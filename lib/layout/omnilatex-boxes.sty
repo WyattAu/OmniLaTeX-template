@@ -1,0 +1,61 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OmniLaTeX Boxes Module
+%
+% Color boxes, examples, and tcolorbox environments
+% Part of OmniLaTeX-template modular architecture
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/layout/omnilatex-boxes}[2024-10-11 v6.0.0 OmniLaTeX boxes module]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Color Boxes (tcolorbox)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{tcolorbox}% Put after tikz
+\tcbuselibrary{many}%
+\tcbset{%
+    highlight math style={%
+            colframe=white,
+            colback=g6,
+        },%
+}%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Example Environment
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newtcolorbox[%
+    auto counter,%
+    number within=chapter,%
+    % Set cleveref, see https://tex.stackexchange.com/a/126023/120853:
+    crefname={\GetTranslation{Example}}{\GetTranslation{Examples}},
+    % List of Examples. *.loe file ending could clash with package thmtools,
+    % careful if that is used!
+    list inside=loe,
+]{example}% Name of environment itself
+[2]% Number of arguments for the environment
+[]% Default of optional argument, which is the first one. Use it for label
+{%
+    beforeafter skip=18pt plus 4pt minus 4pt,%
+    width=0.95\linewidth,%
+    % Center box; see https://tex.stackexchange.com/a/273111/120853:
+    enlarge left by=0.025\linewidth,
+    title=\GetTranslation{Example}\ \thetcbcounter: #2,%
+    fonttitle=\sffamily,%
+    leftrule=1mm,%
+    arc is angular,%
+    parbox,% Allows regular paragraph breaks
+    breakable,% Breaks across pages
+    enhanced,% Hands drawing to tikz
+    rightrule=0mm,%
+    bottomrule=0mm,%
+    % Setting what ends up in 'list of' so that '<Title>' is not shown:
+    list text=#2,
+    #1,%
+    colback=g6,%
+    colframe=g1,%
+    % float,
+}%
+
+\endinput

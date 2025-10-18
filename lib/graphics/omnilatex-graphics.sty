@@ -1,0 +1,128 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OmniLaTeX Graphics Module
+%
+% Image handling, SVG support, and graphics paths
+% Part of OmniLaTeX-template modular architecture
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/graphics/omnilatex-graphics}[2024-10-11 v6.0.0 OmniLaTeX graphics module]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Graphics Support
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{graphicx}
+\RequirePackage{xparse}
+
+% Set global standard path for bitmap images
+\graphicspath{{assets/images/bitmaps/}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% SVG Support
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{svg}
+
+% Running the document to generate the PDF and PDF_TEX file from the original SVG
+% will require SHELL ESCAPE (--shell-escape), aka elevation.
+% However, after the auxiliary images have been created, they only need to be input;
+% shell-escape will no longer be required.
+\svgpath{assets/images/vectors/}% Analogous to \graphicspath{}
+\svgsetup{%
+    inkscapepath=svgsubdir,% Put into subdirectory of where original SVG was found
+    % In most cases, we include SVGs that contain no text, then add it in a
+    % tikzpicture overlay. Therefore, don't generate *.pdf_tex file.
+    % Toggle this back to true wherever needed, on a per-file basis
+    inkscapelatex=false,
+}
+
+\ifOmniUltra
+  \svgsetup{inkscapeexe=}
+\fi
+
+\ifOmniUltra
+  % Provide a lightweight wrapper that avoids spawning inkscape during ultra builds
+  \let\OmniOrigIncludeSvg\includesvg
+  \RenewDocumentCommand{\includesvg}{O{} m}{%
+    \IfFileExists{#2.pdf}{%
+      \includegraphics[#1]{#2.pdf}% use cached conversion
+    }{%
+      \OmniOrigIncludeSvg[#1]{#2}% fallback to standard behaviour
+    }%
+  }
+\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Visual Utilities
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{censor}% For censoring sensitive content
+\RequirePackage{cancel}% Cancel out math in equations
+\RequirePackage{scalerel}% Scale stuff relative to e.g. letters
+
+% Print a contour around letters, e.g. black text with a white border on some noisy
+% background, so that text remains legible.
+% NOT COMPATIBLE WITH XELATEX! Requires pdflatex or lualatex
+\RequirePackage[outline]{contour}
+\contourlength{0.12em}
+
+% Helper commands for contoured text
+\newcommand*{\ctrw}[1]{% Black text, white contour
+    \hypersetup{hidelinks}% Hide links, which might be colored
+    \contour{white}{\textcolor{black}{#1}}%
+}%
+
+\newcommand*{\ctrb}[1]{% White text, black contour
+    \hypersetup{hidelinks}% Hide links, which might be colored
+    \contour{black}{\textcolor{white}{#1}}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Debug Helper for TikZ + SVG
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% When placing nodes over included SVGs using Tikz,
+% we require some help to debug the positions:
+\newcommand*{\debugtikzsvg}{%
+    % This has to be evoked within a TikZ scope of:
+    % `\begin{scope}[x={(image.south east)},y={(image.north west)}]`
+    % The image we invoke the grid "on top of" needs to be labelled "image":
+    \draw[help lines, xstep=0.02,ystep=0.02, opacity=0.5]
+    (image.south west) grid (image.north east);
+    \draw[gray, thick, xstep=0.1,ystep=0.1, opacity=0.8]
+    (image.south west) grid (image.north east);
+    %
+    \foreach \posfraction in {%
+            0, 0.1, ...,1%
+        }{%
+            \foreach \startpoint/\endpoint/\nodeorientation in {% 2D-grid
+                    south west/south east/below,%
+                    north west/north east/above,%
+                    south east/north east/right,%
+                    south west/north west/left%
+                }{
+                    \node[\nodeorientation, opacity=0.5]
+                    at ($(image.\startpoint)!\posfraction!(image.\endpoint)$)
+                    {%
+                        \pgfmathparse{int(\posfraction*10)}% Round result
+                        \num{\pgfmathresult}%
+                    };
+                }%
+        }%
+}%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Custom Icon Command
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Wrapper to include vector icons by filename and scale them
+\newcommand*{\mtlbsmlkicon}[1]{%
+    \scalerel*{%
+        \includesvg{assets/logos/matlab_simulink/#1}%
+    }{%
+        X% Scale first argument to height for capital X
+    }%
+}%
+
+\endinput

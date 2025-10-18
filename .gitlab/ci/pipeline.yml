@@ -1,0 +1,153 @@
+# This file configures the GitLab Continuous Integration system,
+# and as such has little to do with core git, the version control system.
+# See also here: https://docs.gitlab.com/ee/ci/quick_start/#create-a-gitlab-ciyml-file
+# It relies heavily on the Makefile, also part of this repository.
+
+# ======================================================================================
+# ======================================================================================
+# Global defaults, overwritable in each job
+# ======================================================================================
+# ======================================================================================
+
+stages:
+  - .pre
+  - lint
+  - build
+  - test
+  - collect
+
+default:
+    image:
+        # Image from dockerhub per default. Specify full path to use a different image.
+        name: ghcr.io/wyattau/omnilatex-docker:latest
+        # Override any entrypoint back to a naked shell so that job `script`s can be
+        # executed normally.
+        # See also: https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#overriding-the-entrypoint-of-an-image
+        # Cannot use `make` as ENTRYPOINT even if all scripts used it: runner expects an
+        # entrypoint that accepts shell scripts ("the runner expects that the image has
+        # no entrypoint or that the entrypoint is prepared to start a shell command. ")
+        # See also:
+        # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#overriding-the-entrypoint-of-an-image
+        entrypoint: [""]
+    # In general, pipelines currently run into a lot of issues pulling images, see for
+    # example:
+    # https://collaborating.tuhh.de/alex/latex-cookbook/-/jobs/553678
+    # with its "ERROR: Job failed: failed to pull image".
+    # There is nothing that can currently be done except for retrying (see
+    # Ticket#2022010509000459 from servicedesk).
+    # Having to retry has been an issue in the past too, see also
+    # https://collaborating.tuhh.de/alex/latex-cookbook/-/commit/f9dc86b1b40ec9626d9bcfc027e8e466b5348ba0
+    retry: 2
+
+# ======================================================================================
+# ======================================================================================
+# Job templates (start with period).
+# Not actually run by the runner, but can be used to extend other jobs, keeping the
+# config dry.
+# The main logic happens here, the actual jobs only combine these as needed.
+# ======================================================================================
+# ======================================================================================
+
+
+.base:
+    variables:
+        IS_OMNILATEX_CONTAINER: "true"
+        CI: "true"
+
+.lint:
+    extends: .base
+    stage: lint
+    script:
+        - python3 build.py --mode prod lint
+
+.build: # Core build job template
+    extends: .base
+    # Use Python build.py for all jobs. CI runs in prod mode for full validation.
+    # The CI environment variable is detected automatically by build.py,
+    # ensuring native execution inside the container.
+    stage: build
+    script:
+        # Build both root document and all examples
+        - python3 build.py --mode prod build-all
+
+.pdf: # Job template for PDF-producing jobs
+    extends: .build
+    before_script:
+        # Clean old builds to ensure fresh compilation
+        - python3 build.py clean-examples
+        - latexmk -C main.tex
+    # LaTeX stages provide PDFs:
+    artifacts:
+        # artifacts.zip is renamed to current tag/branch:
+        name: "$CI_COMMIT_REF_NAME"
+        paths:
+            # Root document PDF
+            - "main.pdf"
+            # All example PDFs
+            - "build/examples/*.pdf"
+        expire_in: 30 days
+
+.test:
+    extends: .base
+    stage: test
+    script:
+        - |
+          if [ -n "$PYTEST_ARGS" ]; then
+            python3 build.py --mode prod test $PYTEST_ARGS
+          else
+            python3 build.py --mode prod test
+          fi
+
+# ======================================================================================
+# ======================================================================================
+# Actual job definitions.
+# All job names have to correspond to make targets, see .make above.
+# ======================================================================================
+# ======================================================================================
+
+preflight:
+    stage: .pre
+    extends: .base
+    script:
+        - python3 build.py preflight
+    # Preflight checks are relevant, but we are interested in how exactly later jobs
+    # error out if preflight fails. Therefore, allow failure.
+    allow_failure: true
+
+build-all:
+    extends: .pdf
+    cache:
+        key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
+        paths:
+            - "**/_minted*"  # Cache minted outputs for faster builds
+            - "**/*.aux"
+            - "**/*.bbl"
+            - "*.synctex.gz"
+
+test-self:
+    extends: .test
+    needs: []  # Allows job to start immediately
+
+test-pdfs:
+    extends: .test
+    needs:
+        - build-all
+
+all:  # Convenience job to collect PDFs
+    stage: collect
+    variables:
+        IS_OMNILATEX_CONTAINER: "true"
+    script:
+        - echo "Collecting build artifacts"
+        - echo "Root document:"
+        - ls -lh main.pdf || echo "No main.pdf found"
+        - echo "Examples:"
+        - ls -lh build/examples/*.pdf || echo "No example PDFs found"
+    artifacts:
+        name: "omnilatex-all-documents-$CI_COMMIT_REF_NAME"
+        paths:
+            - "main.pdf"
+            - "build/examples/*.pdf"
+        expire_in: 90 days
+    needs:
+        - "build-all"

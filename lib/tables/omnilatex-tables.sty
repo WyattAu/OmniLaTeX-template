@@ -1,0 +1,64 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OmniLaTeX Tables Module
+%
+% Table formatting and environments
+% Part of OmniLaTeX-template modular architecture
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/tables/omnilatex-tables}[2024-10-11 v6.0.0 OmniLaTeX tables module]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Table Packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{tabu}% For longtabu
+\RequirePackage{array}
+\RequirePackage{multirow}% Cells spanning multiple rows
+\RequirePackage{booktabs}% Pretty tables
+\RequirePackage{tabularray}% Powerful, modern package
+\RequirePackage{codehigh}% Verbatim code in tables
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Custom Column Types
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Helper Commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand*{\multirotatecell}[2]{%
+    \multirow{#1}{*}{%
+        \begin{tabular}{@{}c@{}}%
+            \rotatebox[origin=c]{90}{#2}%
+        \end{tabular}%
+    }%
+}%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Tabularray Configuration
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DefTblrTemplate{contfoot-text}{normal}{\GetTranslation{Contfoot}}
+\SetTblrTemplate{contfoot-text}{normal}
+\DefTblrTemplate{conthead-text}{normal}{\GetTranslation{Conthead}}
+\SetTblrTemplate{conthead-text}{normal}
+\DefTblrTemplate{caption-sep}{normal}{\ /\ }
+\SetTblrTemplate{caption-sep}{normal}
+\SetTblrStyle{caption-tag}{font=\bfseries\sffamily\small}
+\SetTblrStyle{caption-sep}{font=\bfseries\sffamily\small}
+\SetTblrStyle{caption-text}{font=\small}
+\SetTblrStyle{conthead-text}{font=\small}
+\SetTblrStyle{contfoot-text}{font=\small}
+\UseTblrLibrary{booktabs}
+\UseTblrLibrary{siunitx}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Global Settings
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand*{\arraystretch}{1.3}
+
+\endinput

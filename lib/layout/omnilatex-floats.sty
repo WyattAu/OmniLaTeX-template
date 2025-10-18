@@ -1,0 +1,103 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OmniLaTeX Floats Module
+%
+% Float configuration, captions, and subfloats
+% Part of OmniLaTeX-template modular architecture
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/layout/omnilatex-floats}[2024-10-11 v6.0.0 OmniLaTeX floats module]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Float Packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Does \centering automatically, provides side captions (fcapside) and much more.
+\RequirePackage{floatrow}
+
+\RequirePackage{flafter}% Floats always after their reference
+
+\floatsetup{footposition=bottom}% For all floats
+
+\floatsetup[longtable]{LTcapwidth=table}% https://tex.stackexchange.com/a/345772/120853
+
+\floatsetup[table]{%
+    style=plaintop,% Always above, no matter where \caption is called
+    footnoterule=none,%
+    footskip=.35\skip\footins,%
+}%
+
+\floatsetup[figure]{%
+    capbesideposition=right,%
+    capbesidesep=quad,%
+}%
+
+\floatsetup[subfigure]{style=plain}% Plain style, so no rules
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Caption Configuration
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{caption}
+
+% Will be printed between 'Figure/Table/... XYZ' and the caption text:
+\DeclareCaptionLabelSeparator{slash}{\ /\ }% `\ ' (backslash+space) is a short space
+
+\DeclareCaptionFont{ftfont}{%
+    \scriptsize%
+    \color{g3}%
+    \hypersetup{hidelinks}%
+    \sffamily\raggedleft%
+}%
+
+\captionsetup{% All captions
+    format=plain,%
+    textformat=period,% Always print period at end
+    font=small,% All fonts
+    labelfont={sf,bf},%
+    labelsep=slash,%
+    labelformat=simple,% Just Name/Number, no period or similar
+    indention=1em,%
+}%
+
+\captionsetup[floatfoot]{%
+    footfont=ftfont,% https://tex.stackexchange.com/q/9547/120853
+}%
+
+\captionsetup[capbesidefigure]{
+    % When using sidecaptions, the linewidth can be rather small and awkward breaks and
+    % many underfull hboxes occur. Therefore, raggedright.
+    justification=raggedright,
+}
+
+\captionsetup[subfigure]{%
+    labelformat=simple,% 'parens' uses parantheses, 'brace' just the right one
+    labelsep=slash,%
+    labelfont={sf,bf},%
+    list=off,% list=off removes subfigures from LoF
+}%
+
+\captionsetup[subtable]{%
+    labelformat=simple,% 'parens' uses parantheses, 'brace' just the right one
+    labelsep=slash,%
+    labelfont={sf,bf},%
+    list=off,% list=off removes subfigures from LoF
+}%
+
+% Change counter from Arabic number to letter:
+\renewcommand*{\theContinuedFloat}{\alph{ContinuedFloat}}
+
+% Make this new length and indent, same length as regular caption indent:
+\newlength{\floatfootruleindent}
+\setlength{\floatfootruleindent}{\caption@indent}% Set the new length
+
+% A bit hacky; introduce a rule underneath caption if \floatfoot is called:
+\renewcommand*{\floatfootskip}{2pt\hspace{\floatfootruleindent}\hrulefill}%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Subfloats
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{subcaption}% For subfloats
+
+\endinput

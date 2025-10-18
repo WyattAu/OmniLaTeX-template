@@ -1,0 +1,75 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OmniLaTeX Page Layout Module
+%
+% Headers, footers, and page makeup
+% Part of OmniLaTeX-template modular architecture
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/layout/omnilatex-page}[2024-10-11 v6.0.0 OmniLaTeX page layout module]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% SCRLayer for page makeup (header/footer etc.)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage[automark]{scrlayer-scrpage}% Automatically mark
+
+\clearpairofpagestyles % Reset defaults
+
+% Declare new length (acting as a height) for the vertical bar in the header:
+\newlength{\headerrulelength}
+% Increase height of rule here; KOMA Script will complain, no idea how to fix
+\setlength{\headerrulelength}{3ex}
+
+% New command for the vertical rule, with height as specified by the new length above:
+\newcommand*{\headerrule}{%
+    \rule[-1ex]{0.1em}{\headerrulelength}%
+}%
+
+% Define headers:
+\lehead{% Left, even head
+    \llap{%
+        \pagemark\enskip\headerrule%
+    }%
+    \enskip\headmark%
+}%
+
+\rohead{% Right, odd head
+    \headmark\enskip%
+    \rlap{%
+        \headerrule\enskip\pagemark%
+    }%
+}%
+
+% https://tex.stackexchange.com/q/299125/120853:
+\renewcommand*{\chaptermarkformat}{\thechapter\enskip}%
+
+\addtokomafont{pagehead}{\sffamily\itshape\footnotesize}%
+\addtokomafont{pagenumber}{\sffamily\bfseries\footnotesize}%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Deliberately blank pages with message
+% Occurs if new chapter starts (opens right) but previous chapter ended on
+% a recto (right) page itself.
+% The intermediate left page will be blank; leave a message that this is intentional.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand*{\blankpage}{% https://tex.stackexchange.com/a/205536/120853
+    \par\vspace*{\fill}%
+    \begin{center}
+        \textcolor{g2}{%
+            \GetTranslation{BlankPage}% See translations file
+        }%
+    \end{center}
+}%
+
+\DeclareNewLayer[% Create new layer under some name
+    foreground,%
+    textarea,%
+    contents=\blankpage,%
+]{blankpage.fg}
+
+\DeclarePageStyleByLayers{blank}{blankpage.fg}% Make layer available as pagestyle
+\KOMAoptions{cleardoublepage=blank}% Use pagestyle
+
+\endinput

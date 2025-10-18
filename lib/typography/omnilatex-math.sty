@@ -1,0 +1,409 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OmniLaTeX Math Module
+%
+% Mathematical typesetting and symbols
+% Part of OmniLaTeX-template modular architecture
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/typography/omnilatex-math}[2024-10-11 v6.0.0 OmniLaTeX math module]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Math Tools
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Tweaks and improvements for amsmath; also loads amsmath.
+% Needs to be loaded before unicode-math (done in fonts module)!
+\RequirePackage{mathtools}
+
+% Custom tag format - use brackets instead of parentheses
+\newtagform{brackets}{[}{]}
+\usetagform{brackets}
+
+% Allow multi-line environments to break across pages.
+% While it makes sense to disallow it, not doing so can produce big spacing issues.
+% Usually, any such environment will require manual attention.
+% Number from 1 to 4 as optional argument:
+% [1]: allow pagebreaks, but avoid as much as possible.
+% [4]: maximum permissiveness
+\allowdisplaybreaks[2]
+
+% Automatic macro for delimiters (parentheses, brackets, ...)
+% Using the starred variant of the created command (like \parens*{<content>})
+% also scales the delimiters automatically, using \left and \right.
+\DeclarePairedDelimiter{\parens}{(}{)}
+\DeclarePairedDelimiter{\brackets}{[}{]}
+\DeclarePairedDelimiter{\braces}{\{}{\}}
+
+% For a 'cases' environment that also supports equation numbering
+% https://tex.stackexchange.com/a/180910/120853
+\RequirePackage{empheq}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Scientific Typesetting - Chemistry
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{chemmacros}% \ch{}, \chcpd[]{compound} etc.
+\chemsetup{%
+    formula=chemformula,%
+    chemformula/font-family=tgpl,% Use math font family
+}
+
+% Setup for reactions
+\chemsetup[reactions]{
+    before-tag = \textbf{R}\ ,%insert an R before the bold reaction number
+    tag-open = [ ,%use square brackets, as for equations
+            tag-close = ] ,
+    own-counter=false,%use own counter (true) or the equation counter (false)
+    % autoref-name=\ChemTranslate{reaction},
+}
+
+% Some new custom environments. Very simple definitions that behave just like the
+% widely known AMSMath math environment as specified in the last argument.
+\NewChemReaction{reactionsgather}{gather}% Like AMSmath's `gather`
+\NewChemReaction{reactionsgather*}{gather*}
+
+% Sort reaction counter underneath chapter, see
+% https://tex.stackexchange.com/questions/530210/how-to-cross-reference-reactions-in-chemmacros-chapter#comment1340793_530210
+\renewcommand*{\thereaction}{\thechapter.\arabic{reaction}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Scientific Typesetting - Units
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{siunitx}% Typesetting physical units correctly
+\sisetup{%
+    % For siunitx v3, the following block replaces what used to be
+    % `detect-all` (removed in that release, see
+    % https://github.com/josephwright/siunitx/blob/main/CHANGELOG.md#v300 ).
+    % It allows the `siunitx` output to match surrounding text/math (italics/bold/...,
+    % roman/sans/... etc. as much as possible)
+    mode=match,
+    propagate-math-font=true,
+    reset-math-version=false,
+    reset-text-family=false,
+    reset-text-series=false,
+    reset-text-shape=false,% Not part of official fix, but still added (see https://collaborating.tuhh.de/alex/latex-cookbook/-/issues/8)
+    text-family-to-math=true,
+    text-series-to-math=true,
+    %
+    % Requires siunitx v3+, see also https://tex.stackexchange.com/a/468031/120853,
+    % https://github.com/josephwright/siunitx/issues/532 :
+    text-font-command=\unitnumberfont,
+    %
+    % Alternative range-phrase:
+    % en-dash via '--', but inside \text{}, so it's not 'two minus signs'
+    % range-phrase={\,\text{--}\,},
+    range-units=single,% single: Print unit only once, at end
+    per-mode=symbol,
+    % use plus minus for uncertainties
+    uncertainty-mode = separate,
+}%
+% Second setup step, with locales. See also
+% https://tex.stackexchange.com/a/46979/120853
+\gappto{\blockextras@german}{%
+    \sisetup{locale=DE}
+}
+\gappto{\blockextras@english}{%
+    \sisetup{locale=US}
+}
+
+% Declare units ourselves:
+% Set as text so it stays a hyphen in math mode, as opposed to minus sign
+\DeclareSIUnit{\volpercent}{Vol.\text{-}\%}
+\DeclareSIUnit{\watthour}{Wh}%
+\DeclareSIUnit{\annum}{a}%
+\DeclareSIUnit{\atmosphere}{atm}%
+\DeclareSIUnit{\partspermillion}{ppm}%
+\DeclareSIUnit{\bar}{bar}% https://tex.stackexchange.com/a/598473/120853
+% relative Humidtiy depends on the language, that's why there has to be differentiated
+\IfStrEq{\omnilatex@language% If language is set to german
+}{%
+    german%
+}{%
+    %True statement
+    \DeclareSIUnit{\relhumidity}{\%\,\text{r.F.}}%
+}{%
+    %False statement
+    \DeclareSIUnit{\relhumidity}{\%\,\text{RH}}%
+}
+\RequirePackage[official]{eurosym}% Get the Euro sign to declare the "unit" euro
+% Because the € sign itself is referenced by \euro, we do not need to declare a unit ourselves
+
+% Unit qualifiers, i.e. subscripts.
+% We already have a dedicated system (bib file with glossaries-extra) for subscripts
+% for symbols, so use those (just format, don't index) also for units here.
+\DeclareSIQualifier{\dryair}{% for moist air context
+    \glsfmtname{sub.dry}\glsfmtname{sub.air}%
+}
+\DeclareSIQualifier{\water}{%
+    \glsfmtname{sub.water}%
+}
+\DeclareSIQualifier{\thermal}{%
+    \glsfmtname{sub.thermal}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Custom Math Commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Required for starred command variants
+\RequirePackage{suffix}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Equation Punctuation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% To insert math equations into the text flow,
+% we need punctuation marks at the end of display-style equations.
+% Prepend them with a small horizontal space for visual separation.
+\newcommand*{\eqend}{\,.}% Command \eqdot reserved by unicode-math
+\newcommand*{\eqcomma}{\,,}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Math Operators
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Gradient operator (so that it will be printed upright)
+\DeclareMathOperator{\grad}{grad}
+
+% Constant notation
+\newcommand*{\const}{\text{\GetTranslation{Constant}.}}% For all 'constant' expressions
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Text in Math Mode
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Quick Quad like physics package. For text between two equation parts.
+% We do not use physics package because it is currently not in a good condition:
+% https://tex.stackexchange.com/q/471532/120853
+\newcommand*{\qq}[1]{\quad\text{#1}\quad}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Scientific Notation Helpers
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Unified markup for constructs of the form:
+% '1.2 ppm CO2' etc., with correct, specified spacing.
+\newcommand*{\chemamount}[3]{%
+    \ensuremath{%
+        \qty{#1}{#2}%
+        \;% Medium-sized space
+        \chcpd{#3}%
+    }%
+}
+
+% Circle input and parse as a number
+\newcommand*{\circlednum}[1]{%
+    \tikz[baseline=(char.base)]{%
+        \node[circlednum] (char) {\num{#1}};
+    }
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Glossary Integration Wrappers
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Create a couple of wrappers to integrate with gls
+% These are only necessary because we cannot really create gls entries that also accept
+% arguments, so we treat them separately.
+%
+% Use the \<XYZ>fmt commands only to format arguments, without doing anything else.
+% Then use the \<XYZ> commands in the text, which includes indexing etc.
+% We use \glsdisp, which works like \glsdisp{<indexed label>}{<displayed link text>}
+% and respects the first use flag.
+% If {<displayed link text>} contains another glossary-entry, e.g. a \sym command,
+% that is still indexed and seems to work. The link leads to <indexed label>.
+%
+% If the custom commands do not make use of gls-like commands explicitly,
+% add a \glsadd to create an entry in the glossary, but no text at the location
+
+% use dottedsquare (provided by unicode-math package, refer to unimath-symbols.pdf)
+% as a placeholder for symbols
+% HACKY: Raise it a bit, since default symbol hangs low
+\newcommand*{\symbolplaceholder}{\raisebox{0.3ex}{\dottedsquare}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Statistical Notation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Mean value: horizontal overbar. The built-in options all look poor
+% https://tex.stackexchange.com/a/22134/120853
+\newcommand*{\meanfmt}[1]{%
+    \ensuremath{%
+        \mkern 1.5mu%
+        \overline{%
+            \mkern-1.5mu#1\mkern-1.5mu%
+        }%
+        \mkern 1.5mu%
+    }%
+}
+\newcommand*{\mean}[1]{\glsdisp{sym.mean}{\meanfmt{#1}}}
+
+% Logarithmic mean
+\newcommand*{\logmeanfmt}[1]{\ensuremath{\tilde{#1}}}
+\newcommand*{\logmean}[1]{\glsdisp{sym.logmean}{\logmeanfmt{#1}}}
+
+% Absolute value
+\DeclarePairedDelimiter{\absfmt}{\lvert}{\rvert}% Absolute value
+\newcommand*{\abs}[1]{\glsdisp{sym.abs}{\ensuremath{\absfmt*{#1}}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Physical Notation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Dotted symbol for flows
+\newcommand*{\flowfmt}[1]{\ensuremath{\dot{#1}}}
+\newcommand*{\flow}[1]{\glsdisp{sym.flow}{\flowfmt{#1}}}
+
+% Delta/Difference
+\newcommand*{\differencefmt}[1]{\ensuremath{\Delta #1}}
+\newcommand*{\difference}[1]{\glsdisp{sym.difference}{\differencefmt{#1}}}
+
+% Wrapper for Nabla Operator
+\newcommand*{\nablaoperatorfmt}[1]{\ensuremath{\nabla #1}}
+\newcommand*{\nablaoperator}[2][]{% Optional argument is degree
+    \ensuremath{%
+        \glsdisp{sym.nabla}{\nablaoperatorfmt{^{#1}#2}}
+    }%
+}
+
+% Wrapper for Heat Exchanger Entry
+\newcommand*{\heatexentryfmt}[1]{\ensuremath{#1'}}
+\newcommand*{\heatexentry}[1]{\glsdisp{sym.heatexentry}{\heatexentryfmt{#1}}}
+
+% Wrapper for Heat Exchanger Exit
+\newcommand*{\heatexexitfmt}[1]{\ensuremath{#1''}}
+\newcommand*{\heatexexit}[1]{\glsdisp{sym.heatexexit}{\heatexexitfmt{#1}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Vectors
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Vector with bold symbol instead of arrow
+\newcommand*{\vectfmt}[1]{\ensuremath{\symbf{#1}}}
+\newcommand*{\vect}[1]{\glsdisp{sym.vector}{\vectfmt{#1}}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Derivatives
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% These functionalities are also provided by the otherwise useful 'physics' package.
+% However, that package has many issues and is best avoided!
+%
+% Base Version:
+% Syntax: \deriv[<degree>]{<symbol>}
+%
+% Starred variant gives partial derivative.
+% The star/asterisk and brackets (optional argument in []) may both be left out.
+%
+% Usage example 1: \deriv*[2]{x} -> 2nd degree partial derivative of x
+% Usage example 2: \deriv{x} -> derivative of x
+% Usage example 3: \deriv*{x} -> partial derivative of x
+% Usage example 4: \deriv[5]{x} -> 5th derivative of x
+%
+% \newcommand syntax:
+% \newcommand{<command>}[<number of arguments>][<defaults>]{<code>}
+%
+% I.e., if [<defaults>] is empty, no default values exist.
+% If one optional argument exists, it takes #1, and the mandatory arguments are appended
+% as #2, ...
+%
+% Use explicit glssymbol, since the regular field 'name' is occupied by what will be
+% printed in the glossary (with the \symbolplaceholder appended)
+
+\newcommand*{\derivativefmt}[1]{%
+    % Upright d in derivatives
+    \ensuremath{\mathup{d}#1}%
+}%
+
+\newcommand*{\partialderivativefmt}[1]{%
+    \ensuremath{\partial #1}%
+}
+
+\newcommand*{\deriv}[2][]{%
+    \ensuremath{%
+        \glsdisp{sym.derivative}{%
+            \derivativefmt{^{#1}#2}%
+        }%
+    }%
+}%
+
+% Make it so that starred version of \deriv{} command gives partial derivative
+\WithSuffix\newcommand\deriv*[2][]{%
+    \ensuremath{%
+        \glsdisp{sym.partial_derivative}{%
+            \partialderivativefmt{^{#1}#2}%
+        }%
+    }%
+}%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Derivative Fractions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Syntax: \fracderiv[<degree>]{<numerator>}{<denominator>}
+%
+% Starred variant gives partial derivative.
+% The star/asterisk and brackets (optional argument in []) may both be left out.
+%
+% timederiv simply inserts the time symbol as the denominator automatically.
+% posderiv does the same for the positional coordinate symbol.
+%
+% Usage example 1: \fracderiv*[2]{x}{y}
+% Usage example 2: \fracderiv{x}{y}
+% Usage example 3: \timederiv[3]{x} % Note how there is no second mandatory argument
+% Usage example 4 \posderiv*[2]{y} % Note how there is no second mandatory argument
+
+\newcommand{\fracderiv}[3][]{%
+    \ensuremath{%
+        \frac{%
+            \deriv[#1]{#2}%
+        }{%
+            \deriv{#3}^{#1}%
+        }%
+    }%
+}%
+
+% starred version gives partial derivative
+\WithSuffix\newcommand\fracderiv*[3][]{%
+    \ensuremath{%
+        \frac{%
+            \deriv*[#1]{#2}%
+        }{%
+            \deriv*{#3}^{#1}%
+        }%
+    }%
+}
+
+% Time derivative
+\newcommand*{\timederiv}[2][]{%
+    \fracderiv[#1]{#2}{\gls{sym.time}}%
+}%
+% Partial Time derivative
+\WithSuffix\newcommand\timederiv*[2][]{%
+    \fracderiv*[#1]{#2}{\gls{sym.time}}%
+}
+
+% Positional derivative
+\newcommand*{\posderiv}[2][]{%
+    \fracderiv[#1]{#2}{\gls{sym.first_cart_coord}}%
+}
+% Partial Positional derivative
+\WithSuffix\newcommand\posderiv*[2][]{%
+    \fracderiv*[#1]{#2}{\gls{sym.first_cart_coord}}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Temperature Notation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% To print: 45/55 °C
+\newcommand*{\temperaturepair}[2]{%
+    \qtyrange[%
+        range-phrase={/},%
+        range-units=single%
+    ]{#1}{#2}{\degreeCelsius}%
+}%
+
+\endinput

@@ -1,0 +1,310 @@
+% Defining this command just here, because it is just needed in this file and nowhere else.
+% And it is unnecessary for the general template, so it's not in the preamble
+% >> \command
+% Funktion: LaTeX-Befehle nicht parsen (ähnlich verb) und Schriftformat
+%           festlegen
+% Hinweise: \verb macht prinzipiell das Gleiche, aber es geht hier um eine
+%           semantische Formatierung von Kommandos. Formatierung kann also
+%           nachträglich problemlos geändert werden über die Makro-Definition
+% Gebrauch: \command{...}
+% Optionen: -
+% vor/nach: -
+% Referenz: $groups$/d/msg/de.comp.text.tex/Dz82hjNiVdA/BV88_dFsp7sJ
+\makeatletter
+\newcommand*{\command}{%
+    \begingroup
+    \let\do\@makeother
+    \dospecials
+    \catcode`\{=1 %
+    \catcode`\}=2 %
+    % curly braces have normal catcodes for normal argument parsing
+    % alternative, see \verb.
+    \@command
+}
+\newcommand*{\@command}[1]{%
+    \endgroup
+    % \detokenize needed because of curly braces
+    \texttt{\detokenize{#1}}%
+}
+\makeatother
+
+\chapter{Grundlagen}
+\label{ch:grundlagen}
+
+In diesem \namecref{ch:grundlagen} geht es um die Grundlagen des wissenschaftlichen Arbeitens und die Typographischen Grundlagen für diese.
+
+Dieser Teil stammt aus der \enquote{alten} Institutsvorlage und ist daher nicht unbedingt top aktuell was Aussagen über das Template betrifft. Hierfür sind die anderen Kapitel und Abschnitte am Besten geeignet. Allerdings wird hier noch einmal auf das wissenschaftliche Arbeiten und generelles was Typographie betrifft eingegangen, weswegen dieser Teil hier aufgenommen wurde.
+
+\section{Wissenschaftliches Arbeiten}
+\label{sec:Wissenschaftliches_Arbeiten}
+
+Ziel des wissenschaftlichen Arbeitens ist der Gewinn neuer Erkenntnisse. Insbesondere müssen Probleme strukturiert, gegliedert und methodisch und systematisch gelöst werden \cite{Voss}. Problemlösungsprozesse sind Teil des Studiums und müssen für studentische Arbeiten eigenständig angewandt werden. Daneben geht es beim wissenschaftlichen Arbeiten auch um eine entsprechende Form der schriftlichen Ausarbeitung und der Präsentation.
+
+In dieser Vorlage werden nur einige Aspekte aus dem wissenschaftlichen Arbeiten hervorgehoben: die Ansprüche an die Wissenschaft, die Recherche und das Zitieren. Die Form der schriftlichen Darstellung wird mit der Vorlage bereits geliefert und ausführlich besprochen, so dass hierauf nicht weiter eingegangen werden muss. Für allgemeinere Betrachtungen zum wissenschaftlichen Arbeiten sei auf die Fachliteratur verwiesen:
+
+Literaturempfehlung deutsch:
+
+\begin{itemize}
+    \item \cite{Voss}
+    \item \cite{Sesink}
+    \item \cite{Karmasin}
+\end{itemize}
+
+%------------------------------------------------------------------------------%
+\subsection{Ansprüche an die Wissenschaft}
+\label{sec:AnspruecheWissenschaft}
+
+Bei den studentischen Arbeiten handelt es sich um wissenschaftliche Arbeiten, für die gewisse, allgemeine Kriterien erfüllt werden müssen. Nach \cite{Voss} lassen sich diese Ansprüche in folgende Adjektive gliedern: \textit{objektiv, präzise, zuverlässig, vollständig, ehrlich} und \textit{ethisch}, siehe auch \cref{fig:Ansprueche_an_die_Wissenschaft}.
+
+\begin{figure}%
+    \ffigbox[\textwidth]{% forest does not work with \FBwidth (?)
+        \caption{Ansprüche an die Wissenschaft \cite{Voss}}
+        \label{fig:Ansprueche_an_die_Wissenschaft}
+    }{
+        \footnotesize
+        \begin{forest}
+            forked edges,% Instead of direct connections, draw edges
+            for tree={%
+                    grow'=south,
+                    anchor=north,
+                    where level=0{}{calign=first},% works like {if}{else}
+                    %
+                    % Put all nodes of same level onto same tier also, aligning
+                    % them vertically:
+                    tier/.pgfmath=level(),
+                    %
+                    where level=1{font={\bfseries}}{},%
+                },%
+            % Decrease distance to only affect root-first level with s sep, see
+            % https://tex.stackexchange.com/a/188461/120853
+            [Ansprüche an die Wissenschaft, anchor=south, for children={s sep-=1em}
+                        [Ansprüche an die Wissenschaft]
+                        [objektiv]
+                        [präzise]
+                        [zuverlässig]
+                        [vollständig]
+                        [ehrlich]
+                        [ethisch]
+                ]
+        \end{forest}
+    }
+\end{figure}
+
+Diese Kriterien werden nun kurz umrissen, wobei hierfür die Erläuterungen aus \cite{Voss} übernommen werden. \textit{Objektivität} bedeutet, dass eine möglichst neutrale und analysierende Position zum bearbeiteten Thema eingenommen wird. Die gewonnenen Resultate sollten \textit{präzise}, d.\,h. eindeutig und verständlich für den Leser sein. Ergebnisse sind \textit{zuverlässig}, wenn bei wiederholten Untersuchungen (bspw. Messungen) jeweils die gleichen Ergebnisse auftreten. Dieses Kriterium ist nicht immer erfüllbar, da eine Situation geschaffen werden muss, in der alle Einflussfaktoren konstant bleiben.
+
+Die \textit{Vollständigkeit} bedeutet, dass alle relevanten Aspekte der Aufgabenstellung untersucht werden und die Informationsgrundlagen (z.\,B. durch Literaturrecherchen) möglichst ausgeschöpft werden. Auch dieses Kriterium ist für studentische Arbeiten nicht immer komplett erfüllbar, da hier auch der zeitliche Rahmen eine Rolle spielt. Das Kriterium \textit{ehrlich} bedeutet, dass der Autor alle Quellen, aus denen Erkenntnisse, Argumente und Anregungen gewonnen hat, offen legt. Für dieses Kriterium ist also das korrekte Zitieren wichtig, siehe \cref{sec:Zitieren}. Zu guter Letzt sollte die Wissenschaft \textit{ethisch} sein, d.\,h. sich an Standards der Menschlichkeit, Würde und Erhaltung der Umwelt orientieren.
+
+
+%------------------------------------------------------------------------------%
+\subsection{Recherche}
+\label{sec:Recherche}
+
+In der Regel beginnt eine studentische Arbeit mit der Recherche und Quellensuche. Hierfür sollen einige Tipps genannt werden, um vorhandene Informationen leichter zu finden. Es empfiehlt sich für die Recherche folgende Quellen/Suchmöglichkeiten zu berücksichtigen:
+
+\begin{itemize}
+    \item \textbf{Betreuer der Arbeit oder Fachexperte:} \\
+          Zunächst sollte der Betreuer nach entsprechender Literatur oder Informationen zum Thema gefragt werden. Meistens ist bereits einiges zum Thema vorhanden oder zumindest das Wissen, welche Literatur in Frage kommt. Neben dem Betreuer kommen etwaige Fachexperten aus Universität oder Industrie in Frage, um erste Informationen zu sammeln.
+    \item \textbf{Studentische Arbeiten oder Veröffentlichungen des Instituts:} \\
+          Am Institut gibt es eine Vielzahl von studentischen Arbeiten oder Veröffentlichungen. Häufig sind Arbeiten vorhanden, die eine ähnliche Thematik oder Methodik verwendet haben. Hiermit ist ein guter Startpunkt für die eigene Arbeit gegeben.
+    \item \textbf{Tagungsbände (Proceedings) von Fachkonferenzen:} \\
+          Bei sehr neuen Technologien ist Standardliteratur meist rar. Eine gute Quelle können Tagungsbände von Konferenzen sein. Hier werden von den Experten die neuesten Ergebnisse vorgestellt. Fragt euren Betreuer nach den Namen entsprechender Konferenzen.
+    \item \textbf{Bibliotheks- oder Verbundkataloge:} \\
+          Neben dem Katalog der eigenen Universitätsbibliothek \cite{TUB} sind vor allem auch Verbundkataloge von Interesse. Diese listen alle verfügbaren Titel eines Bibliothekenverbundes auf. Im norddeutschen Raum ist der Katalog des Gemeinsamen Bibliotheksverbundes \cite{GBV} die zentrale Anlaufstelle und kann über eine Fernleihe genutzt werden.
+    \item \textbf{eBooks der Verlage:} \\
+          Über das TUHH-interne Intranet gibt es Vollzugriff auf die eBooks unterschiedlicher Verlage, wie z.\,B. \href{www.springerlink.com}{SpringerLink} oder \href{www.oldenbourg-link.com}{Oldenbourg-Link}. Eine Vielzahl weiterer eBook-Angebote stehen zur Verfügung. Weitere Informationen sind der \href{www.tub.tu-harburg.de}{Homepage der Universitätsbibliothek} zu entnehmen.
+    \item \textbf{Internetsuchmaschinen:} \\
+          Zu guter Letzt spielt natürlich das Internet in der Recherche eine immer wichtigere Rolle. Für wissenschaftliche Zwecke kommen beispielsweise Suchmaschinen wie \href{scholar.google.de}{Google Scholar}, \href{books.google.de}{Google Books} oder \href{base.ub.uni-bielefeld.de}{Bielefield Academic Search Engine (BASE)} in Frage. Informationen direkt aus dem Internet zu übernehmen sollte, wenn möglich, vermieden werden. Zum einen ist die Zugänglichkeit der Informationen nicht langfristig gewährleistet und zum anderen ist die Zitierfähigkeit häufig nicht gegeben (Beispiel: Wikipedia).
+\end{itemize}
+
+Diese Auflistung ist natürlich nur eine Auswahl an Möglichkeiten. Wichtig ist es, sich ein möglichst umfassende Sammlung relevanter Quellen zuzulegen, um bekannte Erkenntnisse zum Thema verwerten zu können. Wichtig ist aber eher die Qualität der Quellen, als die Quantität.
+
+
+%------------------------------------------------------------------------------%
+\subsection{Zitieren}
+\label{sec:Zitieren}
+
+Auch wenn wissenschaftliche Arbeiten die Eigenleistung des Autors wiedergeben sollen, ist es unabdingbar bereits vorhandenes Wissen zu verwenden und darzustellen. Es ist jedoch äußerst wichtig, dass man Eigenleistung und fremdes Wissen deutlich unterscheidbar macht. Aus diesem Grund muss fremdes Wissen \textbf{immer} mit Quellen belegt werden und zwar so, dass auch eine eindeutige Zuordnung zur Quelle möglich ist. Hierdurch wird eine Nachprüfbarkeit der Aussagen der Arbeit ermöglicht \cite{Voss}.
+
+Es werden zwei Arten von Zitaten unterschieden: direkte und indirekte Zitate. \enquote{Direkte Zitate sind wortwörtliche Übernahmen aus fremden Texten} \cite{Voss}. Sie müssen grundsätzlich in Anführungszeichen gesetzt werden. Sie werden verwendet, wenn der getreue Wortlaut wichtig ist und hervorgehoben werden soll \cite{Voss}.
+
+Bei indirekten Zitaten handelt es sich um die sinngemäße Wiedergabe von Aussagen, bei denen keine Anführungszeichen verwendet werden \cite{Voss}.
+
+Die Form der Quellenangabe wird durch diese Vorlage vorgegeben (durch den \verb|\cite{bibid}|-Befehl), so dass sich der Autor keine weiteren Gedanken darüber machen muss.
+
+\section{Typografische Richtlinien}
+\label{cha:Typografische_Richtlinien}
+
+In diesem \namecref{cha:Typografische_Richtlinien} werden typografische Richtlinien festgelegt bzw. vorgeschlagen, die eine übersichtlichere Gestaltung und eindeutige Formatierung des Dokuments bewirken.
+
+Allgemein sollte darauf geachtet werden, typografische Richtlinien konsistent über das gesamte Dokument anzuwenden. Dazu empfiehlt es sich eigene Makros in der Datei \textit{main.tex} zu definieren und diese zu verwenden. Eine Änderung der Formatierung im Makro wird dann automatisch im gesamten Dokument übernommen.
+
+Im \cref{sec:Schriftformatierung} wird erläutert, auf welche Weise Textelemente bzgl. ihrer Schrift formatiert werden. Hierdurch können beispielsweise besondere Wörter wie Eigennamen hervorgehoben werden können. Ein Vorschlag für eine Konvention zur Formatierung von Textelementen wird gegeben.
+
+In den folgenden Abschnitten \cref{sec:Einheiten} bis \cref{sec:Abkuerzungen} wird die korrekte Formatierung von Einheiten und Abkürzungen erläutert. Hierbei handelt es sich um anerkannte typografische Regeln, die auf jeden Fall eingehalten werden sollten.
+
+
+%------------------------------------------------------------------------------%
+\subsection{Schriftformatierung}
+\label{sec:Schriftformatierung}
+
+Über die Schriftformatierung können Textelemente besonders ausgezeichnet werden, beispielsweise durch eine \textit{kursive} Darstellung. Im Folgenden werden grundlegende Informationen daraus präsentiert. Für weitere Details sei auf \textcite{fntguide} verwiesen.
+
+
+%------------------------------------------------------------------------------%
+\subsection{Befehle}
+\label{sec:Befehle}
+
+Für die Schriftformatierungen stehen die in \cref{tab:Befehle_Schriftformatierung_Textmodus} gezeigte Befehle zur Verfügung. Aus vorherigen \textit{\LaTeX{}}-Versionen stehen veraltete Befehle (z.\,B. \command{\bf}) zur Verfügung, die jedoch nicht mehr genutzt werden sollten. Es stehen jeweils zwei Varianten bereit. Die \command{\textxx{..}}-Befehle formatieren den Text innerhalb der Klammer, die weitere Variante ist ein Schalter, der den gesamten nachfolgenden Text (innerhalb der jeweiligen Umgebung) formatiert.
+
+\begin{table}%
+    \centering%
+    \caption[Befehle zur Schriftformatierung im Textmodus]{Befehle zur Schriftformatierung im Textmodus \cite{fntguide} \label{tab:Befehle_Schriftformatierung_Textmodus}}%
+    \begin{tabular}{lll}%
+        \toprule % booktabs-Paket
+        \textbf{Formatierung}            & \textbf{Befehl}                                & \textbf{Beispiel}             \\ \cmidrule(r){1-1}\cmidrule(lr){2-2}\cmidrule(l){3-3} % booktabs-Paket
+        Roman (Serifenschrift)           & \command{\textrm{...}} od. \command{\rmfamily} & \textrm{Beispiel abc ABC 123} \\
+        Bold Face (fett)                 & \command{\textbf{...}} od. \command{\bfseries} & \textbf{Beispiel abc ABC 123} \\
+        Italics (kursiv)                 & \command{\textit{...}} od. \command{\itshape}  & \textit{Beispiel abc ABC 123} \\
+        Slanted (schräggestellt)         & \command{\textsl{...}} od. \command{\slshape}  & \textsl{Beispiel abc ABC 123} \\
+        Sans Serif (serifenlose Schrift) & \command{\textsf{...}} od. \command{\sffamily} & \textsf{Beispiel abc ABC 123} \\
+        Small Caps (Kapitälchen)         & \command{\textsc{...}} od. \command{\scshape}  & \textsc{Beispiel abc ABC 123} \\
+        Typewriter (Schreibmaschine)     & \command{\texttt{...}} od. \command{\ttfamily} & \texttt{Beispiel abc ABC 123} \\
+        \bottomrule % booktabs-Paket
+    \end{tabular}%
+\end{table}%
+
+Die Schriftgröße kann über die Befehle in \cref{tab:Befehle_Schriftgroessen} verändert werden. Die Befehle sind keine Absolutangaben sondern als relative Änderung im Vergleich zur Standardschriftgröße zu verstehen. Für die hier verwendete Standardgröße von 12\,pt realisiert der Befehl \command{\huge} bereits die maximal mögliche Größe, so dass im Vergleich dazu \command{\Huge} keine Veränderung mehr bewirkt.
+
+% Hinweis: Ausgabe der Schriftgröße im Text:
+% \makeatletter\tiny\f@size\makeatother
+%
+% Author command   normalsize=10pt    normalsize=12pt
+% --------------------------------------------------------------
+% \tiny            5pt      ( 50%)    6pt      ( 50%)
+% \scriptsize      7pt      ( 70%)    8pt      ( 67%)
+% \footnotesize    8pt      ( 80%)    10pt     ( 83%)
+% \small           9pt      ( 90%)    10.95pt  ( 91%)
+% \normalsize      10pt     (100%)    12pt     (100%)
+% \large           12pt     (120%)    14.4pt   (120%)
+% \Large           14.4pt   (144%)    17.28pt  (144%)
+% \LARGE           17.28pt  (173%)    20.74pt  (173%)
+% \huge            20.74pt  (207%)    24.88pt  (207%)
+% \Huge            24.88pt  (249%)    24.88pt  (207%)
+
+\begin{table}%
+    \centering%
+    \caption[Befehle zur Schriftgrößenänderung]{Befehle zur Schriftgrößenänderung \cite{fntguide} \label{tab:Befehle_Schriftgroessen}}%
+    \begin{tabular}{cll}%
+        \toprule % booktabs-Paket
+        \textbf{Größe (ca.)} & \textbf{Befehl}         & \textbf{Beispiel}        \\ \cmidrule(r){1-1}\cmidrule(lr){2-2}\cmidrule(l){3-3} % booktabs-Paket
+        50\%                 & \command{\tiny}         & {\tiny Beispiel}         \\
+        70\%                 & \command{\scriptsize}   & {\scriptsize Beispiel}   \\
+        80\%                 & \command{\footnotesize} & {\footnotesize Beispiel} \\
+        90\%                 & \command{\small}        & {\small Beispiel}        \\
+        \textbf{100\%}       & \command{\normalsize}   & {\normalsize Beispiel}   \\
+        120\%                & \command{\large}        & {\large Beispiel}        \\
+        140\%                & \command{\Large}        & {\Large Beispiel}        \\
+        170\%                & \command{\LARGE}        & {\LARGE Beispiel}        \\
+        210\%                & \command{\huge}         & {\huge Beispiel}         \\
+        250\%                & \command{\Huge}         & {\Huge Beispiel}         \\
+        \bottomrule % booktabs-Paket
+    \end{tabular}%
+\end{table}%
+
+
+
+%------------------------------------------------------------------------------%
+\subsection{Konventionen}
+\label{sec:Konventionen}
+
+Änderungen der Schriftformatierung sollten sehr bedacht und in eher geringem Maße angewandt werden. Wichtig ist auch die Konsistenz bei der Anwendung. In diesem Abschnitt soll ein \textit{Vorschlag} für Konventionen präsentiert werden, der sich an häufig verwendeten Formatierungen richtet, jedoch keine vorgeschriebene Regel darstellt, siehe \cref{tab:Konventionen_Hervorhebung}. Der Autor (ggf. auch der Betreuer) ist frei in der Wahl, ob diese Konventionen verwendet und ggf. auf eigene Bedürfnisse angepasst werden sollen!
+
+\begin{table}%
+    \centering%
+    \caption{Konventionsvorschläge zur Text-Hervorhebung \label{tab:Konventionen_Hervorhebung}}%
+    \resizebox{\textwidth}{!}{
+        \begin{tabular}{lll}%
+            \toprule % booktabs-Paket
+            \textbf{Objekt}                                 & \textbf{Formatierung} & \textbf{Beispiel}     \\ \cmidrule(r){1-1}\cmidrule(lr){2-2}\cmidrule(l){3-3} % booktabs-Paket
+            Personen-, Firmennamen etc.                     & Kapitälchen           & \textsc{Isaac Newton} \\
+            Produkt-, Modellbezeichnungen                   & schräggestellt        & \textsl{Airbus A380}  \\
+            Allg. Hervorhebung, Fremdwörter etc.            & kursiv                & \textit{a priori}     \\
+            Auffällige Hervorhebung (eher nicht verwenden!) & fett                  & \textbf{sehr wichtig} \\
+            Besondere Bezeichnung, umgangssprachlich etc.   & Anführungszeichen     & \enquote{trivial}     \\
+            \bottomrule % booktabs-Paket
+        \end{tabular}%
+    }
+\end{table}%
+
+Die Grenzen zum Anwendungsbereich der einzelnen Formatierungsvorschläge sind schwammig und obliegen dem Autor. Ggf. ist es auch sinnvoll eigene Makros zu definieren. Beispielweise ein Makro \command{\person{}}, das die Schriftformatierung von Personen und Eigennamen umsetzt. Vorteil hierbei ist, dass eine Änderung der Schriftformatierung einmalig global erfolgt. Makros können in der Präambel der \textit{main.tex} definiert werden.
+
+%------------------------------------------------------------------------------%
+\subsection{Einheiten}
+\label{sec:Einheiten}
+
+In dieser Vorlage sollte am Besten alles so umgesetzt werden wie in \cref{subsec:math} beschrieben. Nichtsdestotrotz gelten die hier beschriebenen Konventionen.
+
+Bei der richtigen Darstellung von Zahlenwerten mit Einheiten gibt es einige Regeln zu beachten. Zum einen wird die Einheit immer mit aufrechter Schrift dargestellt \cite{PTBSI}. Zum anderen ist ein entsprechender Abstand zwischen Zahlenwert und Einheit notwendig, der jedoch nicht so groß wie ein normales Leerzeichen sein sollte. Weiterhin muss verhindert werden, dass Zeilenumbrüche zwischen Zahlenwert und Einheit stattfinden. Beispiele für richtige und falsche Darstellungsweisen sind in \cref{tab:Darstellung_Zahlen_Einheiten} gegeben.
+
+\begin{table}%
+    \centering%
+    \caption{Darstellung von Zahlen mit Einheiten \label{tab:Darstellung_Zahlen_Einheiten}}%
+    \begin{tabular}{ccccl}%
+        \toprule % booktabs-Paket
+        \multicolumn{2}{c}{\textbf{richtig}} & \multicolumn{3}{c}{\textbf{falsch}}                                                               \\ \cmidrule(r){1-2}\cmidrule(l){3-5} % booktabs-Paket
+        \textbf{Code}                        & \textbf{Darstellung}                & \textbf{Code}     & \textbf{Darstellung} & \textbf{Hinweis} \\ \cmidrule(r){1-1}\cmidrule(lr){2-2}\cmidrule(lr){3-3}\cmidrule(lr){4-4}\cmidrule(l){5-5} % booktabs-Paket
+        \command{1\,m}                       & 1\,m                                & \command{1m}      & 1m                   & Kein Abstand     \\
+        \command{\SI{1}{\meter}}             & 1\,m                                & \command{1 m}     & 1 m                  & Abstand zu groß  \\
+        \command{\(1\,\mathrm{m}\)}          & \(1\,\mathrm{m}\)                   & \command{\(1 m\)} & \(1 m\)              & Einheit kursiv   \\ %$
+        \bottomrule % booktabs-Paket
+    \end{tabular}%
+\end{table}%
+
+Statt der manuellen Formatierung der Abstände und Einheitenschrift wird empfohlen das Paket \href{https://ctan.org/pkg/siunitx?lang=de}{\ctanpackage{siunitx}} zu verwenden. Dieses bietet weitere Funktionalitäten wie die Gruppierung von 3er-Zahlenblöcken, Konvertierung von Dezimaltrennzeichen etc. an. Die Verwendung erfolgt über die Befehle \command{\SI{}{}} bzw. \command{\num{}}. Einige Beispiele sind in \cref{tab:siunitx_Zahlen_Einheiten} gezeigt. Für weitere Informationen bitte das \href{https://ctan.org/pkg/siunitx?lang=de}{\ctanpackage{Benutzerhandbuch}} verwenden.
+
+\begin{table}%
+    \centering%
+    \caption{Darstellung von Zahlen und Einheiten mit \ctanpackage{siunitx}-Paket \label{tab:siunitx_Zahlen_Einheiten}}%
+    \resizebox{\textwidth}{!}{
+        \begin{tabular}{ccl}%
+            \toprule % booktabs-Paket
+            \textbf{\ctanpackage{siunitx}-Befehl}              & \textbf{Darstellung}                     & \textbf{Hinweis}                                                 \\ \cmidrule(r){1-1}\cmidrule(lr){2-2}\cmidrule(l){3-3} % booktabs-Paket
+            \command{\SI{1}{\meter}}                           & \SI{1}{m}                                & Abstand/Schrift automatisch (Text-Modus)                         \\
+            \command{\SI{1}{\meter\per\square\second}}         & \SI{1}{\meter\per\square\second}         & Verwenden von SI-Einheiten Namen                                 \\
+            \command{\SI{30}{\relhumidity}}                    & \SI{3}{\relhumidity}                     & Eigene Einheit für rel. Feuchte, abhängig von Sprache            \\
+            \command{\SI{1.1(5)}{\meter}; \SI{1,2+-5}{\meter}} & \SI{1.1(5)}{\meter}; \SI{1,2+-5}{\meter} & Konvertierung Ungenauigkeiten richtige Darstellung mit Einheiten \\
+            \command{\(\SI{1}{m}\)}                            & \(\SI{1}{m}\)                            & Abstand/Schrift automatisch (Mathe-Modus)                        \\%$
+            \command{\SI{100}{\frac{m}{s}}}                    & \(\SI{100}{\frac{m}{s}}\)                & Bruchdarstellung der Einheit möglich                             \\[4pt]
+            \command{\SI{100}{\dfrac{m}{s}}}                   & \(\SI{100}{\dfrac{m}{s}}\)               & Bruchdarstellung mit normaler Schriftgröße                       \\[3pt]
+            \command{\num{10000}}                              & \num{10000}                              & Gruppierung von 3er-Zahlenblocks                                 \\
+            \command{\num{1000}}                               & \num{1000}                               & Keine Gruppierung bei 4er-Zahlenblock                            \\
+            \command{\num{1.1}; \num{1,2}}                     & \num{1.1}; \num{1,2}                     & Konvertierung Dezimaltrennzeichen                                \\
+            \command{\num{1.1(5)}; \num{1,2+-5}}               & \num{1.1(5)}; \num{1,2+-5}               & Konvertierung Ungenauigkeiten richtige Darstellung               \\
+            \command{\num{1E-7}}                               & \num{1E-7}                               & Konvertierung wissenschaftliche Notation                         \\
+            \bottomrule % booktabs-Paket
+        \end{tabular}%
+    }
+\end{table}%
+
+
+%------------------------------------------------------------------------------%
+\subsection{Abkürzungen}
+\label{sec:Abkuerzungen}
+
+Bei Abkürzungen wie \enquote{z.\,B.} oder \enquote{i.\,d.\,R.}
+ist auf richtigen Abstand zu achten. Falsch ist es, keinen Abstand (\enquote{z.B.}) oder einen zu großen Abstand (\enquote{z. B.}) zu wählen. Zudem muss verhindert werden, dass derartige Abkürzungen durch einen Zeilenumbruch auseinander gerissen werden. Aus diesem Grund wird ein so genanntes \enquote{Spatium} verwendet, dass ein schmales Leerzeichen darstellt, welches nicht umbrochen werden kann. Das Spatium wird in \textit{\LaTeX{}} mit der Zeichenfolge \command{\,} erzeugt, siehe \cref{tab:Abkuerzungen}.
+
+\begin{table}%
+    \centering%
+    \caption{Abstände bei Abkürzungen \label{tab:Abkuerzungen}}%
+    \begin{tabular}{cccc}%
+        \toprule % booktabs-Paket
+        \multicolumn{2}{c}{\textbf{richtig}} & \multicolumn{2}{c}{\textbf{falsch}}                                           \\ \cmidrule(r){1-2}\cmidrule(l){3-4} % booktabs-Paket
+        \textbf{Code}                        & \textbf{Darstellung}                & \textbf{Code}    & \textbf{Darstellung} \\ \cmidrule(r){1-1}\cmidrule(lr){2-2}\cmidrule(lr){3-3}\cmidrule(lr){4-4} % booktabs-Paket
+        \command{i.\,d.\,R.}                 & i.\,d.\,R.                          & \command{i.d.R.} & i.d.R.               \\
+        \command{z.\,B.}                     & z.\,B.                              & \command{z. B.}  & z. B.                \\
+        \bottomrule % booktabs-Paket
+    \end{tabular}%
+\end{table}%
+
+Für häufig wiederkehrende Abkürzungen ist es sinnvoll Makros zu definieren. Diese können in dieser Vorlage in der Präambel der \textit{main.tex} definiert werden.

@@ -1,0 +1,145 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OmniLaTeX Hyperref Module
+%
+% Hyperlinks, PDF metadata, bookmarks, and cross-references
+% Part of OmniLaTeX-template modular architecture
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/references/omnilatex-hyperref}[2024-10-11 v6.0.0 OmniLaTeX hyperref module]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Hyperref and PDF Appearance
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Provide fallback definitions for git metadata commands if not yet defined
+% These will be overridden by git-metadata.lua if it's loaded in legacy
+\providecommand{\GitRefName}{n.a.}
+\providecommand{\GitShortSHA}{n.a.}
+
+\RequirePackage[pdfusetitle]{hyperref}% Loads url-package internally
+\hypersetup{%
+% Unicode settings are automatically true for luatex engine,
+% don't specify manually
+colorlinks=true,% No ugly frames, but still colored
+allcolors=darklink,%
+% hidelinks,% Toggle here!
+plainpages=false,%
+pdfcreator={%
+LaTeX with hyperref,
+glossaries-extra/bib2gls
+and biblatex/biber
+[\GitRefName{}@\GitShortSHA{}]%
+},
+bookmarksnumbered=true,%
+pdfdisplaydoctitle,% https://tex.stackexchange.com/a/435434/120853
+}%
+
+% Use colored links just for display, not for printing!
+% See: https://mirror.ctan.org/macros/latex/contrib/hyperref/doc/hyperref-doc.pdf#subsection.7.12
+% and https://gitlab.com/agrahn/ocgx2
+% Like this, all colored links are hidden when the PDF is printed. The link
+% text is still there, but the color is not printed. The color is set to black.
+% This is done by the ocgcolorlinks option of the ocgx2 package.
+% The link color for the digital version is still set via \hypersetup{allcolors=darklink}.
+% NEEDS TO BE LOADED AFTER HYPERREF AND TIKZ!
+% See: https://gitlab.com/agrahn/ocgx2#package-option-ocgcolorlinks
+% In previous versions of this template, there has been two document versions.
+% One for printing and one for digital use. This is no longer necessary!
+% One disadvantage of this approach is that the link color can not be changed
+% with \textcolor{}{} anymore. It will always be dark blue in the digital version.
+% (or whatever color is set in \hypersetup{allcolors=...}).
+\RequirePackage[%
+    ocgcolorlinks,%
+    tikz,%
+]{ocgx2}
+
+% In order to translate, polyglossia wraps things into \text<language>, e.g.
+% \textenglish. If this is part of a PDF string, like when we do
+% \addchap{\glossaryname}, LaTeX/hyperref will complain that \textenglish is not a
+% PDF string and is dropped.
+% Therefore, disable commands of the form \text<language> in this document. Don't
+% use a static language but the current language from kvoptions.
+%
+% Expansion works as follows:
+% \expandafter is executed, causing \let to be saved for later.
+% \csname is then executed next. It scans ahead to its matching \endcsname,
+% "performing full expansion as it goes" (Quote from
+%  https://tex.stackexchange.com/a/430557/120853).
+% In that process, \omnilatex@language is expanded to the value it was given in the
+% document options through kvoptions.
+% Now, \csname finishes and presents a token \text<language>, e.g. \textenglish.
+% LaTeX starts over; \expandafter is now gone, so it reads \let\text<language> ...
+% In this case, ... is \relax, removing the macro definition.
+% It will no longer occur in PDF commands.
+% See also:
+% https://www.overleaf.com/learn/latex/Articles/How_does_%5Cexpandafter_work:_A_detailed_study_of_consecutive_%5Cexpandafter_commands
+% and
+% TUGboat, Volume 9, 1988, No. 1: Macros: A Tutorial on \expandafter by
+% Stephan v. Bechtolsheim.
+%
+% Idea from https://tex.stackexchange.com/a/230197/120853
+\pdfstringdefDisableCommands{%
+    \expandafter\let\csname text\omnilatex@language\endcsname \relax%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Bookmark Appearance
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Define variable to set on/off bold chapters and set it to true for default
+% ifboldPDFchapters
+\newif\ifboldPDFchapters\boldPDFchapterstrue
+\RequirePackage{bookmark}% Control bookmark appearance in PDF
+\bookmarksetup{%
+    open,% Open bookmark pane in PDF viewer
+    openlevel=1,% Open first two levels, hide all subsections etc. (0-indexed)
+    addtohook={%
+            \ifnum\bookmarkget{level}=0% Only print top-level (0) bookmarks bold
+                % switch on/off whether chapters are printed bold
+                % so that the chapters before the TOC can be set to be not bold
+                \ifboldPDFchapters
+                    \bookmarksetup{bold}%
+                \fi
+            \fi%
+        },%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Cross-References (cleveref)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Should be loaded late, because it does a lot of redefinitions.
+% With Polyglossia, cleveref recognizes what was passed in
+% \setdefaultlanguage and uses it. It must come before cleveref is loaded.
+
+\RequirePackage[
+    % Always capitalise; still, use \Cref and \cref appropriately in case that changes!
+    capitalise,
+    nameinlink,% Name of reference is part of PDF hyperlink
+    noabbrev,% Full expansion: Figure instead of Fig., etc.
+]{cleveref}%
+\creflabelformat{equation}{#2#1#3}% No (1), but 1, aka remove parentheses
+
+% Since TexLive 2022 there is a bug with cleveref not working with polyglossia,
+% because it uses an old polyglossia command. Whith this "hack" it works again,
+% so that cleveref commands are also dynamically language dependent:
+% https://tex.stackexchange.com/a/680026
+
+\providecommand\german@loaded{}
+\providecommand\english@loaded{}
+
+% Syntax: \crefname{<counter>}{<singular>}{<plural>}
+% \Crefname (capitalised) is not required; when it is not present but \Cref{} is
+% called, it uses \MakeUppercase on \crefname definitions.
+% However, if LaTeX macros are used in the definition, it is required.
+% Code listings, see `minted` package.
+% Introduce a new <type> called `code`, then make the (existing) counter `listing`
+% use it by aliasing. Modifying `listing` directly with `\crefname{listing}...`
+% did not work! See also
+% https://tex.stackexchange.com/a/310355/120853
+\crefname{code}{\GetTranslation{Listing}}{\GetTranslation{Listings}}
+\Crefname{code}{\GetTranslation{Listing}}{\GetTranslation{Listings}}
+\crefalias{listing}{code}
+
+\endinput

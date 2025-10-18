@@ -1,0 +1,135 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OmniLaTeX Document Module
+%
+% Document metadata, custom commands, and utilities
+% Part of OmniLaTeX-template modular architecture
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/layout/omnilatex-document}[2024-10-11 v6.0.0 OmniLaTeX document module]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Document Metadata Commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Document type (e.g., "Bachelor Thesis", "Master Thesis", etc.)
+\newcommand*{\documenttype}[1]{%
+    \renewcommand*{\@documenttype}{#1}%
+}
+
+% \@ehc is generic error text, see also
+% https://tex.stackexchange.com/a/59952/120853.
+% A quick test showed that it prints:
+%
+%      Try typing <return> to proceed. If that doesn't work, type X <return>
+%      to quit.
+%
+% It's a help message. Help messages are a required third argument for ClassErrors
+% and PackageErrors, but not Warnings.
+
+\newcommand*{\@documenttype}{%
+    \ClassWarning{omnilatex}{No \noexpand\documenttype given}%{\@ehc}%
+}
+
+% Student ID number
+\newcommand*{\idnumber}[1]{%
+    \renewcommand*{\@idnumber}{#1}%
+}
+\newcommand*{\@idnumber}{%
+    \ClassWarning{omnilatex}{No \noexpand\idnumber given}%{\@ehc}%
+}
+
+% First examiner
+\newcommand*{\firstexamniner}[1]{%
+    \renewcommand*{\@firstexamniner}{#1}%
+}
+\newcommand*{\@firstexamniner}{%
+    Prof.~Dr.~Jane Doe}%
+
+% Second examiner
+\newcommand*{\secondexamniner}[1]{%
+    \renewcommand*{\@secondexamniner}{#1}%
+}
+\newcommand*{\@secondexamniner}{%
+    Prof.~Dr.~Foo Bar}%
+
+% Supervisor
+\newcommand*{\supervisor}[1]{%
+    \renewcommand*{\@supervisor}{#1}%
+}
+\newcommand*{\@supervisor}{%
+    John Doe, M.Sc.}%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Signature Field
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\signaturefield}[1][\@author]{%
+    % This should only occur on pages with a lot of other pages behind it, to support
+    % writing on it here.
+    % If is occurs at the beginning of the document, put it recto. At the end, verso.
+    % Else, writing and stamping on here won't have much support.
+    \vspace*{1.5cm}% Leave room for signature
+    \begin{center}
+        \begin{tabular}{%
+                % Columns widths control signature line length
+                M{12em}
+                M{4em}% Empty middle
+                M{12em}
+            }
+            \cmidrule{1-1}\cmidrule{3-3}
+            \textit{#1} & 
+                        &   % Empty column
+            \textit{\GetTranslation{PlaceDate}}
+            \\
+        \end{tabular}
+    \end{center}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Utility Commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Wrapper for "i.e.", "e.g.", "c.f.", "etc.", etc.
+% We do not define dedicated commands here (like \eg or \etc) to print that stuff
+% automatically, since there are way too many exceptions and caveats.
+% Such macros are not worth it because the requirements change too much from use to use
+%  (different languages, capitalisation, ending dot if abbreviation is at end of
+% sentence, ...).
+% It is left to the user to do the specifics.
+% This macro just makes sure it is all in italics.
+\newcommand*{\iecfeg}[1]{\textit{#1}}%
+
+% Indicating an image etc. has been adapted from its source
+\newcommand*{\adaptedfrom}{%
+    \GetTranslation{AdaptedFrom}%
+}%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Demo/Example Commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\definecolor{DarkLinkGreen}{RGB}{65, 107, 60}
+
+% Wrapper for links to CTAN, or elsewhere
+\newcommand*{\ctanpackage}[2][None]{%
+    % Usage:
+    % \ctanpackage[]{siunitx} -> no link generated, warning issued
+    % \ctanpackage[www.test.com]{siunitx} -> link to optional argument
+    % \ctanpackage{siunitx} -> link to siunitx on CTAN (https://ctan.org/pkg/siunitx)
+    \ifstrequal{#1}{None}{%
+        \def\package@link{https://ctan.org/pkg/#2}%
+    }{%
+        \def\package@link{#1}%
+    }%
+    \expandafter\href\expandafter{\package@link}{%
+        \texttt{\textbf{#2}}%
+    }%
+}%
+
+% This sentence contains all 26 letters of the Latin alphabet (pangram)
+\newcommand*{\sampletext}{%
+    The quick brown Fox jumps over the lazy Dog 13 times!%
+}
+
+\endinput

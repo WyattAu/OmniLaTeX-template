@@ -1,0 +1,96 @@
+repos:
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+        exclude: '^(.*\.pdf|.*\.png|.*\.jpg|.*\.svg)$'
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ['--maxkb=5000']
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: detect-private-key
+      - id: mixed-line-ending
+        args: ['--fix=lf']
+  
+  # LaTeX specific checks
+  - repo: https://github.com/jonasbb/pre-commit-latex-hooks
+    rev: v1.4.0
+    hooks:
+      - id: american-eg-ie
+      - id: cleveref-capitalization
+      - id: consistent-spelling
+        args:
+          - --emph=et al.
+          - --emph=a priori
+          - --emph=a posteriori
+      - id: csquotes
+      - id: ensure-labels-for-sections
+      - id: no-space-in-cite
+      - id: tilde-cite
+        exclude: '^content/'  # May have different citation styles
+      - id: unique-labels
+  
+  # Python code formatting (for test scripts)
+  - repo: https://github.com/psf/black
+    rev: 24.1.1
+    hooks:
+      - id: black
+        language_version: python3.10
+        files: '^tests/.*\.py$'
+  
+  # Python import sorting
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: ["--profile", "black"]
+        files: '^tests/.*\.py$'
+  
+  # Python linting
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.0.0
+    hooks:
+      - id: flake8
+        args: ['--max-line-length=100', '--extend-ignore=E203,W503']
+        files: '^tests/.*\.py$'
+  
+  # Markdown linting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.38.0
+    hooks:
+      - id: markdownlint
+        args: ['--fix']
+  
+  # YAML formatting
+  - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+    rev: v2.12.0
+    hooks:
+      - id: pretty-format-yaml
+        args: ['--autofix', '--indent', '2']
+        exclude: '^\.woodpecker\.yml$'
+  
+  # Check for common LaTeX mistakes
+  - repo: local
+    hooks:
+      - id: check-latex-todos
+        name: Check for TODO markers in LaTeX files
+        entry: grep -n "\\\\todo\|TODO\|FIXME"
+        language: system
+        files: '\.tex$'
+        pass_filenames: true
+        # This will fail if TODOs are found - comment out if you want to allow TODOs
+        # stages: [manual]
+  
+  # Spell checking (optional - requires aspell)
+  # - repo: https://github.com/codespell-project/codespell
+  #   rev: v2.2.6
+  #   hooks:
+  #     - id: codespell
+  #       args:
+  #         - --skip="*.bib,*.log,*.aux,*.out,*.fls,*.fdb_latexmk,*.synctex.gz"
+  #         - --ignore-words-list=crate,tabel

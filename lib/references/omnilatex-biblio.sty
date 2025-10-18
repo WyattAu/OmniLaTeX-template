@@ -1,0 +1,119 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OmniLaTeX Bibliography Module
+%
+% Bibliography and citation management with biblatex
+% Part of OmniLaTeX-template modular architecture
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/references/omnilatex-biblio}[2024-10-11 v6.0.0 OmniLaTeX bibliography module]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Bibliography Package
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage[% Default back-end: biber
+    % short style is 'alphabetic' (like [AB99]);
+    % longer: 'authoryear' (like (Einstein, 1940)):
+    style=ext-authoryear, %or authoryear,
+    % Show the citation label as the label of a list similar to the numeric or
+    % alpha-betic styles. Works only with the some styles, e.g. ext-authoryear.
+    introcite=label, 
+    maxnames=2,       % Namenslisten von mehr als maxname werden auf minnames gekürzt
+    minnames=1,       % Namenslisten von mehr als maxname werden auf minnames gekürzt
+    autocite=footnote,% Control what \autocite does
+    %
+    sortcites=true,% Apply what is specified in sorting=
+    % Introduce back references in bibliography:
+    % https://tex.stackexchange.com/a/211631/120853
+    % Do not use hyperref for this
+    backref,
+    % url=false,% Still prints URL for @online, but nowhere else
+    % doi=false,%
+    % isbn=false,%
+]{biblatex}%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Citation Formatting
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Autoren: Nachname, Vorname
+% default: used by numeric and alphabetic style
+% sortname: used by authoryear, authortitle, and verbose style
+% http://tex.stackexchange.com/questions/12806/guidelines-for-customizing-biblatex-styles
+\DeclareNameAlias{default}{family-given}
+\DeclareNameAlias{sortname}{family-given}
+
+% Name mit ';' trennen, da ',' nun Nachname und Vornamen trennt
+\renewcommand*{\multinamedelim}{\addsemicolon\space}
+
+% Nachnamen mit Kapitälchen (small caps) formatieren
+\renewcommand{\mkbibnamefamily}{\textsc}
+
+% <authors>: <title>
+\renewcommand*{\labelnamepunct}{\addcolon\space}
+
+% Eckige Klammern um cite definieren
+% funktioniert nur mit style ext-authoryear
+% \DeclareOuterCiteDelims{cite}{$\lbrack$}{$\rbrack$}
+\DeclareOuterCiteDelims{cite}{\bibopenbracket}{\bibclosebracket}
+
+% Statt u.a. soll et al. auch im Deutschen abgekürzt werden
+\DefineBibliographyStrings{ngerman}{andothers={et\addabbrvspace al\adddot}}
+
+% Set up the penalty for links, to allow linebreak of links in the bibliography
+\setcounter{biburllcpenalty}{9000}% Kleinbuchstaben 
+\setcounter{biburlucpenalty}{9000}% Großbuchstaben
+\setcounter{biburlnumpenalty}{9000}% Zahlen
+
+% The `\addbibresource` command moved to the root *.tex file to work for VSCode's
+% LaTeX Workshop extension.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Special Treatment for anything in \nocite{*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Provides a category/sub-bibliography where all entries that occur in the bib-
+% file(s) but were not actually cited occur. Kind of like a "Further Reading".
+
+% New heading
+\defbibheading{notcited}{%
+    \section*{%
+      \GetTranslation{FurtherReadingTitle}%
+     }%
+}%
+
+\defbibnote{further}{%
+    \textit{\GetTranslation{FurtherReadingText}}%
+}%
+
+% https://tex.stackexchange.com/a/280545/120853
+\DeclareBibliographyCategory{cited}
+\AtEveryCitekey{\addtocategory{cited}{\thefield{entrykey}}}
+
+% A header for when the bibliography is divided per-chapter:
+\defbibheading{subbibliography}{%
+    \section*{%
+      \Cref{refsegment:\therefsection\therefsegment}%
+     }%
+}%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Custom Bibliography Environment
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% https://tex.stackexchange.com/a/477525/120853
+\defbibenvironment{bibnonum}{
+    \list{%
+        %
+    }{%
+        \setlength{\leftmargin}{\bibhang}%
+        \setlength{\itemindent}{-\leftmargin}%
+        \setlength{\itemsep}{\bibitemsep}%
+        \setlength{\parsep}{\bibparsep}
+    }%
+}%
+{\endlist}%
+{\item}
+
+\endinput

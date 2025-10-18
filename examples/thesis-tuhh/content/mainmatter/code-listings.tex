@@ -1,0 +1,239 @@
+\chapter{Code Syntax Highlighting}
+\label{ch:code-listings}
+
+To properly typeset code in \LaTeX{}, we use the \ctanpackage{minted} package.
+It relies on Python, and calls in outside help for syntax highlighting using Python's
+\texttt{pygments} package.
+As such, it requires \texttt{--shell-escape} to compile, and of course Python.
+The latter can be a pain in the buttocks to set up; Docker usage is especially useful here.
+Since \texttt{pygments} has nothing to do with \LaTeX{} (whose ecosystem is a sad mess),
+but is instead a regular old Python package, chances are the language of your choice is
+not only available but also well\-/supported!%
+\footnote{%
+    For example, \ctanpackage{listings}, the inferior alternative to \ctanpackage{minted},
+    still had no Python 3 support (only basic 2) in 2020, at the time of originally writing this.
+    At that point, Python 3 was over 10 years old already and Python 2 was end-of-life.
+}
+
+\paragraph{Color Scheme}
+Note how the color scheme is the same throughout languages.
+The idea is that keywords of similar importance, status or semantics are highlighted uniformly.
+For example, keywords for class and function definitions, like \mintinline{python}{class}
+for Python or \mintinline{matlab}{classdef} for MATLAB.%
+\footnote{%
+Notice how these keywords were created using an \emph{inline} listing, like:
+\mintinline{python}{y = [file_patterns[x] for x in ["send", "help"]]}.
+}
+Another example are error\-/handling and -throwing keywords, which many languages
+offer.
+All these different types should be identified and treated equally.
+\ctanpackage{minted} is a widely used package and knows about a lot of languages.
+You can check it out at
+\begin{center}
+    \url{https://pygments.org/demo/}.
+\end{center}
+
+If the current colors are not to your liking they can be changed easily using
+\ctanpackage{minted}'s \texttt{style} option.
+Refer to the comments in the source code on how to see available styles.
+
+\paragraph{References}
+Individual code lines can also be referenced.
+For example, we find a \mintinline{python}{return} statement on
+% NOTE: referencing single "minted" lines *CANNOT* be done with cleveref, unfortunately.
+% See: https://tex.stackexchange.com/q/132420/120853 . A plain old `ref` does the trick.
+line \ref{line:python_return} in \cref{lst:float_example}.
+That line is also highlighted, using \ctanpackage{minted}'s \texttt{highlightlines} option.
+
+\section{Python}
+The following examples are not always complete or functioning, they are only supposed
+to showcase the available syntax highlighting.
+The base style looks like:
+\begin{minted}{python}
+    def get_nonempty_line(
+        lines: Iterable[str],
+        last: bool = True
+    ) -> str:
+        if last:
+            lines = reversed(lines)
+        return next(line for line in lines if line.rstrip())
+\end{minted}
+It is intended for (small) samples of code that flow into the surrounding text.
+A second feature are code listings as regular floats, as demonstrated in
+\cref{lst:float_example}.
+As floats, they behave like any other figure, table \iecfeg{etc}.
+
+\begin{listing}
+    \caption{%
+        This is a caption.
+        Listings cannot be overly long since floats do not page-break. Therefore is the longlisting environment.% No period here!
+    }
+    \label{lst:float_example}
+    \begin{minted}[highlightlines={24}]{python}
+        import json
+        import logging.config
+        from pathlib import Path
+
+        from resources.helpers import path_relative_to_caller_file
+
+        ¬\phstring{\LaTeX{} can go in here: \(\sum_{i = 1}^{n} a + \frac{\pi}{2} \)}¬
+
+        def set_up_logging(logger_name: str) -> logging.Logger:
+            """Set up a logging configuration."""
+            config_filepath = path_relative_to_caller_file("logger.json")  # same directory
+
+            try:
+                with open(config_filepath) as config_file:
+                    config: dict = json.load(config_file)
+                logging.config.dictConfig(config)
+            except FileNotFoundError:
+                logging.basicConfig(
+                    level=logging.INFO, format="[%(asctime)s: %(levelname)s] %(message)s"
+                )
+                logging.warning(f"Using fallback: no logging config found at {config_filepath}")
+                logger_name = __name__
+
+            return logging.getLogger(logger_name) ¬\label{line:python_return}¬
+    \end{minted}
+\end{listing}
+
+\Cref{lst:longlisting_example} showcases breaking across pages, imported from a file, probably best suited for an appendix:
+
+\begin{longlisting}
+    \caption{%
+        This is a page breaking code, with a caption, which is imported from a file!%
+    }
+    \label{lst:longlisting_example}
+    \inputminted{python}{assets/code/ansi_escaped_string.py}
+\end{longlisting}
+
+\section{MATLAB}
+
+This section contains example code for MATLAB, for example:
+\begin{minted}{matlab}
+    %{
+        Universal Gas Constant for SIMULINK.
+    %}
+    R_m = Simulink.Parameter;
+        R_m.Value = 8.3144598;
+        R_m.Description = 'universal gas constant';
+        R_m.DocUnits = 'J/(mol*K)';
+\end{minted}
+Of course, floats (see \cref{lst:matlab_class_definition}) are available as well.
+So are longer sections, like \cref{lst:matlab_longlisting}.
+
+\begin{listing}
+    \caption[A class definition in MATLAB]{%
+        A class definition in MATLAB, from \cite{mathworksCreateSimpleClass2020}%
+    }
+    \label{lst:matlab_class_definition}
+    \begin{minted}{matlab}
+        classdef BasicClass
+            properties
+                Value {mustBeNumeric}
+            end
+            methods
+                function r = roundOff(obj)
+                    r = round([obj.Value],2);
+                end
+                function r = multiplyBy(obj,n)
+                    r = [obj.Value] * n;
+                end
+            end
+        end
+    \end{minted}
+\end{listing}
+
+\begin{longlisting}
+    \caption{%
+        This is a page breaking matlab code, with a caption, which is imported from a file!%
+    }
+    \label{lst:matlab_longlisting}
+    \inputminted{python}{assets/code/matlab_long.m}
+\end{longlisting}
+
+\subsection{MATLAB/Simulink icons}
+
+For an older project, MATLAB/Simulink vector icons were created.
+They are included here at the off\-/chance that someone else might find a use for these.
+\begin{itemize}
+    \item \mtlbsmlkicon{matlab_object_box}
+    \item \mtlbsmlkicon{matlab_struct}
+    \item \mtlbsmlkicon{matlab_table}
+    \item \mtlbsmlkicon{simulink_algebraic_constraint}
+    \item \mtlbsmlkicon{simulink_base_workspace}
+    \item \mtlbsmlkicon{simulink_configuration}
+    \item \mtlbsmlkicon{simulink_data_dictionary}
+    \item \mtlbsmlkicon{simulink_library_model}
+    \item \mtlbsmlkicon{simulink_library}
+    \item \mtlbsmlkicon{simulink_log_data}
+    \item \mtlbsmlkicon{simulink_lut}
+    \item \mtlbsmlkicon{simulink_model_workspace}
+    \item \mtlbsmlkicon{simulink_model}
+    \item \mtlbsmlkicon{simulink_referenced_model}
+    \item \mtlbsmlkicon{simulink_step_block}
+\end{itemize}
+
+\section{Modelica}
+
+Naturally, floating and all other environments and styles are also available for
+Modelica.
+The syntax highlighting for a few basic code samples \autocite{wikipediacontributorsModelica2021} looks like:
+
+\begin{minted}{modelica}
+    x := 2 + y;
+    x + y = 3 * z;
+
+    model FirstOrder
+        parameter Real c=1 "Time constant";
+        Real x (start=10) "An unknown";
+    equation
+        der(x) = -c*x "A first order differential equation";
+    end FirstOrder;
+
+    type Voltage = Real(quantity="ElectricalPotential", unit="V");
+    type Current = Real(quantity="ElectricalCurrent", unit="A");
+
+    connector Pin "Electrical pin"
+        Voltage      v "Potential at the pin";
+        flow Current i "Current flowing into the component";
+    end Pin;
+
+    model Capacitor
+        parameter Capacitance C;
+        Voltage u "Voltage drop between pin_p and pin_n";
+        Pin pin_p, pin_n;
+    equation
+        0 = pin_p.i + pin_n.i;
+        u = pin_p.v - pin_n.v;
+        C * der(u) = pin_p.i;
+    end Capacitor;
+
+    model SignalVoltage
+        "Generic voltage source using the input signal as source voltage"
+        Interfaces.PositivePin p;
+        Interfaces.NegativePin n;
+        Modelica.Blocks.Interfaces.RealInput v(unit="V")
+            "Voltage between pin p and n (= p.v - n.v) as input signal";
+        SI.Current i "Current flowing from pin p to pin n";
+    equation
+        v = p.v - n.v;
+        0 = p.i + n.i;
+        i = p.i;
+    end SignalVoltage;
+
+    model Circuit
+        Capacitor C1(C=1e-4) "A Capacitor instance from the model above";
+        Capacitor C2(C=1e-5) "A Capacitor instance from the model above";
+            ...
+    equation
+        connect(C1.pin_p, C2.pin_n);
+            ...
+    end Circuit;
+\end{minted}
+
+\section{Lua}
+
+Files can also be read into \LaTeX{} directly.
+For example, the following is some current Lua code \emph{used for this very document}:
+\inputminted{lua}{./lua/git-metadata.lua}

@@ -1,0 +1,40 @@
+pipeline:
+  lint:
+    image: ghcr.io/wyattau/omnilatex-docker:latest
+    environment:
+      - IS_OMNILATEX_CONTAINER=true
+      - CI=true
+    commands:
+      - python3 build.py --mode prod lint
+    when:
+      event: [push, pull_request, tag]
+
+  build:
+    image: ghcr.io/wyattau/omnilatex-docker:latest
+    environment:
+      - IS_OMNILATEX_CONTAINER=true
+      - CI=true
+    commands:
+      - python3 build.py --mode prod build-all
+    when:
+      event: [push, pull_request, tag]
+    depends_on:
+      - lint
+  
+  test:
+    image: ghcr.io/wyattau/omnilatex-docker:latest
+    environment:
+      - IS_OMNILATEX_CONTAINER=true
+      - CI=true
+    commands:
+      - python3 build.py --mode prod test
+    when:
+      event: [push, pull_request, tag]
+    depends_on:
+      - build
+
+branches:
+  include: [main, master, develop, feature/*, bugfix/*]
+
+when:
+  event: [push, pull_request, tag]

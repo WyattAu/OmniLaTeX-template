@@ -1,0 +1,134 @@
+% Helper file that pulls subchapters together.
+
+% Set initial pages to alpha, so that they do not collide with later Arabic numbering
+% in the generated PDF. This won't show in print because page numbers aren't displayed
+% until later. But you will be able to print the title page by printing page 'a', which
+% would otherwise overlap with page '1', aka the first actual text page.
+\pagenumbering{alph}
+\maketitle% Print main title page
+\subimport{frontmatter/}{colophon}
+
+\frontmatter% In KOMAScript, resets pagenumber, uses Roman numerals etc.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Set bold chapters in bookmark to false
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\boldPDFchaptersfalse
+
+% Note that \subincludefrom{}{} cannot be nested, therefore us \subimport
+\subimport{frontmatter/}{task}
+\subimport{frontmatter/}{authorship_declaration}
+\subimport{frontmatter/}{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Table of Content
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\cleardoublepage % damit das Bookmark auf der richtigen Seite gesetzt wird
+\pdfbookmark[1]{\contentsname}{toc} % Bookmark im PDF (hyperref-Paket)
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% All kind of listings
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\listoffigures%
+
+\listoftables%
+
+\listofexamples%
+
+\listoflistings%
+
+% If you want a list of reactions, uncomment the following line.
+% Therefore you also have to switch on the own counter for reactions
+% (own-counter=true) in the class file (where chemmacros is loaded).
+% \listofreactions%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Set bold chapters in bookmark to true
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\boldPDFchapterstrue
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Glossary with page list
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% addchap is KOMA equivalent for \chapter*, but also creates ToC entry, see also
+% https://tex.stackexchange.com/a/116085/120853
+% Use built-in macro \glossaryname for proper internationalization. With polyglossia, it
+% will contain \text<language>{<glossary translation>}, which has been taken care of
+% using \pdfstringdefDisableCommands{} in the class file
+% October 2023: This is obsolet. The command isn't expanded or whatever and so
+% it isn't printed bold. That's why our own translation is used. Here it works
+% as in the past.
+\addchap{\GetTranslation{Gloss}}%
+\label{ch:glossary}
+
+\emph{%
+    \GetTranslation{GlossaryLegend}%
+}%
+
+% Print "unsorted" glossaries; these are in fact sorted, but externally using bib2gls.
+% These will throw 'Token not allowed in PDF, removing \text<language>' warning.
+% Specify title= manually if that gets too annoying.
+\printunsrtglossary[
+    type=symbols,
+    style=symbunitlong,
+]
+\printunsrtglossary[
+    type=numbers,
+    style=numberlong,
+]
+\printunsrtglossary[
+    type=subscripts,
+    style=mcolalttree,
+    nonumberlist,
+]
+\printunsrtglossary[
+    type=abbreviations,
+    style=long3colheader,
+    title=\GetTranslation{Acronyms},
+]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Glossary without page list
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\addchap{\GetTranslation{Gloss} without page lists}%
+
+\emph{
+    The following styles do not contain page lists of the entries' occurrences,
+    leading to a cleaner, more concise look.
+    Refer to the source code on how to achieve this (which options and styles to use).
+}
+
+% For all sorts of styles, see also
+% https://www.dickimaw-books.com/gallery/glossaries-styles/
+
+% Simply pass the `nonumberlist` parameter where desired/required:
+\printunsrtglossary[
+    type=symbols,
+    style=symbunitlong,
+    nonumberlist,
+]
+\printunsrtglossary[
+    type=numbers,
+    style=numberlong,
+    nonumberlist,
+]
+\printunsrtglossary[
+    type=subscripts,
+    style=mcolalttree,
+    nonumberlist,
+]
+\printunsrtglossary[
+    type=abbreviations,
+    % If `nonumberlist` is passed, the `long3colheader` style simply leaves the
+    % corresponding table cells *empty* (leading to an entirely empty column), but does
+    % not actually remove the column. So use a different, but equivalent style
+    % altogether:
+    style=longheader,
+    % The `longheader` style prints the page list behind the description, just not in a
+    % separate column. So also explicitly suppress the generation of that:
+    nonumberlist,
+    title=\GetTranslation{Acronyms},
+]

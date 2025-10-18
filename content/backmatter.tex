@@ -1,0 +1,43 @@
+% For the order of things here (appendix, indices, bibliographies, ...) and their
+% numbering, see also https://tex.stackexchange.com/a/20547/120853.
+% Feel free to deviate since this is a subjective topic.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Appendix
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\appendix
+
+\subimport{backmatter/}{01_appendix}
+\subimport{backmatter/}{02_appendix}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Backmatter with Bibliography & Index
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\backmatter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Bibliography
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\nocite{*}% Add everything that has not yet been cited
+
+\label{ch:bibliography}
+\printbibliography[% Print the 'real' bibliography of actually cited references
+    category=cited,%
+]
+
+\printbibliography[%
+    notcategory=cited,%
+    heading=notcited,%
+    env=bibnonum,%
+    prenote=further,%
+]%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Index
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setglossarysection{chapter}
+\printunsrtindex[%
+    style=bookindex,%
+]

@@ -1,0 +1,98 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Settings for the Titlepage, which are most of the time changed once for a document.
+%
+% They live in their own *.sty file aka package so they're out of the way.
+% The settings here rarely need to be changed, but also don't fit into the *.cls aka
+% documentclass file.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Document type
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documenttype{Master Thesis}% Document type, like Master Thesis, PhD Thesis, ...
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Title
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Comprehensive LaTeX Template for TUHH Theses}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Author
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% If your using the template in german, please     %%%
+%%% correct the gender to your preferred gender      %%%
+%%% with one of the following commands:              %%%
+% \RenewTranslation{german}{author}{Autor:in}%(default) or
+% \RenewTranslation{german}{author}{Autorin}%or
+% \RenewTranslation{german}{author}{Autor}%or
+% Automatically set the correct article for the author in german
+% depending on the set translation for author
+\IfStrEqCase{\GetTranslationFor{german}{author}}{%
+    % Case 1: author is Autor
+    {Autor}{\RenewTranslation{german}{authorArticle}{der}}%
+        % Case 2: author is Autorin
+        {Autorin}{\RenewTranslation{german}{authorArticle}{die}}%
+}%[Here goes the else case, if needed]
+% Set the author
+\author{Vasco Alexander Wild, Alex Povel}%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Date
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Print today's date w/ syntax of newer package datetime2:
+\date{\DTMtoday{}}
+%% Print a specified date in the right, language dependent format
+% \date{\DTMdate{2023-01-15}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Examiners
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% If your using the template in german, please     %%%
+%%% correct the gender to the correct gender of      %%%
+%%% your examiners and supervisor with the following %%%
+%%% commands:                                        %%%
+% \RenewTranslation{german}{FirstExaminer}{Prüfer:in}%or
+% \RenewTranslation{german}{SecondExaminer}{Prüfer:in}%or
+% \RenewTranslation{german}{Supervisor}{Betreuer:in}
+\firstexamniner{Prof.~Dr.-Ing.~Arne Speerforck}
+\secondexamniner{Prof.~Dr.-Ing.~Foo Bar}
+\supervisor{John Doe, M.Sc.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Enrolment/student ID number
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\idnumber{666}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Publishers
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\publishers{%
+    \GetTranslation{TUHH}\\%
+    \GetTranslation{ITT}%
+}% Institutions, university, etc. Can also use graphics here
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PDF Metadata
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\hypersetup{%
+    pdfsubject={%
+            Comprehensive LaTeX template with examples for TUHH theses, employing the 'latest and greatest'.%
+        },
+    pdfkeywords={%
+            latex,%
+            template,%
+            modern,%
+            thesis,%
+            tuhh,%
+            phd,%
+            master,%
+            bachelor,%
+            best practices,%
+        },
+    %% Default opening of the document in supported PDF viewers
+    %% Possible inputs:
+    %% SinglePage, OneColumn, TwoColumnLeft,
+    %% TwoColumnRight, TwoPageLeft, and
+    %% TwoPageRight or empty (just comment out)
+    pdfpagelayout=TwoPageRight,
+}%

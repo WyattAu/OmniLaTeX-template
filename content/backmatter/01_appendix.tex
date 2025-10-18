@@ -1,0 +1,151 @@
+\chapter{An appendix chapter}
+
+Some appendix content can go here, for example detailed computations.
+
+\section{More appendix}
+
+The usual sectioning commands keep working, as does page numbering, showcased by the
+following blind text.
+
+\Blindtext
+
+\section{Unprocessed data}
+\label{ch:appendix_table}
+
+This is also a good place to put unprocessed data, like \cref{tab:random_long}.
+
+\clearpage
+
+% The following is an experimental table based on the new and promising-looking
+% tabularray package. If it matures and proves useful, we might want to employ it
+% everywhere.
+\begin{longtblr}[%
+        caption={%Here goes the caption
+                A \texttt{longtblr} from the new \ctanpackage{tabularray} package.%
+                It introduces many new features and concepts and is based on a new interface.%
+                For example, this table breaks across pages and has an automatically sized column%
+            },
+        entry={%Here goes the entry for the list of tables
+                A \texttt{longtblr} from the new \ctanpackage{tabularray} package.%
+            },
+        label={%The label of the table
+                tab:random_long%
+            },
+        note{1}={Some table footnote.},%referenced with \TblrNote{<notename>}
+        remark{Note}={Some general hint regarding the table, which might span multiple lines.},
+    ]{
+        colspec={
+                % column options:
+                % l, c, r: left, center, right allignment
+                % t, m, b: top baseline, middle, bottom baseline
+                % number: relative width of the column
+                % si={table-format=3.2}: column contains a SI number
+                % example: X[3,l,m]
+                % column types:
+                % X: Variable-width column; will be as wide as needed to fill width of table
+                % Q: As wide as needed for text to fit without line break
+                Q[si={table-format=3.2},c]%
+                c
+                X
+                c
+            },
+        % width=0.8\textwidth, % set the total width of the table
+        column{2}={% Execute command on every cell, e.g. second column contains siunitx units
+                cmd={\unit}% \unit replaces \si in siunitx version 3 and above
+            },
+        column{4}={% Always preto/appto cell text, e.g. fourth column contains math content, so prepend and append math mode
+                preto=\(,
+                appto=\),
+            },
+        rowhead=1,% 'number of the first rows of the table appear in every page'
+        row{odd}={gray!20},% make every odd row grey, so every second row
+        row{1}={white},% but first row should be white
+        row{2-Z}={font=\footnotesize},% X, Y and Z dynamically refer to the last three lines
+        stretch=0.7, % General stretch of the table
+    }%
+    \toprule
+    {{{Magnitude}}} & Unit                & Variable-width text                                                                                  & \text{Math column} \\
+    \midrule
+    10.0            & \meter              & Some rather long text that will get broken up and even has a footnote\TblrNote{1}                    & x = y              \\
+    % From here on: randomly generated rows, using a Lua script previously part of
+    % this repo (check git log).
+    37.13           & \giga\degreeCelsius & Foo                                                                                                  & H^i=f              \\
+    496.111         & \kilo\bar           & Yeet                                                                                                 & a-P=d              \\
+    0.23            & \milli\meter        & Baz                                                                                                  & C^u=o              \\
+    3.30            & \nano\watt          & Baz                                                                                                  & I+Y=C              \\
+    0.6             & \kilo\ohm           & C                                                                                                    & p+n=t              \\
+    5.845           & \bar                & B                                                                                                    & Y^H=x              \\
+    7.343           & \nano\newton        & Yeet                                                                                                 & Z/z=c              \\
+    403.0           & \giga\newton        & Foo                                                                                                  & a^Z=v              \\
+    312.81          & \nano\candela       & Bar                                                                                                  & I-l=g              \\
+    0.457           & \pascal             & B                                                                                                    & f+Q=i              \\
+    545.773         & \kilo\degreeCelsius & Bar                                                                                                  & i+j=W              \\
+    76.5            & \newton             & Hello World                                                                                          & o/q=A              \\
+    67.20           & \ampere             & Hello World                                                                                          & T^e=M              \\
+    2.571           & \giga\gram          & Foo                                                                                                  & O+o=j              \\
+    285.542         & \nano\pascal        & A                                                                                                    & o+T=Z              \\
+    12.458          & \volt               & A                                                                                                    & k/K=b              \\
+    668.0           & \volt               & B                                                                                                    & p+E=o              \\
+    799.923         & \kilo\meter         & Hello World                                                                                          & p^j=X              \\
+    413.0           & \nano\degreeCelsius & Foo                                                                                                  & j^s=l              \\
+    86.64           & \milli\gram         & Yeet                                                                                                 & F^k=C              \\
+    50.931          & \nano\candela       & A                                                                                                    & T^j=M              \\
+    0.75            & \kelvin             & Yeet                                                                                                 & X/g=z              \\
+    0.184           & \milli\kelvin       & This is a longer text that will probably span multiple lines in the table because it is overly wide. & i+k=K              \\
+    24.0            & \giga\kelvin        & Baz                                                                                                  & R+H=a              \\
+    583.56          & \nano\ampere        & B                                                                                                    & R+C=r              \\
+    4.92            & \giga\pascal        & This is a longer text that will probably span multiple lines in the table because it is overly wide. & P/O=z              \\
+    196.104         & \giga\watt          & This is a longer text that will probably span multiple lines in the table because it is overly wide. & u^R=g              \\
+    11.2            & \giga\volt          & C                                                                                                    & q+P=R              \\
+    60.14           & \nano\bar           & Bar                                                                                                  & E^B=B              \\
+    347.91          & \milli\ampere       & Baz                                                                                                  & u^t=M              \\
+    563.70          & \ohm                & Baz                                                                                                  & S/y=D              \\
+    0.43            & \milli\kelvin       & Yeet                                                                                                 & w/z=u              \\
+    3.851           & \milli\kelvin       & A                                                                                                    & m/Z=c              \\
+    0.74            & \gram               & Foo                                                                                                  & b^d=F              \\
+    0.98            & \nano\ohm           & Yeet                                                                                                 & m/w=G              \\
+    942.0           & \giga\candela       & Hello World                                                                                          & T^I=S              \\
+    426.661         & \nano\ampere        & Hello World                                                                                          & b/n=H              \\
+    663.729         & \giga\newton        & Yeet                                                                                                 & j+D=Z              \\
+    0.65            & \nano\candela       & C                                                                                                    & J-s=E              \\
+    0.29            & \bar                & B                                                                                                    & f+J=M              \\
+    433.72          & \watt               & Foo                                                                                                  & s^k=r              \\
+    0.96            & \nano\gram          & C                                                                                                    & H/P=m              \\
+    51.79           & \nano\volt          & Baz                                                                                                  & b/G=b              \\
+    0.744           & \kilo\watt          & B                                                                                                    & G^C=X              \\
+    0.9             & \candela            & B                                                                                                    & H+i=U              \\
+    416.71          & \giga\kelvin        & Foo                                                                                                  & H^j=I              \\
+    447.0           & \degreeCelsius      & Bar                                                                                                  & N+o=K              \\
+    0.65            & \degreeCelsius      & Yeet                                                                                                 & K-h=F              \\
+    0.954           & \nano\pascal        & Hello World                                                                                          & z+Y=J              \\
+    874.234         & \nano\watt          & Baz                                                                                                  & M+i=w              \\
+    0.14            & \volt               & This is a longer text that will probably span multiple lines in the table because it is overly wide. & Q+i=v              \\
+    4.427           & \milli\newton       & Baz                                                                                                  & B/B=p              \\
+    5.4             & \kilo\gram          & This is a longer text that will probably span multiple lines in the table because it is overly wide. & t/A=w              \\
+    0.60            & \candela            & B                                                                                                    & n^P=K              \\
+    163.0           & \kilo\ampere        & Yeet                                                                                                 & M+w=b              \\
+    53.911          & \ohm                & Yeet                                                                                                 & E-y=a              \\
+    61.0            & \giga\candela       & Yeet                                                                                                 & T-M=E              \\
+    0.686           & \kilo\candela       & Foo                                                                                                  & d^a=f              \\
+    6.354           & \bar                & A                                                                                                    & F/L=G              \\
+    2.88            & \kilo\degreeCelsius & Bar                                                                                                  & M^r=T              \\
+    283.457         & \milli\gram         & Hello World                                                                                          & D-E=u              \\
+    490.455         & \meter              & Hello World                                                                                          & S/u=E              \\
+    960.1           & \ampere             & Yeet                                                                                                 & r/M=q              \\
+    884.0           & \bar                & B                                                                                                    & w^R=v              \\
+    824.9           & \kilo\watt          & Baz                                                                                                  & Z-t=T              \\
+    91.6            & \volt               & Yeet                                                                                                 & E/o=s              \\
+    45.0            & \newton             & Baz                                                                                                  & Z-m=P              \\
+    75.0            & \nano\watt          & C                                                                                                    & Y-U=R              \\
+    778.0           & \milli\kelvin       & Foo                                                                                                  & x^j=L              \\
+    0.885           & \milli\watt         & C                                                                                                    & u^S=G              \\
+    70.49           & \milli\candela      & Yeet                                                                                                 & z^R=r              \\
+    185.0           & \kilo\gram          & Bar                                                                                                  & O+T=A              \\
+    4.880           & \giga\ohm           & A                                                                                                    & F/U=q              \\
+    0.78            & \giga\kelvin        & Bar                                                                                                  & m+C=E              \\
+    712.36          & \nano\bar           & This is a longer text that will probably span multiple lines in the table because it is overly wide. & Z+D=p              \\
+    37.13           & \giga\degreeCelsius & Foo                                                                                                  & H^i=f              \\
+    496.111         & \kilo\bar           & Yeet                                                                                                 & a-P=d              \\
+    0.23            & \milli\meter        & Baz                                                                                                  & C^u=o              \\
+    \bottomrule
+\end{longtblr}

@@ -1,0 +1,70 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OmniLaTeX Lists Module
+%
+% List configuration and custom list environments
+% Part of OmniLaTeX-template modular architecture
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/typography/omnilatex-lists}[2024-10-11 v6.0.0 OmniLaTeX lists module]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% List Configuration
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage[inline]{enumitem}% Custom list environments
+\setlist{noitemsep}% No vertical spacing in lists
+\setlist[1]{labelindent=\parindent}% Indent lists by paragraph indent
+% Refer to unimath_symbols.pdf for source of \smblksquare etc.:
+% https://ctan.org/texarchive/macros/latex/contrib/unicode-math
+\setlist[itemize,1]{label=\smblksquare}%
+\setlist[enumerate]{font=\sffamily\bfseries}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Compact Lists for Tables
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% For compact itemize lists within table cells:
+\newlist{tabitemize}{itemize}{1}% Second argument is max. depth
+\setlist[tabitemize]{%
+    label=\smblksquare,%
+    nosep,% nosep kills all vertical spacing
+    align=parleft,
+    leftmargin=*,
+    % https://tex.stackexchange.com/a/443573/120853,
+    % but before=\compress didn't work:
+    after=\vspace{-\baselineskip},
+    before=\vspace{-0.75\baselineskip},% Hacky manual parameter
+}
+
+% For compact enumerations lists within table cells:
+\newlist{tabenum}{enumerate}{1}% Second argument is max. depth
+\setlist[tabenum]{
+    label={\arabic*.},
+    font=\sffamily\bfseries,
+    leftmargin=*,
+    nosep,% nosep kills all vertical spacing
+    align=parleft,
+    % https://tex.stackexchange.com/a/443573/120853,
+    % but before=\compress didn't work:
+    after=\vspace{-\baselineskip},
+    before=\vspace{-0.75\baselineskip},% Hacky manual parameter
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Enumerated Description List
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% An enumerated description list:
+% https://tex.stackexchange.com/a/30035/120853
+\newcounter{descriptcount}
+\newlist{enumdescript}{description}{2}% Derive from existing description env.
+\setlist[enumdescript, 1]{% Set first level action
+    before={%
+            \setcounter{descriptcount}{0}%
+            % \renewcommand*\thedescriptcount{\alph{descriptcount}}%
+        },
+    font={\bfseries\stepcounter{descriptcount}\thedescriptcount.~}
+}
+
+\endinput

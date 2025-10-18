@@ -1,0 +1,171 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TUHH/ITT Institution Configuration
+%
+% Hamburg University of Technology (TUHH)
+% Institute of Engineering Thermodynamics (ITT / M-21)
+%
+% This file contains all TUHH and ITT-specific branding,
+% logos, translations, and styling.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{institution-config/tuhh-config}[2024-10-10 v1.0.0 TUHH/ITT Institution Configuration]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Logo Definitions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DeclareTranslation{english}{LogoTUHH}{\includesvg[height=3cm]{logos/TUHH/TUHH_logo-wortmarke_en_rgb}}
+\DeclareTranslation{german}{LogoTUHH}{\includesvg[height=3cm]{logos/TUHH/TUHH_logo-wortmarke_de_rgb}}
+
+\DeclareTranslation{english}{LogoITT}{\includesvg[height=3cm]{logos/TUHH/ITT_Logo_text_eng}}
+\DeclareTranslation{german}{LogoITT}{\includesvg[height=3cm]{logos/TUHH/ITT_Logo_text}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Links
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DeclareTranslation{english}{LinkTUHH}{https://www.tuhh.de/tuhh/en}
+\DeclareTranslation{german}{LinkTUHH}{https://www.tuhh.de/tuhh}
+
+\DeclareTranslation{english}{LinkITT}{https://www.tuhh.de/technische-thermodynamik/en}
+\DeclareTranslation{german}{LinkITT}{https://www.tuhh.de/itt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Names
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DeclareTranslation{english}{TUHH}{Hamburg university of Technology}
+\DeclareTranslation{german}{TUHH}{Technische Universität Hamburg}
+
+\DeclareTranslation{english}{ITT}{Institute of Engineering Thermodynamics}
+\DeclareTranslation{german}{ITT}{Institut für Technische Thermodynamik}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TUHH-Specific Title Page Style
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand*{\DefineTUHHTitleStyle}{%
+    % These exist already, overwrite:
+    \setkomafont{title}{\sffamily\bfseries\Huge}
+    \setkomafont{subtitle}{\normalfont\normalsize\sffamily}
+    \setkomafont{author}{\sffamily\bfseries}
+    \setkomafont{publishers}{\sffamily}
+    %
+    % One same line as subtitle, so should look the same; inherit style:
+    \setkomafont{date}{\usekomafont{subtitle}}
+    %
+    \setkomafont{documenttype}{\usekomafont{subtitle}\footnotesize}
+    %
+    % Set the subtitle to be the examiners and supervisor. If set later in the document, this is overridden!
+    \subtitle{%
+        \begin{tabular}[t]{% [t] sets tabular anchor to the top
+                @{}% Remove horizontal space left of tabular
+                l% If no really good reason to do otherwise, always left-align cell
+                @{\ }% '\ ' (backslash-space) is a small space, here a column separator
+                l
+                l
+                @{}% Remove horizontal space right of tabular
+            }
+            \GetTranslation{First}                             & \GetTranslation{FirstExaminer}  & \@firstexamniner  \\
+            \GetTranslation{Second}                            & \GetTranslation{SecondExaminer} & \@secondexamniner \\
+            \multicolumn{2}{@{}l}{\GetTranslation{Supervisor}} & \@supervisor                                        %
+        \end{tabular}
+    }%
+    \renewcommand{\maketitle}{%
+        \begin{titlepage}
+            \hfill%
+            %
+            % 2nd optional argument is height, required for \vfill etc. to work
+            \begin{minipage}[b][1\textheight]{0.05\textwidth}%
+                \color{black}\rule{0.15em}{\textheight}% Vertical line
+                \hfill%
+            \end{minipage}% This comment char is important to suppress linebreak
+            %
+            \begin{minipage}[b][1\textheight]{0.75\textwidth}
+                \vspace{4\baselineskip}
+                % Logos einfügen
+                \begin{minipage}[c]{\textwidth}
+                    \begin{center}
+                        \href{\GetTranslation{LinkTUHH}}{\GetTranslation{LogoTUHH}}%
+                        \qquad%\vspace{20mm}
+                        \href{\GetTranslation{LinkITT}}{\GetTranslation{LogoITT}}%
+                    \end{center}
+                \end{minipage}
+                \\[3\baselineskip] %Wegen der Grafiken funktioniert \vspace nicht...
+                {\usekomafont{documenttype}\faGraduationCap{}\ \@documenttype{}\hspace{0.5em}}
+                \hrulefill
+                \begin{spacing}{1.1}% In case of multi-line titles, more relaxed spacing
+                    \usekomafont{title}\raggedright\@title
+                \end{spacing}
+                \hrule
+                \vspace{0.8\baselineskip}
+                {%
+                    \usekomafont{author}%
+                    % Tabular enables \and and \\ syntax
+                    \begin{tabular}[t]{@{}l@{}}%
+                        \@author
+                    \end{tabular}
+                }%
+                \hfill
+                {\usekomafont{date}\@date}\par
+                \vfill
+                {\usekomafont{subtitle}\@subtitle}\par
+                \vspace{2\baselineskip}
+                {%
+                    \usekomafont{publishers}%
+                    \begin{tabular}[t]{@{}l@{}}%
+                        \@publishers
+                    \end{tabular}
+                }\par
+                \vspace{0.2ex}% Also required for \vfill as something to 'fill against'
+            \end{minipage}
+        \end{titlepage}
+    }%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TUHH-Specific TikZ Pics and Graphics
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% A human member of TUHH (for demonstration purposes)
+\tikzset{
+    TUHHuman/.pic={% A human member of TUHH. Hilarious......
+        \pgfmathsetmacro{\roundingradius}{0.4}
+        \filldraw[pic actions] (0,0) circle (1);% Head
+        %
+        % Use arc over just specifying 'rounded corners', because rounded corners are absolute and aren't affected by 'scale'
+        \filldraw[pic actions]
+        (0,-1.2)% Below head
+        -- ++ (2.5-\roundingradius,0) arc (90:0:\roundingradius)% Right shoulder
+        -- ++ (0,{-(5 - 2*\roundingradius)}) arc (0:-90:\roundingradius) -- ++ ({-(0.8 - 2*\roundingradius)},0) arc (270:180:\roundingradius) -- ++ (0,{4 - \roundingradius})% Right arm
+        -- ++ (-0.25,0)% Right arm pit
+        -- ++ (0,{-(8 - \roundingradius)}) arc (0:-90:\roundingradius) -- ++ ({-(1 - 2*\roundingradius)},0) arc (270:180:\roundingradius) -- ++ (0,{4 - 2*\roundingradius}) arc (0:90:\roundingradius)% Right leg
+        -- ++ ({-(1 - 2*\roundingradius)},0)% Gap between legs
+        arc (90:180:\roundingradius) -- ++ (0,{-(4 - 2*\roundingradius)}) arc (0:-90:\roundingradius) -- ++ ({-(1 - 2*\roundingradius)},0) arc (270:180:\roundingradius) -- ++ (0,{8 - \roundingradius})% Left leg
+        -- ++ (-0.25,0)% Left arm pit
+        -- ++ (0,{-(4 - \roundingradius)}) arc (0:-90:\roundingradius) -- ++ ({-(0.8 - 2*\roundingradius},0) arc (270:180:\roundingradius) -- ++ (0,{5 - 2*\roundingradius})% Left arm
+        arc (180:90:\roundingradius)-- cycle;% Left shoulder; cycle back to below head
+        
+        \node[right, transform shape] at (-1.25,-2.5) {\ctrw{\textcolor[RGB]{45,198,214}{\textbf{\textsf{TUHH}}}}};% Chest emblem; transform shape allows node to be affected by 'scale' option
+        %
+        % \draw[help lines] (-3,-11) grid (3,1);% Debugging grid
+    },
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Default Values for TUHH
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Override default publisher to be TUHH/ITT
+\AtBeginDocument{%
+    % Only set if not already customized by user
+    \@ifundefined{@publishers@custom}{%
+        \publishers{%
+            \GetTranslation{TUHH}\\%
+            \GetTranslation{ITT}%
+        }%
+    }{}%
+}
+
+\endinput

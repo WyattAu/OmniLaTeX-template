@@ -1,0 +1,515 @@
+\chapter{Usage}
+
+This document \enquote{requires}%
+\footnote{
+  It does not \emph{technically} require Docker, but I hope to convince you that
+  the non\-/Docker, manual way is the way of the dodo and a big no\-/no.
+}
+\href{https://www.docker.com/}{Docker}.
+On a high level, Docker allows to prepare specific software bundles, tailor\-/made for
+whatever application the bundle author desires.
+Other users can then use these software bundles for their own projects.
+The bundles are well\-/defined and can be distributed and run very easily.
+The more complex and demanding the required software, the higher the benefit of using such bundles.
+The driving design principle and primary use case for these bundles is \emph{isolation}.
+Whatever you do with the bundles, it happens in isolation from your host system.
+This allows a user to have, for example, arbitrary Python versions at their disposal,
+whereas a local system installation can only ever offer a single version.
+
+For a \LaTeX{} document, the one at hand here is pretty complex.
+This is owed to the many used packages and outside tooling.
+Outside tooling (programs other than \LaTeX{} called from within \LaTeX{}) is quite
+prevalent in \LaTeX{}, since it itself is so limited.%
+\footnote{
+  For example, when writing Python, you would not call Perl or JavaScript from within it,
+  because whatever they can do, Python can.
+  The same analogy does \emph{not} hold for \LaTeX{}: base \LaTeX{} can do surprisingly
+  little, even though \TeX{} is technically Turing\-/complete.
+}
+Let us look at the outside tooling used for this document.
+
+\section{Outside tools and special packages}
+
+This section highlights the pain points of \emph{not} using Docker.
+If you are already familiar and need no convincing, skip to \cref{ch:using-docker}.
+For this document, outside tools are required for:
+\begin{enumerate}
+  \item \ctanpackage{glossaries-extra}: requires the outside tool
+        \ctanpackage{bib2gls}, see \cref{ch:bib2gls}, which in turn requires
+        a Java Runtime Environment.
+  \item \ctanpackage{biblatex}: requires the outside tool \ctanpackage{biber},
+        see \cref{ch:bibliography_rationale}.
+  \item \ctanpackage{svg}: requires the outside program
+        \href{https://inkscape.org/}{InkScape}.
+        Examples for that package's main command, \verb|\includesvg|, are
+        \cref{fig:wide_caption,fig:tighter_caption,fig:multiple_floats,fig:sidecap,fig:inside_float}.
+  \item Using \texttt{contour gnuplot} commands with \ctanpackage{pgfplots}, see
+        \cref{fig:mollier_diagram}, requires
+        \href{http://www.gnuplot.info/download.html}{gnuplot}.
+  \item Syntax highlighting for source code, see \cref{ch:code-listings},
+        is done through \ctanpackage{minted}.
+        It requires \href{https://www.python.org/}{Python} (built into virtually all Linux
+        distributions but needs to be installed on Windows) with its
+        \href{https://pypi.org/project/Pygments/}{pygments} package installed.
+        That package does the heavy lifting and \ctanpackage{minted} inserts the result
+        into your \LaTeX{} document.
+\end{enumerate}
+
+If you have a proper \LaTeX{} distribution, \texttt{bib2gls} and \texttt{biber}
+will already be available as commands and ready to be invoked.
+The latter means that they are on your \texttt{\$PATH}, \iecfeg{i.e.}\ the paths to
+the respective binaries are part of the \texttt{PATH} environment variable.
+\emph{All other stuff, you have to install manually}.
+
+You will have to install and keep everything else updated by hand.
+What if one of the dependencies of this document conflicts with something you have already
+installed on your system?
+What if that conflict is not resolvable?
+You would be unable to use this document.
+This is where Docker comes into play.
+You outsource all this setting\-/up to someone who already bundled all that stuff together.
+Docker calls these \enquote{bundles} \emph{images}.
+There is a Docker image \emph{tailor\-/made} for this document:
+\begin{center}
+  \href{https://collaborating.tuhh.de/m21/public/theses/latex_dockerfile}{\LaTeX{} Dockerfile of the ITT}.
+\end{center}
+It is guaranteed to function correctly for this document, since the author maintains both
+in parallel.
+There will never be a mismatch.
+If maintenance ceases, it will cease for both components at the same time, hence it will
+still continue to work, just not get updated anymore.
+
+\section{Using Docker}
+\label{ch:using-docker}
+
+Instead of all of the above, \textbf{only one installation is required}: Docker.
+You can get it from
+\begin{center}
+  \url{https://docs.docker.com/get-docker/} .
+\end{center}
+\emph{You don't even need a \LaTeX{} distribution}.
+All you need is an editor to edit the files in, see \cref{ch:editor}.
+With Docker installed, you can decide between two opportunities:
+\begin{enumerate}
+  \item Using Docker itself to compile
+  \item Using \href{ch:vsc}{Visual Studio Code} to compile (recommended for beginners, see \cref{ch:editor})
+\end{enumerate}
+In this \lcnamecref{ch:using-docker} the first opportunity will be explained and in \cref{ch:compilation_steps} the
+different compilation methods will be explained. If you want to use \href{ch:vsc}{Visual Studio Code} you should just read \cref{ch:compilation_steps} to understand
+the different compilation methods, but don't worry about the terminal Code. The rest can be skipped and you proceed with \cref{ch:editor}.
+
+Once you want to compile, open a terminal, navigate to your directory and run
+\begin{minted}[linenos=false]{powershell}
+    docker run --rm --volume ${PWD}:/tex "ghcr.io/wyattau/omnilatex-docker:latest"
+\end{minted}
+for PowerShell or
+\begin{minted}[linenos=false]{shell}
+    docker run --rm --volume $(pwd):/tex "ghcr.io/wyattau/omnilatex-docker:latest"
+\end{minted}
+for bash.
+That's it!
+
+The command consists of:
+\begin{itemize}
+  \item The \texttt{--rm} option, which removes the run container after you are done
+        (containers are \enquote{instances} of images).
+        This is generally desired, since containers are ephemeral and should be treated as such.
+        Do not keep containers around, simply create new ones!
+        If you need adjustments, adjust the image, not the container, then create new containers
+        from that adjusted image.
+  \item The \texttt{--volume} option makes the current directory (\texttt{pwd})
+        available \emph{inside} the running container, at the \texttt{/tex} destination path.
+        The \LaTeX{} process needs your files to work with.
+        Without this option, the container would be \enquote{naked}, with no way of
+        accessing your files.
+  \item The final argument to \texttt{docker run} is the image to be run, in this case
+        \path{ghcr.io/wyattau/omnilatex-docker:latest}, which will use the image specified by the Link.
+\end{itemize}
+
+Ideally, the command can be registered as the \enquote{compilation} command of your
+editor.
+That way, you just hit the compile button and will be using Docker in the background,
+with no changes to your workflow.
+
+\subsection{Compilation}
+\label{ch:compilation_steps}
+
+You are probably used to running \texttt{pdflatex} or similar on your source files,
+as many times as needed.
+So where does that step happen in the above \texttt{docker} command?
+
+The Docker approach uses the \textbf{\texttt{latexmk}} tool to ease all the painful labour
+of running chains of \texttt{pdflatex}, \texttt{biber} \iecfeg{etc}.\ manually.
+\texttt{latexmk} automates \LaTeX{} compilation by detecting all the required
+steps and then running them as often as required.
+It requires \textbf{Perl}.
+Linux users will already have it available, Windows users may grab
+\href{http://strawberryperl.com/}{Strawberry Perl}.
+As such, this document's processing pipeline \emph{as a whole} requires Perl,
+although it is technically not required for document compilation only.
+
+Once Perl is installed (of course, the Docker image already contains it),
+the entire document can be compiled by \textbf{simply calling \texttt{latexmk}}.
+You do not even have to provide a \texttt{*.tex} file argument.
+By default, \texttt{latexmk} will simply compile all found \texttt{*.tex} files.
+\textbf{The core ingredient to this magic process is the \texttt{.latexmkrc} configuration file}.
+You can find it in the repository root directory.
+It is tailored to this document and does not need to be touched if the compilation
+process itself has not changed.
+It also contains some more insights to the entire process.
+
+\texttt{latexmk} is great because it figures out most things by itself and enjoys
+wide\-/spread acceptance and adoption.
+If it does not figure out everything from the get\-/go, it is easily customized,
+like for this document.
+
+Having walked through all this manually, hopefully using the prepared Docker image
+instead makes more sense now.
+It is guaranteed to work for everyone, because the Docker container (that is, the
+virtual build environment) will be identical for all users.
+It is independent of local \LaTeX{} installations and all their quirks.
+As such, it simply and forever does away with the entire, huge class of
+\begin{displayquote}[Everyone, at some point]
+  But it works on my machine!
+\end{displayquote}
+Good riddance to that.
+
+If all of this is embedded into a pipeline on GitLab, your documents are built whenever
+you \texttt{git push} to the remote server (or whenever you configure it to). For more
+information have a look at \cref{ch:GitLab}. It does not get simpler; the downside is of course the
+lengthier setup, but all of that is explained in the
+\href{https://collaborating.tuhh.de/alex/latex-cookbook/-/blob/master/README.md}{README}.
+Also, the repository itself is a live demonstration where everything is set up already!
+
+\subsubsection{Complete (\emph{slow}) compilation}
+
+The most prevalent downside to \texttt{latexmk} are longer compilation times.
+The tool examines changes in auxiliary and source files.
+This is made possible by the way \LaTeX{} works with its kind of unique way of writing out auxiliary files (a system of multiple passes).
+Consider a simplified, manual example chain:
+\begin{enumerate}
+  \item You have a \texttt{test.tex} file (and nothing else!), with \texttt{cref} or equivalent cross\-/referencing commands in it.
+  \item You compile the file \emph{once}, \iecfeg{e.g.}\ using \texttt{lualatex}.
+  \item A \texttt{test.aux} file (and probably others, \iecfeg{e.g.}\ \texttt{.toc}) will have been generated, as well as the \abb{portable_document_format} file itself.
+        
+        The \abb{portable_document_format} has literal \textbf{??} markers where there should be references.
+        This is because to resolve those references, and print \iecfeg{e.g.}\ the correct page number, \LaTeX{} needs to look into the \texttt{.aux} file.
+        But that file was just generated and was not available yet for the first compilation run.
+  \item Hence, you compile again.
+        
+        The \textbf{??} markers are now replaced by their properly spelled\-/out reference.
+        However, what if, hypothetically, one of these \textbf{??} substitutions now reads \emph{very super long reference to page 37 in the document}.
+        It is so long that subsequent content has shifted again.
+        That content is now on different pages.
+        This triggered another change in the auxiliary files.
+  \item \label{item:last_compilation} You compile \emph{again}, the third time.
+        Things have settled, no changes happened this time anymore.
+        You are done.
+\end{enumerate}
+
+\texttt{latexmk} works by detecting this convergence towards a steady\-/state (which may, through bugs, never be reached).
+However, it would compile \emph{an additional} time after \cref{item:last_compilation}, to make sure or because it cannot really be certain (just talking from experience here, not knowledge).
+So while you gain deterministic, automated builds, they will take much longer.
+
+What if you do not care if there are \textbf{??} markers left, undefined entries, shifted pages and so forth, maybe because you are only drafting things up?
+You can simply compile yourself once, manually, \iecfeg{e.g.}\ using \texttt{lualatex}.
+This will speed things up by a long shot, but is considered advanced usage.
+It does, as opposed to \texttt{latexmk}, not \enquote{just work} anymore, and beginners might wonder what those \textbf{??} are.
+Now that you know, you may handle them.
+
+\paragraph{Faster (\emph{incomplete}) compilation}
+The base \texttt{docker} commands were shown at the beginning of \cref{ch:using-docker}.
+An alternative is to run
+\begin{minted}[linenos=false]{shell}
+    docker run --rm --volume $(pwd):/tex https://collaborating.tuhh.de/m21/public/theses/latex_dockerfile -e '$max_repeat=1'
+\end{minted}
+This limits \texttt{latexmk} to only run commands once (\texttt{-e} is for additional Perl code), with the following effects:
+\begin{itemize}
+  \item \texttt{latexmk} might complain that it did not succeed for lack of repeats (including a non\-/zero exit code, meaning failure when it was only partial failure).
+  \item Results are compiled quickly.
+  \item \texttt{latexmk} and its tailor\-/made config is still used under the hood, so you do not have to adjust anything.
+  \item Other commands like \texttt{biber} for bibliography generation might still be run.
+\end{itemize}
+This is probably your best bet to get faster drafting cycles while retaining high likelihood of it working.
+
+\paragraph{Fastest (\emph{incompletest}) compilation}
+The following method is the most advanced (but not hard at all!).
+To overwrite the Docker image's default, so\-/called \mintinline{dockerfile}{ENTRYPOINT}, which is \texttt{latexmk}, run the command as:
+\begin{minted}[linenos=false]{shell}
+    docker run --rm --volume $(pwd):/tex --entrypoint="lualatex" https://collaborating.tuhh.de/m21/public/theses/latex_dockerfile --shell-escape $FILENAME
+\end{minted}
+Notice that you now have to give a filename, like \texttt{cookbook.tex}, since \texttt{lualatex} expects that.
+The above command is exactly like running \emph{only} \texttt{lualatex}, just in the context of that image (with your files made available at \texttt{/tex}).
+The effects of this command are:
+\begin{itemize}
+  \item No \texttt{latexmk} involved at all:
+        \begin{itemize}
+          \item it is therefore the fastest approach,
+          \item but you have to pass all required options yourself (like \texttt{--shell-escape}).
+        \end{itemize}
+  \item No commands like \texttt{biber} run; you have to do that yourself (or use \texttt{latexmk}).
+\end{itemize}
+This is the approach I personally use, while outsourcing the full \texttt{latexmk}\-/based compilations to a server using \abb{continuous_integration}/\abb{continuous_delivery}.
+It affords us the fastest iteration speeds while having a full version available \enquote{in the background}: the best of both worlds and arguably the fastest workflow.
+
+\paragraph{Fastest still slow}
+We cannot compile faster than a naked \texttt{lualatex} run (\texttt{docker} overhead is negligible).
+For the current document you see here, even such a single run takes about one minute.
+Remember that you need upwards of three runs from a \enquote{cold} (no auxiliary files, empty caches, \dots{}) start.
+Single, article\-/size, \texttt{pdflatex}\-/based documents compile in only a few seconds.
+The reasons for the slowness are, among others:
+\begin{itemize}
+  \item \texttt{lualatex} is simply considerably slower than \texttt{pdflatex}
+        (the additional capabilities make up for that many times over).
+        One reason is the time spent dealing with (system) fonts.
+  \item This document loads a metric crapton of packages, some of which are very expensive to load, like \ctanpackage{tikz}.
+        This is in the spirit of providing a useful document with numerous examples of various functionalities and packages.
+        You should definitely \textbf{\textcolor{mRed}{comment out the packages you do not need}}.
+  \item Compiling the entire document takes long, so \textbf{\textcolor{mRed}{make use of the \texttt{include} and \texttt{subinclude}} commands and comment out unneeded parts}.
+        The more fine\-/grained you do this, the more control you get.
+        If you cut it down to short (only a handful of \abb{portable_document_format} pages) files, you can work on and compile only those.
+        This method has the highest time saving potential.
+  \item If you perform \ctanpackage{pgfplots} calculations within \LaTeX{}, \iecfeg{c.f.}\ \cref{fig:plotting_in_latex,fig:plotting_in_latex_tufte,fig:mollier_diagram}, expect significant slowness.
+        For simple plots, this is still much better than having to use an external program, export data, import to \LaTeX{}, repeat on data change (instead of adjusting the equation in \LaTeX{} directly) \iecfeg{etc.}
+  \item \LaTeX{} is not compiled in parallel.
+\end{itemize}
+This document is like an aircraft carrier: modern, feature\-/rich and high\-/impact, but very sluggish.
+
+\paragraph{Print version}
+There was a time of this \LaTeX{} document where the print version was compiled separately, with an own \LaTeX{} Workshop recipe or an own GitLab pipeline job.
+Since we now use the \ctanpackage{ocgx2}-package (as addon for \ctanpackage{hyperref}), which colors links in the \abb{portable_document_format} file, but doesn't print them, this is no longer necessary.
+
+\subsection{More on Docker}
+
+You do not need to know of the entire chain of how Docker images are created and run.
+Only consuming the final image has all the benefits with little effort.
+However, the process is not complex:
+\begin{enumerate}
+  \item A \textbf{\texttt{Dockerfile} text document} is created, containing instructions on how the image should look like (like what stuff to install, what to copy where, ...).
+        
+        As a baseline, these instructions often rely on a Debian distribution.
+        As such, all the usual Debian/Linux tools can be accessed, like \texttt{bash}.
+        
+        An (unrelated)
+        \href{https://github.com/alexpovel/random_python/blob/master/music-converter/Dockerfile}{example Dockerfile}
+        can look like:
+        
+        \begin{minted}{dockerfile}
+            # Get the latest Debian Slim with Python installed
+            FROM python:slim
+
+            # Update the Debian package repositories and install a Debian package.
+            # Agree to installation automatically (`-y`)!
+            # This is required because Dockerfiles need to run without user interaction.
+            RUN apt-get update && apt-get install -y ffmpeg
+
+            # Copy a file from the building host into the image
+            COPY requirements.txt .
+
+            # Run some shell command, as you would in a normal sh/bash environment.
+            # This is a Python-specific command to install Python packages according to some
+            # requirements.
+            RUN pip install -r requirements.txt
+
+            # Copy more stuff!
+            COPY music-converter/ music-converter/
+
+            # This will be the command the image executes if run.
+            # It runs this command as a process and terminates as soon as the process ends
+            # (successfully or otherwise).
+            # Docker is not like a virtual machine: it is intended to run *one* process, then
+            # die. If you need to run it again, just create a new container (instance of a
+            # Docker image). Treat containers as *cattle*, not as a *pet*. The
+            # container-recreation process is light-weight, fast and the way to go.
+            #
+            # Of course, this does not stop anyone from running one *long-running* process
+            # (as in infinity, `while True`-style). This is still a good use-case for Docker
+            # (as are most things!). An example for this is a webserver.
+            ENTRYPOINT [ "python", "-m", "music-converter", "/in", "--destination", "/out" ]
+        \end{minted}
+        
+        The Dockerfile this project uses for LaTeX stuff is here:
+        \begin{center}
+          \url{https://collaborating.tuhh.de/m21/public/theses/latex_dockerfile}
+        \end{center}
+        It is not as simple, so not as suited for an example.
+        Its length gives you an idea of the setup required to compile this \LaTeX{} document.
+        All of that complexity is of no concern to you when using Docker!
+        Of course, such an image also works for much simpler documents.
+        
+        If you require custom additions, you can always inherit from existing base images:
+        \begin{minted}{dockerfile}
+            FROM https://collaborating.tuhh.de/m21/public/theses/latex\_dockerfile
+
+            # ... Your stuff goes here ...
+        \end{minted}
+  \item The \textbf{image} is then built according to the \texttt{Dockerfile} instructions,
+        resulting in a large\-/ish file that contains an executable environment.
+        For example, if we install a comprehensive TeXLive distribution, the image can be
+        more than \qty{2}{\giga\byte} in size.
+        Note that you will never interact with that \enquote{file} directly.
+        Docker manages it for you, and all interaction occurs through the \texttt{docker} command.
+        
+        The Docker image can be distributed.
+        If you just instruct to run an image called \iecfeg{e.g.} \texttt{alexpovel/latex}, without
+        specifying a full URL to somewhere, Docker will look on its Hub for an image of that
+        name (and find it \href{https://hub.docker.com/r/alexpovel/latex}{here}).
+        Anyone can pull (public) images from there, and everyone will
+        be on the same page (alternatively, you could build the image from the Dockerfile, but this feature is
+        deprecated/outsourced to the \href{https://collaborating.tuhh.de/m21/public/theses/latex_dockerfile}{LaTeX{} Dockerfile Repo}).
+        Because the Dockerfile this project uses can not be found on Dockerhub the full path/link to it has to be given.
+        
+        For example, as stated, the \LaTeX{} environment for this project requires a whole bunch of setting\-/up.
+        This can take more than an afternoon to read up upon, understand, implement and getting to run.
+        In some cases, it will be impossible if some required part of a project conflicts
+        with a pre\-/existing condition on your machine.
+        For example, suppose project \emph{A} requires Perl in version \texttt{6.9.0},
+        but project \emph{B} requires version \texttt{4.2.0}.
+        This is what Docker is all about: isolation.
+        Whatever is present on your system does not matter, only the Docker image/container
+        contents are relevant.
+        
+        Further, if you for example specify \mintinline{dockerfile}{FROM python:3.8.6}
+        as your base image, aka provided a so\-/called tag of \texttt{3.8.6}, it will be that tag in ten years' time still.
+        As such, you nailed the version your process takes place in and requires.
+        Once set up, this will run on virtually any computer running Docker, be it your
+        laptop now or whatever your machine is in ten years.
+        This is especially important for the reproducibility of research.
+  \item Once the image is created, it can be run, \textbf{creating a container}.
+        We can then enter the container and use it like a pretty normal (usually Linux)
+        machine, for example to compile our \LaTeX{} files.
+        Other, single commands can also be executed.
+        
+        The proper way is to run one container \emph{per process}.
+        If that process (\iecfeg{e.g.}\ \texttt{latexmk}) finishes, the container exits.
+        A new process then requires a new container.
+\end{enumerate}
+
+\section{Editor}
+\label{ch:editor}
+
+You are free to do whatever you want.
+However, a garbage editor can substantially hamstring your work.
+For example, please do not use Notepad++.
+It is a fantastic little program but unsuitable for any serious, longer work.
+
+The author uses and dearly recommends \href{https://code.visualstudio.com/}{Visual Studio Code},
+using its
+\href{https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop}{\LaTeX{} Workshop} extension, which provides syntax highlighting, shortcuts and many other useful things.
+Visual Studio Code is among the most state\-/of\-/the\-/art editors currently available.
+Being usable for \LaTeX{} is just a nice side\-/effect we can take advantage of.
+It is open\-/source and therefore also has a privacy\-/respecting alternative fork, \emph{VSCodium}.
+
+For a more conventional, complete \abb{integrated_development_environment},
+try \href{https://www.texstudio.org/}{TeXStudio}.
+Like VSCode, it is also
+\href{https://github.com/texstudio-org/texstudio}{open source}.
+TeXStudio will cater to \qty{90}{\percent} of your \LaTeX{} needs, but nothing else (Markdown, \dots{}).
+
+\subsection{Visual Studio Code}
+\label{ch:vsc}
+
+The repository of this document comes with a \href{https://github.com/microsoft/vscode-dev-containers}{\texttt{.devcontainer}} directory.
+In it is all the configuration necessary to run your development environment \emph{inside} the Docker container entirely.
+To make the magic work, install the \href{https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers}{\emph{Remote -- Containers}} extension.
+Visual Studio Code automatically prompts you to install it when you first open this repository, as configured in \texttt{.vscode/extensions.json}.
+Follow the instructions there on how to download all prerequisites, like of course Docker.
+Visual Studio Code will detect the remote container configuration of this repository automatically.
+If not, run the steps manually:
+\begin{enumerate}
+  \item Open the command palette (\keys{\ctrl{} + \shift{} + P} --- the command palette is one of the defining, core features of Visual Studio Code, it's great!).
+  \item Run \menu{Remote-Containers: Reopen in container}.
+\end{enumerate}
+Your development environment is now \emph{inside} the container.
+Hence, if you ran for example \texttt{latexmk} in the console, it executes the container version.
+This is exactly what we want and previously did using the \texttt{docker run} command.
+
+\subsubsection{Extensions}
+There is a small problem.
+On its own, Visual Studio Code has no concept of \LaTeX{}, since out of the box, it is much closer to being an editor than an \abb{integrated_development_environment}.
+You increase the program's capabilities by choosing and installing extensions.
+Using the \href{https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop}{\emph{LaTeX Workshop}} extension for Visual Studio Code is recommended.
+For the container environment, it is installed automatically from the settings found in \texttt{devcontainer.json}.
+The \emph{LaTeX Workshop} extension turns Visual Studio Code into a \LaTeX{} \abb{integrated_development_environment}.
+It works using \emph{recipes}, which in turn use \emph{tools}.
+The extension comes with a pre\-/defined \texttt{latexmk} tool:
+\begin{enumerate}
+  \item Open the command palette.
+  \item Run \menu{LaTeX Workshop: Build with recipe > Complete compilation}.
+\end{enumerate}
+This just runs \texttt{latexmk} within the container. Or you can click TEX on the left side of VSC and under Build LaTeX project select \menu{Complete compilation}.
+As usual using Docker, your host machine does not need a \LaTeX{} installation for this to work.
+If you want, you can stop here --- running \texttt{latexmk} is all that is ever needed.
+Hit \keys{\ctrl{} + \Alt{} + B} to build the project again, using the last used recipe.
+
+\subsubsection{Settings}
+You can configure \emph{everything} in Visual Studio Code, including its extensions, in the settings.
+Open them by either:
+\begin{itemize}
+  \item The command palette at \menu{Preferences: Open Settings (JSON)}, or
+  \item navigating to \menu{File > Preferences > Settings}, then opening as \abb{js_object_notation}.
+\end{itemize}
+For example, as discussed at the end of \cref{ch:compilation_steps}, you might want to have a recipe that only runs \texttt{lualatex}, once.
+This is \textbf{already taken care of} for this repository:
+\inputminted{json}{./.vscode/settings.json}
+These are \emph{Workspace Settings}, which \href{https://code.visualstudio.com/docs/getstarted/settings}{take precedence over (global) user settings}.
+As such, they also override all the recipes \emph{LaTeX Workshop} usually comes with.
+You will have to define more recipes yourself.
+
+With the new recipes, you can now run all three in \cref{ch:compilation_steps} described compilation methods:
+\begin{itemize}
+  \item \menu{LaTeX Workshop: Build with recipe > Complete compilation}, or
+  \item \menu{LaTeX Workshop: Build with recipe > Faster compilation}, or
+  \item \menu{LaTeX Workshop: Build with recipe > Fastest compilation}, or
+\end{itemize}
+from the command palette. Or you can click TEX on the left side of VSC and under Build LaTeX project select your desired recipe.
+Notice the freedom and flexibility you have for defining many more recipes.
+In fact, alongside \texttt{latexmk} and classic \texttt{make}, you now have more potential flexibility and automation than one could possibly need.
+
+Using the above \emph{Remote -- Containers} approach, the entire development chain happens inside the container, with your working directory mounted into it.
+This enables:
+\begin{itemize}
+  \item the \emph{LaTeX Workshop} extension to work fully:
+        \begin{itemize}
+          \item SyncTeX works:
+                \begin{itemize}
+                  \item \keys{\ctrl{} + Click} into the \abb{portable_document_format} preview goes to the source code
+                  \item \menu{LaTex Workshop: SyncTeX from cursor} (command palette) goes the other way.
+                \end{itemize}
+          \item Highlighting infos, warnings and errors (\emph{Problems} pane) works
+          \item \href{https://github.com/James-Yu/LaTeX-Workshop/wiki/Intellisense}{IntelliSense} works, providing autocompletion for:
+                \begin{itemize}
+                  \item citations (\texttt{autocite} \iecfeg{etc.}) --- check out the \emph{Citation Browser} in the command palette!
+                  \item references (\texttt{cref} \iecfeg{etc.})
+                  \item and more, like commands
+                \end{itemize}
+          \item Auto\-/Formatting (\keys{\shift{} + \Alt{} + F}) works (\emph{LaTeX Workshop} uses \ctanpackage{latexindent})
+        \end{itemize}
+  \item Your files are persisted normally, despite the container being ephemeral.
+  \item Tools like \texttt{make} work from within the Visual Studio Code terminal.
+        For example, run \texttt{make clean} to clear everything not tracked by git.
+        This is very convenient for a cold start, because \LaTeX{} sometimes gets stuck if auxiliary files are corrupted.
+\end{itemize}
+
+\subsubsection{More Settings}
+For more control, you might want to keep the extension from compiling on every document save:
+\begin{minted}{json}
+    "latex-workshop.latex.autoBuild.run": "never"
+\end{minted}
+See \href{https://github.com/James-Yu/LaTeX-Workshop/wiki/Compile#latex-recipes}{the official documentation} for more.
+
+\subsection{Other Editors}
+
+You will have to incorporate the \texttt{docker} commands shown in \cref{ch:using-docker} manually.
+Most editors do not support container\-/native developing, so you will go the old\-/school route.
+
+\section{GitLab}
+\label{ch:GitLab}
+
+It is highly recommended to use this cookbook in combination with GitLab. Therefore,
+you just fork the GitLab Repo of this cookbook. Then you just have to install git
+and pull this Repo afterwards. If you do so, you have many nice features enabled
+from which you can profit. For example everytime you push a new version to GitLab,
+the CI pipeline compiles the whole document for you.
+And of course, like this you have a version control and backup of your document.
+So, please consider using GitLab.

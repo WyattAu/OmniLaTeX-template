@@ -1,0 +1,76 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OmniLaTeX Colors Module
+%
+% Color definitions and schemes
+% Part of OmniLaTeX-template modular architecture
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/utils/omnilatex-colors}[2024-10-11 v6.0.0 OmniLaTeX colors module]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Color Support
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage[table]{xcolor}% Color support with table option
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Custom Color Definitions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Gradients for plots/diagrams (shades of gray)
+\colorlet{g1}{black!70}
+\colorlet{g2}{black!55}
+\colorlet{g3}{black!40}
+\colorlet{g4}{black!20}
+\colorlet{g5}{black!10}
+\colorlet{g6}{black!05}
+
+% Different fluids/materials for diagrams
+\definecolor{Glass}{RGB}{170, 238, 255}% Very light blue
+\definecolor{Air}{RGB}{213, 246, 255}% Light blue
+\definecolor{LightFluid}{RGB}{148, 224, 255}
+\definecolor{MediumFluid}{RGB}{135, 178, 232}
+\definecolor{DarkFluid}{RGB}{119, 151, 197}
+\definecolor{HotFluid}{RGB}{255, 128, 128}% 255/128/128 is same as 'red!50'
+
+% Dark blue link color
+\definecolor{darklink}{RGB}{48, 62, 116}%
+
+% From colorbrewer's RdYlBu: from red (1) to blue (6)
+\definecolor{rdylbu1}{RGB}{215,  48,  39}%
+\definecolor{rdylbu2}{RGB}{252, 141,  89}%
+\definecolor{rdylbu3}{RGB}{254, 224, 144}%
+\definecolor{rdylbu4}{RGB}{224, 243, 248}%
+\definecolor{rdylbu5}{RGB}{145, 191, 219}%
+\definecolor{rdylbu6}{RGB}{ 69, 117, 180}%
+
+% From colorbrewer's Set2 for qualitative data/color discernibility
+\definecolor{Set2A}{RGB}{102, 194, 165}%
+\definecolor{Set2B}{RGB}{252, 141,  98}%
+\definecolor{Set2C}{RGB}{141, 160, 203}%
+\definecolor{Set2D}{RGB}{231, 138, 195}%
+\definecolor{Set2E}{RGB}{166, 216,  84}%
+\definecolor{Set2F}{RGB}{255, 217,  47}%
+\definecolor{Set2G}{RGB}{229, 196, 148}%
+\definecolor{Set2H}{RGB}{179, 179, 179}%
+
+% Matlab colors for plots
+\definecolor{mBlue}{HTML}{0072BD}
+\definecolor{mOrange}{HTML}{D95319}
+\definecolor{mYellow}{HTML}{EDB120}
+\definecolor{mPurple}{HTML}{7E2F8E}
+\definecolor{mGreen}{HTML}{77AC30}
+\definecolor{mSky}{HTML}{4DBEEE}
+\definecolor{mRed}{HTML}{A2142F}
+
+% Code annotations
+\definecolor{cRed}{RGB}{209,0,86}%
+\definecolor{cBlue}{RGB}{0, 130, 185}%
+\definecolor{cGreen}{RGB}{0, 128, 63}%
+\definecolor{cOrange}{RGB}{244, 131, 66}%
+
+% Demonstration/miscellaneous colors
+\definecolor{DarkLinkGreen}{RGB}{65, 107, 60}
+
+\endinput

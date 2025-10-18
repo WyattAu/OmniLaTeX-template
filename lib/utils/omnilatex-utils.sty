@@ -1,0 +1,91 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OmniLaTeX Utilities Module
+%
+% System utilities, TODO notes, and miscellaneous packages
+% Part of OmniLaTeX-template modular architecture
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/utils/omnilatex-utils}[2024-10-11 v6.0.0 OmniLaTeX utilities module]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TODO Notes
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ifomnilatex@todonotes
+    % If todonotes true, then load the package and set it up
+    \RequirePackage{todonotes}% TODO-notes in the margins
+    \setuptodonotes{fancyline}%
+\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% System Information Banner
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Provides \hologo and \Hologo to typeset various logos, like the LuaLaTeX logo.
+\RequirePackage{hologo}
+
+% Using fontspec, this document is incompatible with anything but XeLaTeX/LuaLaTeX.
+% LuaLaTeX can grab additional memory as needed, therefore no issues with tikz and no
+% need to tikzexternalize (!).
+% Further, contour-package and XeLaTeX are strictly incompatible (LuaLaTeX works).
+% Therefore, only ever use LuaLaTeX anyway.
+
+% Print only what occurs after 'This is ' and store in macro given in brackets at end.
+% luatexbanner is provided by luatex engine, but prints 'This is luatex XYX' usually.
+% https://tex.stackexchange.com/a/394043/120853
+\StrBehind*{\luatexbanner}{This is }[\shortbanner]
+
+% Take input and substitute strings; here: make plain LuaTeX string into pretty logo.
+% StrSubstitue has no starred variant, therefore dekotenize.
+% https://tex.stackexchange.com/a/350583/120853
+\StrSubstitute{\shortbanner}{\detokenize{LuaTeX}}{\hologo{LuaTeX}}[\prettybanner]
+
+% Generate some control sequences which contain metadata, which can be inserted e.g.
+% into the PDF metadata (e.g. to have the exact git commit SHA of a build).
+% Load external Lua file instead of inline code for better maintainability.
+% See examples/git-metadata.lua for implementation details.
+% Try to load from multiple possible locations
+\directlua{
+    local found = false
+    local paths = {"examples/git-metadata.lua", "../../examples/git-metadata.lua", "git-metadata.lua"}
+    for _, path in ipairs(paths) do
+        local file = io.open(path, "r")
+        if file then
+            file:close()
+            dofile(path)
+            found = true
+            break
+        end
+    end
+    if not found then
+        texio.write_nl("Warning: git-metadata.lua not found, skipping git metadata generation")
+    end
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Keyboard and Menu Macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Macros to pretty-print keyboard buttons and menu navigation
+\RequirePackage[
+    os=win,% Default is `mac`
+]{menukeys}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Miscellaneous Packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{censor}
+\ifomnilatex@censoring
+    % censor package censors by default; do nothing if censoring requested
+    % TeX doesn't have \ifnot or similar, see also
+    % https://tex.stackexchange.com/q/386093/120853
+\else
+    % Turn off if document option given
+    \StopCensoring
+\fi
+
+\RequirePackage{cancel}% Cancel out math in equations
+
+\endinput

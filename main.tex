@@ -1,0 +1,59 @@
+% Magic Comment: this template requires LuaLaTeX. The following 'magic comment' is
+% recognized by editors and will ensure lualatex engine use:
+
+%!TEX TS-program = lualatex
+
+% Note that package `svg` also requires elevation, aka the `--shell-escape` option to
+% read/write SVG/PDF files.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Load class file
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[%
+    % Global language, passed down to packages and base class.
+    language=english,
+    % language=german,% to use in german uncomment this line and comment the above
+    institution=tuhh,% Institution configuration (tuhh, or 'none' for generic)
+    twoside,% For printing two-sided documents
+    % oneside,% For printing one-sided documents
+    titlestyle=TUHH,% Style of titlepage: thesis, book, TUHH or uncomment for vanilla
+    BCOR=5mm,% Binding Correction. Cannot be known a priori, only guesstimated
+    % a5,% Option: a5 for a5 paper with 10pt, otherwise a4 paper with 11pt
+    % Toggle all \censor{} etc. commands, e.g. to generate a public version:
+    censoring=true,
+    loadGlossaries,% Load glossarie files
+    todonotes,% load package todonotes to use \todo{} commands
+]{omnilatex}% OmniLaTeX universal document class
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Preamble
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Load document-specific settings (title, author, etc.)
+\RequirePackage{config/document-settings}
+
+% This is still the preamble. You can insert '\newcommand's and all other stuff here. If
+% it is a more long-term change, write it to the class (*.cls) file. You also find all
+% settings to existing packages there.
+
+%\usepackage{showframe}% Uncomment for debugging (show frames)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% The following occurs here so VSCode's 'LaTeX Workshop' extension can find all bib
+% resources (it doesn't seem to look into class files):
+\addbibresource{bib/bibliography.bib}% *.bib file goes here
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Titlepage and document metadata content:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% The "real" Document starts here
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\import{content/}{frontmatter}
+\import{content/}{mainmatter}
+\import{content/}{backmatter}
+\end{document}

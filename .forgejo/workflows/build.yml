@@ -1,0 +1,88 @@
+name: Build LaTeX Document
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/wyattau/omnilatex-docker:latest
+
+    steps:
+      - name: Checkout repository
+        uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run lint (preflight)
+        env:
+          IS_OMNILATEX_CONTAINER: "true"
+          CI: "true"
+        run: |
+          python3 build.py --mode prod lint
+
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/wyattau/omnilatex-docker:latest
+    
+    steps:
+      - name: Checkout repository
+        uses: https://code.forgejo.org/actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Build all documents (Production mode)
+        env:
+          IS_OMNILATEX_CONTAINER: "true"
+          CI: "true"
+        run: |
+          python3 build.py --mode prod build-all
+      
+      - name: Upload root PDF
+        uses: https://code.forgejo.org/actions/upload-artifact@v4
+        with:
+          name: PDF-Root
+          path: main.pdf
+      
+      - name: Upload example PDFs
+        uses: https://code.forgejo.org/actions/upload-artifact@v4
+        with:
+          name: PDF-Examples
+          path: build/examples/*.pdf
+  
+  test:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+
+    container:
+      image: ghcr.io/wyattau/omnilatex-docker:latest
+
+    steps:
+      - name: Checkout repository
+        uses: https://code.forgejo.org/actions/checkout@v4
+      
+      - name: Download root PDF
+        uses: https://code.forgejo.org/actions/download-artifact@v4
+        with:
+          name: PDF-Root
+          path: .
+
+      
+      - name: Download example PDFs
+        uses: https://code.forgejo.org/actions/download-artifact@v4
+        with:
+          name: PDF-Examples
+          path: build/examples
+      
+      - name: Run tests
+        env:
+          IS_OMNILATEX_CONTAINER: "true"
+          CI: "true"
+        run: |
+          python3 build.py --mode prod test

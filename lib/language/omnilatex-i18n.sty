@@ -1,0 +1,219 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OmniLaTeX Language & Internationalization Module
+%
+% Polyglossia, translations, and multilingual support
+% Part of OmniLaTeX-template modular architecture
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/language/omnilatex-i18n}[2024-10-11 v6.0.0 OmniLaTeX i18n module]
+
+% Requires: \omnilatex@language to be defined by class
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Polyglossia - Language Rules
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{polyglossia}% Language rules. Replacement for babel in lualatex
+
+% Expand this properly; the version without \expandsafters does not work fully.
+% The first \expandafter is seen, so the following \setdefaultlanguage is not
+% expanded and skipped.
+% Next, the second \expandafter is looked at. It sees the token { next, saving it
+% for later.
+% \omnilatex@language is then expanded fully, to the current language.
+% What is left is a properly working string, \setdefaultlanguage{<language string>}
+\expandafter\setdefaultlanguage\expandafter{\omnilatex@language}
+
+% Whatever main language (setmainlanguage = setdefaultlanguage) was loaded, we want
+% the "other" one (since we expect only English and German) to be available as a
+% secondary language. This is very convenient if for example a thesis is in English,
+% but certain parts have to be in German, e.g. for legal reasons. A simple switch
+% \begin{german} ... \end{german} would then achieve that.
+\setotherlanguages{german,english}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Translations Package
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{translations}
+% Providing localization that are not automatically covered by polyglossia.
+% We use the translations package for this, which is a bit more powerful than
+% the provided commands by KOMAscript \providecaptionname<language> commands.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Generic Translations (not institution-specific)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Title page elements
+\DeclareTranslation{english}{First}{\nth{1}}
+\DeclareTranslation{german}{First}{1.}
+
+\DeclareTranslation{english}{Second}{\nth{2}}
+\DeclareTranslation{german}{Second}{2.}
+
+\DeclareTranslation{english}{Examiner}{Examiner}
+\DeclareTranslation{german}{Examiner}{Prüfer:in}
+
+\DeclareTranslation{english}{FirstExaminer}{Examiner}
+\DeclareTranslation{german}{FirstExaminer}{Prüfer}
+
+\DeclareTranslation{english}{SecondExaminer}{Examiner}
+\DeclareTranslation{german}{SecondExaminer}{Prüfer:in}
+
+\DeclareTranslation{english}{Supervisor}{Supervisor}
+\DeclareTranslation{german}{Supervisor}{Betreuer:in}
+
+% Colophon
+\DeclareTranslation{english}{CompiledOn}{Compiled on}
+\DeclareTranslation{german}{CompiledOn}{Kompiliert am}
+
+\DeclareTranslation{english}{LatexClass}{Class}
+\DeclareTranslation{german}{LatexClass}{Klasse}
+
+\DeclareTranslation{english}{Generator}{Generator}
+\DeclareTranslation{german}{Generator}{Generiert durch}
+
+\DeclareTranslation{english}{CensorNotice}{CENSORED VERSION}
+\DeclareTranslation{german}{CensorNotice}{ZENSIERTE VERSION}
+
+% Task page
+\DeclareTranslation{english}{PlaceDate}{Place \& Date}
+\DeclareTranslation{german}{PlaceDate}{Ort \& Datum}
+
+\DeclareTranslation{english}{Topic}{Topic}
+\DeclareTranslation{german}{Topic}{Thema}
+
+\DeclareTranslation{english}{Task}{Task}
+\DeclareTranslation{german}{Task}{Problemstellung}
+
+\DeclareTranslation{english}{For}{For}
+\DeclareTranslation{german}{For}{Für}
+
+% Declaration of Authorship
+\DeclareTranslation{english}{AuthorshipDeclTitle}{Declaration of Authorship}
+\DeclareTranslation{german}{AuthorshipDeclTitle}{Erklärung zur Eigenständigkeit}
+
+\DeclareTranslation{english}{author}{author}
+\DeclareTranslation{german}{author}{Autor:in}
+
+% Only needed for German, as the English version does not need a gendered article.
+\DeclareTranslation{german}{authorArticle}{der/die}
+
+\DeclareTranslation{english}{AuthorshipDeclText}{%
+    I, \@author{}, hereby declare to be the sole, independent author of the
+    \@documenttype{} submitted here.
+    No other than the cited references have been used.
+    Any content directly or indirectly obtained from external sources has been marked up as such.
+    This thesis has neither been submitted to a second examination authority nor been published.%
+}%
+
+\DeclareTranslation{german}{AuthorshipDeclText}{%
+    Hiermit bestätige ich, \@author{}, \GetTranslation{authorArticle} alleinige und selbstständige \GetTranslation{author} der hier
+    vorgelegten \@documenttype{} zu sein.
+    Keine anderen als die angegebenen Quellen wurden benutzt.
+    Jeglicher aus externen Quellen direkt oder indirekt bezogene Inhalt ist als solcher markiert.
+    Diese Arbeit wurde weder einer anderen Prüfungsbehörde vorgelegt noch veröffentlicht.
+}%
+
+% Cleveref
+\DeclareTranslation{english}{Reaction}{Reaction}
+\DeclareTranslation{german}{Reaction}{Reaktion}
+
+\DeclareTranslation{english}{Reactions}{Reactions}
+\DeclareTranslation{german}{Reactions}{Reaktionen}
+
+% Glossary
+\DeclareTranslation{english}{Gloss}{Glossary}
+\DeclareTranslation{german}{Gloss}{Glossar}
+
+\DeclareTranslation{english}{Greek}{Greek}
+\DeclareTranslation{german}{Greek}{Griech.}
+
+\DeclareTranslation{english}{Roman}{Roman}
+\DeclareTranslation{german}{Roman}{Röm.}
+
+\DeclareTranslation{english}{Other}{Other}
+\DeclareTranslation{german}{Other}{Andere}
+
+\DeclareTranslation{english}{Terms}{Terms}
+\DeclareTranslation{german}{Terms}{Begriffe}
+
+\DeclareTranslation{english}{Names}{Names}
+\DeclareTranslation{german}{Names}{Namen}
+
+\DeclareTranslation{english}{Acronyms}{Acronyms}
+\DeclareTranslation{german}{Acronyms}{Akronyme}
+
+\DeclareTranslation{english}{Subscripts}{Subscripts}
+\DeclareTranslation{german}{Subscripts}{Indizes}
+
+\DeclareTranslation{english}{Superscripts}{Superscripts}
+\DeclareTranslation{german}{Superscripts}{Hochgest.}
+
+\DeclareTranslation{english}{SubSuperTitle}{Sub- and Superscripts}
+\DeclareTranslation{german}{SubSuperTitle}{Indizes und Hochgestellte}
+
+% SCRLayer and page layout
+\DeclareTranslation{english}{BlankPage}{Rest of this page intentionally left blank.}
+\DeclareTranslation{german}{BlankPage}{Rest der Seite absichtlich freigelassen.}
+
+% Lists of content
+\DeclareTranslation{english}{IllustrativeElements}{Illustrative Elements}
+\DeclareTranslation{german}{IllustrativeElements}{Veranschaulichende Elemente}
+
+\DeclareTranslation{english}{ListOfIllustrations}{List of Illustrations}
+\DeclareTranslation{german}{ListOfIllustrations}{Illustrationsverzeichnis}
+
+\DeclareTranslation{english}{Listing}{Code Listing}
+\DeclareTranslation{english}{Listings}{Code Listings}
+\DeclareTranslation{german}{Listing}{Code}
+\DeclareTranslation{german}{Listings}{Codes}
+
+\DeclareTranslation{english}{ListOfListings}{List of Code}
+\DeclareTranslation{german}{ListOfListings}{Codeverzeichnis}
+
+\DeclareTranslation{english}{ListOfExamples}{List of Examples}
+\DeclareTranslation{german}{ListOfExamples}{Beispielverzeichnis}
+
+\DeclareTranslation{english}{Example}{Example}
+\DeclareTranslation{german}{Example}{Beispiel}
+\DeclareTranslation{english}{Examples}{Examples}
+\DeclareTranslation{german}{Examples}{Beispiele}
+
+% Table translations for tabularray
+\DeclareTranslation{english}{Contfoot}{Continued on next page}
+\DeclareTranslation{german}{Contfoot}{Fortgeführt auf der nächsten Seite}
+
+\DeclareTranslation{english}{Conthead}{ (Continued)}
+\DeclareTranslation{german}{Conthead}{ (Fortgesetzt)}
+
+% Bibliography
+\DeclareTranslation{english}{FurtherReadingTitle}{Further Reading}
+\DeclareTranslation{german}{FurtherReadingTitle}{Weitere Literatur}
+
+\DeclareTranslation{english}{FurtherReadingText}{%
+    The following references were used in this work but not cited in the text body;
+    they are provided here as\-/is.
+}
+\DeclareTranslation{german}{FurtherReadingText}{%
+    Die folgenden Quellen wurden im Rahmen dieser Arbeit benutzt, jedoch nicht
+    explizit zitiert.
+    Sie sind hier der Vollständigkeit halber aufgeführt.
+}
+
+% Math and scientific notation
+\DeclareTranslation{english}{Constant}{const}
+\DeclareTranslation{german}{Constant}{konst}
+
+\DeclareTranslation{english}{Unit}{Unit}
+\DeclareTranslation{german}{Unit}{Einh.}
+
+\DeclareTranslation{english}{PhysicalQuantity}{Physical Quantity}
+\DeclareTranslation{german}{PhysicalQuantity}{Physikalische Größe}
+
+% Image and content attribution
+\DeclareTranslation{english}{AdaptedFrom}{Adapted from}
+\DeclareTranslation{german}{AdaptedFrom}{Adaptiert von}
+
+\endinput

@@ -1,0 +1,19 @@
+\documentclass{article}
+\usepackage{lib/code/omnilatex-listings}
+\usepackage{shellesc}% minted dependency helper but optional
+\usepackage{ifthen}
+
+\makeatletter
+\newcommand{\MintedDraftState}{%
+  \ifminted@draft TRUE\else FALSE\fi
+}
+\makeatother
+
+\begin{document}
+\typeout{MINTED_MODE:\MintedDraftState}
+
+\begin{minted}{python}
+print("hello from minted")
+\end{minted}
+
+\end{document}

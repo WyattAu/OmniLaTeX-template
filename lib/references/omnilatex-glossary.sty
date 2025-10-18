@@ -1,0 +1,463 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OmniLaTeX Glossary Module
+%
+% Glossaries, symbols, abbreviations, and index management
+% Part of OmniLaTeX-template modular architecture
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/references/omnilatex-glossary}[2024-10-11 v6.0.0 OmniLaTeX glossary module]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Glossaries Package
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage[% Initiate with package options for predefined styles
+    nomain,% Nomain, aka no default glossary
+    record,% Record usages of commands to auxiliary files for bib2gls
+    abbreviations,% Regular abbreviations/acronyms
+    symbols,% Physical symbols
+    index,% A regular book index at the end
+    numbers,% constants like Pi
+    toc=true,% Toggle inclusion in Table of Contents
+]{glossaries-extra}% Also see https://tex.stackexchange.com/q/477658/120853
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% New Glossary 'types'
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Using Abbreviations/Symbols etc. package options creates these glossaries already.
+% Create the rest manually.
+\newglossary*{subscripts}{\GetTranslation{Subscripts}}%
+
+% For example, in the case of symbols, there are three groups: roman, greek and
+% other.
+% If the 'other' sub-glossary is used (it provides the built-ins like
+% \mean, \vect, \deriv, ...) but is NOT supposed to be printed in the PDF glossary,
+% it is assigned to the following glossary type.
+% The glossary is printed using \printunsrtglossary with a `type=<entry type>`
+% keyword specified, which would also print the 'other' entries, since they are of
+% type 'symbols' as well. Only by assigning a different type altogether is this
+% circumvented. This does not impact using the commands and the defined entries using
+% \sym{<entry name>}, since that is provided by the 'label-prefix', not the 'type'.
+% Analogue procedures apply to all glossaries.
+\newglossary*{notprinted}{Non-printed entries}% Title never occurs anyway!
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% New Glossary 'fields'
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Add custom key for a 'unit' field for symbols:
+\glsaddkey{unit}%
+{\relax}%
+{\glsentryunit}%
+{\Glsentryunit}%
+{\glsunit}%
+{\Glsunit}%
+{\GLSunit}
+
+% For specific quantities (enthalpy etc.)
+\glsaddkey{specific}%
+{\relax}%
+{\glsentryspecific}%
+{\Glsentryspecific}%
+{\glsspecific}%
+{\Glsspecific}%
+{\GLSspecific}
+
+% For First names of people
+\glsaddkey{firstname}%
+{\relax}%
+{\glsentryfirstname}%
+{\Glsentryfirstname}%
+{\glsfirstname}%
+{\Glsfirstname}%
+{\GLSfirstname}
+
+% For values of numbers/constants
+\glsaddkey{value}%
+{\relax}%
+{\glsentryvalue}%
+{\Glsentryvalue}%
+{\glsvalue}%
+{\Glsvalue}%
+{\GLSvalue}
+
+% For international versions of symbols
+\glsaddkey{international-symbol}%
+{\relax}%
+{\glsentryinternationalsymbol}%
+{\Glsentryinternationalsymbol}%
+{\glsinternationalsymbol}%
+{\Glsinternationalsymbol}%
+{\GLSinternationalsymbol}
+
+% For alternative versions of symbols
+\glsaddkey{alternative-symbol}%
+{\relax}%
+{\glsentryalternativesymbol}%
+{\Glsentryalternativesymbol}%
+{\glsalternativesymbol}%
+{\Glsalternativesymbol}%
+{\GLSalternativesymbol}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Abstract the prefixes here.
+% For example, if we load 'symbols' from a 'roman' file,
+% we define a prefix and call entries later as \gls{<prefix>.<entry>}
+% These prefixes are used in various places; define them here once and reference later
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand*{\symprefix}{sym.}
+\newcommand*{\subprefix}{sub.}
+\newcommand*{\nameprefix}{name.}
+\newcommand*{\constantsprefix}{cons.}
+\newcommand*{\indexprefix}{idx.}
+\newcommand*{\abbreviationprefix}{abb.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Load the bib files:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ifomnilatex@loadGlossaries
+    \GlsXtrLoadResources[%
+        src={bib/glossaries/abbreviations},%
+        sort=doc,% Use document language for sorting
+        label-prefix={\abbreviationprefix},
+        type=abbreviations,
+        selection={all},%
+    ]%
+    \GlsXtrLoadResources[%
+        src={bib/glossaries/index/terms},%
+        sort=doc, % Use document language for sorting
+        type=index,
+        group=terms,
+        label-prefix={\indexprefix},
+        selection={all},%
+    ]%
+    \GlsXtrLoadResources[%
+        src={bib/glossaries/index/names},%
+        sort=doc, % Use document language for sorting
+        type=index,
+        category=names,
+        group=names,
+        label-prefix={\nameprefix},
+        selection={all},%
+    ]%
+    \GlsXtrLoadResources[%
+        src={bib/glossaries/symbols/roman},%
+        sort=doc, % Use document language for sorting
+        symbol-sort-fallback=name,% Sort by name aka symbol if sort field is missing
+        %
+        % If first field is equal, sort by this next (by appending it).
+        % E.g. 'c' for 'Velocity' and also for 'Heat Capacity' is then sorted with
+        % 'Heat Capacity' first etc.:
+        sort-suffix=description,
+        label-prefix={\symprefix},
+        type=symbols,% Change this to 'notprinted' to omit printing in the glossary
+        category={same as type},
+        selection={all},
+        group={roman},
+    ]%
+    \GlsXtrLoadResources[%
+        src={bib/glossaries/symbols/greek},%
+        sort=doc, % Use document language for sorting
+        symbol-sort-fallback=name,% Sort by name aka symbol if sort field is missing
+        %
+        % If first field is equal, sort by this next (by appending it).
+        % E.g. 'c' for 'Velocity' and also for 'Heat Capacity' is then sorted with
+        % 'Heat Capacity' first etc.:
+        sort-suffix=description,
+        label-prefix={\symprefix},
+        type=symbols,% Change this to 'notprinted' to omit printing in the glossary
+        category={same as type},
+        selection={all},
+        group={greek},
+    ]%
+    \GlsXtrLoadResources[%
+        src={bib/glossaries/symbols/other},%
+        sort=doc, % Use document language for sorting
+        symbol-sort-fallback=name,% Sort by name aka symbol if sort field is missing
+        %
+        % If first field is equal, sort by this next (by appending it).
+        % E.g. 'c' for 'Velocity' and also for 'Heat Capacity' is then sorted with
+        % 'Heat Capacity' first etc.:
+        sort-suffix=description,
+        label-prefix={\symprefix},
+        type=symbols,% Change this to 'notprinted' to omit printing in the glossary
+        category={same as type},
+        selection={all},
+        group={other},
+    ]%
+    \GlsXtrLoadResources[%
+        src={bib/glossaries/symbols/subscripts},%
+        % sort=doc, % Use document language for sorting
+        sort-field=name,% Default is by label, not by name
+        type=subscripts,%
+        category=subscripts,
+        label-prefix={\subprefix},
+        selection={all},%
+    ]%
+    \GlsXtrLoadResources[
+        src={bib/glossaries/constants},% constants.bib
+        sort=doc, % Use document language for sorting
+        symbol-sort-fallback=name,% Sort by name aka symbol if sort field is missing
+        %
+        % If first field is equal, sort by this next (by appending it).
+        % E.g. 'c' for 'Velocity' and also for 'Heat Capacity' is then sorted with
+        % 'Heat Capacity' first etc.:
+        sort-suffix=description,
+        type={numbers},% set the type for all selected entries
+        category={numbers},% set the category for all selected entries
+        label-prefix={\constantsprefix},
+        selection={all},
+        % group={constant},
+    ]
+\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Introduce new commands that alias \gls commands and allow modifiers
+% You then use e.g. \sym{velocity} to access \gls{sym.velocity} etc.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\glsxtrnewgls{\symprefix}{\sym}% \sym{XYZ} is like \gls{sym.XYZ}
+\glsxtrnewgls{\subprefix}{\sub}
+\glsxtrnewgls{\nameprefix}{\name}
+\glsxtrnewgls{\constantsprefix}{\cons}
+\glsxtrnewgls{\indexprefix}{\idx}
+\glsxtrnewgls{\abbreviationprefix}{\abb}
+
+% We cannot alias the commands introduced by `\glsaddkey` the same way:
+% \glsxtrnewgls only works on \gls{<prefix>.<key>} to alias the <prefix> away
+% into its own command. However, for a command like \glsspecific{}, it does not work.
+% We can therefore do \sym{volume}, but have to do \glsspecific{sym.volume}, i.e.
+% specify the prefix manually.
+% A short-cut command is therefore enabled by the following commands.
+\newcommand*{\symspec}[2][]{\glsspecific[#1]{\symprefix#2}}
+% Register with glossaries-extra so it writes info to aux file:
+\glsxtridentifyglslike{\symprefix}{\symspec}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Further Options:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% indexonlyfirst can also be a package option.
+% Index only on first use for certain categories, as set manually above.
+% https://tex.stackexchange.com/a/318886/120853
+% \glssetcategoryattribute{symbols}{indexonlyfirst}{true}
+% \glssetcategoryattribute{subscripts}{indexonlyfirst}{true}
+\glssetcategoryattribute{names}{textformat}{textsc} % As printed in the text
+\glssetcategoryattribute{names}{glossnamefont}{textsc} % As printed in the Glossary
+
+\newcommand*{\specificsymbolmark}{*}
+%
+\glsdefpostdesc{symbols}{% If entry has field 'specific', its description is marked
+    \ifglshasfield{specific}{\glscurrententrylabel}%
+    {\specificsymbolmark}%
+    {}%
+}
+
+% Append stuff after 'name' field for the 'symbols' category.
+% Syntax: \ifglshasfield{<field>}{<label>}{<true part>}{<falsepart>}
+\newcommand*{\alternativesymbolmark}{/}
+%
+\glsdefpostname{symbols}{%
+    % If entry has field 'international-symbol', append it after the regular entry:
+    \ifglshasfield{international-symbol}{\glscurrententrylabel}%
+    { [\glsentryinternationalsymbol{\glscurrententrylabel}]}%
+    {}% Do nothing in else
+    % If entry has a field 'alternative-symbol', append it after the regular entry:
+    \ifglshasfield{alternative-symbol}{\glscurrententrylabel}%
+    {\ \alternativesymbolmark{}\ \glsentryalternativesymbol{\glscurrententrylabel}}%
+    {}%
+}
+
+% Give proper names for all groups here to override the default,
+% automatically generated ones
+\AtBeginDocument{% Do this after preamble, else errors out
+    \glsxtrsetgrouptitle{greek}{\GetTranslation{Greek}}
+    \glsxtrsetgrouptitle{roman}{\GetTranslation{Roman}}
+    \glsxtrsetgrouptitle{other}{\GetTranslation{Other}}
+    \glsxtrsetgrouptitle{terms}{\GetTranslation{Terms}}
+    \glsxtrsetgrouptitle{names}{\GetTranslation{Names}}
+}
+
+\setglossarysection{section} % One down in rprt/book
+
+% Some styles require manual setting of width for the first column.
+% Automate this and find widest entry:
+\setglossarypreamble[subscripts]{\glsfindwidesttoplevelname[\currentglossary]}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% New Styles for glossary printing
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{glossary-bookindex} % The style used for the Index
+
+\RequirePackage{glossary-mcols} % Multi-column styles used for Subscripts
+
+% Long, elaborate base style, providing e.g. 'long3col' for the abbreviations etc.:
+\RequirePackage{glossary-longextra}
+
+\newcommand*{\glshdrfont}[1]{\textbf{#1}} % Font for gls table heads
+
+\newglossarystyle{custom-base}{
+    % A simple style subsequent, custom-defined styles will have in common.
+    \setglossarystyle{long-name-desc-loc}
+    \renewcommand*{\glossaryheader}{}% Remove it
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Symbols
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Standard base style, without page list
+\newglossarystyle{symbunitlong}{% https://tex.stackexchange.com/a/269571/120853
+    % Base new style on existing one. This is quite important, since it implements
+    % all otherwise missing but maybe required commands,
+    % like \glsgroupskip if --group option is used for bib2gls
+    \setglossarystyle{custom-base}
+    
+    \renewcommand*{\glsgroupskip}{\addlinespace\addlinespace}%
+    
+    % This command is taken from the source code, I hope I am not abusing it:
+    \ifglsnonumberlist
+        % User requested NO location list/number list/page list to be printed, so
+        % remove those columns.
+        \renewenvironment{theglossary}{%
+            % Use Longtabu over longtable, the latter caused inexplicable issues with
+            % 'Column widths have changed, rerun Latex'
+            \begin{longtabu}{%
+                    r%
+                    p{0.5\linewidth}%
+                    l%
+                }%
+                }{%
+            \end{longtabu}%
+        }%
+        
+        \renewcommand*{\glsgroupheading}[1]{%
+            \glshdrfont{\glsgetgrouptitle{##1}} &
+            \glshdrfont{\descriptionname} &
+            \glshdrfont{\GetTranslation{Unit}}
+            \tabularnewline
+        }%
+        
+        \renewcommand*{\glossentry}[2]{%
+            \glsentryitem{##1}\glstarget{##1}{\glossentryname{##1}} &
+            \glossentrydesc{##1}\glspostdescription &
+            % Use glsentryunit to access entry, NOT glsunit,
+            % https://tex.stackexchange.com/a/281772/120853:
+            \glsentryunit{##1}
+            \tabularnewline
+        }
+    \else
+        \renewenvironment{theglossary}{% Redefine this, overwriting the base style
+            \begin{longtabu}{%
+                    r%
+                    p{0.5\linewidth}%
+                    p{\glspagelistwidth}%
+                    l%
+                }%
+                }{%
+            \end{longtabu}%
+        }%
+        
+        \renewcommand*{\glsgroupheading}[1]{%
+            \glshdrfont{\glsgetgrouptitle{##1}} &
+            \glshdrfont{\descriptionname} &
+            \glshdrfont{\pagelistname} &
+            \glshdrfont{\GetTranslation{Unit}}
+            \tabularnewline
+        }%
+        
+        \renewcommand*{\glossentry}[2]{%
+            \glsentryitem{##1}\glstarget{##1}{\glossentryname{##1}} &
+            \glossentrydesc{##1}\glspostdescription &
+            ##2 &
+            % Use glsentryunit to access entry, NOT glsunit,
+            % https://tex.stackexchange.com/a/281772/120853:
+            \glsentryunit{##1}
+            \tabularnewline
+        }
+        
+    \fi
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Numbers.
+% To print constants, as in physical constants with values and unit.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newglossarystyle{numberlong}{% https://tex.stackexchange.com/a/269571/120853
+    % Base new style on existing one. This is quite important, since it implements
+    % all otherwise missing but maybe required commands, like
+    % \glsgroupskip if --group option is used for bib2gls
+    \setglossarystyle{custom-base}
+    
+    % This command is taken from the source code, I hope I am not abusing it:
+    \ifglsnonumberlist
+        % User requested NO location list/number list/page list to be printed, so
+        % remove those columns.
+        \renewenvironment{theglossary}{
+            % Use Longtabu over longtable, the latter caused inexplicable issues with
+            % 'Column widths have changed, rerun Latex'
+            \begin{longtabu}{%
+                    r%
+                    p{0.3\linewidth}%
+                    r%
+                    @{\;}%
+                    l%
+                }%
+                }{%
+            \end{longtabu}%
+        }%
+        
+        \renewcommand*{\glossaryheader}{%
+            \glshdrfont{\symbolname} &
+            \glshdrfont{\descriptionname} &
+            \multicolumn{2}{l}{{\glshdrfont{\GetTranslation{PhysicalQuantity}}}}
+            \tabularnewline
+        }%
+        
+        \renewcommand*{\glossentry}[2]{%
+            \glsentryitem{##1}\glstarget{##1}{\glossentryname{##1}} &
+            \glossentrydesc{##1}\glspostdescription &
+            \glsentryvalue{##1} &
+            % Use glsentryunit to access entry, NOT glsunit,
+            % https://tex.stackexchange.com/a/281772/120853:
+            \glsentryunit{##1}
+            \tabularnewline
+        }%
+    \else
+        \renewenvironment{theglossary}{
+            % Use Longtabu over longtable, the latter caused inexplicable issues with
+            % 'Column widths have changed, rerun Latex'
+            \begin{longtabu}{%
+                    r%
+                    p{0.3\linewidth}%
+                    r%
+                    @{\;}%
+                    l%
+                    p{\glspagelistwidth}%
+                }%
+                }{%
+            \end{longtabu}%
+        }%
+        
+        \renewcommand*{\glossaryheader}{%
+            \glshdrfont{\symbolname} &
+            \glshdrfont{\descriptionname} &
+            \multicolumn{2}{l}{{\glshdrfont{\GetTranslation{PhysicalQuantity}}}} &
+            \glshdrfont{\pagelistname}
+            \tabularnewline
+        }%
+        
+        \renewcommand*{\glossentry}[2]{%
+            \glsentryitem{##1}\glstarget{##1}{\glossentryname{##1}} &
+            \glossentrydesc{##1}\glspostdescription &
+            \glsentryvalue{##1} &
+            % Use glsentryunit to access entry, NOT glsunit,
+            % https://tex.stackexchange.com/a/281772/120853:
+            \glsentryunit{##1} &
+            ##2
+            \tabularnewline
+        }%
+    \fi
+}
+
+\endinput

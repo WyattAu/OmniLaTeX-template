@@ -1,0 +1,75 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OmniLaTeX Base Module
+%
+% Core functionality and base setup
+% Part of OmniLaTeX-template modular architecture
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/core/omnilatex-base}[2024-10-11 v6.0.0 OmniLaTeX base module]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Basic Utilities
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{import}% Relative path imports
+\RequirePackage[super]{nth}% For ordinal numbers, like \nth{1} -> 1^{st}
+\RequirePackage{etoolbox}% Programming facilities
+\RequirePackage{xstring}% String manipulation macros
+
+\newcommand*{\omnilatex@buildmode}{dev}
+
+\begingroup
+\directlua{
+  local mode = os.getenv("BUILD_MODE") or "dev"
+  mode = string.lower(mode)
+  tex.print("\\gdef\\omnilatex@buildmode{" .. mode .. "}")
+}
+\endgroup
+
+\newif\ifOmniDev
+\newif\ifOmniProd
+\newif\ifOmniUltra
+
+\OmniDevfalse
+\OmniProdfalse
+\OmniUltrafalse
+
+\ifdefstring{\omnilatex@buildmode}{prod}{%
+  \OmniProdtrue
+}{%
+  \ifdefstring{\omnilatex@buildmode}{ultra}{%
+    \OmniUltratrue
+  }{%
+    \OmniDevtrue
+  }%
+}
+
+\newcommand*{\OmniBuildMode}{\omnilatex@buildmode}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Date and Time
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Replaces datetime; use regional date format from document language
+\RequirePackage[useregional]{datetime2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Spacing and Layout
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{setspaceenhanced}% Line spacing
+% Using this because of issues with setspace, see:
+% https://github.com/komascript/third-party-enhancements/issues/2#issuecomment-2456869119
+% To achieve a reasonable 'text color', i.e. 'filled-ness' of the text,
+% adjust line spacing.
+% Recommendation for Palatino fonts (TeXGyrePagella is a Palatino clone) is a
+% factor of 1.05.
+% Discussion: https://tex.stackexchange.com/q/31064/120853
+% For German, we might even want to go higher to allow space for the many capital
+% letters.
+% Also note that inline-math will look terrible at too low leading/linespread
+\linespread{1.05}
+% Note: KOMAoption singlespacing requires KOMA-Script to be already loaded
+
+\endinput

@@ -1,0 +1,271 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OmniLaTeX KOMA Layout Module
+%
+% KOMA-Script sectioning, titlepage, and TOC customization
+% Part of OmniLaTeX-template modular architecture
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/layout/omnilatex-koma}[2024-10-11 v6.0.0 OmniLaTeX KOMA module]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% KOMA Sectioning and Chapter Format
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% label, e.g. 'Chapter', appearing before the chapter number:
+\addtokomafont{chapterprefix}{\raggedleft}
+
+\renewcommand*{\chapterformat}{%
+    \color{g3}% g3 is a shade of grey
+    %
+    % chapappifchapterprefix{addtext} checks if 'chapterprefix=true' is active,
+    % then prints 'Chapter' or 'Appendix' in front of number,
+    % followed by more text 'addtext':
+    \chapappifchapterprefix{~}% ~ is an unbreakable space character
+    %
+    % Autodot automates the generation of a dot/period, like \thechapter\autodot.
+    % Leave out for no dot.
+    \scalebox{4.5}{\thechapter}
+}%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Titlepage Styles
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Define new font for the title page, so it is created once (\newkomafont)
+% and can later be set however often required (\setkomafont)
+\newkomafont{documenttype}{\usekomafont{subtitle}\footnotesize}
+
+% Emulating a budget 'case' switch statement here
+
+% \ifstrequal from etoolbox doesn't work, it does not expand macros.
+% Use \ifdefstring from same package,
+% see also https://tex.stackexchange.com/a/451937/120853
+
+\ifdefstring{\omnilatex@titlestyle}{thesis}{
+    % These exist already, overwrite:
+    \setkomafont{title}{\sffamily\bfseries\Huge}
+    \setkomafont{subtitle}{\normalfont\normalsize\sffamily}
+    \setkomafont{author}{\sffamily\bfseries}
+    \setkomafont{publishers}{\sffamily}
+    %
+    % One same line as subtitle, so should look the same; inherit style:
+    \setkomafont{date}{\usekomafont{subtitle}}
+    %
+    \setkomafont{documenttype}{\usekomafont{subtitle}\footnotesize}
+    %
+    % Set the subtitle to be the examiners and supervisor. If set later in the document, this is overridden!
+    \subtitle{%
+        \begin{tabular}[t]{% [t] sets tabular anchor to the top
+                @{}% Remove horizontal space left of tabular
+                l% If no really good reason to do otherwise, always left-align cell
+                @{\ }% '\ ' (backslash-space) is a small space, here a column separator
+                l
+                l
+                @{}% Remove horizontal space right of tabular
+            }
+            \GetTranslation{First}                             & \GetTranslation{FirstExaminer}  & \@firstexamniner  \\
+            \GetTranslation{Second}                            & \GetTranslation{SecondExaminer} & \@secondexamniner \\
+            \multicolumn{2}{@{}l}{\GetTranslation{Supervisor}} & \@supervisor                                        %
+        \end{tabular}
+    }%
+    \renewcommand{\maketitle}{%
+        \begin{titlepage}
+            \hfill%
+            %
+            % 2nd optional argument is height, required for \vfill etc. to work
+            \begin{minipage}[b][1\textheight]{0.05\textwidth}%
+                \color{black}\rule{0.15em}{\textheight}% Vertical line
+                \hfill%
+            \end{minipage}% This comment char is important to suppress linebreak
+            %
+            \begin{minipage}[b][1\textheight]{0.75\textwidth}
+                \vspace{4\baselineskip}
+                {\usekomafont{documenttype}\faGraduationCap{}\ \@documenttype{}\hspace{0.5em}}
+                \hrulefill
+                \begin{spacing}{1.1}% In case of multi-line titles, more relaxed spacing
+                    \usekomafont{title}\raggedright\@title
+                \end{spacing}
+                \hrule
+                \vspace{0.8\baselineskip}
+                {%
+                    \usekomafont{author}%
+                    % Tabular enables \and and \\ syntax
+                    \begin{tabular}[t]{@{}l@{}}%
+                        \@author
+                    \end{tabular}
+                }%
+                \hfill
+                {\usekomafont{date}\@date}\par
+                \vfill
+                {\usekomafont{subtitle}\@subtitle}\par
+                \vspace{2\baselineskip}
+                {%
+                    \usekomafont{publishers}%
+                    \begin{tabular}[t]{@{}l@{}}%
+                        \@publishers
+                    \end{tabular}
+                }\par
+                \vspace{0.2ex}% Also required for \vfill as something to 'fill against'
+            \end{minipage}
+        \end{titlepage}
+    }%
+}{%
+    % Else: nothing; faking a 'case' environment
+}
+
+\ifdefstring{\omnilatex@titlestyle}{book}{
+    % These exist already, overwrite:
+    \setkomafont{title}{\sffamily\bfseries\Huge}
+    \setkomafont{subtitle}{\itshape}
+    \setkomafont{author}{\scshape\Large}
+    \setkomafont{date}{\normalfont\normalsize\sffamily}
+    \setkomafont{publishers}{\scshape}
+    %
+    % One same line as date, so should look the same; inherit style:
+    \setkomafont{documenttype}{\usekomafont{date}}
+    %
+    \renewcommand{\maketitle}{%
+        \begin{titlepage}
+            \hfill%
+            %
+            % 2nd optional argument is height, required for \vfill etc. to work
+            \begin{minipage}[b][1\textheight]{0.05\textwidth}%
+                \color{black}\rule{0.15em}{\textheight}% Vertical line
+                \hfill%
+            \end{minipage}% This comment char is important to suppress linebreak
+            %
+            \begin{minipage}[b][1\textheight]{0.75\textwidth}
+                \vspace{2\baselineskip}
+                {\usekomafont{author}
+                    % Tabular enables \and and \\ syntax
+                    \begin{tabular}[t]{@{}l@{}}%
+                        \@author
+                    \end{tabular}
+                }\par
+                \vspace{1.5\baselineskip}
+                \begin{spacing}{1.1}% In case of multi-line titles, more relaxed spacing
+                    \usekomafont{title}\raggedright\@title
+                \end{spacing}
+                \hrule
+                \vspace{0.8\baselineskip}
+                {\usekomafont{documenttype}\@subtitle}
+                \hfill
+                {\usekomafont{date}\@date}\par
+                \vfill
+                {\usekomafont{publishers}
+                    \begin{tabular}[t]{@{}l@{}}%
+                        \@publishers
+                    \end{tabular}
+                }\par
+                \vspace{0.2ex}% Also required for \vfill as something to 'fill against'
+            \end{minipage}
+        \end{titlepage}
+    }%
+}{
+    % Else: nothing; faking a 'case' environment
+}%
+
+\ifdefstring{\omnilatex@titlestyle}{TUHH}{
+    % These exist already, overwrite:
+    \setkomafont{title}{\sffamily\bfseries\Huge}
+    \setkomafont{subtitle}{\normalfont\normalsize\sffamily}
+    \setkomafont{author}{\sffamily\bfseries}
+    \setkomafont{publishers}{\sffamily}
+    %
+    % One same line as subtitle, so should look the same; inherit style:
+    \setkomafont{date}{\usekomafont{subtitle}}
+    %
+    \setkomafont{documenttype}{\usekomafont{subtitle}\footnotesize}
+    %
+    % Set the subtitle to be the examiners and supervisor. If set later in the document, this is overridden!
+    \subtitle{%
+        \begin{tabular}[t]{% [t] sets tabular anchor to the top
+                @{}% Remove horizontal space left of tabular
+                l% If no really good reason to do otherwise, always left-align cell
+                @{\ }% '\ ' (backslash-space) is a small space, here a column separator
+                l
+                l
+                @{}% Remove horizontal space right of tabular
+            }
+            \GetTranslation{First}                             & \GetTranslation{FirstExaminer}  & \@firstexamniner  \\
+            \GetTranslation{Second}                            & \GetTranslation{SecondExaminer} & \@secondexamniner \\
+            \multicolumn{2}{@{}l}{\GetTranslation{Supervisor}} & \@supervisor                                        %
+        \end{tabular}
+    }%
+    \renewcommand{\maketitle}{%
+        \begin{titlepage}
+            \hfill%
+            %
+            % 2nd optional argument is height, required for \vfill etc. to work
+            \begin{minipage}[b][1\textheight]{0.05\textwidth}%
+                \color{black}\rule{0.15em}{\textheight}% Vertical line
+                \hfill%
+            \end{minipage}% This comment char is important to suppress linebreak
+            %
+            \begin{minipage}[b][1\textheight]{0.75\textwidth}
+                \vspace{4\baselineskip}
+                % Logos einfügen
+                \begin{minipage}[c]{\textwidth}
+                    \begin{center}
+                        \href{\GetTranslation{LinkTUHH}}{\GetTranslation{LogoTUHH}}%
+                        \qquad%\vspace{20mm}
+                        \href{\GetTranslation{LinkITT}}{\GetTranslation{LogoITT}}%
+                    \end{center}
+                \end{minipage}
+                \\[3\baselineskip] %Wegen der Grafiken funktioniert \vspace nicht...
+                {\usekomafont{documenttype}\faGraduationCap{}\ \@documenttype{}\hspace{0.5em}}
+                \hrulefill
+                \begin{spacing}{1.1}% In case of multi-line titles, more relaxed spacing
+                    \usekomafont{title}\raggedright\@title
+                \end{spacing}
+                \hrule
+                \vspace{0.8\baselineskip}
+                {%
+                    \usekomafont{author}%
+                    % Tabular enables \and and \\ syntax
+                    \begin{tabular}[t]{@{}l@{}}%
+                        \@author
+                    \end{tabular}
+                }%
+                \hfill
+                {\usekomafont{date}\@date}\par
+                \vfill
+                {\usekomafont{subtitle}\@subtitle}\par
+                \vspace{2\baselineskip}
+                {%
+                    \usekomafont{publishers}%
+                    \begin{tabular}[t]{@{}l@{}}%
+                        \@publishers
+                    \end{tabular}
+                }\par
+                \vspace{0.2ex}% Also required for \vfill as something to 'fill against'
+            \end{minipage}
+        \end{titlepage}
+    }%
+}{%
+    % Else: nothing; faking a 'case' environment
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TOC Configuration (tocbasic)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Dynamic width of number column in LoF/LoT etc (numsep + width of longest entry).
+% 'tocline' is the (dynamic) default style.
+\DeclareTOCStyleEntry[dynnumwidth=true]{tocline}{figure}
+\DeclareTOCStyleEntry[dynnumwidth=true]{tocline}{table}
+
+% Declare a new list of contents, with the file suffix in brackets.
+% This will give access to \listof<name>s
+% The AtBeginDocument is required to make the \GetTranslation command available, see:
+% https://github.com/cgnieder/translations/issues/15#issuecomment-1004769709
+\AtBeginDocument{
+    \DeclareNewTOC[%
+        type=example,% This also creates types=example+s, that is by appending an s
+        % Listname is "List of <Type>s" by default, therefore translate:
+        listname={\GetTranslation{ListOfExamples}},
+    ]{loe}
+}
+
+\endinput

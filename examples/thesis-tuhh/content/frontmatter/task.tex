@@ -1,0 +1,35 @@
+\cleardoublepage % damit das Bookmark auf der richtigen Seite gesetzt wird
+\pdfbookmark[1]{\GetTranslation{Task}}{task} % Bookmark im PDF (hyperref-Paket)
+\chapter*{\GetTranslation{Task}}
+% Place the logo of the institute
+% The logo is placed with tikz to use the "empty" space above the heading for placing it,
+% without an automated linebreak of the \chapter command
+% See https://tex.stackexchange.com/a/89592, https://tex.stackexchange.com/a/124083 
+\begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=north,inner sep=0pt] at ($(current page.north)+(0, -1)$) {\href{\GetTranslation{LinkITT}}{\GetTranslation{LogoITT}}};
+\end{tikzpicture}
+
+\makeatletter
+\begin{tabular}{
+        l
+        p{0.7\linewidth}
+    }
+    \GetTranslation{For}:   & \textbf{\@author{}} [\@idnumber{}]  \\
+    \GetTranslation{Topic}: & \textbf{\@title} (\@documenttype{})
+\end{tabular}\\[\baselineskip]
+\makeatother
+
+\blindtext
+
+\begin{itemize}
+    \item First you are doing this,
+    \item then another thing,
+    \item lastly that.
+\end{itemize}
+
+You will be working on this a lot.
+\newline
+
+\makeatletter
+\@firstexamniner
+\makeatother

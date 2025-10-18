@@ -1,0 +1,30 @@
+\documentclass{article}
+\usepackage{lib/core/omnilatex-base}
+
+\begin{document}
+\directlua{tex.print(string.format("\\typeout{OMNIMODE:%s}", os.getenv("BUILD_MODE") or ""))}
+
+\ifOmniDev
+  \typeout{OMNIDEV:TRUE}
+\else
+  \typeout{OMNIDEV:FALSE}
+\fi
+
+\ifOmniProd
+  \typeout{OMNIPROD:TRUE}
+\else
+  \typeout{OMNIPROD:FALSE}
+\fi
+
+\ifOmniUltra
+  \typeout{OMNIULTRA:TRUE}
+\else
+  \typeout{OMNIULTRA:FALSE}
+\fi
+
+Mode token: \texttt{\OmniBuildMode}
+
+\ifOmniDev\textbf{Dev flag enabled}\fi
+\ifOmniProd\textbf{Prod flag enabled}\fi
+\ifOmniUltra\textbf{Ultra flag enabled}\fi
+\end{document}

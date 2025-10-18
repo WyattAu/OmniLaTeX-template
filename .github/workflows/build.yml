@@ -1,0 +1,93 @@
+name: Build LaTeX Document
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/wyattau/omnilatex-docker:latest
+      options: --user root
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better git metadata
+      
+      - name: Build all documents (Production mode)
+        env:
+          IS_OMNILATEX_CONTAINER: "true"
+          CI: "true"
+        run: |
+          python3 build.py --mode prod build-all
+      
+      - name: Upload root PDF
+        uses: actions/upload-artifact@v4
+        with:
+          name: PDF-Root
+          path: main.pdf
+          if-no-files-found: error
+          retention-days: 30
+      
+      - name: Upload example PDFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: PDF-Examples
+          path: build/examples/*.pdf
+          if-no-files-found: error
+          retention-days: 30
+  
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Download root PDF
+        uses: actions/download-artifact@v4
+        with:
+          name: PDF-Root
+          path: .
+      
+      - name: Download example PDFs
+        uses: actions/download-artifact@v4
+        with:
+          name: PDF-Examples
+          path: build/examples
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      
+      - name: Install test dependencies
+        working-directory: tests
+        run: |
+          poetry install --no-interaction
+      
+      - name: Run PDF tests
+        working-directory: tests
+        run: |
+          poetry run pytest -v --tb=short
+      
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: tests/.pytest_cache
+          retention-days: 7
