@@ -241,6 +241,52 @@
             }
         },
         {
+            "label": "Test: PDF Validation (Poetry)",
+            "type": "shell",
+            "command": "poetry",
+            "args": ["run", "python", "-m", "pytest", "tests/test_pdfs.py"],
+            "options": {
+                "cwd": "${workspaceFolder}/tests",
+                "env": {
+                    "PYTHONPATH": "${workspaceFolder}/tests"
+                }
+            },
+            "group": "test",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Test: PDF Validation (System Python)",
+            "type": "shell",
+            "command": "python3",
+            "args": ["-m", "pytest", "tests/test_pdfs.py"],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "PYTHONPATH": "${workspaceFolder}/tests"
+                }
+            },
+            "group": "test",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Test: Build + PDF Validation (Poetry)",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Build (DEV): Main Document (main.tex)",
+                "Test: PDF Validation (Poetry)"
+            ],
+            "group": "test",
+            "problemMatcher": []
+        },
+        {
             "label": "Lint: Run chktex (LaTeX Linter)",
             "type": "shell",
             "command": "chktex",

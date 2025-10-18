@@ -25,11 +25,28 @@ Example:
 """
 
 import math
+import warnings
 from collections import namedtuple
 from datetime import datetime as dt
 from pathlib import Path
 from typing import List
 from warnings import warn
+
+warnings.filterwarnings(
+    "ignore",
+    message="builtin type SwigPyPacked has no __module__ attribute",
+    category=DeprecationWarning,
+)
+warnings.filterwarnings(
+    "ignore",
+    message="builtin type SwigPyObject has no __module__ attribute",
+    category=DeprecationWarning,
+)
+warnings.filterwarnings(
+    "ignore",
+    message="builtin type swigvarlink has no __module__ attribute",
+    category=DeprecationWarning,
+)
 
 import fitz  # PyMuPDF
 import pytest

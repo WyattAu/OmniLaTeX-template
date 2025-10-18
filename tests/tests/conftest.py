@@ -3,7 +3,15 @@ See also: https://stackoverflow.com/q/34466027/11477374
 List of hooks: https://pytest.org/en/latest/reference.html#hook-reference
 """
 
+import warnings
+
 from tests.utils import _PROJECT_ROOT
+
+warnings.filterwarnings(
+    "ignore",
+    message=r"builtin type .* has no __module__ attribute",
+    category=DeprecationWarning,
+)
 
 
 def pytest_make_parametrize_id(config, val, argname):

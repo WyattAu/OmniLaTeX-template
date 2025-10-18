@@ -3,6 +3,7 @@ import logging
 import re
 import string
 from pathlib import Path
+from typing import Optional
 
 _THIS_DIR = Path(__file__).parent
 
