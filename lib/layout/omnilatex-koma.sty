@@ -13,20 +13,22 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % label, e.g. 'Chapter', appearing before the chapter number:
-\addtokomafont{chapterprefix}{\raggedleft}
+\ifomnilatex@haschapters
+    \addtokomafont{chapterprefix}{\raggedleft}
 
-\renewcommand*{\chapterformat}{%
-    \color{g3}% g3 is a shade of grey
-    %
-    % chapappifchapterprefix{addtext} checks if 'chapterprefix=true' is active,
-    % then prints 'Chapter' or 'Appendix' in front of number,
-    % followed by more text 'addtext':
-    \chapappifchapterprefix{~}% ~ is an unbreakable space character
-    %
-    % Autodot automates the generation of a dot/period, like \thechapter\autodot.
-    % Leave out for no dot.
-    \scalebox{4.5}{\thechapter}
-}%
+    \renewcommand*{\chapterformat}{%
+        \color{g3}% g3 is a shade of grey
+        %
+        % chapappifchapterprefix{addtext} checks if 'chapterprefix=true' is active,
+        % then prints 'Chapter' or 'Appendix' in front of number,
+        % followed by more text 'addtext':
+        \chapappifchapterprefix{~}% ~ is an unbreakable space character
+        %
+        % Autodot automates the generation of a dot/period, like \thechapter\autodot.
+        % Leave out for no dot.
+        \scalebox{4.5}{\thechapter}
+    }%
+\fi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Titlepage Styles

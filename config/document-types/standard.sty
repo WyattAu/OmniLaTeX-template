@@ -1,0 +1,62 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/standard}[2025-10-18 OmniLaTeX standard profile]
+
+\documenttype{Standard}
+\KOMAoptions{titlepage=true,twoside=false,parskip=half}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{1}
+
+\makeatletter
+
+\newcommand*{\omnilatex@standardfront}{%
+    \begin{titlepage}
+        \thispagestyle{empty}%
+        \begin{flushright}
+            {\Large\textsf{\@standardseries}}\\
+            {\large Designation \@standarddesignation}\\
+            {\small Status: \@standardstatus}
+        \end{flushright}
+        \vspace{1.5\baselineskip}
+        \begin{center}
+            {\Huge\bfseries \@title}\par\vspace{1\baselineskip}
+            {\large\@standardscope}\par\vspace{1.5\baselineskip}
+            {\normalsize Prepared by \@standardcommittee}
+        \end{center}
+        \vspace{1.5\baselineskip}
+        \noindent\textbf{Publication Date:}~\@date\par
+        \noindent\textbf{Supersedes:}~\@standardsupersedes\par
+        \noindent\textbf{ICS Codes:}~\@standardics\par
+        \noindent\textbf{Keywords:}~\@standardkeywords\par
+        \vfill
+        \noindent\rule{\textwidth}{0.4pt}\par
+        \noindent\small \@standarddisclaimer
+    \end{titlepage}
+}
+
+\renewcommand{\maketitle}{%
+    \omnilatex@standardfront
+    \setcounter{footnote}{0}%
+}
+
+\providecommand*{\@standardseries}{Omni Standards Series}
+\newcommand*{\standardseries}[1]{\gdef\@standardseries{#1}}
+\providecommand*{\@standarddesignation}{F-000}
+\newcommand*{\standarddesignation}[1]{\gdef\@standarddesignation{#1}}
+\providecommand*{\@standardstatus}{Draft}
+\newcommand*{\standardstatus}[1]{\gdef\@standardstatus{#1}}
+\providecommand*{\@standardscope}{Scope statement}
+\newcommand*{\standardscope}[1]{\gdef\@standardscope{#1}}
+\providecommand*{\@standardcommittee}{Committee Name}
+\newcommand*{\standardcommittee}[1]{\gdef\@standardcommittee{#1}}
+\providecommand*{\@standardsupersedes}{None}
+\newcommand*{\standardsupersedes}[1]{\gdef\@standardsupersedes{#1}}
+\providecommand*{\@standardics}{00.000}
+\newcommand*{\standardics}[1]{\gdef\@standardics{#1}}
+\providecommand*{\@standardkeywords}{n/a}
+\newcommand*{\standardkeywords}[1]{\gdef\@standardkeywords{#1}}
+\providecommand*{\@standarddisclaimer}{This standard is provided "as is" without warranty.}
+\newcommand*{\standarddisclaimer}[1]{\gdef\@standarddisclaimer{#1}}
+
+\makeatother
+
+\endinput

@@ -1,0 +1,67 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/technicalreport}[2025-10-18 OmniLaTeX technical report profile]
+
+\documenttype{Technical Report}
+\KOMAoptions{titlepage=true,twoside=false}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{2}
+
+\makeatletter
+
+\newcommand*{\omnilatex@techreportfront}{%
+    \begin{titlepage}
+        \thispagestyle{empty}%
+        \begin{flushright}
+            {\Large \textsf{Technical Report}}\\
+            {\large Report No.~\@reportnumber}\\
+            {\large Revision \@revision}
+        \end{flushright}
+        \vspace{2\baselineskip}
+        \begin{center}
+            {\Huge\bfseries \@title}\par\vspace{1.25\baselineskip}
+            {\large Prepared by \@preparedby}\par\vspace{0.75\baselineskip}
+            {\normalsize For \@client}
+        \end{center}
+        \vspace{1.5\baselineskip}
+        \noindent\textbf{Project:}~\@projectname\par
+        \noindent\textbf{Submission Date:}~\@date\par
+        \vspace{1\baselineskip}
+        \noindent\textbf{Confidentiality:}~\@confidentiality
+        \vspace{1.5\baselineskip}
+        \begin{tabular}{@{}p{0.35\textwidth}p{0.6\textwidth}@{}}
+            Executive Sponsor: & \@sponsor \\\n+            Lead Engineer: & \@leadengineer \\\n+            Document Control: & \@doccontrol \\\n+        \end{tabular}
+        \vfill
+        \noindent\rule{\textwidth}{0.4pt}\par
+        \noindent\small \@distribution
+    \end{titlepage}
+}
+
+\renewcommand{\maketitle}{%
+    \omnilatex@techreportfront
+    \setcounter{footnote}{0}%
+}
+
+\providecommand*{\@reportnumber}{TR-000}
+\newcommand*{\reportnumber}[1]{\gdef\@reportnumber{#1}}
+\providecommand*{\@revision}{A}
+\newcommand*{\revision}[1]{\gdef\@revision{#1}}
+\providecommand*{\@preparedby}{Analysis Group}
+\newcommand*{\preparedby}[1]{\gdef\@preparedby{#1}}
+\providecommand*{\@client}{Client Organization}
+\newcommand*{\client}[1]{\gdef\@client{#1}}
+\providecommand*{\@projectname}{Project Name}
+\newcommand*{\projectname}[1]{\gdef\@projectname{#1}}
+\providecommand*{\@confidentiality}{Internal Use Only}
+\newcommand*{\confidentiality}[1]{\gdef\@confidentiality{#1}}
+\providecommand*{\@sponsor}{Name}
+\newcommand*{\sponsor}[1]{\gdef\@sponsor{#1}}
+\providecommand*{\@leadengineer}{Name}
+\newcommand*{\leadengineer}[1]{\gdef\@leadengineer{#1}}
+\providecommand*{\@doccontrol}{Name}
+\newcommand*{\doccontrol}[1]{\gdef\@doccontrol{#1}}
+\providecommand*{\@distribution}{Distribution authorized to project stakeholders.}
+\newcommand*{\distribution}[1]{\gdef\@distribution{#1}}
+
+\makeatother
+
+\endinput

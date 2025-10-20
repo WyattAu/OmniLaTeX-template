@@ -42,7 +42,9 @@
 }%
 
 % https://tex.stackexchange.com/q/299125/120853:
-\renewcommand*{\chaptermarkformat}{\thechapter\enskip}%
+\makeatletter
+\@ifundefined{chaptermarkformat}{}{\renewcommand*{\chaptermarkformat}{\thechapter\enskip}}
+\makeatother
 
 \addtokomafont{pagehead}{\sffamily\itshape\footnotesize}%
 \addtokomafont{pagenumber}{\sffamily\bfseries\footnotesize}%

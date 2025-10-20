@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """
-Production-ready build script for LaTeX projects.
+OmniLaTeX build entry point.
 
-Features:
-- Cross-platform and CI-safe.
-- Smart execution mode detection:
-  * Inside .devcontainer: runs tools natively (IS_OMNILATEX_CONTAINER=true)
-  * In CI environment: runs tools natively (CI=1)
-  * Local development: wraps commands in Docker
-  * Override with USE_DOCKER=0 to force native execution
-- Includes build, clean, and preflight commands.
+Key capabilities:
+  • Explicit dev/prod/ultra modes with diagnostics announced up front.
+  • Comprehensive logging of every subprocess invocation with elapsed timing.
+  • Per-command verbose output toggled via --verbose / OMNILATEX_VERBOSE=1.
+  • High-level commands for root builds, example builds, cleaning, preflight, and tests.
+
+This script no longer shells out through Docker automatically. Instead, it assumes
+execution inside the devcontainer or a prepared environment. Docker support can be
+reintroduced by adjusting CommandRunner.get_base_command().
 """
 
 from __future__ import annotations
@@ -18,30 +19,39 @@ import os
 import shutil
 import subprocess
 import sys
+import time
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Dict, List, Optional
+from typing import Callable, Dict, Iterable, List, Optional
 
 # -----------------------------------------------------------------------------
 # Terminal Output
 # -----------------------------------------------------------------------------
 class TerminalOutput:
-    """Handles formatted and colored terminal output."""
+    """Handles formatted terminal messages with optional ANSI colors."""
 
     def __init__(self, use_color: bool = sys.stdout.isatty()) -> None:
+        palette = {
+            "blue": "\033[94m",
+            "green": "\033[92m",
+            "yellow": "\033[93m",
+            "red": "\033[91m",
+            "bold": "\033[1m",
+            "end": "\033[0m",
+        }
         if use_color:
-            self.blue = "\033[94m"
-            self.green = "\033[92m"
-            self.yellow = "\033[93m"
-            self.red = "\033[91m"
-            self.bold = "\033[1m"
-            self.end = "\033[0m"
+            self.blue = palette["blue"]
+            self.green = palette["green"]
+            self.yellow = palette["yellow"]
+            self.red = palette["red"]
+            self.bold = palette["bold"]
+            self.end = palette["end"]
         else:
             self.blue = self.green = self.yellow = self.red = self.bold = self.end = ""
 
     def header(self, message: str) -> None:
-        print(f"\n{self.bold}{self.blue}--- {message} ---{self.end}")
+        print(f"\n{self.bold}{self.blue}=== {message} ==={self.end}")
 
     def info(self, message: str) -> None:
         print(f"[INFO] {message}")
@@ -59,18 +69,21 @@ class TerminalOutput:
     def command(self, command: str) -> None:
         print(f"{self.bold}[RUN] {command}{self.end}")
 
+    def debug(self, message: str) -> None:
+        print(f"[DEBUG] {message}")
+
 # -----------------------------------------------------------------------------
 # Project configuration
 # -----------------------------------------------------------------------------
 @dataclass(frozen=True)
 class ProjectConfig:
-    docker_image: str = "ghcr.io/wyattau/omnilatex-docker:latest"
     build_dir: Path = Path("build")
 
     def is_ci(self) -> bool:
-        """Detect CI environment from common env vars (flexible)."""
-        v = os.environ.get("CI", "")
-        return v.lower() in ("1", "true", "yes")
+        return os.environ.get("CI", "").lower() in {"1", "true", "yes"}
+
+    def verbose_enabled(self) -> bool:
+        return os.environ.get("OMNILATEX_VERBOSE", "0").lower() in {"1", "true", "yes"}
 
     def get_git_short_sha(self) -> str:
         if self.is_ci():
@@ -85,59 +98,64 @@ class ProjectConfig:
 # Command execution
 # -----------------------------------------------------------------------------
 class CommandRunner:
-    """
-    Build and run commands with smart execution mode detection.
-    
-    Runs natively when inside .devcontainer or CI, wraps in Docker for local development.
-    """
-
-    def __init__(self, config: ProjectConfig, ui: TerminalOutput, build_mode: str = 'dev') -> None:
+    def __init__(self, config: ProjectConfig, ui: TerminalOutput, build_mode: str = "dev", verbose: bool = False) -> None:
         self.config = config
         self.ui = ui
         self.build_mode = build_mode
+        self.verbose = verbose or config.verbose_enabled()
 
     def get_base_command(self, tool: str) -> List[str]:
-        # Check if we're already inside the omnilatex container
-        in_container = os.environ.get("IS_OMNILATEX_CONTAINER") == "true"
-        # Or if we're in CI, or if Docker is explicitly disabled
-        use_docker = os.environ.get("USE_DOCKER", "1") == "1"
-        
-        # Run natively if: in container, in CI, or Docker disabled
-        if in_container or self.config.is_ci() or not use_docker:
-            return [tool]
-        
-        # Otherwise, wrap in Docker for local development
-        return [
-            "docker", "run", "--rm",
-            "--volume", f"{os.getcwd()}:/tex",
-            "--workdir", "/tex",
-            "--env", f"BUILD_MODE={self.build_mode}",
-            "--entrypoint", tool,
-            self.config.docker_image
-        ]
+        return [tool]
+
+    def format_command(self, args: Iterable[str]) -> str:
+        return " ".join(str(arg) for arg in args)
 
     def run(
         self,
         cmd_args: List[str],
+        *,
         capture_output: bool = False,
         extra_env: Optional[Dict[str, str]] = None,
+        cwd: Optional[Path] = None,
     ) -> Optional[str]:
-        self.ui.command(" ".join(cmd_args))
-        # Set BUILD_MODE environment variable for native execution
+        command_str = self.format_command(cmd_args)
+        self.ui.command(command_str)
         env = os.environ.copy()
-        env['BUILD_MODE'] = self.build_mode
+        env["BUILD_MODE"] = self.build_mode
         if extra_env:
             env.update(extra_env)
+        start = time.perf_counter()
         try:
             if capture_output:
-                result = subprocess.run(cmd_args, check=True, text=True, capture_output=True, env=env)
+                result = subprocess.run(
+                    cmd_args,
+                    check=True,
+                    text=True,
+                    capture_output=True,
+                    env=env,
+                    cwd=str(cwd) if cwd else None,
+                )
+                elapsed = time.perf_counter() - start
+                if self.verbose:
+                    self.ui.debug(f"Completed in {elapsed:.2f}s: {command_str}")
+                    if result.stdout:
+                        self.ui.debug(result.stdout.strip())
+                    if result.stderr:
+                        self.ui.debug(result.stderr.strip())
                 return result.stdout
-            subprocess.run(cmd_args, check=True, env=env)
+
+            subprocess.run(cmd_args, check=True, env=env, cwd=str(cwd) if cwd else None)
+            elapsed = time.perf_counter() - start
+            if self.verbose:
+                self.ui.debug(f"Completed in {elapsed:.2f}s: {command_str}")
             return None
         except subprocess.CalledProcessError as exc:
-            self.ui.error(f"Command failed with exit code {exc.returncode}: {' '.join(cmd_args)}")
+            elapsed = time.perf_counter() - start
+            self.ui.error(
+                f"Command failed ({elapsed:.2f}s, exit {exc.returncode}): {command_str}"
+            )
         except FileNotFoundError:
-            self.ui.error(f"Command not found: {cmd_args[0]}. Is it installed and in PATH?")
+            self.ui.error(f"Command not found: {cmd_args[0]}. Install it or adjust PATH.")
         return None
 
 # -----------------------------------------------------------------------------
@@ -162,11 +180,41 @@ class BuildTasks:
         self.runner = runner
         self.ui = ui
 
+    # ------------------------------------------------------------------
+    # Helper utilities
+    # ------------------------------------------------------------------
+    def _announce_targets(self, title: str, targets: Iterable[str]) -> None:
+        target_list = list(targets)
+        if target_list:
+            self.ui.info(f"{title}: {', '.join(target_list)}")
+        else:
+            self.ui.warning(f"{title}: none")
+
+    def _mode_label(self) -> str:
+        return {
+            "dev": "DEVELOPMENT",
+            "prod": "PRODUCTION",
+            "ultra": "ULTRA-LITE",
+        }.get(self.runner.build_mode, self.runner.build_mode.upper())
+
+    def _example_description(self, example_dir: Path) -> str:
+        readme = example_dir / "README.md"
+        if not readme.exists():
+            return ""
+        try:
+            with open(readme, "r", encoding="utf-8") as fh:
+                for line in fh.readlines()[:10]:
+                    stripped = line.strip()
+                    if stripped and not stripped.startswith("#"):
+                        return stripped
+        except Exception:
+            return ""
+        return ""
+
     def build_tex(self, files: Optional[List[str]] = None) -> None:
-        mode_label = "PRODUCTION" if self.runner.build_mode == 'prod' else "DEVELOPMENT"
-        self.ui.header(f"Building LaTeX Source Files ({mode_label} MODE)")
+        mode_label = self._mode_label()
+        self.ui.header(f"Building LaTeX Source Files ({mode_label})")
         cmd = self.runner.get_base_command("latexmk")
-        # Don't specify -pdf flag; let .latexmkrc control the PDF mode ($pdf_mode = 4 for lualatex)
         flags = ["-interaction=nonstopmode"]
 
         if files:
@@ -188,7 +236,7 @@ class BuildTasks:
             self.ui.warning("No compilable .tex files found (files with \\documentclass).")
             return
 
-        self.ui.info(f"Targets: {', '.join(target_files)}")
+        self._announce_targets("Targets", target_files)
         for tex in target_files:
             if not Path(tex).exists():
                 self.ui.warning(f"Source not found: {tex}")
@@ -197,8 +245,8 @@ class BuildTasks:
     
     def build_root(self, _files: Optional[List[str]] = None) -> None:
         """Build the root main.tex document."""
-        mode_label = "PRODUCTION" if self.runner.build_mode == 'prod' else "DEVELOPMENT"
-        self.ui.header(f"Building Root Document ({mode_label} MODE)")
+        mode_label = self._mode_label()
+        self.ui.header(f"Building Root Document ({mode_label})")
         
         main_tex = Path("main.tex")
         if not main_tex.exists():
@@ -211,7 +259,6 @@ class BuildTasks:
         self.ui.success("Root document build complete.")
     
     def build_all(self, _files: Optional[List[str]] = None) -> None:
-        """Build root document and all examples."""
         self.ui.header("Building All Documents (Root + Examples)")
         
         # Build root first
@@ -221,15 +268,6 @@ class BuildTasks:
         self.build_examples()
         
         self.ui.success("All documents built successfully.")
-        
-        # Move PDFs to build directory (latexmk outputs to root)
-        #self.config.build_dir.mkdir(exist_ok=True)
-        #for pdf in Path(".").glob("*.pdf"):
-        #    dest = self.config.build_dir / pdf.name
-        #    shutil.move(str(pdf), str(dest))
-        #    self.ui.info(f"Moved {pdf} to {dest}")
-        
-        self.ui.success("LaTeX compilation finished.")
 
     def clean_aux(self, _files: Optional[List[str]] = None) -> None:
         self.ui.header("Cleaning auxiliary files")
@@ -296,30 +334,17 @@ class BuildTasks:
         """List all available examples."""
         self.ui.header("Available Examples")
         examples = self.discover_examples()
-        
+
         if not examples:
             self.ui.info("No examples found.")
             return
-        
+
         for example in examples:
-            readme = example / "README.md"
-            description = ""
-            if readme.exists():
-                try:
-                    with open(readme, 'r', encoding='utf-8') as f:
-                        lines = f.readlines()
-                        # Try to find first description line
-                        for line in lines[:10]:
-                            if line.strip() and not line.startswith('#'):
-                                description = line.strip()
-                                break
-                except Exception:
-                    pass
-            
+            description = self._example_description(example)
             self.ui.info(f"  {example.name}")
             if description:
-                print(f"    {description}")
-        
+                self.ui.info(f"    {description}")
+
         self.ui.success(f"Found {len(examples)} example(s).")
 
     def build_example(self, files: Optional[List[str]] = None) -> None:
@@ -339,6 +364,8 @@ class BuildTasks:
         
         root_latexmkrc = Path(__file__).resolve().parent / ".latexmkrc"
 
+        repo_root = Path(__file__).resolve().parent
+
         for example_name in files:
             self.ui.header(f"Building example: {example_name}")
             example_dir = examples_dir / example_name
@@ -355,15 +382,22 @@ class BuildTasks:
             # Build in the example directory
             try:
                 with working_directory(example_dir):
-                    # Ensure per-example cache directories exist
                     for cache_dir in (Path("_minted"), Path("svg-inkscape")):
                         cache_dir.mkdir(parents=True, exist_ok=True)
 
                     cmd = self.runner.get_base_command("latexmk")
                     latexmk_flags: List[str] = ["-interaction=nonstopmode"]
+                    if os.environ.get("OMNILATEX_FORCE_REBUILD") == "1":
+                        latexmk_flags.append("-g")
+                    current_texinputs = os.environ.get("TEXINPUTS", "")
+                    texinputs_entries = [str(repo_root)]
+                    if current_texinputs:
+                        texinputs_entries.append(current_texinputs)
+                    texinputs_entries.append("")
                     extra_env = {
                         "MINTED_CACHE_DIR": str((Path("_minted") / "").resolve()),
                         "OMNILATEX_EXAMPLE_ROOT": str(Path.cwd()),
+                        "TEXINPUTS": os.pathsep.join(texinputs_entries),
                     }
 
                     invoke: List[str] = cmd + latexmk_flags
@@ -377,7 +411,6 @@ class BuildTasks:
 
                     self.runner.run(invoke, extra_env=extra_env)
 
-                # Copy PDF to build output
                 src_pdf = example_dir / "main.pdf"
                 if src_pdf.exists():
                     dest_pdf = build_examples_dir / f"{example_name}.pdf"
@@ -385,7 +418,7 @@ class BuildTasks:
                     self.ui.success(f"Built {example_name} -> {dest_pdf}")
                 else:
                     self.ui.warning(f"PDF not generated for {example_name}")
-            
+
             except Exception as exc:
                 self.ui.error(f"Failed to build {example_name}: {exc}")
 
@@ -437,7 +470,6 @@ class BuildTasks:
             return
         
         examples_dir = Path("examples")
-        
         for example_name in files:
             self.ui.header(f"Cleaning example: {example_name}")
             example_dir = examples_dir / example_name
@@ -485,12 +517,17 @@ def main() -> None:
     ui = TerminalOutput()
     config = ProjectConfig()
 
-    parser = argparse.ArgumentParser(description="LaTeX build tool")
+    parser = argparse.ArgumentParser(description="OmniLaTeX build tool")
     parser.add_argument(
         "--mode",
         choices=["dev", "prod", "ultra"],
         default="dev",
-        help="Build mode: 'dev' for fast iteration (default), 'prod' for full validation, 'ultra' for minimal rebuild"
+        help="Build mode: 'dev' for fast iteration (default), 'prod' for full validation, 'ultra' for minimal rebuild",
+    )
+    parser.add_argument(
+        "--verbose",
+        action="store_true",
+        help="Enable verbose command output (or set OMNILATEX_VERBOSE=1)",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -524,18 +561,12 @@ def main() -> None:
     args = parser.parse_args()
     
     # Initialize runner and tasks with build mode
-    runner = CommandRunner(config, ui, build_mode=args.mode)
+    runner = CommandRunner(config, ui, build_mode=args.mode, verbose=args.verbose)
     tasks = BuildTasks(config, runner, ui)
     
     # Show build mode for build commands
-    if args.command.startswith('build'):
-        mode_labels = {
-            "dev": "DEVELOPMENT",
-            "prod": "PRODUCTION",
-            "ultra": "ULTRA-LITE",
-        }
-        mode_label = mode_labels.get(args.mode, args.mode.upper())
-        ui.info(f"Build mode: {mode_label}")
+    if args.command.startswith("build"):
+        ui.info(f"Build mode: {tasks._mode_label()}")
     
     # Get and call the appropriate handler method
     method_name: str = getattr(args, "method")

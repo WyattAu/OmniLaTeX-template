@@ -1,0 +1,48 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/book}[2025-10-18 OmniLaTeX book profile]
+
+\documenttype{Book}
+\KOMAoptions{titlepage=true,twoside=true}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+
+\makeatletter
+
+\newcommand*{\omnilatex@bookfrontpage}{%
+    \begin{titlepage}
+        \thispagestyle{empty}%
+        \begin{center}
+            {\Large\textsc{\@publisher}}\\[1.5\baselineskip]
+            {\Huge\bfseries\@title}\par\vspace{1\baselineskip}
+            {\Large\itshape\@subtitle}\par\vspace{2\baselineskip}
+            {\Large\@author}\par\vfill
+        \end{center}
+        \noindent\rule{\textwidth}{0.4pt}\par
+        \begin{flushleft}
+            \textbf{Edition:}~\@edition\par
+            \textbf{Publication:}~\@pubcity,\ \@pubcountry\par
+            \textbf{ISBN:}~\@isbn
+        \end{flushleft}
+    \end{titlepage}
+}
+
+\renewcommand{\maketitle}{%
+    \omnilatex@bookfrontpage
+    \setcounter{footnote}{0}%
+}
+
+\providecommand*{\@subtitle}{\relax}
+\providecommand*{\subtitle}[1]{\gdef\@subtitle{#1}}
+\providecommand*{\@publisher}{OmniLaTeX Press}
+\providecommand*{\publisher}[1]{\gdef\@publisher{#1}}
+\providecommand*{\@edition}{First Edition}
+\providecommand*{\edition}[1]{\gdef\@edition{#1}}
+\providecommand*{\@isbn}{978-0-00-000000-0}
+\providecommand*{\isbn}[1]{\gdef\@isbn{#1}}
+\providecommand*{\@pubcity}{Berlin}
+\providecommand*{\@pubcountry}{Germany}
+\providecommand*{\publocation}[2]{\gdef\@pubcity{#1}\gdef\@pubcountry{#2}}
+
+\makeatother
+
+\endinput

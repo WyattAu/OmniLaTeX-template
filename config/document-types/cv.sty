@@ -1,0 +1,52 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/cv}[2025-10-18 OmniLaTeX CV profile]
+
+\documenttype{Curriculum Vitae}
+\KOMAoptions{titlepage=false,twoside=false}
+\setcounter{secnumdepth}{0}
+\setcounter{tocdepth}{0}
+
+\makeatletter
+
+\newcommand*{\omnilatex@cvheader}{%
+    \begingroup
+    \setlength{\parindent}{0pt}%
+    {\Large\bfseries\@title}\par
+    \ifx\@cvrole\@empty\else{\normalsize\@cvrole}\par\fi
+    \begingroup
+    \small
+    \ifx\@cvlocation\@empty\else \@cvlocation \fi
+    \ifx\@cvlocation\@empty\else\ifx\@cvcontact\@empty\else\,|\,\fi\fi
+    \@cvcontact\par
+    \ifx\@cvlinks\@empty\else \@cvlinks\par\fi
+    \endgroup
+    \vspace{0.5\baselineskip}
+    \hrule
+    \ifx\@cvsummary\@empty\else
+        \vspace{0.5\baselineskip}
+        {\small\@cvsummary}\par
+        \vspace{0.5\baselineskip}
+        \hrule
+    \fi
+    \vspace{\baselineskip}
+    \endgroup
+}
+
+\renewcommand{\maketitle}{%
+    \omnilatex@cvheader
+}
+
+\providecommand*{\@cvrole}{\@author}
+\newcommand*{\cvrole}[1]{\gdef\@cvrole{#1}}
+\providecommand*{\@cvcontact}{\@date}
+\newcommand*{\cvcontact}[1]{\gdef\@cvcontact{#1}}
+\providecommand*{\@cvlocation}{}
+\newcommand*{\cvlocation}[1]{\gdef\@cvlocation{#1}}
+\providecommand*{\@cvlinks}{}
+\newcommand*{\cvlinks}[1]{\gdef\@cvlinks{#1}}
+\providecommand*{\@cvsummary}{}
+\newcommand*{\cvsummary}[1]{\gdef\@cvsummary{#1}}
+
+\makeatother
+
+\endinput

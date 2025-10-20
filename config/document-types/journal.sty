@@ -1,0 +1,84 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/journal}[2025-10-18 OmniLaTeX journal profile]
+
+\documenttype{Journal Paper}
+\KOMAoptions{titlepage=true,twoside=false}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+\makeatletter
+
+\newcommand*{\omnilatex@journalfrontpage}{%
+    \begin{titlepage}
+        \thispagestyle{empty}%
+        \begin{flushright}
+            {\small \textsf{\@journalname}}\\
+            {\small Volume \@journalvolume\ (\@journalyear)}\\
+            {\small Issue \@journalissue\ \textbullet{} pp.~\@journalpages}
+        \end{flushright}
+        \vspace{2\baselineskip}
+        \begin{center}
+            {\Huge\bfseries \@title}\par\vspace{1.5\baselineskip}
+            {\large \@author}\par\vspace{1\baselineskip}
+            {\small \@affiliation}\par\vspace{0.75\baselineskip}
+            {\small Correspondence: \@contact}
+        \end{center}
+        \vspace{1.5\baselineskip}
+        \noindent\textbf{Article Type:}~\@articletype\par\vspace{0.65\baselineskip}
+        \begin{abstract}
+            \@subtitle
+        \end{abstract}
+        \vspace{0.75\baselineskip}
+        \noindent\textbf{Keywords:}~\@keywords\par
+        \noindent\textbf{DOI:}~\@doi\par
+        \vspace{1.5\baselineskip}
+        \noindent\textbf{Highlights}\par
+        \begin{itemize}[leftmargin=1.5em]
+            \forcsvlist{\item }{\@highlights}
+        \end{itemize}
+        \vfill
+        \noindent\rule{\textwidth}{0.4pt}\par
+        \noindent\small Received \@receiveddate{} \textbullet{} Accepted \@accepteddate{} \textbullet{} Published \@publisheddate
+    \end{titlepage}
+}
+
+\renewcommand{\maketitle}{%
+    \omnilatex@journalfrontpage
+    \setcounter{footnote}{0}%
+    \let\thanks\@gobble
+}
+
+\providecommand*{\@journalname}{OmniLaTeX Journal}
+\providecommand*{\journalname}[1]{\gdef\@journalname{#1}}
+\providecommand*{\@journalvolume}{1}
+\providecommand*{\journalvolume}[1]{\gdef\@journalvolume{#1}}
+\providecommand*{\@journalissue}{1}
+\providecommand*{\journalissue}[1]{\gdef\@journalissue{#1}}
+\providecommand*{\@journalpages}{1--12}
+\providecommand*{\journalpages}[1]{\gdef\@journalpages{#1}}
+\providecommand*{\@journalyear}{2025}
+\providecommand*{\journalyear}[1]{\gdef\@journalyear{#1}}
+\providecommand*{\@subtitle}{\relax}
+\providecommand*{\subtitle}[1]{\gdef\@subtitle{#1}}
+\providecommand*{\@keywords}{n/a}
+\providecommand*{\keywords}[1]{\gdef\@keywords{#1}}
+\providecommand*{\@doi}{pending}
+\providecommand*{\doi}[1]{\gdef\@doi{#1}}
+\providecommand*{\@contact}{editor@example.com}
+\providecommand*{\contact}[1]{\gdef\@contact{#1}}
+\providecommand*{\@affiliation}{Independent Researcher}
+\providecommand*{\affiliation}[1]{\gdef\@affiliation{#1}}
+\providecommand*{\@articletype}{Original Research}
+\providecommand*{\articletype}[1]{\gdef\@articletype{#1}}
+\providecommand*{\@highlights}{Key insight,Secondary finding}
+\providecommand*{\highlights}[1]{\gdef\@highlights{#1}}
+\providecommand*{\@receiveddate}{--}
+\providecommand*{\receiveddate}[1]{\gdef\@receiveddate{#1}}
+\providecommand*{\@accepteddate}{--}
+\providecommand*{\accepteddate}[1]{\gdef\@accepteddate{#1}}
+\providecommand*{\@publisheddate}{--}
+\providecommand*{\publisheddate}[1]{\gdef\@publisheddate{#1}}
+
+\makeatother
+
+\endinput

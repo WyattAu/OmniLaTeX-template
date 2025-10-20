@@ -27,7 +27,7 @@
 
 \newtcolorbox[%
     auto counter,%
-    number within=chapter,%
+    number within=\ifomnilatex@haschapters chapter\else section\fi,%
     % Set cleveref, see https://tex.stackexchange.com/a/126023/120853:
     crefname={\GetTranslation{Example}}{\GetTranslation{Examples}},
     % List of Examples. *.loe file ending could clash with package thmtools,

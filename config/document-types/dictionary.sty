@@ -1,0 +1,53 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/dictionary}[2025-10-18 OmniLaTeX dictionary profile]
+
+\documenttype{Dictionary}
+\KOMAoptions{titlepage=true,twoside=true}
+\setcounter{secnumdepth}{1}
+\setcounter{tocdepth}{1}
+
+\makeatletter
+
+\newcommand*{\omnilatex@dictionaryfront}{%
+    \begin{titlepage}
+        \thispagestyle{empty}%
+        \begin{center}
+            {\Large\textsc{\@dictionaryseries}}\\[0.75\baselineskip]
+            {\Huge\bfseries\@title}\par\vspace{1\baselineskip}
+            {\large\@dictionarysubtitle}\par\vspace{2\baselineskip}
+            {\normalsize Compiled by \@author}\par\vspace{0.75\baselineskip}
+            {\normalsize \@dictionaryedition}
+        \end{center}
+        \vfill
+        \noindent\textbf{Publisher:}~\@dictionarypublisher\par
+        \noindent\textbf{ISBN:}~\@dictionaryisbn\par
+        \noindent\textbf{Subjects:}~\@dictionarysubjects\par
+        \vspace{1.5\baselineskip}
+        \noindent\rule{\textwidth}{0.4pt}\par
+        \noindent\small \@dictionarynote
+    \end{titlepage}
+}
+
+\renewcommand{\maketitle}{%
+    \omnilatex@dictionaryfront
+    \setcounter{footnote}{0}%
+}
+
+\providecommand*{\@dictionaryseries}{OmniLexicon Collection}
+\newcommand*{\dictionaryseries}[1]{\gdef\@dictionaryseries{#1}}
+\providecommand*{\@dictionarysubtitle}{A quick reference for Omni terminology}
+\newcommand*{\dictionarysubtitle}[1]{\gdef\@dictionarysubtitle{#1}}
+\providecommand*{\@dictionaryedition}{First Edition}
+\newcommand*{\dictionaryedition}[1]{\gdef\@dictionaryedition{#1}}
+\providecommand*{\@dictionarypublisher}{OmniLaTeX Publishing}
+\newcommand*{\dictionarypublisher}[1]{\gdef\@dictionarypublisher{#1}}
+\providecommand*{\@dictionaryisbn}{978-0-00-000001-7}
+\newcommand*{\dictionaryisbn}[1]{\gdef\@dictionaryisbn{#1}}
+\providecommand*{\@dictionarysubjects}{Computing, Documentation}
+\newcommand*{\dictionarysubjects}[1]{\gdef\@dictionarysubjects{#1}}
+\providecommand*{\@dictionarynote}{All terms are provided for quick technical reference.}
+\newcommand*{\dictionarynote}[1]{\gdef\@dictionarynote{#1}}
+
+\makeatother
+
+\endinput

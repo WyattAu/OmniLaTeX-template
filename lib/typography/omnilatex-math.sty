@@ -43,7 +43,7 @@
 % Scientific Typesetting - Chemistry
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\RequirePackage{chemmacros}% \ch{}, \chcpd[]{compound} etc.
+\RequirePackage{chemmacros}% \ch{}, \chcpd[]{} etc.
 \chemsetup{%
     formula=chemformula,%
     chemformula/font-family=tgpl,% Use math font family
@@ -63,9 +63,14 @@
 \NewChemReaction{reactionsgather}{gather}% Like AMSmath's `gather`
 \NewChemReaction{reactionsgather*}{gather*}
 
-% Sort reaction counter underneath chapter, see
+\ifomnilatex@haschapters
+    \renewcommand*{\thereaction}{\thechapter.\arabic{reaction}}%
+\else
+    \renewcommand*{\thereaction}{\arabic{reaction}}%
+\fi
+
+% Sort reaction counter underneath chapter where available, fallback to section.
 % https://tex.stackexchange.com/questions/530210/how-to-cross-reference-reactions-in-chemmacros-chapter#comment1340793_530210
-\renewcommand*{\thereaction}{\thechapter.\arabic{reaction}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Scientific Typesetting - Units
@@ -149,6 +154,8 @@
 
 % Required for starred command variants
 \RequirePackage{suffix}
+\RequirePackage{xfrac}
+\RequirePackage{nicefrac}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Equation Punctuation

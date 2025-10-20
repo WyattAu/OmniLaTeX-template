@@ -1,0 +1,56 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/dissertation}[2025-10-18 OmniLaTeX dissertation profile]
+
+\documenttype{Dissertation}
+\KOMAoptions{titlepage=true,twoside=true}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{2}
+
+\makeatletter
+
+\newcommand*{\omnilatex@dissertationfront}{%
+    \begin{titlepage}
+        \thispagestyle{empty}%
+        \begin{center}
+            {\Large\textsc{\@dissertationinstitution}}\\[0.5\baselineskip]
+            {\large\@dissertationdepartment}\par\vspace{2\baselineskip}
+            {\Huge\bfseries\@title}\par\vspace{1.25\baselineskip}
+            {\Large\@author}\par\vspace{1\baselineskip}
+            {\large\@dissertationdegree}
+        \end{center}
+        \vspace{2\baselineskip}
+        \noindent\textbf{Primary Supervisor:}~\@firstsupervisor\par
+        \noindent\textbf{Secondary Supervisor:}~\@secondsupervisor\par
+        \noindent\textbf{Advisory Committee:}~\@dissertationcommittee\par
+        \vspace{1.5\baselineskip}
+        \noindent Submitted on \@submissiondate\par
+        \vfill
+        \noindent\textbf{Keywords:}~\@keywords
+    \end{titlepage}
+}
+
+\renewcommand{\maketitle}{%
+    \omnilatex@dissertationfront
+    \setcounter{footnote}{0}%
+}
+
+\providecommand*{\@dissertationdegree}{Doctoral Dissertation}
+\newcommand*{\dissertationdegree}[1]{\gdef\@dissertationdegree{#1}}
+\providecommand*{\@dissertationdepartment}{Department}
+\newcommand*{\dissertationdepartment}[1]{\gdef\@dissertationdepartment{#1}}
+\providecommand*{\@dissertationinstitution}{University}
+\newcommand*{\dissertationinstitution}[1]{\gdef\@dissertationinstitution{#1}}
+\providecommand*{\@firstsupervisor}{Supervisor Name}
+\newcommand*{\firstsupervisor}[1]{\gdef\@firstsupervisor{#1}}
+\providecommand*{\@secondsupervisor}{Co-Supervisor Name}
+\newcommand*{\secondsupervisor}[1]{\gdef\@secondsupervisor{#1}}
+\providecommand*{\@dissertationcommittee}{Committee Member A, Committee Member B}
+\newcommand*{\dissertationcommittee}[1]{\gdef\@dissertationcommittee{#1}}
+\providecommand*{\@submissiondate}{\today}
+\newcommand*{\submissiondate}[1]{\gdef\@submissiondate{#1}}
+\providecommand*{\@keywords}{n/a}
+\newcommand*{\keywords}[1]{\gdef\@keywords{#1}}
+
+\makeatother
+
+\endinput

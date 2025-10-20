@@ -1,0 +1,54 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/thesis}[2025-10-18 OmniLaTeX thesis profile]
+
+\documenttype{Thesis}
+\KOMAoptions{titlepage=true,twoside=true}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+
+\makeatletter
+
+\newcommand*{\omnilatex@thesisfront}{%
+    \begin{titlepage}
+        \thispagestyle{empty}%
+        \begin{center}
+            {\Large\textsc{\@thesisinstitution}}\\[0.5\baselineskip]
+            {\large\@thesisdepartment}\par\vspace{2\baselineskip}
+            {\Huge\bfseries\@title}\par\vspace{1.25\baselineskip}
+            {\Large\@author}\par\vspace{1\baselineskip}
+            {\normalsize Submitted in partial fulfillment of the requirements for the degree of \@thesisdegree}
+        \end{center}
+        \vspace{2\baselineskip}
+        \noindent\textbf{Advisor:}~\@thesisadvisor\par
+        \noindent\textbf{Committee:}~\@thesiscommittee\par
+        \noindent\textbf{Defense Date:}~\@defensedate\par
+        \vfill
+        \noindent\rule{\textwidth}{0.4pt}\par
+        \noindent\small \@thesislocation\par
+        \noindent\small \@date
+    \end{titlepage}
+}
+
+\renewcommand{\maketitle}{%
+    \omnilatex@thesisfront
+    \setcounter{footnote}{0}%
+}
+
+\providecommand*{\@thesisinstitution}{University}
+\newcommand*{\thesisinstitution}[1]{\gdef\@thesisinstitution{#1}}
+\providecommand*{\@thesisdepartment}{Department}
+\newcommand*{\thesisdepartment}[1]{\gdef\@thesisdepartment{#1}}
+\providecommand*{\@thesisdegree}{Master of Science}
+\newcommand*{\thesisdegree}[1]{\gdef\@thesisdegree{#1}}
+\providecommand*{\@thesisadvisor}{Advisor Name}
+\newcommand*{\thesisadvisor}[1]{\gdef\@thesisadvisor{#1}}
+\providecommand*{\@thesiscommittee}{Committee Member A, Committee Member B}
+\newcommand*{\thesiscommittee}[1]{\gdef\@thesiscommittee{#1}}
+\providecommand*{\@defensedate}{\today}
+\newcommand*{\defensedate}[1]{\gdef\@defensedate{#1}}
+\providecommand*{\@thesislocation}{City, Country}
+\newcommand*{\thesislocation}[1]{\gdef\@thesislocation{#1}}
+
+\makeatother
+
+\endinput

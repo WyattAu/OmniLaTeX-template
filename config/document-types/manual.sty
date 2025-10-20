@@ -1,0 +1,48 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/manual}[2025-10-18 OmniLaTeX manual profile]
+
+\documenttype{Product Manual}
+\KOMAoptions{titlepage=false,twoside=false}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{2}
+
+\makeatletter
+
+\newcommand*{\omnilatex@manualfront}{%
+    \clearpage
+    \thispagestyle{empty}
+    \begin{center}
+        {\Large\textsc{\@manualbrand}}\\[0.5\baselineskip]
+        {\huge\bfseries\@title}\par\vspace{1\baselineskip}
+        {\sffamily\Large Firmware Version \@manualversion}\par\vspace{2\baselineskip}
+    \end{center}
+    \begin{flushleft}
+        \textbf{Release Date:}~\@manualreleasedate\par
+        \textbf{Support Contact:}~\@manualsupport\par
+    \end{flushleft}
+    \vspace{1\baselineskip}
+    \noindent\rule{\textwidth}{0.4pt}\par
+    \begin{flushleft}
+        \@manualsummary
+    \end{flushleft}
+    \clearpage
+}
+
+\renewcommand{\maketitle}{%
+    \omnilatex@manualfront
+}
+
+\newcommand*{\@manualbrand}{OmniLaTeX Devices}
+\newcommand*{\manualbrand}[1]{\gdef\@manualbrand{#1}}
+\newcommand*{\@manualversion}{1.0}
+\newcommand*{\manualversion}[1]{\gdef\@manualversion{#1}}
+\newcommand*{\@manualreleasedate}{\today}
+\newcommand*{\manualreleasedate}[1]{\gdef\@manualreleasedate{#1}}
+\newcommand*{\@manualsupport}{support@example.com}
+\newcommand*{\manualsupport}[1]{\gdef\@manualsupport{#1}}
+\newcommand*{\@manualsummary}{This manual provides setup, operation, and maintenance guidance.}
+\newcommand*{\manualsummary}[1]{\gdef\@manualsummary{#1}}
+
+\makeatother
+
+\endinput

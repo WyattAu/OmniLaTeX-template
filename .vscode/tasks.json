@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build (DEV): Main Document (main.tex)",
+            "label": "Build: Root (dev)",
             "type": "shell",
             "command": "python3",
             "args": ["build.py", "--mode", "dev", "build-root"],
@@ -21,21 +21,19 @@
             }
         },
         {
-            "label": "Build (PROD): Main Document (main.tex)",
+            "label": "Build: Root (prod)",
             "type": "shell",
             "command": "python3",
             "args": ["build.py", "--mode", "prod", "build-root"],
             "group": "build",
             "problemMatcher": [],
             "presentation": {
-                "echo": true,
                 "reveal": "always",
-                "focus": false,
                 "panel": "shared"
             }
         },
         {
-            "label": "Build (DEV): All (Root + Examples)",
+            "label": "Build: All (dev)",
             "type": "shell",
             "command": "python3",
             "args": ["build.py", "--mode", "dev", "build-all"],
@@ -47,7 +45,7 @@
             }
         },
         {
-            "label": "Build (PROD): All (Root + Examples)",
+            "label": "Build: All (prod)",
             "type": "shell",
             "command": "python3",
             "args": ["build.py", "--mode", "prod", "build-all"],
@@ -59,31 +57,60 @@
             }
         },
         {
-            "label": "Clean: Main Document",
+            "label": "Build: Examples (dev, checklist)",
             "type": "shell",
-            "command": "latexmk",
-            "args": ["-C", "main.tex"],
+            "command": "python3",
+            "args": [
+                "tools/build_examples_select.py",
+                "--mode",
+                "dev"
+            ],
+            "group": "build",
             "problemMatcher": [],
             "presentation": {
-                "reveal": "silent",
+                "reveal": "always",
                 "panel": "shared"
             }
         },
         {
-            "label": "Clean + Rebuild: Main Document",
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "Clean: Main Document",
-                "Build: Main Document (main.tex)"
+            "label": "Build: Examples (prod, checklist)",
+            "type": "shell",
+            "command": "python3",
+            "args": [
+                "tools/build_examples_select.py",
+                "--mode",
+                "prod"
             ],
-            "problemMatcher": []
+            "group": "build",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
         },
         {
-            "label": "List All Examples",
+            "label": "Build: Example (prompt)",
+            "type": "shell",
+            "command": "python3",
+            "args": [
+                "build.py",
+                "--mode",
+                "dev",
+                "build-example",
+                "${input:omnilatexExample}"
+            ],
+            "group": "build",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "List: Examples",
             "type": "shell",
             "command": "python3",
             "args": ["build.py", "list-examples"],
-            "group": "none",
             "problemMatcher": [],
             "presentation": {
                 "reveal": "always",
@@ -91,83 +118,10 @@
             }
         },
         {
-            "label": "Build (DEV): All Examples",
+            "label": "Clean: Root aux",
             "type": "shell",
             "command": "python3",
-            "args": ["build.py", "--mode", "dev", "build-examples"],
-            "group": "build",
-            "problemMatcher": [],
-            "presentation": {
-                "reveal": "always",
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Build (PROD): All Examples",
-            "type": "shell",
-            "command": "python3",
-            "args": ["build.py", "--mode", "prod", "build-examples"],
-            "group": "build",
-            "problemMatcher": [],
-            "presentation": {
-                "reveal": "always",
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Build (DEV): TUHH Thesis Example",
-            "type": "shell",
-            "command": "python3",
-            "args": ["build.py", "--mode", "dev", "build-example", "thesis-tuhh"],
-            "group": "build",
-            "problemMatcher": [],
-            "presentation": {
-                "reveal": "always",
-                "panel": "new"
-            }
-        },
-        {
-            "label": "Build (PROD): TUHH Thesis Example",
-            "type": "shell",
-            "command": "python3",
-            "args": ["build.py", "--mode", "prod", "build-example", "thesis-tuhh"],
-            "group": "build",
-            "problemMatcher": [],
-            "presentation": {
-                "reveal": "always",
-                "panel": "new"
-            }
-        },
-        {
-            "label": "Build (DEV): Minimal Starter Example",
-            "type": "shell",
-            "command": "python3",
-            "args": ["build.py", "--mode", "dev", "build-example", "minimal-starter"],
-            "group": "build",
-            "problemMatcher": [],
-            "presentation": {
-                "reveal": "always",
-                "panel": "new"
-            }
-        },
-        {
-            "label": "Build (PROD): Minimal Starter Example",
-            "type": "shell",
-            "command": "python3",
-            "args": ["build.py", "--mode", "prod", "build-example", "minimal-starter"],
-            "group": "build",
-            "problemMatcher": [],
-            "presentation": {
-                "reveal": "always",
-                "panel": "new"
-            }
-        },
-        {
-            "label": "Clean: All Examples",
-            "type": "shell",
-            "command": "python3",
-            "args": ["build.py", "clean-examples"],
-            "group": "none",
+            "args": ["build.py", "clean-aux"],
             "problemMatcher": [],
             "presentation": {
                 "reveal": "silent",
@@ -175,101 +129,21 @@
             }
         },
         {
-            "label": "Clean + Rebuild (DEV): All Examples",
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "Clean: All Examples",
-                "Build (DEV): All Examples"
-            ],
-            "problemMatcher": []
-        },
-        {
-            "label": "Clean + Rebuild (PROD): All Examples",
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "Clean: All Examples",
-                "Build (PROD): All Examples"
-            ],
-            "problemMatcher": []
-        },
-        {
-            "label": "Test: Build Main Document",
-            "type": "shell",
-            "command": "latexmk",
-            "args": ["main.tex"],
-            "group": "test",
-            "problemMatcher": [],
-            "presentation": {
-                "reveal": "always",
-                "panel": "dedicated"
-            }
-        },
-        {
-            "label": "Validate: Check Main PDF Generated",
-            "type": "shell",
-            "command": "test",
-            "args": ["-f", "main.pdf", "&&", "echo", "[SUCCESS] Main PDF exists", "||", "echo", "[ERROR] Main PDF missing"],
-            "group": "test",
-            "problemMatcher": [],
-            "presentation": {
-                "reveal": "always",
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Test Suite: Full Build Validation",
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "Clean: Main Document",
-                "Clean: All Examples",
-                "Test: Build Main Document",
-                "Build (DEV): All Examples",
-                "Validate: Check Main PDF Generated"
-            ],
-            "problemMatcher": []
-        },
-        {
-            "label": "Test: Module Style Fixtures",
+            "label": "Clean: Examples",
             "type": "shell",
             "command": "python3",
-            "args": ["tests/run_module_tests.py"],
-            "group": "test",
+            "args": ["build.py", "clean-examples"],
             "problemMatcher": [],
             "presentation": {
-                "reveal": "always",
+                "reveal": "silent",
                 "panel": "shared"
             }
         },
         {
-            "label": "Test: PDF Validation (Poetry)",
-            "type": "shell",
-            "command": "poetry",
-            "args": ["run", "python", "-m", "pytest", "tests/test_pdfs.py"],
-            "options": {
-                "cwd": "${workspaceFolder}/tests",
-                "env": {
-                    "PYTHONPATH": "${workspaceFolder}/tests"
-                }
-            },
-            "group": "test",
-            "problemMatcher": [],
-            "presentation": {
-                "reveal": "always",
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Test: PDF Validation (System Python)",
+            "label": "Clean: Deep",
             "type": "shell",
             "command": "python3",
-            "args": ["-m", "pytest", "tests/test_pdfs.py"],
-            "options": {
-                "cwd": "${workspaceFolder}",
-                "env": {
-                    "PYTHONPATH": "${workspaceFolder}/tests"
-                }
-            },
-            "group": "test",
+            "args": ["build.py", "clean"],
             "problemMatcher": [],
             "presentation": {
                 "reveal": "always",
@@ -277,20 +151,10 @@
             }
         },
         {
-            "label": "Test: Build + PDF Validation (Poetry)",
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "Build (DEV): Main Document (main.tex)",
-                "Test: PDF Validation (Poetry)"
-            ],
-            "group": "test",
-            "problemMatcher": []
-        },
-        {
-            "label": "Lint: Run chktex (LaTeX Linter)",
+            "label": "Preflight: Environment",
             "type": "shell",
-            "command": "chktex",
-            "args": ["-q", "-v0", "main.tex"],
+            "command": "python3",
+            "args": ["build.py", "--verbose", "preflight"],
             "problemMatcher": [],
             "presentation": {
                 "reveal": "always",
@@ -298,7 +162,19 @@
             }
         },
         {
-            "label": "Format: Run latexindent",
+            "label": "Test: Suite",
+            "type": "shell",
+            "command": "python3",
+            "args": ["build.py", "test"],
+            "group": "test",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Format: latexindent",
             "type": "shell",
             "command": "latexindent",
             "args": ["-w", "main.tex"],
@@ -309,7 +185,18 @@
             }
         },
         {
-            "label": "Git: Run Pre-commit Hooks",
+            "label": "Lint: chktex",
+            "type": "shell",
+            "command": "chktex",
+            "args": ["-q", "-v0", "main.tex"],
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Git: Pre-commit",
             "type": "shell",
             "command": "pre-commit",
             "args": ["run", "--all-files"],
@@ -323,14 +210,14 @@
             "label": "Quality: Format + Lint + Pre-commit",
             "dependsOrder": "sequence",
             "dependsOn": [
-                "Format: Run latexindent",
-                "Lint: Run chktex (LaTeX Linter)",
-                "Git: Run Pre-commit Hooks"
+                "Format: latexindent",
+                "Lint: chktex",
+                "Git: Pre-commit"
             ],
             "problemMatcher": []
         },
         {
-            "label": "Stats: Count Words in Main Document",
+            "label": "Stats: Word count",
             "type": "shell",
             "command": "texcount",
             "args": ["-total", "-q", "main.tex"],
@@ -341,7 +228,7 @@
             }
         },
         {
-            "label": "Open: Build Output Directory",
+            "label": "Open: Build output",
             "type": "shell",
             "command": "xdg-open",
             "args": ["build/examples/"],
@@ -359,17 +246,13 @@
             "presentation": {
                 "reveal": "silent"
             }
-        },
+        }
+    ],
+    "inputs": [
         {
-            "label": "Deep Clean: All Build Artifacts",
-            "type": "shell",
-            "command": "bash",
-            "args": ["-c", "latexmk -C main.tex && python3 build.py clean-examples && rm -rf build/"],
-            "problemMatcher": [],
-            "presentation": {
-                "reveal": "always",
-                "panel": "shared"
-            }
+            "id": "omnilatexExample",
+            "type": "promptString",
+            "description": "Example name to build (e.g., article, journal, cv)"
         }
     ]
 }
