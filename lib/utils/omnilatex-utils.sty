@@ -44,11 +44,18 @@
 % Generate some control sequences which contain metadata, which can be inserted e.g.
 % into the PDF metadata (e.g. to have the exact git commit SHA of a build).
 % Load external Lua file instead of inline code for better maintainability.
-% See examples/git-metadata.lua for implementation details.
+% See lua/git-metadata.lua for implementation details.
 % Try to load from multiple possible locations
 \directlua{
     local found = false
-    local paths = {"examples/git-metadata.lua", "../../examples/git-metadata.lua", "git-metadata.lua"}
+    local paths = {
+        "lua/git-metadata.lua",
+        "../lua/git-metadata.lua",
+        "../../lua/git-metadata.lua",
+        "examples/git-metadata.lua",
+        "../../examples/git-metadata.lua",
+        "git-metadata.lua"
+    }
     for _, path in ipairs(paths) do
         local file = io.open(path, "r")
         if file then

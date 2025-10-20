@@ -27,26 +27,45 @@
 }%
 
 % Define headers:
-\lehead{% Left, even head
-    \llap{%
-        \pagemark\enskip\headerrule%
-    }%
-    \enskip\headmark%
-}%
-
-\rohead{% Right, odd head
-    \headmark\enskip%
-    \rlap{%
-        \headerrule\enskip\pagemark%
-    }%
-}%
-
-% https://tex.stackexchange.com/q/299125/120853:
 \makeatletter
+\if@twoside
+    \lehead{% Left, even head
+        \llap{%
+            \pagemark\enskip\headerrule%
+        }%
+        \enskip\headmark%
+    }%
+
+    \rohead{% Right, odd head
+        \headmark\enskip%
+        \rlap{%
+            \headerrule\enskip\pagemark%
+        }%
+    }%
+    \lefoot{}
+    \lofoot{}
+    \cefoot{}
+    \cofoot{}
+    \refoot{}
+    \rofoot{}
+\else
+    \lehead{}
+    \rohead{}
+    \chead{\headmark}
+    \cfoot{\pagemark}
+    \lefoot{}
+    \lofoot{}
+    \refoot{}
+    \rofoot{}
+\fi
 \@ifundefined{chaptermarkformat}{}{\renewcommand*{\chaptermarkformat}{\thechapter\enskip}}
 \makeatother
 
+\pagestyle{scrheadings}
+\DeclarePageStyleAlias{plain}{scrheadings}
+
 \addtokomafont{pagehead}{\sffamily\itshape\footnotesize}%
+\addtokomafont{pagefoot}{\sffamily\bfseries\footnotesize}%
 \addtokomafont{pagenumber}{\sffamily\bfseries\footnotesize}%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -41,6 +41,10 @@ local macro_content_sources = {
         env = "CI_COMMIT_SHORT_SHA",
         cmd = "git rev-parse --short HEAD",
     },
+    GitLongSHA = {
+        env = "CI_COMMIT_SHA",
+        cmd = "git rev-parse HEAD",
+    },
 }
 
 for macro_name, content_sources in pairs(macro_content_sources) do

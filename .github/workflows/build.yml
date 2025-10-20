@@ -51,6 +51,9 @@ jobs:
         run: |
           mkdir -p github-pages
           cp main.pdf github-pages/main.pdf
+          if [ -d pages ]; then
+            cp -r pages/. github-pages/
+          fi
           cat <<'EOF' > github-pages/index.html
           <!DOCTYPE html>
           <html lang="en">

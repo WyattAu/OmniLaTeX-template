@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OmniLaTeX PDF Verification</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #101418;
+      --fg: #f8f9fc;
+      --muted: #9ca8b6;
+      --accent: #4ea3ff;
+      --ok: #2ecc71;
+      --warn: #f1c40f;
+      --err: #e74c3c;
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      display: flex;
+      min-height: 100vh;
+      align-items: center;
+      justify-content: center;
+      padding: 2.5rem 1.25rem;
+    }
+
+    main {
+      width: min(720px, 100%);
+      background: rgba(17, 24, 33, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: clamp(1.75rem, 2vw + 1rem, 2.5rem);
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(12px);
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: clamp(1.6rem, 2vw + 1rem, 2.3rem);
+    }
+
+    p {
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    code {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 0.15em 0.35em;
+      border-radius: 0.35em;
+      font-size: 0.95em;
+    }
+
+    .status {
+      border-radius: 12px;
+      padding: 1.15rem;
+      margin: 1.5rem 0;
+      line-height: 1.6;
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .status[data-state="ok"] {
+      background: rgba(46, 204, 113, 0.1);
+      border: 1px solid rgba(46, 204, 113, 0.35);
+    }
+
+    .status[data-state="warn"] {
+      background: rgba(241, 196, 15, 0.1);
+      border: 1px solid rgba(241, 196, 15, 0.35);
+    }
+
+    .status[data-state="err"] {
+      background: rgba(231, 76, 60, 0.1);
+      border: 1px solid rgba(231, 76, 60, 0.35);
+    }
+
+    .meta-grid {
+      display: grid;
+      gap: 0.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      margin: 1.25rem 0;
+    }
+
+    .meta-item {
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 10px;
+      padding: 0.75rem 0.9rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .meta-item span {
+      display: block;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.35rem;
+    }
+
+    form {
+      margin-top: 1.75rem;
+      display: grid;
+      gap: 1rem;
+    }
+
+    label {
+      display: grid;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+    }
+
+    input[type="text"] {
+      padding: 0.65rem 0.8rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.04);
+      color: inherit;
+      font-size: 0.95rem;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 0.75rem 1.65rem;
+      background: var(--accent);
+      color: #0c1220;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      justify-self: start;
+    }
+
+    @media (max-width: 600px) {
+      main {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Verify OmniLaTeX Build Provenance</h1>
+    <p>
+      This tool confirms whether the PDF you are reading was generated from the latest commit of
+      the public repository. Pass the commit hash (embedded in the PDF) through the
+      <code>?commit=&lt;sha&gt;</code> query parameter—links inside the template do this automatically.
+    </p>
+
+    <section id="status" class="status" data-state="warn">
+      <strong>Awaiting input…</strong>
+      <span>Provide a commit hash or follow a verification link from the PDF.</span>
+    </section>
+
+    <section class="meta-grid" id="details" hidden>
+      <article class="meta-item">
+        <span>Commit</span>
+        <div id="commit-sha">—</div>
+      </article>
+      <article class="meta-item">
+        <span>Author</span>
+        <div id="commit-author">—</div>
+      </article>
+      <article class="meta-item">
+        <span>Date</span>
+        <div id="commit-date">—</div>
+      </article>
+      <article class="meta-item">
+        <span>Reference Branch</span>
+        <div id="branch-head">—</div>
+      </article>
+    </section>
+
+    <form id="manual-check">
+      <label>
+        Commit SHA (40 hex characters or short SHA)
+        <input id="sha-input" type="text" name="commit" placeholder="e.g. 9c4f9c5…" required />
+      </label>
+      <label>
+        Repository (<code>owner/repo</code>)
+        <input id="repo-input" type="text" name="repo" value="WyattAu/OmniLaTeX-template" />
+      </label>
+      <label>
+        Reference branch
+        <input id="branch-input" type="text" name="branch" value="main" />
+      </label>
+      <button type="submit">Verify commit</button>
+    </form>
+  </main>
+
+  <script>
+    const statusBox = document.getElementById("status");
+    const detailsSection = document.getElementById("details");
+    const commitShaEl = document.getElementById("commit-sha");
+    const commitAuthorEl = document.getElementById("commit-author");
+    const commitDateEl = document.getElementById("commit-date");
+    const branchHeadEl = document.getElementById("branch-head");
+    const form = document.getElementById("manual-check");
+
+    function updateStatus(type, message, sub) {
+      statusBox.dataset.state = type;
+      statusBox.innerHTML = `<strong>${message}</strong>` + (sub ? `<span>${sub}</span>` : "");
+    }
+
+    function formatDate(iso) {
+      try {
+        return new Intl.DateTimeFormat(undefined, {
+          dateStyle: "medium",
+          timeStyle: "short",
+        }).format(new Date(iso));
+      } catch (err) {
+        return iso;
+      }
+    }
+
+    function showDetails(data) {
+      detailsSection.hidden = false;
+      commitShaEl.innerHTML = `<a href="https://github.com/${data.repo}/commit/${data.sha}" target="_blank" rel="noopener">${data.sha}</a>`;
+      commitAuthorEl.textContent = `${data.author} (${data.email})`;
+      commitDateEl.textContent = formatDate(data.date);
+      branchHeadEl.innerHTML = `<a href="https://github.com/${data.repo}/commit/${data.branchHead}" target="_blank" rel="noopener">${data.branchHead}</a>`;
+    }
+
+    async function verify({ commit, repo, branch }) {
+      updateStatus("warn", "Verifying commit…", `Fetching metadata for ${commit} in ${repo}.`);
+      detailsSection.hidden = true;
+
+      const headers = { "Accept": "application/vnd.github+json" };
+
+      const commitResp = await fetch(`https://api.github.com/repos/${repo}/commits/${commit}`, { headers });
+      if (commitResp.status === 404) {
+        updateStatus("err", "Commit not found", `Commit ${commit} is not present in ${repo}.`);
+        return;
+      }
+      if (!commitResp.ok) {
+        updateStatus("err", "GitHub API error", `Received status ${commitResp.status}. Try again later.`);
+        return;
+      }
+      const commitData = await commitResp.json();
+
+      const branchResp = await fetch(`https://api.github.com/repos/${repo}/branches/${branch}`, { headers });
+      if (branchResp.status === 404) {
+        updateStatus("err", "Branch not found", `Branch ${branch} does not exist in ${repo}.`);
+        return;
+      }
+      if (!branchResp.ok) {
+        updateStatus("err", "GitHub API error", `Received status ${branchResp.status} while fetching branch information.`);
+        return;
+      }
+      const branchData = await branchResp.json();
+      const headSha = branchData.commit?.sha;
+
+      const compareUrl = `https://api.github.com/repos/${repo}/compare/${commit}...${branch}`;
+      const compareResp = await fetch(compareUrl, { headers });
+      let compareData = null;
+      if (compareResp.ok) {
+        compareData = await compareResp.json();
+      }
+
+      const authorName = commitData.commit?.author?.name ?? "Unknown";
+      const authorEmail = commitData.commit?.author?.email ?? "&mdash;";
+      const authorDate = commitData.commit?.author?.date ?? commitData.commit?.committer?.date ?? "";
+      showDetails({
+        sha: commitData.sha,
+        author: authorName,
+        email: authorEmail,
+        date: authorDate,
+        repo,
+        branchHead: headSha ?? "Unknown",
+      });
+
+      if (commitData.sha === headSha) {
+        updateStatus("ok", "Commit matches branch head", `${commitData.sha} is the current tip of ${branch}.`);
+        return;
+      }
+
+      if (compareData && compareData.status === "behind") {
+        updateStatus(
+          "warn",
+          "Commit is behind branch head",
+          `${branch} is ${compareData.behind_by} commits ahead of ${commitData.sha}.`
+        );
+        return;
+      }
+
+      if (compareData && compareData.status === "ahead") {
+        updateStatus(
+          "warn",
+          "Commit is ahead of branch head",
+          `${commitData.sha} is ${compareData.ahead_by} commits ahead of ${branch}.`
+        );
+        return;
+      }
+
+      updateStatus(
+        "warn",
+        "Commit differs from branch head",
+        `${commitData.sha} does not match ${branch}. Verify the branch or repository parameters.`
+      );
+    }
+
+    function parseQuery() {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        commit: params.get("commit")?.trim(),
+        repo: params.get("repo")?.trim() || "WyattAu/OmniLaTeX-template",
+        branch: params.get("branch")?.trim() || "main",
+      };
+    }
+
+    async function bootstrap() {
+      const query = parseQuery();
+      form.elements.commit.value = query.commit ?? "";
+      form.elements.repo.value = query.repo;
+      form.elements.branch.value = query.branch;
+
+      if (query.commit) {
+        try {
+          await verify(query);
+        } catch (err) {
+          console.error(err);
+          updateStatus("err", "Unexpected error", err.message ?? "Unknown error");
+        }
+      }
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const formData = new FormData(form);
+      const commit = formData.get("commit").trim();
+      const repo = formData.get("repo").trim();
+      const branch = formData.get("branch").trim();
+
+      if (!commit) {
+        updateStatus("warn", "Commit hash required", "Provide a commit hash to perform verification.");
+        return;
+      }
+
+      const url = new URL(window.location.href);
+      url.searchParams.set("commit", commit);
+      url.searchParams.set("repo", repo);
+      url.searchParams.set("branch", branch);
+      history.replaceState(null, "", url.toString());
+
+      try {
+        await verify({ commit, repo, branch });
+      } catch (err) {
+        console.error(err);
+        updateStatus("err", "Unexpected error", err.message ?? "Unknown error");
+      }
+    });
+
+    bootstrap();
+  </script>
+</body>
+</html>

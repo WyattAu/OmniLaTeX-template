@@ -64,6 +64,7 @@
 \newcommand*{\omnilatex@bookoptions}{listof=totoc,bibliography=totoc,chapterprefix=true,open=right,numbers=noenddot}
 \newcommand*{\omnilatex@reportoptions}{listof=totoc,bibliography=totoc,chapterprefix=false,open=any,numbers=noenddot}
 \newcommand*{\omnilatex@articleoptions}{bibliography=totoc,numbers=noenddot,parskip=half}
+\newcommand*{\omnilatex@inlinepaperoptions}{bibliography=totoc,numbers=noenddot,parskip=half,titlepage=false}
 \newcommand*{\omnilatex@journaloptions}{bibliography=totoc,numbers=noenddot,parskip=half,titlepage=true}
 \newcommand*{\omnilatex@cvoptions}{numbers=noenddot,parskip=full,fontsize=11pt}
 
@@ -109,6 +110,7 @@
 \omnilatex@matchdoctypes{standard,standards}{\omnilatex@setdoctype{standard}{scrreprt}{\omnilatex@reportoptions}}%
 \omnilatex@matchdoctypes{patent,patents}{\omnilatex@setdoctype{patent}{scrreprt}{\omnilatex@reportoptions}}%
 \omnilatex@matchdoctypes{article,articles,paper,papers}{\omnilatex@setdoctype{article}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{inlinepaper,inlinepapers,inline-research,inline-research-paper}{\omnilatex@setdoctype{inlinepaper}{scrartcl}{\omnilatex@inlinepaperoptions}}%
 \omnilatex@matchdoctypes{journal,journals,magazine,magazines}{\omnilatex@setdoctype{journal}{scrartcl}{\omnilatex@journaloptions}}%
 \omnilatex@matchdoctypes{dictionary,dictionaries,lexicon,lexicons}{\omnilatex@setdoctype{dictionary}{scrbook}{\omnilatex@bookoptions}}%
 \omnilatex@matchdoctypes{cv,resume,resumes,curriculumvitae}{\omnilatex@setdoctype{cv}{scrartcl}{\omnilatex@cvoptions}}%

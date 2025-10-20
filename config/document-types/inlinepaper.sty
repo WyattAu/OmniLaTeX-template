@@ -1,0 +1,71 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/inlinepaper}[2025-10-20 OmniLaTeX inline research paper profile]
+
+\documenttype{Inline Research Paper}
+\KOMAoptions{titlepage=false,twoside=false,parskip=half}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{2}
+
+% Compact two-column layout for research papers
+\setlength{\columnsep}{18pt}
+
+\makeatletter
+
+% Inline title block resembling arXiv inline layouts: compact metadata with full-width abstract
+\newcommand*{\omnilatex@inlinepaperfront}{%
+    \begingroup
+    \thispagestyle{empty}% suppress number on inline front layout
+    \setlength{\parindent}{0pt}
+    \sffamily\small
+    \textbf{Preprint}\hfill\@date\par
+    \vspace{0.4\baselineskip}
+    {\fontsize{18pt}{22pt}\selectfont\bfseries\@title\par}
+    \vspace{0.6\baselineskip}
+    \normalfont\normalsize
+    {\def\and{\par\vspace{0.25\baselineskip}}\@author\par}
+    \ifx\@affiliation\@empty\else
+        \vspace{0.25\baselineskip}
+        {\small \@affiliation\par}
+    \fi
+    \ifx\@contact\@empty\else
+        \vspace{0.25\baselineskip}
+        {\small Correspondence: \@contact\par}
+    \fi
+    \ifx\@supplementary\@empty\else
+        \vspace{0.25\baselineskip}
+        {\small \@supplementary\par}
+    \fi
+    \vspace{0.75\baselineskip}
+    \textbf{Abstract}\par
+    \vspace{0.3\baselineskip}
+    \ifx\@subtitle\relax\else\@subtitle\par\fi
+    \ifx\@keywords\@empty\else
+        \vspace{0.5\baselineskip}
+        {\small\textbf{Keywords:}}~\@keywords\par
+    \fi
+    \vspace{0.75\baselineskip}
+    \endgroup
+}
+
+\renewcommand{\maketitle}{%
+    \twocolumn[{%
+        \omnilatex@inlinepaperfront
+    }]
+    \setcounter{footnote}{0}%
+    \let\thanks\@gobble
+}
+
+\providecommand*{\@subtitle}{\relax}
+\providecommand*{\subtitle}[1]{\gdef\@subtitle{#1}}
+\providecommand*{\@keywords}{\@empty}
+\providecommand*{\keywords}[1]{\gdef\@keywords{#1}}
+\providecommand*{\@affiliation}{\@empty}
+\providecommand*{\affiliation}[1]{\gdef\@affiliation{#1}}
+\providecommand*{\@contact}{\@empty}
+\providecommand*{\contact}[1]{\gdef\@contact{#1}}
+\providecommand*{\@supplementary}{\@empty}
+\providecommand*{\supplementary}[1]{\gdef\@supplementary{#1}}
+
+\makeatother
+
+\endinput
