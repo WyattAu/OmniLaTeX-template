@@ -30,35 +30,94 @@ local function get_cmd_stdout(cmd)
     return first_line
 end
 
+local function first_env_value(env_spec)
+    if not env_spec then
+        return nil, nil
+    end
+    if type(env_spec) == "string" then
+        env_spec = { env_spec }
+    end
+    for _, name in ipairs(env_spec) do
+        local value = os.getenv(name)
+        if value and value ~= "" then
+            return value, name
+        end
+    end
+    return nil, nil
+end
+
+local function normalize_ref(ref)
+    if not ref then
+        return ref
+    end
+    local cleaned = ref:gsub("^refs/heads/", "")
+    cleaned = cleaned:gsub("^refs/tags/", "")
+    cleaned = cleaned:gsub("^refs/remotes/", "")
+    return cleaned
+end
+
 -- Environment variables as used e.g. in GitLab CI.
 -- Otherwise, e.g. when developing locally, use commands as a fallback.
 local macro_content_sources = {
     GitRefName = {
-        env = "CI_COMMIT_REF_NAME",
+        env = {
+            "CI_COMMIT_REF_NAME",
+            "GITHUB_REF_NAME",
+            "GITHUB_HEAD_REF",
+            "GITHUB_REF",
+        },
         cmd = "git rev-parse --abbrev-ref HEAD",
+        process_env = function(value)
+            return normalize_ref(value)
+        end,
     },
     GitShortSHA = {
-        env = "CI_COMMIT_SHORT_SHA",
+        env = {
+            "CI_COMMIT_SHORT_SHA",
+            "GITHUB_SHA",
+        },
         cmd = "git rev-parse --short HEAD",
+        process_env = function(value, source)
+            if source == "GITHUB_SHA" then
+                return value:sub(1, 7)
+            end
+            return value
+        end,
     },
     GitLongSHA = {
-        env = "CI_COMMIT_SHA",
+        env = {
+            "CI_COMMIT_SHA",
+            "GITHUB_SHA",
+        },
         cmd = "git rev-parse HEAD",
     },
 }
 
 for macro_name, content_sources in pairs(macro_content_sources) do
     -- Default: check for environment variable:
-    local env = content_sources.env
     local cmd = content_sources.cmd
     local content = "n.a."  -- Default value
-    local env_content = os.getenv(env)
+    local env_content, env_name = first_env_value(content_sources.env)
 
     if env_content and env_content ~= "" then  -- Empty string evaluates to true
-        texio.write_nl("Found and will be using environment variable '"..env.."'.")
-        content = env_content
+        texio.write_nl("Found and will be using environment variable '"..env_name.."'.")
+        if content_sources.process_env then
+            local ok, processed = pcall(content_sources.process_env, env_content, env_name)
+            if ok and processed and processed ~= "" then
+                content = processed
+            else
+                content = env_content
+            end
+        else
+            content = env_content
+        end
     else
-        texio.write_nl("Environment variable '"..env.."' undefined or empty, trying fallback command.")
+        local env_names = content_sources.env
+        if type(env_names) == "table" then
+            env_names = table.concat(env_names, ", ")
+        end
+        env_names = env_names or "(none)"
+        texio.write_nl("Environment variable(s) '"..env_names.."' undefined or empty, trying fallback command.")
         -- luatex reference for shell escape:
         -- "0 means disabled, 1 means anything is permitted, and 2 is restricted"
         if status.shell_escape == 1 then

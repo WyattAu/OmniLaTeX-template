@@ -12,33 +12,14 @@
 % Float Packages
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Does \centering automatically, provides side captions (fcapside) and much more.
-\RequirePackage{floatrow}
-
 \RequirePackage{flafter}% Floats always after their reference
-
-\floatsetup{footposition=bottom}% For all floats
-
-\floatsetup[longtable]{LTcapwidth=table}% https://tex.stackexchange.com/a/345772/120853
-
-\floatsetup[table]{%
-    style=plaintop,% Always above, no matter where \caption is called
-    footnoterule=none,%
-    footskip=.35\skip\footins,%
-}%
-
-\floatsetup[figure]{%
-    capbesideposition=right,%
-    capbesidesep=quad,%
-}%
-
-\floatsetup[subfigure]{style=plain}% Plain style, so no rules
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Caption Configuration
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \RequirePackage{caption}
+\RequirePackage{xparse}
 
 % Will be printed between 'Figure/Table/... XYZ' and the caption text:
 \DeclareCaptionLabelSeparator{slash}{\ /\ }% `\ ' (backslash+space) is a short space
@@ -60,16 +41,6 @@
     indention=1em,%
 }%
 
-\captionsetup[floatfoot]{%
-    footfont=ftfont,% https://tex.stackexchange.com/q/9547/120853
-}%
-
-\captionsetup[capbesidefigure]{
-    % When using sidecaptions, the linewidth can be rather small and awkward breaks and
-    % many underfull hboxes occur. Therefore, raggedright.
-    justification=raggedright,
-}
-
 \captionsetup[subfigure]{%
     labelformat=simple,% 'parens' uses parantheses, 'brace' just the right one
     labelsep=slash,%
@@ -87,17 +58,61 @@
 % Change counter from Arabic number to letter:
 \renewcommand*{\theContinuedFloat}{\alph{ContinuedFloat}}
 
-% Make this new length and indent, same length as regular caption indent:
-\newlength{\floatfootruleindent}
-\setlength{\floatfootruleindent}{\caption@indent}% Set the new length
-
-% A bit hacky; introduce a rule underneath caption if \floatfoot is called:
-\renewcommand*{\floatfootskip}{2pt\hspace{\floatfootruleindent}\hrulefill}%
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Subfloats
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \RequirePackage{subcaption}% For subfloats
+
+\newlength{\omnilatex@floatboxwidth}
+\setlength{\omnilatex@floatboxwidth}{0.5\linewidth}
+\newcommand*{\FBwidth}{\omnilatex@floatboxwidth}
+
+\NewDocumentEnvironment{subfloatrow}{O{2}}{%
+    \begingroup
+    \setlength{\omnilatex@floatboxwidth}{\dimexpr\linewidth/#1\relax}%
+    \begin{minipage}{\linewidth}%
+    \centering
+}{%
+    \end{minipage}%
+    \endgroup
+}
+
+\NewDocumentCommand{\ffigbox}{O{\FBwidth} m m}{%
+    \begin{minipage}{#1}%
+        \centering
+        #3\par
+        #2%
+    \end{minipage}%
+}
+
+\NewDocumentCommand{\ttabbox}{O{\FBwidth} m m}{%
+    \begin{minipage}{#1}%
+        \centering
+        #2\par
+        #3%
+    \end{minipage}%
+}
+
+\NewDocumentCommand{\floatbox}{m m m}{%
+    #2\par
+    #3%
+}
+
+\NewDocumentCommand{\floatfoot}{m}{%
+    \caption*{#1}%
+}
+
+\NewDocumentCommand{\fcapside}{O{\FBwidth} m m}{%
+    \begin{minipage}{\linewidth}%
+        \begin{minipage}[t]{\dimexpr\linewidth-#1-1em\relax}%
+            #2%
+        \end{minipage}\hfill
+        \begin{minipage}[t]{#1}%
+            \centering
+            #3%
+        \end{minipage}%
+    \end{minipage}%
+}
 
 \endinput

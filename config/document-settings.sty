@@ -71,8 +71,14 @@
     \GetTranslation{ITT}%
 }% Institutions, university, etc. Can also use graphics here
 
-\providecommand*{\VerificationBaseURL}{https://wyattau.github.io/OmniLaTeX-template/verify.html}
-\providecommand*{\GitVerificationURL}{\VerificationBaseURL?commit=\GitLongSHA}
+\providecommand*{\VerificationBaseURL}{%
+    \ifcsname GITHOST_PAGES_URL\endcsname
+        \GITHOST_PAGES_URL
+    \else
+        https://wyattau.github.io/OmniLaTeX-template
+    \fi
+}
+\providecommand*{\GitVerificationURL}{\VerificationBaseURL/verify.html?commit=\GitLongSHA}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PDF Metadata

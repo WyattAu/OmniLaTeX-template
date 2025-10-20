@@ -320,15 +320,16 @@
         % User requested NO location list/number list/page list to be printed, so
         % remove those columns.
         \renewenvironment{theglossary}{%
-            % Use Longtabu over longtable, the latter caused inexplicable issues with
-            % 'Column widths have changed, rerun Latex'
-            \begin{longtabu}{%
-                    r%
-                    p{0.5\linewidth}%
-                    l%
+            % Use longtblr from tabularray for modern long table support
+            \begin{longtblr}[
+                    theme=longtable,
+                    rowhead=1,
+                ]{
+                    colspec={@{}Q[r]Q[l]Q[l]@{}},
+                    column{2}={wd=0.5\linewidth},
                 }%
                 }{%
-            \end{longtabu}%
+            \end{longtblr}%
         }%
         
         \renewcommand*{\glsgroupheading}[1]{%
@@ -348,14 +349,16 @@
         }
     \else
         \renewenvironment{theglossary}{% Redefine this, overwriting the base style
-            \begin{longtabu}{%
-                    r%
-                    p{0.5\linewidth}%
-                    p{\glspagelistwidth}%
-                    l%
+            \begin{longtblr}[
+                    theme=longtable,
+                    rowhead=1,
+                ]{
+                    colspec={@{}Q[r]Q[l]Q[l]Q[l]@{}},
+                    column{2}={wd=0.5\linewidth},
+                    column{3}={wd=\glspagelistwidth},
                 }%
                 }{%
-            \end{longtabu}%
+            \end{longtblr}%
         }%
         
         \renewcommand*{\glsgroupheading}[1]{%
@@ -393,18 +396,17 @@
     \ifglsnonumberlist
         % User requested NO location list/number list/page list to be printed, so
         % remove those columns.
-        \renewenvironment{theglossary}{
-            % Use Longtabu over longtable, the latter caused inexplicable issues with
-            % 'Column widths have changed, rerun Latex'
-            \begin{longtabu}{%
-                    r%
-                    p{0.3\linewidth}%
-                    r%
-                    @{\;}%
-                    l%
+        \renewenvironment{theglossary}{%
+            % Use longtblr from tabularray for modern long table support
+            \begin{longtblr}[
+                    theme=longtable,
+                    rowhead=1,
+                ]{
+                    colspec={@{}Q[r]Q[l]Q[r]Q[l]@{}},
+                    column{2}={wd=0.3\linewidth},
                 }%
                 }{%
-            \end{longtabu}%
+            \end{longtblr}%
         }%
         
         \renewcommand*{\glossaryheader}{%
@@ -424,19 +426,18 @@
             \tabularnewline
         }%
     \else
-        \renewenvironment{theglossary}{
-            % Use Longtabu over longtable, the latter caused inexplicable issues with
-            % 'Column widths have changed, rerun Latex'
-            \begin{longtabu}{%
-                    r%
-                    p{0.3\linewidth}%
-                    r%
-                    @{\;}%
-                    l%
-                    p{\glspagelistwidth}%
+        \renewenvironment{theglossary}{%
+            % Use longtblr from tabularray for modern long table support
+            \begin{longtblr}[
+                    theme=longtable,
+                    rowhead=1,
+                ]{
+                    colspec={@{}Q[r]Q[l]Q[r]Q[l]Q[l]@{}},
+                    column{2}={wd=0.3\linewidth},
+                    column{5}={wd=\glspagelistwidth},
                 }%
                 }{%
-            \end{longtabu}%
+            \end{longtblr}%
         }%
         
         \renewcommand*{\glossaryheader}{%

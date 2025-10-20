@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>OmniLaTeX PDF Verification</title>
+  <title id="page-title">OmniLaTeX PDF Verification</title>
   <style>
     :root {
       color-scheme: light dark;
@@ -29,7 +29,7 @@
     }
 
     main {
-      width: min(720px, 100%);
+      width: min(760px, 100%);
       background: rgba(17, 24, 33, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 16px;
@@ -125,6 +125,9 @@
       background: rgba(255, 255, 255, 0.04);
       color: inherit;
       font-size: 0.95rem;
+      width: 100%;
+      box-sizing: border-box;
+      word-break: break-all;
     }
 
     button {
@@ -148,8 +151,8 @@
 </head>
 <body>
   <main>
-    <h1>Verify OmniLaTeX Build Provenance</h1>
-    <p>
+    <h1 id="page-heading">Verify OmniLaTeX Build Provenance</h1>
+    <p id="intro-text">
       This tool confirms whether the PDF you are reading was generated from the latest commit of
       the public repository. Pass the commit hash (embedded in the PDF) through the
       <code>?commit=&lt;sha&gt;</code> query parameter—links inside the template do this automatically.
@@ -204,6 +207,9 @@
     const commitDateEl = document.getElementById("commit-date");
     const branchHeadEl = document.getElementById("branch-head");
     const form = document.getElementById("manual-check");
+    const pageTitleEl = document.getElementById("page-title");
+    const headingEl = document.getElementById("page-heading");
+    const introTextEl = document.getElementById("intro-text");
 
     function updateStatus(type, message, sub) {
       statusBox.dataset.state = type;
@@ -313,7 +319,18 @@
         commit: params.get("commit")?.trim(),
         repo: params.get("repo")?.trim() || "WyattAu/OmniLaTeX-template",
         branch: params.get("branch")?.trim() || "main",
+        project: params.get("project")?.trim(),
       };
+    }
+
+    function applyProjectLabel(project) {
+      if (!project) {
+        return;
+      }
+      const safeProject = project.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      pageTitleEl.textContent = `${safeProject} PDF Verification`;
+      headingEl.textContent = `Verify ${safeProject} Build Provenance`;
+      introTextEl.innerHTML = `This tool confirms whether the PDF you are reading was generated from the latest commit of the <strong>${safeProject}</strong> repository. Pass the commit hash (embedded in the PDF) through the <code>?commit=&lt;sha&gt;</code> query parameter—links inside the template do this automatically.`;
     }
 
     async function bootstrap() {
@@ -321,6 +338,7 @@
       form.elements.commit.value = query.commit ?? "";
       form.elements.repo.value = query.repo;
       form.elements.branch.value = query.branch;
+      applyProjectLabel(query.project || query.repo?.split("/")?.[1] || "OmniLaTeX");
 
       if (query.commit) {
         try {
