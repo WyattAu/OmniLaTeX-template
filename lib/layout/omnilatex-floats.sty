@@ -78,7 +78,7 @@
     \endgroup
 }
 
-\NewDocumentCommand{\ffigbox}{O{\FBwidth} m m}{%
+\NewDocumentCommand{\ffigbox}{O{\FBwidth} +m +m}{%
     \begin{minipage}{#1}%
         \centering
         #3\par
@@ -86,7 +86,27 @@
     \end{minipage}%
 }
 
-\NewDocumentCommand{\ttabbox}{O{\FBwidth} m m}{%
+\newcounter{omnilatex@mpfootnote}
+
+\NewDocumentCommand{\mpfootnotemark}{o}{%
+    \IfNoValueTF{#1}{%
+        \stepcounter{omnilatex@mpfootnote}%
+        \footnotemark[\value{omnilatex@mpfootnote}]%
+    }{%
+        \footnotemark[#1]%
+    }%
+}
+
+\NewDocumentCommand{\mpfootnotetext}{o m}{%
+    \IfNoValueTF{#1}{%
+        \footnotetext[\value{omnilatex@mpfootnote}]{#2}%
+    }{%
+        \footnotetext[#1]{#2}%
+    }%
+}
+
+\NewDocumentCommand{\ttabbox}{O{\FBwidth} +m +m}{%
+    \setcounter{omnilatex@mpfootnote}{0}%
     \begin{minipage}{#1}%
         \centering
         #2\par
@@ -94,7 +114,7 @@
     \end{minipage}%
 }
 
-\NewDocumentCommand{\floatbox}{m m m}{%
+\NewDocumentCommand{\floatbox}{m +m +m}{%
     #2\par
     #3%
 }
@@ -103,16 +123,23 @@
     \caption*{#1}%
 }
 
-\NewDocumentCommand{\fcapside}{O{\FBwidth} m m}{%
+\NewDocumentCommand{\fcapside}{O{\FBwidth} +m +m}{%
     \begin{minipage}{\linewidth}%
         \begin{minipage}[t]{\dimexpr\linewidth-#1-1em\relax}%
-            #2%
+            #2\par
         \end{minipage}\hfill
         \begin{minipage}[t]{#1}%
             \centering
-            #3%
+            #3\par
         \end{minipage}%
     \end{minipage}%
+}
+
+\NewDocumentCommand{\fakeverb}{m}{%
+    \begingroup
+        \ttfamily
+        \detokenize{#1}%
+    \endgroup
 }
 
 \endinput

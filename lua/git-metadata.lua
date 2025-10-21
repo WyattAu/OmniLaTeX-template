@@ -30,6 +30,10 @@ local function get_cmd_stdout(cmd)
     return first_line
 end
 
+local function trim(str)
+    return (str:gsub("^%s+", ""):gsub("%s+$", ""))
+end
+
 local function first_env_value(env_spec)
     if not env_spec then
         return nil, nil
@@ -55,6 +59,36 @@ local function normalize_ref(ref)
     cleaned = cleaned:gsub("^refs/remotes/", "")
     return cleaned
 end
+
+local function normalize_repo_slug(value)
+    if not value then
+        return value
+    end
+    local cleaned = value
+    cleaned = cleaned:gsub("^git@[^:]+:", "")
+    cleaned = cleaned:gsub("^ssh://[^/]+/", "")
+    cleaned = cleaned:gsub("^https?://[^/]+/", "")
+    cleaned = cleaned:gsub("^/", "")
+    cleaned = cleaned:gsub("%.git$", "")
+    return cleaned
+end
+
+local function repo_slug_from_remote(url)
+    if not url or url == "" then
+        return url
+    end
+    return normalize_repo_slug(trim(url))
+end
+
+local function project_from_slug(slug)
+    if not slug then
+        return slug
+    end
+    local project = slug:match("([^/]+)$")
+    return project
+end
+
+local resolved_values = {}
 
 -- Environment variables as used e.g. in GitLab CI.
 -- Otherwise, e.g. when developing locally, use commands as a fallback.
@@ -91,6 +125,46 @@ local macro_content_sources = {
         },
         cmd = "git rev-parse HEAD",
     },
+    GitRepositorySlug = {
+        env = {
+            "CI_PROJECT_PATH",
+            "CI_REPOSITORY_URL",
+            "GITHUB_REPOSITORY",
+            "FORGEJO_REPOSITORY",
+            "GITEA_REPOSITORY",
+            "CI_REPO_OWNER" -- fallback for some runners
+        },
+        cmd = "git config --get remote.origin.url",
+        process_env = function(value, source)
+            if source == "CI_REPOSITORY_URL" then
+                return repo_slug_from_remote(value)
+            end
+            return normalize_repo_slug(value)
+        end,
+        process_cmd = function(value)
+            return repo_slug_from_remote(value)
+        end,
+    },
+    GitProjectName = {
+        env = {
+            "CI_PROJECT_TITLE",
+            "CI_PROJECT_NAME",
+            "GITHUB_REPOSITORY",
+            "FORGEJO_REPOSITORY",
+            "GITEA_REPOSITORY",
+        },
+        cmd = "git config --get remote.origin.url",
+        process_env = function(value, source)
+            if source == "CI_PROJECT_TITLE" or source == "CI_PROJECT_NAME" then
+                return value
+            end
+            local slug = normalize_repo_slug(value)
+            return project_from_slug(slug)
+        end,
+        process_cmd = function(value)
+            return project_from_slug(repo_slug_from_remote(value))
+        end,
+    },
 }
 
 for macro_name, content_sources in pairs(macro_content_sources) do
@@ -124,7 +198,14 @@ for macro_name, content_sources in pairs(macro_content_sources) do
             local cmd_success, cmd_stdout = pcall(get_cmd_stdout, cmd)
             if cmd_success then
                 texio.write_nl("Fallback command '"..cmd.."' succeeded.")
-                content = cmd_stdout
+                local processed = cmd_stdout
+                if content_sources.process_cmd then
+                    local ok, result = pcall(content_sources.process_cmd, cmd_stdout)
+                    if ok and result and result ~= "" then
+                        processed = result
+                    end
+                end
+                content = processed
             else
                 texio.write_nl("Fallback command '"..cmd.."' unsuccessful.")
             end
@@ -135,6 +216,7 @@ for macro_name, content_sources in pairs(macro_content_sources) do
 
     -- Shouldn't happen, would be programmer error, therefore assert Python-style
     assert(content, "Content not defined (neither success nor fallback present)")
+    content = trim(content)
 
     --[[
         The `content` can contain unprintable characters, like underscores in git branch
@@ -147,4 +229,34 @@ for macro_name, content_sources in pairs(macro_content_sources) do
     texio.write_nl("Providing new macro '"..macro_name.."' with contents: '"..escaped_content.."'.")
     --  Set a macro (`\newcommand`) see also: https://tex.stackexchange.com/a/450892/120853
     token.set_macro(macro_name, escaped_content)
+    resolved_values[macro_name] = content
+end
+
+if (not resolved_values.GitProjectName or resolved_values.GitProjectName == "" or resolved_values.GitProjectName == "n.a.") and resolved_values.GitRepositorySlug and resolved_values.GitRepositorySlug ~= "" and resolved_values.GitRepositorySlug ~= "n.a." then
+    local project = project_from_slug(resolved_values.GitRepositorySlug)
+    if project and project ~= "" then
+        local escaped = "\\detokenize{"..project.."}"
+        texio.write_nl("Deriving GitProjectName from GitRepositorySlug.")
+        token.set_macro("GitProjectName", escaped)
+        resolved_values.GitProjectName = project
+    end
+end
+
+do
+    local base_url_env, _ = first_env_value({
+        "OMNILATEX_VERIFICATION_BASE_URL",
+        "VERIFICATION_BASE_URL",
+        "CF_PAGES_URL",
+        "PAGES_URL",
+        "DEPLOYMENT_URL",
+        "PAGES_BASE_URL"
+    })
+    if base_url_env and base_url_env ~= "" then
+        local cleaned = trim(base_url_env)
+        cleaned = cleaned:gsub("/$", "")
+        local escaped = "\\detokenize{"..cleaned.."}"
+        texio.write_nl("Setting macro 'GitHostPagesURL' from environment.")
+        token.set_macro("GitHostPagesURL", escaped)
+        token.set_macro("GITHOST_PAGES_URL", escaped)
+    end
 end

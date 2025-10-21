@@ -22,6 +22,25 @@
     toc=true,% Toggle inclusion in Table of Contents
 ]{glossaries-extra}% Also see https://tex.stackexchange.com/q/477658/120853
 
+\RequirePackage{longtable}
+
+% Ensure extended longtable-based styles are available and configure fallbacks
+\RequirePackage{glossary-longextra}
+\providecommand*{\OmniLaTeXAcronymStyle}{long3colheader}
+\newif\ifomnilatex@longtblr
+\IfFileExists{tblrliblongtblr.sty}{%
+    \omnilatex@longtblrtrue
+}{%
+    \omnilatex@longtblrfalse
+    \GlsLongExtraUseTabulartrue
+    \renewcommand*{\OmniLaTeXAcronymStyle}{long3col}%
+}
+
+\ifomnilatex@longtblr
+    \RequirePackage{tabularray}
+    \UseTblrLibrary{longtblr}
+\fi
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % New Glossary 'types'
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -319,18 +338,26 @@
     \ifglsnonumberlist
         % User requested NO location list/number list/page list to be printed, so
         % remove those columns.
-        \renewenvironment{theglossary}{%
-            % Use longtblr from tabularray for modern long table support
-            \begin{longtblr}[
-                    theme=longtable,
-                    rowhead=1,
-                ]{
-                    colspec={@{}Q[r]Q[l]Q[l]@{}},
-                    column{2}={wd=0.5\linewidth},
-                }%
+        \ifomnilatex@longtblr
+            \renewenvironment{theglossary}{%
+                % Use longtblr from tabularray for modern long table support
+                \begin{longtblr}[
+                        theme=longtable,
+                        rowhead=1,
+                    ]{
+                        colspec={@{}Q[r]Q[l]Q[l]@{}},
+                        column{2}={wd=0.5\linewidth},
+                    }%
+                    }{%
+                \end{longtblr}%
+            }%
+        \else
+            \renewenvironment{theglossary}{%
+                \begin{longtable}{@{}r p{0.5\linewidth} l@{}}%
                 }{%
-            \end{longtblr}%
-        }%
+                \end{longtable}%
+            }%
+        \fi
         
         \renewcommand*{\glsgroupheading}[1]{%
             \glshdrfont{\glsgetgrouptitle{##1}} &
@@ -348,18 +375,26 @@
             \tabularnewline
         }
     \else
-        \renewenvironment{theglossary}{% Redefine this, overwriting the base style
-            \begin{longtblr}[
-                    theme=longtable,
-                    rowhead=1,
-                ]{
-                    colspec={@{}Q[r]Q[l]Q[l]Q[l]@{}},
-                    column{2}={wd=0.5\linewidth},
-                    column{3}={wd=\glspagelistwidth},
-                }%
+        \ifomnilatex@longtblr
+            \renewenvironment{theglossary}{% Redefine this, overwriting the base style
+                \begin{longtblr}[
+                        theme=longtable,
+                        rowhead=1,
+                    ]{
+                        colspec={@{}Q[r]Q[l]Q[l]Q[l]@{}},
+                        column{2}={wd=0.5\linewidth},
+                        column{3}={wd=\glspagelistwidth},
+                    }%
+                    }{%
+                \end{longtblr}%
+            }%
+        \else
+            \renewenvironment{theglossary}{% Redefine this, overwriting the base style
+                \begin{longtable}{@{}r p{0.5\linewidth} p{\glspagelistwidth} l@{}}%
                 }{%
-            \end{longtblr}%
-        }%
+                \end{longtable}%
+            }%
+        \fi
         
         \renewcommand*{\glsgroupheading}[1]{%
             \glshdrfont{\glsgetgrouptitle{##1}} &
@@ -396,18 +431,26 @@
     \ifglsnonumberlist
         % User requested NO location list/number list/page list to be printed, so
         % remove those columns.
-        \renewenvironment{theglossary}{%
-            % Use longtblr from tabularray for modern long table support
-            \begin{longtblr}[
-                    theme=longtable,
-                    rowhead=1,
-                ]{
-                    colspec={@{}Q[r]Q[l]Q[r]Q[l]@{}},
-                    column{2}={wd=0.3\linewidth},
-                }%
+        \ifomnilatex@longtblr
+            \renewenvironment{theglossary}{%
+                % Use longtblr from tabularray for modern long table support
+                \begin{longtblr}[
+                        theme=longtable,
+                        rowhead=1,
+                    ]{
+                        colspec={@{}Q[r]Q[l]Q[r]Q[l]@{}},
+                        column{2}={wd=0.3\linewidth},
+                    }%
+                    }{%
+                \end{longtblr}%
+            }%
+        \else
+            \renewenvironment{theglossary}{%
+                \begin{longtable}{@{}r p{0.3\linewidth} r @{}l@{}}%
                 }{%
-            \end{longtblr}%
-        }%
+                \end{longtable}%
+            }%
+        \fi
         
         \renewcommand*{\glossaryheader}{%
             \glshdrfont{\symbolname} &
@@ -426,19 +469,27 @@
             \tabularnewline
         }%
     \else
-        \renewenvironment{theglossary}{%
-            % Use longtblr from tabularray for modern long table support
-            \begin{longtblr}[
-                    theme=longtable,
-                    rowhead=1,
-                ]{
-                    colspec={@{}Q[r]Q[l]Q[r]Q[l]Q[l]@{}},
-                    column{2}={wd=0.3\linewidth},
-                    column{5}={wd=\glspagelistwidth},
-                }%
+        \ifomnilatex@longtblr
+            \renewenvironment{theglossary}{%
+                % Use longtblr from tabularray for modern long table support
+                \begin{longtblr}[
+                        theme=longtable,
+                        rowhead=1,
+                    ]{
+                        colspec={@{}Q[r]Q[l]Q[r]Q[l]Q[l]@{}},
+                        column{2}={wd=0.3\linewidth},
+                        column{5}={wd=\glspagelistwidth},
+                    }%
+                    }{%
+                \end{longtblr}%
+            }%
+        \else
+            \renewenvironment{theglossary}{%
+                \begin{longtable}{@{}r p{0.3\linewidth} r @{}l p{\glspagelistwidth}@{}}%
                 }{%
-            \end{longtblr}%
-        }%
+                \end{longtable}%
+            }%
+        \fi
         
         \renewcommand*{\glossaryheader}{%
             \glshdrfont{\symbolname} &

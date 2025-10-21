@@ -2113,17 +2113,17 @@ For an example box, see \cref{ex:example}.
     capabilities.
     
     Anyway --- here is such a float within an example box:
-    \begin{figure}[H]
+    \begin{center}
         \fcapside[\FBwidth]{%
-            \caption{%
+            \captionof{figure}{%
                 Side-captions are still possible.
                 So are labels%
-            }
+            }%
             \label{fig:inside_float}
-        }{%
+        }{% 
             \includesvg[width=0.6\linewidth]{compressor_impeller_isometric}
         }
-    \end{figure}
+    \end{center}
     Note how using \verb|\linewidth| as a length, not the global constant
     \verb|\textwidth|, figures can be scaled according to the current context.
     

@@ -59,22 +59,22 @@
 }%
 
 \newcommand*{\GitVerificationBox}{%
-    \begin{tcolorbox}[
-        width=\linewidth,
-        colback=g6,
-        colframe=g2,
-        boxrule=0.5pt,
-        sharp corners,
-        enhanced,
-        left=1.25ex,
-        right=1.25ex,
-        top=1ex,
-        bottom=1ex
-    ]
-        \sffamily\footnotesize
-        \textbf{Verify build provenance}\par
-        \href{\GitVerificationURL}{Compare embedded commit \GitShortSHA{} with the repository state.}
-    \end{tcolorbox}%
+    \noindent\mbox{\href{\GitVerificationURL}{%
+        \tcbox[
+            colback=g6,
+            colframe=g2,
+            boxrule=0.5pt,
+            sharp corners,
+            enhanced,
+            left=3mm,
+            right=3mm,
+            top=1mm,
+            bottom=1mm,
+            boxsep=0pt,
+        ]{%
+            \sffamily\footnotesize\bfseries Check for updates%
+        }%
+    }}%
 }
 
 \endinput
