@@ -71,6 +71,15 @@
     \GetTranslation{ITT}%
 }% Institutions, university, etc. Can also use graphics here
 
+\providecommand*{\VerificationBaseURL}{%
+    \ifcsname GitHostPagesURL\endcsname
+        \GitHostPagesURL
+    \else
+        https://omnilatex-template.pages.dev
+    \fi
+}
+\providecommand*{\GitVerificationURL}{\VerificationBaseURL/verify.html?commit=\GitLongSHA}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PDF Metadata
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
