@@ -17,6 +17,47 @@
     \renewcommand*{\@documenttype}{#1}%
 }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Document Layout Controls (font size, margins)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\providecommand*{\@documentfontsize}{}
+\newcommand*{\documentfontsize}[1]{%
+    \gdef\@documentfontsize{#1}%
+    \ifx\@documentfontsize\@empty\else
+        \KOMAoptions{fontsize=#1}%
+        \ifcsname recalctypearea\endcsname
+            \recalctypearea
+        \fi
+    \fi
+}
+
+\providecommand*{\@documentlayout}{}
+\newcommand*{\documentlayout}[1]{%
+    \gdef\@documentlayout{#1}%
+    \ifx\@documentlayout\@empty\else
+        \KOMAoptions{#1}%
+        \ifcsname recalctypearea\endcsname
+            \recalctypearea
+        \fi
+    \fi
+}
+
+\AtBeginDocument{% Ensure defaults (if any) are applied even if set before document starts
+    \ifx\@documentfontsize\@empty\else
+        \KOMAoptions{fontsize=\@documentfontsize}%
+        \ifcsname recalctypearea\endcsname
+            \recalctypearea
+        \fi
+    \fi
+    \ifx\@documentlayout\@empty\else
+        \KOMAoptions{\@documentlayout}%
+        \ifcsname recalctypearea\endcsname
+            \recalctypearea
+        \fi
+    \fi
+}
+
 % \@ehc is generic error text, see also
 % https://tex.stackexchange.com/a/59952/120853.
 % A quick test showed that it prints:
