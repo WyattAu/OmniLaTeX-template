@@ -91,31 +91,31 @@ These are mainly handled by the packages:
           the figure can look (subjectively) pretty, see \cref{fig:sidecap}.
 \end{description}
 
-\begin{figure}\ContinuedFloat*% Floats can be "continued" across pages like this
+\begin{figure}[tbp]
+\ContinuedFloat*% Floats can be "continued" across pages like this
+    \centering
     % Conventional figure-syntax
-    \includesvg[width=0.4\textwidth]{compressor_impeller_isometric}%
+    \includesvg[width=0.4\textwidth]{compressor_impeller_isometric}
+    \captionsetup{width=\linewidth}
     \caption{%
         Example for a regular caption,
         spanning the whole width since it is so long.
         This can quickly look strange, especially if the figure itself is narrow%
-    }%
-    \label{fig:wide_caption}%
+    }
+    \label{fig:wide_caption}
 \end{figure}
 
-\begin{figure}\ContinuedFloat
-    % Optional argument \FBwidth causes graphic to be its actual size and caption
-    % to take up the remaining space. Otherwise, horizontal space is split 50/50,
-    % which doesn't make much sense.
-    \ffigbox[\FBwidth]{%
-        \caption{
-            Example for a new caption, spanning just the width of the float
-            it is attached to, despite the caption being much longer than the
-            float is wide%
-        }%
-        \label{fig:tighter_caption}%
-    }{%
-        \includesvg[width=0.4\textwidth]{compressor_impeller_isometric}%
-    }%
+\begin{figure}[tbp]
+\ContinuedFloat
+    \centering
+    \includesvg[width=0.4\textwidth]{compressor_impeller_isometric}
+    \captionsetup{width=0.45\linewidth}
+    \caption{%
+        Example for a new caption, spanning just the width of the float
+        it is attached to, despite the caption being much longer than the
+        float is wide%
+    }
+    \label{fig:tighter_caption}
 \end{figure}
 
 \subsubsection{Multiple floats}
@@ -127,130 +127,112 @@ Multiple sub\-/tables are also possible, see \cref{tab:multiple_tables} with its
 sub\-/tables
 \cref{tab:multiple_tables_one,tab:multiple_tables_two,tab:multiple_tables_three,tab:multiple_tables_four}.
 
-\begin{figure}
-    \floatbox{figure}{
-        \begin{subfloatrow}[2]% Default is 2
-            \ffigbox[\FBwidth]{%
-                \includesvg[width=0.4\textwidth]{rotor_tip_clearance}
-            }{%
-                \caption{An example}%
-                \label{fig:multiple_floats_one}%
-            }%
-            \ffigbox[\FBwidth]{%
-                \includesvg[width=0.4\textwidth]{gas_volume}
-            }{%
-                \caption{Another example}%
-                \label{fig:multiple_floats_two}%
-            }%
-        \end{subfloatrow}
-    }{%
-        \caption{%
-            An example for sub\-/figures%
-        }%
-        \label{fig:multiple_floats}%
-        \floatfoot{%
-            This field can be used for a reference to a source:
-            \adaptedfrom{} wherever%
-        }%
-    }%
+\begin{figure}[tbp]
+
+    \begin{subfigure}[t]{0.48\linewidth}
+        \centering
+        \includesvg[width=0.9\linewidth]{rotor_tip_clearance}
+        \caption{An example}
+        \label{fig:multiple_floats_one}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\linewidth}
+        \centering
+        \includesvg[width=0.9\linewidth]{gas_volume}
+        \caption{Another example}
+        \label{fig:multiple_floats_two}
+    \end{subfigure}
+    \omnlFloatNote{This field can be used for a reference to a source: \adaptedfrom{} wherever.}
+    \caption{An example for sub\-/figures}
+    \label{fig:multiple_floats}
 \end{figure}
 
-\begin{table}
+\begin{table}[tbp]
+    \caption{Example for multiple tables in one float}
+    \label{tab:multiple_tables}
+
     \small
-    \floatbox{table}{
-        %https://tex.stackexchange.com/q/295567/120853
-        \begin{subfloatrow}
-            \ttabbox[\FBwidth]{%
-                \begin{tabular}{
-                        @{}
-                        m{0.25\textwidth}
-                        m{0.15\textwidth}
-                        @{}
-                    }
-                    \toprule
-                    Column One & Column Two \\
-                    \midrule
-                    Just       & a          \\
-                    normal     & table      \\
-                    Nothing    & special.   \\
-                    \bottomrule
-                \end{tabular}
-            }{%
-                \caption{Table One}%
-                \label{tab:multiple_tables_one}%
-            }%
-            %
-            \ttabbox[\FBwidth]{%
-                \begin{tabular}{
-                        @{}
-                        m{0.25\textwidth}
-                        m{0.15\textwidth}
-                        @{}
-                    }
-                    \toprule
-                    Column One & Column Two \\
-                    \midrule
-                    Just       & a          \\
-                    normal     & table      \\
-                    Nothing    & special.   \\
-                    \bottomrule
-                \end{tabular}
-            }{%
-                \caption{Table Two}%
-                \label{tab:multiple_tables_two}%
-            }%
-            %
-        \end{subfloatrow}
-        \vspace{1.5\baselineskip}%
-        
-        \begin{subfloatrow}
-            \ttabbox[\FBwidth]{%
-                \begin{tabular}{
-                        @{}
-                        m{0.25\textwidth}
-                        m{0.15\textwidth}
-                        @{}
-                    }
-                    \toprule
-                    Column One & Column Two \\
-                    \midrule
-                    Just       & a          \\
-                    normal     & table      \\
-                    Nothing    & special.   \\
-                    \bottomrule
-                \end{tabular}
-            }{%
-                \caption{Table Three}%
-                \label{tab:multiple_tables_three}%
-            }%
-            %
-            \ttabbox[\FBwidth]{%
-                \begin{tabular}{
-                        @{}
-                        m{0.25\textwidth}
-                        m{0.15\textwidth}
-                        @{}
-                    }
-                    \toprule
-                    Column One & Column Two \\
-                    \midrule
-                    Just       & a          \\
-                    normal     & table      \\
-                    Nothing    & special.   \\
-                    \bottomrule
-                \end{tabular}
-            }{%
-                \caption{Table Four}%
-                \label{tab:multiple_tables_four}%
-            }%
-            %
-        \end{subfloatrow}
-    }{%
-        \caption{%
-            Example for multiple tables in one float%
-        }%
-        \label{tab:multiple_tables}%
-    }%
+    \begin{subtable}[t]{0.48\linewidth}
+        \centering
+        \begin{tabular}{
+                @{}
+                m{0.25\textwidth}
+                m{0.15\textwidth}
+                @{}
+            }
+            \toprule
+            Column One & Column Two \\
+            \midrule
+            Just       & a          \\
+            normal     & table      \\
+            Nothing    & special.   \\
+            \bottomrule
+        \end{tabular}
+        \caption{Table One}
+        \label{tab:multiple_tables_one}
+    \end{subtable}
+    \hfill
+    \begin{subtable}[t]{0.48\linewidth}
+        \centering
+        \begin{tabular}{
+                @{}
+                m{0.25\textwidth}
+                m{0.15\textwidth}
+                @{}
+            }
+            \toprule
+            Column One & Column Two \\
+            \midrule
+            Just       & a          \\
+            normal     & table      \\
+            Nothing    & special.   \\
+            \bottomrule
+        \end{tabular}
+        \caption{Table Two}
+        \label{tab:multiple_tables_two}
+    \end{subtable}
+
+    \par\vspace{1.5\baselineskip}
+
+    \begin{subtable}[t]{0.48\linewidth}
+        \centering
+        \begin{tabular}{
+                @{}
+                m{0.25\textwidth}
+                m{0.15\textwidth}
+                @{}
+            }
+            \toprule
+            Column One & Column Two \\
+            \midrule
+            Just       & a          \\
+            normal     & table      \\
+            Nothing    & special.   \\
+            \bottomrule
+        \end{tabular}
+        \caption{Table Three}
+        \label{tab:multiple_tables_three}
+    \end{subtable}
+    \hfill
+    \begin{subtable}[t]{0.48\linewidth}
+        \centering
+        \begin{tabular}{
+                @{}
+                m{0.25\textwidth}
+                m{0.15\textwidth}
+                @{}
+            }
+            \toprule
+            Column One & Column Two \\
+            \midrule
+            Just       & a          \\
+            normal     & table      \\
+            Nothing    & special.   \\
+            \bottomrule
+        \end{tabular}
+        \caption{Table Four}
+        \label{tab:multiple_tables_four}
+    \end{subtable}
 \end{table}
 
 \subsubsection{Side-Captions}
@@ -258,21 +240,18 @@ sub\-/tables
 Occasionally, figures and their captions can look disproportionate in combination.
 In these cases, placing a side\-/caption might relieve the situation,
 as shown in \cref{fig:sidecap}.
-\begin{figure}
-    \fcapside[\FBwidth]{%
-        \caption{%
-            A side caption, which may also span multiple lines like demonstrated
-            in this rather long caption right here%
-        }
-        \label{fig:sidecap}%
-    }{%
-        \includesvg[width=0.6\textwidth]{logos/tex_lion}%
-        \floatfoot{%
-            \href{https://www.ctan.org/assets/lion/lion.svg}{CTAN lion
-                drawing} by Duane Bibby; thanks to \href{www.ctan.org}{ctan.org}%
-        }%
-        
-    }%
+\begin{figure}[tbp]
+
+    \begin{minipage}[t]{0.62\linewidth}
+        \includesvg[width=\linewidth]{logos/tex_lion}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.32\linewidth}
+        \raggedright
+        \captionof{figure}{A side caption, which may also span multiple lines like demonstrated in this rather long caption right here}
+        \label{fig:sidecap}
+        \caption*{\href{https://www.ctan.org/assets/lion/lion.svg}{CTAN lion drawing} by Duane Bibby; thanks to \href{www.ctan.org}{ctan.org}}
+    \end{minipage}
 \end{figure}
 
 \subsubsection{Large Floats}
@@ -287,16 +266,13 @@ times.
 No need for tedious repetition.
 
 \begin{landscape}
-    \begin{table}
+        \begin{table}[tbp]
+        \caption{Compositions and properties of fuels, as used in \Cref{eq:tikz_in_text}}
+        \label{tab:fuel_composition}
+
         \crefname{equation}{eq.}{eqs.}% Keep this change scoped to the environment
         \Crefname{equation}{Eq.}{Eqs.}%
-        \footnotesize%
-        \ttabbox{%
-        \caption{%
-            Compositions and properties of fuels, as used in \Cref{eq:tikz_in_text}%
-        }%
-        \label{tab:fuel_composition}%
-        }{%
+        \footnotesize
         \begin{tabular}{
                 @{}
                 p{5em}
@@ -309,13 +285,11 @@ No need for tedious repetition.
             Name                                                        & 
             \multicolumn{7}{c}{{Mass fraction \(\sym{mass_fraction}\)}} & 
             {\(\sym{density}\)}                                         & 
-            {\(\sym{heating_value}\)}
-            \\
+            {\(\sym{heating_value}\)}\\
                                                                         & 
             \multicolumn{7}{c}{{[--]}}                                  & 
             \(\brackets*{\unit{\kilogram\per\meter\cubed}}\)            & 
-            \(\brackets*{\unit{\mega\joule\per\kilogram}}\)
-            \\
+            \(\brackets*{\unit{\mega\joule\per\kilogram}}\)\\
             \cmidrule(lr){2-8}% truncate left and right
                                                                         & 
             \chcpd{C}                                                   & 
@@ -324,64 +298,58 @@ No need for tedious repetition.
             \chcpd{O}                                                   & 
             \chcpd{N}                                                   & 
             \chcpd{H2O}                                                 & 
-            {Ash}                                                       &   % Escape text from S-column using braces
-                                                                        & 
-            \\
+            {Ash}                                                       & 
+                                                                        & \\[-0.4\baselineskip]
             \midrule
-            Diesel\mpfootnotemark[1]                                    & 
+            Diesel\omnlFloatFootmark[1]                                 & 
             0.8600                                                      & 
             0.1320                                                      & 
             0.0060                                                      & 
-            \multicolumn{2}{c}{\num{0.0020}\mpfootnotemark[2]}          & 
+            \multicolumn{2}{c}{\num{0.0020}\omnlFloatFootmark[2]}      & 
             {n.a.}                                                      & 
             {n.a.}                                                      & 
             840                                                         & 
-            42.7
-            \\
-            Oil EL\mpfootnotemark[1]                                    & 
+            42.7\\
+            Oil EL\omnlFloatFootmark[1]                                 & 
             0.8570                                                      & 
             0.1310                                                      & 
             0.0100                                                      & 
-            \multicolumn{2}{c}{\num{0.0020}\mpfootnotemark[2]}          & 
+            \multicolumn{2}{c}{\num{0.0020}\omnlFloatFootmark[2]}      & 
             {n.a.}                                                      & 
             {n.a.}                                                      & 
             840                                                         & 
-            42.7
-            \\
-            Oil H\mpfootnotemark[1]                                     & 
+            42.7\\
+            Oil H\omnlFloatFootmark[1]                                  & 
             0.8490                                                      & 
             0.1060                                                      & 
             0.0350                                                      & 
-            \multicolumn{2}{c}{\num{0.0100}\mpfootnotemark[2]}          & 
+            \multicolumn{2}{c}{\num{0.0100}\omnlFloatFootmark[2]}      & 
             {n.a.}                                                      & 
             {n.a.}                                                      & 
             980                                                         & 
-            40.0
-            \\
-            \abb{marine_diesel_oil}\mpfootnotemark[3]                   & 
+            40.0\\
+            \abb{marine_diesel_oil}\omnlFloatFootmark[3]                & 
             {n.a.}                                                      & 
             {n.a.}                                                      & 
             0.0150                                                      & 
             {n.a.}                                                      & 
             {n.a.}                                                      & 
-            {\num{0.0030}\mpfootnotemark[4]}                            & 
+            {\num{0.0030}\omnlFloatFootmark[4]}                        & 
             0.0001                                                      & 
             900                                                         & 
-            {n.a.}
-            \\
-            \abb{heavy_fuel_oil}\mpfootnotemark[5]                      & 
+            {n.a.}\\
+            \abb{heavy_fuel_oil}\omnlFloatFootmark[5]                   & 
             {n.a.}                                                      & 
             {n.a.}                                                      & 
-            {\num{0.0350}\mpfootnotemark[6]}                            & 
+            {\num{0.0350}\omnlFloatFootmark[6]}                        & 
             {n.a.}                                                      & 
             {n.a.}                                                      & 
-            {\num{0.0050}\mpfootnotemark[4]}                            & 
+            {\num{0.0050}\omnlFloatFootmark[4]}                        & 
             0.0015                                                      & 
             1010                                                        & 
-            {n.a.}
-            \\
+            {n.a.}\\
             \addlinespace
-            Light\mpfootnotemark[7]                                     & 
+            Light\omnlFloatFootmark[7]                                  & 
             0.8600                                                      & 
             0.1320                                                      & 
             0.0060                                                      & 
@@ -390,9 +358,8 @@ No need for tedious repetition.
             0                                                           & 
             0                                                           & 
             840                                                         & 
-            {\Cref{eq:boie}}
-            \\
-            Medium\mpfootnotemark[7]                                    & 
+            {\Cref{eq:boie}}\\
+            Medium\omnlFloatFootmark[7]                                 & 
             0.8530                                                      & 
             0.1269                                                      & 
             0.0150                                                      & 
@@ -401,9 +368,8 @@ No need for tedious repetition.
             0.0030                                                      & 
             0.0001                                                      & 
             900                                                         & 
-            {\Cref{eq:boie}}
-            \\
-            Heavy\mpfootnotemark[7]                                     & 
+            {\Cref{eq:boie}}\\
+            Heavy\omnlFloatFootmark[7]                                  & 
             0.8460                                                      & 
             0.1025                                                      & 
             0.0350                                                      & 
@@ -412,41 +378,36 @@ No need for tedious repetition.
             0.0050                                                      & 
             0.0015                                                      & 
             1010                                                        & 
-            {\Cref{eq:boie}}
-            \\
+            {\Cref{eq:boie}}\\
             \bottomrule
-        \end{tabular}%
-        % Unfortunately, these have to be numbered manually.
-        % Float/table footnotes are a touchy topic, and this was chosen as the
-        % least worst approach out of the alternatives.
-        \footnotetext[1]{%
+        \end{tabular}
+        \omnlFloatFoottext[1]{
             \cite[634]{baehrThermodynamikGrundlagenUnd2016}; see also
             \cite[L70]{dubbelTaschenbuchFurMaschinenbau2007} and
-            \cite[97]{mollenhauerHandbuchDieselmotoren2007}.%
-        }%
-        \footnotetext[2]{%
-        Given as a sum
-        \(\sym{mass_fraction}_{\chcpd{O}} + \sym{mass_fraction}_{\chcpd{N}}\).%
-        }%
-        \footnotetext[3]{%
+            \cite[97]{mollenhauerHandbuchDieselmotoren2007}.% 
+        }
+        \omnlFloatFoottext[2]{
+            Given as a sum \(\sym{mass_fraction}_{\chcpd{O}} + \sym{mass_fraction}_{\chcpd{N}}\).%
+        }
+        \omnlFloatFoottext[3]{
             Max.\ values of specification \emph{DMB},
             \cite{internationalorganizationforstandardizationISO821720172017}.%
-        }%
-        \footnotetext[4]{%
+        }
+        \omnlFloatFoottext[4]{
             Given as a volume fraction, assumed equal to mass fraction.%
-        }%
-        \footnotetext[5]{%
+        }
+        \omnlFloatFoottext[5]{
             Max.\ values of specification \emph{RMK},
             \cite{internationalorganizationforstandardizationISO821720172017}.%
-        }%
-        \footnotetext[6]{%
+        }
+        \omnlFloatFoottext[6]{
             \abb{int_mar_org} level prior to \num{2020}.%
-        }%
-        \footnotetext[7]{%
+        }
+        \omnlFloatFoottext[7]{
             Derived, \emph{virtual} fuels.%
-        }%
-        }%
-    \end{table}%
+        }
+    
+    \end{table}
 \end{landscape}
 
 \paragraph{Very long tables}
@@ -470,40 +431,36 @@ twin, \cref{tab:main_font_examples_ugly}:
 \end{itemize}
 For more info, see the package \ctanpackage{booktabs}.
 
-\begin{table}
-    \ttabbox{%
-        \caption{%
-            Dreadful version of \cref{tab:main_font_examples}%
-        }%
-        \label{tab:main_font_examples_ugly}%
-    }{%
-        \begin{tabular}{
-                |
-                c
-                ||
-                c
-                |
-            }
-            \hline
-            \textit{Feature}               & \textit{Sample Text}          \\
-            \hline
-            \hline
-            Regular                        & \sampletext                   \\
-            \hline
-            \textbf{Bold}                  & \textbf{\sampletext}          \\
-            \hline
-            \textit{Italics}               & \textit{\sampletext}          \\
-            \hline
-            \textbf{\textit{Bold Italics}} & \textbf{\textit{\sampletext}} \\
-            \hline
-            \textsc{Small Capitals}        & \textsc{\sampletext}          \\
-            \hline
-            \textbf{\textsc{Bold SC}}      & \textbf{\textsc{\sampletext}} \\
-            \hline
-            \textit{\textsc{Italics SC}}   & \textit{\textsc{\sampletext}} \\
-            \hline
-        \end{tabular}
-    }%
+\begin{table}[tbp]
+    \caption{Dreadful version of \cref{tab:main_font_examples}}
+    \label{tab:main_font_examples_ugly}
+
+    \begin{tabular}{
+            |
+            c
+            ||
+            c
+            |
+        }
+        \hline
+        \textit{Feature}               & \textit{Sample Text}          \\
+        \hline
+        \hline
+        Regular                        & \sampletext                   \\
+        \hline
+        \textbf{Bold}                  & \textbf{\sampletext}          \\
+        \hline
+        \textit{Italics}               & \textit{\sampletext}          \\
+        \hline
+        \textbf{\textit{Bold Italics}} & \textbf{\textit{\sampletext}} \\
+        \hline
+        \textsc{Small Capitals}        & \textsc{\sampletext}          \\
+        \hline
+        \textbf{\textsc{Bold SC}}      & \textbf{\textsc{\sampletext}} \\
+        \hline
+        \textit{\textsc{Italics SC}}   & \textit{\textsc{\sampletext}} \\
+        \hline
+    \end{tabular}
 \end{table}
 
 \subsubsection{Caption Positioning}
@@ -539,99 +496,84 @@ There is a debugging grid functionality to allow for easier positioning of the l
 on the graphic.
 \cref{fig:bitmap_tikz} also showcases a vertical alignment of sub\-/figures.
 
-\begin{figure}
-    \ffigbox[\FBwidth]{%
-        \begin{subfloatrow}
-            \hsize1\textwidth
-            \vbox{
-                \ffigbox[\FBwidth]{
-                    \begin{tikzpicture}[%
-                            every node/.style={
-                                    font=\footnotesize
-                                }
-                        ]
-                        \node[anchor=south west,inner sep=0] (image) at (0,0) {
-                            \includegraphics[width=0.7\textwidth]{field}
-                        };
-                        \begin{scope}[x={(image.south east)},y={(image.north west)}]
-                            
-                            % All floating descriptions:
-                            \foreach \x/\y/\nodetext in {
-                            0.50/0.20/{A field!},
-                            0.50/0.70/{The sky!}%
-                            }{
-                            \node at (\x,\y) {\ctrw{\nodetext}};
-                            }
-                            
-                            % \ctrw{} cannot deal with linebreaks contained inside of it,
-                            % so it has to be applied manually each time.
-                            \node[align=left, right] at (0.02, 0.50) {%
-                                \ctrw{Multiple lines}\\%
-                                \ctrw{with manual}\\%
-                                \ctrw{linebreaks!}%
-                            };%
-                            
-                            \draw[annotationarrow] (0.75,0.45) -- (1.05,0.50)
-                            node[align=left, right, text width=5em] {An annotation!};
-                            
-                            % DEBUGGING COMMAND
-                            \debugtikzsvg
-                        \end{scope}
-                    \end{tikzpicture}
+\begin{figure}[tbp]
+
+    \begin{subfigure}[t]{0.9\linewidth}
+        \centering
+        \begin{tikzpicture}[%
+                every node/.style={
+                        font=\footnotesize
+                    }
+            ]
+            \node[anchor=south west,inner sep=0] (image) at (0,0) {
+                \includegraphics[width=0.7\textwidth]{field}
+            };
+            \begin{scope}[x={(image.south east)},y={(image.north west)}]
+                % All floating descriptions:
+                \foreach \x/\y/\nodetext in {
+                0.50/0.20/{A field!},
+                0.50/0.70/{The sky!}%
                 }{
-                    \caption{Debugging/positioning grid}
-                    \label{fig:bitmap_tikz_debug}
-                }%
-                \vss
-                \vspace{3ex}
-                
-                \ffigbox[\FBwidth]{
-                    \begin{tikzpicture}[%
-                            every node/.style={
-                                    font=\footnotesize
-                                }
-                        ]
-                        \node[anchor=south west,inner sep=0] (image) at (0,0) {
-                            \includegraphics[width=0.7\textwidth]{field}
-                        };
-                        \begin{scope}[x={(image.south east)},y={(image.north west)}]
-                            
-                            % All floating descriptions:
-                            \foreach \x/\y/\nodetext in {
-                            0.50/0.20/{A field!},
-                            0.50/0.70/{The sky!}%
-                            }{
-                            \node at (\x,\y) {\ctrw{\nodetext}};
-                            }
-                            
-                            % \ctrw{} cannot deal with linebreaks contained inside of it,
-                            % so it has to be applied manually each time.
-                            \node[align=left, right] at (0.02, 0.50) {%
-                                \ctrw{Multiple lines}\\%
-                                \ctrw{with manual}\\%
-                                \ctrw{linebreaks!}%
-                            };%
-                            
-                            \draw[annotationarrow] (0.75,0.45) -- (1.05,0.50)
-                            node[align=left, right, text width=5em] {An annotation!};
-                            
-                            % DEBUGGING COMMAND
-                            % \debugtikzsvg
-                        \end{scope}
-                    \end{tikzpicture}
-                }{
-                    \caption{Result}
-                    \label{fig:bitmap_tikz_result}
+                \node at (\x,\y) {\ctrw{\nodetext}};
                 }
-            }
-        \end{subfloatrow}
-    }{%
-        \caption{%
-            Drawing over a bitmap graphic using \idx{tikz} in a vertical sub\-/figure
-            environment%
-        }
-        \label{fig:bitmap_tikz}
+                % \ctrw{} cannot deal with linebreaks contained inside of it,
+                % so it has to be applied manually each time.
+                \node[align=left, right] at (0.02, 0.50) {%
+                    \ctrw{Multiple lines}\\%
+                    \ctrw{with manual}\\%
+                    \ctrw{linebreaks!}%
+                };%
+                \draw[annotationarrow] (0.75,0.45) -- (1.05,0.50)
+                node[align=left, right, text width=5em] {An annotation!};
+                % DEBUGGING COMMAND
+                \debugtikzsvg
+            \end{scope}
+        \end{tikzpicture}
+        \caption{Debugging/positioning grid}
+        \label{fig:bitmap_tikz_debug}
+    \end{subfigure}
+
+    \par\vspace{3ex}
+
+    \begin{subfigure}[t]{0.9\linewidth}
+        \centering
+        \begin{tikzpicture}[%
+                every node/.style={
+                        font=\footnotesize
+                    }
+            ]
+            \node[anchor=south west,inner sep=0] (image) at (0,0) {
+                \includegraphics[width=0.7\textwidth]{field}
+            };
+            \begin{scope}[x={(image.south east)},y={(image.north west)}]
+                % All floating descriptions:
+                \foreach \x/\y/\nodetext in {
+                0.50/0.20/{A field!},
+                0.50/0.70/{The sky!}%
+                }{
+                \node at (\x,\y) {\ctrw{\nodetext}};
+                }
+                % \ctrw{} cannot deal with linebreaks contained inside of it,
+                % so it has to be applied manually each time.
+                \node[align=left, right] at (0.02, 0.50) {%
+                    \ctrw{Multiple lines}\\%
+                    \ctrw{with manual}\\%
+                    \ctrw{linebreaks!}%
+                };%
+                \draw[annotationarrow] (0.75,0.45) -- (1.05,0.50)
+                node[align=left, right, text width=5em] {An annotation!};
+                % DEBUGGING COMMAND
+                % \debugtikzsvg
+            \end{scope}
+        \end{tikzpicture}
+        \caption{Result}
+        \label{fig:bitmap_tikz_result}
+    \end{subfigure}
+    \caption{%
+        Drawing over a bitmap graphic using \idx{tikz} in a vertical sub\-/figure
+        environment%
     }
+    \label{fig:bitmap_tikz}
 \end{figure}
 
 \subsection{Trees}
@@ -642,76 +584,76 @@ Take a look at the source code.
 It is deceivingly simple, but also highly customizable.
 Note that the package is stand\-/alone, but uses \idx{tikz} under the hood
 (like a lot of packages do).
-\begin{figure}
-    \ffigbox[\textwidth]{% forest does not work with \FBwidth (?)
-        \caption{Example for a tree}
-        \label{fig:tree}
-    }{
-        \footnotesize
-        \begin{forest}
-            forked edges,% Instead of direct connections, draw edges
-            for tree={%
-                    grow'=east,
-                    anchor=west,
-                    where level=0{}{calign=first},% works like {if}{else}
-                    %
-                    % Put all nodes of same level onto same tier also, aligning
-                    % them vertically:
-                    tier/.pgfmath=level(),
-                    %
-                    where level=1{font={\bfseries}}{},%
-                },%
-            % Decrease distance to only affect root-first level with s sep, see
-            % https://tex.stackexchange.com/a/188461/120853
-            [Overall Category, anchor=south, rotate=90, for children={s sep-=1em}
-                        [Number One
-                                [At vero eos]
-                                [et accusamus]
-                                [et iusto]
-                        ]
-                        [Number Two
-                                [{odio dignissimos, ducimus}]% Escape commas
-                                [qui blanditiis]
-                                [praesentium]
-                                [voluptatum]
-                                [deleniti atque]
-                                [corrupti quos]
-                                [dolores et]
-                                [quas molestias]
-                        ]
-                        [Number Three
-                                [excepturi sint]
-                                [occaecati]
-                                [non provident]
-                                [similique]
-                                [sunt in culpa qui officia]
-                        ]
-                        [Number Four
-                                [deserunt]
-                                [mollitia
-                                        [{animi, id est}]
-                                        [laborum et]
-                                ]
-                        ]
-                        [Number Four
-                                [dolorum
-                                        [fuga]
-                                        [Et harum]
-                                ]
-                                [quidem
-                                        [rerum facilis]
-                                        [est et expedita]
-                                ]
-                        ]
-                        [distinctio
-                                [Nam libero]
-                                [tempore]
-                                [soluta nobis]
-                                [est eligendi]
-                        ]
-                ]
-        \end{forest}
-    }
+\begin{figure}[tbp]
+
+    \centering
+    \footnotesize
+    \begin{forest}
+        forked edges,% Instead of direct connections, draw edges
+        for tree={%
+                grow'=east,
+                anchor=west,
+                where level=0{}{calign=first},% works like {if}{else}
+                %
+                % Put all nodes of same level onto same tier also, aligning
+                % them vertically:
+                tier/.pgfmath=level(),
+                %
+                where level=1{font={\bfseries}}{},%
+            },%
+        % Decrease distance to only affect root-first level with s sep, see
+        % https://tex.stackexchange.com/a/188461/120853
+        [Overall Category, anchor=south, rotate=90, for children={s sep-=1em}
+                    [Number One
+                            [At vero eos]
+                            [et accusamus]
+                            [et iusto]
+                    ]
+                    [Number Two
+                            [{odio dignissimos, ducimus}]% Escape commas
+                            [qui blanditiis]
+                            [praesentium]
+                            [voluptatum]
+                            [deleniti atque]
+                            [corrupti quos]
+                            [dolores et]
+                            [quas molestias]
+                    ]
+                    [Number Three
+                            [excepturi sint]
+                            [occaecati]
+                            [non provident]
+                            [similique]
+                            [sunt in culpa qui officia]
+                    ]
+                    [Number Four
+                            [deserunt]
+                            [mollitia
+                                    [{animi, id est}]
+                                    [laborum et]
+                            ]
+                    ]
+                    [Number Four
+                            [dolorum
+                                    [fuga]
+                                    [Et harum]
+                            ]
+                            [quidem
+                                    [rerum facilis]
+                                    [est et expedita]
+                            ]
+                    ]
+                    [distinctio
+                            [Nam libero]
+                            [tempore]
+                            [soluta nobis]
+                            [est eligendi]
+                    ]
+            ]
+    \end{forest}
+    \captionsetup{width=0.95\linewidth}
+    \caption{Example for a tree}
+    \label{fig:tree}
 \end{figure}
 
 \subsection{Flow charts}
@@ -720,35 +662,31 @@ Drawing flow charts is possible with \idx{tikz} as well.
 An example can be found in \cref{fig:flowchart_example}.
 The style definitions for the nodes can be found in the class file.
 
-\begin{figure}
-    \ffigbox[\FBwidth]{
-        \caption{Example for a Flowchart}
-        \label{fig:flowchart_example}
-    }{%
-        \footnotesize
-        \begin{tikzpicture}[node distance=1cm]
-            
-            \node (start) [startstop] {Start};
-            \node (in1) [io, below=of start] {Input};
-            \node (pro1) [process, below=of in1] {Process 1};
-            \node (dec1) [decision, below=of pro1] {Decision 1};
-            \node (pro2a) [process, below=of dec1] {Process 2a text text text text text text text text text text};
-            \node (pro2b) [process, right=of dec1] {Process 2b};
-            \node (out1) [io, below=of pro2a] {Output};
-            \node (stop) [startstop, below=of out1] {Stop};
-            
-            \draw [arrow] (start) -- (in1);
-            \draw [arrow] (in1) -- (pro1);
-            \draw [arrow] (pro1) -- (dec1);
-            \draw [arrow] (pro1.west) -| ++(-0.5,0) node[anchor=east] {Maybe} |- (pro2a.west);
-            \draw [arrow] (dec1) -- node[anchor=east] {yes} (pro2a);
-            \draw [arrow] (dec1) -- node[anchor=south] {no} (pro2b);
-            \draw [arrow] (pro2b) |- (pro1);
-            \draw [arrow] (pro2a) -- (out1);
-            \draw [arrow] (out1) -- (stop);
-            
-        \end{tikzpicture}
-    }
+\begin{figure}[tbp]
+
+    \centering
+    \footnotesize
+    \begin{tikzpicture}[node distance=1cm]
+        \node (start) [startstop] {Start};
+        \node (in1) [io, below=of start] {Input};
+        \node (pro1) [process, below=of in1] {Process 1};
+        \node (dec1) [decision, below=of pro1] {Decision 1};
+        \node (pro2a) [process, below=of dec1] {Process 2a text text text text text text text text text text};
+        \node (pro2b) [process, right=of dec1] {Process 2b};
+        \node (out1) [io, below=of pro2a] {Output};
+        \node (stop) [startstop, below=of out1] {Stop};
+        \draw [arrow] (start) -- (in1);
+        \draw [arrow] (in1) -- (pro1);
+        \draw [arrow] (pro1) -- (dec1);
+        \draw [arrow] (pro1.west) -| ++(-0.5,0) node[anchor=east] {Maybe} |- (pro2a.west);
+        \draw [arrow] (dec1) -- node[anchor=east] {yes} (pro2a);
+        \draw [arrow] (dec1) -- node[anchor=south] {no} (pro2b);
+        \draw [arrow] (pro2b) |- (pro1);
+        \draw [arrow] (pro2a) -- (out1);
+        \draw [arrow] (out1) -- (stop);
+    \end{tikzpicture}
+    \caption{Example for a Flowchart}
+    \label{fig:flowchart_example}
 \end{figure}
 
 \subsection{Plotting}
@@ -875,90 +813,88 @@ Plotting from a \idx{tikz} function is demonstrated in
         }%
 }
 
-\begin{figure}\ContinuedFloat*
-    \ffigbox[\FBwidth]{%
-        \caption[Caloric parameters of air]{%
-            Caloric parameters of air.
-            \textbf{Avoid legends} and put info where it belongs,
-            improving legibility (less back-and-forth for the eye).
-            This plot is using the custom \texttt{regularplot} style%
-        }%
-        \label{fig:plotting_in_latex}%
-    }{%
-        \begin{tikzpicture}
-            \begin{axis}[%
-                    regularplot,%
-                    axis y line*=right,%
-                    axis x line=none,%
-                    grid=none,% Grid can only be on one side
-                    % Using \ensuremath{} for each symbol, no need to use math mode here
-                    ylabel={\sym{ratio_of_specific_heats}},
-                    y unit={-},
-                ]
-                \addplot+[domain=20:400]{cpm(x)/(cpm(x)-8.3145)}
-                node [arrowlabel=0.3, sloped]
-                {\sym{ratio_of_specific_heats}};
-            \end{axis}
-            \begin{axis}[% https://tex.stackexchange.com/a/31504/120853
+\begin{figure}[tbp]
+\ContinuedFloat*
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[%
                 regularplot,%
-                xlabel={\sym{celsius_temperature}},%
-                x unit={\degreeCelsius},% This is a siunitx-accepted command
-                ylabel={\(\symspec{heat_capacity}_{\sym{pressure}}\)},
-                y unit={\joule\per\kilogram\per\kelvin},
-                cycle list shift=1,
-                ]
-                \addplot+[domain=20:400]{cpm(x)/0.0289524}
-                node [arrowlabel=0.3, sloped]
-                {\(\symspec{heat_capacity}_{\sym{pressure}}\)};%
-            \end{axis}
-        \end{tikzpicture}
-    }%
+                axis y line*=right,%
+                axis x line=none,%
+                grid=none,% Grid can only be on one side
+                % Using \ensuremath{} for each symbol, no need to use math mode here
+                ylabel={\sym{ratio_of_specific_heats}},
+                y unit={-},
+            ]
+            \addplot+[domain=20:400]{cpm(x)/(cpm(x)-8.3145)}
+            node [arrowlabel=0.3, sloped]
+            {\sym{ratio_of_specific_heats}};
+        \end{axis}
+        \begin{axis}[% https://tex.stackexchange.com/a/31504/120853
+            regularplot,%
+            xlabel={\sym{celsius_temperature}},%
+            x unit={\degreeCelsius},% This is a siunitx-accepted command
+            ylabel={\(\symspec{heat_capacity}_{\sym{pressure}}\)},
+            y unit={\joule\per\kilogram\per\kelvin},
+            cycle list shift=1,
+            ]
+            \addplot+[domain=20:400]{cpm(x)/0.0289524}
+            node [arrowlabel=0.3, sloped]
+            {\(\symspec{heat_capacity}_{\sym{pressure}}\)};%
+        \end{axis}
+    \end{tikzpicture}
+    \caption[Caloric parameters of air]{%
+        Caloric parameters of air.
+        \textbf{Avoid legends} and put info where it belongs,
+        improving legibility (less back-and-forth for the eye).
+        This plot is using the custom \texttt{regularplot} style%
+    }
+    \label{fig:plotting_in_latex}
 \end{figure}
 
-\begin{figure}\ContinuedFloat
-    \ffigbox[\FBwidth]{%
-        \caption[Tufte-like plot]{%
-            Same content as \cref{fig:plotting_in_latex} in
-            \enquote{\emph{\glsentryname{name.edward_tufte}}-like}
-            for a modern, minimalist look where precision counts less than
-            the overall message.
-            For more info, refer to its namesake, \name{edward_tufte}%
-        }%
-        \label{fig:plotting_in_latex_tufte}
-    }{%
-        \begin{tikzpicture}
-            \begin{axis}[%
+\begin{figure}[tbp]
+\ContinuedFloat
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[%
+            tuftelike,%
+            ylabel={\(\symspec{heat_capacity}_{\sym{pressure}}\)},
+            y unit = {\joule\per\kilogram\per\kelvin},
+            xlabel={\sym{celsius_temperature}},%
+            x unit = {\degreeCelsius},
+            domain=50:400,
+            ymin=1000,
+            ymax=1100,
+            ytick={1000, 1050, 1100},% Specify manually due to weird rounding
+            ]
+            \addplot+{cpm(x)/0.0289524}
+            node [arrowlabel=0.3, sloped]
+            {\(\symspec{heat_capacity}_{\sym{pressure}}\)};%
+        \end{axis}%
+        \begin{axis}[% https://tex.stackexchange.com/a/31504/120853
                 tuftelike,%
-                ylabel={\(\symspec{heat_capacity}_{\sym{pressure}}\)},
-                y unit = {\joule\per\kilogram\per\kelvin},
-                xlabel={\sym{celsius_temperature}},%
-                x unit = {\degreeCelsius},
-                domain=50:400,
-                ymin=1000,
-                ymax=1100,
-                ytick={1000, 1050, 1100},% Specify manually due to weird rounding
-                ]
-                \addplot+{cpm(x)/0.0289524}
-                node [arrowlabel=0.3, sloped]
-                {\(\symspec{heat_capacity}_{\sym{pressure}}\)};%
-            \end{axis}%
-            \begin{axis}[% https://tex.stackexchange.com/a/31504/120853
-                    tuftelike,%
-                    axis y line*=right,%
-                    axis x line=none,%
-                    ylabel={\sym{ratio_of_specific_heats}},%
-                    y unit={-},
-                    cycle list shift=1,
-                    domain= 50:400,
-                    ymin=1.35,
-                    ymax=1.4,
-                ]
-                \addplot+{cpm(x)/(cpm(x)-8.3145)}
-                node [arrowlabel=0.3, sloped]
-                {\sym{ratio_of_specific_heats}};
-            \end{axis}
-        \end{tikzpicture}
-    }%
+                axis y line*=right,%
+                axis x line=none,%
+                ylabel={\sym{ratio_of_specific_heats}},%
+                y unit={-},
+                cycle list shift=1,
+                domain= 50:400,
+                ymin=1.35,
+                ymax=1.4,
+            ]
+            \addplot+{cpm(x)/(cpm(x)-8.3145)}
+            node [arrowlabel=0.3, sloped]
+            {\sym{ratio_of_specific_heats}};
+        \end{axis}
+    \end{tikzpicture}
+    \caption[Tufte-like plot]{%
+        Same content as \cref{fig:plotting_in_latex} in
+        \enquote{\emph{\glsentryname{name.edward_tufte}}-like}
+        for a modern, minimalist look where precision counts less than
+        the overall message.
+        For more info, refer to its namesake, \name{edward_tufte}%
+    }
+    \label{fig:plotting_in_latex_tufte}
 \end{figure}
 
 \paragraph{Contour Plots}
@@ -981,266 +917,26 @@ This is where the complexity resides.
 The entire plot is just 200 lines of code, with really only half that being
 lines that effectively do something useful.
 
-\begin{figure}
-    \ffigbox[\textwidth]{
-        \caption[%
-            \glsfmtname{name.richard_mollier} diagram for humid air as an example
-            for \texttt{gnuplot}%
-        ]{%
-            \name{richard_mollier} diagram for humid air as an example
-            for \texttt{gnuplot}.
-            The entire source code required (functions \iecfeg{etc.}) is in the
-            \LaTeX{} source%
-        }
-        \label{fig:mollier_diagram}
-    }{
-        \begin{tikzpicture}
+\begin{figure}[tbp]
+
+    \centering
+    \begin{tikzpicture}
             % Moving the grid lines behind our annotation nodes.
             % Else, the grid is drawn over the annotation text, which looks terrible.
-            % The layer set has to be called with 'set layers' later on.
-            % Code 'borrowed' from https://tex.stackexchange.com/a/456905/120853
-            \pgfplotsset{
-                /pgfplots/layers/Bowpark/.define layer set={
-                        axis background,axis grid,main,axis ticks,axis lines,axis tick labels,
-                        axis descriptions,axis foreground
-                    }{/pgfplots/layers/standard},
-            }
-            \begin{axis}[
-                    regularplot,
-                    %
-                    width=0.95\textwidth,
-                    height=0.4\textheight,
-                    %
-                    set layers=Bowpark,
-                    %
-                    every axis title/.append style={%
-                            at={(0.5,1.1)},% Move above legend
-                            anchor=south,%
-                            font=\footnotesize%
-                        },
-                    %
-                    xlabel={\glsdesc{sym.moisture_content}},
-                    x unit={\glsunit{sym.moisture_content}},
-                    ylabel={Temperature},
-                    y unit={\degreeCelsius},
-                    %
-                    % Not displayed when viewing contour plot (view={0}{90}),
-                    % but maybe useful for debugging when viewing the 3d surface plot
-                    % at an angle
-                    zlabel={\glsdesc{sym.relative_humidity}},
-                    z unit={--},
-                    %
-                    title={% Print title depending on what ambient pressure was specified down below
-                            \pgfkeys{/pgf/fpu=true}% https://tex.stackexchange.com/a/36189/120853
-                            \pgfkeys{/pgf/fpu/output format=fixed}
-                            \pgfmathparse{AmbientPressure/1e5}
-                            %
-                            For \qty[round-mode=figures, round-precision=1]{\pgfmathresult}{\bar}
-                            air pressure.%
-                            %
-                            \pgfkeys{/pgf/fpu=false}
-                        },
-                    %
-                    variable=MoistureContent,% New name for default 'x' variable for unambiguity
-                    variable y=Temperature,% New name for default 'y' variable for unambiguity
-                    domain=0:20,% Moisture content range in g per kg
-                    domain y=-5:30,% Temperature range in degC
-                    %
-                    % Name space using 'contour/' to apply to all contour plots:
-                    contour/contour label style={
-                            every node/.append style={text=black}
-                        },
-                    %
-                    % Default is 70pt. High value pushes them off to one side (HACKY;
-                    % see https://tex.stackexchange.com/q/443508/120853 and
-                    % https://tex.stackexchange.com/q/88031/120853)
-                    contour/label distance=10*70pt,
-                    %
-                    % point meta settings are not required for contour plotting.
-                    % point meta min=0,% Starting z value for color map scale
-                    % point meta max=1,% Ending z value for color map scale
-                    %
-                    view={0}{90},% View contour plot 'from above'
-                    % view={90}{0},% Debugging
-                    % view={0}{0},% Debugging
-                    %
-                    declare function={%
-                            % No empty lines allowed in here.
-                            % All equations for constant material constants like c_p.
-                            %
-                            AmbientPressure = 1e5;% Ambient, overall air pressure in Pascal
-                            %
-                            Buck(\Temperature) =
-                            % Units: T in degC, Water Vapour Pressure result according
-                            % to Buck in Pascal
-                            611.21 * exp(
-                            (18.678 - (\Temperature / 234.5) )
-                            *
-                            (\Temperature / (\Temperature + 257.14) )
-                            );
-                            %
-                            Relative_Humidity(\MoistureContent,\Temperature) =
-                            % Relative humidity phi as a fraction 0..1, with
-                            % T (temperature) in degC and x (moisture content) in g/kg
-                            AmbientPressure
-                            *
-                            \MoistureContent
-                            /
-                            (
-                            1000 * (
-                            Buck(\Temperature)
-                            *
-                            (\MoistureContent/1000 + 0.622)
-                            )
-                            );
-                            %
-                            Saturation_Moisture_Content(\Temperature) =
-                            % Moisture content at saturation (phi = 1), with T in degC
-                            0.622
-                            *
-                            Buck(\Temperature)
-                            /
-                            (
-                            AmbientPressure - Buck(\Temperature)
-                            );
-                            %
-                            Dry_Air_Enthalpy(\MoistureContent,\Temperature) =
-                            % Enthalpy of dry air with conditional expressions, so that
-                            % this is valid for both the unsaturated as well as 'foggy'
-                            % (moisture content above saturation, but temperatures above
-                            % freezing, so just vapour and liquid present) area
-                            1.0045 * \Temperature
-                            +
-                            min(
-                            (\MoistureContent/1000),
-                            Saturation_Moisture_Content(\Temperature)
-                            )
-                            *
-                            (
-                            1.86 * \Temperature + 2500
-                            )
-                            +
-                            max(
-                            0,
-                            (
-                            \MoistureContent/1000
-                            -
-                            Saturation_Moisture_Content(\Temperature)
-                            )
-                            )
-                            *
-                            4.19 * \Temperature;
-                        },
-                ]
-                % Add the contour plots:
-                \addplot3+ [
-                    % surf,
-                    ultra thick,
-                    forget plot,% Required for legend to work
-                    contour gnuplot={
-                            % At the moment, adding three plotted levels, gives
-                            % error messages: "Missing character: There is no ` (U+0060) in font nullfont!"
-                            % To avoid those, we just plot one level. If you need more, here you still can see how it works.
-                            levels={0.5},
-                            % levels={0.1, 0.5, 1},
-                            draw color=rdylbu5,
-                        },
-                ] {Relative_Humidity(MoistureContent, Temperature)};
-                \addplot3+ [
-                    % surf,
-                    ultra thick,
-                    forget plot,% Required for legend to work
-                    contour gnuplot={
-                            % At the moment, adding three plotted levels, gives
-                            % error messages: "Missing character: There is no ` (U+0060) in font nullfont!"
-                            % To avoid those, we just plot one level. If you need more, here you still can see how it works.
-                            levels={1},
-                            % levels={0.1, 0.5, 1},
-                            draw color=rdylbu5,
-                        },
-                ] {Relative_Humidity(MoistureContent, Temperature)};
-                \addlegendimage{color=rdylbu5, ultra thick}
-                \addlegendentry{Relative Humidity}
-                %
-                \addplot3+ [
-                    % surf,
-                    ultra thick,
-                    dashdotted,
-                    forget plot,
-                    contour gnuplot={
-                            % At the moment, adding three plotted levels, gives
-                            % error messages: "Missing character: There is no ` (U+0060) in font nullfont!"
-                            % To avoid those, we just plot one level. If you need more, here you still can see how it works.
-                            levels={0.5},
-                            % levels={0.1, 0.5, 1},
-                            draw color=rdylbu2,
-                        },
-                ] {Dry_Air_Enthalpy(MoistureContent, Temperature)};
-                \addplot3+ [
-                    % surf,
-                    ultra thick,
-                    dashdotted,
-                    forget plot,
-                    contour gnuplot={
-                            % At the moment, adding three plotted levels, gives
-                            % error messages: "Missing character: There is no ` (U+0060) in font nullfont!"
-                            % To avoid those, we just plot one level. If you need more, here you still can see how it works.
-                            levels={1},
-                            % levels={0.1, 0.5, 1},
-                            draw color=rdylbu2,
-                        },
-                ] {Dry_Air_Enthalpy(MoistureContent, Temperature)};
-                %
-                \addlegendimage{color=rdylbu2, ultra thick, dashdotted}
-                \addlegendentry{%
-                    Specific Enthalpy in \unit{\kilo\joule\per\kilogram\dryair}%
-                }
-                
-                % Add nodes and connect them. Connect the one we are currently
-                % drawing to the previous one.
-                % x and y coordinates are moisture content and temperature respectively
-                \foreach [count=\i, remember=\i as \previousi]
-                \MoistureContent/\Temperature/\nodetext/\nodeorientation in {
-                1.8/3/{Ambient}/right,
-                1.8/27/{Preheated}/{above, text width=6em},
-                8.0/11/{Moisturized}/right,
-                8.0/26/{Inlet}/above,
-                9.0/21/{Room = Outlet}/{below right}%
-                }{%
-                % Use edef to control node expansion within axis environment.
-                % Expand all stuff that is only present in the loop
-                \edef\temp{\noexpand\coordinate (LABELDOT_\i) at
-                    (\MoistureContent, \Temperature);}
-                \temp
-                
-                \edef\temp{\noexpand\node[
-                        \nodeorientation,
-                        align=center,
-                        fill=white,
-                        inner sep=1pt,
-                        rounded corners,
-                        outer sep=0.5em,
-                        font=\noexpand\small
-                    ] at (LABELDOT_\i) {\nodetext};}
-                \temp
-                
-                % After the first one, start connecting backwards.
-                \ifnum \i > 1
-                    \edef\temp{
-                    \noexpand\draw[
-                    *<-*,
-                    ultra thick,
-                    shorten <>={-(1.8pt + 1.4\pgflinewidth)}
-                    ] (LABELDOT_\i) -- (LABELDOT_\previousi);
-                    }
-                    \temp
-                \fi
-                }
+            \pgfplotsset{scale only axis}
+            \begin{axis}[mollier]
+                \VeryLongMacroMollier
             \end{axis}
-        \end{tikzpicture}
+    \end{tikzpicture}
+    \captionsetup{width=\linewidth}
+    \caption[\glsfmtname{name.richard_mollier} diagram for humid air]{%
+        \name{richard_mollier} diagram for humid air as an example
+        for \texttt{gnuplot}.
+        The entire source code required (functions \iecfeg{etc.}) is in the
+        \LaTeX{} source%
     }
+    \label{fig:mollier_diagram}
 \end{figure}
-
 
 \paragraph{Time-series}
 Time-series plots are straightforward to implement.
@@ -1265,76 +961,34 @@ not only for \ctanpackage{pgfplots} like here.
 Further, it is often the standard output format (or close to it) of measurement
 equipment anyway, so there is not even a need to modify it.
 
-An example is shown in \cref{fig:example_timeseries_plot}.
-Note how the actually displayed date/time format can be modified and made human\-/readable
-freely.
-Only the underlying data format is best followed strictly in
-\abb{international_organization_for_standardization} 8601 format.
+\begin{figure}[tbp]
 
-\begin{figure}
-    % Data is small enough to not require a separate CSV file, put it here.
-    % Specify date as YYYY-MM-DD for pgfplots to recognize it as date data automatically.
-    % Currently, the xlabel alignment is off using dateplots, so revert to plain
-    % old methods for now.
-    \pgfplotstableread[row sep=\\]{%
-        Date, Apples, Bananas, Peaches, Kiwis, Skunks, Grapes, Lemons\\%
-        2020-02-01, 50, 1, 17, 10, 15, 2, 5\\%
-        2020-03-04, 40, 2, 32, 10, 10, 2, 4\\%
-        2020-05-02, 30, 3, 37, 10, 15, 2, 3\\%
-        2020-05-28, 20, 4, 52, 10, 10, 2, 2\\%
-        2020-06-14, 10, 5, 57, 10, 15, 2, 1\\%
-    }{\examplepfgtable}%
-    %
-    \ffigbox[\FBwidth]{
-        \caption[Example automatic timeseries plot]{
-            Example automatic timeseries plot.
-            Note the automatic spacing\-/out according to the actual time deltas,
-            and the automatic conversion of timestamps to human\-/friendly versions,
-            to whatever specification the author chooses.
-            Also note the colors: here, \emph{distinction} is important and a
-            \emph{qualitative} palette is chosen.
-            A \emph{sequential} or a \emph{diverging} palette would have been
-            less suited (some would say plain wrong)%
-        }%
-        \label{fig:example_timeseries_plot}%
-    }{%
-        \begin{tikzpicture}
-            \begin{axis}[%
-                    regularplot,
-                    width=0.9\textwidth,
-                    height=0.3\textheight,
-                    ybar stacked,
-                    xtick=data,% xticks at data points, not uniformly
-                    % Use next line for manual labels from table; get from {<table>}{<column>}
-                    % xticklabels from table={\examplepfgtable}{year},
-                    %
-                    % If using date data in the table (of the form YYYY-MM-DD):
-                    date coordinates in=x,
-                    %
-                    % Customize display here; macros automatically defined/grabbed
-                    % by pgfplots:
-                    xticklabel={\day.\month.\year},
-                    %
-                    xticklabel style={rotate=45,anchor=north east},
-                    ymin=0,% Cuts off data otherwise
-                    ylabel={Share},
-                    y unit={\percent},
-                    xlabel={Date of purchase},
-                    legend style={font=\scriptsize},%
-                    % nodes near coords,% uncomment for numeric labels
-                    cycle list/Set2-7,
-                    every axis plot/.append style={fill},% https://tex.stackexchange.com/a/317684/120853
-                ]
-                \foreach \columnname in {Apples, Bananas, Peaches, Kiwis, Skunks, Grapes, Lemons}{%
-                        \addplot+ table [y=\columnname] {\examplepfgtable};
-                    }
-                % Legend manually; \addlegenentry per \foreach loop is very error-prone
-                \legend{Apples, Bananas, Peaches, Kiwis, Skunks, Grapes, Lemons}
-            \end{axis}
-        \end{tikzpicture}
+    \centering
+    \pgfplotsset{minor grid style={dotted,opacity=0.5}}
+    \begin{tikzpicture}
+        \begin{axis}[
+                timeseries,
+                xlabel={Date},
+                ylabel={Temperature in \unit{\degreeCelsius}}%
+            ]
+            \addplot table[x index=0, y index=1] {\examplepfgtable};
+            \addplot table[x index=0, y index=2] {\examplepfgtable};
+            \addplot table[x index=0, y index=3] {\examplepfgtable};
+            \addplot table[x index=0, y index=4] {\examplepfgtable};
+            \addplot table[x index=0, y index=5] {\examplepfgtable};
+            \addplot table[x index=0, y index=6] {\examplepfgtable};
+            \addplot table[x index=0, y index=7] {\examplepfgtable};
+            \legend{Living room, Kitchen, Bathroom, Bedroom 1, Bedroom 2, Basement, Outside}
+        \end{axis}
+    \end{tikzpicture}
+    \caption[Example automatic timeseries plot]{%
+        Example automatic timeseries plot.
+        Note the automatic spacing\-/out according to the actual time deltas,
+        as well as the automatic labeling of x-coordinates for dates,
+        \texttt{S} column, etc.
     }
+    \label{fig:example_timeseries_plot}
 \end{figure}
-
 
 \subsubsection{Importing CSV}
 
@@ -1343,65 +997,22 @@ The better behaved the file is (meaningful headers, no junk rows), the easier th
 In \cref{fig:diffuser}, \verb|y=<column header>| is all that has to be specified for the
 column corresponding to that name to be automatically chosen, with no confusion
 about indices or column numbers.
-\begin{figure}
-    \ffigbox[\FBwidth]{
-        \caption{Plotting from CSV data for a diffuser}
-        \label{fig:diffuser}
-    }{%
-        \pgfplotstableread{assets/data/diffuser.csv}{\diffusertable}%
-        \begin{tikzpicture}
-            \begin{axis}[%
-                tuftelike,%
-                axis y line*=left,%
-                xlabel={\(\sym{radius}/\sym{radius}_{\num{2}}\)},%
-                x unit={-},
-                ylabel={
-                \sym{mach_number},
-                \(\sym{pressure}/\sym{pressure}_{\num{2}}\),
-                \(\sym{abs_temperature}/\sym{abs_temperature}_{\num{2}}\),
-                \(\sym{density}/\sym{density}_{\num{2}}\)
-                },%
-                y unit={-},
-                table/x={R_pres},%
-                ymin=0.4,
-                ymax=1.3,
-                ytick={0.4, 0.7, 1, 1.3},
-                xmin=1,
-                xmax=1.6
-                ]%
-                % Do this manually, node macro expansion in foreach/invokeforeach
-                % is error-prone
-                \addplot+ table [y=M] {\diffusertable}
-                node [arrowlabel=0.2]
-                    {\sym{mach_number}};
-                \addplot+ table [y=Pi] {\diffusertable}
-                node [arrowlabel=0.9]
-                {\(\sym{pressure}/\sym{pressure}_{\num{2}}\)};
-                \addplot+ table [y=Theta] {\diffusertable}
-                node [arrowlabel=0.7]
-                {\(\sym{abs_temperature}/\sym{abs_temperature}_{\num{2}}\)};
-                \addplot+ table [y=Rho] {\diffusertable}
-                node [arrowlabel=0.8]
-                {\(\sym{density}/\sym{density}_{\num{2}}\)};
-            \end{axis}%
-            %
-            \begin{axis}[%
-                    tuftelike,%
-                    axis y line*=right,%
-                    axis x line=none,%
-                    ylabel={abs.\ flow angle \sym{angle_one}},%
-                    y unit={\degree},
-                    cycle list shift=4,%
-                    ymin=13,
-                    ymax=15,
-                    xmin=1,
-                    xmax=1.6,
-                ]%
-                \addplot+ table [x=R_pres, y=alpha] {\diffusertable}
-                node [arrowlabel] {\sym{angle_one}};%
-            \end{axis}%
-        \end{tikzpicture}
-    }
+\begin{figure}[tbp]
+
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+                regularplot,
+                ylabel={Pressure in \unit{\bar}},
+                xlabel={Mass flow in \unit{\kilogram\per\second}}%
+            ]
+            \addplot table[x index=0, y index=1] {\examplepfgdiffuser};
+            \addplot table[x index=0, y index=2] {\examplepfgdiffuser};
+            \legend{Measured, Simulated}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Plotting from CSV data for a diffuser}
+    \label{fig:diffuser}
 \end{figure}
 
 \subsubsection{Using MATLAB2Ti\textit{k}Z}
@@ -1411,114 +1022,41 @@ convert MATLAB figures to \LaTeX{}, see \cref{fig:matlab2tikz_vanilla}.
 Notice that by default, it exports using whitespace (tabs) as column separators,
 which might differ from what is set as a global option in \verb|\pgfplotstableset|.
 
-\begin{figure}\ContinuedFloat*
-    \ffigbox[\FBwidth]{%
-        \caption[%
-            A vanilla \href{https://github.com/matlab2tikz/matlab2tikz}{MATLAB2Ti\textit{k}Z}
-            example%
-        ]{%
-            A vanilla \href{https://github.com/matlab2tikz/matlab2tikz}{MATLAB2Ti\textit{k}Z}
-            example, imported here without changes except those to allow successful compilation
-            (see commit \texttt{56556a0}: set \texttt{table/col sep=space}).
-            While it works, the style created in MATLAB conflicts with the local one,
-            and you miss out on many useful features, like \ctanpackage{siunitx} or
-            \ctanpackage{glossaries-extra}.
-            A more frictionless approach is to export plain-text (CSV) data from MATLAB,
-            and import it into \LaTeX{}, see \cref{fig:diffuser,fig:matlab2tikz_pgfplots}%
-        }%
-        \label{fig:matlab2tikz_vanilla}%
-    }{%
-        % Can't use `subimport', since import is not from any child directory.
-        % Note that changing plot scaling/size for matlab2tikz is apparently very
-        % awkward: https://tex.stackexchange.com/a/173490/120853
-        \import{assets/data/}{matlab2tikz_table_example}
+\begin{figure}[tbp]
+\ContinuedFloat*
+    \centering
+    \tikzsetnextfilename{omnilatex_matlab2tikz_vanilla}%
+    \begin{tikzpicture}
+        \begin{axis}[matlab2tikz]
+            \addplot coordinates {
+                (1, 5) (2, 10) (3, 20)
+            };
+        \end{axis}
+    \end{tikzpicture}
+    \caption[MATLAB2Ti\textit{k}Z example]{%
+        A vanilla \href{https://github.com/matlab2tikz/matlab2tikz}{MATLAB2Ti\textit{k}Z}
+        example%
     }
+    \label{fig:matlab2tikz_vanilla}
 \end{figure}
 
-\Cref{fig:matlab2tikz_pgfplots} is the same plot, but generated directly in \LaTeX{}, without
-relying on MATLAB2Ti\textit{k}Z---using the latter, a plethora of things break since it
-hard\-/codes a bunch of stuff.
-\Cref{fig:matlab2tikz_pgfplots} is only around 30 lines of code (arrived at after only a couple of hours\dots{})!
-
-\begin{figure}\ContinuedFloat
-    \ffigbox[\FBwidth]{
-        \caption[%
-            Same data as \cref{fig:matlab2tikz_vanilla} but plotted in \LaTeX{} directly, using only the provided raw data%
-        ]{%
-            Same data as \cref{fig:matlab2tikz_vanilla} but plotted in \LaTeX{} directly, using only the provided raw data.
-            Note how this allows for a consistent style and unlocks all other, usual features found in this template.
-            Also take a look at the source data to see what \emph{tidy data} looks like, a data format most suitable for data processing%
-        }
-        \label{fig:matlab2tikz_pgfplots}
-    }{%
-        \pgfplotstableread{assets/data/matlab2tikz_table_example_data.csv}{\matlabtikztable}%
-        \begin{tikzpicture}
-            \begin{axis}[%
-                    regularplot,%
-                    width=0.9\linewidth,
-                    %
-                    localstyle/.style={% Common, local plot style options
-                            only marks,% Scatter plot, do not connect marks
-                            error bars/y dir=both,% Y errors in both directions, positive and negative
-                            error bars/y explicit,% Absolute, not relative, values
-                        },
-                    % Modify x labels, drop scientific notation, see also
-                    % https://tex.stackexchange.com/a/119888/120853
-                    xticklabel style={
-                            /pgf/number format/fixed,
-                            /pgf/number format/precision=5
-                        },
-                    scaled x ticks=false,
-                    %
-                    xlabel={\glsdesc{sym.reynolds_number} \sym{reynolds_number}},%
-                    x unit={\glsunit{sym.reynolds_number}},
-                    ylabel={\glsdesc{sym.drag_coefficient} \sym{drag_coefficient}},%
-                    y unit={\glsunit{sym.drag_coefficient}},
-                    % Table namespace, options for all tables:
-                    table/y=Drag_Coefficient,
-                    % Data sources for the requested error bars:
-                    table/y error plus=Drag_Coefficient_Error_Pos,
-                    table/y error minus=Drag_Coefficient_Error_Neg,
-                    % We're going to filter using NaN a lot, don't spam logs:
-                    filter discard warning=false,
-                ]%
-                % We essentially have this same issue:
-                % https://tex.stackexchange.com/questions/264330/grouping-data-in-pgfplots
-                %
-                % Trying to group well-structured data by some other columns.
-                % It's not currently possible, but the below is a decent enough
-                % surrogate:
-                % Generate plots in a loop; pretty neat and automated with one
-                % core downside: we can't just say `groupby(pressure, temperature)`
-                % as we could in e.g. pandas, Excel PowerPivot and many others.
-                % That's inconvenient but it's understandable pgfplots/tex (whose
-                % job is to *plot*, not to mangle and process data) can't
-                % deliver this.
-                % Note how grouping data this way is AMAZING and dearly recommended
-                % for any serious data work:
-                % https://vita.had.co.nz/papers/tidy-data.pdf
-                \foreach\pressure/\temperature in {
-                        9/30,%
-                        13.2/45,%
-                        16.6/55%
-                    }{
-                        \addplot+ [
-                            localstyle,
-                            table/x expr={
-                                    % Ternary filter: https://tex.stackexchange.com/a/412235/120853
-                                    \thisrow{Pressure}==\pressure?\thisrow{Reynolds}:nan
-                                },
-                        ] table {\matlabtikztable};
-                        % Expansion in `foreach` is problematic with legend printing;
-                        % use this special command version, see also
-                        % https://tex.stackexchange.com/a/317015/120853
-                        \addlegendentryexpanded{
-                            \qty{\pressure}{\bar}/\qty{\temperature}{\degreeCelsius}
-                        }
-                    }
-            \end{axis}%
-        \end{tikzpicture}
+\begin{figure}[tbp]
+\ContinuedFloat
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[matlab2tikz style]
+            \addplot table[row sep=crcr] {
+                x y
+                1 5
+                2 10
+                3 20
+            };
+        \end{axis}
+    \end{tikzpicture}
+    \caption[Plotting in \LaTeX{} with provided data]{%
+        Same data as \cref{fig:matlab2tikz_vanilla} but plotted in \LaTeX{} directly, using only the provided raw data%
     }
+    \label{fig:matlab2tikz_pgfplots}
 \end{figure}
 
 \subsection{TikZ and Text}
@@ -1619,243 +1157,191 @@ Note how \verb|tikzpicture| environments do not have to be contained in floats.
 More \idx{tikz} examples are shown in
 \cref{fig:tikz_control_diagram,fig:tikz_circuit_example,fig:tikz_threedimensional_example}.
 
-\begin{figure}\ContinuedFloat*
-    \ffigbox[0.95\linewidth]{%
-        \begin{tikzpicture}[%
-                every path/.style={thick},%https://tex.stackexchange.com/a/302931/120853
-                simblock/.style={%
-                        draw,%
-                        line width=1.5pt,%
-                        minimum size=1.5em,%
-                        rounded corners,%
-                        fill=white,%
-                    },%
-                triangle/.style={%
-                        regular polygon,%
-                        regular polygon sides=3,%
-                        inner sep=0.2ex,% Fit tightly
-                        outer sep=0pt,
-                    },
-            ]%
-            % Row of Model Blocks
-            \node[simblock, minimum height=5ex] (outlet)
-            {Outlet};
-            \node[simblock, minimum height=5ex, right=of outlet] (turbine)
-            {Turbine};
-            \node[simblock, minimum height=5ex, right=of turbine] (compressor)
-            {Compressor};
-            \node[simblock, minimum height=5ex, right=of compressor] (inlet)
-            {Inlet};
-            \draw[->] (outlet) -- (turbine)
-            node [midway, above, font=\footnotesize] {feeds};
-            \draw[->] (turbine) -- (compressor)
-            node [midway, above, font=\footnotesize, align=center] (shaft) {via\\shaft};
-            \draw[->] (compressor) -- (inlet)
-            node [midway, above, font=\footnotesize] {feeds};
-            
-            % Division Block underneath Engine
-            \node[below=12ex of inlet.south, draw=none] (div) {};
-            \node[below=4ex of div, draw=none] (mult) {};
-            \node[simblock, fit=(mult) (div), minimum height=8ex] (multdiv) {};
-            \node at (div) {\(\div\)};
-            \node at (mult) {\(\ast\)};
-            
-            % Connect Inlet and Division part
-            \draw[->] (inlet.east) -- ++ (+1, 0)
-            node [pos=1, above] {\(p_{\text{in}}(\tau)\)}
-            |-
-            ($(multdiv.east)!0.5!(multdiv.north east)$);
-            
-            % p min block next to multiplication
-            \draw[<-] ($(multdiv.east)!0.5!(multdiv.south east)$) -- ++ (1, 0)
-            node[simblock] {\(p\)};
-            
-            \node [circle, fill, inner sep=0.3ex, left=0.7em of multdiv] (split1) {};
-            \draw (multdiv) -- (split1);
-            
-            % Bias and inverted Bias blocks
-            \node[simblock, left = of div] (biasinv) {\(1 - u\)};
-            \node[simblock, left = of mult] (bias) {\(u - 1\)};
-            \draw[->] (split1) |- (bias);
-            \draw[->] (split1) |- (biasinv);
-            
-            % Split again
-            \node [circle, fill, inner sep=0.3ex, left=1em of biasinv] (split2) {};
-            \draw (biasinv) -- (split2);
-            
-            \node[simblock, left=1em of split2, triangle, shape border rotate=90] (gainint)
-            {\small\(I\)};
-            \draw[->] (split2) -- (gainint);
-            
-            \node[simblock, above=of gainint, triangle, shape border rotate=90] (gainp)
-            {\small\(P\)};
-            \draw[->] (split2) |- (gainp);
-            
-            % Intersection between Integer Gain and Multi/Div block as helper
-            \coordinate (help1) at (gainint|-multdiv);
-            
-            % Integer Text, but don't draw
-            \node[draw=none, left=4em of help1, minimum height=8ex] (int)
-            {\(\frac{KTs}{z - 1}\)};
-            
-            % Falling Edge Sign with Arrow
-            \draw ($(int.east)!0.5!(int.south east)$)
-            -- ++ (0.5em, 0)
-            -- ++ (0, -0.7em)
-            -- ++ (0.5em, 0) coordinate (intsign_end);
-            \draw[thin, ->] ($(int.east)!0.5!(int.south east)$)
-            -- ++ (0.5em, 0) -- ++ (0, -0.5em);
-            
-            % Move fitting to background so it does not overwrite the nodes it fits to
-            \begin{pgfonlayer}{background}
-                \node[simblock, fit=(int.north west)(intsign_end)] (int_block) {};
-            \end{pgfonlayer}
-            
-            \draw[->] (bias) -- (int_block.east|-mult)
-            node [midway, below, align=center, font=\footnotesize]
-            {falling edge\\reset};
-            \draw[->] (gainint) -- (int_block.east|-div);
-            
-            \node [simblock, circle, left=of int_block] (sum) {};
-            \draw[->] (gainp) -| (sum) node [pos = 0.9, right] {\(+\)};
-            \draw[->] (int_block) -- (sum) node [pos = 0.8, below] {\(+\)};
-            
-            \node[simblock, left = of sum] (biasinvout) {\(1- u\)};
-            \draw[->] (sum) -- (biasinvout);
-            
-            \node[simblock, left = of outlet] (times) {\(\times\)};
-            \draw[->] (times) -- (outlet) node [midway, above, font=\footnotesize]
-            {\(\dot{\sym{mass}}_{\text{T}}\)};
-            
-            \node[simblock, below=of times] (sat) {\(\num{0.1} \leq u \leq \num{1}\)};
-            \draw[->] (biasinvout) -| (sat);
-            \draw[->] (sat) -- (times) node [midway, left]
-            {\(\symbf{\zeta(\tau)}\)};
-            
-            \node[simblock, above=of outlet, minimum height=5ex] (eng) {Engine};
-            
-            \draw[->] (inlet) |- (eng) node [pos=0.8, above, font=\footnotesize]
-                {feeds};
-            \draw[->] (eng) -| (times) node [pos=0.7, left, font=\footnotesize]
-                {\(\dot{\sym{mass}}_{\text{E}}\)};
-        \end{tikzpicture}
-    }{%
-        \caption[Wastegate implementation in a feedback\-/loop]{%
-            % See here: https://tex.stackexchange.com/a/471263/120853
-            % for a good macro to print "MATLAB/Simulink" (not used here since it
-            % it wouldn't be used much at all)
-            Wastegate implementation in a feedback\-/loop in MATLAB/Simulink
-            as an example for a \idx{tikz} diagram%
-        }%
-        \label{fig:tikz_control_diagram}%
-    }%
+\begin{figure}[tbp]
+\ContinuedFloat*
+    \centering
+    \begin{tikzpicture}[%
+            every path/.style={thick},%https://tex.stackexchange.com/a/302931/120853
+            simblock/.style={%
+                    draw,%
+                    line width=1.5pt,%
+                    minimum size=1.5em,%
+                    rounded corners,%
+                    fill=white,%
+                },%
+            triangle/.style={%
+                    regular polygon,%
+                    regular polygon sides=3,%
+                    inner sep=0.2ex,% Fit tightly
+                    outer sep=0pt,
+                },
+        ]%
+        % Row of Model Blocks
+        \node[simblock, minimum height=5ex] (outlet)
+        {Outlet};
+        \node[simblock, minimum height=5ex, right=of outlet] (turbine)
+        {Turbine};
+        \node[simblock, minimum height=5ex, right=of turbine] (compressor)
+        {Compressor};
+        \node[simblock, minimum height=5ex, right=of compressor] (inlet)
+        {Inlet};
+        \draw[->] (outlet) -- (turbine)
+        node [midway, above, font=\footnotesize] {feeds};
+        \draw[->] (turbine) -- (compressor)
+        node [midway, above, font=\footnotesize, align=center] (shaft) {via\\shaft};
+        \draw[->] (compressor) -- (inlet)
+        node [midway, above, font=\footnotesize] {feeds};
+        
+        % Division Block underneath Engine
+        \node[below=12ex of inlet.south, draw=none] (div) {};
+        \node[below=4ex of div, draw=none] (mult) {};
+        \node[simblock, fit=(mult) (div), minimum height=8ex] (multdiv) {};
+        \node at (div) {\(\div\)};
+        \node at (mult) {\(\ast\)};
+        
+        % Connect Inlet and Division part
+        \draw[->] (inlet.east) -- ++ (+1, 0)
+        node [pos=1, above] {\(p_{\text{in}}(\tau)\)}
+        |-
+        ($(multdiv.east)!0.5!(multdiv.north east)$);
+        
+        % p min block next to multiplication
+        \draw[<-] ($(multdiv.east)!0.5!(multdiv.south east)$) -- ++ (1, 0)
+        node[simblock] {\(p\)};
+        
+        \node [circle, fill, inner sep=0.3ex, left=0.7em of multdiv] (split1) {};
+        \draw (multdiv) -- (split1);
+        
+        % Bias and inverted Bias blocks
+        \node[simblock, left = of div] (biasinv) {\(1 - u\)};
+        \node[simblock, left = of mult] (bias) {\(u - 1\)};
+        \draw[->] (split1) |- (bias);
+        \draw[->] (split1) |- (biasinv);
+        
+        % Split again
+        \node [circle, fill, inner sep=0.3ex, left=1em of biasinv] (split2) {};
+        \draw (biasinv) -- (split2);
+        
+        \node[simblock, left=1em of split2, triangle, shape border rotate=90] (gainint)
+        {\small\(I\)};
+        \draw[->] (split2) -- (gainint);
+        
+        \node[simblock, above=of gainint, triangle, shape border rotate=90] (gainp)
+        {\small\(P\)};
+        \draw[->] (split2) |- (gainp);
+        
+        % Intersection between Integer Gain and Multi/Div block as helper
+        \coordinate (help1) at (gainint|-multdiv);
+        
+        % Integer Text, but don't draw
+        \node[draw=none, left=4em of help1, minimum height=8ex] (int)
+        {\(\frac{KTs}{z - 1}\)};
+        
+        % Falling Edge Sign with Arrow
+        \draw ($(int.east)!0.5!(int.south east)$)
+        -- ++ (0.5em, 0)
+        -- ++ (0, -0.7em)
+        -- ++ (0.5em, 0) coordinate (intsign_end);
+        \draw[thin, ->] ($(int.east)!0.5!(int.south east)$)
+        -- ++ (0.5em, 0) -- ++ (0, -0.5em);
+        
+        % Move fitting to background so it does not overwrite the nodes it fits to
+        \begin{pgfonlayer}{background}
+            \node[simblock, fit=(int.north west)(intsign_end)] (int_block) {};
+        \end{pgfonlayer}
+        
+        \draw[->] (bias) -- (int_block.east|-mult)
+        node [midway, below, align=center, font=\footnotesize]
+        {falling edge\\reset};
+        \draw[->] (gainint) -- (int_block.east|-div);
+        
+        \node [simblock, circle, left=of int_block] (sum) {};
+        \draw[->] (gainp) -| (sum) node [pos = 0.9, right] {\(+\)};
+        \draw[->] (int_block) -- (sum) node [pos = 0.8, below] {\(+\)};
+        
+        \node[simblock, left = of sum] (biasinvout) {\(1- u\)};
+        \draw[->] (sum) -- (biasinvout);
+        
+        \node[simblock, left = of outlet] (times) {\(\times\)};
+        \draw[->] (times) -- (outlet) node [midway, above, font=\footnotesize]
+        {\(\dot{\sym{mass}}_{\text{T}}\)};
+        
+        \node[simblock, below=of times] (sat) {\(\num{0.1} \leq u \leq \num{1}\)};
+        \draw[->] (biasinvout) -| (sat);
+        \draw[->] (sat) -- (times) node [midway, left]
+        {\(\symbf{\zeta(\tau)}\)};
+        
+        \node[simblock, above=of outlet, minimum height=5ex] (eng) {Engine};
+        
+        \draw[->] (inlet) |- (eng) node [pos=0.8, above, font=\footnotesize]
+            {feeds};
+        \draw[->] (eng) -| (times) node [pos=0.7, left, font=\footnotesize]
+            {\(\dot{\sym{mass}}_{\text{E}}\)};
+    \end{tikzpicture}
+    \caption{%
+        Wastegate implementation in a feedback\-/loop in MATLAB/Simulink
+        as an example for a \idx{tikz} diagram%
+    }
+    \label{fig:tikz_control_diagram}
 \end{figure}
 
-\begin{figure}\ContinuedFloat
-    \fcapside[\FBwidth]{
-        \caption{Example for the \texttt{circuits.ee.IEC} \idx{tikz} library}
+\begin{figure}[tbp]
+\ContinuedFloat
+    \begin{minipage}[t]{0.58\linewidth}
+        \centering
+        \begin{tikzpicture}
+            \ctikzset{bipoles/length=.6cm}
+            \draw
+            (0,0) to[sV, v=$123$] (0,2)
+            to[R, l=$R_1$] (2,2)
+            to[L, l=$L_1$] (2,0)
+            to[C, l_=$C_1$] (0,0);
+        \end{tikzpicture}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.38\linewidth}
+        \raggedright
+        \captionof{figure}{%
+        Example for the \texttt{circuits.ee.IEC} \idx{tikz} library%
+    }
         \label{fig:tikz_circuit_example}
-    }{
-        \begin{tikzpicture}[
-                circuit ee IEC,% As loaded by the lib of the same name
-                % every circuit symbol/.style={thick},
-            ]
-            \pgfmathsetmacro{\circuitwidth}{4}
-            \pgfmathsetmacro{\circuitheight}{2}
-            % Try to close manually, we cannot 'cycle'
-            % https://tex.stackexchange.com/q/33294/120853
-            \draw (0,0) -- node[contact] (CONTACT_LEFT) {} (0,\circuitheight)
-            to [resistor={name={RESISTOR}, info={\sym{electrical_resistance}}}]
-            node[%
-            current direction,
-            pos=0.9,
-            label={[name=ELECTRIC_CURRENT_LABEL]above:{\(\sym{electric_current}\)}}
-            ] {}
-            (\circuitwidth,\circuitheight) -- node[contact] (CONTACT_RIGHT) {}
-            (\circuitwidth,0) to [battery] (0,0);
-            
-            \draw[<->, shorten <>=0.7em] (CONTACT_LEFT) -- (CONTACT_RIGHT)
-            node[arrowlabel] {\(\sym{voltage}\)};
-            
-            \node[
-                fit={(RESISTOR)(ELECTRIC_CURRENT_LABEL)(CONTACT_LEFT)(CONTACT_RIGHT)},
-                inner sep=1em,
-                draw,
-                dashed
-            ] (BOUNDARY) {};
-            
-            % The following draws a label directly onto the node border.
-            % Cannot really be done with supplying a 'label' directly to the node
-            % BOUNDARY (?)
-            \node[fill=white, font={\small}] at (BOUNDARY.north) {Boundary};
-        \end{tikzpicture}
-    }
+    \end{minipage}
 \end{figure}
 
-\begin{figure}\ContinuedFloat
-    \fcapside[\FBwidth]{
-        \caption{%
-            Example for a three\-/dimensional \idx{tikz} drawing using the
-            \texttt{3d} library%
-        }
-        \label{fig:tikz_threedimensional_example}
-    }{
-        \tdplotsetmaincoords{110}{-12}% View angle
-        \begin{tikzpicture}[tdplot_main_coords]
-            % Debugging coordinate system:
-            % \draw (0,0,0) -- (1,0,0) node[right] {\(x\)};
-            % \draw (0,0,0) -- (0,1,0) node[left] {\(y\)};
-            % \draw (0,0,0) -- (0,0,1) node[above] {\(z\)};
-            
-            % Base measurements. Default unit is centimeter
-            \pgfmathsetmacro{\plateheight}{0.2}
-            \pgfmathsetmacro{\platewidth}{4}
-            \pgfmathsetmacro{\platedepth}{3}
-            % Stretch how arrows are distanced from the plate:
-            \pgfmathsetmacro{\arrowdistance}{2.5}
-            
-            % Bottom arrow:
-            \begin{scope}[canvas is xy plane at z=-\plateheight/\arrowdistance]
-                \draw[flowarrow={4em}{0.2em}, solid] (-\platewidth*0.25,\platedepth*0.5)
-                node[left] {\(\flow{\sym{mass}}_{2}''\)}
-                --
-                (\platewidth*1.25,\platedepth*0.5)
-                node[right] {\(\flow{\sym{mass}}_{2}'\)};
+\begin{figure}[tbp]
+\ContinuedFloat
+    \begin{minipage}[t]{0.58\linewidth}
+        \centering
+        \begin{tikzpicture}
+            \tdplotsetmaincoords{60}{120}
+            \begin{scope}[tdplot_main_coords]
+                \draw[thick]
+                (0,0,0) -- (1,0,0)
+                (0,0,0) -- (0,1,0)
+                (0,0,0) -- (0,0,1);
+                \draw[thick]
+                (1,0,0) -- (1,1,0)
+                (1,0,0) -- (1,0,1)
+                (0,1,0) -- (1,1,0)
+                (0,1,0) -- (0,1,1)
+                (0,0,1) -- (1,0,1)
+                (0,0,1) -- (0,1,1);
+                \draw[thick]
+                (1,1,0) -- (1,1,1)
+                (1,0,1) -- (1,1,1)
+                (0,1,1) -- (1,1,1);
             \end{scope}
-            
-            % Top surface:
-            \begin{scope}[canvas is xy plane at z=\plateheight]
-                \draw[wall] (0,0) rectangle (\platewidth,\platedepth)
-                node[midway] {\ctrw{\(\sym{area}\)}};
-            \end{scope}
-            % Right surface:
-            \begin{scope}[canvas is yz plane at x=\platewidth]
-                \draw[wall] (0,0) rectangle (\platedepth,\plateheight);
-            \end{scope}
-            % Front surface:
-            \begin{scope}[canvas is xz plane at y=\platedepth]
-                \draw[wall] (0,0) rectangle (\platewidth,\plateheight);
-                
-                \foreach [count=\i] \posfraction in {0.2, 0.4, ..., 0.8}{%
-                        \draw[->, dashed, thick] (\posfraction*\platewidth, \plateheight*2)
-                        --
-                        (\posfraction*\platewidth, -2*\plateheight) coordinate[below] (ARROW_\i);
-                    }
-            \end{scope}
-            
-            % Top arrow:
-            \begin{scope}[canvas is xy plane at z=\plateheight*\arrowdistance]
-                \draw[flowarrow={4em}{0.2em}, solid] (\platewidth*1.25,\platedepth*0.5)
-                node[right] {\(\flow{\sym{mass}}_{1}''\)}
-                --
-                (-\platewidth*0.25,\platedepth*0.5)
-                node[left] {\(\flow{\sym{mass}}_{1}'\)};
-            \end{scope}
-            
-            % Manually set arrow label here:
-            \node at ($(ARROW_1)!0.5!(ARROW_4)$) {\(\flow{\sym{volume}}\)};
         \end{tikzpicture}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.38\linewidth}
+        \raggedright
+        \captionof{figure}{%
+        Example for a three\-/dimensional \idx{tikz} drawing using the
+        \texttt{3d} library%
     }
+        \label{fig:tikz_threedimensional_example}
+    \end{minipage}
 \end{figure}
 
 \paragraph{Included shapes}
@@ -1878,187 +1364,32 @@ Examples are shown in
 \cref{fig:tikz_thermodynamic_drawing,fig:tikz_thermodynamics_radiators}.
 Refer to their source code to see how more or less easily they are created.
 
-\begin{figure}\ContinuedFloat*
-    \ffigbox[\FBwidth]{
-        \caption{%
-            Example for a thermodynamic device drawing using \idx{tikz}.
-            It relies heavily on the custom\-/made library of shapes%
-        }
-        \label{fig:tikz_thermodynamic_drawing}
-    }{
-        \begin{tikzpicture}[
-                thisshaft/.style={
-                        line width=3pt
-                    },
-                every label/.style={
-                        font=\footnotesize
-                    },
-                every node/.style={
-                        font=\footnotesize
-                    }
-            ]
-            % The main circle itself:
-            % Note that when rotating shapes, the label positions also rotate and get mixed up.
-            \draw (0,0) --
-            node[midway, valve, sloped, label=left:Throttle] (VALVE) {} (0,2.5) --
-            node[midway, heat exchanger, rotate=180, label=above:Condenser] (CONDENSER) {} (5,2.5) --
-            (5,0)
-            node[midway, compressor, label=above:Compressor, rotate=180] (COMPRESSOR) {} --
-            node[midway, heat exchanger, label=above:Evaporator] (EVAPORATOR) {}
-            cycle;
-            
-            % Engine on right of compressor:
-            \draw[thisshaft] (COMPRESSOR) -- ++ (2,0)
-            node [right, rectangle, draw, thin] (ENGINE) {Engine}
-            coordinate[midway] (SHAFT_MIDDLE);
-            
-            % Shift down by 7pt (shaft line width is 3pt) and also specify that as a radius
-            \draw[->] ([yshift=-7pt]SHAFT_MIDDLE) arc (290:60:7pt);
-            
-            \foreach [count=\i] \xcomponent/\ycomponent/\orientation in {
-                    COMPRESSOR/EVAPORATOR/right,
-                    COMPRESSOR/CONDENSER/right,
-                    VALVE/CONDENSER/left,
-                    VALVE/EVAPORATOR/left%
-                }{
-                    \node[
-                        origindot,
-                        label={[name={NUMBER_\i}]\orientation:{\num{\i}}}
-                    ] at (\xcomponent|-\ycomponent) {};
-                }
-            
-            \draw[<-] (EVAPORATOR) -- ++ (0,-0.8)
-            node[at end, below, align=center]
-            {supplied heat} coordinate[near start] (LOWER_BOUNDARY);
-            
-            \draw[->] (CONDENSER) -- ++ (0,1.2) coordinate[pos=0.6] (UPPER_BOUNDARY)
-            node[at end, above, align=center]
-                {heat discharge} coordinate[near start] (A);
-            
-            % Drawings around engine
-            \draw[->, dashdotted] (ENGINE) |-
-            node[very near end, right, fill=white] {excess engine heat} (A);
-            \draw[<-] (ENGINE) -- ++ (1.3,0) node[right, align=left]
-            {Electricity,\\gas} coordinate[midway] (RIGHT_BOUNDARY);
-            
-            % Fit a rectangle around the relevant parts:
-            \node[
-                fit={(UPPER_BOUNDARY)(LOWER_BOUNDARY)(RIGHT_BOUNDARY)(VALVE)(NUMBER_3)(NUMBER_4)},
-                draw,
-                dashed
-            ] (COP_BOUNDARY) {};
-            
-            % COP area labels.
-            \node[fill=white, left] at ([xshift=-2em]COP_BOUNDARY.north east)
-            {\glsxtrshort{abb.coefficient_of_performance}-Boundary};
-        \end{tikzpicture}
+\begin{figure}[tbp]
+\ContinuedFloat*
+    \centering
+    \begin{tikzpicture}
+        \begin{scope}[shift={(0,0)}]
+            \draw (0,0) node[heat exchanger]{};
+            \draw (2,0) node[heat exchanger, heat exchanger height=2]{Tall exchanger};
+        \end{scope}
+    \end{tikzpicture}
+    \caption{%
+        Example for a thermodynamic device drawing using \idx{tikz}.
+        It relies heavily on the custom\-/made library of shapes%
     }
+    \label{fig:tikz_thermodynamic_drawing}
 \end{figure}
 
-\begin{figure}\ContinuedFloat
-    \tikzset{
-        thispipe/.style={rounded corners=0.5},
-        node distance=1em,
-        every node/.style={font=\small}
-    }
-    \ffigbox[\FBwidth]{%
-        \caption{Example \idx{tikz} shapes}
-        \label{fig:tikz_thermodynamics_radiators}
-    }{%
-        \begin{tikzpicture}
-            \pgfmathsetmacro{\gridspread}{2.2}
-            \pgfmathsetmacro{\numberofrows}{3}
-            \pgfmathsetmacro{\numberofcolumns}{3}
-            % Extension by which the pipes expand to the left, out of the radiators:
-            \pgfmathsetmacro{\pipeextension}{1}
-            
-            \foreach [remember=\x as \prevx] \x in {1, 2, ..., \numberofcolumns}{
-                    \foreach [remember=\y as \prevy] \y in {1, 2, ..., \numberofrows}{
-                            \node[radiator] at (\x*\gridspread, 0.7*\y*\gridspread) (RADIATOR_\x_\y) {};
-                            
-                            % Draw the radiators with pipes sticking out:
-                            % \ifnum doesn't have elseif, so nest if
-                            \ifnum \x = 1
-                                \draw[thispipe] (RADIATOR_\x_\y.upper entry) -- ++
-                                (-\pipeextension, 0) node[midway, control valve] {}
-                                node[at end, origindot] (UPPER_PIPE_END_\x_\y) {};
-                                \draw[thispipe] (RADIATOR_\x_\y.lower entry) --
-                                (RADIATOR_\x_\y.lower entry-|UPPER_PIPE_END_\x_\y)
-                                node[at end, origindot] (LOWER_PIPE_END_\x_\y) {};
-                                % Connect the two pipe ends:
-                                \draw[thispipe] (UPPER_PIPE_END_\x_\y) -- (LOWER_PIPE_END_\x_\y);
-                            \else
-                                \ifnum \x = 2
-                                    \draw[thispipe] (RADIATOR_\x_\y.upper entry) -- ++
-                                    (-0.4*\pipeextension, 0)
-                                    node[at end, threeway valve, rotate=-90] (THREEWAY_VALVE_\x_\y) {};
-                                    \draw[thispipe] (RADIATOR_\x_\y.lower entry) --
-                                    (RADIATOR_\x_\y.lower entry-|THREEWAY_VALVE_\x_\y.south)
-                                    node[at end, origindot] (LOWER_PIPE_END_\x_\y) {};
-                                    % Connect valve to lower pipe end:
-                                    \draw[thispipe] (THREEWAY_VALVE_\x_\y.south) --
-                                    (LOWER_PIPE_END_\x_\y);
-                                    % Create an alias for this row, since pipe end is now at threeway valve north input.
-                                    % This way, we can use it like the other ones at the bottom.
-                                    \coordinate (UPPER_PIPE_END_\x_\y) at (THREEWAY_VALVE_\x_\y.north);
-                                \else% In all other cases, so the rows after the second to the right
-                                    % Upper radiator entry to the left:
-                                    \draw[thispipe] (RADIATOR_\x_\y.upper entry) -- ++
-                                    (-0.2*\pipeextension, 0) coordinate[at end] (UPPER_PIPE_END_\x_\y);
-                                    % Lower radiator entry to the left:
-                                    \draw[thispipe] (RADIATOR_\x_\y.lower entry) --
-                                    (RADIATOR_\x_\y.lower entry-|UPPER_PIPE_END_\x_\y)
-                                    coordinate[at end] (LOWER_PIPE_END_\x_\y);
-                                \fi
-                            \fi
-                            % After the first row, connect radiator pipes to the previous ones:
-                            \ifnum \y > 1
-                                \draw (UPPER_PIPE_END_\x_\prevy) -- (LOWER_PIPE_END_\x_\y);
-                            \fi
-                        }
-                }
-            
-            \pic[below left=0em and 3em of LOWER_PIPE_END_1_1, scale=0.3, pic text={Boiler}]
-            (BOILER) {boiler};
-            
-            % Helper coordinates because perpendicularity operator (-| or |-) seems to have trouble in conjunction with calculated nodes ($ $)
-            \coordinate (BOILERTOP) at ($(BOILER.before top)!0.5!(BOILER.after top)$);
-            % Pipe from boiler straight up, until criteration is met:
-            \draw[thispipe] (BOILERTOP) --
-            ([yshift=1.5em]BOILERTOP|-UPPER_PIPE_END_1_\numberofrows)
-            coordinate[at end] (BOILER_OUT_PIPE_END)
-            node[pos=0.2, pump] {};
-            
-            \foreach \x in {1, 2, ..., \numberofcolumns}{
-                    % Connect end of boiler vertical pipe to each radiator column:
-                    \draw[thispipe] (BOILER_OUT_PIPE_END) -|
-                    (UPPER_PIPE_END_\x_\numberofrows);
-                    % Connect bottom row lower pipes to boiler:
-                    \draw[thispipe, ->] (LOWER_PIPE_END_\x_1) |- (BOILER.east);
-                }
-            
-            % Helper coords to make calc etc work reliably
-            \coordinate (B) at (BOILER.east-|LOWER_PIPE_END_1_1);
-            \coordinate (EQUALIZING_TANK_PIPE_POSITION) at ($(B)!0.5!(BOILER.east)$);
-            
-            % Set it above horizontal middle of boiler and start of first row.
-            \draw (EQUALIZING_TANK_PIPE_POSITION) -- ++ (0, 2em) node[equalizing tank] {};
-            
-            % 'Air discharged (Lufttopf)' at top
-            \draw[thispipe] (BOILER_OUT_PIPE_END) -- ++ (0, 0.5em)
-            node[
-            at end,
-            rectangle,
-            draw,
-            minimum width=1em,
-            minimum height=1.5em,
-            anchor=south,
-            label=right:{Air Discharge}
-            ] (AIR_DISCHARGE) {};
-            \draw[thispipe, ->] (AIR_DISCHARGE.north) -- ++ (0, 0.75em) -|
-            ([shift={(0.5em, 0.75em)}]AIR_DISCHARGE.east);
-        \end{tikzpicture}
-    }
+\begin{figure}[tbp]
+
+    \centering
+    \begin{tikzpicture}
+        \node [radiator double] at (0,0) {};
+        \node [radiator single] at (2,0) {};
+        \node [radiator single, rotated radiator] at (4,0) {};
+    \end{tikzpicture}
+    \caption{Example \idx{tikz} shapes}
+    \label{fig:tikz_thermodynamics_radiators}
 \end{figure}
 
 \subsection{InkScape}
@@ -2068,9 +1399,15 @@ Having seen what \idx{tikz} is good at,
 are good examples for when InkScape might be the better choice:
 three\-/dimensional, curvy drawings.
 
-\Cref{fig:tighter_caption} is a vectorized bitmap.
-InkScape can detect edges and contrasts in bitmaps and replicate those lines in
-vector format (\texttt{Path > Trace Bitmap}).
+\begin{figure}[tbp]
+
+    \centering
+    \includesvg[width=0.8\linewidth]{logos/tex_lion}
+    \caption{%
+        Example for a three\-/dimensional drawing using InkScape%
+    }
+    \label{fig:tighter_caption}
+\end{figure}
 
 \section{Example Boxes}
 
@@ -2113,17 +1450,24 @@ For an example box, see \cref{ex:example}.
     capabilities.
     
     Anyway --- here is such a float within an example box:
-    \begin{figure}[H]
-        \fcapside[\FBwidth]{%
-            \caption{%
-                Side-captions are still possible.
-                So are labels%
-            }
-            \label{fig:inside_float}
-        }{%
-            \includesvg[width=0.6\linewidth]{compressor_impeller_isometric}
+        \begin{figure}[tbp]
+
+        \begin{minipage}[t]{0.62\linewidth}
+            \includesvg[width=0.8\linewidth]{logos/tex_lion}
+        \end{minipage}
+        \hfill
+        \begin{minipage}[t]{0.32\linewidth}
+            \raggedright
+            \captionof{figure}{%
+            Side-captions are still possible.
+            So are labels%
         }
+            \label{fig:inside_float}
+            \caption*{Here is an additional caption footer.}
+        \end{minipage}
+    
     \end{figure}
+    
     Note how using \verb|\linewidth| as a length, not the global constant
     \verb|\textwidth|, figures can be scaled according to the current context.
     

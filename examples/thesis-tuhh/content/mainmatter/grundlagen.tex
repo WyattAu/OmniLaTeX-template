@@ -56,38 +56,36 @@ Literaturempfehlung deutsch:
 
 Bei den studentischen Arbeiten handelt es sich um wissenschaftliche Arbeiten, für die gewisse, allgemeine Kriterien erfüllt werden müssen. Nach \cite{Voss} lassen sich diese Ansprüche in folgende Adjektive gliedern: \textit{objektiv, präzise, zuverlässig, vollständig, ehrlich} und \textit{ethisch}, siehe auch \cref{fig:Ansprueche_an_die_Wissenschaft}.
 
-\begin{figure}%
-    \ffigbox[\textwidth]{% forest does not work with \FBwidth (?)
-        \caption{Ansprüche an die Wissenschaft \cite{Voss}}
-        \label{fig:Ansprueche_an_die_Wissenschaft}
-    }{
-        \footnotesize
-        \begin{forest}
-            forked edges,% Instead of direct connections, draw edges
-            for tree={%
-                    grow'=south,
-                    anchor=north,
-                    where level=0{}{calign=first},% works like {if}{else}
-                    %
-                    % Put all nodes of same level onto same tier also, aligning
-                    % them vertically:
-                    tier/.pgfmath=level(),
-                    %
-                    where level=1{font={\bfseries}}{},%
-                },%
-            % Decrease distance to only affect root-first level with s sep, see
-            % https://tex.stackexchange.com/a/188461/120853
-            [Ansprüche an die Wissenschaft, anchor=south, for children={s sep-=1em}
-                        [Ansprüche an die Wissenschaft]
-                        [objektiv]
-                        [präzise]
-                        [zuverlässig]
-                        [vollständig]
-                        [ehrlich]
-                        [ethisch]
-                ]
-        \end{forest}
-    }
+\begin{figure}[tbp]
+    \centering
+    \footnotesize
+    \begin{forest}
+        forked edges,% Instead of direct connections, draw edges
+        for tree={%
+                grow'=south,
+                anchor=north,
+                where level=0{}{calign=first},% works like {if}{else}
+                %
+                % Put all nodes of same level onto same tier also, aligning
+                % them vertically:
+                tier/.pgfmath=level(),
+                %
+                where level=1{font={\bfseries}}{},%
+            },%
+        % Decrease distance to only affect root-first level with s sep, see
+        % https://tex.stackexchange.com/a/188461/120853
+        [Ansprüche an die Wissenschaft, anchor=south, for children={s sep-=1em}
+                    [Ansprüche an die Wissenschaft]
+                    [objektiv]
+                    [präzise]
+                    [zuverlässig]
+                    [vollständig]
+                    [ehrlich]
+                    [ethisch]
+            ]
+    \end{forest}
+    \caption{Ansprüche an die Wissenschaft \cite{Voss}}
+    \label{fig:Ansprueche_an_die_Wissenschaft}
 \end{figure}
 
 Diese Kriterien werden nun kurz umrissen, wobei hierfür die Erläuterungen aus \cite{Voss} übernommen werden. \textit{Objektivität} bedeutet, dass eine möglichst neutrale und analysierende Position zum bearbeiteten Thema eingenommen wird. Die gewonnenen Resultate sollten \textit{präzise}, d.\,h. eindeutig und verständlich für den Leser sein. Ergebnisse sind \textit{zuverlässig}, wenn bei wiederholten Untersuchungen (bspw. Messungen) jeweils die gleichen Ergebnisse auftreten. Dieses Kriterium ist nicht immer erfüllbar, da eine Situation geschaffen werden muss, in der alle Einflussfaktoren konstant bleiben.

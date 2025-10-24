@@ -95,4 +95,15 @@
 
 \RequirePackage{cancel}% Cancel out math in equations
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% General Helper Macros
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\providecommand*{\fakeverb}[1]{%
+    \begingroup
+        \ttfamily
+        \detokenize{#1}%
+    \endgroup
+}
+
 \endinput

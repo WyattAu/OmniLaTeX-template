@@ -89,43 +89,33 @@ also feature very broad support for all sorts of symbols and characters, as well
 shapes and weights and combinations thereof.
 The latter is demonstrated in \cref{tab:main_font_examples}.
 %
-\begin{table}\ContinuedFloat*
-    \ttabbox{%
-        % Brackets hold entry that will go into List of Tables (short form)
-        \caption[Main/Roman Font Examples]{%
-            Examples for font features offered by the main roman font.
-            Notice the small vertical white space after the fourth row,
-            nicely separating content that is slightly dissimilar%
-        }%
-        % Use a string like 'tab:' to help with organization and auto-complete
-        % when reffing
-        \label{tab:main_font_examples}
-    }{%
-        \small
-        \begin{tabular}{
-                % @{<value>} specifies the column separator;
-                % Use @{} to remove white space from sides (empty value)
-                @{}
-                l% If no other significant reason, left-align
-                l
-                @{}
-            }
-            \toprule
-            Feature                        & Sample Text                   \\
-            \midrule
-            Regular                        & \sampletext                   \\
-            \textbf{Bold}                  & \textbf{\sampletext}          \\
-            \textit{Italics}               & \textit{\sampletext}          \\
-            \textbf{\textit{Bold Italics}} & \textbf{\textit{\sampletext}} \\
-            % Some inconspicuous vertical separation,
-            % more visually pleasing than a full rule
-            \addlinespace
-            \textsc{Small Capitals}        & \textsc{\sampletext}          \\
-            \textbf{\textsc{Bold SC}}      & \textbf{\textsc{\sampletext}} \\
-            \textit{\textsc{Italics SC}}   & \textit{\textsc{\sampletext}} \\
-            \bottomrule
-        \end{tabular}
-    }%
+\begin{table}[tbp]\ContinuedFloat*
+    \caption[Main/Roman Font Examples]{%
+        Examples for font features offered by the main roman font.
+        Notice the small vertical white space after the fourth row,
+        nicely separating content that is slightly dissimilar%
+    }
+    \label{tab:main_font_examples}
+    \centering
+    \small
+    \begin{tabular}{%
+            @{}
+            l
+            l
+            @{}}
+        \toprule
+        Feature                        & Sample Text                   \\
+        \midrule
+        Regular                        & \sampletext                   \\
+        \textbf{Bold}                  & \textbf{\sampletext}          \\
+        \textit{Italics}               & \textit{\sampletext}          \\
+        \textbf{\textit{Bold Italics}} & \textbf{\textit{\sampletext}} \\
+        \addlinespace
+        \textsc{Small Capitals}        & \textsc{\sampletext}          \\
+        \textbf{\textsc{Bold SC}}      & \textbf{\textsc{\sampletext}} \\
+        \textit{\textsc{Italics SC}}   & \textit{\textsc{\sampletext}} \\
+        \bottomrule
+    \end{tabular}
 \end{table}
 
 Combine all that with \ctanpackage{microtype} (a package taking care of typesetting
@@ -254,114 +244,112 @@ The \ctanpackage{physics} package has some
 and as such, this document relies on a couple custom macros in place of it, see
 \cref{tab:predefined_math_macros}.
 
-\begin{table}
-    \ttabbox{%
-        \caption[Predefined math macros]{%
-            Predefined math macros.
-            Refer to the source code for help on the syntax.
-            For derivatives, the starred macros yield partial derivatives%
-        }%
-        \label{tab:predefined_math_macros}
-    }{%
-        \renewcommand*{\arraystretch}{1.8}% For the fracs, increase spacing (local effect)
-        \small
-        \begin{tabular}{%
-                @{}
-                l
-                l
-                @{}
-            }
-            % floatrow cannot be used with \verb, or even \texttt and escaped special
-            % characters, see "Limitations" in floatrow docs.
-            % As a consequence, use normal names and refer the reader to the source
-            % code.
-            \toprule
-            Name                                & Examples                                                                                       \\
-            \midrule
-            Mean                                & \(\mean{\sym{density}}\), \(\mean{\sym{area}}\)                                                \\
-            Logarithmic Mean                    & \(\logmean{\sym{density}}\), \(\logmean{\sym{area}}\)                                          \\
-            % The starred variant scales automatically:
-            Absolute\mpfootnotemark[1]          & \(\abs{\sym{density}}\), \(\abs{\sym{area}}\), \(\abs{\frac{\sym{area}^{2}}{\sym{area}^{3}}}\) \\
-            Flow                                & \(\flow{\sym{mass}}\), \(\flow{\sym{enthalpy}}\)                                               \\
-            Delta                               & \(\difference{\sym{volume}}\), \(\difference{\symspec{enthalpy}}\)                             \\
-            Nabla Operator                      & 
-            \(
-            \nablaoperator{\sym{first_cart_coord}},
-            \nablaoperator[3]{\sym{first_cart_coord}}
-            \)                                                                                                                                   \\
-            Vectors                             & \(\vect{\sym{first_cart_coord}}\), \(\vect{A}\)                                                \\
-            \addlinespace
-            Derivatives                         & 
-            \(
-            \deriv{\sym{mass}},
-            \deriv[2]{\sym{first_cart_coord}},
-            \deriv*{\sym{mass}},
-            \deriv*[2]{\sym{first_cart_coord}}
-            \)                                                                                                                                   \\
-            Fractional Deriv.                   & 
-            \(
-            \fracderiv{\sym{voltage}}{\sym{time}},
-            \fracderiv[2]{\sym{second_cart_coord}}{\sym{first_cart_coord}},
-            \fracderiv*{\sym{voltage}}{\sym{time}},
-            \fracderiv*[2]{\sym{second_cart_coord}}{\sym{first_cart_coord}},
-            \fracderiv{\symspec{enthalpy}}{\sym{abs_temperature}},
-            \fracderiv[2]{\symspec{enthalpy}}{\sym{abs_temperature}},
-            \fracderiv*{\symspec{enthalpy}}{\sym{abs_temperature}},
-            \fracderiv*[2]{\symspec{enthalpy}}{\sym{abs_temperature}}
-            \)                                                                                                                                   \\
-            Time Deriv.\mpfootnotemark[2]       & 
-            \(
-            \timederiv{\sym{voltage}},
-            \timederiv[2]{\sym{second_cart_coord}},
-            \timederiv*{\sym{voltage}},
-            \timederiv*[2]{\sym{first_cart_coord}}
-            \)                                                                                                                                   \\
-            Positional Deriv.\mpfootnotemark[2] & 
-            \(
-            \posderiv{\sym{volume}},
-            \posderiv[2]{\sym{velocity}},
-            \posderiv*{\sym{volume}},
-            \posderiv*[2]{\sym{velocity}}
-            \)                                                                                                                                   \\
-            \addlinespace
-            % The starred variant scales automatically. The non-starred version
-            % does not scale.
-            % Supply the optional argument for manual control of the size, e.g.
-            % `\abs[\Bigg]{\frac{a}{b}}`, should this ever be needed.
-            Parentheses\mpfootnotemark[1]       & 
-            \(
-            \parens*{x},
-            \parens*{x_{2}},
-            \parens*{x^{2}},
-            \parens*{\frac{x}{y}},
-            \parens*{\frac{x^{2}}{y^{3}}}
-            \)                                                                                                                                   \\
-            Brackets\mpfootnotemark[1]          & 
-            \(
-            \brackets*{x},
-            \brackets*{x_{2}},
-            \brackets*{x^{2}},
-            \brackets*{\frac{x}{y}},
-            \brackets*{\frac{x^{2}}{y^{3}}}
-            \)                                                                                                                                   \\
-            Braces\mpfootnotemark[1]            & 
-            \(
-            \braces*{x},
-            \braces*{x_{2}},
-            \braces*{x^{2}},
-            \braces*{\frac{x}{y}},
-            \braces*{\frac{x^{2}}{y^{3}}}
-            \)                                                                                                                                   \\
-            \bottomrule
-        \end{tabular}
-        \footnotetext[1]{%
-            These scale automatically according to their content, using \ctanpackage{mathtools}.%
-        }%
-        \footnotetext[2]{%
-            As a shortcut version of fractional derivatives.%
-        }%
+\begin{table}[tbp]
+    \caption[Predefined math macros]{%
+        Predefined math macros.
+        Refer to the source code for help on the syntax.
+        For derivatives, the starred macros yield partial derivatives%
     }
+    \label{tab:predefined_math_macros}
+    \centering
+    {\renewcommand*{\arraystretch}{1.8}%
+    \small
+    \begin{tabular}{%
+            @{}
+            l
+            l
+            @{}
+        }
+        % floatrow cannot be used with \verb, or even \texttt and escaped special
+        % characters, see "Limitations" in floatrow docs.
+        % As a consequence, use normal names and refer the reader to the source
+        % code.
+        \toprule
+        Name                                & Examples                                                                                       \\
+        \midrule
+        Mean                                & \(\mean{\sym{density}}\), \(\mean{\sym{area}}\)                                                \\
+        Logarithmic Mean                    & \(\logmean{\sym{density}}\), \(\logmean{\sym{area}}\)                                          \\
+        % The starred variant scales automatically:
+        Absolute\footnotemark[1]          & \(\abs{\sym{density}}\), \(\abs{\sym{area}}\), \(\abs{\frac{\sym{area}^{2}}{\sym{area}^{3}}}\) \\
+        Flow                                & \(\flow{\sym{mass}}\), \(\flow{\sym{enthalpy}}\)                                               \\
+        Delta                               & \(\difference{\sym{volume}}\), \(\difference{\symspec{enthalpy}}\)                             \\
+        Nabla Operator                      & \\
+        \(
+        \nablaoperator{\sym{first_cart_coord}},
+        \nablaoperator[3]{\sym{first_cart_coord}}
+        \)                                                                                                                                   \\
+        Vectors                             & \(\vect{\sym{first_cart_coord}}\), \(\vect{A}\)                                                \\
+        \addlinespace
+        Derivatives                         & \\
+        \(
+        \deriv{\sym{mass}},
+        \deriv[2]{\sym{first_cart_coord}},
+        \deriv*{\sym{mass}},
+        \deriv*[2]{\sym{first_cart_coord}}
+        \)                                                                                                                                   \\
+        Fractional Deriv.                   & \\
+        \(
+        \fracderiv{\sym{voltage}}{\sym{time}},
+        \fracderiv[2]{\sym{second_cart_coord}}{\sym{first_cart_coord}},
+        \fracderiv*{\sym{voltage}}{\sym{time}},
+        \fracderiv*[2]{\sym{second_cart_coord}}{\sym{first_cart_coord}},
+        \fracderiv{\symspec{enthalpy}}{\sym{abs_temperature}},
+        \fracderiv[2]{\symspec{enthalpy}}{\sym{abs_temperature}},
+        \fracderiv*{\symspec{enthalpy}}{\sym{abs_temperature}},
+        \fracderiv*[2]{\symspec{enthalpy}}{\sym{abs_temperature}}
+        \)                                                                                                                                   \\
+        Time Deriv.\footnotemark[2]       & \\
+        \(
+        \timederiv{\sym{voltage}},
+        \timederiv[2]{\sym{second_cart_coord}},
+        \timederiv*{\sym{voltage}},
+        \timederiv*[2]{\sym{first_cart_coord}}
+        \)                                                                                                                                   \\
+        Positional Deriv.\footnotemark[2] & \\
+        \(
+        \posderiv{\sym{volume}},
+        \posderiv[2]{\sym{velocity}},
+        \posderiv*{\sym{volume}},
+        \posderiv*[2]{\sym{velocity}}
+        \)                                                                                                                                   \\
+        \addlinespace
+        % The starred variant scales automatically. The non-starred version
+        % does not scale.
+        % Supply the optional argument for manual control of the size, e.g.
+        % `\abs[\Bigg]{\frac{a}{b}}`, should this ever be needed.
+        Parentheses\footnotemark[1]       & \\
+        \(
+        \parens*{x},
+        \parens*{x_{2}},
+        \parens*{x^{2}},
+        \parens*{\frac{x}{y}},
+        \parens*{\frac{x^{2}}{y^{3}}}
+        \)                                                                                                                                   \\
+        Brackets\footnotemark[1]          & \\
+        \(
+        \brackets*{x},
+        \brackets*{x_{2}},
+        \brackets*{x^{2}},
+        \brackets*{\frac{x}{y}},
+        \brackets*{\frac{x^{2}}{y^{3}}}
+        \)                                                                                                                                   \\
+        Braces\footnotemark[1]            & \\
+        \(
+        \braces*{x},
+        \braces*{x_{2}},
+        \braces*{x^{2}},
+        \braces*{\frac{x}{y}},
+        \braces*{\frac{x^{2}}{y^{3}}}
+        \)                                                                                                                                   \\
+        \bottomrule
+    \end{tabular}}
 \end{table}
+\footnotetext[1]{%
+    These scale automatically according to their content, using \ctanpackage{mathtools}.%
+}
+\footnotetext[2]{%
+    As a shortcut version of fractional derivatives.%
+}
 
 \subsubsection{Symbols}
 
@@ -586,31 +574,29 @@ Importantly, and in contrast to most other free sans\-/serif fonts, it comes wit
 the bells and whistles required for stunts, see \cref{tab:sans_font_examples}.
 This even includes small\-/capitals support.
 
-\begin{table}\ContinuedFloat
-    \ttabbox{%
-        \caption[Sans-Serif Examples]{%
-            Examples for font features offered by the sans-serif font%
+\begin{table}[tbp]\ContinuedFloat
+    \caption[Sans-Serif Examples]{
+        Examples for font features offered by the sans-serif font%
+    }
+    \label{tab:sans_font_examples}
+    \centering
+    {\sffamily
+    \begin{tabular}{
+            @{}
+            l
+            l
+            @{}
         }%
-        \label{tab:sans_font_examples}
-    }{%
-        \sffamily
-        \begin{tabular}{
-                @{}
-                l
-                l
-                @{}
-            }%
-            \toprule
-            Feature                        & Sample Text                   \\
-            \midrule
-            Regular                        & \sampletext                   \\
-            \textbf{Bold}                  & \textbf{\sampletext}          \\
-            \textit{Italics}               & \textit{\sampletext}          \\
-            \textbf{\textit{Bold Italics}} & \textbf{\textit{\sampletext}} \\
-            \textsc{SC}                    & \textsc{\sampletext}          \\
-            \bottomrule
-        \end{tabular}
-    }%
+        \toprule
+        Feature                        & Sample Text                   \\
+        \midrule
+        Regular                        & \sampletext                   \\
+        \textbf{Bold}                  & \textbf{\sampletext}          \\
+        \textit{Italics}               & \textit{\sampletext}          \\
+        \textbf{\textit{Bold Italics}} & \textbf{\textit{\sampletext}} \\
+        \textsc{SC}                    & \textsc{\sampletext}          \\
+        \bottomrule
+    \end{tabular}}
 \end{table}
 
 \subsection{Mono-Spaced}
@@ -638,31 +624,29 @@ italics\-/like result.
 Italics are a nice but uncritical feature for code listings, so this should be okay.
 See for yourself in \cref{tab:mono_font_examples}.
 
-\begin{table}\ContinuedFloat
-    \ttabbox{%
-        \caption[Monospaced Examples]{%
-            Examples for font features offered by the monospaced font.
-            The italics are indeed faked and not real glyphs, just slanted
-            regular shapes%
+\begin{table}[tbp]\ContinuedFloat
+    \caption[Monospaced Examples]{
+        Examples for font features offered by the monospaced font.
+        The italics are indeed faked and not real glyphs, just slanted
+        regular shapes%
+    }
+    \label{tab:mono_font_examples}
+    \centering
+    {\ttfamily
+    \begin{tabular}{
+            @{}
+            l
+            l
+            @{}
         }%
-        \label{tab:mono_font_examples}
-    }{%
-        \ttfamily
-        \begin{tabular}{
-                @{}
-                l
-                l
-                @{}
-            }%
-            \toprule
-            Feature          & Sample Text          \\
-            \midrule
-            Regular          & \sampletext          \\
-            \textbf{Bold}    & \textbf{\sampletext} \\
-            \textit{Italics} & \textit{\sampletext} \\
-            \bottomrule
-        \end{tabular}
-    }%
+        \toprule
+        Feature          & Sample Text          \\
+        \midrule
+        Regular          & \sampletext          \\
+        \textbf{Bold}    & \textbf{\sampletext} \\
+        \textit{Italics} & \textit{\sampletext} \\
+        \bottomrule
+    \end{tabular}}
 \end{table}
 
 \subsection{Symbols}
@@ -708,80 +692,37 @@ The language can be switched dynamically, and all content will be adjusted, see
 More languages can be added easily in the translations file.
 % Note that the \verb|listing| type of \ctanpackage{cleveref} will only work with
 % the main document language and is currently not able to be switched dynamically.
-\begin{table}
-    \ttabbox{%
-        \caption{%
-            Available languages and dynamic switching.
-            Note how the commands are language\-/dependent; no manual adjustments
-            necessary%
-        }%
-        \label{tab:languages}%
-    }{%
-        \footnotesize
-        \begin{tabular}{
-                @{}
-                *3{l}
-                p{0.15\linewidth}
-                p{0.25\linewidth}
-                @{}
-            }
-            \toprule
-            Language                                           & Quotes & Numerals & Headers \iecfeg{etc.} & Hyphenation \\
-            \midrule
-            English                                            & 
-            % An alternative command is \textenglish, \textgerman etc.
-            % However, that command can break due to macro expansion stuff,
-            % if it contains macros and not just plain text.
-            \begin{english}\enquote{Quote!}\end{english}       & 
-            \begin{english}\qty{100.2}{\meter}\end{english}    & 
-            % polyglossia \begin{<language>} environment seems to introduce
-            % empty lines in paragraph columns; remove them manually.
-            \vspace{-\baselineskip}% This is guesswork; haven't figured this out yet
-            \begin{english}%
-                \glossaryname{},%
-                \cref{fig:censorbox},
-                \cref{tab:main_font_examples},
-                \cref{ch:base-features},
-                \cref{lst:float_example}
-            \end{english} & 
-            \vspace{-\baselineskip}% This is guesswork; haven't figured this out yet
-            \begin{english}
-                This is a random text intended to show of hyphenation and line
-                endings in the respective language.
-                It is therefore a bit longer, so hopefully some words will break
-                at the word boundaries.
-                This cannot be guaranteed however.
-                So there is to hoping that this test shows off the hyphenation
-                rules and capabilities put into place by
-                \ctanpackage{polyglossia}.
-            \end{english}
-            \\
-            German                                             & 
-            \begin{german}\enquote{Zitat!}\end{german}         & 
-            \begin{german}\qty{100.2}{\meter}\end{german}      & 
-            \vspace{-\baselineskip}% This is guesswork; haven't figured this out yet
-            \begin{german}
-                \glossaryname{},
-                \cref{fig:censorbox},
-                \cref{tab:main_font_examples},
-                \cref{ch:base-features},
-                \cref{lst:float_example}
-            \end{german}                    & 
-            \vspace{-\baselineskip}% This is guesswork; haven't figured this out yet
-            \begin{german}
-                Dies ist ein zufälliger Text, der die Worttrennungsregeln und
-                Satzenden der jeweiligen Sprache demonstrieren soll.
-                Er ist daher etwas länger, sodass manche Wörter hoffentlich
-                an den Seitenrändern gebrochen werden.
-                Dies kann allerdings nicht garantiert werden.
-                Wir können also nur hoffen, dass dieser Test die
-                Silbentrennungsregeln und -fähigkeiten des
-                \ctanpackage{polyglossia} Pakets.
-            \end{german}%
-            \\
-            \bottomrule
-        \end{tabular}
-    }%
+\begin{table}[tbp]
+    \caption{
+        Available languages and dynamic switching.
+        Note how the commands are language\-/dependent; no manual adjustments
+        necessary%
+    }
+    \label{tab:languages}
+    \centering
+    \footnotesize
+    \begin{tabular}{
+            @{}
+            *3{l}
+            p{0.15\linewidth}
+            p{0.25\linewidth}
+            @{}
+        }
+        \toprule
+        Language                                           & Quotes & Numerals & Headers \iecfeg{etc.} & Hyphenation \\
+        \midrule
+        English                                            &
+        \begin{english}\enquote{Quote!}\end{english}       &
+        \begin{english}\qty{100.2}{\meter}\end{english}    &
+        \parbox{0.15\linewidth}{\centering\begin{english}\MakeUppercase{Header}\end{english}} &
+        \parbox{0.25\linewidth}{\centering\begin{english}\hyphenation{read-ing}\end{english}} \\
+        German                                             &
+        \begin{german}\enquote{Zitat!}\end{german}         &
+        \begin{german}\qty{100,2}{\meter}\end{german}     &
+        \parbox{0.15\linewidth}{\centering\begin{german}\MakeUppercase{\"Uber\"erschrift}\end{german}} &
+        \parbox{0.25\linewidth}{\centering\begin{german}\hyphenation{Zu-sam-men-ar-beit}\end{german}} \\
+        \bottomrule
+    \end{tabular}
 \end{table}
 
 \section{Sectioning}
@@ -1041,17 +982,15 @@ secret:
 \censor{today is \DTMtoday{}}.
 
 Float contents can also be censored, as illustrated in \cref{fig:censorbox}.
-\begin{figure}
-    \ffigbox[\FBwidth]{%
-        \caption{Example for a censoring box}%
-        \label{fig:censorbox}%
-    }{%
-        \censorbox{%
-            % Having issued \graphicspath globally, we do not have to specify the full
-            % path here. Not even a file extension is necessary.
-            \includegraphics[width=0.5\textwidth]{field}
-        }%
+\begin{figure}[tbp]
+    \centering
+    \censorbox{%
+        % Having issued \graphicspath globally, we do not have to specify the full
+        % path here. Not even a file extension is necessary.
+        \includegraphics[width=0.5\textwidth]{field}
     }
+    \caption{Example for a censoring box}
+    \label{fig:censorbox}
 \end{figure}
 
 \section{Glossaries}
@@ -1206,65 +1145,63 @@ Another useful command might be, to access the description, aka the name of your
 for symbols. Therefore just use \verb|\glsdesc{<category>.<entry name>}| like here \glsdesc{sym.area}
 for the Symbol \sym{area}.
 
-\begin{table}
-    \ttabbox{%
-        % Brackets hold entry that will go into List of Tables (short form)
-        \caption[Predefined glossaries]{%
-            Predefined glossaries with their respective \texttt{*.bib} files,
-            invoking commands and list occurrence in the document%
-        }%
-        % Use a string like 'tab:' to help with organization and auto-complete
-        % when reffing
-        \label{tab:available_bib_files}
-    }{%
-        \small
-        \begin{tabular}{
-                % @{<value>} specifies the column separator;
-                % Use @{} to remove white space from sides (empty value)
-                @{}
-                *3{l}% If no other significant reason, left-align
-                @{}
-            }
-            \toprule
-            Name (\texttt{.bib})                 & Command                      & Listed in / Description       \\
-            \midrule
-            % \nameref is courtesy of the nameref package, which is part of
-            % hyperref. It references the target by name, e.g. Chapter name.
-            % However, that does not work very well for generated chapter names.
-            \texttt{terms}                       & \texttt{\textbackslash idx}  & Index \textrightarrow{} Terms \\
-            \texttt{names}                       & \texttt{\textbackslash name} & Index \textrightarrow{} Names \\
-            \addlinespace
-            \texttt{roman}                       & 
-            \texttt{\textbackslash sym}          & 
-            \nameref{ch:glossary} \textrightarrow{} Symbols \textrightarrow{} Roman                             \\
-            \texttt{greek}                       & 
-            \texttt{\textbackslash sym}          & 
-            \nameref{ch:glossary} \textrightarrow{} Symbols \textrightarrow{} Greek                             \\
-            \texttt{other}                       & 
-            \texttt{\textbackslash sym}          & 
-            \nameref{ch:glossary} \textrightarrow{} Symbols \textrightarrow{} Other                             \\
-            \addlinespace
-            \texttt{subscripts}                  & 
-            \texttt{\textbackslash sub}          & 
-            \nameref{ch:glossary} \textrightarrow{} Subscripts                                                  \\
-            \addlinespace
-            \texttt{constants}\mpfootnotemark[1] & 
-            \texttt{\textbackslash cons}         & 
-            \nameref{ch:glossary} \textrightarrow{} Numbers                                                     \\
-            \addlinespace
-            \texttt{abbreviations}               & 
-            \texttt{\textbackslash abb}          & 
-            \nameref{ch:glossary} \textrightarrow{} Acronyms                                                    \\
-            \bottomrule
-        \end{tabular}
-        \footnotetext[1]{%
-            Constants like \cons{pi} are toy examples for this document.
-            However, this glossary section is very convenient to share assumptions
-            and used constants in a clear and concise way in one central place,
-            aiding reproducibility and overall document integrity.%
+\begin{table}[tbp]
+    % Brackets hold entry that will go into List of Tables (short form)
+    \caption[Predefined glossaries]{%
+        Predefined glossaries with their respective \texttt{*.bib} files,
+        invoking commands and list occurrence in the document%
+    }
+    % Use a string like 'tab:' to help with organization and auto-complete
+    % when reffing
+    \label{tab:available_bib_files}
+    \centering
+    \small
+    \begin{tabular}{
+            % @{<value>} specifies the column separator;
+            % Use @{} to remove white space from sides (empty value)
+            @{}
+            *3{l}% If no other significant reason, left-align
+            @{}
         }
-    }%
+        \toprule
+        Name (\texttt{.bib})                 & Command                      & Listed in / Description       \\
+        \midrule
+        % \nameref is courtesy of the nameref package, which is part of
+        % hyperref. It references the target by name, e.g. Chapter name.
+        % However, that does not work very well for generated chapter names.
+        \texttt{terms}                       & \texttt{\textbackslash idx}  & Index \textrightarrow{} Terms \\
+        \texttt{names}                       & \texttt{\textbackslash name} & Index \textrightarrow{} Names \\
+        \addlinespace
+        \texttt{roman}                       &
+        \texttt{\textbackslash sym}          &
+        \nameref{ch:glossary} \textrightarrow{} Symbols \textrightarrow{} Roman                             \\
+        \texttt{greek}                       &
+        \texttt{\textbackslash sym}          &
+        \nameref{ch:glossary} \textrightarrow{} Symbols \textrightarrow{} Greek                             \\
+        \texttt{other}                       &
+        \texttt{\textbackslash sym}          &
+        \nameref{ch:glossary} \textrightarrow{} Symbols \textrightarrow{} Other                             \\
+        \addlinespace
+        \texttt{subscripts}                  &
+        \texttt{\textbackslash sub}          &
+        \nameref{ch:glossary} \textrightarrow{} Subscripts                                                  \\
+        \addlinespace
+        \texttt{constants}\footnotemark[1] &
+        \texttt{\textbackslash cons}         &
+        \nameref{ch:glossary} \textrightarrow{} Numbers                                                     \\
+        \addlinespace
+        \texttt{abbreviations}               &
+        \texttt{\textbackslash abb}          &
+        \nameref{ch:glossary} \textrightarrow{} Acronyms                                                    \\
+        \bottomrule
+    \end{tabular}
 \end{table}
+\footnotetext[1]{%
+    Constants like \cons{pi} are toy examples for this document.
+    However, this glossary section is very convenient to share assumptions
+    and used constants in a clear and concise way in one central place,
+    aiding reproducibility and overall document integrity.%
+}
 
 \paragraph{Modifying Print Output}
 To use glossary entries but not print them in a glossary, comment out the entire

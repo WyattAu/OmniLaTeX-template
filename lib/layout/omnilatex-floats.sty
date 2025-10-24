@@ -20,6 +20,7 @@
 
 \RequirePackage{caption}
 \RequirePackage{xparse}
+\RequirePackage{array}
 
 % Will be printed between 'Figure/Table/... XYZ' and the caption text:
 \DeclareCaptionLabelSeparator{slash}{\ /\ }% `\ ' (backslash+space) is a short space
@@ -64,82 +65,229 @@
 
 \RequirePackage{subcaption}% For subfloats
 
-\newlength{\omnilatex@floatboxwidth}
-\setlength{\omnilatex@floatboxwidth}{0.5\linewidth}
-\newcommand*{\FBwidth}{\omnilatex@floatboxwidth}
+\ExplSyntaxOn
 
-\NewDocumentEnvironment{subfloatrow}{O{2}}{%
-    \begingroup
-    \setlength{\omnilatex@floatboxwidth}{\dimexpr\linewidth/#1\relax}%
-    \begin{minipage}{\linewidth}%
-    \centering
-}{%
-    \end{minipage}%
-    \endgroup
+\tl_new:N \l__omnilatex_float_type_tl
+\tl_new:N \l__omnilatex_float_caption_tl
+\tl_new:N \l__omnilatex_float_short_caption_tl
+\tl_new:N \l__omnilatex_float_label_tl
+\tl_new:N \l__omnilatex_float_footnote_tl
+\tl_new:N \l__omnilatex_float_caption_width_tl
+\tl_new:N \l__omnilatex_float_align_tl
+\tl_new:N \l__omnilatex_float_placement_tl
+\tl_new:N \l__omnilatex_float_caption_position_tl
+\tl_if_exist:NF \l__omnilatex_float_options_tl { \tl_new:N \l__omnilatex_float_options_tl }
+
+\bool_if_exist:NF \l__omnilatex_float_caption_typeset_bool { \bool_new:N \l__omnilatex_float_caption_typeset_bool }
+\bool_if_exist:NF \l__omnilatex_float_manual_caption_bool { \bool_new:N \l__omnilatex_float_manual_caption_bool }
+
+\msg_new:nnn { omnilatex / float } { missing-caption }
+  { No~caption~provided~for~'#1'~float.~Use~`caption=...`~in~the~options. }
+
+\msg_new:nnn { omnilatex / float } { missing-label }
+  { No~label~defined~for~'#1'~float.~Add~`label=...`~to~enable~references. }
+
+\msg_new:nnn { omnilatex / float } { missing-manual-caption }
+  { Float~'#1'~was~set~to~manual~caption~placement,~but~no~caption~was~typeset. }
+
+\keys_define:nn { omnilatex / float }
+  {
+    placement .tl_set:N = \l__omnilatex_float_placement_tl,
+    placement .initial:n = { tbp },
+    caption .code:n = { \tl_set:Nn \l__omnilatex_float_caption_tl { #1 } },
+    short-caption .code:n = { \tl_set:Nn \l__omnilatex_float_short_caption_tl { #1 } },
+    label .code:n = { \tl_set:Nn \l__omnilatex_float_label_tl { #1 } },
+    footnote .code:n = { \tl_set:Nn \l__omnilatex_float_footnote_tl { #1 } },
+    caption-width .code:n = { \tl_set:Nn \l__omnilatex_float_caption_width_tl { #1 } },
+    align .choice:,
+    align / center .code:n = { \tl_set:Nn \l__omnilatex_float_align_tl { center } },
+    align / left .code:n = { \tl_set:Nn \l__omnilatex_float_align_tl { left } },
+    align / right .code:n = { \tl_set:Nn \l__omnilatex_float_align_tl { right } },
+    align .initial:n = center,
+    caption-position .choice:,
+    caption-position / top .code:n = {
+        \tl_set:Nn \l__omnilatex_float_caption_position_tl { top }
+        \bool_set_false:N \l__omnilatex_float_manual_caption_bool
+    },
+    caption-position / bottom .code:n = {
+        \tl_set:Nn \l__omnilatex_float_caption_position_tl { bottom }
+        \bool_set_false:N \l__omnilatex_float_manual_caption_bool
+    },
+    caption-position / manual .code:n = {
+        \tl_set:Nn \l__omnilatex_float_caption_position_tl { manual }
+        \bool_set_true:N \l__omnilatex_float_manual_caption_bool
+    },
+  }
+
+\cs_new_protected:Npn \omnilatex_float_reset:
+  {
+    \tl_clear:N \l__omnilatex_float_caption_tl
+    \tl_clear:N \l__omnilatex_float_short_caption_tl
+    \tl_clear:N \l__omnilatex_float_label_tl
+    \tl_clear:N \l__omnilatex_float_footnote_tl
+    \tl_clear:N \l__omnilatex_float_caption_width_tl
+    \tl_set:Nn \l__omnilatex_float_align_tl { center }
+    \tl_set:Nn \l__omnilatex_float_placement_tl { tbp }
+    \tl_set:Nn \l__omnilatex_float_caption_position_tl { bottom }
+    \bool_set_false:N \l__omnilatex_float_caption_typeset_bool
+    \bool_set_false:N \l__omnilatex_float_manual_caption_bool
+    \setcounter{omnilatex@float@footnote}{0}
+  }
+
+\cs_new_protected:Npn \omnilatex_float_validate:
+  {
+    \tl_if_blank:VTF \l__omnilatex_float_caption_tl
+      { \msg_error:nnn { omnilatex / float } { missing-caption } { \l__omnilatex_float_type_tl } }
+      { }
+    \tl_if_blank:VTF \l__omnilatex_float_label_tl
+      { \msg_warning:nnn { omnilatex / float } { missing-label } { \l__omnilatex_float_type_tl } }
+      { }
+  }
+
+\cs_new_protected:Npn \omnilatex_float_apply_alignment:
+  {
+    \tl_if_eq:VnT \l__omnilatex_float_align_tl { center } { \centering }
+    \tl_if_eq:VnT \l__omnilatex_float_align_tl { left } { \raggedright }
+    \tl_if_eq:VnT \l__omnilatex_float_align_tl { right } { \raggedleft }
+  }
+
+\cs_new_protected:Npn \omnilatex_float_typeset_caption:
+  {
+    \bool_set_true:N \l__omnilatex_float_caption_typeset_bool
+    \tl_if_blank:VTF \l__omnilatex_float_caption_width_tl
+      { }
+      { \captionsetup{width=\l__omnilatex_float_caption_width_tl} }
+    \tl_trim_spaces:N \l__omnilatex_float_caption_tl
+    \tl_trim_spaces:N \l__omnilatex_float_short_caption_tl
+    \tl_trim_spaces:N \l__omnilatex_float_label_tl
+    \tl_trim_spaces:N \l__omnilatex_float_footnote_tl
+    \str_case:VnTF \l__omnilatex_float_type_tl
+      {
+        { figure }
+          {
+            \tl_if_blank:VTF \l__omnilatex_float_short_caption_tl
+              { \captionof{figure}{\tl_use:N \l__omnilatex_float_caption_tl} }
+              { \captionof{figure}[\tl_use:N \l__omnilatex_float_short_caption_tl]{\tl_use:N \l__omnilatex_float_caption_tl} }
+          }
+        { table }
+          {
+            \tl_if_blank:VTF \l__omnilatex_float_short_caption_tl
+              { \captionof{table}{\tl_use:N \l__omnilatex_float_caption_tl} }
+              { \captionof{table}[\tl_use:N \l__omnilatex_float_short_caption_tl]{\tl_use:N \l__omnilatex_float_caption_tl} }
+          }
+      }
+      {
+        \tl_if_blank:VTF \l__omnilatex_float_short_caption_tl
+          { \caption{\tl_use:N \l__omnilatex_float_caption_tl} }
+          { \caption[\tl_use:N \l__omnilatex_float_short_caption_tl]{\tl_use:N \l__omnilatex_float_caption_tl} }
+      }
+    \tl_if_blank:VTF \l__omnilatex_float_label_tl
+      { }
+      { \label{\tl_use:N \l__omnilatex_float_label_tl} }
+    \tl_if_blank:VTF \l__omnilatex_float_footnote_tl
+      { }
+      { \caption*{\tl_use:N \l__omnilatex_float_footnote_tl} }
+  }
+
+\cs_new_protected:Npn \__omnilatex_float_begin_internal:nn #1#2
+  {
+    \omnilatex_float_reset:
+    \tl_set:Nn \l__omnilatex_float_type_tl { #1 }
+    \tl_if_blank:nF { #2 }
+      { \keys_set:nn { omnilatex / float } { #2 } }
+    \tl_trim_spaces:N \l__omnilatex_float_placement_tl
+    \tl_if_eq:nnTF { #1 } { table }
+      { \tl_set:Nn \l__omnilatex_float_caption_position_tl { top } }
+      { \tl_set:Nn \l__omnilatex_float_caption_position_tl { bottom } }
+    \omnilatex_float_validate:
+    \tl_if_blank:VTF \l__omnilatex_float_placement_tl
+      { \begin{#1} }
+      { \exp_args:Nne \__omnilatex_float_begin_with_placement:nn
+          { #1 } { \tl_to_str:N \l__omnilatex_float_placement_tl } }
+    \omnilatex_float_apply_alignment:
+    \tl_if_eq:VnT \l__omnilatex_float_caption_position_tl { top }
+      { \omnilatex_float_typeset_caption: }
+  }
+
+\cs_new_protected:Npn \__omnilatex_float_end_internal:
+  {
+    \bool_if:NF \l__omnilatex_float_manual_caption_bool
+      {
+        \tl_if_eq:VnT \l__omnilatex_float_caption_position_tl { bottom }
+          {
+            \bool_if:NF \l__omnilatex_float_caption_typeset_bool
+              { \omnilatex_float_typeset_caption: }
+          }
+      }
+    \bool_if:NT \l__omnilatex_float_manual_caption_bool
+      {
+        \bool_if:NF \l__omnilatex_float_caption_typeset_bool
+          { \msg_warning:nnn { omnilatex / float } { missing-manual-caption } { \l__omnilatex_float_type_tl } }
+      }
+    \tl_set:Nx \l_tmpa_tl { \tl_to_str:N \l__omnilatex_float_type_tl }
+    \str_case:Vn \l_tmpa_tl
+      {
+        { figure } { \end{figure} }
+        { table }  { \end{table} }
+      }
+      { \end{\tl_use:N \l_tmpa_tl} }
+  }
+
+\NewDocumentCommand{\omnlFigure}{ O{} +m }
+  {
+    \group_begin:
+      \__omnilatex_float_begin_internal:nn { figure } { #1 }
+      #2
+      \__omnilatex_float_end_internal:
+    \group_end:
+  }
+
+\NewDocumentCommand{\omnlTable}{ O{} +m }
+  {
+    \group_begin:
+      \__omnilatex_float_begin_internal:nn { table } { #1 }
+      #2
+      \__omnilatex_float_end_internal:
+    \group_end:
+  }
+
+\NewDocumentCommand{\omnlFloatCaption}{}
+  { \omnilatex_float_typeset_caption: }
+
+\NewDocumentCommand{\omnlFloatNote}{m}
+  { \caption*{#1} }
+
+\newcounter{omnilatex@float@footnote}
+
+\NewDocumentCommand{\omnlFloatFootmark}{o}{%
+  \IfNoValueTF{#1}{%
+    \stepcounter{omnilatex@float@footnote}%
+    \footnotemark[\value{omnilatex@float@footnote}]%
+  }{%
+    \footnotemark[#1]%
+  }%
 }
 
-\NewDocumentCommand{\ffigbox}{O{\FBwidth} +m +m}{%
-    \begin{minipage}{#1}%
-        \centering
-        #3\par
-        #2%
-    \end{minipage}%
+\NewDocumentEnvironment{omnlFloatRow}{ O{2} }
+  {
+    \begin{minipage}{\linewidth}
+      \setlength{\tabcolsep}{0pt}% No horizontal padding
+      \renewcommand*{\arraystretch}{1}% Default row spacing
+      \begin{tabular}{@{}*{#1}{>{\centering\arraybackslash}m{\dimexpr\linewidth/#1\relax}}@{}}
+  }
+  {
+      \end{tabular}
+    \end{minipage}
+  }
+
+\NewDocumentCommand{\omnlFloatFoottext}{o m}{%
+  \IfNoValueTF{#1}{%
+    \footnotetext[\value{omnilatex@float@footnote}]{#2}%
+  }{%
+    \footnotetext[#1]{#2}%
+  }%
 }
 
-\newcounter{omnilatex@mpfootnote}
-
-\NewDocumentCommand{\mpfootnotemark}{o}{%
-    \IfNoValueTF{#1}{%
-        \stepcounter{omnilatex@mpfootnote}%
-        \footnotemark[\value{omnilatex@mpfootnote}]%
-    }{%
-        \footnotemark[#1]%
-    }%
-}
-
-\NewDocumentCommand{\mpfootnotetext}{o m}{%
-    \IfNoValueTF{#1}{%
-        \footnotetext[\value{omnilatex@mpfootnote}]{#2}%
-    }{%
-        \footnotetext[#1]{#2}%
-    }%
-}
-
-\NewDocumentCommand{\ttabbox}{O{\FBwidth} +m +m}{%
-    \setcounter{omnilatex@mpfootnote}{0}%
-    \begin{minipage}{#1}%
-        \centering
-        #2\par
-        #3%
-    \end{minipage}%
-}
-
-\NewDocumentCommand{\floatbox}{m +m +m}{%
-    #2\par
-    #3%
-}
-
-\NewDocumentCommand{\floatfoot}{m}{%
-    \caption*{#1}%
-}
-
-\NewDocumentCommand{\fcapside}{O{\FBwidth} +m +m}{%
-    \begin{minipage}{\linewidth}%
-        \begin{minipage}[t]{\dimexpr\linewidth-#1-1em\relax}%
-            #2\par
-        \end{minipage}\hfill
-        \begin{minipage}[t]{#1}%
-            \centering
-            #3\par
-        \end{minipage}%
-    \end{minipage}%
-}
-
-\NewDocumentCommand{\fakeverb}{m}{%
-    \begingroup
-        \ttfamily
-        \detokenize{#1}%
-    \endgroup
-}
+\ExplSyntaxOff
 
 \endinput
