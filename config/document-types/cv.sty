@@ -8,10 +8,19 @@
 \setcounter{secnumdepth}{0}
 \setcounter{tocdepth}{0}
 
+\documentcolormode{bw}
+\documentlinespacing{single}
+\documentparspacing{full}
+\documentitemspacing{normal}
+\documentfontmode{sans}
+\documentlinkstyle{black}
+\documentcodestyle{bw}
+
 \makeatletter
 
 \newcommand*{\omnilatex@cvheader}{%
     \begingroup
+    \raggedright
     \setlength{\parindent}{0pt}%
     {\Large\bfseries\@title}\par
     \ifx\@cvrole\@empty\else{\normalsize\@cvrole}\par\fi

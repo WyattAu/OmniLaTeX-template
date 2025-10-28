@@ -1,0 +1,45 @@
+\documentclass[
+    language=english,
+    doctype=thesis,
+    institution=none,
+    titlestyle=thesis
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\frontmatter
+\maketitle
+\tableofcontents
+
+\mainmatter
+\chapter{Introduction}
+Summarize the research motivation and objectives. This thesis demonstrates custom spacing settings with double line spacing, full paragraph spacing, and compact item spacing.
+
+\chapter{Methodology}
+Document experimental design, data acquisition, and analysis steps.
+
+Here is a list to demonstrate the compact item spacing:
+
+\begin{itemize}
+    \item First item with compact spacing
+    \item Second item showing the effect
+    \item Third item in the list
+\end{itemize}
+
+\chapter{Results}
+Present findings supported by figures and tables. Notice the double line spacing throughout the document for better readability.
+
+\chapter{Conclusion}
+Highlight contributions, limitations, and future work. The custom spacing makes this document easier to read and review.
+
+\appendix
+\chapter{Additional Material}
+Provide supporting derivations or extended data.
+
+\backmatter
+\printbibliography
+
+\end{document}

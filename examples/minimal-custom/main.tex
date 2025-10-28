@@ -1,0 +1,92 @@
+% Minimal OmniLaTeX Custom Template
+% This file demonstrates customization features with minimal content
+
+%!TEX TS-program = lualatex
+
+\documentclass[
+    language=english,
+    institution=none,        % Generic (no institution branding)
+    oneside,                 % Single-sided (screen viewing)
+    loadGlossaries,          % Enable glossaries/acronyms
+]{../../omnilatex}
+
+% Document settings
+\RequirePackage{config/document-settings}
+
+% Bibliography (local to this example)
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+% Title page
+\maketitle
+
+% Table of contents
+\tableofcontents
+
+\chapter{Introduction}
+
+This is a minimal custom template demonstrating OmniLaTeX customization capabilities.
+Notice the sans-serif font, single line spacing, and minimal paragraph/item spacing.
+
+\section{Text Formatting}
+
+Basic text with \textbf{bold}, \textit{italic}, and \texttt{monospace} fonts.
+Unicode support: αβγ, ℝℂℕ, ∀∃∈∋.
+
+\section{Customizations Demonstrated}
+
+This document uses several customization commands:
+\begin{itemize}
+    \item Sans-serif font mode
+    \item Single line spacing
+    \item No paragraph spacing
+    \item No item spacing
+\end{itemize}
+
+\section{Code Example}
+
+\begin{minted}{python}
+def hello_custom():
+    """Minimal custom function"""
+    return "Hello, customized world!"
+\end{minted}
+
+\chapter{Mathematics}
+
+Inline math: $E = mc^2$.
+
+Display equation:
+\begin{equation}
+    x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+\end{equation}
+
+\chapter{Figures and Tables}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+        \draw[thick, ->] (0,0) -- (3,0) node[right] {$x$};
+        \draw[thick, ->] (0,0) -- (0,3) node[above] {$y$};
+        \draw[red, thick, domain=0:2.5] plot (\x, {\x*\x});
+    \end{tikzpicture}
+    \caption{Customized figure}
+    \label{fig:custom}
+\end{figure}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Custom table}
+    \begin{tabular}{lc}
+        \toprule
+        \textbf{Feature} & \textbf{Status} \\
+        \midrule
+        Font mode        & Sans-serif      \\
+        Line spacing     & Single          \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\printbibliography
+
+\end{document}

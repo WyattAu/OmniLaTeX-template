@@ -24,21 +24,21 @@
 \tl_new:N \l__omnilatex_tmp_tl
 \tl_new:N \g__omnilatex_user_options_tl
 \cs_new_protected:Npn \omnilatex@adduseroption #1
-  {
+{
     \tl_set:Nn \l__omnilatex_tmp_tl { #1 }
     \tl_trim_spaces:N \l__omnilatex_tmp_tl
     \tl_if_blank:VTF \l__omnilatex_tmp_tl
-      { }
-      {
+    { }
+    {
         \tl_if_empty:NTF \g__omnilatex_user_options_tl
-          { \tl_gset_eq:NN \g__omnilatex_user_options_tl \l__omnilatex_tmp_tl }
-          {
+        { \tl_gset_eq:NN \g__omnilatex_user_options_tl \l__omnilatex_tmp_tl }
+        {
             \tl_gput_right:Nn \g__omnilatex_user_options_tl { , }
             \tl_gput_right:NV \g__omnilatex_user_options_tl \l__omnilatex_tmp_tl
-          }
+        }
         \xdef\omnilatexuserclassoptions{\tl_use:N \g__omnilatex_user_options_tl}
-      }
-  }
+    }
+}
 \ExplSyntaxOff
 
 \newcommand*{\omnilatex@setdoctype}[3]{%
@@ -135,6 +135,7 @@
 \RequirePackage{lib/typography/omnilatex-math}
 \RequirePackage{lib/typography/omnilatex-lists}
 \RequirePackage{lib/typography/omnilatex-typesetting}
+\RequirePackage{setspace}
 \RequirePackage{lib/graphics/omnilatex-graphics}
 \RequirePackage{lib/graphics/omnilatex-tikz-core}
 \RequirePackage{lib/graphics/omnilatex-tikz-engineering}

@@ -1,0 +1,36 @@
+\documentclass[
+    language=english,
+    doctype=article,
+    institution=none,
+    titlestyle=book,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\section*{Abstract}
+This template demonstrates the OmniLaTeX article configuration with custom color settings. The document uses color mode for links and code highlighting, showcasing how customization commands can override default settings.
+
+\tableofcontents
+
+\section{Introduction}
+This section outlines the scope of the article. Notice the colored links and code elements that demonstrate the custom color overrides.
+
+\section{Results}
+Summaries and discussion go here. Here's some sample code to show color highlighting:
+
+\begin{minted}{python}
+def hello_world():
+    print("Hello, colorful world!")
+\end{minted}
+
+\section{Conclusion}
+Key findings are highlighted in this section. The color customizations make the document more visually appealing while maintaining readability.
+
+\printbibliography
+
+\end{document}

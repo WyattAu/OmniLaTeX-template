@@ -19,7 +19,7 @@ whereas a local system installation can only ever offer a single version.
 For a \LaTeX{} document, the one at hand here is pretty complex.
 This is owed to the many used packages and outside tooling.
 Outside tooling (programs other than \LaTeX{} called from within \LaTeX{}) is quite
-prevalent in \LaTeX{}, since it itself is so limited.%
+prevalent in \LaTeX{}, since it itself is so limited.%anot
 \footnote{
   For example, when writing Python, you would not call Perl or JavaScript from within it,
   because whatever they can do, Python can.
@@ -220,7 +220,7 @@ Now that you know, you may handle them.
 \paragraph{Faster (\emph{incomplete}) compilation}
 The base \texttt{docker} commands were shown at the beginning of \cref{ch:using-docker}.
 An alternative is to run
-\begin{minted}[linenos=false]{shell}
+\begin{minted}[linenos=false,style=default]{shell}
     docker run --rm --volume $(pwd):/tex https://collaborating.tuhh.de/m21/public/theses/latex_dockerfile -e '$max_repeat=1'
 \end{minted}
 This limits \texttt{latexmk} to only run commands once (\texttt{-e} is for additional Perl code), with the following effects:

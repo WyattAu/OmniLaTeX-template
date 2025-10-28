@@ -26,12 +26,30 @@ from pathlib import Path
 from typing import Callable, Dict, Iterable, List, Optional
 
 # -----------------------------------------------------------------------------
+# Constants
+# -----------------------------------------------------------------------------
+READ_FIRST_CHARS = 5000
+MAIN_TEX_FILENAME = "main.tex"
+README_FILENAME = "README.md"
+LATEXMK_COMMAND = "latexmk"
+INTERACTION_NONSTOP = "-interaction=nonstopmode"
+FORCE_REBUILD_FLAG = "-g"
+MINTED_CACHE_SUBDIR = "_minted"
+SVG_INKSCAPE_CACHE = "svg-inkscape"
+BUILD_EXAMPLES_SUBDIR = "examples"
+
+# -----------------------------------------------------------------------------
 # Terminal Output
 # -----------------------------------------------------------------------------
 class TerminalOutput:
     """Handles formatted terminal messages with optional ANSI colors."""
 
     def __init__(self, use_color: bool = sys.stdout.isatty()) -> None:
+        """Initialize TerminalOutput with optional ANSI color support.
+
+        Args:
+            use_color: Whether to use ANSI color codes in output.
+        """
         palette = {
             "blue": "\033[94m",
             "green": "\033[92m",
@@ -64,7 +82,6 @@ class TerminalOutput:
 
     def error(self, message: str) -> None:
         print(f"{self.bold}{self.red}[ERROR] {message}{self.end}", file=sys.stderr)
-        raise RuntimeError(message)
 
     def command(self, command: str) -> None:
         print(f"{self.bold}[RUN] {command}{self.end}")
@@ -184,13 +201,24 @@ class BuildTasks:
     # Helper utilities
     # ------------------------------------------------------------------
     def _announce_targets(self, title: str, targets: Iterable[str]) -> None:
+        """Announce a list of targets to the user.
+
+        Args:
+            title: Title for the announcement.
+            targets: Iterable of target strings to display.
+        """
         target_list = list(targets)
         if target_list:
             self.ui.info(f"{title}: {', '.join(target_list)}")
         else:
             self.ui.warning(f"{title}: none")
 
-    def _mode_label(self) -> str:
+    def mode_label(self) -> str:
+        """Get a human-readable label for the current build mode.
+
+        Returns:
+            String label for the build mode.
+        """
         return {
             "dev": "DEVELOPMENT",
             "prod": "PRODUCTION",
@@ -198,84 +226,166 @@ class BuildTasks:
         }.get(self.runner.build_mode, self.runner.build_mode.upper())
 
     def _example_description(self, example_dir: Path) -> str:
-        readme = example_dir / "README.md"
+        """Extract the first non-header line from an example's README.md file.
+
+        Args:
+            example_dir: Path to the example directory.
+
+        Returns:
+            The first non-empty, non-header line from README.md, or empty string if not found.
+
+        Raises:
+            FileNotFoundError: If README.md does not exist.
+            UnicodeDecodeError: If README.md cannot be decoded as UTF-8.
+            OSError: If README.md cannot be read.
+        """
+        readme = example_dir / README_FILENAME
         if not readme.exists():
-            return ""
+            raise FileNotFoundError(f"README.md not found in {example_dir}")
         try:
             with open(readme, "r", encoding="utf-8") as fh:
                 for line in fh.readlines()[:10]:
                     stripped = line.strip()
                     if stripped and not stripped.startswith("#"):
                         return stripped
-        except Exception:
-            return ""
+        except UnicodeDecodeError as e:
+            raise UnicodeDecodeError(e.encoding, e.object, e.start, e.end, f"Failed to decode README.md in {example_dir}: {e.reason}")
+        except OSError as e:
+            raise OSError(f"Failed to read README.md in {example_dir}: {e}")
         return ""
 
     def build_tex(self, files: Optional[List[str]] = None) -> None:
-        mode_label = self._mode_label()
+        """Build LaTeX source files that contain \\documentclass.
+
+        Scans the current directory recursively for .tex files and compiles those
+        containing \\documentclass. If specific files are provided, builds only those.
+
+        Args:
+            files: Optional list of specific .tex files to build. If None, auto-discovers
+                   all .tex files with \\documentclass.
+
+        Returns:
+            None
+
+        Raises:
+            No exceptions raised; warnings are issued for missing files or read errors.
+        """
+        mode_label = self.mode_label()
         self.ui.header(f"Building LaTeX Source Files ({mode_label})")
-        cmd = self.runner.get_base_command("latexmk")
-        flags = ["-interaction=nonstopmode"]
+        cmd = self.runner.get_base_command(LATEXMK_COMMAND)
+        flags = [INTERACTION_NONSTOP]
 
         if files:
             target_files = files
         else:
             # Only compile files with \documentclass (standalone documents)
             all_tex = [str(p) for p in Path(".").rglob("*.tex")]
-            target_files = []
+            target_files: List[str] = []
             for tex_file in all_tex:
                 try:
                     with open(tex_file, 'r', encoding='utf-8') as f:
-                        content = f.read(5000)  # Read first 5000 chars
+                        content = f.read(READ_FIRST_CHARS)
                         if r'\documentclass' in content:
                             target_files.append(tex_file)
-                except Exception:
+                except (OSError, UnicodeDecodeError):
                     continue
-        
+
         if not target_files:
             self.ui.warning("No compilable .tex files found (files with \\documentclass).")
             return
 
         self._announce_targets("Targets", target_files)
         for tex in target_files:
-            if not Path(tex).exists():
+            tex_path = Path(tex)
+            if not tex_path.exists():
                 self.ui.warning(f"Source not found: {tex}")
                 continue
             self.runner.run(cmd + flags + [tex])
     
     def build_root(self, _files: Optional[List[str]] = None) -> None:
-        """Build the root main.tex document."""
-        mode_label = self._mode_label()
+        """Build the root main.tex document.
+
+        Compiles the main.tex file in the project root using latexmk with
+        appropriate environment variables for minted caching.
+
+        Args:
+            _files: Ignored parameter for consistency with other methods.
+
+        Returns:
+            None
+
+        Raises:
+            No exceptions raised; warnings issued for missing files.
+        """
+        mode_label = self.mode_label()
         self.ui.header(f"Building Root Document ({mode_label})")
-        
-        main_tex = Path("main.tex")
+
+        main_tex = Path(MAIN_TEX_FILENAME)
         if not main_tex.exists():
             self.ui.warning("No main.tex found in root directory.")
             return
-        
-        cmd = self.runner.get_base_command("latexmk")
-        flags = ["-interaction=nonstopmode"]
-        self.runner.run(cmd + flags + ["main.tex"])
+
+        cmd = self.runner.get_base_command(LATEXMK_COMMAND)
+        flags = [INTERACTION_NONSTOP]
+
+        # Ensure minted cache directory exists before building
+        minted_cache_dir = self.config.build_dir / MINTED_CACHE_SUBDIR
+        minted_cache_dir.mkdir(parents=True, exist_ok=True)
+        extra_env = {
+            "MINTED_CACHE_DIR": str((minted_cache_dir / "").resolve()),
+        }
+
+        self.runner.run(cmd + flags + [MAIN_TEX_FILENAME], extra_env=extra_env)
         self.ui.success("Root document build complete.")
     
     def build_all(self, _files: Optional[List[str]] = None) -> None:
+        """Build the root document and all examples.
+
+        First builds the root main.tex, then builds all discovered examples.
+
+        Args:
+            _files: Ignored parameter for consistency with other methods.
+
+        Returns:
+            None
+        """
         self.ui.header("Building All Documents (Root + Examples)")
-        
+
         # Build root first
         self.build_root()
-        
+
         # Then build examples
         self.build_examples()
-        
+
         self.ui.success("All documents built successfully.")
 
     def clean_aux(self, _files: Optional[List[str]] = None) -> None:
+        """Clean LaTeX auxiliary files using latexmk -c.
+
+        Removes all auxiliary files (.aux, .log, .fls, etc.) generated by LaTeX.
+
+        Args:
+            _files: Ignored parameter for consistency with other methods.
+
+        Returns:
+            None
+        """
         self.ui.header("Cleaning auxiliary files")
-        cmd = self.runner.get_base_command("latexmk")
+        cmd = self.runner.get_base_command(LATEXMK_COMMAND)
         self.runner.run(cmd + ["-c"])
         self.ui.success("Auxiliary files cleaned.")
 
     def clean_pdf(self, _files: Optional[List[str]] = None) -> None:
+        """Remove all PDF files from the build directory.
+
+        Deletes all .pdf files in the configured build directory.
+
+        Args:
+            _files: Ignored parameter for consistency with other methods.
+
+        Returns:
+            None
+        """
         self.ui.header("Cleaning PDF files")
         if not self.config.build_dir.exists():
             self.ui.info("Build directory does not exist.")
@@ -290,6 +400,16 @@ class BuildTasks:
         self.ui.success("PDF cleaning complete.")
 
     def clean_all(self, _files: Optional[List[str]] = None) -> None:
+        """Perform a full cleanup of all build artifacts.
+
+        Cleans auxiliary files, removes PDFs, and deletes the entire build directory.
+
+        Args:
+            _files: Ignored parameter for consistency with other methods.
+
+        Returns:
+            None
+        """
         self.ui.header("Full clean")
         self.clean_aux()
         self.clean_pdf()
@@ -300,6 +420,17 @@ class BuildTasks:
         self.ui.success("Full cleanup finished.")
 
     def preflight(self, _files: Optional[List[str]] = None) -> None:
+        """Run environment preflight checks.
+
+        Performs various checks on the system environment, including library
+        availability, user permissions, directory writability, and LaTeX installation.
+
+        Args:
+            _files: Ignored parameter for consistency with other methods.
+
+        Returns:
+            None
+        """
         self.ui.header("Preflight checks")
         if sys.platform == "linux":
             try:
@@ -308,30 +439,80 @@ class BuildTasks:
                     self.ui.success("librsvg present.")
                 else:
                     self.ui.warning("librsvg not detected.")
-            except Exception as exc:
+            except (subprocess.CalledProcessError, FileNotFoundError) as exc:
                 self.ui.warning(f"Could not run ldconfig: {exc}")
         else:
             self.ui.info(f"Skipping Linux-only checks on {sys.platform}")
 
-        cmd = self.runner.get_base_command("latexmk")
+        # Check user permissions and environment
+        self.ui.info("Checking user and permissions...")
+        try:
+            whoami = self.runner.run(["whoami"], capture_output=True)
+            if whoami:
+                self.ui.info(f"Current user: {whoami.strip()}")
+            else:
+                self.ui.warning("Could not determine current user")
+        except (subprocess.CalledProcessError, FileNotFoundError) as exc:
+            self.ui.warning(f"Could not check user: {exc}")
+
+        # Ensure minted cache directory exists and is writable
+        minted_cache_dir = self.config.build_dir / MINTED_CACHE_SUBDIR
+        minted_cache_dir.mkdir(parents=True, exist_ok=True)
+        self.ui.info(f"Ensured minted cache directory: {minted_cache_dir}")
+        try:
+            # Check if we can write to minted cache directory
+            test_file = minted_cache_dir / "test_write.tmp"
+            test_file.write_text("test")
+            test_file.unlink()
+            self.ui.success("Minted cache directory is writable")
+        except OSError as exc:
+            self.ui.error(f"Minted cache directory not writable: {exc}")
+
+        # Check environment variables
+        self.ui.info("Checking environment variables...")
+        env_vars = ["IS_OMNILATEX_CONTAINER", "BUILD_MODE", "TEXINPUTS", "MINTED_CACHE_DIR"]
+        for var in env_vars:
+            value = os.environ.get(var)
+            if value:
+                self.ui.info(f"{var}={value}")
+            else:
+                self.ui.info(f"{var} not set")
+
+        cmd = self.runner.get_base_command(LATEXMK_COMMAND)
         self.runner.run(cmd + ["--version"])
         self.ui.success("Preflight complete.")
 
     def discover_examples(self) -> List[Path]:
-        """Find all example directories with main.tex."""
+        """Find all example directories containing main.tex.
+
+        Scans the 'examples' directory for subdirectories that contain a main.tex file.
+
+        Returns:
+            Sorted list of Path objects for example directories with main.tex.
+        """
         examples_dir = Path("examples")
         if not examples_dir.exists():
             return []
-        
-        examples = []
+
+        examples: List[Path] = []
         for item in examples_dir.iterdir():
-            if item.is_dir() and (item / "main.tex").exists():
+            if item.is_dir() and (item / MAIN_TEX_FILENAME).exists():
                 examples.append(item)
-        
+
         return sorted(examples)
 
     def list_examples(self, _files: Optional[List[str]] = None) -> None:
-        """List all available examples."""
+        """List all available examples with their descriptions.
+
+        Discovers examples and displays their names along with descriptions
+        extracted from README.md files.
+
+        Args:
+            _files: Ignored parameter for consistency with other methods.
+
+        Returns:
+            None
+        """
         self.ui.header("Available Examples")
         examples = self.discover_examples()
 
@@ -340,7 +521,10 @@ class BuildTasks:
             return
 
         for example in examples:
-            description = self._example_description(example)
+            try:
+                description = self._example_description(example)
+            except (FileNotFoundError, UnicodeDecodeError, OSError):
+                description = ""
             self.ui.info(f"  {example.name}")
             if description:
                 self.ui.info(f"    {description}")
@@ -348,20 +532,33 @@ class BuildTasks:
         self.ui.success(f"Found {len(examples)} example(s).")
 
     def build_example(self, files: Optional[List[str]] = None) -> None:
-        """Build one or more specific examples."""
+        """Build one or more specific examples.
+
+        Compiles the specified examples using latexmk with appropriate environment
+        variables and copies resulting PDFs to the build directory.
+
+        Args:
+            files: List of example names to build.
+
+        Returns:
+            None
+
+        Raises:
+            No exceptions raised; errors are logged as warnings.
+        """
         if not files:
             self.ui.error("No example name provided. Use: build.py build-example <name>")
             return
-        
+
         examples_dir = Path("examples")
         if not examples_dir.exists():
             self.ui.error("Examples directory not found.")
             return
-        
+
         # Build output directory
-        build_examples_dir = self.config.build_dir / "examples"
+        build_examples_dir = self.config.build_dir / BUILD_EXAMPLES_SUBDIR
         build_examples_dir.mkdir(parents=True, exist_ok=True)
-        
+
         root_latexmkrc = Path(__file__).resolve().parent / ".latexmkrc"
 
         repo_root = Path(__file__).resolve().parent
@@ -369,35 +566,40 @@ class BuildTasks:
         for example_name in files:
             self.ui.header(f"Building example: {example_name}")
             example_dir = examples_dir / example_name
-            
+
             if not example_dir.exists():
                 self.ui.warning(f"Example not found: {example_name}")
                 continue
-            
-            main_tex = example_dir / "main.tex"
+
+            main_tex = example_dir / MAIN_TEX_FILENAME
             if not main_tex.exists():
                 self.ui.warning(f"main.tex not found in {example_name}")
                 continue
-            
+
             # Build in the example directory
             try:
                 with working_directory(example_dir):
-                    for cache_dir in (Path("_minted"), Path("svg-inkscape")):
+                    # Ensure cache directories exist before building
+                    for cache_dir in (Path(MINTED_CACHE_SUBDIR), Path(SVG_INKSCAPE_CACHE)):
                         cache_dir.mkdir(parents=True, exist_ok=True)
 
-                    cmd = self.runner.get_base_command("latexmk")
-                    latexmk_flags: List[str] = ["-interaction=nonstopmode"]
+                    cmd = self.runner.get_base_command(LATEXMK_COMMAND)
+                    latexmk_flags: List[str] = [INTERACTION_NONSTOP]
                     if os.environ.get("OMNILATEX_FORCE_REBUILD") == "1":
-                        latexmk_flags.append("-g")
+                        latexmk_flags.append(FORCE_REBUILD_FLAG)
                     current_texinputs = os.environ.get("TEXINPUTS", "")
                     texinputs_entries = [str(repo_root)]
                     if current_texinputs:
                         texinputs_entries.append(current_texinputs)
                     texinputs_entries.append("")
+                    # Use build directory for minted cache to avoid permission issues
+                    minted_cache_dir = self.config.build_dir / MINTED_CACHE_SUBDIR
+                    minted_cache_dir.mkdir(parents=True, exist_ok=True)
                     extra_env = {
-                        "MINTED_CACHE_DIR": str((Path("_minted") / "").resolve()),
+                        "MINTED_CACHE_DIR": str((minted_cache_dir / "").resolve()),
                         "OMNILATEX_EXAMPLE_ROOT": str(Path.cwd()),
                         "TEXINPUTS": os.pathsep.join(texinputs_entries),
+                        "LC_ALL": "C.utf8",  # Set locale to avoid LuaLaTeX locale issues
                     }
 
                     invoke: List[str] = cmd + latexmk_flags
@@ -407,7 +609,7 @@ class BuildTasks:
                     if local_rc.exists():
                         invoke.extend(["-r", str(local_rc)])
 
-                    invoke.append("main.tex")
+                    invoke.append(MAIN_TEX_FILENAME)
 
                     self.runner.run(invoke, extra_env=extra_env)
 
@@ -419,27 +621,46 @@ class BuildTasks:
                 else:
                     self.ui.warning(f"PDF not generated for {example_name}")
 
-            except Exception as exc:
+            except (OSError, subprocess.CalledProcessError, FileNotFoundError) as exc:
                 self.ui.error(f"Failed to build {example_name}: {exc}")
 
     def build_examples(self, _files: Optional[List[str]] = None) -> None:
-        """Build all examples."""
+        """Build all discovered examples.
+
+        Discovers all examples and builds them using build_example().
+
+        Args:
+            _files: Ignored parameter for consistency with other methods.
+
+        Returns:
+            None
+        """
         self.ui.header("Building all examples")
         examples = self.discover_examples()
-        
+
         if not examples:
             self.ui.warning("No examples found.")
             return
-        
+
         example_names = [e.name for e in examples]
         self.ui.info(f"Found {len(example_names)} example(s): {', '.join(example_names)}")
-        
+
         # Use build_example to build each
         self.build_example(example_names)
-        
+
         self.ui.success("All examples built.")
 
     def run_tests(self, files: Optional[List[str]] = None) -> None:
+        """Run the test suite using Poetry and pytest.
+
+        Sets up the test environment and runs pytest with provided arguments.
+
+        Args:
+            files: Optional list of pytest arguments/files to pass to pytest.
+
+        Returns:
+            None
+        """
         self.ui.header("Running test suite")
 
         tests_dir = Path("tests")
@@ -464,48 +685,67 @@ class BuildTasks:
         self.ui.success("Test suite finished.")
 
     def clean_example(self, files: Optional[List[str]] = None) -> None:
-        """Clean auxiliary files from one or more examples."""
+        """Clean auxiliary files from one or more examples.
+
+        Runs latexmk -c in each specified example directory to remove
+        auxiliary LaTeX files.
+
+        Args:
+            files: List of example names to clean.
+
+        Returns:
+            None
+        """
         if not files:
             self.ui.error("No example name provided. Use: build.py clean-example <name>")
             return
-        
+
         examples_dir = Path("examples")
         for example_name in files:
             self.ui.header(f"Cleaning example: {example_name}")
             example_dir = examples_dir / example_name
-            
+
             if not example_dir.exists():
                 self.ui.warning(f"Example not found: {example_name}")
                 continue
-            
+
             try:
                 with working_directory(example_dir):
-                    cmd = self.runner.get_base_command("latexmk")
+                    cmd = self.runner.get_base_command(LATEXMK_COMMAND)
                     self.runner.run(cmd + ["-c"])
-                
+
                 self.ui.success(f"Cleaned {example_name}")
-            
-            except Exception as exc:
+
+            except (OSError, subprocess.CalledProcessError, FileNotFoundError) as exc:
                 self.ui.error(f"Failed to clean {example_name}: {exc}")
 
     def clean_examples(self, _files: Optional[List[str]] = None) -> None:
-        """Clean all examples."""
+        """Clean all examples and their build outputs.
+
+        Cleans auxiliary files from all examples and removes the build/examples directory.
+
+        Args:
+            _files: Ignored parameter for consistency with other methods.
+
+        Returns:
+            None
+        """
         self.ui.header("Cleaning all examples")
         examples = self.discover_examples()
-        
+
         if not examples:
             self.ui.warning("No examples found.")
             return
-        
+
         example_names = [e.name for e in examples]
         self.clean_example(example_names)
-        
+
         # Also clean build output
-        build_examples_dir = self.config.build_dir / "examples"
+        build_examples_dir = self.config.build_dir / BUILD_EXAMPLES_SUBDIR
         if build_examples_dir.exists():
             shutil.rmtree(build_examples_dir)
             self.ui.info(f"Removed {build_examples_dir}")
-        
+
         self.ui.success("All examples cleaned.")
 
 # -----------------------------------------------------------------------------
@@ -566,7 +806,7 @@ def main() -> None:
     
     # Show build mode for build commands
     if args.command.startswith("build"):
-        ui.info(f"Build mode: {tasks._mode_label()}")
+        ui.info(f"Build mode: {tasks.mode_label()}")
     
     # Get and call the appropriate handler method
     method_name: str = getattr(args, "method")

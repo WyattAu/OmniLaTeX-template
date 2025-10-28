@@ -14,8 +14,6 @@ services:
     # Using :cached improves performance on macOS
     volumes:
       - ..:/workspace:cached
-      # Named volume for minted cache (improves performance)
-      - minted-cache:/workspace/_minted
 
     # CRITICAL FIX: Override the image's ENTRYPOINT.
     # We replace the default `latexmk` executable with a long-running
@@ -36,10 +34,10 @@ services:
       # Optimize Python
       - PYTHONUNBUFFERED=1
       - PYTHONDONTWRITEBYTECODE=1
-    
+
     # Working directory
     working_dir: /workspace
-    
+
     # Resource limits (adjust based on your system)
     # deploy:
     #   resources:
@@ -50,6 +48,5 @@ services:
     #       memory: 2G
 
 # Named volumes for better performance
-volumes:
-  minted-cache:
-    driver: local
+# Note: Removed problematic minted cache volume to avoid permission issues
+# Cache directory is now created automatically by build.py

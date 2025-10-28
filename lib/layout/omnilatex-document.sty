@@ -43,6 +43,52 @@
     \fi
 }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Document Customization Commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Document color mode
+\providecommand*{\@documentcolormode}{}
+\newcommand*{\documentcolormode}[1]{%
+    \gdef\@documentcolormode{#1}%
+}
+
+% Document line spacing
+\providecommand*{\@documentlinespacing}{}
+\newcommand*{\documentlinespacing}[1]{%
+    \gdef\@documentlinespacing{#1}%
+}
+
+% Document paragraph spacing
+\providecommand*{\@documentparspacing}{}
+\newcommand*{\documentparspacing}[1]{%
+    \gdef\@documentparspacing{#1}%
+}
+
+% Document item spacing
+\providecommand*{\@documentitemspacing}{}
+\newcommand*{\documentitemspacing}[1]{%
+    \gdef\@documentitemspacing{#1}%
+}
+
+% Document font mode
+\providecommand*{\@documentfontmode}{}
+\newcommand*{\documentfontmode}[1]{%
+    \gdef\@documentfontmode{#1}%
+}
+
+% Document link style
+\providecommand*{\@documentlinkstyle}{}
+\newcommand*{\documentlinkstyle}[1]{%
+    \gdef\@documentlinkstyle{#1}%
+}
+
+% Document code style
+\providecommand*{\@documentcodestyle}{}
+\newcommand*{\documentcodestyle}[1]{%
+    \gdef\@documentcodestyle{#1}%
+}
+
 \AtBeginDocument{% Ensure defaults (if any) are applied even if set before document starts
     \ifx\@documentfontsize\@empty\else
         \KOMAoptions{fontsize=\@documentfontsize}%
@@ -55,6 +101,70 @@
         \ifcsname recalctypearea\endcsname
             \recalctypearea
         \fi
+    \fi
+    % Apply document customizations
+    \ifx\@documentcolormode\@empty\else
+        \ifdefstring{\@documentcolormode}{dark}{%
+            \hypersetup{allcolors=darklink}%
+        }{%
+            \ifdefstring{\@documentcolormode}{light}{%
+                \hypersetup{allcolors=darklink}%
+            }{%
+                \ifdefstring{\@documentcolormode}{color}{%
+                    \hypersetup{allcolors=darklink}%
+                }{%
+                    \ClassWarning{omnilatex}{Unknown color mode '\@documentcolormode'}%
+                }%
+            }%
+        }%
+    \fi
+    \ifx\@documentlinespacing\@empty\else
+        \ifdefstring{\@documentlinespacing}{single}{\singlespacing}{%
+            \ifdefstring{\@documentlinespacing}{onehalf}{\onehalfspacing}{%
+                \ifdefstring{\@documentlinespacing}{double}{\doublespacing}{%
+                    \setstretch{\@documentlinespacing}%
+                }%
+            }%
+        }%
+    \fi
+    \ifx\@documentparspacing\@empty\else
+        \ifdefstring{\@documentparspacing}{none}{\setparsizes{0pt}{0pt}{0pt}}{%
+            \ifdefstring{\@documentparspacing}{half}{\setparsizes{\parskip}{0pt}{0pt}}{%
+                \ifdefstring{\@documentparspacing}{full}{\setparsizes{\baselineskip}{0pt}{0pt}}{%
+                    \setparsizes{\@documentparspacing}{0pt}{0pt}%
+                }%
+            }%
+        }%
+    \fi
+    \ifx\@documentitemspacing\@empty\else
+        \ifdefstring{\@documentitemspacing}{none}{\setlist{noitemsep}}{%
+            \ifdefstring{\@documentitemspacing}{compact}{\setlist{itemsep=0pt}}{%
+                \ifdefstring{\@documentitemspacing}{normal}{\setlist{itemsep=2pt}}{%
+                    \setlist{itemsep=\@documentitemspacing}%
+                }%
+            }%
+        }%
+    \fi
+    \ifx\@documentfontmode\@empty\else
+        \ifdefstring{\@documentfontmode}{serif}{}{%
+            \ifdefstring{\@documentfontmode}{sans}{\sffamily}{%
+                \ifdefstring{\@documentfontmode}{mono}{\ttfamily}{%
+                    \ClassWarning{omnilatex}{Unknown font mode '\@documentfontmode'}%
+                }%
+            }%
+        }%
+    \fi
+    \ifx\@documentlinkstyle\@empty\else
+        \ifdefstring{\@documentlinkstyle}{color}{\hypersetup{colorlinks=true}}{%
+            \ifdefstring{\@documentlinkstyle}{plain}{\hypersetup{colorlinks=false}}{%
+                \ClassWarning{omnilatex}{Unknown link style '\@documentlinkstyle'}%
+            }%
+        }%
+    \fi
+    \ifx\@documentcodestyle\@empty\else
+        \ifdefstring{\@documentcodestyle}{color}{\setminted{style=default}}{%
+            \setminted{style=\@documentcodestyle}%
+        }%
     \fi
 }
 
@@ -119,8 +229,8 @@
                 M{12em}
             }
             \cmidrule{1-1}\cmidrule{3-3}
-            \textit{#1} & 
-                        &   % Empty column
+            \textit{#1} &
+                        & % Empty column
             \textit{\GetTranslation{PlaceDate}}
             \\
         \end{tabular}

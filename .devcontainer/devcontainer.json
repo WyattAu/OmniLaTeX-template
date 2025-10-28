@@ -4,19 +4,17 @@
     // This file configures the development environment to run inside the container
     // defined in `docker-compose.yml`.
     "name": "OmniLaTeX Development",
-
     // Instruct VS Code to use Docker Compose for the environment.
     "dockerComposeFile": "docker-compose.yml",
-
     // Specify the service within the compose file that VS Code should attach to.
     "service": "app",
-
+    // Specify the user to connect as inside the container
+    "remoteUser": "root",
     // The working directory inside the container.
     "workspaceFolder": "/workspace",
-
     // Post-creation command to optimize environment
     "postCreateCommand": "python3 build.py preflight",
-
+    "updateRemoteUserUID": true,
     // Define the extensions and settings for VS Code inside the container.
     "customizations": {
         "vscode": {
@@ -34,11 +32,15 @@
                 "latex-workshop.latex.recipes": [
                     {
                         "name": "latexmk (dev mode)",
-                        "tools": ["latexmk-dev"]
+                        "tools": [
+                            "latexmk-dev"
+                        ]
                     },
                     {
                         "name": "latexmk (prod mode)",
-                        "tools": ["latexmk-prod"]
+                        "tools": [
+                            "latexmk-prod"
+                        ]
                     }
                 ],
                 "latex-workshop.latex.tools": [

@@ -196,10 +196,10 @@ sub run_bib2gls {
     return 0 unless $do_gls;
     if ( $silent ) {
     #    my $ret = system "bib2gls --silent --group '$_[0]'"; # Original version
-        my $ret = system "bib2gls --silent --group $_[0]"; # Runs in PowerShell
+        my $ret = system "bib2gls --silent --log-encoding=UTF-8 --tex-encoding=UTF-8 --group $_[0]"; # Runs in PowerShell
     } else {
     #    my $ret = system "bib2gls --group '$_[0]'"; # Original version
-        my $ret = system "bib2gls --group $_[0]"; # Runs in PowerShell
+        my $ret = system "bib2gls --log-encoding=UTF-8 --tex-encoding=UTF-8 --group $_[0]"; # Runs in PowerShell
     };
 
     my ($base, $path) = fileparse( $_[0] );

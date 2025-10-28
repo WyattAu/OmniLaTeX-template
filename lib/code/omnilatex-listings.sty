@@ -13,7 +13,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Always enable caching for performance
-% Cache directory is _minted-<jobname> by default
+% Cache directory is _minted-<jobname> by default, but can be overridden by MINTED_CACHE_DIR
 \RequirePackage[newfloat=true,cache=true,cachedir=_minted]{minted}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -22,6 +22,7 @@
 
 \setminted{%
     autogobble=true,
+    style=default,
     fontsize=\footnotesize,
     breaklines=true,
     breakanywhere=true,
