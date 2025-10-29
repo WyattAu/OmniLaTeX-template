@@ -24,7 +24,30 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Dict, Iterable, List, Optional
-from tqdm import tqdm
+
+try:
+    from tqdm import tqdm
+except ImportError:
+    class SimpleProgressBar:
+        def __init__(self, total, desc="", unit=""):
+            self.total = total
+            self.desc = desc
+            self.unit = unit
+            self.current = 0
+            print(f"{desc}: 0/{total} {unit}")
+
+        def update(self, n=1):
+            self.current += n
+            print(f"{self.desc}: {self.current}/{self.total} {self.unit}")
+
+        def set_description(self, desc):
+            self.desc = desc
+            print(f"{self.desc}: {self.current}/{self.total} {self.unit}")
+
+        def close(self):
+            pass
+
+    tqdm = SimpleProgressBar
 
 # -----------------------------------------------------------------------------
 # Constants
