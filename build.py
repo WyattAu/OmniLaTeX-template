@@ -24,6 +24,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Dict, Iterable, List, Optional
+from tqdm import tqdm
 
 # -----------------------------------------------------------------------------
 # Constants
@@ -42,10 +43,10 @@ BUILD_EXAMPLES_SUBDIR = "examples"
 # Terminal Output
 # -----------------------------------------------------------------------------
 class TerminalOutput:
-    """Handles formatted terminal messages with optional ANSI colors."""
+    """Handles formatted terminal messages with optional ANSI colors and advanced formatting."""
 
     def __init__(self, use_color: bool = sys.stdout.isatty()) -> None:
-        """Initialize TerminalOutput with optional ANSI color support.
+        """Initialize TerminalOutput with optional ANSI color support and extended formatting.
 
         Args:
             use_color: Whether to use ANSI color codes in output.
@@ -55,7 +56,12 @@ class TerminalOutput:
             "green": "\033[92m",
             "yellow": "\033[93m",
             "red": "\033[91m",
+            "cyan": "\033[96m",
+            "magenta": "\033[95m",
+            "white": "\033[97m",
+            "gray": "\033[90m",
             "bold": "\033[1m",
+            "underline": "\033[4m",
             "end": "\033[0m",
         }
         if use_color:
@@ -63,31 +69,105 @@ class TerminalOutput:
             self.green = palette["green"]
             self.yellow = palette["yellow"]
             self.red = palette["red"]
+            self.cyan = palette["cyan"]
+            self.magenta = palette["magenta"]
+            self.white = palette["white"]
+            self.gray = palette["gray"]
             self.bold = palette["bold"]
+            self.underline = palette["underline"]
             self.end = palette["end"]
         else:
-            self.blue = self.green = self.yellow = self.red = self.bold = self.end = ""
+            self.blue = self.green = self.yellow = self.red = self.cyan = self.magenta = self.white = self.gray = self.bold = self.underline = self.end = ""
 
     def header(self, message: str) -> None:
         print(f"\n{self.bold}{self.blue}=== {message} ==={self.end}")
 
     def info(self, message: str) -> None:
-        print(f"[INFO] {message}")
+        print(f"{self.cyan}[INFO]{self.end} {message}")
 
     def success(self, message: str) -> None:
-        print(f"{self.green}[SUCCESS] {message}{self.end}")
+        print(f"{self.green}[✓] {message}{self.end}")
 
     def warning(self, message: str) -> None:
-        print(f"{self.yellow}[WARNING] {message}{self.end}")
+        print(f"{self.yellow}[⚠] {message}{self.end}")
 
     def error(self, message: str) -> None:
-        print(f"{self.bold}{self.red}[ERROR] {message}{self.end}", file=sys.stderr)
+        print(f"{self.bold}{self.red}[✗] {message}{self.end}", file=sys.stderr)
 
     def command(self, command: str) -> None:
-        print(f"{self.bold}[RUN] {command}{self.end}")
+        print(f"{self.bold}{self.gray}[RUN]{self.end} {command}")
 
     def debug(self, message: str) -> None:
-        print(f"[DEBUG] {message}")
+        print(f"{self.gray}[DEBUG] {message}{self.end}")
+
+    def status(self, status_type: str, message: str) -> None:
+        """Display a status message with appropriate icon and color.
+
+        Args:
+            status_type: Type of status ('success', 'error', 'warning', 'info', 'progress')
+            message: The status message
+        """
+        icons = {
+            "success": f"{self.green}✓{self.end}",
+            "error": f"{self.red}✗{self.end}",
+            "warning": f"{self.yellow}⚠{self.end}",
+            "info": f"{self.cyan}ℹ{self.end}",
+            "progress": f"{self.blue}⟳{self.end}",
+        }
+        icon = icons.get(status_type, f"{self.gray}?{self.end}")
+        print(f"[{icon}] {message}")
+
+    def indented_step(self, level: int, message: str, status_type: str = "info") -> None:
+        """Display an indented step with status indicator.
+
+        Args:
+            level: Indentation level (0-based)
+            message: The step message
+            status_type: Status type for the indicator
+        """
+        indent = "  " * level
+        branch = "├── " if level > 0 else ""
+        icons = {
+            "success": f"{self.green}✓{self.end}",
+            "error": f"{self.red}✗{self.end}",
+            "warning": f"{self.yellow}⚠{self.end}",
+            "info": f"{self.cyan}•{self.end}",
+            "progress": f"{self.blue}⟳{self.end}",
+        }
+        icon = icons.get(status_type, f"{self.gray}•{self.end}")
+        print(f"{indent}{branch}[{icon}] {message}")
+
+    def table(self, headers: List[str], rows: List[List[str]], min_widths: Optional[List[int]] = None) -> None:
+        """Display a formatted table.
+
+        Args:
+            headers: List of header strings
+            rows: List of row lists (each row is a list of strings)
+            min_widths: Optional minimum widths for each column
+        """
+        if not headers and not rows:
+            return
+
+        # Calculate column widths
+        all_rows = [headers] + rows if headers else rows
+        widths = []
+        for i in range(len(all_rows[0])):
+            col_width = max(len(str(row[i])) for row in all_rows if i < len(row))
+            if min_widths and i < len(min_widths):
+                col_width = max(col_width, min_widths[i])
+            widths.append(col_width)
+
+        # Print headers
+        if headers:
+            header_line = " | ".join(f"{h:<{w}}" for h, w in zip(headers, widths))
+            separator = "-+-".join("-" * w for w in widths)
+            print(f"{self.bold}{header_line}{self.end}")
+            print(separator)
+
+        # Print rows
+        for row in rows:
+            row_line = " | ".join(f"{str(cell):<{w}}" for cell, w in zip(row, widths))
+            print(row_line)
 
 # -----------------------------------------------------------------------------
 # Project configuration
@@ -127,6 +207,54 @@ class CommandRunner:
     def format_command(self, args: Iterable[str]) -> str:
         return " ".join(str(arg) for arg in args)
 
+    def filter_latex_log(self, output: str) -> str:
+        """Filter LaTeX log output to show only errors and warnings.
+
+        Args:
+            output: The raw LaTeX log output.
+
+        Returns:
+            Filtered output containing only error and warning lines.
+        """
+        lines = output.splitlines()
+        filtered: List[str] = []
+        for line in lines:
+            if "LaTeX Error:" in line or "LaTeX Warning:" in line or line.startswith("!"):
+                filtered.append(line)
+        return "\n".join(filtered)
+
+    def _categorize_error(self, cmd_args: List[str], exc: Exception) -> str:
+        """Categorize the error type based on command and exception."""
+        command = cmd_args[0].lower()
+        latex_commands = {'latexmk', 'pdflatex', 'xelatex', 'lualatex'}
+        if command in latex_commands:
+            return "LaTeX compilation error"
+        elif isinstance(exc, FileNotFoundError):
+            return "System command not found"
+        elif isinstance(exc, subprocess.CalledProcessError):
+            if exc.returncode == 1 and command in latex_commands:
+                return "LaTeX compilation error"
+            else:
+                return "System command error"
+        else:
+            return "Unknown error"
+
+    def _get_error_suggestions(self, category: str, cmd_args: List[str], exc: Exception) -> List[str]:
+        """Provide suggestions based on error category."""
+        suggestions = []
+        if category == "LaTeX compilation error":
+            suggestions.append("Check TEXINPUTS environment variable for missing packages or paths.")
+            suggestions.append("Ensure all required LaTeX packages are installed (e.g., via tlmgr).")
+            suggestions.append("Verify the .tex file syntax and references.")
+            if isinstance(exc, subprocess.CalledProcessError) and exc.stderr:
+                if "File `" in exc.stderr and "not found" in exc.stderr:
+                    suggestions.append("Missing input file or package - check file paths and package installations.")
+        elif category == "System command not found":
+            suggestions.append(f"Install '{cmd_args[0]}' or ensure it's in your PATH.")
+        elif category == "System command error":
+            suggestions.append("Check command arguments and system permissions.")
+        return suggestions
+
     def run(
         self,
         cmd_args: List[str],
@@ -134,9 +262,12 @@ class CommandRunner:
         capture_output: bool = False,
         extra_env: Optional[Dict[str, str]] = None,
         cwd: Optional[Path] = None,
+        suppress_run: bool = False,
+        filter_verbose: bool = False,
     ) -> Optional[str]:
         command_str = self.format_command(cmd_args)
-        self.ui.command(command_str)
+        if not suppress_run:
+            self.ui.command(command_str)
         env = os.environ.copy()
         env["BUILD_MODE"] = self.build_mode
         if extra_env:
@@ -156,9 +287,19 @@ class CommandRunner:
                 if self.verbose:
                     self.ui.debug(f"Completed in {elapsed:.2f}s: {command_str}")
                     if result.stdout:
-                        self.ui.debug(result.stdout.strip())
+                        if filter_verbose:
+                            filtered_stdout = self.filter_latex_log(result.stdout)
+                            if filtered_stdout:
+                                self.ui.debug(filtered_stdout.strip())
+                        else:
+                            self.ui.debug(result.stdout.strip())
                     if result.stderr:
-                        self.ui.debug(result.stderr.strip())
+                        if filter_verbose:
+                            filtered_stderr = self.filter_latex_log(result.stderr)
+                            if filtered_stderr:
+                                self.ui.debug(filtered_stderr.strip())
+                        else:
+                            self.ui.debug(result.stderr.strip())
                 return result.stdout
 
             subprocess.run(cmd_args, check=True, env=env, cwd=str(cwd) if cwd else None)
@@ -168,11 +309,24 @@ class CommandRunner:
             return None
         except subprocess.CalledProcessError as exc:
             elapsed = time.perf_counter() - start
-            self.ui.error(
-                f"Command failed ({elapsed:.2f}s, exit {exc.returncode}): {command_str}"
-            )
-        except FileNotFoundError:
-            self.ui.error(f"Command not found: {cmd_args[0]}. Install it or adjust PATH.")
+            category = self._categorize_error(cmd_args, exc)
+            suggestions = self._get_error_suggestions(category, cmd_args, exc)
+            error_msg = f"{category}: Command failed ({elapsed:.2f}s, exit {exc.returncode}): {command_str}"
+            if suggestions:
+                error_msg += "\nSuggestions:\n" + "\n".join(f"  - {s}" for s in suggestions)
+            if self.verbose and exc.stderr:
+                # Include partial stderr logs for debugging
+                lines = exc.stderr.strip().split('\n')
+                partial_logs = '\n'.join(lines[-10:])  # Last 10 lines
+                error_msg += f"\nPartial stderr logs:\n{partial_logs}"
+            self.ui.error(error_msg)
+        except FileNotFoundError as exc:
+            category = self._categorize_error(cmd_args, exc)
+            suggestions = self._get_error_suggestions(category, cmd_args, exc)
+            error_msg = f"{category}: {exc}"
+            if suggestions:
+                error_msg += "\nSuggestions:\n" + "\n".join(f"  - {s}" for s in suggestions)
+            self.ui.error(error_msg)
         return None
 
 # -----------------------------------------------------------------------------
@@ -262,7 +416,7 @@ class BuildTasks:
 
         Args:
             files: Optional list of specific .tex files to build. If None, auto-discovers
-                   all .tex files with \\documentclass.
+                    all .tex files with \\documentclass.
 
         Returns:
             None
@@ -294,13 +448,40 @@ class BuildTasks:
             self.ui.warning("No compilable .tex files found (files with \\documentclass).")
             return
 
+        self.ui.indented_step(0, f"Discovered {len(target_files)} target file(s)", "info")
         self._announce_targets("Targets", target_files)
+
+        # Use progress bar only if not in verbose mode and multiple files
+        use_progress = len(target_files) > 1 and not self.runner.verbose
+
+        progress_bar = None
+        if use_progress:
+            progress_bar = tqdm(total=len(target_files), desc="Building .tex files", unit="file")
+
+        successful_builds = 0
         for tex in target_files:
             tex_path = Path(tex)
             if not tex_path.exists():
-                self.ui.warning(f"Source not found: {tex}")
+                self.ui.indented_step(1, f"Source not found: {tex}", "warning")
+                if use_progress:
+                    progress_bar.update(1)
                 continue
-            self.runner.run(cmd + flags + [tex])
+            if use_progress:
+                progress_bar.set_description(f"Building {tex}")
+            self.ui.indented_step(1, f"Compiling {tex}", "progress")
+            try:
+                self.runner.run(cmd + flags + [tex], suppress_run=True, filter_verbose=True)
+                self.ui.indented_step(2, f"Successfully built {tex}", "success")
+                successful_builds += 1
+            except Exception:
+                self.ui.indented_step(2, f"Failed to build {tex}", "error")
+            if use_progress:
+                progress_bar.update(1)
+
+        if use_progress:
+            progress_bar.close()
+
+        self.ui.success(f"Built {successful_builds}/{len(target_files)} .tex file(s)")
     
     def build_root(self, _files: Optional[List[str]] = None) -> None:
         """Build the root main.tex document.
@@ -335,7 +516,7 @@ class BuildTasks:
             "MINTED_CACHE_DIR": str((minted_cache_dir / "").resolve()),
         }
 
-        self.runner.run(cmd + flags + [MAIN_TEX_FILENAME], extra_env=extra_env)
+        self.runner.run(cmd + flags + [MAIN_TEX_FILENAME], extra_env=extra_env, suppress_run=True, filter_verbose=True)
         self.ui.success("Root document build complete.")
     
     def build_all(self, _files: Optional[List[str]] = None) -> None:
@@ -502,10 +683,10 @@ class BuildTasks:
         return sorted(examples)
 
     def list_examples(self, _files: Optional[List[str]] = None) -> None:
-        """List all available examples with their descriptions.
+        """List all available examples with their descriptions in a table format.
 
         Discovers examples and displays their names along with descriptions
-        extracted from README.md files.
+        extracted from README.md files in a structured table.
 
         Args:
             _files: Ignored parameter for consistency with other methods.
@@ -520,14 +701,18 @@ class BuildTasks:
             self.ui.info("No examples found.")
             return
 
+        # Prepare table data
+        headers = ["Example", "Description"]
+        rows = []
         for example in examples:
             try:
                 description = self._example_description(example)
             except (FileNotFoundError, UnicodeDecodeError, OSError):
                 description = ""
-            self.ui.info(f"  {example.name}")
-            if description:
-                self.ui.info(f"    {description}")
+            rows.append([example.name, description])
+
+        # Display table with minimum widths
+        self.ui.table(headers, rows, min_widths=[15, 50])
 
         self.ui.success(f"Found {len(examples)} example(s).")
 
@@ -560,24 +745,41 @@ class BuildTasks:
         build_examples_dir.mkdir(parents=True, exist_ok=True)
 
         root_latexmkrc = Path(__file__).resolve().parent / ".latexmkrc"
-
         repo_root = Path(__file__).resolve().parent
 
+        # Use progress bar only if not in verbose mode and multiple examples
+        use_progress = len(files) > 1 and not self.runner.verbose
+
+        progress_bar = None
+        if use_progress:
+            progress_bar = tqdm(total=len(files), desc="Building examples", unit="example")
+
+        successful_builds = 0
         for example_name in files:
-            self.ui.header(f"Building example: {example_name}")
+            if use_progress:
+                progress_bar.set_description(f"Building {example_name}")
+            else:
+                self.ui.header(f"Building example: {example_name}")
+
+            self.ui.indented_step(0, f"Processing example: {example_name}", "progress")
             example_dir = examples_dir / example_name
 
             if not example_dir.exists():
-                self.ui.warning(f"Example not found: {example_name}")
+                self.ui.indented_step(1, f"Example directory not found: {example_name}", "warning")
+                if use_progress:
+                    progress_bar.update(1)
                 continue
 
             main_tex = example_dir / MAIN_TEX_FILENAME
             if not main_tex.exists():
-                self.ui.warning(f"main.tex not found in {example_name}")
+                self.ui.indented_step(1, f"main.tex not found in {example_name}", "warning")
+                if use_progress:
+                    progress_bar.update(1)
                 continue
 
             # Build in the example directory
             try:
+                self.ui.indented_step(1, "Setting up build environment", "info")
                 with working_directory(example_dir):
                     # Ensure cache directories exist before building
                     for cache_dir in (Path(MINTED_CACHE_SUBDIR), Path(SVG_INKSCAPE_CACHE)):
@@ -611,18 +813,37 @@ class BuildTasks:
 
                     invoke.append(MAIN_TEX_FILENAME)
 
-                    self.runner.run(invoke, extra_env=extra_env)
+                    self.ui.indented_step(2, "Running LaTeX compilation", "progress")
+                    self.runner.run(invoke, extra_env=extra_env, suppress_run=True, filter_verbose=True)
 
                 src_pdf = example_dir / "main.pdf"
                 if src_pdf.exists():
                     dest_pdf = build_examples_dir / f"{example_name}.pdf"
                     shutil.copy(src_pdf, dest_pdf)
-                    self.ui.success(f"Built {example_name} -> {dest_pdf}")
+                    self.ui.indented_step(1, f"PDF copied to build directory: {dest_pdf}", "success")
+                    successful_builds += 1
                 else:
-                    self.ui.warning(f"PDF not generated for {example_name}")
+                    self.ui.indented_step(1, f"PDF not generated for {example_name}", "warning")
 
             except (OSError, subprocess.CalledProcessError, FileNotFoundError) as exc:
-                self.ui.error(f"Failed to build {example_name}: {exc}")
+                category = self.runner._categorize_error(invoke, exc)
+                suggestions = self.runner._get_error_suggestions(category, invoke, exc)
+                error_msg = f"Failed to build example '{example_name}': {category} - {exc}"
+                if suggestions:
+                    error_msg += "\nSuggestions:\n" + "\n".join(f"  - {s}" for s in suggestions)
+                if self.runner.verbose and isinstance(exc, subprocess.CalledProcessError) and exc.stderr:
+                    lines = exc.stderr.strip().split('\n')
+                    partial_logs = '\n'.join(lines[-10:])
+                    error_msg += f"\nPartial stderr logs:\n{partial_logs}"
+                self.ui.indented_step(1, f"Build failed: {error_msg}", "error")
+            finally:
+                if use_progress:
+                    progress_bar.update(1)
+
+        if use_progress:
+            progress_bar.close()
+
+        self.ui.success(f"Successfully built {successful_builds}/{len(files)} example(s)")
 
     def build_examples(self, _files: Optional[List[str]] = None) -> None:
         """Build all discovered examples.
@@ -643,7 +864,7 @@ class BuildTasks:
             return
 
         example_names = [e.name for e in examples]
-        self.ui.info(f"Found {len(example_names)} example(s): {', '.join(example_names)}")
+        self.ui.indented_step(0, f"Discovered {len(example_names)} example(s) to build", "info")
 
         # Use build_example to build each
         self.build_example(example_names)
@@ -717,7 +938,17 @@ class BuildTasks:
                 self.ui.success(f"Cleaned {example_name}")
 
             except (OSError, subprocess.CalledProcessError, FileNotFoundError) as exc:
-                self.ui.error(f"Failed to clean {example_name}: {exc}")
+                clean_cmd = cmd + ["-c"]
+                category = self.runner._categorize_error(clean_cmd, exc)
+                suggestions = self.runner._get_error_suggestions(category, clean_cmd, exc)
+                error_msg = f"Failed to clean example '{example_name}': {category} - {exc}"
+                if suggestions:
+                    error_msg += "\nSuggestions:\n" + "\n".join(f"  - {s}" for s in suggestions)
+                if self.runner.verbose and isinstance(exc, subprocess.CalledProcessError) and exc.stderr:
+                    lines = exc.stderr.strip().split('\n')
+                    partial_logs = '\n'.join(lines[-10:])
+                    error_msg += f"\nPartial stderr logs:\n{partial_logs}"
+                self.ui.error(error_msg)
 
     def clean_examples(self, _files: Optional[List[str]] = None) -> None:
         """Clean all examples and their build outputs.

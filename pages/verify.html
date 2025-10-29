@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,13 +8,16 @@
   <style>
     :root {
       color-scheme: light dark;
-      --bg: #101418;
+      --bg: linear-gradient(135deg, #0f1419 0%, #1a1f26 100%);
       --fg: #f8f9fc;
       --muted: #9ca8b6;
       --accent: #4ea3ff;
       --ok: #2ecc71;
       --warn: #f1c40f;
       --err: #e74c3c;
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
       font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
     }
 
@@ -26,16 +30,19 @@
       align-items: center;
       justify-content: center;
       padding: 2.5rem 1.25rem;
+      transition: background 0.3s ease;
     }
 
     main {
       width: min(760px, 100%);
-      background: rgba(17, 24, 33, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
       padding: clamp(1.75rem, 2vw + 1rem, 2.5rem);
-      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.25);
-      backdrop-filter: blur(12px);
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition: all 0.3s ease;
     }
 
     h1 {
@@ -60,27 +67,35 @@
     }
 
     .status {
-      border-radius: 12px;
+      border-radius: 16px;
       padding: 1.15rem;
       margin: 1.5rem 0;
       line-height: 1.6;
       display: grid;
       gap: 0.65rem;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
     }
 
     .status[data-state="ok"] {
-      background: rgba(46, 204, 113, 0.1);
-      border: 1px solid rgba(46, 204, 113, 0.35);
+      background: rgba(46, 204, 113, 0.15);
+      border: 1px solid rgba(46, 204, 113, 0.4);
+      box-shadow: 0 4px 20px rgba(46, 204, 113, 0.2);
     }
 
     .status[data-state="warn"] {
-      background: rgba(241, 196, 15, 0.1);
-      border: 1px solid rgba(241, 196, 15, 0.35);
+      background: rgba(241, 196, 15, 0.15);
+      border: 1px solid rgba(241, 196, 15, 0.4);
+      box-shadow: 0 4px 20px rgba(241, 196, 15, 0.2);
     }
 
     .status[data-state="err"] {
-      background: rgba(231, 76, 60, 0.1);
-      border: 1px solid rgba(231, 76, 60, 0.35);
+      background: rgba(231, 76, 60, 0.15);
+      border: 1px solid rgba(231, 76, 60, 0.4);
+      box-shadow: 0 4px 20px rgba(231, 76, 60, 0.2);
     }
 
     .meta-grid {
@@ -91,10 +106,14 @@
     }
 
     .meta-item {
-      background: rgba(255, 255, 255, 0.04);
-      border-radius: 10px;
+      background: var(--glass-bg);
+      border-radius: 12px;
       padding: 0.75rem 0.9rem;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
     .meta-item span {
@@ -120,14 +139,23 @@
 
     input[type="text"] {
       padding: 0.65rem 0.8rem;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      background: rgba(255, 255, 255, 0.04);
+      border-radius: 10px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
       color: inherit;
       font-size: 0.95rem;
       width: 100%;
       box-sizing: border-box;
       word-break: break-all;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: all 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(78, 163, 255, 0.2);
     }
 
     button {
@@ -140,6 +168,17 @@
       font-size: 0.95rem;
       cursor: pointer;
       justify-self: start;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(78, 163, 255, 0.3);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(78, 163, 255, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
     }
 
     @media (max-width: 600px) {
@@ -147,8 +186,79 @@
         padding: 1.5rem;
       }
     }
+
+    /* Hover effects for glassmorphic elements */
+    .meta-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .status:hover {
+      transform: translateY(-1px);
+    }
+
+    /* Text truncation and tooltips */
+    .truncate {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 100%;
+      position: relative;
+    }
+
+    .truncate:hover::after {
+      content: attr(data-full-text);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 0.5rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      z-index: 1000;
+      max-width: 300px;
+      word-break: break-all;
+    }
+
+    /* Smooth animations for status changes */
+    .status {
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Details section animation */
+    #details {
+      animation: slideIn 0.4s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   </style>
 </head>
+
 <body>
   <main>
     <h1 id="page-heading">Verify OmniLaTeX Build Provenance</h1>
@@ -214,6 +324,10 @@
     function updateStatus(type, message, sub) {
       statusBox.dataset.state = type;
       statusBox.innerHTML = `<strong>${message}</strong>` + (sub ? `<span>${sub}</span>` : "");
+      // Trigger animation by removing and re-adding the class
+      statusBox.style.animation = 'none';
+      statusBox.offsetHeight; // Trigger reflow
+      statusBox.style.animation = '';
     }
 
     function formatDate(iso) {
@@ -229,10 +343,10 @@
 
     function showDetails(data) {
       detailsSection.hidden = false;
-      commitShaEl.innerHTML = `<a href="https://github.com/${data.repo}/commit/${data.sha}" target="_blank" rel="noopener">${data.sha}</a>`;
+      commitShaEl.innerHTML = `<a href="https://github.com/${data.repo}/commit/${data.sha}" target="_blank" rel="noopener" class="truncate" data-full-text="${data.sha}">${data.sha}</a>`;
       commitAuthorEl.textContent = `${data.author} (${data.email})`;
       commitDateEl.textContent = formatDate(data.date);
-      branchHeadEl.innerHTML = `<a href="https://github.com/${data.repo}/commit/${data.branchHead}" target="_blank" rel="noopener">${data.branchHead}</a>`;
+      branchHeadEl.innerHTML = `<a href="https://github.com/${data.repo}/commit/${data.branchHead}" target="_blank" rel="noopener" class="truncate" data-full-text="${data.branchHead}">${data.branchHead}</a>`;
     }
 
     async function verify({ commit, repo, branch }) {
@@ -379,4 +493,5 @@
     bootstrap();
   </script>
 </body>
+
 </html>
