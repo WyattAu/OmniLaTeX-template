@@ -126,6 +126,43 @@ local macro_content_sources = {
         end,
         allow_empty = false,
     },
+    GitRepositorySlug = {
+        env = {
+            "GITHUB_REPOSITORY",
+        },
+        cmd = "git remote get-url origin",
+        process_env = function(value, name)
+            return value
+        end,
+        process_cmd = function(url)
+            local user, repo = url:match("github%.com[:/]([^/]+)/([^/]+)")
+            if user and repo then
+                repo = repo:gsub("%.git$", "")
+                return user .. "/" .. repo
+            end
+            return nil
+        end,
+        allow_empty = false,
+    },
+    GitProjectName = {
+        env = {
+            "GITHUB_REPOSITORY",
+        },
+        cmd = "git remote get-url origin",
+        process_env = function(value, name)
+            local user, repo = value:match("([^/]+)/(.+)")
+            return repo
+        end,
+        process_cmd = function(url)
+            local user, repo = url:match("github%.com[:/]([^/]+)/([^/]+)")
+            if user and repo then
+                repo = repo:gsub("%.git$", "")
+                return repo
+            end
+            return nil
+        end,
+        allow_empty = false,
+    },
 }
 
 for macro_name, content_sources in pairs(macro_content_sources) do
