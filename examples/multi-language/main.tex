@@ -1,0 +1,169 @@
+% Multi-Language Document Example
+% Demonstrates comprehensive multilingual support using babel
+
+\documentclass[
+    language=english,
+    doctype=article,
+    institution=none,
+]{../../omnilatex}
+
+% Configure polyglossia for multiple languages
+\setdefaultlanguage{english}
+\setotherlanguages{ngerman, french, spanish, italian, portuguese}
+
+\RequirePackage{config/document-settings}
+\addbibresource{bib/bibliography.bib}
+
+% Title and author information
+\title{\foreignlanguage{english}{Multi-Language Document Example}}
+\author{\foreignlanguage{english}{OmniLaTeX Development Team}}
+
+\begin{document}
+
+% Set main language to English
+\selectlanguage{english}
+
+% Title page
+\maketitle
+
+% Table of contents
+\tableofcontents
+
+% English section
+\section{\foreignlanguage{english}{Introduction}}
+
+\foreignlanguage{english}{
+    This document demonstrates the comprehensive multilingual capabilities of OmniLaTeX.
+    The system supports multiple languages including English, German, French, Spanish,
+    Italian, and Portuguese, ensuring proper typography and hyphenation for each language.
+}
+
+\foreignlanguage{english}{
+    All text demonstrates font coverage and proper character rendering using the
+    Libertinus Serif font family, which provides excellent support for European
+    languages and special characters.
+}
+
+% German section
+\section{\foreignlanguage{ngerman}{Deutsche Übersetzung}}
+
+\foreignlanguage{ngerman}{
+    Dies ist ein deutscher Text, der die Fähigkeiten des OmniLaTeX-Systems zur
+    Verarbeitung mehrerer Sprachen demonstriert. Das System verwendet Babel für
+    die korrekte Silbentrennung und Typografie.
+}
+
+\foreignlanguage{ngerman}{
+    Deutsche Texte erfordern spezielle Zeichen wie Umlaute (ä, ö, ü) und das Eszett (ß).
+    Diese Zeichen werden korrekt von der Libertinus-Schriftfamilie unterstützt.
+}
+
+% French section
+\section{\foreignlanguage{french}{Traduction française}}
+
+\foreignlanguage{french}{
+    Ce document illustre les capacités multilingues d'OmniLaTeX. Le système
+    supporte le français avec les caractères accentués appropriés (à, â, é, è, ê, ë,
+    î, ï, ô, ù, û, ü, ÿ) et la typographie française correcte.
+}
+
+\foreignlanguage{french}{
+    La magnifique typographie de la Libertinus Serif assure une lecture parfaite
+    de tous les textes multilingues dans ce document d'exemple.
+}
+
+% Spanish section
+\section{\foreignlanguage{spanish}{Traducción española}}
+
+\foreignlanguage{spanish}{
+    Este documento demuestra las capacidades multilingües del sistema OmniLaTeX.
+    El español incluye caracteres especiales como la ñ y los acentos (á, é, í, ó, ú),
+    que son correctamente renderizados con la familia tipográfica Libertinus.
+}
+
+\foreignlanguage{spanish}{
+    El soporte tipográfico completo garantiza que todos los idiomas europeos
+    se vean perfectos en cualquier documento generado con OmniLaTeX.
+}
+
+% Italian section
+\section{\foreignlanguage{italian}{Traduzione italiana}}
+
+\foreignlanguage{italian}{
+    Questo documento dimostra le capacità multilingue del sistema OmniLaTeX.
+    La lingua italiana utilizza caratteri accentati (à, è, é, ì, í, î, ò, ó, ù, ú, û, ü)
+    che vengono correttamente supportati dal font Libertinus Serif.
+}
+
+\foreignlanguage{italian}{
+    L'eccellente supporto tipografico assicura che tutti i testi multilingue
+    siano perfettamente leggibili e esteticamente gradevoli.
+}
+
+% Portuguese section
+\section{\foreignlanguage{portuguese}{Tradução portuguesa}}
+
+\foreignlanguage{portuguese}{
+    Este documento demonstra as capacidades multilingues do sistema OmniLaTeX.
+    O português inclui caracteres especiais como a cedilha (ç) e acentos (á, à, â, ã,
+    é, ê, í, ó, ô, õ, ú, û) que são corretamente renderizados.
+}
+
+\foreignlanguage{portuguese}{
+    O suporte tipográfico completo da família Libertinus garante uma
+    apresentação perfeita para todos os idiomas supported.
+}
+
+% Mixed language example
+\section{\foreignlanguage{english}{Mixed Language Content}}
+
+\foreignlanguage{english}{
+    This section demonstrates mixing languages within the same document.
+    For example, we can discuss \emph{\foreignlanguage{french}{la typographie française}}
+    and \emph{\foreignlanguage{german}{deutsche Silbentrennung}} in the same paragraph.
+    \foreignlanguage{spanish}{Esto demuestra} la flexibilidad del sistema OmniLaTeX
+    \foreignlanguage{italian}{per la gestione} \foreignlanguage{portuguese}{de múltiplos idiomas}
+    \foreignlanguage{english}{in a single document}.
+}
+
+% Mathematical content with international examples
+\section{\foreignlanguage{english}{Mathematical Content}}
+
+\foreignlanguage{english}{
+    Mathematics transcends language barriers. The formula for the area of a circle
+    remains universal: $A = \pi r^2$. However, we can provide examples in different languages:
+}
+
+\begin{equation}
+    \foreignlanguage{german}{Fläche des Kreises: } A = \pi r^{2}
+\end{equation}
+
+\begin{equation}
+    \foreignlanguage{french}{Aire du cercle: } A = \pi r^2
+\end{equation}
+
+\begin{equation}
+    \foreignlanguage{spanish}{Área del círculo: } A = \pi r^2
+\end{equation}
+
+\begin{equation}
+    \foreignlanguage{italian}{Area del cerchio: } A = \pi r^2
+\end{equation}
+
+\begin{equation}
+    \foreignlanguage{portuguese}{Área do círculo: } A = \pi r^2
+\end{equation}
+
+% Bibliography example
+\section{\foreignlanguage{english}{Bibliography}}
+
+\foreignlanguage{english}{
+    This document demonstrates font coverage for multiple languages. The bibliography
+    system properly handles international characters and provides appropriate sorting
+    according to language-specific rules.
+}
+
+\nocite{*}
+\printbibliography
+
+\end{document}

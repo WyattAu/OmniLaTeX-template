@@ -6,19 +6,58 @@ A modular LaTeX template system for academic and professional documents. This fo
 
 - Support for books, theses, dissertations, articles, journals, CVs, manuals, technical reports, patents, and standards
 - LuaLaTeX engine with Lua scripting
+- Modern typography system with Libertinus Serif + Monaspace Neon fonts
+- Native bold/italic support for code listings and improved Unicode mathematical symbols
 - Content support for code listings, mathematics, tables, figures, bibliographies, glossaries, TikZ graphics, and multi-language documents
 - CI/CD integration for GitHub Actions, GitLab CI, Forgejo, and Gitea
 - PDF verification with commit SHA embedding
 - Docker container for consistent builds
 - Ready-to-use templates in the examples directory
 
+## Font System
+
+OmniLaTeX uses a modern typography system based on:
+
+- **Libertinus Serif** for main text and mathematical content
+- **Monaspace Neon** for monospace/code listings
+- **Merriweather Sans** for sans-serif elements
+
+### Benefits of the New Font System
+
+✅ **Native Bold/Italic Support**: Code listings now display true bold and italic formatting without font faking
+
+✅ **Enhanced Unicode Support**: Improved mathematical symbol rendering and international character support
+
+✅ **Better Typography**: Libertinus fonts provide superior readability and character spacing
+
+✅ **Professional Appearance**: Modern font stack suitable for academic and professional documents
+
+## Migration from Previous Versions
+
+If you're upgrading from a version using TeX Gyre Pagella and Inconsolata fonts:
+
+1. **No Manual Changes Required**: The migration is handled automatically in the font configuration
+2. **Benefits**: Better code formatting, improved mathematical symbols, and enhanced overall typography
+3. **Backward Compatibility**: All existing LaTeX code continues to work without modification
+4. **Build Process**: Use the same compilation commands as before
+
 ## Installation
 
 ### Prerequisites
 
-- LuaLaTeX
+- LuaLaTeX with TeX Live 2025 or newer
 - Python 3.8+ for build script
 - Git for version control and verification
+
+### Font Requirements
+
+The Libertinus and Monaspace font families are automatically available in TeX Live 2025+:
+
+- **Libertinus Serif** and **Libertinus Math** (for main text and mathematics)
+- **Monaspace Neon** (for monospace/code listings)
+- **Merriweather Sans** (for sans-serif elements)
+
+No additional font installation is required when using the provided Docker container or TeX Live 2025.
 
 ### Quick Start
 

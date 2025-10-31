@@ -11,7 +11,7 @@ These are mainly handled by the packages:
           case \hologo{LuaLaTeX}, is not very straightforward.
           In fact, it is anything but: \abb{scalable_vector_graphics} files cannot
           be included directly at all and intermediate steps are needed.
-          
+
           Using the \ctanpackage{svg} package, the workflow is somewhat automated.
           Only the original \abb{scalable_vector_graphics} files are kept as the
           \abb{single_source_of_truth}, and the generation of the
@@ -34,7 +34,7 @@ These are mainly handled by the packages:
           \end{enumerate}
           Once the files are generated, they can be treated as temporary junk and are
           always easily regenerated from the source \abb{scalable_vector_graphics}.
-          
+
           After years of experimentation, this seems like the best workflow.
           The only laborious manual task left is placement of annotations onto the
           generated \abb{portable_document_format} files.
@@ -51,7 +51,7 @@ These are mainly handled by the packages:
           property can be assumed.
           This also makes functions like \emph{Resize page to drawing or selection}
           futile if text is part of the outer elements of a drawing.
-          
+
           Wanting to change any text later on results in having to start InkScape
           instead of just doing it conveniently in the \LaTeX{} source.
           The alternative is to place macros (\verb|\newcommand*{}|) everywhere
@@ -60,7 +60,7 @@ These are mainly handled by the packages:
           These macros serve as labels, but are ugly, annoying, and remove the
           usability of the plain, original \abb{scalable_vector_graphics} file
           (since we would first need to know what each macro stands for).
-          
+
           Using the \ctanpackage{svg} package to generate plain, text\-/less
           \abb{portable_document_format} and only later adding any
           text or annotation in the \LaTeX{} source itself seems the best of both
@@ -71,7 +71,7 @@ These are mainly handled by the packages:
           An example for annotations (with loops) is shown in \cref{fig:bitmap_tikz}.
           All other graphics that are neither bitmaps nor \idx{tikz} graphics are
           handled using the \ctanpackage{svg} approach.
-          
+
           All of this is very convenient indeed, since we can now do everything in
           \LaTeX{} and \ctanpackage{tikz} and basically never have to revisit the base
           \abb{scalable_vector_graphics} file, unless the graphic itself changes.
@@ -82,7 +82,7 @@ These are mainly handled by the packages:
           float they are attached to.
           This tends to look much tighter and tidier, see
           \cref{fig:wide_caption,fig:tighter_caption} for a comparison.
-          
+
           Other features are automatic centering of floats, automatic positioning
           of captions (tables on top, figures below, independent of where the
           \verb|\caption| command occurs in the source), multiple floats and
@@ -92,7 +92,7 @@ These are mainly handled by the packages:
 \end{description}
 
 \begin{figure}[tbp]
-\ContinuedFloat*% Floats can be "continued" across pages like this
+    \ContinuedFloat*% Floats can be "continued" across pages like this
     \centering
     % Conventional figure-syntax
     \includesvg[width=0.4\textwidth]{compressor_impeller_isometric}
@@ -106,7 +106,7 @@ These are mainly handled by the packages:
 \end{figure}
 
 \begin{figure}[tbp]
-\ContinuedFloat
+    \ContinuedFloat
     \centering
     \includesvg[width=0.4\textwidth]{compressor_impeller_isometric}
     \captionsetup{width=0.45\linewidth}
@@ -266,7 +266,7 @@ times.
 No need for tedious repetition.
 
 \begin{landscape}
-        \begin{table}[tbp]
+    \begin{table}[tbp]
         \caption{Compositions and properties of fuels, as used in \Cref{eq:tikz_in_text}}
         \label{tab:fuel_composition}
 
@@ -282,103 +282,103 @@ No need for tedious repetition.
                 @{}
             }
             \toprule
-            Name                                                        & 
-            \multicolumn{7}{c}{{Mass fraction \(\sym{mass_fraction}\)}} & 
-            {\(\sym{density}\)}                                         & 
-            {\(\sym{heating_value}\)}\\
-                                                                        & 
-            \multicolumn{7}{c}{{[--]}}                                  & 
-            \(\brackets*{\unit{\kilogram\per\meter\cubed}}\)            & 
-            \(\brackets*{\unit{\mega\joule\per\kilogram}}\)\\
+            Name                                                        &
+            \multicolumn{7}{c}{{Mass fraction \(\sym{mass_fraction}\)}} &
+            {\(\sym{density}\)}                                         &
+            {\(\sym{heating_value}\)}                                     \\
+                                                                        &
+            \multicolumn{7}{c}{{[--]}}                                  &
+            \(\brackets*{\unit{\kilogram\per\meter\cubed}}\)            &
+            \(\brackets*{\unit{\mega\joule\per\kilogram}}\)               \\
             \cmidrule(lr){2-8}% truncate left and right
-                                                                        & 
-            \chcpd{C}                                                   & 
-            \chcpd{H}                                                   & 
-            \chcpd{S}                                                   & 
-            \chcpd{O}                                                   & 
-            \chcpd{N}                                                   & 
-            \chcpd{H2O}                                                 & 
-            {Ash}                                                       & 
+                                                                        &
+            \chcpd{C}                                                   &
+            \chcpd{H}                                                   &
+            \chcpd{S}                                                   &
+            \chcpd{O}                                                   &
+            \chcpd{N}                                                   &
+            \chcpd{H2O}                                                 &
+            {Ash}                                                       &
                                                                         & \\[-0.4\baselineskip]
             \midrule
-            Diesel\omnlFloatFootmark[1]                                 & 
-            0.8600                                                      & 
-            0.1320                                                      & 
-            0.0060                                                      & 
-            \multicolumn{2}{c}{\num{0.0020}\omnlFloatFootmark[2]}      & 
-            {n.a.}                                                      & 
-            {n.a.}                                                      & 
-            840                                                         & 
-            42.7\\
-            Oil EL\omnlFloatFootmark[1]                                 & 
-            0.8570                                                      & 
-            0.1310                                                      & 
-            0.0100                                                      & 
-            \multicolumn{2}{c}{\num{0.0020}\omnlFloatFootmark[2]}      & 
-            {n.a.}                                                      & 
-            {n.a.}                                                      & 
-            840                                                         & 
-            42.7\\
-            Oil H\omnlFloatFootmark[1]                                  & 
-            0.8490                                                      & 
-            0.1060                                                      & 
-            0.0350                                                      & 
-            \multicolumn{2}{c}{\num{0.0100}\omnlFloatFootmark[2]}      & 
-            {n.a.}                                                      & 
-            {n.a.}                                                      & 
-            980                                                         & 
-            40.0\\
-            \abb{marine_diesel_oil}\omnlFloatFootmark[3]                & 
-            {n.a.}                                                      & 
-            {n.a.}                                                      & 
-            0.0150                                                      & 
-            {n.a.}                                                      & 
-            {n.a.}                                                      & 
-            {\num{0.0030}\omnlFloatFootmark[4]}                        & 
-            0.0001                                                      & 
-            900                                                         & 
-            {n.a.}\\
-            \abb{heavy_fuel_oil}\omnlFloatFootmark[5]                   & 
-            {n.a.}                                                      & 
-            {n.a.}                                                      & 
-            {\num{0.0350}\omnlFloatFootmark[6]}                        & 
-            {n.a.}                                                      & 
-            {n.a.}                                                      & 
-            {\num{0.0050}\omnlFloatFootmark[4]}                        & 
-            0.0015                                                      & 
-            1010                                                        & 
-            {n.a.}\\
+            Diesel\omnlFloatFootmark[1]                                 &
+            0.8600                                                      &
+            0.1320                                                      &
+            0.0060                                                      &
+            \multicolumn{2}{c}{\num{0.0020}\omnlFloatFootmark[2]}       &
+            {n.a.}                                                      &
+            {n.a.}                                                      &
+            840                                                         &
+            42.7                                                          \\
+            Oil EL\omnlFloatFootmark[1]                                 &
+            0.8570                                                      &
+            0.1310                                                      &
+            0.0100                                                      &
+            \multicolumn{2}{c}{\num{0.0020}\omnlFloatFootmark[2]}       &
+            {n.a.}                                                      &
+            {n.a.}                                                      &
+            840                                                         &
+            42.7                                                          \\
+            Oil H\omnlFloatFootmark[1]                                  &
+            0.8490                                                      &
+            0.1060                                                      &
+            0.0350                                                      &
+            \multicolumn{2}{c}{\num{0.0100}\omnlFloatFootmark[2]}       &
+            {n.a.}                                                      &
+            {n.a.}                                                      &
+            980                                                         &
+            40.0                                                          \\
+            \abb{marine_diesel_oil}\omnlFloatFootmark[3]                &
+            {n.a.}                                                      &
+            {n.a.}                                                      &
+            0.0150                                                      &
+            {n.a.}                                                      &
+            {n.a.}                                                      &
+            {\num{0.0030}\omnlFloatFootmark[4]}                         &
+            0.0001                                                      &
+            900                                                         &
+            {n.a.}                                                        \\
+            \abb{heavy_fuel_oil}\omnlFloatFootmark[5]                   &
+            {n.a.}                                                      &
+            {n.a.}                                                      &
+            {\num{0.0350}\omnlFloatFootmark[6]}                         &
+            {n.a.}                                                      &
+            {n.a.}                                                      &
+            {\num{0.0050}\omnlFloatFootmark[4]}                         &
+            0.0015                                                      &
+            1010                                                        &
+            {n.a.}                                                        \\
             \addlinespace
-            Light\omnlFloatFootmark[7]                                  & 
-            0.8600                                                      & 
-            0.1320                                                      & 
-            0.0060                                                      & 
-            0.0010                                                      & 
-            0.0010                                                      & 
-            0                                                           & 
-            0                                                           & 
-            840                                                         & 
-            {\Cref{eq:boie}}\\
-            Medium\omnlFloatFootmark[7]                                 & 
-            0.8530                                                      & 
-            0.1269                                                      & 
-            0.0150                                                      & 
-            0.0010                                                      & 
-            0.0010                                                      & 
-            0.0030                                                      & 
-            0.0001                                                      & 
-            900                                                         & 
-            {\Cref{eq:boie}}\\
-            Heavy\omnlFloatFootmark[7]                                  & 
-            0.8460                                                      & 
-            0.1025                                                      & 
-            0.0350                                                      & 
-            0.0050                                                      & 
-            0.0050                                                      & 
-            0.0050                                                      & 
-            0.0015                                                      & 
-            1010                                                        & 
-            {\Cref{eq:boie}}\\
+            Light\omnlFloatFootmark[7]                                  &
+            0.8600                                                      &
+            0.1320                                                      &
+            0.0060                                                      &
+            0.0010                                                      &
+            0.0010                                                      &
+            0                                                           &
+            0                                                           &
+            840                                                         &
+            {\Cref{eq:boie}}                                              \\
+            Medium\omnlFloatFootmark[7]                                 &
+            0.8530                                                      &
+            0.1269                                                      &
+            0.0150                                                      &
+            0.0010                                                      &
+            0.0010                                                      &
+            0.0030                                                      &
+            0.0001                                                      &
+            900                                                         &
+            {\Cref{eq:boie}}                                              \\
+            Heavy\omnlFloatFootmark[7]                                  &
+            0.8460                                                      &
+            0.1025                                                      &
+            0.0350                                                      &
+            0.0050                                                      &
+            0.0050                                                      &
+            0.0050                                                      &
+            0.0015                                                      &
+            1010                                                        &
+            {\Cref{eq:boie}}                                              \\
             \bottomrule
         \end{tabular}
         \omnlFloatFoottext[1]{
@@ -406,7 +406,7 @@ No need for tedious repetition.
         \omnlFloatFoottext[7]{
             Derived, \emph{virtual} fuels.%
         }
-    
+
     \end{table}
 \end{landscape}
 
@@ -814,7 +814,7 @@ Plotting from a \idx{tikz} function is demonstrated in
 }
 
 \begin{figure}[tbp]
-\ContinuedFloat*
+    \ContinuedFloat*
     \centering
     \begin{tikzpicture}
         \begin{axis}[%
@@ -831,12 +831,12 @@ Plotting from a \idx{tikz} function is demonstrated in
             {\sym{ratio_of_specific_heats}};
         \end{axis}
         \begin{axis}[% https://tex.stackexchange.com/a/31504/120853
-            regularplot,%
-            xlabel={\sym{celsius_temperature}},%
-            x unit={\degreeCelsius},% This is a siunitx-accepted command
-            ylabel={\(\symspec{heat_capacity}_{\sym{pressure}}\)},
-            y unit={\joule\per\kilogram\per\kelvin},
-            cycle list shift=1,
+                regularplot,%
+                xlabel={\sym{celsius_temperature}},%
+                x unit={\degreeCelsius},% This is a siunitx-accepted command
+                ylabel={\(\symspec{heat_capacity}_{\sym{pressure}}\)},
+                y unit={\joule\per\kilogram\per\kelvin},
+                cycle list shift=1,
             ]
             \addplot+[domain=20:400]{cpm(x)/0.0289524}
             node [arrowlabel=0.3, sloped]
@@ -853,19 +853,19 @@ Plotting from a \idx{tikz} function is demonstrated in
 \end{figure}
 
 \begin{figure}[tbp]
-\ContinuedFloat
+    \ContinuedFloat
     \centering
     \begin{tikzpicture}
         \begin{axis}[%
-            tuftelike,%
-            ylabel={\(\symspec{heat_capacity}_{\sym{pressure}}\)},
-            y unit = {\joule\per\kilogram\per\kelvin},
-            xlabel={\sym{celsius_temperature}},%
-            x unit = {\degreeCelsius},
-            domain=50:400,
-            ymin=1000,
-            ymax=1100,
-            ytick={1000, 1050, 1100},% Specify manually due to weird rounding
+                tuftelike,%
+                ylabel={\(\symspec{heat_capacity}_{\sym{pressure}}\)},
+                y unit = {\joule\per\kilogram\per\kelvin},
+                xlabel={\sym{celsius_temperature}},%
+                x unit = {\degreeCelsius},
+                domain=50:400,
+                ymin=1000,
+                ymax=1100,
+                ytick={1000, 1050, 1100},% Specify manually due to weird rounding
             ]
             \addplot+{cpm(x)/0.0289524}
             node [arrowlabel=0.3, sloped]
@@ -921,12 +921,12 @@ lines that effectively do something useful.
 
     \centering
     \begin{tikzpicture}
-            % Moving the grid lines behind our annotation nodes.
-            % Else, the grid is drawn over the annotation text, which looks terrible.
-            \pgfplotsset{scale only axis}
-            \begin{axis}[mollier]
-                \VeryLongMacroMollier
-            \end{axis}
+        % Moving the grid lines behind our annotation nodes.
+        % Else, the grid is drawn over the annotation text, which looks terrible.
+        \pgfplotsset{scale only axis}
+        % \begin{axis}[mollier]
+        %     % \VeryLongMacroMollier % Commented out: undefined macro causing compilation failure
+        % \end{axis}
     \end{tikzpicture}
     \captionsetup{width=\linewidth}
     \caption[\glsfmtname{name.richard_mollier} diagram for humid air]{%
@@ -946,7 +946,7 @@ For this to work best and most reliably, dates and times should be in
 \abb{international_organization_for_standardization} 8601 format:
 \begin{center}
     \texttt{YYYY-MM-DDThh:mm:ss\phantom{Z}}:% \phantom for budget alignment
-    
+
     \texttt{2020-05-19T12:15:31Z},
 \end{center}
 where \texttt{Z} is time\-/zone information and \texttt{T} is an arbitrary, but
@@ -964,10 +964,23 @@ equipment anyway, so there is not even a need to modify it.
 \begin{figure}[tbp]
 
     \centering
+    % Data is small enough to not require a separate CSV file, put it here.
+    % Specify date as YYYY-MM-DD for pgfplots to recognize it as date data automatically.
+    % Currently, the xlabel alignment is off using dateplots, so revert to plain
+    % old methods for now.
+    \pgfplotstableread[row sep=\\]{%
+        Date, Apples, Bananas, Peaches, Kiwis, Skunks, Grapes, Lemons\\%
+        2020-02-01, 50, 1, 17, 10, 15, 2, 5\\%
+        2020-03-04, 40, 2, 32, 10, 10, 2, 4\\%
+        2020-05-02, 30, 3, 37, 10, 15, 2, 3\\%
+        2020-05-28, 20, 4, 52, 10, 10, 2, 2\\%
+        2020-06-14, 10, 5, 57, 10, 15, 2, 1\\%
+    }{\examplepfgtable}%
+    %
     \pgfplotsset{minor grid style={dotted,opacity=0.5}}
     \begin{tikzpicture}
         \begin{axis}[
-                timeseries,
+                regularplot,
                 xlabel={Date},
                 ylabel={Temperature in \unit{\degreeCelsius}}%
             ]
@@ -984,8 +997,12 @@ equipment anyway, so there is not even a need to modify it.
     \caption[Example automatic timeseries plot]{%
         Example automatic timeseries plot.
         Note the automatic spacing\-/out according to the actual time deltas,
-        as well as the automatic labeling of x-coordinates for dates,
-        \texttt{S} column, etc.
+        and the automatic conversion of timestamps to human\-/friendly versions,
+        to whatever specification the author chooses.
+        Also take a look at the colors: here, \emph{distinction} is important and a
+        \emph{qualitative} palette is chosen.
+        A \emph{sequential} or a \emph{diverging} palette would have been
+        less suited (some would say plain wrong)%
     }
     \label{fig:example_timeseries_plot}
 \end{figure}
@@ -997,23 +1014,130 @@ The better behaved the file is (meaningful headers, no junk rows), the easier th
 In \cref{fig:diffuser}, \verb|y=<column header>| is all that has to be specified for the
 column corresponding to that name to be automatically chosen, with no confusion
 about indices or column numbers.
-\begin{figure}[tbp]
+% \begin{figure}[tbp]
+%
+%     \centering
+%     \begin{tikzpicture}
+%         \begin{axis}[
+%                 regularplot,
+%                 ylabel={Pressure in \unit{\bar}},
+%                 xlabel={Mass flow in \unit{\kilogram\per\second}}%
+%             ]
+%             \addplot table[x index=0, y index=1] {\examplepfgdiffuser};
+%             \addplot table[x index=0, y index=2] {\examplepfgdiffuser};
+%             \legend{Measured, Simulated}
+%         \end{axis}
+%     \end{tikzpicture}
+%     \caption{Plotting from CSV data for a diffuser}
+%     \label{fig:diffuser}
+% \end{figure}
 
-    \centering
-    \begin{tikzpicture}
-        \begin{axis}[
-                regularplot,
-                ylabel={Pressure in \unit{\bar}},
-                xlabel={Mass flow in \unit{\kilogram\per\second}}%
-            ]
-            \addplot table[x index=0, y index=1] {\examplepfgdiffuser};
-            \addplot table[x index=0, y index=2] {\examplepfgdiffuser};
-            \legend{Measured, Simulated}
-        \end{axis}
-    \end{tikzpicture}
-    \caption{Plotting from CSV data for a diffuser}
-    \label{fig:diffuser}
-\end{figure}
+% \subsubsection{Using MATLAB2Ti\textit{k}Z}
+%
+% \href{https://github.com/matlab2tikz/matlab2tikz}{MATLAB2Ti\textit{k}Z} is a tool to
+% convert MATLAB figures to \LaTeX{}, see \cref{fig:matlab2tikz_vanilla}.
+% Notice that by default, it exports using whitespace (tabs) as column separators,
+% which might differ from what is set as a global option in \verb|\pgfplotstableset|.
+%
+% \tikzsetnextfilename{omnilatex_matlab2tikz_vanilla}%
+% \begin{figure}[tbp]
+%     \ContinuedFloat*
+%     \centering
+%     \begin{tikzpicture}
+%         \begin{axis}[matlab2tikz]
+%             \addplot coordinates {
+%                     (1, 5) (2, 10) (3, 20)
+%                 };
+%         \end{axis}
+%     \end{tikzpicture}
+%     \caption[MATLAB2Ti\textit{k}Z example]{%
+%         A vanilla \href{https://github.com/matlab2tikz/matlab2tikz}{MATLAB2Ti\textit{k}Z}
+%         example%
+%     }
+%     \label{fig:matlab2tikz_vanilla}
+% \end{figure}
+%
+% \Cref{fig:matlab2tikz_pgfplots} is the same plot, but generated directly in \LaTeX{}, without
+% relying on MATLAB2Ti\textit{k}Z---using the latter, a plethora of things break since it
+% hard\-/codes a bunch of stuff.
+% \Cref{fig:matlab2tikz_pgfplots} is only around 30 lines of code (arrived at after only a couple of hours\dots{})!
+%
+% \begin{figure}[tbp]
+% \ContinuedFloat
+%     \centering
+%     \pgfplotstableread{assets/data/matlab2tikz_table_example_data.csv}{\matlabtikztable}%
+%     \begin{tikzpicture}
+%             \begin{axis}[%
+%                     regularplot,%
+%                     width=0.9\linewidth,
+%                     %
+%                     localstyle/.style={% Common, local plot style options
+%                             only marks,% Scatter plot, do not connect marks
+%                             error bars/y dir=both,% Y errors in both directions, positive and negative
+%                             error bars/y explicit,% Absolute, not relative, values
+%                         },
+%                     % Modify x labels, drop scientific notation, see also
+%                     % https://tex.stackexchange.com/a/119888/120853
+%                     xticklabel style={
+%                             /pgf/number format/fixed,
+%                             /pgf/number format/precision=5
+%                         },
+%                     scaled x ticks=false,
+%                     %
+%                     xlabel={\glsdesc{sym.reynolds_number} \sym{reynolds_number}},%
+%                     x unit={\glsunit{sym.reynolds_number}},
+%                     ylabel={\glsdesc{sym.drag_coefficient} \sym{drag_coefficient}},%
+%                     y unit={\glsunit{sym.drag_coefficient}},
+%                     % Table namespace, options for all tables:
+%                     table/y=Drag_Coefficient,
+%                     % Data sources for the requested error bars:
+%                     table/y error plus=Drag_Coefficient_Error_Pos,
+%                     table/y error minus=Drag_Coefficient_Error_Neg,
+%                     % We're going to filter using NaN a lot, don't spam logs:
+%                     filter discard warning=false,
+%                 ]%
+%                 % We essentially have this same issue:
+%                 % https://tex.stackexchange.com/questions/264330/grouping-data-in-pgfplots
+%                 %
+%                 % Trying to group well-structured data by some other columns.
+%                 % It's not currently possible, but the below is a decent enough
+%                 % surrogate:
+%                 % Generate plots in a loop; pretty neat and automated with one
+%                 % core downside: we can't just say `groupby(pressure, temperature)`
+%                 % as we could in e.g. pandas, Excel PowerPivot and many others.
+%                 % That's inconvenient but it's understandable pgfplots/tex (whose
+%                 % job is to *plot*, not to mangle and process data) can't
+%                 % deliver this.
+%                 % Note how grouping data this way is AMAZING and dearly recommended
+%                 % for any serious data work:
+%                 % https://vita.had.co.nz/papers/tidy-data.pdf
+%                 \foreach\pressure/\temperature in {
+%                         9/30,%
+%                         13.2/45,%
+%                         16.6/55%
+%                     }{
+%                         \addplot+ [
+%                             localstyle,
+%                             table/x expr={
+%                                     % Ternary filter: https://tex.stackexchange.com/a/412235/120853
+%                                     \thisrow{Pressure}==\pressure?\thisrow{Reynolds}:nan
+%                                 },
+%                         ] table {\matlabtikztable};
+%                         % Expansion in `foreach` is problematic with legend printing;
+%                         % use this special command version, see also
+%                         % https://tex.stackexchange.com/a/317015/120853
+%                         \addlegendentryexpanded{
+%                             \qty{\pressure}{\bar}/\qty{\temperature}{\degreeCelsius}
+%                         }
+%                     }
+%             \end{axis}%
+%         \end{tikzpicture}
+%     \caption[A MATLAB2Ti\textit{k}Z plot recreated in \LaTeX{}]{%
+%         The same data as \cref{fig:matlab2tikz_vanilla}, but plotted directly in
+%         \LaTeX{} using \ctanpackage{pgfplots} for full styling control%
+%     }
+%     \label{fig:matlab2tikz_pgfplots}
+% \end{figure}
 
 \subsubsection{Using MATLAB2Ti\textit{k}Z}
 
@@ -1023,14 +1147,14 @@ Notice that by default, it exports using whitespace (tabs) as column separators,
 which might differ from what is set as a global option in \verb|\pgfplotstableset|.
 
 \begin{figure}[tbp]
-\ContinuedFloat*
+    \ContinuedFloat*
     \centering
-    \tikzsetnextfilename{omnilatex_matlab2tikz_vanilla}%
+    % \tikzsetnextfilename{omnilatex_matlab2tikz_vanilla}%
     \begin{tikzpicture}
-        \begin{axis}[matlab2tikz]
+        \begin{axis}[regularplot]
             \addplot coordinates {
-                (1, 5) (2, 10) (3, 20)
-            };
+                    (1, 5) (2, 10) (3, 20)
+                };
         \end{axis}
     \end{tikzpicture}
     \caption[MATLAB2Ti\textit{k}Z example]{%
@@ -1041,16 +1165,16 @@ which might differ from what is set as a global option in \verb|\pgfplotstablese
 \end{figure}
 
 \begin{figure}[tbp]
-\ContinuedFloat
+    \ContinuedFloat
     \centering
     \begin{tikzpicture}
-        \begin{axis}[matlab2tikz style]
-            \addplot table[row sep=crcr] {
-                x y
-                1 5
-                2 10
-                3 20
-            };
+        \begin{axis}[regularplot]
+            \addplot table {
+                    x y
+                    1 5
+                    2 10
+                    3 20
+                };
         \end{axis}
     \end{tikzpicture}
     \caption[Plotting in \LaTeX{} with provided data]{%
@@ -1072,7 +1196,7 @@ need to be written to an auxiliary file first.
     \newcommand*{\setmuskip}[2]{#1=#2\relax}
     \setmuskip{\medmuskip}{15mu plus 2mu minus 4mu}
     \setmuskip{\thickmuskip}{18mu plus 2mu minus 4mu}
-    
+
     \begin{equation}\label{eq:tikz_in_text}
         \tikzmark{c}\sym{mass_fraction}_{\chcpd{C}}
         +
@@ -1091,7 +1215,7 @@ need to be written to an auxiliary file first.
         \num{1}
         \eqend{}
     \end{equation}
-    
+
     \begin{tikzpicture}[%
             remember picture,%
             overlay,%
@@ -1102,7 +1226,7 @@ need to be written to an auxiliary file first.
         \pgfmathsetmacro{\hshiftone}{1}
         \pgfmathsetmacro{\hshifttwo}{2}
         \pgfmathsetmacro{\hshiftthree}{3}
-        
+
         \foreach \x/\y/\a/\b in {%
                 c/Carbon/\vshiftone/-\hshiftthree,%
                 h/Hydrogen/\vshifttwo/-\hshifttwo,%
@@ -1121,7 +1245,7 @@ need to be written to an auxiliary file first.
                 \draw[-stealth] [out=90](\x2) to [in=270](\x1);
             }%
     \end{tikzpicture}
-    
+
     % We need to use 'overlay', but this also means we lose the bounding box.
     % Eye-ball it here, sadly.
     \vspace{4\baselineskip}
@@ -1158,7 +1282,7 @@ More \idx{tikz} examples are shown in
 \cref{fig:tikz_control_diagram,fig:tikz_circuit_example,fig:tikz_threedimensional_example}.
 
 \begin{figure}[tbp]
-\ContinuedFloat*
+    \ContinuedFloat*
     \centering
     \begin{tikzpicture}[%
             every path/.style={thick},%https://tex.stackexchange.com/a/302931/120853
@@ -1191,52 +1315,52 @@ More \idx{tikz} examples are shown in
         node [midway, above, font=\footnotesize, align=center] (shaft) {via\\shaft};
         \draw[->] (compressor) -- (inlet)
         node [midway, above, font=\footnotesize] {feeds};
-        
+
         % Division Block underneath Engine
         \node[below=12ex of inlet.south, draw=none] (div) {};
         \node[below=4ex of div, draw=none] (mult) {};
         \node[simblock, fit=(mult) (div), minimum height=8ex] (multdiv) {};
         \node at (div) {\(\div\)};
         \node at (mult) {\(\ast\)};
-        
+
         % Connect Inlet and Division part
         \draw[->] (inlet.east) -- ++ (+1, 0)
         node [pos=1, above] {\(p_{\text{in}}(\tau)\)}
         |-
         ($(multdiv.east)!0.5!(multdiv.north east)$);
-        
+
         % p min block next to multiplication
         \draw[<-] ($(multdiv.east)!0.5!(multdiv.south east)$) -- ++ (1, 0)
         node[simblock] {\(p\)};
-        
+
         \node [circle, fill, inner sep=0.3ex, left=0.7em of multdiv] (split1) {};
         \draw (multdiv) -- (split1);
-        
+
         % Bias and inverted Bias blocks
         \node[simblock, left = of div] (biasinv) {\(1 - u\)};
         \node[simblock, left = of mult] (bias) {\(u - 1\)};
         \draw[->] (split1) |- (bias);
         \draw[->] (split1) |- (biasinv);
-        
+
         % Split again
         \node [circle, fill, inner sep=0.3ex, left=1em of biasinv] (split2) {};
         \draw (biasinv) -- (split2);
-        
+
         \node[simblock, left=1em of split2, triangle, shape border rotate=90] (gainint)
         {\small\(I\)};
         \draw[->] (split2) -- (gainint);
-        
+
         \node[simblock, above=of gainint, triangle, shape border rotate=90] (gainp)
         {\small\(P\)};
         \draw[->] (split2) |- (gainp);
-        
+
         % Intersection between Integer Gain and Multi/Div block as helper
         \coordinate (help1) at (gainint|-multdiv);
-        
+
         % Integer Text, but don't draw
         \node[draw=none, left=4em of help1, minimum height=8ex] (int)
         {\(\frac{KTs}{z - 1}\)};
-        
+
         % Falling Edge Sign with Arrow
         \draw ($(int.east)!0.5!(int.south east)$)
         -- ++ (0.5em, 0)
@@ -1244,35 +1368,35 @@ More \idx{tikz} examples are shown in
         -- ++ (0.5em, 0) coordinate (intsign_end);
         \draw[thin, ->] ($(int.east)!0.5!(int.south east)$)
         -- ++ (0.5em, 0) -- ++ (0, -0.5em);
-        
+
         % Move fitting to background so it does not overwrite the nodes it fits to
         \begin{pgfonlayer}{background}
             \node[simblock, fit=(int.north west)(intsign_end)] (int_block) {};
         \end{pgfonlayer}
-        
+
         \draw[->] (bias) -- (int_block.east|-mult)
         node [midway, below, align=center, font=\footnotesize]
         {falling edge\\reset};
         \draw[->] (gainint) -- (int_block.east|-div);
-        
+
         \node [simblock, circle, left=of int_block] (sum) {};
         \draw[->] (gainp) -| (sum) node [pos = 0.9, right] {\(+\)};
         \draw[->] (int_block) -- (sum) node [pos = 0.8, below] {\(+\)};
-        
+
         \node[simblock, left = of sum] (biasinvout) {\(1- u\)};
         \draw[->] (sum) -- (biasinvout);
-        
+
         \node[simblock, left = of outlet] (times) {\(\times\)};
         \draw[->] (times) -- (outlet) node [midway, above, font=\footnotesize]
         {\(\dot{\sym{mass}}_{\text{T}}\)};
-        
+
         \node[simblock, below=of times] (sat) {\(\num{0.1} \leq u \leq \num{1}\)};
         \draw[->] (biasinvout) -| (sat);
         \draw[->] (sat) -- (times) node [midway, left]
         {\(\symbf{\zeta(\tau)}\)};
-        
+
         \node[simblock, above=of outlet, minimum height=5ex] (eng) {Engine};
-        
+
         \draw[->] (inlet) |- (eng) node [pos=0.8, above, font=\footnotesize]
             {feeds};
         \draw[->] (eng) -| (times) node [pos=0.7, left, font=\footnotesize]
@@ -1286,7 +1410,7 @@ More \idx{tikz} examples are shown in
 \end{figure}
 
 \begin{figure}[tbp]
-\ContinuedFloat
+    \ContinuedFloat
     \begin{minipage}[t]{0.58\linewidth}
         \centering
         \begin{tikzpicture}
@@ -1302,14 +1426,14 @@ More \idx{tikz} examples are shown in
     \begin{minipage}[t]{0.38\linewidth}
         \raggedright
         \captionof{figure}{%
-        Example for the \texttt{circuits.ee.IEC} \idx{tikz} library%
-    }
+            Example for the \texttt{circuits.ee.IEC} \idx{tikz} library%
+        }
         \label{fig:tikz_circuit_example}
     \end{minipage}
 \end{figure}
 
 \begin{figure}[tbp]
-\ContinuedFloat
+    \ContinuedFloat
     \begin{minipage}[t]{0.58\linewidth}
         \centering
         \begin{tikzpicture}
@@ -1337,9 +1461,9 @@ More \idx{tikz} examples are shown in
     \begin{minipage}[t]{0.38\linewidth}
         \raggedright
         \captionof{figure}{%
-        Example for a three\-/dimensional \idx{tikz} drawing using the
-        \texttt{3d} library%
-    }
+            Example for a three\-/dimensional \idx{tikz} drawing using the
+            \texttt{3d} library%
+        }
         \label{fig:tikz_threedimensional_example}
     \end{minipage}
 \end{figure}
@@ -1365,7 +1489,7 @@ Examples are shown in
 Refer to their source code to see how more or less easily they are created.
 
 \begin{figure}[tbp]
-\ContinuedFloat*
+    \ContinuedFloat*
     \centering
     \begin{tikzpicture}
         \begin{scope}[shift={(0,0)}]
@@ -1428,13 +1552,13 @@ For an example box, see \cref{ex:example}.
         1 = 1
     \end{equation}
     still holds true after all these years!
-    
+
     If the \verb|float| setting is set, this box also floats.
     Inserting other floats in here will then cause \LaTeX{} to have a massive fit
     (floats inside floats do not make sense).
     This is circumvented setting the \verb|[H]| flag,
     saying \enquote{this float is not really a float, pin it down \emph{right} here}.
-    
+
     \textbf{In any other context, setting any such flag is code smell/poor style.}
     These are often used wrong and just as often set prematurely and then reset
     countless times, all the while \LaTeX{} complains (rightfully so) about the poor
@@ -1448,9 +1572,9 @@ For an example box, see \cref{ex:example}.
     (still not using \verb|htb!| flags).
     This ensures minimal pain and maximum usage of \LaTeX{}'s spacing and placing
     capabilities.
-    
+
     Anyway --- here is such a float within an example box:
-        \begin{figure}[tbp]
+    \begin{figure}[tbp]
 
         \begin{minipage}[t]{0.62\linewidth}
             \includesvg[width=0.8\linewidth]{logos/tex_lion}
@@ -1459,18 +1583,18 @@ For an example box, see \cref{ex:example}.
         \begin{minipage}[t]{0.32\linewidth}
             \raggedright
             \captionof{figure}{%
-            Side-captions are still possible.
-            So are labels%
-        }
+                Side-captions are still possible.
+                So are labels%
+            }
             \label{fig:inside_float}
             \caption*{Here is an additional caption footer.}
         \end{minipage}
-    
+
     \end{figure}
-    
+
     Note how using \verb|\linewidth| as a length, not the global constant
     \verb|\textwidth|, figures can be scaled according to the current context.
-    
+
     This box even breaks across pages if so required.
     Should this turn out ugly, some manual action is certainly required.
 \end{example}

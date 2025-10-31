@@ -7,7 +7,7 @@
     language=english,
     institution=none,        % Generic (no institution branding)
     oneside,                 % Single-sided (screen viewing)
-    loadGlossaries,          % Enable glossaries/acronyms
+    % loadGlossaries,          % Enable glossaries/acronyms - temporarily disabled
 ]{../../omnilatex}
 
 % Document settings
@@ -53,10 +53,10 @@ Reference tables: Table~\ref{tab:example}.
 \begin{itemize}
     \item First item
     \item Second item
-    \begin{itemize}
-        \item Nested item
-        \item Another nested item
-    \end{itemize}
+          \begin{itemize}
+              \item Nested item
+              \item Another nested item
+          \end{itemize}
     \item Third item
 \end{itemize}
 
@@ -93,10 +93,10 @@ The quadratic formula:
 
 Maxwell's equations:
 \begin{align}
-    \nabla \cdot \mathbf{E} &= \frac{\rho}{\varepsilon_0} \\
-    \nabla \cdot \mathbf{B} &= 0 \\
-    \nabla \times \mathbf{E} &= -\frac{\partial \mathbf{B}}{\partial t} \\
-    \nabla \times \mathbf{B} &= \mu_0 \mathbf{J} + \mu_0\varepsilon_0 \frac{\partial \mathbf{E}}{\partial t}
+    \nabla \cdot \mathbf{E}  & = \frac{\rho}{\varepsilon_0}                                                   \\
+    \nabla \cdot \mathbf{B}  & = 0                                                                            \\
+    \nabla \times \mathbf{E} & = -\frac{\partial \mathbf{B}}{\partial t}                                      \\
+    \nabla \times \mathbf{B} & = \mu_0 \mathbf{J} + \mu_0\varepsilon_0 \frac{\partial \mathbf{E}}{\partial t}
 \end{align}
 
 Reference equations: Equation~\eqref{eq:quadratic}.
@@ -136,9 +136,9 @@ Reference equations: Equation~\eqref{eq:quadratic}.
         \toprule
         \textbf{Item} & \textbf{Value 1} & \textbf{Value 2} \\
         \midrule
-        First  & 10.5 & 20.3 \\
-        Second & 15.2 & 18.7 \\
-        Third  & 12.8 & 22.1 \\
+        First         & 10.5             & 20.3             \\
+        Second        & 15.2             & 18.7             \\
+        Third         & 12.8             & 22.1             \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -148,7 +148,7 @@ Reference equations: Equation~\eqref{eq:quadratic}.
 \section{Python Example}
 
 \begin{listing}[htbp]
-\begin{minted}{python}
+    \begin{minted}{python}
 def fibonacci(n):
     """Calculate the nth Fibonacci number."""
     if n <= 1:
@@ -157,20 +157,20 @@ def fibonacci(n):
 
 print(fibonacci(10))  # Output: 55
 \end{minted}
-\caption{Recursive Fibonacci function in Python}
-\label{lst:fibonacci}
+    \caption{Recursive Fibonacci function in Python}
+    \label{lst:fibonacci}
 \end{listing}
 
 \section{LaTeX Example}
 
 \begin{listing}[htbp]
-\begin{minted}{latex}
+    \begin{minted}{latex}
 \documentclass{article}
 \begin{document}
 Hello, \LaTeX{}!
 \end{document}
 \end{minted}
-\caption{Minimal LaTeX document}
+    \caption{Minimal LaTeX document}
 \end{listing}
 
 % For inline code, use: \mintinline{python}{def foo(): pass}
@@ -207,10 +207,10 @@ Using \gls{latex} and \gls{tuhh} again.
 
 % Example box (requires custom definition or package)
 \begin{center}
-\fbox{\parbox{0.8\textwidth}{%
-    \textbf{Note:} This is an example callout box.
-    You can add important information here.
-}}
+    \fbox{\parbox{0.8\textwidth}{%
+            \textbf{Note:} This is an example callout box.
+            You can add important information here.
+        }}
 \end{center}
 
 \section{TODO Notes}
@@ -223,7 +223,7 @@ Using \gls{latex} and \gls{tuhh} again.
 
 External link: \url{https://www.latex-project.org/}
 
-Link with text: \href{https://www.ctan.org/}{CTAN Package Repository}
+Link with text: \href{https://www.ctan.org}{CTAN Package Repository}
 
 Email: \href{mailto:example@example.com}{example@example.com}
 

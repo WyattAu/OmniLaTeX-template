@@ -15,9 +15,9 @@
 \RequirePackage[inline]{enumitem}% Custom list environments
 \setlist{noitemsep}% No vertical spacing in lists
 \setlist[1]{labelindent=\parindent}% Indent lists by paragraph indent
-% Refer to unimath_symbols.pdf for source of \smblksquare etc.:
-% https://ctan.org/texarchive/macros/latex/contrib/unicode-math
-\setlist[itemize,1]{label=\smblksquare}%
+% Use standard LaTeX bullet characters instead of Unicode symbols
+% that may not be available in all fonts
+\setlist[itemize,1]{label=\textbullet}%
 \setlist[enumerate]{font=\sffamily\bfseries}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -27,7 +27,7 @@
 % For compact itemize lists within table cells:
 \newlist{tabitemize}{itemize}{1}% Second argument is max. depth
 \setlist[tabitemize]{%
-    label=\smblksquare,%
+    label=\textbullet,%
     nosep,% nosep kills all vertical spacing
     align=parleft,
     leftmargin=*,

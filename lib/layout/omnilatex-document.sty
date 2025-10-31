@@ -163,7 +163,9 @@
     \fi
     \ifx\@documentcodestyle\@empty\else
         \ifdefstring{\@documentcodestyle}{color}{\setminted{style=default}}{%
-            \setminted{style=\@documentcodestyle}%
+            \ifdefstring{\@documentcodestyle}{bw}{\setminted{style=default}}{%
+                \setminted{style=\@documentcodestyle}%
+            }%
         }%
     \fi
 }

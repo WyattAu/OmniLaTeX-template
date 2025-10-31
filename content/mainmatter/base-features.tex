@@ -50,13 +50,12 @@ hit compile, wait, done%
 \label{ch:fonts_text}
 
 Using high-quality fonts is one goal.
-This includes the fantastic
-\href{https://ctan.org/texarchive/fonts/tex-gyre/opentype}{\TeX Gyre fonts},
-of which the \emph{\href{https://en.wikipedia.org/wiki/Palatino}{Palatino}}
-(by Hermann Zapf) clone \emph{\href{https://ctan.org/pkg/tex-gyre-pagella}{Pagella}}
+This includes the modern and elegant
+\href{https://github.com/alif-type/libertinus}{Libertinus fonts},
+of which the \emph{\href{https://github.com/alif-type/libertinus}{Libertinus Serif}}
 was chosen for this document.
 It comes with an accompanying
-\href{https://ctan.org/texarchive/fonts/tex-gyre-math/opentype}{math font}
+\href{https://github.com/alif-type/libertinus}{math font}
 of the same name%
 \footnote{
     Both fonts are vector fonts;
@@ -90,7 +89,7 @@ shapes and weights and combinations thereof.
 The latter is demonstrated in \cref{tab:main_font_examples}.
 %
 \begin{table}[tbp]
-\ContinuedFloat*
+    \ContinuedFloat*
     \small
     \begin{tabular}{
             % @{<value>} specifies the column separator;
@@ -196,12 +195,12 @@ Some display-style math examples follow.
     \label{eq:highlighted}
     \\
     \mathbf{% This is how you do bold math
-    \sum_{\sym{count} = \num{0}}^{\sym{component}}
-    \begin{pmatrix}
-        \sym{count} \\ \sym{component}
-    \end{pmatrix}
-    =
-    \num{2}^{\sym{count}}
+        \sum_{\sym{count} = \num{0}}^{\sym{component}}
+        \begin{pmatrix}
+            \sym{count} \\ \sym{component}
+        \end{pmatrix}
+        =
+        \num{2}^{\sym{count}}
     }
     \\
     % This equation does not make sense.
@@ -222,18 +221,18 @@ Some display-style math examples follow.
     }
     \sym{celsius_temperature}^{\sym{count}}
     \parens*{
-    \sym{first_cart_coord}_{\num{1}},
-    \sym{first_cart_coord}_{\num{2}},
-    \dots, \sym{first_cart_coord}_{\sym{count}}
+        \sym{first_cart_coord}_{\num{1}},
+        \sym{first_cart_coord}_{\num{2}},
+        \dots, \sym{first_cart_coord}_{\sym{count}}
     } = \num{0}
     \\
     \difference{\symspec{enthalpy}_{\text{change}}}
     =
     \nicefrac{\num{1}}{\num{2}}
     \parens*{
-    \sym{velocity}^{\num{2}}_{\text{exit}}
-    -
-    \sym{velocity}^{\num{2}}_{\text{entry}}
+        \sym{velocity}^{\num{2}}_{\text{exit}}
+        -
+        \sym{velocity}^{\num{2}}_{\text{entry}}
     }
 \end{gather}
 If these symbols are colored, it is because they are links and link coloring is on.
@@ -266,29 +265,29 @@ and as such, this document relies on a couple custom macros in place of it, see
         % As a consequence, use normal names and refer the reader to the source
         % code.
         \toprule
-        Name                                & Examples                                                                                       \\
+        Name                                   & Examples                                                                                       \\
         \midrule
-        Mean                                & \(\mean{\sym{density}}\), \(\mean{\sym{area}}\)                                                \\
-        Logarithmic Mean                    & \(\logmean{\sym{density}}\), \(\logmean{\sym{area}}\)                                          \\
+        Mean                                   & \(\mean{\sym{density}}\), \(\mean{\sym{area}}\)                                                \\
+        Logarithmic Mean                       & \(\logmean{\sym{density}}\), \(\logmean{\sym{area}}\)                                          \\
         % The starred variant scales automatically:
         Absolute\omnlFloatFootmark[1]          & \(\abs{\sym{density}}\), \(\abs{\sym{area}}\), \(\abs{\frac{\sym{area}^{2}}{\sym{area}^{3}}}\) \\
-        Flow                                & \(\flow{\sym{mass}}\), \(\flow{\symspec{enthalpy}}\)                                               \\
-        Delta                               & \(\difference{\sym{volume}}\), \(\difference{\symspec{enthalpy}}\)                             \\
-        Nabla Operator                      & 
+        Flow                                   & \(\flow{\sym{mass}}\), \(\flow{\symspec{enthalpy}}\)                                           \\
+        Delta                                  & \(\difference{\sym{volume}}\), \(\difference{\symspec{enthalpy}}\)                             \\
+        Nabla Operator                         &
         \(
         \nablaoperator{\sym{first_cart_coord}},
         \nablaoperator[3]{\sym{first_cart_coord}}
-        \)                                                                                                                                   \\
-        Vectors                             & \(\vect{\sym{first_cart_coord}}\), \(\vect{A}\)                                                \\
+        \)                                                                                                                                      \\
+        Vectors                                & \(\vect{\sym{first_cart_coord}}\), \(\vect{A}\)                                                \\
         \addlinespace
-        Derivatives                         & 
+        Derivatives                            &
         \(
         \deriv{\sym{mass}},
         \deriv[2]{\sym{first_cart_coord}},
         \deriv*{\sym{mass}},
         \deriv*[2]{\sym{first_cart_coord}}
-        \)                                                                                                                                   \\
-        Fractional Deriv.                   & 
+        \)                                                                                                                                      \\
+        Fractional Deriv.                      &
         \(
         \fracderiv{\sym{voltage}}{\sym{time}},
         \fracderiv[2]{\sym{second_cart_coord}}{\sym{first_cart_coord}},
@@ -298,21 +297,21 @@ and as such, this document relies on a couple custom macros in place of it, see
         \fracderiv[2]{\symspec{enthalpy}}{\sym{abs_temperature}},
         \fracderiv*{\symspec{enthalpy}}{\sym{abs_temperature}},
         \fracderiv*[2]{\symspec{enthalpy}}{\sym{abs_temperature}}
-        \)                                                                                                                                   \\
-        Time Deriv.\omnlFloatFootmark[2]       & 
+        \)                                                                                                                                      \\
+        Time Deriv.\omnlFloatFootmark[2]       &
         \(
         \timederiv{\sym{voltage}},
         \timederiv[2]{\sym{second_cart_coord}},
         \timederiv*{\sym{voltage}},
         \timederiv*[2]{\sym{first_cart_coord}}
-        \)                                                                                                                                   \\
-        Positional Deriv.\omnlFloatFootmark[2] & 
+        \)                                                                                                                                      \\
+        Positional Deriv.\omnlFloatFootmark[2] &
         \(
         \posderiv{\sym{voltage}},
         \posderiv[2]{\sym{second_cart_coord}},
         \posderiv*{\sym{voltage}},
         \posderiv*[2]{\sym{second_cart_coord}}
-        \)                                                                                                                                   \\
+        \)                                                                                                                                      \\
         \bottomrule
     \end{tabular}
     \omnlFloatFoottext[1]{Absolute value}
@@ -506,23 +505,23 @@ Single chemical compounds are invoked using \verb|\chcpd|, as demonstrated in
 \cref{eq:boie}.
 \begin{equation}\label{eq:boie}
     \tcbhighmath{
-    \frac{
-        \sym{heating_value}
-    }{
-        \num{1e6}
-    }
-    =
-    \num{35}\sym{mass_fraction}_{\chcpd{C}}
-    +
-    \num{94.3}\sym{mass_fraction}_{\chcpd{H}}
-    +
-    \num{10.4}\sym{mass_fraction}_{\chcpd{S}}
-    +
-    \num{6.3}\sym{mass_fraction}_{\chcpd{N}}
-    -
-    \num{10.8}\sym{mass_fraction}_{\chcpd{O}}
-    -
-    \num{2.44}\sym{mass_fraction}_{\text{w}}
+        \frac{
+            \sym{heating_value}
+        }{
+            \num{1e6}
+        }
+        =
+        \num{35}\sym{mass_fraction}_{\chcpd{C}}
+        +
+        \num{94.3}\sym{mass_fraction}_{\chcpd{H}}
+        +
+        \num{10.4}\sym{mass_fraction}_{\chcpd{S}}
+        +
+        \num{6.3}\sym{mass_fraction}_{\chcpd{N}}
+        -
+        \num{10.8}\sym{mass_fraction}_{\chcpd{O}}
+        -
+        \num{2.44}\sym{mass_fraction}_{\text{w}}
     }
 \end{equation}
 
@@ -549,7 +548,7 @@ the bells and whistles required for stunts, see \cref{tab:sans_font_examples}.
 This even includes small\-/capitals support.
 
 \begin{table}[tbp]
-\ContinuedFloat
+    \ContinuedFloat
     \sffamily
     \begin{tabular}{
             @{}
@@ -576,8 +575,9 @@ This even includes small\-/capitals support.
 
 Wanting to display any sort of code, or maybe a \abb{uniform_resource_locator},
 in the document will have you looking for a mono\-/spaced aka typewriter font.
-\href{https://fonts.google.com/specimen/Inconsolata}{Inconsolata}, published by Google,
-is the pick here.
+Modern \href{https://github.com/chriskapp/neon-monospace}{Monaspace Neon}
+from the Monaspace family provides superior monospaced typography,
+replacing the previous Inconsolata choice.
 See \cref{ch:code-listings} for a more in-depth demonstration.
 At the time of writing (\DTMdate{2020-04-15})%
 \footnote{%
@@ -589,15 +589,16 @@ At the time of writing (\DTMdate{2020-04-15})%
     This gets us \textbf{language-independent}
     \abb{international_organization_for_standardization} formatting.
 },
-Inconsolata has native regular and bold faces, but no italics.
-However, such a feature can be faked using \ctanpackage{unicode-math}/%
-\ctanpackage{fontspec}, where the regular font is \emph{slanted} to give an
-italics\-/like result.
-Italics are a nice but uncritical feature for code listings, so this should be okay.
+Monaspace Neon has native regular, bold, and italics faces, providing
+complete typographic support without any font faking required.
+This represents a significant improvement over the previous monospace font
+that required artificial slant for italic appearance.
+Italics are particularly useful for code listings with comments and documentation,
+so native support greatly enhances readability.
 See for yourself in \cref{tab:mono_font_examples}.
 
 \begin{table}[tbp]
-\ContinuedFloat
+    \ContinuedFloat
     \ttfamily
     \begin{tabular}{
             @{}
@@ -676,18 +677,18 @@ More languages can be added easily in the translations file.
             @{}
         }
         \toprule
-        Language                                           & Quotes & Numerals & Headers \iecfeg{etc.} & Hyphenation \\
+        Language                                                                                       & Quotes & Numerals & Headers \iecfeg{etc.} & Hyphenation \\
         \midrule
-        English                                            &
-        \begin{english}\enquote{Quote!}\end{english}       &
-        \begin{english}\qty{100.2}{\meter}\end{english}    &
-        \parbox{0.15\linewidth}{\centering\begin{english}\MakeUppercase{Header}\end{english}} &
-        \parbox{0.25\linewidth}{\centering\begin{english}\hyphenation{read-ing}\end{english}} \\
-        German                                             &
-        \begin{german}\enquote{Zitat!}\end{german}         &
-        \begin{german}\qty{100,2}{\meter}\end{german}     &
+        English                                                                                        &
+        \begin{english}\enquote{Quote!}\end{english}                                                   &
+        \begin{english}\qty{100.2}{\meter}\end{english}                                                &
+        \parbox{0.15\linewidth}{\centering\begin{english}\MakeUppercase{Header}\end{english}}          &
+        \parbox{0.25\linewidth}{\centering\begin{english}\hyphenation{read-ing}\end{english}}                                                                    \\
+        German                                                                                         &
+        \begin{german}\enquote{Zitat!}\end{german}                                                     &
+        \begin{german}\qty{100,2}{\meter}\end{german}                                                  &
         \parbox{0.15\linewidth}{\centering\begin{german}\MakeUppercase{\"Uber\"erschrift}\end{german}} &
-        \parbox{0.25\linewidth}{\centering\begin{german}\hyphenation{Zu-sam-men-ar-beit}\end{german}} \\
+        \parbox{0.25\linewidth}{\centering\begin{german}\hyphenation{Zu-sam-men-ar-beit}\end{german}}                                                            \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -1014,7 +1015,7 @@ This initially unintuitive approach has several critical advantages:
           throughout the entire document, it can be done with ease.
           Replacing single letters like that using tools like \texttt{sed} would be a
           nightmare, if not impossible.
-          
+
           There is also absolutely no danger that \emph{both} symbols occur (unless
           it is explicitly set up like that), with both referring to velocity,
           as can happen when returning to a document after abandoning it for many months
@@ -1029,7 +1030,7 @@ This initially unintuitive approach has several critical advantages:
           But the \emph{meaning} is that \emph{energy} equals \emph{mass} times
           \emph{velocity} squared.
           This can now be expressed directly in the source code.
-          
+
           The \abb{what_you_see_is_what_you_mean} principle is at the core of \LaTeX{}
           and is what sets it apart.
           It is the reason you also do not say
@@ -1047,7 +1048,7 @@ This initially unintuitive approach has several critical advantages:
           Do \emph{emphasized} (produced from \verb|\emph|) and \textit{emphasized}
           (\verb|\textit|) text look the same?
           They certainly do\dots{} usually.
-          
+
           Yet, what is \emph{meant} is \emph{emphasis}; italic text is just what it
           happens to look like now, but it is not the \emph{meaning}.
           For example, we could later decide to redefine emphasized text to bold,
@@ -1131,35 +1132,35 @@ for the Symbol \sym{area}.
             @{}
         }
         \toprule
-        Name (\texttt{.bib})                 & Command                      & Listed in / Description       \\
+        Name (\texttt{.bib})               & Command                      & Listed in / Description       \\
         \midrule
         % \nameref is courtesy of the nameref package, which is part of
         % hyperref. It references the target by name, e.g. Chapter name.
         % However, that does not work very well for generated chapter names.
-        \texttt{terms}                       & \texttt{\textbackslash idx}  & Index \textrightarrow{} Terms \\
-        \texttt{names}                       & \texttt{\textbackslash name} & Index \textrightarrow{} Names \\
+        \texttt{terms}                     & \texttt{\textbackslash idx}  & Index \textrightarrow{} Terms \\
+        \texttt{names}                     & \texttt{\textbackslash name} & Index \textrightarrow{} Names \\
         \addlinespace
-        \texttt{roman}                       &
-        \texttt{\textbackslash sym}          &
-        \nameref{ch:glossary} \textrightarrow{} Symbols \textrightarrow{} Roman                             \\
-        \texttt{greek}                       &
-        \texttt{\textbackslash sym}          &
-        \nameref{ch:glossary} \textrightarrow{} Symbols \textrightarrow{} Greek                             \\
-        \texttt{other}                       &
-        \texttt{\textbackslash sym}          &
-        \nameref{ch:glossary} \textrightarrow{} Symbols \textrightarrow{} Other                             \\
+        \texttt{roman}                     &
+        \texttt{\textbackslash sym}        &
+        \nameref{ch:glossary} \textrightarrow{} Symbols \textrightarrow{} Roman                           \\
+        \texttt{greek}                     &
+        \texttt{\textbackslash sym}        &
+        \nameref{ch:glossary} \textrightarrow{} Symbols \textrightarrow{} Greek                           \\
+        \texttt{other}                     &
+        \texttt{\textbackslash sym}        &
+        \nameref{ch:glossary} \textrightarrow{} Symbols \textrightarrow{} Other                           \\
         \addlinespace
-        \texttt{subscripts}                  &
-        \texttt{\textbackslash sub}          &
-        \nameref{ch:glossary} \textrightarrow{} Subscripts                                                  \\
+        \texttt{subscripts}                &
+        \texttt{\textbackslash sub}        &
+        \nameref{ch:glossary} \textrightarrow{} Subscripts                                                \\
         \addlinespace
         \texttt{constants}\footnotemark[1] &
-        \texttt{\textbackslash cons}         &
-        \nameref{ch:glossary} \textrightarrow{} Numbers                                                     \\
+        \texttt{\textbackslash cons}       &
+        \nameref{ch:glossary} \textrightarrow{} Numbers                                                   \\
         \addlinespace
-        \texttt{abbreviations}               &
-        \texttt{\textbackslash abb}          &
-        \nameref{ch:glossary} \textrightarrow{} Acronyms                                                    \\
+        \texttt{abbreviations}             &
+        \texttt{\textbackslash abb}        &
+        \nameref{ch:glossary} \textrightarrow{} Acronyms                                                  \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -1230,7 +1231,7 @@ Using it for mathematical symbols can look like:
 
 \begin{landscape}
     \section{Landscape}
-    
+
     Pages in landscape format are rather straightforward to implement.
     Note that not only are these in landscape orientation; they are also recognized
     as such by supporting document viewers, rotating the page for you and keeping

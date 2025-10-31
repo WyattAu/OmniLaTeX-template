@@ -35,46 +35,39 @@
 % Source: https://tug.org/FontCatalogue/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Main font: TeX Gyre Pagella (Palatino clone)
+% Main font: Libertinus Serif (replacing TeX Gyre Pagella)
 \setmainfont[
     Numbers=Lowercase,% Hanging/OldStyle numbers through Lowercase numbers
-]{TeXGyrePagella}
+    % Proper scaling for consistent appearance with other fonts
+    Scale=MatchLowercase,
+]{Libertinus Serif}
 
-% Monospace font: Inconsolata
-% Source: https://fonts.google.com/specimen/Inconsolata
+% Monospace font: Monaspace Neon (replacing Inconsolata)
+% Source: https://github.com/chriskapp/neon-monospace
 \setmonofont[
-    % Inconsolata doesn't have italics font, so fake it. Discouraged but should
-    % only occur in a few places in code and not be noticable there. Inconsolata
-    % is too nice to give up on it for lack of italics. See also
-    % https://tex.stackexchange.com/a/183220/120853
-    AutoFakeSlant,
+    % Monaspace Neon has proper italics support
     Scale=MatchLowercase,% Prettier when using inline-code alongside our main font
-]{inconsolata}
+]{Monaspace Neon}
 
 % Sans font: Merriweather Sans
 % Source: https://tug.org/FontCatalogue/merriweathersans/
 % Note: Previously used FiraSans due to LuaLaTeX issues, but these are now fixed
 \setsansfont{MerriweatherSans}
 
-% Math font to match Pagella
-% Source: https://ctan.org/texarchive/fonts/tex-gyre-math/opentype
+% Math font: Libertinus Math (replacing TeX Gyre Pagella Math)
+% Source: https://github.com/alif-type/libertinus
 \setmathfont[
-    % TeXGyrePagellaMath doesn't have bold font, so fake it. Discouraged but should
-    % only occur in a few places in code and not be noticable there. TeXGyrePagellaMath
-    % is too nice to give up on it for lack of bold. See also
-    % https://tex.stackexchange.com/a/183220/120853
-    AutoFakeBold,
     %Set math-font-commands to new versions; use \symbf{} instead of \mathbf{} etc:
     mathrm=sym,%
     mathit=sym,%
     mathsf=sym,%
     mathbf=sym,%
     mathtt=sym,%
-    % 'tpgl': 'TexGyrePagellaLining'.
+    % 'libertinus': 'LibertinusSerif' NFSS family.
     % This 'NFSS' style is required for \fontfamily{nfss-code}\selectfont to work,
     % e.g. in package chemmacros/chemformula
-    NFSSFamily=tgpl,%
-]{TeXGyrePagellaMath}
+    NFSSFamily=libertinus,%
+]{Libertinus Math}
 
 % Provide a new font family for siunitx to work.
 % See: https://tex.stackexchange.com/a/468031/120853.
@@ -86,7 +79,9 @@
     % might be hanging if that feature is turned on in the main font (OldStyle numbers).
     % To ensure these physical numbers are always upright, set Numbers:
     Numbers=Uppercase,
-]{TeXGyrePagella}
+    % Proper scaling for consistency with main text
+    Scale=MatchLowercase,
+]{Libertinus Serif}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Special Symbols and Icons

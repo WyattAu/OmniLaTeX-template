@@ -17,15 +17,13 @@
             "tools": [
                 "lualatex"
             ]
-        },
+        }
     ],
     "latex-workshop.latex.tools": [
         {
             "name": "latexmk",
             "command": "latexmk",
             "args": [
-                // latexmk doesn't need a file argument, but provide it to avoid running
-                // on *all* found tex files
                 "%DOC%"
             ],
             "env": {}
@@ -34,9 +32,6 @@
             "name": "latexmk_once",
             "command": "latexmk",
             "args": [
-                // Don't know why, but the normal command/flag -e '$max_repeat=1'
-                // doesn't work because of the space. If it is seperated in two
-                // lines it works.
                 "--e",
                 "$max_repeat=1",
                 "%DOC%"
@@ -55,53 +50,32 @@
                 "%DOC%"
             ],
             "env": {}
-        },
+        }
     ],
-    // Configure LaTeX Workshop to look for output in the build directory
     "latex-workshop.latex.outDir": "./build",
-    // Make the first recipe the default recipe
     "latex-workshop.latex.recipe.default": "first",
-    // Enable chktex for linting
     "latex-workshop.linting.chktex.enabled": true,
-    // Run the linter on save
-    // Disable automatic build on save
     "latex-workshop.latex.autoBuild.run": "never",
-    // Disable automatic retry of LatexWorkshop when an error occured:
     "latex-workshop.latex.autoBuild.cleanAndRetry.enabled": false,
-    // Set the latexindent command as the default formatter
     "latex-workshop.formatting.latex": "latexindent",
-    // Packages which are always used by LaTeX Workshop for Intellisense, see:
-    // https://github.com/James-Yu/LaTeX-Workshop/wiki/Intellisense#latex-workshopintellisensepackageextra
-    // This is just a fallback. Because with this question asked: https://github.com/James-Yu/LaTeX-Workshop/issues/3965
-    // all packages from the class file shall be used. Just in case, the most important packages are listed here.
     "latex-workshop.intellisense.package.extra": [
         "siunitx",
-        "hyperref",
+        "hyperref"
     ],
-    // Be sure to make Latex-Workshop the standard formatter
     "editor.defaultFormatter": "James-Yu.latex-workshop",
-    // Automatically format on save
     "editor.formatOnSave": true,
-    // Make the .cls and .sty files to latex files, so they're displayed and compiled correctly
     "files.associations": {
         "*.trsl": "latex",
         "*.cls": "latex",
         "*.sty": "latex"
-      },
-    // Set the encoding to utf8, to "gurarantee" that the files are opened and
-    // saved with the correct encoding
+    },
     "files.encoding": "utf8",
-    // When opened in a container, automatically run the command "latex-workshop.compilerlog" to open the
-    // LaTeX compiler log. So that you are always confronted with the compiler log. See:
-    // https://stackoverflow.com/a/55191027 and
-    // https://marketplace.visualstudio.com/items?itemName=gabrielgrinberg.auto-run-command
     "auto-run-command.rules": [
         {
-          "condition": "isRunningInContainer",
-          "command": "latex-workshop.compilerlog",
-          "message": "Open LaTeX Compiler Log"
+            "condition": "isRunningInContainer",
+            "command": "latex-workshop.compilerlog",
+            "message": "Open LaTeX Compiler Log"
         }
-      ],
-    // enable German dictionary
-    "cSpell.language": "en,de-de",
+    ],
+    "cSpell.language": "en,de-de"
 }

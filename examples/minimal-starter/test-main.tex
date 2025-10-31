@@ -1,0 +1,284 @@
+% Minimal OmniLaTeX Starter Template
+% This file demonstrates all major features idiomatically with minimal content
+
+%!TEX TS-program = lualatex
+
+\documentclass[
+    language=english,
+    institution=none,        % Generic (no institution branding)
+    oneside,                 % Single-sided (screen viewing)
+    loadGlossaries,          % Enable glossaries/acronyms
+]{../../omnilatex}
+
+% Document settings
+\RequirePackage{config/document-settings}
+
+% Bibliography (local to this example)
+\addbibresource{bib/bibliography.bib}
+
+\begin{document}
+
+% Title page
+\maketitle
+
+% Table of contents
+\tableofcontents
+
+\chapter{Introduction}
+
+This is a minimal starter template demonstrating all major OmniLaTeX capabilities.
+Each section shows one feature with minimal but idiomatic usage.
+
+\section{Text Formatting}
+
+Basic text with \textbf{bold}, \textit{italic}, and \texttt{monospace} fonts.
+Unicode support: αβγ, ℝℂℕ, ∀∃∈∋.
+
+\section{Citations}
+
+Reference bibliography entries with \verb|\cite{}|: \cite{knuth1984texbook}.
+Multiple citations: \cite{lamport1994latex,goossens1994latex}.
+
+\section{Cross-References}
+
+Reference sections with \verb|\ref{}|: See Section~\ref{sec:lists}.
+Reference figures: Figure~\ref{fig:example}.
+Reference tables: Table~\ref{tab:example}.
+
+\chapter{Lists and Structures}
+\label{sec:lists}
+
+\section{Unordered Lists}
+
+\begin{itemize}
+    \item First item
+    \item Second item
+    \begin{itemize}
+        \item Nested item
+        \item Another nested item
+    \end{itemize}
+    \item Third item
+\end{itemize}
+
+\section{Ordered Lists}
+
+\begin{enumerate}
+    \item First step
+    \item Second step
+    \item Third step
+\end{enumerate}
+
+\section{Description Lists}
+
+\begin{description}
+    \item[OmniLaTeX] Universal LaTeX template
+    \item[LuaLaTeX] Modern LaTeX engine
+    \item[KOMA-Script] Document class collection
+\end{description}
+
+\chapter{Mathematics}
+
+\section{Inline Math}
+
+Einstein's famous equation: $E = mc^2$.
+Pythagorean theorem: $a^2 + b^2 = c^2$.
+
+\section{Display Math}
+
+The quadratic formula:
+\begin{equation}
+    x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+    \label{eq:quadratic}
+\end{equation}
+
+Maxwell's equations:
+\begin{align}
+    \nabla \cdot \mathbf{E} &= \frac{\rho}{\varepsilon_0} \\
+    \nabla \cdot \mathbf{B} &= 0 \\
+    \nabla \times \mathbf{E} &= -\frac{\partial \mathbf{B}}{\partial t} \\
+    \nabla \times \mathbf{B} &= \mu_0 \mathbf{J} + \mu_0\varepsilon_0 \frac{\partial \mathbf{E}}{\partial t}
+\end{align}
+
+Reference equations: Equation~\eqref{eq:quadratic}.
+
+\chapter{Figures and Tables}
+
+\section{Figures}
+
+\begin{figure}[htbp]
+    \centering
+    % Example with TikZ - create a simple diagram
+    \begin{tikzpicture}
+        \draw[thick, ->] (0,0) -- (3,0) node[right] {$x$};
+        \draw[thick, ->] (0,0) -- (0,3) node[above] {$y$};
+        \draw[blue, thick, domain=0:2.5] plot (\x, {\x*\x});
+        \node at (1.5,3) {$f(x) = x^2$};
+    \end{tikzpicture}
+    \caption{Example TikZ figure showing $f(x) = x^2$}
+    \label{fig:example}
+\end{figure}
+
+% For external images, use:
+% \begin{figure}[htbp]
+%     \centering
+%     \includegraphics[width=0.8\textwidth]{../../assets/yourimage.pdf}
+%     \caption{Your caption}
+%     \label{fig:yourimage}
+% \end{figure}
+
+\section{Tables}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Example table with data}
+    \label{tab:example}
+    \begin{tabular}{lcc}
+        \toprule
+        \textbf{Item} & \textbf{Value 1} & \textbf{Value 2} \\
+        \midrule
+        First  & 10.5 & 20.3 \\
+        Second & 15.2 & 18.7 \\
+        Third  & 12.8 & 22.1 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\chapter{Code Listings}
+
+\section{Python Example}
+
+\begin{listing}[htbp]
+\begin{minted}{python}
+def fibonacci(n):
+    """Calculate the nth Fibonacci number."""
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+
+print(fibonacci(10))  # Output: 55
+\end{minted}
+\caption{Recursive Fibonacci function in Python}
+\label{lst:fibonacci}
+\end{listing}
+
+\section{LaTeX Example}
+
+\begin{listing}[htbp]
+\begin{minted}{latex}
+\documentclass{article}
+\begin{document}
+Hello, \LaTeX{}!
+\end{document}
+\end{minted}
+\caption{Minimal LaTeX document}
+\end{listing}
+
+% For inline code, use: \mintinline{python}{def foo(): pass}
+% Or for simple code: \texttt{inline\_code}
+
+\chapter{Glossaries and Acronyms}
+
+\section{Using Glossaries}
+
+% First use shows full definition
+This template uses \gls{latex} for typesetting.
+The \gls{tuhh} is a research university in Hamburg.
+
+% Subsequent uses show abbreviated form
+Using \gls{latex} and \gls{tuhh} again.
+
+% Force full or short forms
+\Glspl{cpu} are essential for computing.  % Plural
+\acrshort{cpu} is the short form only.
+\acrlong{cpu} is the long form only.
+
+\section{Adding New Terms}
+
+% Add terms to: ../../bib/glossaries/abbreviations.bib
+% Format:
+% @abbreviation{key,
+%     short = {SHORT},
+%     long  = {Long form},
+% }
+
+\chapter{Advanced Features}
+
+\section{Boxes and Callouts}
+
+% Example box (requires custom definition or package)
+\begin{center}
+\fbox{\parbox{0.8\textwidth}{%
+    \textbf{Note:} This is an example callout box.
+    You can add important information here.
+}}
+\end{center}
+
+\section{TODO Notes}
+
+% Requires todonotes option in documentclass
+% \todo{This is a TODO note visible in draft mode}
+% \todo[inline]{This is an inline TODO note}
+
+\section{Hyperlinks}
+
+External link: \url{https://www.latex-project.org/}
+
+Link with text: \href{https://www.ctan.org/}{CTAN Package Repository}
+
+Email: \href{mailto:example@example.com}{example@example.com}
+
+\section{Footnotes}
+
+This text has a footnote\footnote{This is the footnote text.}.
+Multiple footnotes\footnote{First footnote.} are possible\footnote{Second footnote.}.
+
+\section{Colors}
+
+Text can be \textcolor{red}{red}, \textcolor{blue}{blue}, or \textcolor{green}{green}.
+
+You can define custom colors in your document or institution configuration.
+
+\chapter{Bibliography and References}
+
+All citations appear automatically in the bibliography.
+Add entries to \texttt{../../bib/bibliography.bib}.
+
+Example BibTeX entry:
+\begin{verbatim}
+@book{knuth1984texbook,
+    author = {Donald E. Knuth},
+    title = {The TeXbook},
+    year = {1984},
+    publisher = {Addison-Wesley}
+}
+\end{verbatim}
+
+% Bibliography is printed automatically at the end if using backmatter
+% Or manually with: \printbibliography
+
+\appendix
+
+\chapter{Appendix Example}
+
+Appendices use the same chapter structure.
+They're automatically labeled A, B, C, etc.
+
+\section{Additional Data}
+
+Extra information that doesn't fit in the main text.
+
+\section{Supplementary Code}
+
+\begin{minted}{bash}
+#!/bin/bash
+# Build script example
+latexmk -pdf main.tex
+\end{minted}
+
+% Print glossaries
+\printglossaries
+
+% Print bibliography
+\printbibliography[heading=bibintoc]
+
+\end{document}

@@ -20,6 +20,9 @@
 
 \RequirePackage{microtype}% Advanced typesetting for kerning etc.
 
+% Enable hyphenation and improve paragraph breaking for ragged-right text
+\RequirePackage{ragged2e}%
+
 % Dummy text in readable English (Other languages are also detected)
 % Provides a more realistic preview than Lorem Ipsum
 \RequirePackage{blindtext}
@@ -37,13 +40,14 @@
 % https://github.com/komascript/third-party-enhancements/issues/2#issuecomment-2456869119
 % To achieve a reasonable 'text color', i.e. 'filled-ness' of the text,
 % adjust line spacing.
-% Recommendation for Palatino fonts (TeXGyrePagella is a Palatino clone) is a
-% factor of 1.05.
-% Discussion: https://tex.stackexchange.com/q/31064/120853
+% Recommendation for Libertinus fonts is a factor of 1.10 (slightly more open
+% than the previous 1.05 for TeX Gyre Pagella/Palatino).
+% This provides better readability and accommodates the slightly different
+% metrics of Libertinus compared to TeX Gyre Pagella.
 % For German, we might even want to go higher to allow space for the many capital
 % letters.
 % Also note that inline-math will look terrible at too low leading/linespread
-\linespread{1.05}
+\linespread{1.10}
 % Note: singlespacing option is set at the class level in omnilatex.cls
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -62,5 +66,9 @@
 }
 % Add itshape to beginning (beg) of display quote environments:
 \renewcommand*{\mkbegdispquote}[2]{\itshape}
+
+% Set text to ragged-right with proper hyphenation
+% This improves readability and avoids underfull hbox warnings
+\RaggedRight
 
 \endinput

@@ -801,6 +801,19 @@ class BuildTasks:
                 continue
 
             # Build in the example directory
+            # Pre-build invoke command setup
+            cmd = self.runner.get_base_command(LATEXMK_COMMAND)
+            latexmk_flags: List[str] = [INTERACTION_NONSTOP]
+            if os.environ.get("OMNILATEX_FORCE_REBUILD") == "1":
+                latexmk_flags.append(FORCE_REBUILD_FLAG)
+            
+            # Use only root latexmkrc for optimization
+            # Individual .latexmkrc files are kept for documentation/reference
+            invoke: List[str] = cmd + latexmk_flags
+            if root_latexmkrc.exists():
+                invoke.extend(["-r", str(root_latexmkrc)])
+            invoke.append(MAIN_TEX_FILENAME)
+            
             try:
                 self.ui.indented_step(1, "Setting up build environment", "info")
                 with working_directory(example_dir):
@@ -808,15 +821,18 @@ class BuildTasks:
                     for cache_dir in (Path(MINTED_CACHE_SUBDIR), Path(SVG_INKSCAPE_CACHE)):
                         cache_dir.mkdir(parents=True, exist_ok=True)
 
-                    cmd = self.runner.get_base_command(LATEXMK_COMMAND)
-                    latexmk_flags: List[str] = [INTERACTION_NONSTOP]
-                    if os.environ.get("OMNILATEX_FORCE_REBUILD") == "1":
-                        latexmk_flags.append(FORCE_REBUILD_FLAG)
                     current_texinputs = os.environ.get("TEXINPUTS", "")
-                    texinputs_entries = [str(repo_root)]
+                    # Validate TEXINPUTS for performance
                     if current_texinputs:
-                        texinputs_entries.append(current_texinputs)
-                    texinputs_entries.append("")
+                        paths = [p.strip() for p in current_texinputs.split(os.pathsep) if p.strip()]
+                        if len(paths) > 1:
+                            self.ui.warning(f"Excessive TEXINPUTS paths detected ({len(paths)} paths). Consider using only the repository root for better performance.")
+                    # Optimize TEXINPUTS to use minimal paths for performance
+                    texinputs_entries = [
+                        ".",                    # Current example directory
+                        str(repo_root),         # Root repository directory
+                        ""                      # Empty string to terminate
+                    ]
                     # Use build directory for minted cache to avoid permission issues
                     minted_cache_dir = self.config.build_dir / MINTED_CACHE_SUBDIR
                     minted_cache_dir.mkdir(parents=True, exist_ok=True)
@@ -824,18 +840,10 @@ class BuildTasks:
                         "MINTED_CACHE_DIR": str((minted_cache_dir / "").resolve()),
                         "OMNILATEX_EXAMPLE_ROOT": str(Path.cwd()),
                         "TEXINPUTS": os.pathsep.join(texinputs_entries),
-                        "LC_ALL": "C.utf8",  # Set locale to avoid LuaLaTeX locale issues
+                        "LC_ALL": "C.utf8",  # Optimized locale setting
                     }
 
-                    invoke: List[str] = cmd + latexmk_flags
-                    if root_latexmkrc.exists():
-                        invoke.extend(["-r", str(root_latexmkrc)])
-                    local_rc = Path(".latexmkrc")
-                    if local_rc.exists():
-                        invoke.extend(["-r", str(local_rc)])
-
-                    invoke.append(MAIN_TEX_FILENAME)
-
+                    self.ui.indented_step(2, f"Using root latexmkrc for optimization", "debug")
                     self.ui.indented_step(2, "Running LaTeX compilation", "progress")
                     self.runner.run(invoke, extra_env=extra_env, suppress_run=True, filter_verbose=True)
 
@@ -948,6 +956,7 @@ class BuildTasks:
         for example_name in files:
             self.ui.header(f"Cleaning example: {example_name}")
             example_dir = examples_dir / example_name
+            cmd = self.runner.get_base_command(LATEXMK_COMMAND)
 
             if not example_dir.exists():
                 self.ui.warning(f"Example not found: {example_name}")
@@ -955,15 +964,14 @@ class BuildTasks:
 
             try:
                 with working_directory(example_dir):
-                    cmd = self.runner.get_base_command(LATEXMK_COMMAND)
-                    self.runner.run(cmd + ["-c"])
+                    clean_cmd = cmd + ["-c"]
+                    self.runner.run(clean_cmd)
 
                 self.ui.success(f"Cleaned {example_name}")
 
             except (OSError, subprocess.CalledProcessError, FileNotFoundError) as exc:
-                clean_cmd = cmd + ["-c"]
-                category = self.runner._categorize_error(clean_cmd, exc)
-                suggestions = self.runner._get_error_suggestions(category, clean_cmd, exc)
+                category = self.runner._categorize_error(cmd + ["-c"], exc)
+                suggestions = self.runner._get_error_suggestions(category, cmd + ["-c"], exc)
                 error_msg = f"Failed to clean example '{example_name}': {category} - {exc}"
                 if suggestions:
                     error_msg += "\nSuggestions:\n" + "\n".join(f"  - {s}" for s in suggestions)
