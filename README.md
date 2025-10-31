@@ -24,13 +24,13 @@ OmniLaTeX uses a modern typography system based on:
 
 ### Benefits of the New Font System
 
-✅ **Native Bold/Italic Support**: Code listings now display true bold and italic formatting without font faking
+**Native Bold/Italic Support**: Code listings now display true bold and italic formatting without font faking
 
-✅ **Enhanced Unicode Support**: Improved mathematical symbol rendering and international character support
+**Enhanced Unicode Support**: Improved mathematical symbol rendering and international character support
 
-✅ **Better Typography**: Libertinus fonts provide superior readability and character spacing
+**Better Typography**: Libertinus fonts provide superior readability and character spacing
 
-✅ **Professional Appearance**: Modern font stack suitable for academic and professional documents
+**Professional Appearance**: Modern font stack suitable for academic and professional documents
 
 ## Migration from Previous Versions
 
