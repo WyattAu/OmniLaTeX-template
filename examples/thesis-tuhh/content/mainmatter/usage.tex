@@ -19,7 +19,7 @@ whereas a local system installation can only ever offer a single version.
 For a \LaTeX{} document, the one at hand here is pretty complex.
 This is owed to the many used packages and outside tooling.
 Outside tooling (programs other than \LaTeX{} called from within \LaTeX{}) is quite
-prevalent in \LaTeX{}, since it itself is so limited.%
+prevalent in \LaTeX{}, since it itself is so limited.%anot
 \footnote{
   For example, when writing Python, you would not call Perl or JavaScript from within it,
   because whatever they can do, Python can.
@@ -191,12 +191,12 @@ Consider a simplified, manual example chain:
   \item You have a \texttt{test.tex} file (and nothing else!), with \texttt{cref} or equivalent cross\-/referencing commands in it.
   \item You compile the file \emph{once}, \iecfeg{e.g.}\ using \texttt{lualatex}.
   \item A \texttt{test.aux} file (and probably others, \iecfeg{e.g.}\ \texttt{.toc}) will have been generated, as well as the \abb{portable_document_format} file itself.
-
+        
         The \abb{portable_document_format} has literal \textbf{??} markers where there should be references.
         This is because to resolve those references, and print \iecfeg{e.g.}\ the correct page number, \LaTeX{} needs to look into the \texttt{.aux} file.
         But that file was just generated and was not available yet for the first compilation run.
   \item Hence, you compile again.
-
+        
         The \textbf{??} markers are now replaced by their properly spelled\-/out reference.
         However, what if, hypothetically, one of these \textbf{??} substitutions now reads \emph{very super long reference to page 37 in the document}.
         It is so long that subsequent content has shifted again.
@@ -220,7 +220,7 @@ Now that you know, you may handle them.
 \paragraph{Faster (\emph{incomplete}) compilation}
 The base \texttt{docker} commands were shown at the beginning of \cref{ch:using-docker}.
 An alternative is to run
-\begin{minted}[linenos=false]{shell}
+\begin{minted}[linenos=false,style=default]{shell}
     docker run --rm --volume $(pwd):/tex https://collaborating.tuhh.de/m21/public/theses/latex_dockerfile -e '$max_repeat=1'
 \end{minted}
 This limits \texttt{latexmk} to only run commands once (\texttt{-e} is for additional Perl code), with the following effects:
@@ -286,14 +286,14 @@ Only consuming the final image has all the benefits with little effort.
 However, the process is not complex:
 \begin{enumerate}
   \item A \textbf{\texttt{Dockerfile} text document} is created, containing instructions on how the image should look like (like what stuff to install, what to copy where, ...).
-
+        
         As a baseline, these instructions often rely on a Debian distribution.
         As such, all the usual Debian/Linux tools can be accessed, like \texttt{bash}.
-
+        
         An (unrelated)
         \href{https://github.com/alexpovel/random_python/blob/master/music-converter/Dockerfile}{example Dockerfile}
         can look like:
-
+        
         \begin{minted}{dockerfile}
             # Get the latest Debian Slim with Python installed
             FROM python:slim
@@ -327,7 +327,7 @@ However, the process is not complex:
             # (as are most things!). An example for this is a webserver.
             ENTRYPOINT [ "python", "-m", "music-converter", "/in", "--destination", "/out" ]
         \end{minted}
-
+        
         The Dockerfile this project uses for LaTeX stuff is here:
         \begin{center}
           \url{https://collaborating.tuhh.de/m21/public/theses/latex_dockerfile}
@@ -336,7 +336,7 @@ However, the process is not complex:
         Its length gives you an idea of the setup required to compile this \LaTeX{} document.
         All of that complexity is of no concern to you when using Docker!
         Of course, such an image also works for much simpler documents.
-
+        
         If you require custom additions, you can always inherit from existing base images:
         \begin{minted}{dockerfile}
             FROM https://collaborating.tuhh.de/m21/public/theses/latex\_dockerfile
@@ -349,7 +349,7 @@ However, the process is not complex:
         more than \qty{2}{\giga\byte} in size.
         Note that you will never interact with that \enquote{file} directly.
         Docker manages it for you, and all interaction occurs through the \texttt{docker} command.
-
+        
         The Docker image can be distributed.
         If you just instruct to run an image called \iecfeg{e.g.} \texttt{alexpovel/latex}, without
         specifying a full URL to somewhere, Docker will look on its Hub for an image of that
@@ -358,7 +358,7 @@ However, the process is not complex:
         be on the same page (alternatively, you could build the image from the Dockerfile, but this feature is
         deprecated/outsourced to the \href{https://collaborating.tuhh.de/m21/public/theses/latex_dockerfile}{LaTeX{} Dockerfile Repo}).
         Because the Dockerfile this project uses can not be found on Dockerhub the full path/link to it has to be given.
-
+        
         For example, as stated, the \LaTeX{} environment for this project requires a whole bunch of setting\-/up.
         This can take more than an afternoon to read up upon, understand, implement and getting to run.
         In some cases, it will be impossible if some required part of a project conflicts
@@ -368,7 +368,7 @@ However, the process is not complex:
         This is what Docker is all about: isolation.
         Whatever is present on your system does not matter, only the Docker image/container
         contents are relevant.
-
+        
         Further, if you for example specify \mintinline{dockerfile}{FROM python:3.8.6}
         as your base image, aka provided a so\-/called tag of \texttt{3.8.6}, it will be that tag in ten years' time still.
         As such, you nailed the version your process takes place in and requires.
@@ -379,7 +379,7 @@ However, the process is not complex:
         We can then enter the container and use it like a pretty normal (usually Linux)
         machine, for example to compile our \LaTeX{} files.
         Other, single commands can also be executed.
-
+        
         The proper way is to run one container \emph{per process}.
         If that process (\iecfeg{e.g.}\ \texttt{latexmk}) finishes, the container exits.
         A new process then requires a new container.
@@ -451,7 +451,7 @@ Open them by either:
 \end{itemize}
 For example, as discussed at the end of \cref{ch:compilation_steps}, you might want to have a recipe that only runs \texttt{lualatex}, once.
 This is \textbf{already taken care of} for this repository:
-\inputminted{json}{vscode-settings.json}
+\inputminted{json}{./.vscode/settings.json}
 These are \emph{Workspace Settings}, which \href{https://code.visualstudio.com/docs/getstarted/settings}{take precedence over (global) user settings}.
 As such, they also override all the recipes \emph{LaTeX Workshop} usually comes with.
 You will have to define more recipes yourself.
