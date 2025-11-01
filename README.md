@@ -1,6 +1,6 @@
 # OmniLaTeX
 
-A modular LaTeX template system for academic and professional documents. This fork from the TUHH thesis template provides boilerplates for multiple document types.
+A modular LaTeX template system for academic and professional documents. This fork from the TUHH thesis template provides boilerplates for multiple document types. This uses LuaLaTeX for compilation through latexmk, run builds with `build.py` file.
 
 ## Features
 

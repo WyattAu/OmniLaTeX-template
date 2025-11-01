@@ -1,6 +1,7 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{config/document-types/cv}[2025-10-18 OmniLaTeX CV profile]
 
+\RequirePackage{adjustbox}
 \RequirePackage{multicol}
 \RequirePackage{tikz}
 \RequirePackage{fontawesome5}
@@ -28,9 +29,9 @@
 \newcommand*{\omnilatex@cvheader}{%
     \begingroup
     \setlength{\parindent}{0pt}%
-    \begin{minipage}[c]{1.5cm}
+    \begin{minipage}[c]{2.5cm}
         \raggedright
-        \tikz[baseline=(char.base)]{\node[circle,draw,minimum size=1.2cm] (char) {\phantom{\rule{0.9cm}{0.9cm}}}} % circular image placeholder
+        \tikz[baseline=(char.base)]{\clip (0,0) circle (1cm); \useasboundingbox (0,0) circle (1cm); \node[inner sep=0pt] (char) {\adjustimage{width=2cm,height=2cm}{\@cvimage}};} % circular image placeholder
     \end{minipage}%
     \hspace{1em}
     \begin{minipage}[c]{\dimexpr\textwidth-1.5cm-1em\relax}
@@ -69,6 +70,8 @@
 \newcommand*{\cvlinks}[1]{\gdef\@cvlinks{#1}}
 \providecommand*{\@cvsummary}{}
 \newcommand*{\cvsummary}[1]{\gdef\@cvsummary{#1}}
+\providecommand*{\@cvimage}{assets/images/bitmaps/field.jpg}
+\newcommand*{\cvimage}[1]{\gdef\@cvimage{#1}}
 
 \providecommand*{\@cvbulletspacing}{0pt}
 \newcommand*{\cvbulletspacing}[1]{\gdef\@cvbulletspacing{#1}\setlength{\itemsep}{#1}}
