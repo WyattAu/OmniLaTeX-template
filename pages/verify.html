@@ -399,14 +399,14 @@
       });
 
       if (commitData.sha === headSha) {
-        updateStatus("ok", "Commit matches branch head", `${commitData.sha} is the current tip of ${branch}.`);
+        updateStatus("ok", "Document up to date, commit matches branch head", `${commitData.sha} is the current tip of ${branch}.`);
         return;
       }
 
       if (compareData && compareData.status === "behind") {
         updateStatus(
           "warn",
-          "Commit is behind branch head",
+          "Outdated, commit is behind branch head",
           `${branch} is ${compareData.behind_by} commits ahead of ${commitData.sha}.`
         );
         return;
