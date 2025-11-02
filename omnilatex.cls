@@ -1,12 +1,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % OmniLaTeX Universal Document Class
 %
-% A fully modular LaTeX template following SOLID principles
-% Hard fork with complete modularization
+% A modular LaTeX template
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{omnilatex}[2024-10-11 v6.0.0 OmniLaTeX universal class]
+\ProvidesClass{omnilatex}[2025-11-02 v0.1.1 OmniLaTeX universal class]
 
 \RequirePackage{iftex}
 \RequirePackage{etoolbox}
