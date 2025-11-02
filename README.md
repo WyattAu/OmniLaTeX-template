@@ -20,9 +20,9 @@ OmniLaTeX uses a modern typography system based on:
 
 - **Libertinus Serif** for main text and mathematical content
 - **Monaspace Neon** for monospace/code listings
-- **Merriweather Sans** for sans-serif elements
+- **Atkinson Hyperlegible Next** for sans-serif elements
 
-### Benefits of the New Font System
+### Benefits of the Font System
 
 **Native Bold/Italic Support**: Code listings now display true bold and italic formatting without font faking
 
@@ -51,11 +51,9 @@ If you're upgrading from a version using TeX Gyre Pagella and Inconsolata fonts:
 
 ### Font Requirements
 
-The Libertinus and Monaspace font families are automatically available in TeX Live 2025+:
-
 - **Libertinus Serif** and **Libertinus Math** (for main text and mathematics)
 - **Monaspace Neon** (for monospace/code listings)
-- **Merriweather Sans** (for sans-serif elements)
+- **Atkinson Hyperlegible Next** (for sans-serif elements)
 
 No additional font installation is required when using the provided Docker container or TeX Live 2025.
 

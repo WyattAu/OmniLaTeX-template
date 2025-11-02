@@ -21,6 +21,7 @@
 
 \RequirePackage{amsmath}
 \RequirePackage{lualatex-math}
+\RequirePackage{amssymb}
 \RequirePackage[
     warnings-off={
             % Unicode overwrites colon-commands but uses over/underbracket from mathtools
@@ -49,10 +50,8 @@
     Scale=MatchLowercase,% Prettier when using inline-code alongside our main font
 ]{Monaspace Neon}
 
-% Sans font: Merriweather Sans
-% Source: https://tug.org/FontCatalogue/merriweathersans/
-% Note: Previously used FiraSans due to LuaLaTeX issues, but these are now fixed
-\setsansfont{MerriweatherSans}
+% Sans font: Atkinson Hyperlegible Next (replacing Merriweather Sans)
+\setsansfont{Atkinson Hyperlegible Next}
 
 % Math font: Libertinus Math (replacing TeX Gyre Pagella Math)
 % Source: https://github.com/alif-type/libertinus
