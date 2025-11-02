@@ -256,7 +256,15 @@ class BuildTasks:
     # --- ALL ORIGINAL COMMANDS ---
     def build_example(self, files: List[str]): self.build_examples(files)
     def build_all(self, _=None): self.build_root(); self.build_examples()
-    def build_root(self, _=None): self.ui.header("Building Root"), self.runner.run([LATEXMK_COMMAND, INTERACTION_NONSTOP, MAIN_TEX_FILENAME]), self.ui.success("Root build complete.")
+    def build_root(self, _=None):
+        self.ui.header("Building Root")
+        exit_code, logs = self.runner.run([LATEXMK_COMMAND, INTERACTION_NONSTOP, MAIN_TEX_FILENAME])
+        pdf_path = Path(MAIN_TEX_FILENAME).with_suffix('.pdf')
+        if pdf_path.exists():
+            self.ui.success("Root build complete.")
+        else:
+            self.ui.error("Build failure: PDF not generated.")
+            raise SystemExit(1)
     def clean_all(self, _=None): self.ui.header("Full clean"), self.clean_aux(); shutil.rmtree(self.config.build_dir, ignore_errors=True), self.ui.success("Full cleanup finished.")
     def clean_aux(self, _=None):
         self.ui.header("Cleaning auxiliary files")

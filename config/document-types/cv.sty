@@ -7,8 +7,9 @@
 \RequirePackage{fontawesome5}
 
 \documenttype{Curriculum Vitae}
-\documentfontsize{9pt}
-\documentlayout{DIV=15,headinclude=false,footinclude=false,headsepline=false}
+\documentfontsize{10pt}
+\documentlayout{DIV=10,headinclude=false,footinclude=false,headsepline=false}
+\sloppy
 \KOMAoptions{titlepage=false,twoside=false}
 \pagestyle{empty}
 \setcounter{secnumdepth}{0}
@@ -29,12 +30,8 @@
 \newcommand*{\omnilatex@cvheader}{%
     \begingroup
     \setlength{\parindent}{0pt}%
-    \begin{minipage}[c]{2.5cm}
-        \raggedright
-        \tikz[baseline=(char.base)]{\clip (0,0) circle (1cm); \useasboundingbox (0,0) circle (1cm); \node[inner sep=0pt] (char) {\adjustimage{width=2cm,height=2cm}{\@cvimage}};} % circular image placeholder
-    \end{minipage}%
-    \hspace{1em}
-    \begin{minipage}[c]{\dimexpr\textwidth-1.5cm-1em\relax}
+    \ifx\@cvimage\@empty
+    \begin{minipage}[c]{\textwidth}
         \vspace{-0.5\baselineskip}
         \raggedright
         {\Large\bfseries\@title}\par
@@ -42,17 +39,46 @@
         \begingroup
         \small
         \ifx\@cvlocation\@empty\else\textbf{\@cvlocation}\par\fi
-        \ifx\@cvphone\@empty\else\@cvphone \fi
+        \ifx\@cvphone\@empty\else{\@cvphone} \textbullet{} \fi
         \ifx\@cvcontact\@empty\else\@cvcontact \fi
         \par
         \ifx\@cvlinks\@empty\else\@cvlinks\par\fi
         \endgroup
     \end{minipage}%
+    \else
+        \begin{minipage}[c]{2.5cm}
+            \raggedright
+            \tikz[baseline=(char.base)]{\clip (0,0) circle (1cm); \useasboundingbox (0,0) circle (1cm); \node[inner sep=0pt] (char) {\adjustimage{width=2cm,height=2cm}{\@cvimage}};} % circular image placeholder
+        \end{minipage}%
+        \hspace{1em}
+        \begin{minipage}[c]{\dimexpr\textwidth-1.5cm-1em\relax}
+        \vspace{-0.5\baselineskip}
+        \raggedright
+        {\Large\bfseries\@title}\par
+        \ifx\@cvrole\@empty\else{\normalsize\itshape\@cvrole}\par\fi
+        \begingroup
+        \small
+        \ifx\@cvlocation\@empty\else\textbf{\@cvlocation}\par\fi
+            \ifx\@cvphone\@empty\else{\@cvphone} \textbullet{} \fi
+            \ifx\@cvcontact\@empty\else\@cvcontact \fi
+            \par
+            \ifx\@cvlinks\@empty\else\@cvlinks\par\fi
+            \endgroup
+            \end{minipage}%
+    \fi
     \endgroup
 }
 
 \renewcommand{\maketitle}{%
     \omnilatex@cvheader
+    \vspace{0.5\baselineskip}
+    \ifx\@cvsummary\@empty\else
+        \hrule
+        \vspace{0.2\baselineskip}
+        {\raggedright \@cvsummary}
+        \vspace{0.2\baselineskip}
+        \hrule
+    \fi
 }
 
 \let\oldsection\section
@@ -70,7 +96,7 @@
 \newcommand*{\cvlinks}[1]{\gdef\@cvlinks{#1}}
 \providecommand*{\@cvsummary}{}
 \newcommand*{\cvsummary}[1]{\gdef\@cvsummary{#1}}
-\providecommand*{\@cvimage}{assets/images/bitmaps/field.jpg}
+\providecommand*{\@cvimage}{}
 \newcommand*{\cvimage}[1]{\gdef\@cvimage{#1}}
 
 \providecommand*{\@cvbulletspacing}{0pt}
