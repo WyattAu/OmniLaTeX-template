@@ -1,0 +1,53 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/cover-letter}[2025-11-03 OmniLaTeX cover letter profile]
+
+\documenttype{Cover Letter}
+\documentfontsize{11pt}
+\documentlayout{DIV=12,headinclude=false,footinclude=true,headsepline=false}
+\sloppy
+\KOMAoptions{titlepage=false,twoside=false}
+\pagestyle{plain}
+\setcounter{secnumdepth}{0}
+\setcounter{tocdepth}{0}
+
+\documentcolormode{color}
+\documentlinespacing{onehalf}
+\documentparspacing{half}
+\documentitemspacing{normal}
+\documentfontmode{serif}
+\documentlinkstyle{color}
+\documentcodestyle{color}
+
+
+\makeatletter
+
+% Disable maketitle since cover letters don't need title pages
+\renewcommand{\maketitle}{}
+
+% Commands for cover letter metadata
+\providecommand*{\@coverletterrecipient}{}
+\newcommand*{\coverletterrecipient}[1]{\gdef\@coverletterrecipient{#1}}
+\providecommand*{\@coverletterposition}{}
+\newcommand*{\coverletterposition}[1]{\gdef\@coverletterposition{#1}}
+\providecommand*{\@coverlettercompany}{}
+\newcommand*{\coverlettercompany}[1]{\gdef\@coverlettercompany{#1}}
+\providecommand*{\@coverletteraddress}{}
+\newcommand*{\coverletteraddress}[1]{\gdef\@coverletteraddress{#1}}
+\providecommand*{\@coverlettercity}{}
+\newcommand*{\coverlettercity}[1]{\gdef\@coverlettercity{#1}}
+\providecommand*{\@coverletterdate}{\today}
+\newcommand*{\coverletterdate}[1]{\gdef\@coverletterdate{#1}}
+\providecommand*{\@coverlettersendername}{}
+\newcommand*{\coverlettersendername}[1]{\gdef\@coverlettersendername{#1}}
+\providecommand*{\@coverlettersenderaddress}{}
+\newcommand*{\coverlettersenderaddress}[1]{\gdef\@coverlettersenderaddress{#1}}
+\providecommand*{\@coverlettersendercity}{}
+\newcommand*{\coverlettersendercity}[1]{\gdef\@coverlettersendercity{#1}}
+\providecommand*{\@coverlettersenderphone}{}
+\newcommand*{\coverlettersenderphone}[1]{\gdef\@coverlettersenderphone{#1}}
+\providecommand*{\@coverlettersenderemail}{}
+\newcommand*{\coverlettersenderemail}[1]{\gdef\@coverlettersenderemail{#1}}
+
+\makeatother
+
+\endinput

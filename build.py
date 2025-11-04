@@ -175,14 +175,32 @@ class BuildTasks:
                 all_logs.extend(logs_from_run)
             # --- End: EXACT reproduction of original script's core logic ---
 
+            # Create build/examples directory early to avoid race conditions in concurrent builds
+            repo_root = Path(__file__).resolve().parent
+            build_examples_dir = repo_root / self.config.build_dir / BUILD_EXAMPLES_SUBDIR
+            all_logs.append(f"[DEBUG] Build examples dir: {build_examples_dir}")
+            build_examples_dir.mkdir(parents=True, exist_ok=True)
+
             # THE SOLE CRITERION FOR SUCCESS: Does the PDF exist?
             src_pdf = example_dir / "main.pdf"
+            all_logs.append(f"[DEBUG] Checking for PDF at: {src_pdf}")
             if src_pdf.exists():
-                build_examples_dir = self.config.build_dir / BUILD_EXAMPLES_SUBDIR
-                build_examples_dir.mkdir(parents=True, exist_ok=True)
+                all_logs.append(f"[DEBUG] PDF exists, size: {src_pdf.stat().st_size} bytes")
                 dest_pdf = build_examples_dir / f"{example_name}.pdf"
-                shutil.copy(src_pdf, dest_pdf)
-                all_logs.append(f"[green]✓ PDF found and copied to build directory.[/green]")
+                all_logs.append(f"[DEBUG] Destination PDF: {dest_pdf}")
+                try:
+                    shutil.copy(src_pdf, dest_pdf)
+                    all_logs.append(f"[DEBUG] Copy operation completed")
+                    if dest_pdf.exists():
+                        all_logs.append(f"[DEBUG] Destination PDF confirmed, size: {dest_pdf.stat().st_size} bytes")
+                        all_logs.append(f"[green]✓ PDF found and copied to build directory.[/green]")
+                    else:
+                        all_logs.append(f"[bold red]✗ FAILURE: Copy reported success but destination PDF not found[/bold red]")
+                        return example_name, False, all_logs
+                except Exception as copy_exc:
+                    all_logs.append(f"[DEBUG] Copy exception: {copy_exc}")
+                    all_logs.append(f"[bold red]✗ FAILURE: Could not copy PDF: {copy_exc}[/bold red]")
+                    return example_name, False, all_logs
                 return example_name, True, all_logs
             else:
                 all_logs.append(f"[bold red]✗ FAILURE: PDF not found at {src_pdf} after build attempt.[/bold red]")
@@ -262,6 +280,10 @@ class BuildTasks:
         pdf_path = Path(MAIN_TEX_FILENAME).with_suffix('.pdf')
         if pdf_path.exists():
             self.ui.success("Root build complete.")
+            build_dir = self.config.build_dir
+            build_dir.mkdir(parents=True, exist_ok=True)
+            shutil.copy(pdf_path, build_dir / pdf_path.name)
+            self.ui.success(f"Copied {pdf_path.name} to {build_dir}")
         else:
             self.ui.error("Build failure: PDF not generated.")
             raise SystemExit(1)

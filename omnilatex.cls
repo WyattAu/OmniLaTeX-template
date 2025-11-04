@@ -113,6 +113,7 @@
 \omnilatex@matchdoctypes{journal,journals,magazine,magazines}{\omnilatex@setdoctype{journal}{scrartcl}{\omnilatex@journaloptions}}%
 \omnilatex@matchdoctypes{dictionary,dictionaries,lexicon,lexicons}{\omnilatex@setdoctype{dictionary}{scrbook}{\omnilatex@bookoptions}}%
 \omnilatex@matchdoctypes{cv,resume,resumes,curriculumvitae}{\omnilatex@setdoctype{cv}{scrartcl}{\omnilatex@cvoptions}}%
+\omnilatex@matchdoctypes{cover-letter,coverletter}{\omnilatex@setdoctype{cover-letter}{scrartcl}{\omnilatex@articleoptions}}%
 
 \ifx\omnilatexuserclassoptions\@empty
     \PassOptionsToClass{\omnilatexclassoptions}{\@baseclass}
