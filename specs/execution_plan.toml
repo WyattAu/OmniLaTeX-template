@@ -1,0 +1,596 @@
+# OmniLaTeX Execution Plan — Machine-Readable Roadmap
+# Generated: 2026-03-31
+# Schema: v1.0.0
+
+[metadata]
+project = "OmniLaTeX-template"
+version = "0.1.1"
+total_phases = 8
+estimated_weeks = 23
+critical_path = "0 -> 1 -> 6"
+secondary_path = "0 -> 2 -> 3 -> 5"
+
+# =============================================================================
+# Phase 0: Repository Hygiene
+# =============================================================================
+[[phase]]
+id = "P0"
+name = "Repository Hygiene"
+timeline = "1 week"
+status = "pending"
+dependencies = []
+
+[[phase.task]]
+id = "P0-T01"
+title = "Fix .gitignore for example PDFs"
+priority = "critical"
+effort = "0.5 day"
+description = "Add 'examples/*/main.pdf' to .gitignore. Keep '!assets/**/*.pdf' exception. Run 'git rm --cached' on tracked example PDFs."
+verification = "git ls-files -- '*.pdf' returns zero example PDFs"
+files_modified = [".gitignore"]
+files_created = []
+
+[[phase.task]]
+id = "P0-T02"
+title = "Pin Docker image by digest in all CI configs"
+priority = "high"
+effort = "1 day"
+description = "Build versioned Docker tag, pin by sha256 digest in all 5 CI configs (GitHub, GitLab, Forgejo, Gitea, Woodpecker). Create .env.docker with pinned reference."
+verification = "All CI configs reference explicit digest, no ':latest'"
+files_modified = [".github/workflows/build.yml", ".gitlab/ci/pipeline.yml", ".forgejo/workflows/build.yml", ".gitea/workflows/build.yml", ".woodpecker/workflows/pipeline.yml"]
+files_created = [".env.docker"]
+
+[[phase.task]]
+id = "P0-T03"
+title = "Create flake.nix"
+priority = "high"
+effort = "2 days"
+description = "Create flake.nix with devShell (TeX Live full + Python + latexmk), packages.default (builds main.tex), and overlay. Pin nixpkgs to specific commit. Docker remains primary CI vehicle; Nix is additive."
+verification = "nix develop --command python3 build.py build-root succeeds"
+files_modified = []
+files_created = ["flake.nix", "flake.lock"]
+
+[[phase.task]]
+id = "P0-T04"
+title = "Create reproducibility.lock"
+priority = "medium"
+effort = "1 day"
+description = "Create TOML lockfile capturing TeX Live release, package versions (from .log), Python deps, Docker digest, Nixpkgs hash. Updated by 'build.py preflight'."
+verification = "File exists with populated version data"
+files_modified = []
+files_created = ["reproducibility.lock"]
+
+[[phase.task]]
+id = "P0-T05"
+title = "Instrument build.py with timing output"
+priority = "medium"
+effort = "1 day"
+description = "Add --timings flag. Output per-example build metrics as JSON to build/metrics.json. Record: name, mode, wall/user/sys time, PDF size, pass count."
+verification = "build.py --timings build-examples produces build/metrics.json"
+files_modified = ["build.py"]
+files_created = []
+
+[[phase.task]]
+id = "P0-T06"
+title = "Font fallback in omnilatex-fonts.sty"
+priority = "high"
+effort = "0.5 day"
+description = "Add \\IfFontExistsTF checks before loading Monaspace Neon and Atkinson Hyperlegible Next. Fallback to Latin Modern with \\ClassWarning on missing. Prevents hard failure on platforms without custom fonts."
+verification = "Build succeeds without custom fonts installed, with warning emitted"
+files_modified = ["lib/typography/omnilatex-fonts.sty"]
+files_created = []
+
+[[phase.task]]
+id = "P0-T07"
+title = "Bundle custom fonts in assets/fonts/"
+priority = "high"
+effort = "1 day"
+description = "Create assets/fonts/ directory with Monaspace Neon and Atkinson Hyperlegible Next .otf/.ttf files. Update omnilatex-fonts.sty to use explicit file paths via \\setmainfont[Path=...]. Eliminates dependency on system font installation across all platforms."
+verification = "Build works on fresh TeX Live install without system fonts"
+files_modified = ["lib/typography/omnilatex-fonts.sty"]
+files_created = ["assets/fonts/"]
+
+# =============================================================================
+# Phase 1: Deterministic & Reproducible Builds
+# =============================================================================
+[[phase]]
+id = "P1"
+name = "Deterministic & Reproducible Builds"
+timeline = "2-3 weeks"
+status = "pending"
+dependencies = ["P0"]
+
+[[phase.task]]
+id = "P1-T01"
+title = "SOURCE_DATE_EPOCH integration"
+priority = "critical"
+effort = "2 days"
+description = "Read SOURCE_DATE_EPOCH in .latexmkrc and lua/git-metadata.lua. Freeze \\today, all timestamps, and PDF metadata dates to the epoch value."
+verification = "Build with SOURCE_DATE_EPOCH=1700000000 produces PDF with frozen dates"
+files_modified = [".latexmkrc", "lua/git-metadata.lua"]
+files_created = []
+
+[[phase.task]]
+id = "P1-T02"
+title = "Deterministic PDF metadata"
+priority = "high"
+effort = "1 day"
+description = "Override pdfcreationdate, pdfmoddate, suppress/fix /ID array in omnilatex-hyperref.sty when SOURCE_DATE_EPOCH is set."
+verification = "Two builds with same SOURCE_DATE_EPOCH produce identical /Info and /ID streams"
+files_modified = ["lib/references/omnilatex-hyperref.sty"]
+files_created = []
+
+[[phase.task]]
+id = "P1-T03"
+title = "Deterministic font embedding verification"
+priority = "high"
+effort = "1 day"
+description = "Verify font loading order is stable. Ensure omnilatex-fonts.sty uses absolute paths or package names, not directory-dependent discovery."
+verification = "Two builds produce identical font tables in PDF"
+files_modified = ["lib/typography/omnilatex-fonts.sty"]
+files_created = []
+
+[[phase.task]]
+id = "P1-T04"
+title = "Build determinism CI test"
+priority = "high"
+effort = "1 day"
+description = "Add CI job: build example with fixed SOURCE_DATE_EPOCH, copy PDF, clean, rebuild, assert sha256sum matches. Dump diff on mismatch."
+verification = "CI job passes: two builds produce identical PDF hashes"
+files_modified = [".github/workflows/build.yml"]
+files_created = []
+
+[[phase.task]]
+id = "P1-T05"
+title = "Nix reproducibility check"
+priority = "medium"
+effort = "1 day"
+description = "Add checks.x86_64-linux.reproducibility to flake.nix. Build same document twice in isolated derivations, compare output hashes."
+verification = "nix flake check includes reproducibility test"
+files_modified = ["flake.nix"]
+files_created = []
+
+# =============================================================================
+# Phase 2: Formal Specification
+# =============================================================================
+[[phase]]
+id = "P2"
+name = "Formal Specification"
+timeline = "2-3 weeks"
+status = "pending"
+dependencies = ["P0"]
+
+[[phase.task]]
+id = "P2-T01"
+title = "Option schema specification"
+priority = "high"
+effort = "2 days"
+description = "Create specs/option_schema.toml formalizing all 8 keyval options with types, defaults, valid values, and resolution mappings."
+verification = "Schema covers all options in omnilatex.cls with complete type annotations"
+files_modified = []
+files_created = ["specs/option_schema.toml"]
+
+[[phase.task]]
+id = "P2-T02"
+title = "Layout constraint specification"
+priority = "high"
+effort = "1 day"
+description = "Create specs/layout_constraints.toml with ≥10 formal page geometry invariants (margins, text width, caption bounds, etc.)."
+verification = "File contains ≥10 constraints with mathematical expressions"
+files_modified = []
+files_created = ["specs/layout_constraints.toml"]
+
+[[phase.task]]
+id = "P2-T03"
+title = "Document model state machine formalization"
+priority = "high"
+effort = "2 days"
+description = "Formalize class initialization as DFA (INIT → OPTIONS_PARSED → DOCTYPE_RESOLVED → CLASS_LOADED → MODULES_LOADED → PROFILE_LOADED → INSTITUTION_LOADED → READY). Prove totality and determinism."
+verification = "State machine diagram and transition table documented"
+files_modified = []
+files_created = ["specs/document_model_state_machine.md"]
+
+[[phase.task]]
+id = "P2-T04"
+title = "Module interface contracts (21 modules)"
+priority = "medium"
+effort = "5 days"
+description = "Create TOML contract for each of 21 lib/*.sty modules: dependencies, exported commands with signatures, preconditions, postconditions."
+verification = "specs/module_contracts/ contains 21 TOML files, one per module"
+files_modified = []
+files_created = ["specs/module_contracts/"]
+
+[[phase.task]]
+id = "P2-T05"
+title = "Typography constraint specification"
+priority = "medium"
+effort = "1 day"
+description = "Define font size hierarchy, spacing consistency, and color contrast constraints as formal predicates."
+verification = "File contains ≥5 typography constraints with measurable bounds"
+files_modified = []
+files_created = ["specs/typography_constraints.toml"]
+
+# =============================================================================
+# Phase 3: Test Infrastructure Overhaul
+# =============================================================================
+[[phase]]
+id = "P3"
+name = "Test Infrastructure Overhaul"
+timeline = "2-3 weeks"
+status = "pending"
+dependencies = ["P2"]
+
+[[phase.task]]
+id = "P3-T01"
+title = "Adopt l3build framework"
+priority = "critical"
+effort = "2 days"
+description = "Create build.lua (l3build config). Set up testfiles/ directory structure. Configure for multi-file project layout."
+verification = "l3build check runs without errors on existing test files"
+files_modified = []
+files_created = ["build.lua", "testfiles/"]
+
+[[phase.task]]
+id = "P3-T02"
+title = "Module unit tests (21 modules)"
+priority = "high"
+effort = "5 days"
+description = "Create .lvt + .tlg files for each module. Test all exported commands and environments. Priority: math, floats, koma, tikz-engineering, glossary."
+verification = "l3build check passes for all 21 modules"
+files_modified = []
+files_created = ["testfiles/*.lvt", "testfiles/*.tlg"]
+
+[[phase.task]]
+id = "P3-T03"
+title = "Visual regression testing"
+priority = "high"
+effort = "3 days"
+description = "Build reference PDFs, convert to PNG at 300 DPI, implement pixel diff using ImageMagick compare -metric AE. Threshold ≤50 pixels/page."
+verification = "Visual regression catches intentional layout changes"
+files_modified = []
+files_created = ["tests/visual_regression.py", "tests/references/"]
+
+[[phase.task]]
+id = "P3-T04"
+title = "Property-based testing"
+priority = "high"
+effort = "2 days"
+description = "Python harness generating random valid option combinations, compiling minimal .tex, asserting success. Use hypothesis for fuzzing. Target: 78+ combinations."
+verification = "Property tests cover all 13 doctypes × 2 languages × 3 modes"
+files_modified = []
+files_created = ["tests/test_properties.py"]
+
+[[phase.task]]
+id = "P3-T05"
+title = "Negative tests"
+priority = "medium"
+effort = "2 days"
+description = "Test invalid options, missing files, broken configs. Assert graceful failure with meaningful errors."
+verification = "All negative test cases produce actionable error messages"
+files_modified = []
+files_created = ["tests/test_negative.py"]
+
+[[phase.task]]
+id = "P3-T06"
+title = "Integration test matrix CI job"
+priority = "medium"
+effort = "2 days"
+description = "Weekly CI job building all (doctype × institution × language) = 104 combinations. Report pass/fail matrix."
+verification = "CI job runs weekly, produces pass/fail matrix"
+files_modified = [".github/workflows/build.yml"]
+files_created = [".github/workflows/integration-matrix.yml"]
+
+# =============================================================================
+# Phase 4: Performance Engineering
+# =============================================================================
+[[phase]]
+id = "P4"
+name = "Performance Engineering"
+timeline = "2-3 weeks"
+status = "pending"
+dependencies = ["P0"]
+
+[[phase.task]]
+id = "P4-T01"
+title = "Build profiling infrastructure"
+priority = "critical"
+effort = "2 days"
+description = "Parse .log for per-package load times. Extend build.py to aggregate timing. Output structured JSON metrics. Store history in build/metrics_history/."
+verification = "build.py --timings produces per-package breakdown"
+files_modified = ["build.py"]
+files_created = []
+
+[[phase.task]]
+id = "P4-T02"
+title = "Lazy module loading"
+priority = "high"
+effort = "5 days"
+description = "Refactor omnilatex.cls to conditionally load modules. Add options: enablemath, enabletikz, enableengineering, enablecode, enabletables. Document type profiles opt-in. Backward compatible: no options = load all."
+verification = "Minimal CV document loads ≤10 modules; preamble time reduced ≥30%"
+files_modified = ["omnilatex.cls"]
+files_created = []
+
+[[phase.task]]
+id = "P4-T03"
+title = "Preamble precompilation via mylatexformat"
+priority = "high"
+effort = "3 days"
+description = "Generate .fmt file from preamble. On subsequent builds, load .fmt and skip preamble parsing. Integrate into .latexmkrc with freshness detection."
+verification = "Repeat build time reduced ≥40%"
+files_modified = [".latexmkrc"]
+files_created = []
+
+[[phase.task]]
+id = "P4-T04"
+title = "Incremental example builds"
+priority = "medium"
+effort = "2 days"
+description = "In build.py, skip examples whose source files haven't changed since last build. Use file hash comparison."
+verification = "Second 'build-examples' run skips unchanged examples"
+files_modified = ["build.py"]
+files_created = []
+
+[[phase.task]]
+id = "P4-T05"
+title = "Performance regression CI check"
+priority = "medium"
+effort = "1 day"
+description = "Compare build times against baseline. Alert on >15% increase or >5s absolute increase. Store metrics as CI artifacts."
+verification = "CI fails when build time regresses beyond threshold"
+files_modified = [".github/workflows/build.yml"]
+files_created = []
+
+# =============================================================================
+# Phase 5: Correctness & Robustness
+# =============================================================================
+[[phase]]
+id = "P5"
+name = "Correctness & Robustness"
+timeline = "2-3 weeks"
+status = "pending"
+dependencies = ["P3"]
+
+[[phase.task]]
+id = "P5-T01"
+title = "Defensive option validation"
+priority = "critical"
+effort = "1 day"
+description = "Add ClassError for unknown doctypes with valid values list. Validate institution, language, titlestyle. Clear messages for all invalid inputs."
+verification = "Invalid doctype produces ClassError listing valid options"
+files_modified = ["omnilatex.cls"]
+files_created = []
+
+[[phase.task]]
+id = "P5-T02"
+title = "Graceful degradation for missing resources"
+priority = "high"
+effort = "2 days"
+description = "Wrap all resource loading in IfFileExists with ClassWarning on fallback. Meaningful messages for missing fonts, logos, images, bib files."
+verification = "Missing logo produces warning, not compilation failure"
+files_modified = ["omnilatex.cls", "lib/core/omnilatex-base.sty"]
+files_created = []
+
+[[phase.task]]
+id = "P5-T03"
+title = "Unicode stress testing"
+priority = "high"
+effort = "2 days"
+description = "Test CJK, RTL (Arabic), math Unicode, emoji, combining characters across all document types."
+verification = "All Unicode test documents compile and render correctly"
+files_modified = []
+files_created = ["tests/test_unicode.py"]
+
+[[phase.task]]
+id = "P5-T04"
+title = "Edge case testing"
+priority = "medium"
+effort = "2 days"
+description = "Test empty docs, 100+ pages, only-floats, deeply nested environments, very long captions, large bibliography."
+verification = "All edge cases compile without silent data loss"
+files_modified = []
+files_created = ["tests/test_edge_cases.py"]
+
+[[phase.task]]
+id = "P5-T05"
+title = "Cross-TeXLive compatibility matrix"
+priority = "medium"
+effort = "2 days"
+description = "Test with TeX Live 2024 and 2025 via Docker tags. Document minimum required version. Test LuaTeX API boundary versions."
+verification = "Compatibility matrix documented in README"
+files_modified = ["README.md"]
+files_created = []
+
+[[phase.task]]
+id = "P5-T06"
+title = "Windows CI runner"
+priority = "medium"
+effort = "2 days"
+description = "Add GitHub Actions windows-latest runner. Install TeX Live via choco or actions/setup-texlive. Fix .latexmkrc TEXINPUTS separator (; on Windows). Run minimal build verification."
+verification = "CI passes on Windows runner"
+files_modified = [".github/workflows/build.yml", ".latexmkrc"]
+files_created = []
+
+[[phase.task]]
+id = "P5-T07"
+title = "macOS CI runner"
+priority = "medium"
+effort = "1 day"
+description = "Add GitHub Actions macos-latest runner. Install TeX Live via brew install --cask mactex. Run minimal build verification."
+verification = "CI passes on macOS runner"
+files_modified = [".github/workflows/build.yml"]
+files_created = []
+
+# =============================================================================
+# Phase 6: Mathematical Proof Infrastructure
+# =============================================================================
+[[phase]]
+id = "P6"
+name = "Mathematical Proof Infrastructure"
+timeline = "3-4 weeks"
+status = "pending"
+dependencies = ["P1"]
+
+[[phase.task]]
+id = "P6-T01"
+title = "Doctype resolution completeness proof"
+priority = "high"
+effort = "3 days"
+description = "Formalize alias table as String → BaseClass partial function in Lean 4. Prove determinism and totality over specified alias set."
+verification = "lean specs/proofs/doctype_resolution.lean compiles without errors"
+files_modified = []
+files_created = ["specs/proofs/doctype_resolution.lean"]
+
+[[phase.task]]
+id = "P6-T02"
+title = "Page geometry consistency proof"
+priority = "high"
+effort = "4 days"
+description = "Formalize typearea constraints. Prove textwidth + margins = paperwidth for all configurations. Prove caption width ≤ textwidth."
+verification = "lean specs/proofs/page_geometry.lean compiles without errors"
+files_modified = []
+files_created = ["specs/proofs/page_geometry.lean"]
+
+[[phase.task]]
+id = "P6-T03"
+title = "Font size hierarchy proof"
+priority = "medium"
+effort = "3 days"
+description = "Formalize font sizes as linear order. Prove strict ordering preserved across all configurations and font mode switches."
+verification = "lean specs/proofs/font_hierarchy.lean compiles without errors"
+files_modified = []
+files_created = ["specs/proofs/font_hierarchy.lean"]
+
+[[phase.task]]
+id = "P6-T04"
+title = "Float placement invariant proof sketch"
+priority = "medium"
+effort = "3 days"
+description = "Model float placement as constrained optimization. Document proof sketch for section boundary invariant. Full proof deferred (requires formalizing LaTeX float algorithm)."
+verification = "Proof sketch documented with clear mathematical statement"
+files_modified = []
+files_created = ["specs/proofs/float_invariant.lean"]
+
+[[phase.task]]
+id = "P6-T05"
+title = "Build mode configuration consistency proof"
+priority = "low"
+effort = "2 days"
+description = "Formalize build modes (dev/prod/ultra) as states with constraints. Prove each mode's configuration satisfies its documented invariants."
+verification = "lean specs/proofs/build_modes.lean compiles without errors"
+files_modified = []
+files_created = ["specs/proofs/build_modes.lean"]
+
+# =============================================================================
+# Phase 7: Advanced Tooling & DX
+# =============================================================================
+[[phase]]
+id = "P7"
+name = "Advanced Tooling & DX"
+timeline = "2-3 weeks"
+status = "pending"
+dependencies = ["P4", "P5"]
+
+[[phase.task]]
+id = "P7-T01"
+title = "Watch mode for build.py"
+priority = "medium"
+effort = "2 days"
+description = "Add build.py watch using inotifywait/fswatch. On source change, rebuild affected documents incrementally."
+verification = "build.py watch rebuilds on .tex file save"
+files_modified = ["build.py"]
+files_created = []
+
+[[phase.task]]
+id = "P7-T02"
+title = "LSP integration for custom commands"
+priority = "medium"
+effort = "2 days"
+description = "Configure texlab/digestif to resolve OmniLaTeX custom commands. Generate .tags or equivalent for autocomplete."
+verification = "IDE autocomplete works for \\documenttype, \\parens, etc."
+files_modified = []
+files_created = [".texlabrc"]
+
+[[phase.task]]
+id = "P7-T03"
+title = "Implement build.py preflight and test commands"
+priority = "medium"
+effort = "1 day"
+description = "preflight: validate configs, fonts, TeX version. test: delegate to l3build check + pytest. diff: build and compare against reference."
+verification = "build.py preflight and build.py test work end-to-end"
+files_modified = ["build.py"]
+files_created = []
+
+[[phase.task]]
+id = "P7-T04"
+title = "Nix flake checks"
+priority = "medium"
+effort = "2 days"
+description = "Add checks for build, test, determinism, formatting to flake.nix."
+verification = "nix flake check runs all checks"
+files_modified = ["flake.nix"]
+files_created = []
+
+[[phase.task]]
+id = "P7-T05"
+title = "Auto-generated API reference"
+priority = "low"
+effort = "2 days"
+description = "Generate command reference from module interface contracts (P2-T04). Produce docs/api_reference.md. CI validates sync."
+verification = "API reference lists all exported commands with signatures"
+files_modified = []
+files_created = ["docs/api_reference.md"]
+
+[[phase.task]]
+id = "P7-T06"
+title = "build.py doctor command"
+priority = "medium"
+effort = "2 days"
+description = "Add build.py doctor command that checks: TeX Live version, required LaTeX packages installed, custom fonts available (via kpsewhich or fontspec check), Inkscape on PATH, Pygments installed, git CLI available. Output structured health report with pass/fail per check and remediation suggestions."
+verification = "build.py doctor reports pass/fail for all checks on Docker, Linux, macOS"
+files_modified = ["build.py"]
+files_created = []
+
+# =============================================================================
+# Risk Register
+# =============================================================================
+[[risk]]
+id = "R01"
+title = "l3build incompatibility with non-standard layout"
+likelihood = "medium"
+impact = "high"
+mitigation = "Validate early in Phase 3; fallback to custom test harness if needed"
+
+[[risk]]
+id = "R02"
+title = "Nix TeX Live missing required packages"
+likelihood = "medium"
+impact = "medium"
+mitigation = "Use texlive.withPackages overrides; contribute upstream if needed"
+
+[[risk]]
+id = "R03"
+title = "Lean 4 proofs too complex for LaTeX internals"
+likelihood = "medium"
+impact = "low"
+mitigation = "Accept proof sketches for complex properties; focus proofs on document model"
+
+[[risk]]
+id = "R04"
+title = "Lazy loading breaks existing documents"
+likelihood = "low"
+impact = "high"
+mitigation = "Maintain backward-compatible 'load all' default; gradual opt-in"
+
+[[risk]]
+id = "R05"
+title = "Preamble precompilation conflicts with dynamic config"
+likelihood = "medium"
+impact = "medium"
+mitigation = "Detect config changes and invalidate .fmt cache automatically"
+
+[[risk]]
+id = "R06"
+title = "Visual regression false positives from font rendering"
+likelihood = "high"
+impact = "medium"
+mitigation = "Use perceptual diff (SSIM) instead of pixel-exact comparison"

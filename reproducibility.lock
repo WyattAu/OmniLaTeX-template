@@ -1,0 +1,64 @@
+# OmniLaTeX Reproducibility Lockfile
+# Captures exact toolchain versions for deterministic builds.
+# Update with: python3 build.py preflight (once implemented)
+# Manual update: fill in values from your build environment.
+
+[metadata]
+generated = "2026-03-31"
+generator = "manual"
+project_version = "0.1.1"
+
+[texlive]
+# TeX Live release year and version
+# Obtain: tex --version
+release = "2025"
+version_string = ""  # e.g., "TeX 3.141592653 (TeX Live 2025)"
+# Minimum required version
+minimum_release = "2024"
+
+[latexmk]
+# Obtain: latexmk --version
+version = ""
+
+[lua]
+# LuaTeX engine version
+# Obtain: lualatex --version
+version = ""
+# Minimum required version for Lua API compatibility
+minimum_version = "1.15"
+
+[python]
+version = "3"
+# From tests/pyproject.toml or requirements
+minimum_version = "3.10"
+
+[python_packages]
+# Obtain: pip list --format=freeze
+pygments = ""
+pymupdf = ""
+pytest = ""
+hypothesis = ""
+
+[docker]
+image = "ghcr.io/wyattau/omnilatex-docker:latest"
+digest = ""  # sha256:... — obtain via: docker inspect --format='{{index .RepoDigests 0}}' IMAGE
+
+[nix]
+# Nixpkgs commit hash from flake.lock (once generated)
+nixpkgs_commit = ""
+
+[fonts]
+# Fonts that ship with TeX Live (always available)
+libertinus_serif = { available = true, source = "texlive" }
+libertinus_sans = { available = true, source = "texlive" }
+libertinus_math = { available = true, source = "texlive" }
+fontawesome5 = { available = true, source = "texlive" }
+
+# Fonts requiring manual installation
+monaspace_neon = { available = false, source = "manual", url = "https://github.com/chriskapp/neon-monospace", fallback = "Latin Modern Mono" }
+atkinson_hyperlegible_next = { available = false, source = "manual", url = "https://github.com/BrailleInstitute/Atkinson-Hyperlegible-Next-Font", fallback = "Libertinus Sans" }
+
+[latex_packages]
+# Critical packages with version requirements
+# Obtain from .log file after a build: grep "Package: " build/examples/thesis/main.log
+# This section should be populated after the first build in a new environment

@@ -1,5 +1,8 @@
 name: Build LaTeX Document
 
+env:
+  DOCKER_IMAGE: ghcr.io/wyattau/omnilatex-docker:latest  # See .env.docker
+
 on:
   push:
     branches: [ main, master, develop ]
@@ -10,7 +13,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/wyattau/omnilatex-docker:latest
+      image: ${{ env.DOCKER_IMAGE }}
     
     steps:
       - name: Checkout repository

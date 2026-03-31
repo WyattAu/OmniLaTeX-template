@@ -8,6 +8,7 @@ services:
   # The primary service for our development environment.
   app:
     # Use the pre-built, feature-rich omnilatex-docker image.
+    # Update .env.docker when bumping the image version.
     image: ghcr.io/wyattau/omnilatex-docker:latest
 
     # Mount the entire project directory into the container's workspace.

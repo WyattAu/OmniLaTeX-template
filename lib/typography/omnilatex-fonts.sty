@@ -45,13 +45,27 @@
 
 % Monospace font: Monaspace Neon (replacing Inconsolata)
 % Source: https://github.com/chriskapp/neon-monospace
-\setmonofont[
-    % Monaspace Neon has proper italics support
-    Scale=MatchLowercase,% Prettier when using inline-code alongside our main font
-]{Monaspace Neon}
+\IfFontExistsTF{Monaspace Neon}{%
+    \setmonofont[
+        % Monaspace Neon has proper italics support
+        Scale=MatchLowercase,% Prettier when using inline-code alongside our main font
+    ]{Monaspace Neon}%
+}{%
+    \ClassWarning{omnilatex-fonts}{Monaspace Neon not found. Falling back to Latin Modern Mono. Install from: https://github.com/chriskapp/neon-monospace}%
+    \setmonofont[
+        Scale=MatchLowercase,
+    ]{Latin Modern Mono}%
+}
 
 % Sans font: Atkinson Hyperlegible Next (replacing Merriweather Sans)
-\setsansfont{Atkinson Hyperlegible Next}
+\IfFontExistsTF{Atkinson Hyperlegible Next}{%
+    \setsansfont{Atkinson Hyperlegible Next}%
+}{%
+    \ClassWarning{omnilatex-fonts}{Atkinson Hyperlegible Next not found. Falling back to Libertinus Sans.}%
+    \setsansfont[
+        Scale=MatchLowercase,
+    ]{Libertinus Sans}%
+}
 
 % Math font: Libertinus Math (replacing TeX Gyre Pagella Math)
 % Source: https://github.com/alif-type/libertinus

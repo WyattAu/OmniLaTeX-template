@@ -150,6 +150,8 @@ cython_debug/
 # Generated PDF is not suitable for Git. We get our compiled PDF via CI.
 # Only ignore root level PDF, since images/vectors might be in PDF format.
 /*.pdf
+# Example PDFs are build artifacts generated from examples/*/main.tex via CI.
+examples/*/main.pdf
 
 # Testing environment
 testing.tex
@@ -455,6 +457,10 @@ TSWLatexianTemp*
 *.glstex
 *.syi
 *.syg
+
+# Nix build results
+result
+result-*
 
 # windows thumbnail cache:
 Thumbs.db

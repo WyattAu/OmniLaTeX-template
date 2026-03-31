@@ -1,3 +1,6 @@
+# Docker image reference — update .env.docker when bumping the version.
+# Woodpecker does not support global variables for image fields,
+# so each job references the same image directly.
 pipeline:
   lint:
     image: ghcr.io/wyattau/omnilatex-docker:latest

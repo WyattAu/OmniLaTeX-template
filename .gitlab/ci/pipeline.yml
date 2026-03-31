@@ -9,6 +9,9 @@
 # ======================================================================================
 # ======================================================================================
 
+variables:
+  DOCKER_IMAGE: ghcr.io/wyattau/omnilatex-docker:latest  # See .env.docker
+
 stages:
   - .pre
   - lint
@@ -19,7 +22,7 @@ stages:
 default:
     image:
         # Image from dockerhub per default. Specify full path to use a different image.
-        name: ghcr.io/wyattau/omnilatex-docker:latest
+        name: $DOCKER_IMAGE
         # Override any entrypoint back to a naked shell so that job `script`s can be
         # executed normally.
         # See also: https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#overriding-the-entrypoint-of-an-image
