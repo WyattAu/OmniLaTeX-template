@@ -3,7 +3,13 @@
 %
 % Font configuration and loading
 % Part of OmniLaTeX-template modular architecture
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Deterministic font loading (P1-T03):
+%   - All fonts loaded by explicit name, not glob-based discovery.
+%   - Loading order is fixed: main -> mono -> sans -> math -> unit -> icons.
+%   - Font fallbacks use \IfFontExistsTF for graceful degradation.
+%   - Two builds with identical SOURCE_DATE_EPOCH produce identical font tables.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{lib/typography/omnilatex-fonts}[2024-10-11 v6.0.0 OmniLaTeX fonts module]

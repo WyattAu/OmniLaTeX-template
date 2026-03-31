@@ -567,6 +567,13 @@ def main() -> None:
         help="Record per-example build metrics to build/metrics.json.",
     )
     parser.add_argument(
+        "--source-date-epoch",
+        type=int,
+        default=None,
+        metavar="TIMESTAMP",
+        help="Set SOURCE_DATE_EPOCH for reproducible builds (Unix timestamp).",
+    )
+    parser.add_argument(
         "-j",
         "--jobs",
         type=int,
@@ -607,6 +614,8 @@ def main() -> None:
             sub.add_argument("files", nargs="*", default=None)
 
     args = parser.parse_args()
+    if args.source_date_epoch is not None:
+        os.environ["SOURCE_DATE_EPOCH"] = str(args.source_date_epoch)
     if "build" in args.command:
         ui.info(f"Using up to {args.jobs} parallel jobs.")
     runner = CommandRunner(

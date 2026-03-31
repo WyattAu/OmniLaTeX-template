@@ -65,6 +65,28 @@ $warnings_as_errors = 0;
 $show_time = 1;
 
 # ======================================================================================
+# Reproducible Builds (SOURCE_DATE_EPOCH)
+# ======================================================================================
+# https://reproducible-builds.org/specs/source-date-epoch/
+# When set, timestamps in the PDF are frozen to this epoch value.
+# The Lua script (git-metadata.lua) freezes \year, \month, \day, \time primitives.
+# PDF metadata dates are frozen in omnilatex-hyperref.sty.
+# Env vars are passed through to subprocesses automatically.
+
+if (exists $ENV{SOURCE_DATE_EPOCH} && $ENV{SOURCE_DATE_EPOCH} ne '') {
+    my $sde = $ENV{SOURCE_DATE_EPOCH};
+    my @t = gmtime($sde);
+    my $sde_year  = $t[5] + 1900;
+    my $sde_month = $t[4] + 1;
+    my $sde_day   = $t[3];
+    $ENV{SOURCE_DATE_EPOCH_YEAR}  = $sde_year;
+    $ENV{SOURCE_DATE_EPOCH_MONTH} = $sde_month;
+    $ENV{SOURCE_DATE_EPOCH_DAY}   = $sde_day;
+    print "[Reproducible Builds] SOURCE_DATE_EPOCH=$sde -> "
+        . sprintf("%04d-%02d-%02d\n", $sde_year, $sde_month, $sde_day);
+}
+
+# ======================================================================================
 # Build Mode Configuration (dev vs prod)
 # ======================================================================================
 # Set BUILD_MODE environment variable to 'dev' for fast development builds

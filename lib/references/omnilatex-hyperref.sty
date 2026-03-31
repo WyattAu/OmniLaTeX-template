@@ -22,6 +22,9 @@
 \providecommand{\GitHostPagesURL}{n.a.}
 \providecommand{\GitHostAPIProvider}{n.a.}
 \providecommand{\GitHostAPIBase}{n.a.}
+\providecommand{\BuildDate}{\today}
+\providecommand{\BuildDatePDF}{}
+\providecommand{\omnilatex@sde@active}{0}
 
 \RequirePackage[pdfusetitle]{hyperref}% Loads url-package internally
 \hypersetup{%
@@ -36,10 +39,21 @@ LaTeX with hyperref,
 glossaries-extra/bib2gls
 and biblatex/biber
 [\GitRefName{}@\GitShortSHA{}]%
-},
+},%
 bookmarksnumbered=true,%
 pdfdisplaydoctitle,% https://tex.stackexchange.com/a/435434/120853
 }%
+
+% Deterministic PDF metadata when SOURCE_DATE_EPOCH is set.
+% BuildDatePDF is populated by git-metadata.lua only when SDE is active.
+\edef\omnilatex@temp@bdp{\BuildDatePDF}%
+\ifx\omnilatex@temp@bdp\@empty\else
+  \hypersetup{%
+    pdfcreationdate={\BuildDatePDF},%
+    pdfmoddate={\BuildDatePDF},%
+    pdfproducer={OmniLaTeX},%
+  }%
+\fi
 
 % Use colored links just for display, not for printing!
 % See: https://mirror.ctan.org/macros/latex/contrib/hyperref/doc/hyperref-doc.pdf#subsection.7.12

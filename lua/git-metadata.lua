@@ -4,6 +4,7 @@
     complaining about an undefined variable.
 --]]
 local token = require("token")
+local tex = require("tex")
 local texio = require("texio")
 local status = require("status")
 
@@ -21,6 +22,14 @@ local status = require("status")
     easily expanded than the below approach.
     LuaTeX provides excellent access to TeX, making this implementation much easier.
 --]]
+
+local function get_frozen_date()
+    local epoch = os.getenv("SOURCE_DATE_EPOCH")
+    if epoch and epoch ~= "" then
+        return os.date("!%Y-%m-%d %H:%M:%S", tonumber(epoch))
+    end
+    return nil
+end
 
 local function get_cmd_stdout(cmd)
     -- See: https://stackoverflow.com/a/326715/11477374
@@ -164,6 +173,40 @@ local macro_content_sources = {
         allow_empty = false,
     },
 }
+
+-- Set BuildDate macro from SOURCE_DATE_EPOCH if available
+local frozen_date = get_frozen_date()
+if frozen_date then
+    local epoch = os.getenv("SOURCE_DATE_EPOCH")
+    texio.write_nl("SOURCE_DATE_EPOCH detected: " .. epoch .. " -> " .. frozen_date)
+    token.set_macro("BuildDate", "\\detokenize{" .. frozen_date .. "}")
+
+    -- Freeze TeX date primitives so \today and PDF timestamps are reproducible
+    local epoch_num = tonumber(epoch)
+    local t = os.date("!*t", epoch_num)
+    tex.year = t.year
+    tex.month = t.month
+    tex.day = t.day
+    tex.time = (t.hour or 0) * 60 + (t.min or 0)
+    texio.write_nl(
+        "Frozen TeX primitives: year=" .. t.year
+        .. " month=" .. t.month
+        .. " day=" .. t.day
+    )
+
+    -- PDF date string in format D:YYYYMMDDHHmmSSZ (UTC)
+    local pdf_date = string.format(
+        "D:%04d%02d%02d%02d%02d%02dZ",
+        t.year, t.month, t.day,
+        t.hour or 0, t.min or 0, t.sec or 0
+    )
+    token.set_macro("BuildDatePDF", pdf_date)
+    token.set_macro("omnilatex@sde@active", "1")
+else
+    token.set_macro("BuildDate", "\\today")
+    token.set_macro("BuildDatePDF", "")
+    token.set_macro("omnilatex@sde@active", "0")
+end
 
 for macro_name, content_sources in pairs(macro_content_sources) do
     local content = nil
