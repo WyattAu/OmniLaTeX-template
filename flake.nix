@@ -36,13 +36,10 @@
       in
       {
         devShells.default = pkgs.mkShell {
-          packages = with pkgs; [
+          packages = [
             texlive
             pythonEnv
-            latexmk
-            inkscape
-            biber
-            gnumake
+            pkgs.gnumake
           ];
 
           shellHook = ''
@@ -56,7 +53,7 @@
           name = "omnilatex-example";
           src = ./.;
 
-          nativeBuildInputs = [ texlive pythonEnv pkgs.latexmk ];
+          nativeBuildInputs = [ texlive pythonEnv ];
 
           buildPhase = ''
             export HOME=$(mktemp -d)
@@ -79,7 +76,7 @@
           name = "omnilatex-reproducibility-check";
           src = ./.;
 
-          nativeBuildInputs = [ texlive pythonEnv pkgs.latexmk ];
+          nativeBuildInputs = [ texlive pythonEnv ];
 
           buildPhase = ''
             export HOME=$(mktemp -d)
