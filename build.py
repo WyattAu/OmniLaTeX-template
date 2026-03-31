@@ -683,13 +683,294 @@ class BuildTasks:
         self.ui.success(f"Removed {count} PDF(s).")
 
     def preflight(self, _=None):
-        self.ui.header("Preflight checks... (Not implemented)")
+        self.cmd_preflight()
 
     def build_tex(self, _=None):
         self.ui.header("Building TeX... (Not implemented)")
 
     def run_tests(self, _=None):
-        self.ui.header("Running tests... (Not implemented)")
+        return self.cmd_test()
+
+    def cmd_watch(self, files: List[str]):
+        """Watch source files for changes and rebuild."""
+        watch_dirs = [Path(".")]
+        extensions = {".tex", ".sty", ".cls", ".bib", ".lua", ".toml"}
+        ui = self.ui
+        ui.info("Watching for changes... (Ctrl+C to stop)")
+
+        try:
+            from watchdog.observers import Observer
+            from watchdog.events import FileSystemEventHandler
+
+            class RebuildHandler(FileSystemEventHandler):
+                def __init__(self, runner, extensions, files):
+                    self.runner = runner
+                    self.extensions = extensions
+                    self.files = files
+                    self._last_rebuild = 0
+
+                def on_modified(self, event):
+                    path = Path(event.src_path)
+                    if path.suffix in self.extensions:
+                        import time as _time
+
+                        now = _time.time()
+                        if now - self._last_rebuild < 1.0:
+                            return
+                        self._last_rebuild = now
+                        self.runner.ui.info(f"\nChange detected: {path}")
+                        self.runner._rebuild_affected(path, self.files)
+
+            handler = RebuildHandler(self, extensions, files)
+            observer = Observer()
+            for d in watch_dirs:
+                observer.schedule(handler, str(d), recursive=True)
+            observer.start()
+            try:
+                while True:
+                    time.sleep(1)
+            except KeyboardInterrupt:
+                observer.stop()
+            observer.join()
+
+        except ImportError:
+            ui.info("watchdog not installed, using inotifywait fallback")
+            cmd = [
+                "inotifywait",
+                "-r",
+                "-e",
+                "modify,create,delete",
+                "--format",
+                "%w%f",
+            ]
+            for d in watch_dirs:
+                cmd.append(str(d))
+            try:
+                process = subprocess.Popen(cmd, stdout=subprocess.PIPE, text=True)
+                for line in process.stdout:
+                    path = Path(line.strip())
+                    if path.suffix in extensions:
+                        ui.info(f"\nChange detected: {path}")
+                        self._rebuild_affected(path, files)
+            except KeyboardInterrupt:
+                process.terminate()
+
+    def _rebuild_affected(self, changed_path: Path, files: List[str]):
+        """Rebuild documents affected by a changed file."""
+        if changed_path.suffix in {".sty", ".cls", ".lua"}:
+            if files:
+                self.build_example(files)
+            else:
+                self.build_examples([])
+        else:
+            if files:
+                self.build_example(files)
+            else:
+                self.build_examples([])
+
+    def _check_tool(self, tool: str, desc: str, required: bool = True):
+        path = shutil.which(tool)
+        if path:
+            return (desc, True, f"Found at {path}")
+        note = f"Not found" + ("" if not required else " (required)")
+        return (desc, not required, note)
+
+    def _get_texlive_version(self):
+        try:
+            result = subprocess.run(
+                ["tex", "--version"], capture_output=True, text=True, timeout=5
+            )
+            for line in (result.stdout or "").splitlines():
+                m = re.match(r".*TeX Live (\d{4})", line)
+                if m:
+                    return int(m.group(1))
+        except Exception:
+            pass
+        return None
+
+    def _check_latex_package(self, pkg: str) -> bool:
+        try:
+            result = subprocess.run(
+                ["kpsewhich", f"{pkg}.sty"], capture_output=True, text=True, timeout=5
+            )
+            return result.returncode == 0
+        except Exception:
+            return False
+
+    def cmd_preflight(self, files=None):
+        """Validate build environment readiness."""
+        checks = []
+
+        checks.append(self._check_tool("lualatex", "LuaTeX engine"))
+        checks.append(self._check_tool("latexmk", "latexmk build tool"))
+
+        checks.append(
+            ("Python >= 3.10", sys.version_info >= (3, 10), f"Found {sys.version}")
+        )
+
+        checks.append(
+            self._check_tool("inkscape", "Inkscape (SVG support)", required=False)
+        )
+        checks.append(self._check_tool("git", "Git CLI"))
+
+        tex_version = self._get_texlive_version()
+        checks.append(
+            (
+                "TeX Live >= 2024",
+                tex_version is not None and tex_version >= 2024,
+                f"Found TeX Live {tex_version or 'unknown'}",
+            )
+        )
+
+        packages = [
+            "fontspec",
+            "unicode-math",
+            "hyperref",
+            "minted",
+            "biblatex",
+            "siunitx",
+            "circuitikz",
+            "forest",
+        ]
+        for pkg in packages:
+            found = self._check_latex_package(pkg)
+            checks.append((f"Package {pkg}", found, "Found" if found else "Missing"))
+
+        passed = sum(1 for _, ok, _ in checks if ok)
+        total = len(checks)
+        for name, ok, detail in checks:
+            status = "\u2713" if ok else "\u2717"
+            self.ui.info(f"  {status} {name}: {detail}")
+
+        if passed == total:
+            self.ui.success(f"All {total} checks passed")
+        else:
+            self.ui.warning(f"{passed}/{total} checks passed")
+
+    def cmd_test(self, files=None):
+        """Run test suite (l3build + pytest)."""
+        results = []
+
+        self.ui.info("Running l3build check...")
+        result = subprocess.run(
+            ["l3build", "check"],
+            capture_output=True,
+            text=True,
+            cwd=self.config.project_root
+            if hasattr(self.config, "project_root")
+            else Path("."),
+        )
+        results.append(("l3build check", result.returncode == 0))
+        if result.returncode != 0:
+            self.ui.warning(f"l3build check FAILED:\n{result.stdout}\n{result.stderr}")
+        else:
+            self.ui.success("l3build check passed")
+
+        self.ui.info("Running pytest...")
+        result = subprocess.run(
+            [sys.executable, "-m", "pytest", "tests/", "-v", "--tb=short"],
+            capture_output=True,
+            text=True,
+            cwd=self.config.project_root
+            if hasattr(self.config, "project_root")
+            else Path("."),
+        )
+        results.append(("pytest", result.returncode == 0))
+        if result.returncode != 0:
+            self.ui.warning(f"pytest FAILED:\n{result.stdout}")
+        else:
+            self.ui.success("pytest passed")
+
+        passed = sum(1 for _, ok in results if ok)
+        total = len(results)
+        self.ui.info(f"\nTest Results: {passed}/{total} suites passed")
+        if passed < total:
+            return 1
+        return 0
+
+    def cmd_doctor(self, files=None):
+        """Run comprehensive health diagnostics."""
+        import platform as _platform
+
+        self.ui.info("OmniLaTeX Doctor \u2014 Environment Health Check")
+        self.ui.info("=" * 50)
+
+        self.ui.info(f"Platform: {_platform.system()} {_platform.release()}")
+        self.ui.info(f"Python: {sys.version}")
+        self.ui.info(f"Architecture: {_platform.machine()}")
+
+        checks = []
+
+        for tool, desc in [
+            ("lualatex", "LuaTeX engine"),
+            ("latexmk", "Build orchestrator"),
+            ("biber", "Bibliography processor"),
+            ("bib2gls", "Glossary processor"),
+            ("inkscape", "SVG converter"),
+            ("git", "Version control"),
+            ("pygmentize", "Code highlighting (Pygments)"),
+        ]:
+            path = shutil.which(tool)
+            if path:
+                try:
+                    result = subprocess.run(
+                        [tool, "--version"], capture_output=True, text=True, timeout=5
+                    )
+                    version = (result.stdout or result.stderr).split("\n")[0].strip()
+                    checks.append((desc, True, f"{path}\n  {version}"))
+                except Exception:
+                    checks.append((desc, True, f"{path}"))
+            else:
+                remediation = {
+                    "lualatex": "Install TeX Live: https://tug.org/texlive/",
+                    "latexmk": "Install latexmk (usually bundled with TeX Live)",
+                    "biber": "Install biber (usually bundled with TeX Live)",
+                    "bib2gls": "Install bib2gls: tlmgr install bib2gls",
+                    "inkscape": "Install Inkscape: https://inkscape.org/",
+                    "git": "Install git: https://git-scm.com/",
+                    "pygmentize": "pip install Pygments",
+                }
+                checks.append((desc, False, remediation.get(tool, "Install the tool")))
+
+        for font_name in [
+            "Monaspace Neon",
+            "Atkinson Hyperlegible Next",
+            "Libertinus Serif",
+        ]:
+            try:
+                result = subprocess.run(
+                    ["fc-list", ":family", font_name],
+                    capture_output=True,
+                    text=True,
+                    timeout=5,
+                )
+                found = font_name.lower() in result.stdout.lower()
+                note = "Found" if found else "Not found (fallback font will be used)"
+                checks.append((f"Font: {font_name}", found or True, note))
+            except Exception:
+                checks.append(
+                    (
+                        f"Font: {font_name}",
+                        True,
+                        "Could not check (fc-list unavailable)",
+                    )
+                )
+
+        for name, ok, detail in checks:
+            status = "PASS" if ok else "FAIL"
+            self.ui.info(f"\n[{status}] {name}")
+            self.ui.info(f"  {detail}")
+
+        passed = sum(1 for _, ok, _ in checks if ok)
+        total = len(checks)
+        self.ui.info(f"\n{'=' * 50}")
+        self.ui.info(f"Result: {passed}/{total} checks passed")
+
+        failed = [(n, d) for n, ok, d in checks if not ok]
+        if failed:
+            self.ui.info("\nRemediation steps:")
+            for name, detail in failed:
+                self.ui.info(f"  \u2022 {name}: {detail}")
 
 
 # -----------------------------------------------------------------------------
@@ -758,6 +1039,12 @@ def main() -> None:
         "clean-example": (BuildTasks.clean_example, "Clean specific example(s).", True),
         "clean-examples": (BuildTasks.clean_aux, "Clean all examples.", False),
         "test": (BuildTasks.run_tests, "Run test suite.", True),
+        "watch": (BuildTasks.cmd_watch, "Watch files for changes and rebuild.", True),
+        "doctor": (
+            BuildTasks.cmd_doctor,
+            "Comprehensive environment health diagnostics.",
+            False,
+        ),
     }
     for name, (handler, help_text, takes_files) in commands.items():
         sub = subparsers.add_parser(name, help=help_text)

@@ -110,6 +110,15 @@
 
           installPhase = "mkdir $out";
         };
+
+        checks.formatting = pkgs.runCommand "check-formatting" {
+          nativeBuildInputs = [ pkgs.python3 ];
+          src = ./.;
+        } ''
+          python3 -m py_compile $src/build.py
+          echo "PASS: Python syntax check"
+          mkdir $out
+        '';
       }
     );
 }
