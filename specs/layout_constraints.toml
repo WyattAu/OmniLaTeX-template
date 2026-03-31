@@ -1,0 +1,250 @@
+[meta]
+version = "1.0.0"
+class = "omnilatex"
+source = "KOMA-Script typearea, scrlayer-scrpage, lib/layout/omnilatex-page.sty"
+description = "Formal page geometry invariants enforced by the OmniLaTeX layout subsystem"
+
+# ---------------------------------------------------------------------------
+# 1. Horizontal Page Balance
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "C01"
+name = "horizontal_page_balance_oneside"
+scope = "oneside"
+invariant = "textwidth + left_margin + right_margin = paperwidth"
+expression = "textwidth + left_margin + right_margin == paperwidth"
+units = "mm"
+notes = "For one-sided documents, left and right margins are symmetric by default."
+
+[[constraint]]
+id = "C02"
+name = "horizontal_page_balance_twoside"
+scope = "twoside"
+invariant = "textwidth + inner_margin + outer_margin + binding_correction = paperwidth"
+expression = "textwidth + inner_margin + outer_margin + BCOR == paperwidth"
+units = "mm"
+notes = "BCOR (binding correction) shifts the typearea away from the binding edge. Set via BCOR=<length> KOMA option. For scrbook doctypes (book, thesis, dissertation, dictionary), open=right implies twoside."
+
+# ---------------------------------------------------------------------------
+# 2. Vertical Page Balance
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "C03"
+name = "vertical_page_balance"
+scope = "all"
+invariant = "textheight + top_margin + bottom_margin = paperheight"
+expression = "textheight + top_margin + bottom_margin == paperheight"
+units = "mm"
+notes = "top_margin = 1inch + \\voffset + \\topmargin + \\headheight + \\headsep. In KOMA-Script typearea, top:bottom ratio ≈ 1:2 (DIV-based)."
+
+# ---------------------------------------------------------------------------
+# 3. DIV Calculation
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "C04"
+name = "div_textwidth_oneside"
+scope = "oneside"
+invariant = "textwidth = paperwidth × (DIV − 1) / DIV"
+expression = "textwidth == paperwidth * (DIV - 1) / DIV"
+units = "mm, DIV is dimensionless integer ≥ 2"
+notes = "DIV is the typearea division factor. Default is calc (auto-computed). Left_margin = right_margin = paperwidth / (2 × DIV). Total: paperwidth × (DIV−1)/DIV + paperwidth/DIV = paperwidth."
+
+[[constraint]]
+id = "C05"
+name = "div_textwidth_twoside"
+scope = "twoside"
+invariant = "textwidth = paperwidth × (DIV − 1) / DIV"
+expression = "textwidth == paperwidth * (DIV - 1) / DIV"
+units = "mm"
+notes = "Same textwidth formula as oneside. Inner_margin = paperwidth / DIV, outer_margin = paperwidth × 2 / DIV − BCOR (for the inner page). Effective outer = outer_margin + BCOR / 2 (approximate)."
+
+[[constraint]]
+id = "C06"
+name = "div_textheight"
+scope = "all"
+invariant = "textheight = paperheight × (DIV − 1) / DIV"
+expression = "textheight == paperheight * (DIV - 1) / DIV"
+units = "mm"
+notes = "Vertical DIV application. Top margin occupies 1/DIV of pageheight, bottom margin occupies (approximately) the remaining space after textheight and top allocation."
+
+# ---------------------------------------------------------------------------
+# 4. Caption Width
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "C07"
+name = "caption_width_bound"
+scope = "all"
+invariant = "caption_width ≤ textwidth"
+expression = "caption_width <= textwidth"
+units = "mm"
+notes = "Caption width is set via \\captionsetup{width=...}. Default is textwidth. For side captions (wide floats), caption + float width may approach textwidth."
+
+# ---------------------------------------------------------------------------
+# 5. Margin Paragraph Fitting
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "C08"
+name = "marginpar_in_outer_margin"
+scope = "all"
+invariant = "marginpar_width + marginpar_sep ≤ outer_margin"
+expression = "marginpar_width + marginpar_sep <= outer_margin"
+units = "mm"
+notes = "On twoside, 'outer_margin' is the physical outer margin. On oneside, this applies to the right margin. Violations cause overfull \\hbox warnings."
+
+# ---------------------------------------------------------------------------
+# 6. Header Within Top Margin
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "C09"
+name = "header_in_top_margin"
+scope = "all"
+invariant = "headheight + headsep ≤ top_margin"
+expression = "headheight + headsep <= top_margin"
+units = "mm"
+notes = "headheight is the running header box height (default ~12pt, set to \\footnotesize via \\addtokomafont{pagehead}). headsep is the gap between header baseline and text area top. Configured by scrlayer-scrpage in lib/layout/omnilatex-page.sty."
+
+# ---------------------------------------------------------------------------
+# 7. Footer Within Bottom Margin
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "C10"
+name = "footskip_in_bottom_margin"
+scope = "all"
+invariant = "footskip ≤ bottom_margin"
+expression = "footskip <= bottom_margin"
+units = "mm"
+notes = "footskip is the distance from the text area baseline to the footer baseline. Must not exceed the available bottom margin."
+
+# ---------------------------------------------------------------------------
+# 8. Paper Size Definitions
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "C11"
+name = "paper_size_a4"
+scope = "default"
+invariant = "paperwidth = 210mm ∧ paperheight = 297mm"
+expression = "paperwidth == 210 and paperheight == 297"
+units = "mm"
+notes = "A4 is the default paper size. Activated when no paper= option is given."
+
+[[constraint]]
+id = "C12"
+name = "paper_size_a5"
+scope = "a5 option"
+invariant = "paperwidth = 148mm ∧ paperheight = 210mm"
+expression = "paperwidth == 148 and paperheight == 210"
+units = "mm"
+notes = "Activated by the void option 'a5'. Also forces fontsize=10pt."
+
+[[constraint]]
+id = "C13"
+name = "paper_size_letter"
+scope = "explicit"
+invariant = "paperwidth = 215.9mm ∧ paperheight = 279.4mm"
+expression = "paperwidth == 215.9 and paperheight == 279.4"
+units = "mm"
+notes = "US Letter (8.5in × 11in). Can be set via paper=letter passed through default option handler."
+
+# ---------------------------------------------------------------------------
+# 9. Font Size Bounds
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "C14"
+name = "fontsize_bounds_scrbook"
+scope = "base_class = scrbook"
+invariant = "9pt ≤ fontsize ≤ 14pt"
+expression = "9.0 <= fontsize <= 14.0"
+units = "pt"
+notes = "KOMA-Script scrbook accepts fontsize values from 9pt to 14pt in 1pt increments (plus arbitrary sizes with \\KOMAoptions). Default is 10pt for book/thesis/dissertation/dictionary profiles."
+
+[[constraint]]
+id = "C15"
+name = "fontsize_bounds_scrreprt"
+scope = "base_class = scrreprt"
+invariant = "9pt ≤ fontsize ≤ 14pt"
+expression = "9.0 <= fontsize <= 14.0"
+units = "pt"
+notes = "KOMA-Script scrreprt accepts fontsize values from 9pt to 14pt. Default is 11pt. Manual, technicalreport, standard, and patent profiles use scrreprt."
+
+[[constraint]]
+id = "C16"
+name = "fontsize_bounds_scrartcl"
+scope = "base_class = scrartcl"
+invariant = "9pt ≤ fontsize ≤ 14pt"
+expression = "9.0 <= fontsize <= 14.0"
+units = "pt"
+notes = "KOMA-Script scrartcl accepts fontsize values from 9pt to 14pt. The cv profile overrides fontsize=11pt in its KOMA options. Article, inlinepaper, journal, and cover-letter profiles use scrartcl."
+
+# ---------------------------------------------------------------------------
+# 10. Line Spacing Bounds
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "C17"
+name = "linespacing_bounds"
+scope = "all"
+invariant = "1.0 ≤ linespacing ≤ 2.0"
+expression = "1.0 <= linespacing <= 2.0"
+units = "dimensionless (multiplier)"
+notes = "Controlled by \\linespread or the setspace package. OmniLaTeX default is \\linespread{1.10} (set in lib/typography/omnilatex-typesetting.sty). Named presets: single=1.0, onehalf≈1.25, double≈2.0. Custom values via \\documentlinespacing{<factor>} are passed to \\setstretch."
+
+# ---------------------------------------------------------------------------
+# 11. Running Header Rule Height
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "C18"
+name = "header_rule_height"
+scope = "all"
+invariant = "headerrulelength = 3ex"
+expression = "headerrulelength == 3.0 * ex"
+units = "ex (font-relative)"
+notes = "Defined in lib/layout/omnilatex-page.sty. The vertical rule in the header is drawn with \\rule[-1ex]{0.1em}{headerrulelength}. May trigger KOMA headheight warnings."
+
+# ---------------------------------------------------------------------------
+# 12. Chapter Prefix Scaling
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "C19"
+name = "chapter_number_scale"
+scope = "has_chapters = true"
+invariant = "chapter_number rendered at 4.5× body font size"
+expression = "scale_factor == 4.5"
+units = "dimensionless"
+notes = "Applied in lib/layout/omnilatex-koma.sty via \\scalebox{4.5}{\\thechapter}. Only active when omnilatex@haschapters is true (scrbook and scrreprt base classes)."
+
+# ---------------------------------------------------------------------------
+# 13. Text Area Fraction (General DIV Constraint)
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "C20"
+name = "text_area_fraction"
+scope = "all"
+invariant = "text_area / page_area ≥ 0.5"
+expression = "(textwidth * textheight) / (paperwidth * paperheight) >= 0.5"
+units = "dimensionless (ratio)"
+notes = "The text area should cover at least 50% of the page area. For DIV=6, the text area fraction is (5/6)² ≈ 69%. For DIV=15, it is (14/15)² ≈ 87%. Enforced implicitly by the DIV ≥ 2 constraint."
+
+# ---------------------------------------------------------------------------
+# 14. Headline Font Size
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "C21"
+name = "header_footer_font_size"
+scope = "all"
+invariant = "pagehead_font = \\sffamily\\itshape\\footnotesize ∧ pagefoot_font = \\sffamily\\bfseries\\footnotesize"
+expression = "pagehead_size == footnotesize and pagefoot_size == footnotesize"
+units = "pt (relative to body font)"
+notes = "Set via \\addtokomafont{pagehead} and \\addtokomafont{pagefoot} in lib/layout/omnilatex-page.sty. Page numbers also use \\sffamily\\bfseries\\footnotesize."

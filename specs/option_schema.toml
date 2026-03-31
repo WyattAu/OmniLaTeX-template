@@ -1,0 +1,393 @@
+[meta]
+version = "1.0.0"
+class = "omnilatex"
+source = "omnilatex.cls v0.1.1"
+description = "Formal schema for all keyval options accepted by the OmniLaTeX document class"
+
+# ---------------------------------------------------------------------------
+# Keyval Options
+# ---------------------------------------------------------------------------
+
+[[option]]
+name = "language"
+type = "string"
+default = "english"
+internal = "omnilatex@language"
+description = "Document language passed to the tracklang package for i18n support"
+applied_at = "after LoadClass — \\RequirePackage[<language>]{tracklang}"
+valid_values = [
+    # BCP-47 / babel-compatible language tags.
+    # The following are verified against lib/language/omnilatex-i18n.sty:
+    "english",   # default
+    "german",
+    "french",
+    "spanish",
+    "portuguese",
+    "italian",
+    "dutch",
+    "russian",
+    "chinese",
+    "japanese",
+    "korean",
+    "arabic",
+]
+validation = "Non-empty string. Normalized to lowercase. If tracklang does not recognize the tag, a warning is emitted at load time."
+
+[[option]]
+name = "doctype"
+type = "string"
+default = "thesis"
+internal = "omnilatex@doctype"
+description = "Document type alias that resolves to a profile, base KOMA class, and KOMA options"
+applied_at = "before LoadClass — sets \\@baseclass and \\omnilatexclassoptions"
+validation = "Normalized to lowercase and trimmed. Resolved via the doctype resolution table below. Unrecognized aliases silently fall back to the 'book' profile (scrbook)."
+
+[[option]]
+name = "titlestyle"
+type = "string"
+default = "book"
+internal = "omnilatex@titlestyle"
+description = "Title page layout style applied by lib/layout/omnilatex-koma.sty"
+applied_at = "at module load — \\ifdefstring branches in omnilatex-koma.sty"
+valid_values = [
+    "thesis",       # graduation-cap icon, examiner/supervisor table
+    "book",         # author above title, subtitle in italic
+    "TUHH",         # TUHH/ITT logos, examiner table (institution-specific)
+]
+validation = "Normalized to lowercase and trimmed. Unrecognized values silently use the default KOMA title page."
+
+[[option]]
+name = "institution"
+type = "string"
+default = "none"
+internal = "omnilatex@institution"
+description = "Institution configuration to load for branding, logos, and metadata"
+applied_at = "after profile load — searches config/institution.sty, then config/institutions/<name>/<name>.sty"
+valid_values = [
+    "none",     # no institution config loaded (generic template)
+    "tuhh",     # Hamburg University of Technology (TUHH)
+]
+validation = "Non-empty string. 'none' skips loading. Any other value triggers a search: (1) local config/institution.sty, (2) config/institutions/<name>/<name>.sty. If neither is found, a ClassWarning is emitted and loading is skipped."
+
+[[option]]
+name = "censoring"
+type = "bool"
+default = false
+internal = "omnilatex@censoring"
+description = "Enable text censoring (redaction) support via the censor package"
+applied_at = "available after module load; consumed by downstream content"
+
+[[option]]
+name = "loadGlossaries"
+type = "bool"
+default = false
+internal = "omnilatex@loadGlossaries"
+description = "Enable glossary / acronyms via the glossaries-extra package"
+applied_at = "available after module load; consumed by lib/references/omnilatex-glossary.sty"
+
+[[option]]
+name = "todonotes"
+type = "bool"
+default = false
+internal = "omnilatex@todonotes"
+description = "Enable margin todo notes via the todonotes package"
+applied_at = "available after module load"
+
+[[option]]
+name = "enablefonts"
+type = "bool"
+default = false
+internal = "omnilatex@enablefonts"
+description = "Enable custom font loading (Libertinus family) via lib/typography/omnilatex-fonts.sty"
+applied_at = "available after module load"
+
+[[option]]
+name = "enablegraphics"
+type = "bool"
+default = false
+internal = "omnilatex@enablegraphics"
+description = "Enable extended graphics support (graphicx extras, image helpers)"
+applied_at = "available after module load"
+
+# ---------------------------------------------------------------------------
+# Void (non-keyval) Options
+# ---------------------------------------------------------------------------
+
+[[option]]
+name = "a5"
+type = "void"
+default = "not set"
+description = "Switch paper size to A5 (148mm x 210mm) and set fontsize=10pt"
+applied_at = "before LoadClass — passes paper=a5 to typearea package"
+side_effect = "Also appends fontsize=10pt to user class options"
+
+# ---------------------------------------------------------------------------
+# Default Option Handling
+# ---------------------------------------------------------------------------
+
+[default_option_handler]
+mechanism = "DeclareDefaultOption"
+description = "Any unrecognized keyval option is collected into \\omnilatexuserclassoptions and passed through to the base KOMA class via \\PassOptionsToClass"
+example = "doctype=article,DIV=12 → DIV=12 is forwarded to scrartcl"
+
+# ---------------------------------------------------------------------------
+# Doctype Resolution Table
+# ---------------------------------------------------------------------------
+
+[doctype_resolution]
+
+# -- Base option sets (reusable) -----------------------------------------
+
+[doctype_resolution._option_sets.book_opts]
+value = "listof=totoc,bibliography=totoc,chapterprefix=true,open=right,numbers=noenddot"
+used_by = ["book", "thesis", "dissertation", "dictionary"]
+
+[doctype_resolution._option_sets.report_opts]
+value = "listof=totoc,bibliography=totoc,chapterprefix=false,open=any,numbers=noenddot"
+used_by = ["manual", "technicalreport", "standard", "patent"]
+
+[doctype_resolution._option_sets.article_opts]
+value = "bibliography=totoc,numbers=noenddot,parskip=half"
+used_by = ["article", "cover-letter"]
+
+[doctype_resolution._option_sets.inlinepaper_opts]
+value = "bibliography=totoc,numbers=noenddot,parskip=half,titlepage=false"
+used_by = ["inlinepaper"]
+
+[doctype_resolution._option_sets.journal_opts]
+value = "bibliography=totoc,numbers=noenddot,parskip=half,titlepage=true"
+used_by = ["journal"]
+
+[doctype_resolution._option_sets.cv_opts]
+value = "numbers=noenddot,parskip=full,fontsize=11pt"
+used_by = ["cv"]
+
+# -- Profile: book --------------------------------------------------------
+
+[doctype_resolution.book]
+profile = "book"
+base_class = "scrbook"
+koma_options = "book_opts"
+has_chapters = true
+aliases = ["book"]
+
+# -- Profile: thesis ------------------------------------------------------
+
+[doctype_resolution.thesis]
+profile = "thesis"
+base_class = "scrbook"
+koma_options = "book_opts"
+has_chapters = true
+aliases = ["thesis", "theses"]
+
+# -- Profile: dissertation ------------------------------------------------
+
+[doctype_resolution.dissertation]
+profile = "dissertation"
+base_class = "scrbook"
+koma_options = "book_opts"
+has_chapters = true
+aliases = ["dissertation", "dissertations"]
+
+# -- Profile: manual ------------------------------------------------------
+
+[doctype_resolution.manual]
+profile = "manual"
+base_class = "scrreprt"
+koma_options = "report_opts"
+has_chapters = true
+aliases = ["manual", "manuals", "guide", "guides", "handbook", "handbooks"]
+
+# -- Profile: technicalreport ---------------------------------------------
+
+[doctype_resolution.technicalreport]
+profile = "technicalreport"
+base_class = "scrreprt"
+koma_options = "report_opts"
+has_chapters = true
+aliases = [
+    "report", "reports",
+    "technicalreport", "technical-report", "technicalreports", "technical-reports",
+    "techreport", "tech-report", "techreports",
+]
+
+# -- Profile: standard ----------------------------------------------------
+
+[doctype_resolution.standard]
+profile = "standard"
+base_class = "scrreprt"
+koma_options = "report_opts"
+has_chapters = true
+aliases = ["standard", "standards"]
+
+# -- Profile: patent ------------------------------------------------------
+
+[doctype_resolution.patent]
+profile = "patent"
+base_class = "scrreprt"
+koma_options = "report_opts"
+has_chapters = true
+aliases = ["patent", "patents"]
+
+# -- Profile: article -----------------------------------------------------
+
+[doctype_resolution.article]
+profile = "article"
+base_class = "scrartcl"
+koma_options = "article_opts"
+has_chapters = false
+aliases = ["article", "articles", "paper", "papers"]
+
+# -- Profile: inlinepaper -------------------------------------------------
+
+[doctype_resolution.inlinepaper]
+profile = "inlinepaper"
+base_class = "scrartcl"
+koma_options = "inlinepaper_opts"
+has_chapters = false
+aliases = ["inlinepaper", "inlinepapers", "inline-research", "inline-research-paper"]
+
+# -- Profile: journal -----------------------------------------------------
+
+[doctype_resolution.journal]
+profile = "journal"
+base_class = "scrartcl"
+koma_options = "journal_opts"
+has_chapters = false
+aliases = ["journal", "journals", "magazine", "magazines"]
+
+# -- Profile: dictionary --------------------------------------------------
+
+[doctype_resolution.dictionary]
+profile = "dictionary"
+base_class = "scrbook"
+koma_options = "book_opts"
+has_chapters = true
+aliases = ["dictionary", "dictionaries", "lexicon", "lexicons"]
+
+# -- Profile: cv ----------------------------------------------------------
+
+[doctype_resolution.cv]
+profile = "cv"
+base_class = "scrartcl"
+koma_options = "cv_opts"
+has_chapters = false
+aliases = ["cv", "resume", "resumes", "curriculumvitae"]
+
+# -- Profile: cover-letter ------------------------------------------------
+
+[doctype_resolution.cover_letter]
+profile = "cover-letter"
+base_class = "scrartcl"
+koma_options = "article_opts"
+has_chapters = false
+aliases = ["cover-letter", "coverletter"]
+
+# ---------------------------------------------------------------------------
+# Validation Rules
+# ---------------------------------------------------------------------------
+
+[validation]
+
+[validation.doctype]
+rule = "case-insensitive match"
+normalization = "\\tl_lower_case:n applied after \\tl_trim_spaces:N"
+fallback = "If no alias matches, the initial setdoctype{book} from line 103 of omnilatex.cls remains active. No warning is currently emitted for unrecognized doctypes."
+recommendation = "A future version should emit a ClassWarning for unrecognized doctype values."
+
+[validation.titlestyle]
+rule = "case-insensitive match"
+normalization = "\\tl_lower_case:n applied after \\tl_trim_spaces:N"
+fallback = "Unrecognized values result in no title style customization; the default KOMA \\maketitle is used."
+
+[validation.institution]
+rule = "exact string match against 'none', then filesystem probe"
+fallback = "ClassWarning emitted if institution file is not found."
+
+[validation.bool_options]
+rule = "Standard kvoptions boolean parsing"
+true_values = ["true", "on", "yes", "1"]
+false_values = ["false", "off", "no", "0"]
+
+# ---------------------------------------------------------------------------
+# Alias → Profile Flat Index (for quick lookup)
+# ---------------------------------------------------------------------------
+
+[alias_index]
+"book" = "book"
+"thesis" = "thesis"
+"theses" = "thesis"
+"dissertation" = "dissertation"
+"dissertations" = "dissertation"
+"manual" = "manual"
+"manuals" = "manual"
+"guide" = "manual"
+"guides" = "manual"
+"handbook" = "manual"
+"handbooks" = "manual"
+"report" = "technicalreport"
+"reports" = "technicalreport"
+"technicalreport" = "technicalreport"
+"technical-report" = "technicalreport"
+"technicalreports" = "technicalreport"
+"technical-reports" = "technicalreport"
+"techreport" = "technicalreport"
+"tech-report" = "technicalreport"
+"techreports" = "technicalreport"
+"standard" = "standard"
+"standards" = "standard"
+"patent" = "patent"
+"patents" = "patent"
+"article" = "article"
+"articles" = "article"
+"paper" = "article"
+"papers" = "article"
+"inlinepaper" = "inlinepaper"
+"inlinepapers" = "inlinepaper"
+"inline-research" = "inlinepaper"
+"inline-research-paper" = "inlinepaper"
+"journal" = "journal"
+"journals" = "journal"
+"magazine" = "journal"
+"magazines" = "journal"
+"dictionary" = "dictionary"
+"dictionaries" = "dictionary"
+"lexicon" = "dictionary"
+"lexicons" = "dictionary"
+"cv" = "cv"
+"resume" = "cv"
+"resumes" = "cv"
+"curriculumvitae" = "cv"
+"cover-letter" = "cover-letter"
+"coverletter" = "cover-letter"
+
+# ---------------------------------------------------------------------------
+# Unconditional Module Load List (21 OmniLaTeX modules)
+# ---------------------------------------------------------------------------
+
+[modules]
+count = 21
+load_order = [
+    { index = 1,  path = "lib/core/omnilatex-base",                category = "core" },
+    { index = 2,  path = "lib/utils/omnilatex-colors",             category = "utils" },
+    { index = 3,  path = "lib/utils/omnilatex-utils",              category = "utils" },
+    { index = 4,  path = "lib/typography/omnilatex-fonts",         category = "typography" },
+    { index = 5,  path = "lib/typography/omnilatex-math",          category = "typography" },
+    { index = 6,  path = "lib/typography/omnilatex-lists",         category = "typography" },
+    { index = 7,  path = "lib/typography/omnilatex-typesetting",   category = "typography" },
+    { index = 8,  path = "lib/graphics/omnilatex-graphics",        category = "graphics" },
+    { index = 9,  path = "lib/graphics/omnilatex-tikz-core",       category = "graphics" },
+    { index = 10, path = "lib/graphics/omnilatex-tikz-engineering", category = "graphics" },
+    { index = 11, path = "lib/language/omnilatex-i18n",            category = "language" },
+    { index = 12, path = "lib/tables/omnilatex-tables",            category = "tables" },
+    { index = 13, path = "lib/code/omnilatex-listings",            category = "code" },
+    { index = 14, path = "lib/layout/omnilatex-page",              category = "layout" },
+    { index = 15, path = "lib/layout/omnilatex-koma",              category = "layout" },
+    { index = 16, path = "lib/layout/omnilatex-floats",            category = "layout" },
+    { index = 17, path = "lib/references/omnilatex-biblio",        category = "references" },
+    { index = 18, path = "lib/references/omnilatex-glossary",      category = "references" },
+    { index = 19, path = "lib/references/omnilatex-hyperref",      category = "references" },
+    { index = 20, path = "lib/layout/omnilatex-boxes",             category = "layout" },
+    { index = 21, path = "lib/layout/omnilatex-document",          category = "layout" },
+]
+note = "The external package 'setspace' is loaded between modules 7 and 8 (omnilatex.cls line 138) but is not an OmniLaTeX module."

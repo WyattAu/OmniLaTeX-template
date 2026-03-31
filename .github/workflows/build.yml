@@ -94,6 +94,59 @@ jobs:
         with:
           path: github-pages
   
+  determinism:
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ env.DOCKER_IMAGE }}
+      options: --user root
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: First build
+        env:
+          IS_OMNILATEX_CONTAINER: "true"
+          CI: "true"
+        run: |
+          python3 build.py --mode prod --source-date-epoch 1700000000 build examples/thesis/main.tex
+          cp build/examples/thesis/main.pdf /tmp/build1.pdf
+
+      - name: Clean and rebuild
+        env:
+          IS_OMNILATEX_CONTAINER: "true"
+          CI: "true"
+        run: |
+          python3 build.py clean
+          python3 build.py --mode prod --source-date-epoch 1700000000 build examples/thesis/main.tex
+
+      - name: Verify bit-for-bit reproducibility
+        run: |
+          echo "Build 1 hash:"
+          sha256sum /tmp/build1.pdf
+          echo "Build 2 hash:"
+          sha256sum build/examples/thesis/main.pdf
+          diff <(sha256sum /tmp/build1.pdf) <(sha256sum build/examples/thesis/main.pdf)
+          echo "SUCCESS: Builds are bit-for-bit identical"
+
+      - name: Dump PDF metadata diff on mismatch
+        if: failure()
+        env:
+          IS_OMNILATEX_CONTAINER: "true"
+          CI: "true"
+        run: |
+          python3 -c "
+          import fitz
+          doc1 = fitz.open('/tmp/build1.pdf')
+          doc2 = fitz.open('build/examples/thesis/main.pdf')
+          print('=== Build 1 metadata ===')
+          print(doc1.metadata)
+          print('=== Build 2 metadata ===')
+          print(doc2.metadata)
+          "
+
   test:
     runs-on: ubuntu-latest
     needs: build

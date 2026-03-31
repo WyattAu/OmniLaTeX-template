@@ -74,6 +74,42 @@
         overlays.default = final: prev: {
           omnilatex = self.packages.${system}.default;
         };
+
+        checks.reproducibility = pkgs.stdenvNoCC.mkDerivation {
+          name = "omnilatex-reproducibility-check";
+          src = ./.;
+
+          nativeBuildInputs = [ texlive pythonEnv pkgs.latexmk ];
+
+          buildPhase = ''
+            export HOME=$(mktemp -d)
+            export SOURCE_DATE_EPOCH=1700000000
+
+            latexmk -lualatex -interaction=nonstopmode \
+              -outdir=$TMPDIR/build1 \
+              examples/thesis/main.tex
+            hash1=$(sha256sum $TMPDIR/build1/main.pdf | cut -d' ' -f1)
+
+            rm -rf $TMPDIR/build1
+            export HOME=$(mktemp -d)
+
+            latexmk -lualatex -interaction=nonstopmode \
+              -outdir=$TMPDIR/build2 \
+              examples/thesis/main.tex
+            hash2=$(sha256sum $TMPDIR/build2/main.pdf | cut -d' ' -f1)
+
+            echo "Build 1 hash: $hash1"
+            echo "Build 2 hash: $hash2"
+
+            if [ "$hash1" != "$hash2" ]; then
+              echo "FAIL: Reproducibility check failed — hashes differ"
+              exit 1
+            fi
+            echo "PASS: Reproducibility check passed — hashes match"
+          '';
+
+          installPhase = "mkdir $out";
+        };
       }
     );
 }
