@@ -165,6 +165,21 @@ if (exists $ENV{'OMNILATEX_SKIP_BIB2GLS'} && $ENV{'OMNILATEX_SKIP_BIB2GLS'} eq '
 }
 
 # ======================================================================================
+# Preamble Precompilation (mylatexformat)
+# ======================================================================================
+# Precompiles the preamble into a .fmt file for faster subsequent builds.
+# The .fmt is regenerated when any .sty/.cls file changes.
+# Controlled by the USE_PREAMBLE_CACHE environment variable (default: enabled).
+
+# Note: mylatexformat precompilation is incompatible with LuaTeX in most configurations.
+# This feature is documented but disabled by default for LuaTeX-based builds.
+# Users building with XeLaTeX or pdfLaTeX can enable it via USE_PREAMBLE_CACHE=1.
+
+# IMPORTANT: OmniLaTeX requires LuaTeX. mylatexformat does NOT support LuaTeX's
+# format file mechanism. This section is preserved as documentation for future
+# LuaTeX format precompilation support when/if it becomes available.
+
+# ======================================================================================
 # Auxiliary Files
 # ======================================================================================
 

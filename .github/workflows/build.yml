@@ -94,6 +94,63 @@ jobs:
         with:
           path: github-pages
   
+  performance:
+    runs-on: ubuntu-latest
+    needs: build
+    container:
+      image: ${{ env.DOCKER_IMAGE }}
+      options: --user root
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download example PDFs
+        uses: actions/download-artifact@v4
+        with:
+          name: PDF-Examples
+          path: build/examples
+
+      - name: Build examples with timings
+        env:
+          IS_OMNILATEX_CONTAINER: "true"
+          CI: "true"
+        run: |
+          python3 build.py --mode prod --timings --force build-examples
+
+      - name: Generate performance summary
+        if: always()
+        run: |
+          if [ -f build/metrics.json ]; then
+            echo "## Build Performance Metrics" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            python3 -c "
+          import json, sys
+          data = json.load(open('build/metrics.json'))
+          print('| Example | Wall Time (s) | PDF Size | Status |')
+          print('|---------|---------------|----------|--------|')
+          for ex in data.get('examples', []):
+              status = ':white_check_mark:' if ex['success'] else ':x:'
+              size_kb = ex.get('pdf_size_bytes', 0) / 1024
+              print(f\"| {ex['name']} | {ex['wall_time_s']:.1f} | {size_kb:.0f} KB | {status} |\")
+          s = data.get('summary', {})
+          print()
+          print(f\"**Total:** {s.get('total_time_s', 0):.1f}s across {s.get('total', 0)} examples ({s.get('successful', 0)} successful)\")
+          " >> $GITHUB_STEP_SUMMARY
+          else
+            echo "No metrics.json found" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload performance metrics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-metrics
+          path: build/metrics.json
+          retention-days: 90
+
   determinism:
     runs-on: ubuntu-latest
     container:

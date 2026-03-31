@@ -18,6 +18,7 @@ import os
 import shutil
 import subprocess
 import sys
+import hashlib
 import json
 import time
 from contextlib import contextmanager
@@ -258,11 +259,51 @@ class BuildTasks:
         ui: TerminalOutput,
         jobs: int,
         timings: bool = False,
+        force: bool = False,
     ):
         self.config, self.runner, self.ui, self.jobs = config, runner, ui, jobs
         self.timings = timings
+        self.force = force
         self.timings_data: List[dict] = []
         self._timings_lock = threading.Lock()
+        self._cache_lock = threading.Lock()
+
+    @staticmethod
+    def _hash_for_paths(paths: List[Path]) -> str:
+        h = hashlib.sha256()
+        for p in sorted(paths):
+            if p.exists():
+                h.update(p.read_bytes())
+        return h.hexdigest()
+
+    def _load_build_cache(self) -> dict:
+        cache_path = self.config.build_dir / "build_cache.json"
+        if cache_path.exists():
+            try:
+                return json.loads(cache_path.read_text(encoding="utf-8"))
+            except (json.JSONDecodeError, OSError):
+                pass
+        return {}
+
+    def _save_build_cache(self, cache: dict) -> None:
+        cache_path = self.config.build_dir / "build_cache.json"
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+        cache_path.write_text(json.dumps(cache, indent=2) + "\n", encoding="utf-8")
+
+    def _collect_source_files(self, example_name: str) -> List[Path]:
+        repo_root = Path(__file__).resolve().parent
+        example_dir = repo_root / "examples" / example_name
+        files: List[Path] = []
+        tex_file = example_dir / MAIN_TEX_FILENAME
+        if tex_file.exists():
+            files.append(tex_file)
+        for bib in example_dir.rglob("*.bib"):
+            files.append(bib)
+        for sty in repo_root.rglob("*.sty"):
+            files.append(sty)
+        for cls in repo_root.rglob("*.cls"):
+            files.append(cls)
+        return files
 
     def discover_examples(self) -> List[Path]:
         d = Path("examples")
@@ -295,6 +336,25 @@ class BuildTasks:
         try:
             repo_root = Path(__file__).resolve().parent
             example_dir = repo_root / "examples" / example_name
+
+            if not self.force:
+                source_files = self._collect_source_files(example_name)
+                source_hash = self._hash_for_paths(source_files)
+                cache = self._load_build_cache()
+                cached = cache.get(f"examples/{example_name}")
+                dest_pdf = (
+                    repo_root / self.config.build_dir / BUILD_EXAMPLES_SUBDIR
+                ) / f"{example_name}.pdf"
+                if (
+                    cached
+                    and cached.get("source_hash") == source_hash
+                    and dest_pdf.exists()
+                ):
+                    all_logs.append(
+                        f"[green]✓ Cache hit for {example_name}, skipping build.[/green]"
+                    )
+                    _timing_success = True
+                    return example_name, True, all_logs
 
             # --- Start: EXACT reproduction of original script's core logic ---
             cmd = [LATEXMK_COMMAND]
@@ -370,6 +430,18 @@ class BuildTasks:
                     )
                     return example_name, False, all_logs
                 _timing_success = True
+                source_files = self._collect_source_files(example_name)
+                source_hash = self._hash_for_paths(source_files)
+                with self._cache_lock:
+                    cache = self._load_build_cache()
+                    cache[f"examples/{example_name}"] = {
+                        "source_hash": source_hash,
+                        "pdf_size": dest_pdf.stat().st_size,
+                        "build_time": time.strftime(
+                            "%Y-%m-%dT%H:%M:%SZ", time.gmtime()
+                        ),
+                    }
+                    self._save_build_cache(cache)
                 return example_name, True, all_logs
             else:
                 all_logs.append(
@@ -642,6 +714,11 @@ def main() -> None:
         help="Record per-example build metrics to build/metrics.json.",
     )
     parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Force rebuild, ignoring incremental build cache.",
+    )
+    parser.add_argument(
         "--source-date-epoch",
         type=int,
         default=None,
@@ -696,7 +773,9 @@ def main() -> None:
     runner = CommandRunner(
         ui, build_mode=args.mode, verbose=(args.verbose or config.verbose_enabled())
     )
-    tasks = BuildTasks(config, runner, ui, jobs=args.jobs, timings=args.timings)
+    tasks = BuildTasks(
+        config, runner, ui, jobs=args.jobs, timings=args.timings, force=args.force
+    )
 
     try:
         args.handler(tasks, getattr(args, "files", None))

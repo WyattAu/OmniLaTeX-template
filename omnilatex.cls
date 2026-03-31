@@ -18,6 +18,8 @@
 \newcommand*{\omnilatex@doctypeprofile}{}
 \newif\ifomnilatex@haschapters
 \omnilatex@haschaptersfalse
+\newif\ifomnilatex@doctypematched
+\omnilatex@doctypematchedfalse
 
 \ExplSyntaxOn
 \tl_new:N \l__omnilatex_tmp_tl
@@ -48,6 +50,7 @@
     \ifdefstring{#2}{scrbook}{\omnilatex@haschapterstrue}{%
         \ifdefstring{#2}{scrreprt}{\omnilatex@haschapterstrue}{}%
     }%
+    \omnilatex@doctypematchedtrue
     \ClassInfo{omnilatex}{Selected doctype '#1' (base=#2)}%
 }
 
@@ -119,6 +122,31 @@
 \omnilatex@matchdoctypes{dictionary,dictionaries,lexicon,lexicons}{\omnilatex@setdoctype{dictionary}{scrbook}{\omnilatex@bookoptions}}%
 \omnilatex@matchdoctypes{cv,resume,resumes,curriculumvitae}{\omnilatex@setdoctype{cv}{scrartcl}{\omnilatex@cvoptions}}%
 \omnilatex@matchdoctypes{cover-letter,coverletter}{\omnilatex@setdoctype{cover-letter}{scrartcl}{\omnilatex@articleoptions}}%
+
+% Validate doctype: warn if user passed an unknown doctype that didn't match
+\ifomnilatex@doctypematched\else
+    \ClassWarning{omnilatex}{Unknown doctype '\omnilatex@doctype'.%
+        Falling back to 'book'. Valid options: book, thesis, dissertation,%
+        manual, guide, handbook, report, technicalreport, standard, patent,%
+        article, inlinepaper, journal, dictionary, cv, cover-letter}%
+\fi
+
+% Validate titlestyle
+\ExplSyntaxOn
+\str_case:VnF \omnilatex@titlestyle
+{
+    { book } { }
+    { thesis } { }
+    { article } { }
+    { simple } { }
+    { tuhh } { }
+    { TUHH } { }
+}
+{
+    \ClassInfo{omnilatex}{Unknown~titlestyle~'\omnilatex@titlestyle'.~
+        Using~default~title~page~layout.}
+}
+\ExplSyntaxOff
 
 \ifx\omnilatexuserclassoptions\@empty
     \PassOptionsToClass{\omnilatexclassoptions}{\@baseclass}
