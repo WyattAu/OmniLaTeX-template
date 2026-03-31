@@ -1,0 +1,52 @@
+[module]
+name = "omnilatex-floats"
+file = "lib/layout/omnilatex-floats.sty"
+version = "2024-10-11 v6.0.0"
+description = "Float configuration: captions, subfloats, and high-level float wrapper commands with key-value options"
+line_count = 293
+
+[dependencies]
+requires = ["flafter", "caption", "xparse", "array", "subcaption"]
+optionally_requires = []
+
+[[exports]]
+name = "\\omnlFigure"
+type = "command"
+signature = "[options]{content}"
+description = "High-level figure wrapper with key-value options: placement, caption, short-caption, label, footnote, caption-width, align, caption-position"
+
+[[exports]]
+name = "\\omnlTable"
+type = "command"
+signature = "[options]{content}"
+description = "High-level table wrapper with key-value options; defaults to top caption placement"
+
+[[exports]]
+name = "\\omnlFloatCaption"
+type = "command"
+signature = ""
+description = "Manually typeset the float caption when caption-position=manual"
+
+[[exports]]
+name = "\\omnlFloatNote"
+type = "command"
+signature = "{text}"
+description = "Adds an unnumbered caption note below the float"
+
+[[exports]]
+name = "\\omnlFloatFootmark"
+type = "command"
+signature = "[number]"
+description = "Places a footnote mark inside a float; auto-increments if no number given"
+
+[[exports]]
+name = "\\omnlFloatFoottext"
+type = "command"
+signature = "[number]{text}"
+description = "Places footnote text corresponding to omnlFloatFootmark"
+
+[[exports]]
+name = "omnlFloatRow"
+type = "environment"
+signature = "[columns]"
+description = "Minipage-based row layout for side-by-side floats, default 2 columns"

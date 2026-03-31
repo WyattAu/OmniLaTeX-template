@@ -1,0 +1,34 @@
+[module]
+name = "omnilatex-lists"
+file = "lib/typography/omnilatex-lists.sty"
+version = "2024-10-11 v6.0.0"
+description = "List configuration and custom list environments for standard and compact (table) usage"
+line_count = 70
+
+[dependencies]
+requires = ["enumitem"]
+optionally_requires = []
+
+[[exports]]
+name = "tabitemize"
+type = "environment"
+signature = ""
+description = "Compact single-level itemize list for table cells with no vertical spacing"
+
+[[exports]]
+name = "tabenum"
+type = "environment"
+signature = ""
+description = "Compact single-level enumerate list for table cells with no vertical spacing"
+
+[[exports]]
+name = "descriptcount"
+type = "counter"
+signature = ""
+description = "Counter for enumerated description list items"
+
+[[exports]]
+name = "enumdescript"
+type = "environment"
+signature = ""
+description = "Enumerated description list with auto-numbered bold labels (a., b., ...)"

@@ -1,0 +1,124 @@
+[module]
+name = "omnilatex-i18n"
+file = "lib/language/omnilatex-i18n.sty"
+version = "2024-10-11 v6.0.0"
+description = "Internationalization: Polyglossia language setup and bilingual (English/German) translations for all UI strings"
+line_count = 219
+
+[dependencies]
+requires = ["polyglossia", "translations"]
+optionally_requires = []
+
+[[exports]]
+name = "First"
+type = "translation"
+signature = ""
+description = "English: \\nth{1}, German: 1."
+
+[[exports]]
+name = "Second"
+type = "translation"
+signature = ""
+description = "English: \\nth{2}, German: 2."
+
+[[exports]]
+name = "Examiner"
+type = "translation"
+signature = ""
+description = "English: Examiner, German: Prüfer:in"
+
+[[exports]]
+name = "Supervisor"
+type = "translation"
+signature = ""
+description = "English: Supervisor, German: Betreuer:in"
+
+[[exports]]
+name = "CompiledOn"
+type = "translation"
+signature = ""
+description = "English: Compiled on, German: Kompiliert am"
+
+[[exports]]
+name = "CensorNotice"
+type = "translation"
+signature = ""
+description = "English: CENSORED VERSION, German: ZENSIERTE VERSION"
+
+[[exports]]
+name = "AuthorshipDeclTitle"
+type = "translation"
+signature = ""
+description = "English: Declaration of Authorship, German: Erklärung zur Eigenständigkeit"
+
+[[exports]]
+name = "AuthorshipDeclText"
+type = "translation"
+signature = ""
+description = "Full declaration of authorship text in both languages"
+
+[[exports]]
+name = "Reaction"
+type = "translation"
+signature = ""
+description = "English: Reaction, German: Reaktion"
+
+[[exports]]
+name = "Gloss"
+type = "translation"
+signature = ""
+description = "English: Glossary, German: Glossar"
+
+[[exports]]
+name = "BlankPage"
+type = "translation"
+signature = ""
+description = "English: Rest of this page intentionally left blank, German: Rest der Seite absichtlich freigelassen"
+
+[[exports]]
+name = "Listing"
+type = "translation"
+signature = ""
+description = "English: Code Listing, German: Code"
+
+[[exports]]
+name = "Example"
+type = "translation"
+signature = ""
+description = "English: Example, German: Beispiel"
+
+[[exports]]
+name = "Contfoot"
+type = "translation"
+signature = ""
+description = "English: Continued on next page, German: Fortgeführt auf der nächsten Seite"
+
+[[exports]]
+name = "Conthead"
+type = "translation"
+signature = ""
+description = "English: (Continued), German: (Fortgesetzt)"
+
+[[exports]]
+name = "FurtherReadingTitle"
+type = "translation"
+signature = ""
+description = "English: Further Reading, German: Weitere Literatur"
+
+[[exports]]
+name = "Constant"
+type = "translation"
+signature = ""
+description = "English: const, German: konst"
+
+[[exports]]
+name = "Unit"
+type = "translation"
+signature = ""
+description = "English: Unit, German: Einh."
+
+[[exports]]
+name = "AdaptedFrom"
+type = "translation"
+signature = ""
+description = "English: Adapted from, German: Adaptiert von"

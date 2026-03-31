@@ -1,0 +1,40 @@
+[module]
+name = "omnilatex-base"
+file = "lib/core/omnilatex-base.sty"
+version = "2024-10-11 v6.0.0"
+description = "Core functionality and base setup: build mode detection, conditionals, date/time, spacing"
+line_count = 75
+
+[dependencies]
+requires = ["import", "nth", "etoolbox", "xstring", "datetime2", "setspaceenhanced"]
+optionally_requires = []
+
+[[exports]]
+name = "\\omnilatex@buildmode"
+type = "command"
+signature = ""
+description = "Internal macro holding the current build mode string (dev/prod/ultra), set via BUILD_MODE env var or Lua"
+
+[[exports]]
+name = "ifOmniDev"
+type = "command"
+signature = ""
+description = "Boolean conditional: true when build mode is 'dev' (default)"
+
+[[exports]]
+name = "ifOmniProd"
+type = "command"
+signature = ""
+description = "Boolean conditional: true when build mode is 'prod'"
+
+[[exports]]
+name = "ifOmniUltra"
+type = "command"
+signature = ""
+description = "Boolean conditional: true when build mode is 'ultra'"
+
+[[exports]]
+name = "\\OmniBuildMode"
+type = "command"
+signature = ""
+description = "Public accessor that expands to the current build mode string"

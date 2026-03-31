@@ -1,0 +1,174 @@
+[meta]
+version = "1.0.0"
+class = "omnilatex"
+source = "lib/typography/*, lib/layout/omnilatex-page.sty"
+description = "Formal typography constraints for OmniLaTeX font sizes, spacing, and visual consistency"
+
+# ---------------------------------------------------------------------------
+# 1. Font Size Hierarchy
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "TC-001"
+name = "Font size hierarchy"
+scope = "all document types and configurations"
+expression = "fontsize(scriptsize) < fontsize(footnotesize) < fontsize(small) < fontsize(normalsize) < fontsize(large) < fontsize(Large) < fontsize(LARGE) < fontsize(huge) < fontsize(Huge)"
+verification = "Compare \\the\\fontdimen or measure rendered output at each size switch"
+rationale = "LaTeX standard classes guarantee this ordering; OmniLaTeX must preserve it"
+notes = "Standard LaTeX size ordering at 10pt: scriptsize=7pt, footnotesize=8pt, small=9pt, normalsize=10pt, large=10.95pt, Large=11.9pt, LARGE=14.4pt, huge=17.28pt, Huge=20.74pt."
+
+# ---------------------------------------------------------------------------
+# 2. Line Spacing Bounds
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "TC-002"
+name = "Line spacing bounds"
+scope = "all document types and configurations"
+expression = "1.0 <= baselineskip / fontsize(normalsize) <= 2.0"
+verification = "Inspect \\the\\baselineskip and \\the\\fontdimen5\\font after \\normalsize; compute ratio"
+rationale = "Below 1.0 ascenders/descenders collide; above 2.0 destroys readability and wastes page space"
+notes = "OmniLaTeX default is \\linespread{1.10} (set in lib/typography/omnilatex-typesetting.sty). Effective ratio ≈ 1.1 × 1.2 = 1.32 (LaTeX applies factor to the default 1.2 baselineskip-to-fontsize ratio)."
+
+# ---------------------------------------------------------------------------
+# 3. Math Font Consistency
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "TC-003"
+name = "Math font family consistency"
+scope = "when unicode-math is loaded (always in OmniLaTeX)"
+expression = "math_font_family is derived from text_font_family or is a compatible design"
+verification = "Check that \\setmathfont uses a font from the same typeface superfamily as \\setmainfont, or that mathrm/mathit/mathsf/mathtt are mapped to sym"
+rationale = "Mismatched text and math fonts create visual dissonance in inline equations and mixed-mode content"
+notes = "OmniLaTeX uses Libertinus Math with Libertinus Serif. The mathrm=sym, mathit=sym, mathsf=sym, mathbf=sym, mathtt=sym options ensure math-mode font switching uses the math font, maintaining visual unity."
+
+# ---------------------------------------------------------------------------
+# 4. Mono Font Differentiation
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "TC-004"
+name = "Monospace font visual distinctness"
+scope = "all document types and configurations"
+expression = "monospace_font != serif_font (by family name) AND mono_char_width is approximately constant across glyphs"
+verification = "Assert \\familydefault != \\familydefault(mono); inspect glyph widths for uniformity"
+rationale = "Monospace text must be visually distinguishable from body text to clearly delineate code, URLs, and literal content"
+notes = "OmniLaTeX uses Monaspace Neon (preferred) or Latin Modern Mono (fallback). Both are distinctly different from Libertinus Serif. Scale=MatchLowercase is applied for x-height harmony."
+
+# ---------------------------------------------------------------------------
+# 5. Color Contrast
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "TC-005"
+name = "Text color contrast (WCAG AA)"
+scope = "all colored text elements, running headers, footnotes, captions"
+expression = "contrast_ratio(text_color, background_color) >= 4.5"
+verification = "Compute relative luminance L = 0.2126*R + 0.7152*G + 0.0722*B (linearized); contrast = (L_light + 0.05) / (L_dark + 0.05)"
+rationale = "WCAG 2.1 Level AA requires minimum 4.5:1 contrast ratio for normal text to ensure accessibility"
+notes = "OmniLaTeX defines named colors in lib/utils/omnilatex-colors.sty. Default body text is black on white (contrast=21:1). Custom accent colors used in headers, links, and captions must be validated against this threshold. The blank page message uses color 'g2' which must satisfy this constraint."
+
+# ---------------------------------------------------------------------------
+# 6. Caption Font Size
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "TC-006"
+name = "Caption font size bound"
+scope = "all float environments (figure, table, listing)"
+expression = "caption_fontsize <= fontsize(normalsize)"
+verification = "Inspect \\addtokomafont{caption} or \\captionsetup{font=...}; compare effective size to normalsize"
+rationale = "Captions must be subordinate to body text to maintain visual hierarchy; larger captions would compete with content"
+notes = "KOMA-Script default caption font is normalsize. OmniLaTeX does not currently override this, so the constraint is satisfied by default. If a smaller size is desired, footnotesize or small are appropriate choices."
+
+# ---------------------------------------------------------------------------
+# 7. Footnote Font Size
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "TC-007"
+name = "Footnote text size"
+scope = "all document types and configurations"
+expression = "footnote_text_fontsize == fontsize(footnotesize)"
+verification = "Inspect \\footnotesize vs \\the\\font after footnote text begins"
+rationale = "Standard LaTeX convention uses footnotesize for footnote text to visually separate footnotes from body text"
+notes = "LaTeX classes automatically switch to \\footnotesize within footnote text via \\footnotetext and \\footnote commands. KOMA-Script preserves this convention. See also TC-001 for the size ordering guarantee."
+
+# ---------------------------------------------------------------------------
+# 8. Header/Footer Font Size
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "TC-008"
+name = "Running header footer font size"
+scope = "all document types and configurations"
+expression = "pagehead_fontsize == fontsize(footnotesize) AND pagefoot_fontsize == fontsize(footnotesize)"
+verification = "Inspect \\addtokomafont{pagehead} and \\addtokomafont{pagefoot} definitions in lib/layout/omnilatex-page.sty"
+rationale = "Running headers and footers must be smaller than body text to avoid competing with content"
+notes = "Set via \\addtokomafont{pagehead}{\\sffamily\\itshape\\footnotesize} and \\addtokomafont{pagefoot}{\\sffamily\\bfseries\\footnotesize} in lib/layout/omnilatex-page.sty. Page numbers also use \\sffamily\\bfseries\\footnotesize."
+
+# ---------------------------------------------------------------------------
+# 9. Sans Font Differentiation
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "TC-009"
+name = "Sans serif font visual distinctness"
+scope = "all document types and configurations"
+expression = "sans_font_family != serif_font_family (by font name)"
+verification = "Assert \\sfdefault != \\rmdefault; visually inspect that sans text is clearly distinguishable from serif"
+rationale = "Sans-serif is used for running headers, enumerate labels, and emphasis contexts; it must be visually distinct from the body serif font"
+notes = "OmniLaTeX uses Atkinson Hyperlegible Next (preferred) or Libertinus Sans (fallback) as the sans-serif font. Both are distinct from Libertinus Serif. Atkinson Hyperlegible Next is specifically designed for accessibility."
+
+# ---------------------------------------------------------------------------
+# 10. Font Scaling Consistency
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "TC-010"
+name = "Optical font scaling"
+scope = "all font families loaded via fontspec"
+expression = "all_font_families use Scale=MatchLowercase or equivalent optical scaling"
+verification = "Inspect \\setmainfont, \\setmonofont, \\setsansfont, \\setmathfont declarations for Scale parameter"
+rationale = "Mismatched x-heights between font families cause jarring visual transitions in inline font switches"
+notes = "Libertinus Serif (main) is the reference. Monaspace Neon and unitnumberfont both use Scale=MatchLowercase. Atkinson Hyperlegible Next uses default scaling (designed to pair well). Libertinus Math uses its own optical sizing."
+
+# ---------------------------------------------------------------------------
+# 11. Paragraph Indentation Consistency
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "TC-011"
+name = "Paragraph indent and skip consistency"
+scope = "all document types and configurations"
+expression = "(parindent > 0 AND parskip == 0) OR (parindent == 0 AND parskip > 0)"
+verification = "Inspect \\parindent and \\parskip values at begin-document"
+rationale = "LaTeX typographic convention: either indent paragraphs with zero skip, or separate paragraphs with skip and no indent; never both and never neither"
+notes = "KOMA-Script classes use parskip by default. Book/thesis profiles (scrbook) use indent-based paragraphs. Article profiles (scrartcl) set parskip=half. The extdash package with 'shortcuts' option supports hyphenation across compound words."
+
+# ---------------------------------------------------------------------------
+# 12. Unit Number Font Consistency
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "TC-012"
+name = "Unit number font upright requirement"
+scope = "all siunitx output (\\qty, \\num, \\unit)"
+expression = "unitnumber_font has Numbers=Uppercase (lining figures)"
+verification = "Inspect \\newfontfamily{\\unitnumberfont} declaration for Numbers=Uppercase"
+rationale = "Physical quantities and measurements must use upright lining figures to avoid confusion with variables (which use oldstyle/hanging figures in body text)"
+notes = "Defined in lib/typography/omnilatex-fonts.sty as \\newfontfamily{\\unitnumberfont}[Numbers=Uppercase, Scale=MatchLowercase]{Libertinus Serif}. This ensures siunitx output uses lining figures even when the main font uses oldstyle (Numbers=Lowercase)."
+
+# ---------------------------------------------------------------------------
+# 13. Microtype Tracking Bounds
+# ---------------------------------------------------------------------------
+
+[[constraint]]
+id = "TC-013"
+name = "Microtypographic adjustment bounds"
+scope = "all document types and configurations"
+expression = "protrusion_factor per glyph in [-0.1, 0.1] AND tracking_adjustment per size in [0, 0.03em]"
+verification = "Inspect microtype configuration; check that no protrusion or tracking value exceeds bounds"
+rationale = "Excessive microtypographic adjustments distort letterforms and degrade readability; conservative bounds ensure subtle improvement without visible artifact"
+notes = "The microtype package is loaded in lib/typography/omnilatex-typesetting.sty with default settings. Default protrusion factors for most glyphs are in the range [-0.05, 0.05]. No custom tracking is currently applied."

@@ -1,0 +1,22 @@
+[module]
+name = "omnilatex-boxes"
+file = "lib/layout/omnilatex-boxes.sty"
+version = "2024-10-11 v6.0.0"
+description = "Color boxes and tcolorbox environments: example boxes with auto-counter and Git verification box"
+line_count = 84
+
+[dependencies]
+requires = ["tcolorbox"]
+optionally_requires = []
+
+[[exports]]
+name = "example"
+type = "environment"
+signature = "[label]{title}"
+description = "Numbered tcolorbox example environment with auto-counter, breakable, gray styling, listed in loe"
+
+[[exports]]
+name = "\\GitVerificationBox"
+type = "command"
+signature = ""
+description = "Inline tcbox with a hyperlink to verify the current git commit"

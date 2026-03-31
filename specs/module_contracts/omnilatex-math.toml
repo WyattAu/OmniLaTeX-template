@@ -1,0 +1,262 @@
+[module]
+name = "omnilatex-math"
+file = "lib/typography/omnilatex-math.sty"
+version = "2024-10-11 v6.0.0"
+description = "Mathematical typesetting: delimiters, chemistry, units, operators, derivatives, statistical/physical notation"
+line_count = 416
+
+[dependencies]
+requires = ["mathtools", "empheq", "chemmacros", "siunitx", "suffix", "xfrac", "nicefrac", "eurosym"]
+optionally_requires = []
+
+[[exports]]
+name = "\\parens"
+type = "command"
+signature = "{content}"
+description = "Auto-scaling paired delimiter for parentheses; starred variant scales with \\left/\\right"
+
+[[exports]]
+name = "\\brackets"
+type = "command"
+signature = "{content}"
+description = "Auto-scaling paired delimiter for square brackets; starred variant scales"
+
+[[exports]]
+name = "\\braces"
+type = "command"
+signature = "{content}"
+description = "Auto-scaling paired delimiter for curly braces; starred variant scales"
+
+[[exports]]
+name = "reactionsgather"
+type = "environment"
+signature = ""
+description = "Chemistry reaction environment like AMSmath gather, with R-tag and equation numbering"
+
+[[exports]]
+name = "reactionsgather*"
+type = "environment"
+signature = ""
+description = "Unnumbered chemistry reaction gather environment"
+
+[[exports]]
+name = "\\eqend"
+type = "command"
+signature = ""
+description = "Inserts comma-period with thin space to end a display equation"
+
+[[exports]]
+name = "\\eqcomma"
+type = "command"
+signature = ""
+description = "Inserts comma with thin space for mid-equation punctuation"
+
+[[exports]]
+name = "\\grad"
+type = "command"
+signature = ""
+description = "Upright 'grad' math operator via DeclareMathOperator"
+
+[[exports]]
+name = "\\const"
+type = "command"
+signature = ""
+description = "Upright 'const.' notation for constant expressions, language-aware"
+
+[[exports]]
+name = "\\qq"
+type = "command"
+signature = "{text}"
+description = "Quick quad: inserts \\quad\\text{#1}\\quad for text between equation parts"
+
+[[exports]]
+name = "\\chemamount"
+type = "command"
+signature = "{quantity}{unit}{substance}"
+description = "Unified markup for '1.2 ppm CO2' constructs with correct spacing"
+
+[[exports]]
+name = "\\circlednum"
+type = "command"
+signature = "{number}"
+description = "Renders a number inside a circle using TikZ circlednum style"
+
+[[exports]]
+name = "\\symbolplaceholder"
+type = "command"
+signature = ""
+description = "Prints a raised dottedsquare as a placeholder for symbols"
+
+[[exports]]
+name = "\\meanfmt"
+type = "command"
+signature = "{variable}"
+description = "Mean value formatting: horizontal overbar with adjusted kerning"
+
+[[exports]]
+name = "\\mean"
+type = "command"
+signature = "{variable}"
+description = "Mean value with overbar, linked to glossary entry sym.mean"
+
+[[exports]]
+name = "\\logmeanfmt"
+type = "command"
+signature = "{variable}"
+description = "Logarithmic mean formatting: tilde over variable"
+
+[[exports]]
+name = "\\logmean"
+type = "command"
+signature = "{variable}"
+description = "Logarithmic mean with tilde, linked to glossary entry sym.logmean"
+
+[[exports]]
+name = "\\absfmt"
+type = "command"
+signature = "{content}"
+description = "Absolute value paired delimiter using \\lvert/\\rvert"
+
+[[exports]]
+name = "\\abs"
+type = "command"
+signature = "{content}"
+description = "Absolute value with auto-scaling, linked to glossary entry sym.abs"
+
+[[exports]]
+name = "\\flowfmt"
+type = "command"
+signature = "{variable}"
+description = "Dotted symbol formatting for flow quantities"
+
+[[exports]]
+name = "\\flow"
+type = "command"
+signature = "{variable}"
+description = "Flow notation with dot, linked to glossary entry sym.flow"
+
+[[exports]]
+name = "\\differencefmt"
+type = "command"
+signature = "{variable}"
+description = "Delta/difference formatting"
+
+[[exports]]
+name = "\\difference"
+type = "command"
+signature = "{variable}"
+description = "Delta notation, linked to glossary entry sym.difference"
+
+[[exports]]
+name = "\\nablaoperatorfmt"
+type = "command"
+signature = "{variable}"
+description = "Nabla operator formatting"
+
+[[exports]]
+name = "\\nablaoperator"
+type = "command"
+signature = "[degree]{variable}"
+description = "Nabla wrapper with optional degree, linked to glossary entry sym.nabla"
+
+[[exports]]
+name = "\\heatexentryfmt"
+type = "command"
+signature = "{variable}"
+description = "Heat exchanger entry formatting (prime suffix)"
+
+[[exports]]
+name = "\\heatexentry"
+type = "command"
+signature = "{variable}"
+description = "Heat exchanger entry notation, linked to glossary entry sym.heatexentry"
+
+[[exports]]
+name = "\\heatexexitfmt"
+type = "command"
+signature = "{variable}"
+description = "Heat exchanger exit formatting (double-prime suffix)"
+
+[[exports]]
+name = "\\heatexexit"
+type = "command"
+signature = "{variable}"
+description = "Heat exchanger exit notation, linked to glossary entry sym.heatexexit"
+
+[[exports]]
+name = "\\vectfmt"
+type = "command"
+signature = "{variable}"
+description = "Vector formatting using bold symbol"
+
+[[exports]]
+name = "\\vect"
+type = "command"
+signature = "{variable}"
+description = "Vector notation with bold symbol, linked to glossary entry sym.vector"
+
+[[exports]]
+name = "\\derivativefmt"
+type = "command"
+signature = "{variable}"
+description = "Upright d derivative formatting"
+
+[[exports]]
+name = "\\partialderivativefmt"
+type = "command"
+signature = "{variable}"
+description = "Partial derivative formatting"
+
+[[exports]]
+name = "\\deriv"
+type = "command"
+signature = "[degree]{variable}"
+description = "Derivative notation, linked to glossary entry sym.derivative"
+
+[[exports]]
+name = "\\deriv*"
+type = "command"
+signature = "[degree]{variable}"
+description = "Partial derivative notation (starred variant), linked to sym.partial_derivative"
+
+[[exports]]
+name = "\\fracderiv"
+type = "command"
+signature = "[degree]{numerator}{denominator}"
+description = "Derivative fraction notation"
+
+[[exports]]
+name = "\\fracderiv*"
+type = "command"
+signature = "[degree]{numerator}{denominator}"
+description = "Partial derivative fraction notation (starred variant)"
+
+[[exports]]
+name = "\\timederiv"
+type = "command"
+signature = "[degree]{variable}"
+description = "Time derivative fraction, denominator is time symbol"
+
+[[exports]]
+name = "\\timederiv*"
+type = "command"
+signature = "[degree]{variable}"
+description = "Partial time derivative fraction"
+
+[[exports]]
+name = "\\posderiv"
+type = "command"
+signature = "[degree]{variable}"
+description = "Positional derivative fraction, denominator is first Cartesian coordinate"
+
+[[exports]]
+name = "\\posderiv*"
+type = "command"
+signature = "[degree]{variable}"
+description = "Partial positional derivative fraction"
+
+[[exports]]
+name = "\\temperaturepair"
+type = "command"
+signature = "{temp1}{temp2}"
+description = "Prints temperature range like 45/55 degC using siunitx"

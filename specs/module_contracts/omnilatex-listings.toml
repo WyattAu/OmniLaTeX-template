@@ -1,0 +1,46 @@
+[module]
+name = "omnilatex-listings"
+file = "lib/code/omnilatex-listings.sty"
+version = "2024-10-11 v6.0.0"
+description = "Source code highlighting with minted: configuration, listing environments, and code annotation commands"
+line_count = 86
+
+[dependencies]
+requires = ["minted", "accsupp"]
+optionally_requires = []
+
+[[exports]]
+name = "longlisting"
+type = "environment"
+signature = ""
+description = "Environment for long code listings using captionsetup with type=listing"
+
+[[exports]]
+name = "\\emptyaccsupp"
+type = "command"
+signature = "{content}"
+description = "Wraps content with empty ActualText for PDF accessibility (invisible to screen readers)"
+
+[[exports]]
+name = "\\phstring"
+type = "command"
+signature = "{text}"
+description = "Highlights text as a string placeholder in red (cRed)"
+
+[[exports]]
+name = "\\phnum"
+type = "command"
+signature = "{text}"
+description = "Highlights text as a numeric placeholder in blue (cBlue)"
+
+[[exports]]
+name = "\\phother"
+type = "command"
+signature = "{text}"
+description = "Highlights text as other placeholder in green (cGreen)"
+
+[[exports]]
+name = "\\phnote"
+type = "command"
+signature = "{text}"
+description = "Highlights text as annotation note in bold orange (cOrange)"

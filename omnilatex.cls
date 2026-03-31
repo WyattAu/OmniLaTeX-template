@@ -79,6 +79,11 @@
 \DeclareBoolOption{todonotes}
 \DeclareBoolOption{enablefonts}
 \DeclareBoolOption{enablegraphics}
+\DeclareBoolOption[true]{enablemath}
+\DeclareBoolOption[true]{enabletikz}
+\DeclareBoolOption[true]{enableengineering}
+\DeclareBoolOption[true]{enablecode}
+\DeclareBoolOption[true]{enabletables}
 
 \DeclareVoidOption{a5}{%
     \PassOptionsToPackage{paper=a5}{typearea}%
@@ -128,28 +133,43 @@
 % Load Core Modules (Always)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Core modules (always loaded)
 \RequirePackage{lib/core/omnilatex-base}
 \RequirePackage{lib/utils/omnilatex-colors}
 \RequirePackage{lib/utils/omnilatex-utils}
 \RequirePackage{lib/typography/omnilatex-fonts}
-\RequirePackage{lib/typography/omnilatex-math}
 \RequirePackage{lib/typography/omnilatex-lists}
 \RequirePackage{lib/typography/omnilatex-typesetting}
-\RequirePackage{setspace}
-\RequirePackage{lib/graphics/omnilatex-graphics}
-\RequirePackage{lib/graphics/omnilatex-tikz-core}
-\RequirePackage{lib/graphics/omnilatex-tikz-engineering}
-\RequirePackage{lib/language/omnilatex-i18n}
-\RequirePackage{lib/tables/omnilatex-tables}
-\RequirePackage{lib/code/omnilatex-listings}
 \RequirePackage{lib/layout/omnilatex-page}
 \RequirePackage{lib/layout/omnilatex-koma}
 \RequirePackage{lib/layout/omnilatex-floats}
-\RequirePackage{lib/references/omnilatex-biblio}
-\RequirePackage{lib/references/omnilatex-glossary}
-\RequirePackage{lib/references/omnilatex-hyperref}
 \RequirePackage{lib/layout/omnilatex-boxes}
 \RequirePackage{lib/layout/omnilatex-document}
+\RequirePackage{lib/references/omnilatex-hyperref}
+\RequirePackage{lib/language/omnilatex-i18n}
+\RequirePackage{setspace}
+
+% Conditional modules (default: all enabled for backward compatibility)
+\ifomnilatex@enablemath
+    \RequirePackage{lib/typography/omnilatex-math}
+\fi
+\ifomnilatex@enabletikz
+    \RequirePackage{lib/graphics/omnilatex-graphics}
+    \RequirePackage{lib/graphics/omnilatex-tikz-core}
+\fi
+\ifomnilatex@enableengineering
+    \RequirePackage{lib/graphics/omnilatex-tikz-engineering}
+\fi
+\ifomnilatex@enablecode
+    \RequirePackage{lib/code/omnilatex-listings}
+\fi
+\ifomnilatex@enabletables
+    \RequirePackage{lib/tables/omnilatex-tables}
+\fi
+\ifomnilatex@loadGlossaries
+    \RequirePackage{lib/references/omnilatex-glossary}
+\fi
+\RequirePackage{lib/references/omnilatex-biblio}
 
 \def\@doctypefile{}
 \edef\@doctypecandidate{config/document-types/\omnilatex@doctypeprofile}

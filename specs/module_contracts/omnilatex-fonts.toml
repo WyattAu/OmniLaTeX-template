@@ -1,0 +1,16 @@
+[module]
+name = "omnilatex-fonts"
+file = "lib/typography/omnilatex-fonts.sty"
+version = "2024-10-11 v6.0.0"
+description = "Font configuration and loading for LuaLaTeX: main, mono, sans, math, unit, and icon fonts"
+line_count = 114
+
+[dependencies]
+requires = ["fontspec", "fix-cm", "amsmath", "lualatex-math", "amssymb", "unicode-math", "fontawesome5"]
+optionally_requires = []
+
+[[exports]]
+name = "\\unitnumberfont"
+type = "command"
+signature = ""
+description = "Font family for typesetting units with siunitx, using Libertinus Serif with upright numbers"

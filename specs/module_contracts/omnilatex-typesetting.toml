@@ -1,0 +1,16 @@
+[module]
+name = "omnilatex-typesetting"
+file = "lib/typography/omnilatex-typesetting.sty"
+version = "2024-10-11 v6.0.0"
+description = "Typography helpers: hyphenation, microtype, line spacing, quotation support, and ragged-right text"
+line_count = 74
+
+[dependencies]
+requires = ["extdash", "microtype", "ragged2e", "blindtext", "pdflscape", "url", "setspaceenhanced", "csquotes"]
+optionally_requires = []
+
+[[exports]]
+name = "\\mkbegdispquote"
+type = "command"
+signature = ""
+description = "Renewed to add italic shape at the beginning of display quote environments"

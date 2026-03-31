@@ -1,0 +1,124 @@
+[module]
+name = "omnilatex-document"
+file = "lib/layout/omnilatex-document.sty"
+version = "2024-10-11 v6.0.0"
+description = "Document metadata commands: document type, font size, layout controls, metadata fields, and utility commands"
+line_count = 288
+
+[dependencies]
+requires = []
+optionally_requires = []
+
+[[exports]]
+name = "\\documenttype"
+type = "command"
+signature = "{type}"
+description = "Set the document type string (e.g., Bachelor Thesis, Master Thesis)"
+
+[[exports]]
+name = "\\documentfontsize"
+type = "command"
+signature = "{size}"
+description = "Set document font size via KOMAoptions and recalculate typearea"
+
+[[exports]]
+name = "\\documentlayout"
+type = "command"
+signature = "{layout}"
+description = "Set document layout KOMAoptions and recalculate typearea"
+
+[[exports]]
+name = "\\documentcolormode"
+type = "command"
+signature = "{mode}"
+description = "Set document color mode (dark/light/color) applied at begin-document"
+
+[[exports]]
+name = "\\documentlinespacing"
+type = "command"
+signature = "{spacing}"
+description = "Set line spacing (single/onehalf/double or numeric) applied at begin-document"
+
+[[exports]]
+name = "\\documentparspacing"
+type = "command"
+signature = "{spacing}"
+description = "Set paragraph spacing (none/half/full or dimension) applied at begin-document"
+
+[[exports]]
+name = "\\documentitemspacing"
+type = "command"
+signature = "{spacing}"
+description = "Set list item spacing (none/compact/normal or dimension) applied at begin-document"
+
+[[exports]]
+name = "\\documentfontmode"
+type = "command"
+signature = "{mode}"
+description = "Set document font mode (serif/sans/mono) applied at begin-document"
+
+[[exports]]
+name = "\\documentlinkstyle"
+type = "command"
+signature = "{style}"
+description = "Set document link style (color/plain) applied at begin-document"
+
+[[exports]]
+name = "\\documentcodestyle"
+type = "command"
+signature = "{style}"
+description = "Set document code listing style (color/bw or minted style name) applied at begin-document"
+
+[[exports]]
+name = "\\idnumber"
+type = "command"
+signature = "{id}"
+description = "Set student ID number"
+
+[[exports]]
+name = "\\firstexamniner"
+type = "command"
+signature = "{name}"
+description = "Set first examiner name"
+
+[[exports]]
+name = "\\secondexamniner"
+type = "command"
+signature = "{name}"
+description = "Set second examiner name"
+
+[[exports]]
+name = "\\supervisor"
+type = "command"
+signature = "{name}"
+description = "Set supervisor name"
+
+[[exports]]
+name = "\\signaturefield"
+type = "command"
+signature = "[name]"
+description = "Typeset a signature field with lines for name and place/date, defaults to \\@author"
+
+[[exports]]
+name = "\\iecfeg"
+type = "command"
+signature = "{text}"
+description = "Wraps text in italics for abbreviations like i.e., e.g., c.f."
+
+[[exports]]
+name = "\\adaptedfrom"
+type = "command"
+signature = ""
+description = "Prints 'Adapted from' or 'Adaptiert von' based on current language"
+
+[[exports]]
+name = "\\ctanpackage"
+type = "command"
+signature = "[url]{package_name}"
+description = "Wraps package name as a hyperlink to CTAN (or custom URL)"
+
+[[exports]]
+name = "\\sampletext"
+type = "command"
+signature = ""
+description = "Prints the pangram 'The quick brown Fox jumps over the lazy Dog 13 times!'"

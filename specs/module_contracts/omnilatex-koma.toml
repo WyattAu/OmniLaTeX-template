@@ -1,0 +1,28 @@
+[module]
+name = "omnilatex-koma"
+file = "lib/layout/omnilatex-koma.sty"
+version = "2024-10-11 v6.0.0"
+description = "KOMA-Script customization: chapter formatting, title page styles (thesis/book/TUHH), and TOC configuration"
+line_count = 276
+
+[dependencies]
+requires = []
+optionally_requires = []
+
+[[exports]]
+name = "\\maketitle"
+type = "command"
+signature = ""
+description = "Renewed maketitle that renders a custom title page based on omnilatex@titlestyle (thesis/book/TUHH)"
+
+[[exports]]
+name = "documenttype"
+type = "komafont"
+signature = ""
+description = "KOMA font for the document type label on the title page"
+
+[[exports]]
+name = "example"
+type = "toc_type"
+signature = ""
+description = "New TOC type 'example' with listname from translations, creating \\listofexamples"

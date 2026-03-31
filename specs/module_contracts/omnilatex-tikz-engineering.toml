@@ -1,0 +1,220 @@
+[module]
+name = "omnilatex-tikz-engineering"
+file = "lib/graphics/omnilatex-tikz-engineering.sty"
+version = "2024-10-11 v6.0.0"
+description = "Engineering shapes, technical diagrams, custom PGF node shapes, and TikZ styles for thermodynamic/mechanical drawings"
+line_count = 1049
+
+[dependencies]
+requires = []
+optionally_requires = []
+
+[[exports]]
+name = "startstop"
+type = "style"
+signature = ""
+description = "Flow chart style: rounded rectangle, red fill, for start/stop nodes"
+
+[[exports]]
+name = "io"
+type = "style"
+signature = ""
+description = "Flow chart style: ellipse, blue fill, for input/output nodes"
+
+[[exports]]
+name = "process"
+type = "style"
+signature = ""
+description = "Flow chart style: rectangle, orange fill, for process nodes"
+
+[[exports]]
+name = "decision"
+type = "style"
+signature = ""
+description = "Flow chart style: signal shape, green fill, for decision nodes"
+
+[[exports]]
+name = "arrow"
+type = "style"
+signature = ""
+description = "Flow chart style: thick arrow with stealth tip"
+
+[[exports]]
+name = "symmetrycross"
+type = "style"
+signature = "[size]"
+description = "Rotated cross-out to mark symmetry center in technical drawings"
+
+[[exports]]
+name = "pipecrosssection"
+type = "style"
+signature = "[size]"
+description = "Circle simulating a pipe cross-section with thick border and MediumFluid fill"
+
+[[exports]]
+name = "arrowlabel"
+type = "style"
+signature = "[position]"
+description = "Label style for positioning text along arrows with white background"
+
+[[exports]]
+name = "wall"
+type = "style"
+signature = "[fill_color]"
+description = "Wall style for cross-sections: thick, drawn, with rounded corners"
+
+[[exports]]
+name = "fluid"
+type = "style"
+signature = "[fill_color]"
+description = "Fluid fill style, default MediumFluid"
+
+[[exports]]
+name = "flowarrow"
+type = "style"
+signature = "{inverse_frequency}{amplitude}"
+description = "Squiggly dashed arrow style for flow visualization using snake decoration"
+
+[[exports]]
+name = "annotationarrow"
+type = "style"
+signature = ""
+description = "Arrow style with thick dot at end, for annotation pointing"
+
+[[exports]]
+name = "origindot"
+type = "style"
+signature = "[fill_color]"
+description = "Small filled circle for coordinate origins"
+
+[[exports]]
+name = "add node at x"
+type = "style"
+signature = "{x_position}{label_text}"
+description = "Place a labeled node at a given x-position on a plot, computing y automatically"
+
+[[exports]]
+name = "shorten <>"
+type = "style"
+signature = "{length}"
+description = "Shorten both ends of a path simultaneously"
+
+[[exports]]
+name = "circlednum"
+type = "style"
+signature = ""
+description = "Circle shape with draw, white fill, used for circled numbers"
+
+[[exports]]
+name = "radiator"
+type = "pic"
+signature = ""
+description = "Detailed 3D radiator pic with front/top/right surfaces and named coordinates"
+
+[[exports]]
+name = "TUHHuman"
+type = "pic"
+signature = ""
+description = "Stylized human figure pic with TUHH chest emblem"
+
+[[exports]]
+name = "boilercylinder"
+type = "style"
+signature = ""
+description = "Cylinder shape styled as a boiler with shading"
+
+[[exports]]
+name = "boiler"
+type = "pic"
+signature = ""
+description = "Boiler pic using boilercylinder style with contoured text"
+
+[[exports]]
+name = "equalizing tank"
+type = "style"
+signature = "[size]"
+description = "Circle split node styled as an equalizing tank"
+
+[[exports]]
+name = "pipe"
+type = "style"
+signature = "[width]"
+description = "Double-line pipe style with MediumFluid fill and triangle arrow caps"
+
+[[exports]]
+name = "valve"
+type = "style"
+signature = "[size]"
+description = "Valve node style using custom valve shape, white fill, rotated 90deg"
+
+[[exports]]
+name = "control valve"
+type = "style"
+signature = "[size]"
+description = "Control valve style with semicircle control wheel extension"
+
+[[exports]]
+name = "threeway valve"
+type = "style"
+signature = "[size]"
+description = "Three-way valve style with asymmetrical port layout"
+
+[[exports]]
+name = "fourway valve"
+type = "style"
+signature = "[size]"
+description = "Four-way valve style with symmetrical cross-pattern"
+
+[[exports]]
+name = "threeway control valve"
+type = "style"
+signature = ""
+description = "Three-way control valve combining threeway valve and control valve features"
+
+[[exports]]
+name = "radiator"
+type = "style"
+signature = "[size]"
+description = "Radiator node style with 3D front/top/right surfaces and vertical slats"
+
+[[exports]]
+name = "vented radiator"
+type = "style"
+signature = ""
+description = "Radiator with ventilation outlet on top-left corner"
+
+[[exports]]
+name = "pump"
+type = "style"
+signature = "[size]"
+description = "Pump node style: circle with internal triangle"
+
+[[exports]]
+name = "compressor"
+type = "style"
+signature = "[size]"
+description = "Compressor node style: circle with internal zigzag pattern"
+
+[[exports]]
+name = "heat exchanger"
+type = "style"
+signature = "[size]"
+description = "Heat exchanger node with triangle heat symbol and in/out anchors"
+
+[[exports]]
+name = "simple heat exchanger"
+type = "style"
+signature = "[size]"
+description = "Simple heat exchanger: rectangle with diagonal cross"
+
+[[exports]]
+name = "sensor"
+type = "style"
+signature = "[size]"
+description = "Sensor node: vertical stroke with three decreasing horizontal lines"
+
+[[exports]]
+name = "level indicator"
+type = "style"
+signature = "[size]"
+description = "Level indicator: inverted triangle with three decreasing horizontal lines"

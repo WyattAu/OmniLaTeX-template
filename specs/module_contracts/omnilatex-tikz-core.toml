@@ -1,0 +1,52 @@
+[module]
+name = "omnilatex-tikz-core"
+file = "lib/graphics/omnilatex-tikz-core.sty"
+version = "2024-10-11 v6.0.0"
+description = "TikZ/PGFPlots core configuration: libraries, plot cycle lists, global plot settings, and reusable styles"
+line_count = 209
+
+[dependencies]
+requires = ["pgfplots", "pgfplotstable", "forest", "tikz-3dplot", "circuitikz"]
+optionally_requires = []
+
+[[exports]]
+name = "regularplot"
+type = "style"
+signature = ""
+description = "PGFPlots style for a broadly usable regular plot with grids, thick lines, outside ticks"
+
+[[exports]]
+name = "plainplot"
+type = "style"
+signature = ""
+description = "PGFPlots style for a clean plot without numerical labels or ticks"
+
+[[exports]]
+name = "tuftelike"
+type = "style"
+signature = ""
+description = "PGFPlots style inspired by Tufte: minimal ticks, shifted axis lines"
+
+[[exports]]
+name = "arrowplot"
+type = "style"
+signature = "{arrow_spec}"
+description = "PGFPlots style that decorates a path with repeated arrows along its length"
+
+[[exports]]
+name = "log x ticks with fixed point"
+type = "style"
+signature = ""
+description = "PGFPlots style for logarithmic x-axis with fixed-point labels instead of scientific notation"
+
+[[exports]]
+name = "log y ticks with fixed point"
+type = "style"
+signature = ""
+description = "PGFPlots style for logarithmic y-axis with fixed-point labels instead of scientific notation"
+
+[[exports]]
+name = "\\parsenode"
+type = "command"
+signature = "[options]text\\pgf@nil"
+description = "Internal helper for add node at x style: parses label options and text"

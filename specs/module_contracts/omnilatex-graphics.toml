@@ -1,0 +1,34 @@
+[module]
+name = "omnilatex-graphics"
+file = "lib/graphics/omnilatex-graphics.sty"
+version = "2024-10-11 v6.0.0"
+description = "Image handling, SVG support, graphics paths, contour text, and TikZ+SVG debug helpers"
+line_count = 126
+
+[dependencies]
+requires = ["graphicx", "xparse", "svg", "scalerel", "contour"]
+optionally_requires = []
+
+[[exports]]
+name = "\\ctrw"
+type = "command"
+signature = "{text}"
+description = "Black text with white contour outline for legibility on noisy backgrounds"
+
+[[exports]]
+name = "\\ctrb"
+type = "command"
+signature = "{text}"
+description = "White text with black contour outline for legibility on noisy backgrounds"
+
+[[exports]]
+name = "\\debugtikzsvg"
+type = "command"
+signature = ""
+description = "Debug overlay for TikZ+SVG alignment: draws grid and position labels over an image node"
+
+[[exports]]
+name = "\\mtlbsmlkicon"
+type = "command"
+signature = "{icon_name}"
+description = "Include and scale a MATLAB/Simulink icon from assets/logos/matlab_simulink/ to height of capital X"

@@ -1,0 +1,256 @@
+[module]
+name = "omnilatex-colors"
+file = "lib/utils/omnilatex-colors.sty"
+version = "2024-10-11 v6.0.0"
+description = "Color definitions and named color schemes for diagrams, plots, code, and links"
+line_count = 80
+
+[dependencies]
+requires = ["xcolor"]
+optionally_requires = []
+
+[[exports]]
+name = "g1"
+type = "color"
+signature = ""
+description = "Gradient shade: black!70"
+
+[[exports]]
+name = "g2"
+type = "color"
+signature = ""
+description = "Gradient shade: black!55"
+
+[[exports]]
+name = "g3"
+type = "color"
+signature = ""
+description = "Gradient shade: black!40"
+
+[[exports]]
+name = "g4"
+type = "color"
+signature = ""
+description = "Gradient shade: black!20"
+
+[[exports]]
+name = "g5"
+type = "color"
+signature = ""
+description = "Gradient shade: black!10"
+
+[[exports]]
+name = "g6"
+type = "color"
+signature = ""
+description = "Gradient shade: black!05"
+
+[[exports]]
+name = "Glass"
+type = "color"
+signature = ""
+description = "Very light blue for diagrams (RGB 170,238,255)"
+
+[[exports]]
+name = "Air"
+type = "color"
+signature = ""
+description = "Light blue for diagrams (RGB 213,246,255)"
+
+[[exports]]
+name = "LightFluid"
+type = "color"
+signature = ""
+description = "Light fluid blue (RGB 148,224,255)"
+
+[[exports]]
+name = "MediumFluid"
+type = "color"
+signature = ""
+description = "Medium fluid blue (RGB 135,178,232)"
+
+[[exports]]
+name = "DarkFluid"
+type = "color"
+signature = ""
+description = "Dark fluid blue (RGB 119,151,197)"
+
+[[exports]]
+name = "HotFluid"
+type = "color"
+signature = ""
+description = "Hot fluid red (RGB 255,128,128)"
+
+[[exports]]
+name = "darklink"
+type = "color"
+signature = ""
+description = "Dark blue link color (RGB 48,62,116)"
+
+[[exports]]
+name = "rdylbu1"
+type = "color"
+signature = ""
+description = "ColorBrewer RdYlBu red (RGB 215,48,39)"
+
+[[exports]]
+name = "rdylbu2"
+type = "color"
+signature = ""
+description = "ColorBrewer RdYlBu orange (RGB 252,141,89)"
+
+[[exports]]
+name = "rdylbu3"
+type = "color"
+signature = ""
+description = "ColorBrewer RdYlBu light yellow (RGB 254,224,144)"
+
+[[exports]]
+name = "rdylbu4"
+type = "color"
+signature = ""
+description = "ColorBrewer RdYlBu light blue (RGB 224,243,248)"
+
+[[exports]]
+name = "rdylbu5"
+type = "color"
+signature = ""
+description = "ColorBrewer RdYlBu medium blue (RGB 145,191,219)"
+
+[[exports]]
+name = "rdylbu6"
+type = "color"
+signature = ""
+description = "ColorBrewer RdYlBu dark blue (RGB 69,117,180)"
+
+[[exports]]
+name = "Set2A"
+type = "color"
+signature = ""
+description = "ColorBrewer Set2 qualitative A (RGB 102,194,165)"
+
+[[exports]]
+name = "Set2B"
+type = "color"
+signature = ""
+description = "ColorBrewer Set2 qualitative B (RGB 252,141,98)"
+
+[[exports]]
+name = "Set2C"
+type = "color"
+signature = ""
+description = "ColorBrewer Set2 qualitative C (RGB 141,160,203)"
+
+[[exports]]
+name = "Set2D"
+type = "color"
+signature = ""
+description = "ColorBrewer Set2 qualitative D (RGB 231,138,195)"
+
+[[exports]]
+name = "Set2E"
+type = "color"
+signature = ""
+description = "ColorBrewer Set2 qualitative E (RGB 166,216,84)"
+
+[[exports]]
+name = "Set2F"
+type = "color"
+signature = ""
+description = "ColorBrewer Set2 qualitative F (RGB 255,217,47)"
+
+[[exports]]
+name = "Set2G"
+type = "color"
+signature = ""
+description = "ColorBrewer Set2 qualitative G (RGB 229,196,148)"
+
+[[exports]]
+name = "Set2H"
+type = "color"
+signature = ""
+description = "ColorBrewer Set2 qualitative H (RGB 179,179,179)"
+
+[[exports]]
+name = "mBlue"
+type = "color"
+signature = ""
+description = "Matlab blue for plots (HTML 0072BD)"
+
+[[exports]]
+name = "mOrange"
+type = "color"
+signature = ""
+description = "Matlab orange for plots (HTML D95319)"
+
+[[exports]]
+name = "mYellow"
+type = "color"
+signature = ""
+description = "Matlab yellow for plots (HTML EDB120)"
+
+[[exports]]
+name = "mPurple"
+type = "color"
+signature = ""
+description = "Matlab purple for plots (HTML 7E2F8E)"
+
+[[exports]]
+name = "mGreen"
+type = "color"
+signature = ""
+description = "Matlab green for plots (HTML 77AC30)"
+
+[[exports]]
+name = "mSky"
+type = "color"
+signature = ""
+description = "Matlab sky blue for plots (HTML 4DBEEE)"
+
+[[exports]]
+name = "mRed"
+type = "color"
+signature = ""
+description = "Matlab red for plots (HTML A2142F)"
+
+[[exports]]
+name = "cRed"
+type = "color"
+signature = ""
+description = "Code annotation red (RGB 209,0,86)"
+
+[[exports]]
+name = "cBlue"
+type = "color"
+signature = ""
+description = "Code annotation blue (RGB 0,130,185)"
+
+[[exports]]
+name = "cGreen"
+type = "color"
+signature = ""
+description = "Code annotation green (RGB 0,128,63)"
+
+[[exports]]
+name = "cOrange"
+type = "color"
+signature = ""
+description = "Code annotation orange (RGB 244,131,66)"
+
+[[exports]]
+name = "DarkLinkGreen"
+type = "color"
+signature = ""
+description = "Demonstration link green (RGB 65,107,60)"
+
+[[exports]]
+name = "kit-blue50"
+type = "color"
+signature = ""
+description = "KIT corporate blue 50% (RGB 0,84,159)"
+
+[[exports]]
+name = "kit-blue40"
+type = "color"
+signature = ""
+description = "KIT corporate blue 40% (RGB 64,127,183)"

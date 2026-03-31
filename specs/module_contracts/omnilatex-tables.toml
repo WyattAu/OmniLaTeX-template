@@ -1,0 +1,22 @@
+[module]
+name = "omnilatex-tables"
+file = "lib/tables/omnilatex-tables.sty"
+version = "2024-10-11 v6.0.0"
+description = "Table formatting: booktabs, tabularray, custom column types, and helper commands for rotated multi-row cells"
+line_count = 64
+
+[dependencies]
+requires = ["array", "multirow", "booktabs", "tabularray", "fvextra"]
+optionally_requires = ["longtblr"]
+
+[[exports]]
+name = "M"
+type = "column_type"
+signature = "{width}"
+description = "Centered paragraph column of specified width"
+
+[[exports]]
+name = "\\multirotatecell"
+type = "command"
+signature = "{rows}{text}"
+description = "Rotates text 90 degrees and wraps it in a multirow spanning the given number of rows"

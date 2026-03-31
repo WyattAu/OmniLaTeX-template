@@ -23,6 +23,7 @@ import time
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
+import re
 from typing import Callable, Dict, List, Optional, Tuple
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
@@ -190,6 +191,63 @@ def working_directory(path: Path):
 
 
 # -----------------------------------------------------------------------------
+# Log Parsing for Package Timing
+# -----------------------------------------------------------------------------
+
+_PACKAGE_RE = re.compile(r"^Package:\s+(\S+)\s+(\d{4}/\d{2}/\d{2})\s*(.*)")
+_LOAD_LUC_RE = re.compile(r"\(load luc:\s+(.+\.luc\))")
+_CPU_TIME_RE = re.compile(
+    r"^(\d+)\s+bytes\s+written.*\(([0-9.]+)\s+seconds\)", re.DOTALL
+)
+_LATEX_RUN_TIME_RE = re.compile(
+    r" Transcript written on .*?\.\n.*?\(([^)]+)\)\s*$", re.DOTALL
+)
+_TOTAL_TIME_RE = re.compile(r"([0-9.]+)\s+seconds?")
+
+
+def parse_log_for_package_times(log_content: str) -> Dict[str, dict]:
+    """Parse LaTeX log content for per-package information and timing data."""
+    packages: Dict[str, dict] = {}
+    for line in log_content.splitlines():
+        m = _PACKAGE_RE.match(line.strip())
+        if m:
+            name, date_str, rest = m.group(1), m.group(2), m.group(3)
+            packages[name] = {
+                "name": name,
+                "date": date_str,
+                "info": rest.strip(),
+            }
+        m = _LOAD_LUC_RE.search(line)
+        if m:
+            luc_path = Path(m.group(1))
+            luc_name = luc_path.stem
+            if luc_name not in packages:
+                packages[luc_name] = {
+                    "name": luc_name,
+                    "source": "luc_cache",
+                    "path": str(luc_path),
+                }
+    total_time = None
+    for line in log_content.splitlines():
+        m = _TOTAL_TIME_RE.search(line)
+        if m and "seconds" in line.lower():
+            val = float(m.group(1))
+            if val > 0.5:
+                total_time = val
+    return {
+        "packages": packages,
+        "package_count": len(packages),
+        "total_time_s": total_time,
+    }
+
+
+def extract_log_path(example_dir: Path) -> Optional[Path]:
+    """Find the main.log file for an example."""
+    log_path = example_dir / "main.log"
+    return log_path if log_path.exists() else None
+
+
+# -----------------------------------------------------------------------------
 # Build Tasks
 # -----------------------------------------------------------------------------
 class BuildTasks:
@@ -340,6 +398,16 @@ class BuildTasks:
                     "pdf_size_bytes": pdf_size,
                     "success": _timing_success,
                 }
+                log_path = extract_log_path(example_dir)
+                if log_path:
+                    try:
+                        log_content = log_path.read_text(
+                            encoding="utf-8", errors="replace"
+                        )
+                        package_info = parse_log_for_package_times(log_content)
+                        timing_record["package_timing"] = package_info
+                    except Exception:
+                        pass
                 with self._timings_lock:
                     self.timings_data.append(timing_record)
 
@@ -476,6 +544,13 @@ class BuildTasks:
             }
             metrics_path.write_text(json.dumps(summary, indent=2) + "\n")
             self.ui.success(f"Timing metrics written to {metrics_path}")
+
+            history_dir = self.config.build_dir / "metrics_history"
+            history_dir.mkdir(parents=True, exist_ok=True)
+            timestamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
+            history_path = history_dir / f"metrics_{timestamp}.json"
+            history_path.write_text(json.dumps(summary, indent=2) + "\n")
+            self.ui.success(f"Metrics history written to {history_path}")
 
     # --- ALL ORIGINAL COMMANDS ---
     def build_example(self, files: List[str]):

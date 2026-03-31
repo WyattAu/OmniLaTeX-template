@@ -1,0 +1,34 @@
+[module]
+name = "omnilatex-biblio"
+file = "lib/references/omnilatex-biblio.sty"
+version = "2024-10-11 v6.0.0"
+description = "Bibliography management with biblatex: ext-authoryear style, citation formatting, and uncited works category"
+line_count = 119
+
+[dependencies]
+requires = ["biblatex"]
+optionally_requires = []
+
+[[exports]]
+name = "bibnonum"
+type = "environment"
+signature = ""
+description = "Custom bibliography environment without numbering, based on biblatex list infrastructure"
+
+[[exports]]
+name = "cited"
+type = "bibliography_category"
+signature = ""
+description = "Bibliography category tracking which entries were actually cited vs. only in bib file"
+
+[[exports]]
+name = "notcited"
+type = "bibliography_heading"
+signature = ""
+description = "Bibliography heading for uncited works with translated 'Further Reading' section title"
+
+[[exports]]
+name = "subbibliography"
+type = "bibliography_heading"
+signature = ""
+description = "Bibliography heading for per-chapter bibliographies using cref to the refsegment"

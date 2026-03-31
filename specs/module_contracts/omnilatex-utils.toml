@@ -1,0 +1,16 @@
+[module]
+name = "omnilatex-utils"
+file = "lib/utils/omnilatex-utils.sty"
+version = "2024-10-11 v6.0.0"
+description = "System utilities, TODO notes, git metadata, keyboard macros, censoring, and miscellaneous packages"
+line_count = 109
+
+[dependencies]
+requires = ["hologo", "menukeys", "censor", "cancel"]
+optionally_requires = ["todonotes"]
+
+[[exports]]
+name = "\\fakeverb"
+type = "command"
+signature = "{content}"
+description = "Typesets argument in ttfont with detokenize, useful for showing verbatim-like text"

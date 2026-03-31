@@ -1,0 +1,76 @@
+[module]
+name = "omnilatex-hyperref"
+file = "lib/references/omnilatex-hyperref.sty"
+version = "2024-10-11 v6.0.0"
+description = "Hyperlinks, PDF metadata, bookmarks, cross-references with cleveref, and git metadata integration"
+line_count = 165
+
+[dependencies]
+requires = ["hyperref", "ocgx2", "bookmark", "cleveref"]
+optionally_requires = []
+
+[[exports]]
+name = "\\GitRefName"
+type = "command"
+signature = ""
+description = "Current git reference name (branch/tag), provided by git-metadata.lua or fallback 'n.a.'"
+
+[[exports]]
+name = "\\GitShortSHA"
+type = "command"
+signature = ""
+description = "Short git commit SHA, provided by git-metadata.lua or fallback 'n.a.'"
+
+[[exports]]
+name = "\\GitLongSHA"
+type = "command"
+signature = ""
+description = "Full git commit SHA, provided by git-metadata.lua or fallback 'n.a.'"
+
+[[exports]]
+name = "\\GitRepositorySlug"
+type = "command"
+signature = ""
+description = "Git repository slug, provided by git-metadata.lua or fallback 'n.a.'"
+
+[[exports]]
+name = "\\GitProjectName"
+type = "command"
+signature = ""
+description = "Git project name, provided by git-metadata.lua or fallback 'n.a.'"
+
+[[exports]]
+name = "\\GitHostPagesURL"
+type = "command"
+signature = ""
+description = "Git hosting pages URL, provided by git-metadata.lua or fallback 'n.a.'"
+
+[[exports]]
+name = "\\GitHostAPIProvider"
+type = "command"
+signature = ""
+description = "Git hosting API provider name, provided by git-metadata.lua or fallback 'n.a.'"
+
+[[exports]]
+name = "\\GitHostAPIBase"
+type = "command"
+signature = ""
+description = "Git hosting API base URL, provided by git-metadata.lua or fallback 'n.a.'"
+
+[[exports]]
+name = "\\BuildDate"
+type = "command"
+signature = ""
+description = "Build date, defaults to \\today"
+
+[[exports]]
+name = "\\BuildDatePDF"
+type = "command"
+signature = ""
+description = "Build date in PDF format for deterministic metadata"
+
+[[exports]]
+name = "ifboldPDFchapters"
+type = "command"
+signature = ""
+description = "Boolean conditional controlling whether chapter-level PDF bookmarks are bold"

@@ -1,0 +1,136 @@
+[module]
+name = "omnilatex-glossary"
+file = "lib/references/omnilatex-glossary.sty"
+version = "2024-10-11 v6.0.0"
+description = "Glossary management: symbols, abbreviations, subscripts, constants, index, custom fields, and glossary printing styles"
+line_count = 515
+
+[dependencies]
+requires = ["glossaries-extra", "longtable", "glossary-longextra", "glossary-bookindex", "glossary-mcols"]
+optionally_requires = ["tabularray"]
+
+[[exports]]
+name = "\\sym"
+type = "command"
+signature = "{label}"
+description = "Alias for \\gls{sym.label} to access symbol glossary entries"
+
+[[exports]]
+name = "\\sub"
+type = "command"
+signature = "{label}"
+description = "Alias for \\gls{sub.label} to access subscript glossary entries"
+
+[[exports]]
+name = "\\name"
+type = "command"
+signature = "{label}"
+description = "Alias for \\gls{name.label} to access name glossary entries"
+
+[[exports]]
+name = "\\cons"
+type = "command"
+signature = "{label}"
+description = "Alias for \\gls{cons.label} to access constant glossary entries"
+
+[[exports]]
+name = "\\idx"
+type = "command"
+signature = "{label}"
+description = "Alias for \\gls{idx.label} to access index glossary entries"
+
+[[exports]]
+name = "\\abb"
+type = "command"
+signature = "{label}"
+description = "Alias for \\gls{abb.label} to access abbreviation glossary entries"
+
+[[exports]]
+name = "\\symspec"
+type = "command"
+signature = "[options]{label}"
+description = "Shortcut for \\glsspecific{sym.label} to access the 'specific' field of a symbol entry"
+
+[[exports]]
+name = "\\symprefix"
+type = "command"
+signature = ""
+description = "Prefix string 'sym.' for symbol glossary labels"
+
+[[exports]]
+name = "\\subprefix"
+type = "command"
+signature = ""
+description = "Prefix string 'sub.' for subscript glossary labels"
+
+[[exports]]
+name = "\\nameprefix"
+type = "command"
+signature = ""
+description = "Prefix string 'name.' for name glossary labels"
+
+[[exports]]
+name = "\\constantsprefix"
+type = "command"
+signature = ""
+description = "Prefix string 'cons.' for constant glossary labels"
+
+[[exports]]
+name = "\\indexprefix"
+type = "command"
+signature = ""
+description = "Prefix string 'idx.' for index glossary labels"
+
+[[exports]]
+name = "\\abbreviationprefix"
+type = "command"
+signature = ""
+description = "Prefix string 'abb.' for abbreviation glossary labels"
+
+[[exports]]
+name = "\\glshdrfont"
+type = "command"
+signature = "{text}"
+description = "Font command for glossary table headers (bold)"
+
+[[exports]]
+name = "\\specificsymbolmark"
+type = "command"
+signature = ""
+description = "Mark appended after description for specific symbols (asterisk)"
+
+[[exports]]
+name = "\\alternativesymbolmark"
+type = "command"
+signature = ""
+description = "Separator mark between symbol and its alternative version (slash)"
+
+[[exports]]
+name = "symbunitlong"
+type = "glossary_style"
+signature = ""
+description = "Custom glossary style for symbols with symbol, description, and unit columns"
+
+[[exports]]
+name = "numberlong"
+type = "glossary_style"
+signature = ""
+description = "Custom glossary style for constants with symbol, description, value, and unit columns"
+
+[[exports]]
+name = "custom-base"
+type = "glossary_style"
+signature = ""
+description = "Base glossary style extending long-name-desc-loc with removed header"
+
+[[exports]]
+name = "subscripts"
+type = "glossary_type"
+signature = ""
+description = "Custom glossary type for subscript entries"
+
+[[exports]]
+name = "notprinted"
+type = "glossary_type"
+signature = ""
+description = "Glossary type for entries that should not appear in printed output"

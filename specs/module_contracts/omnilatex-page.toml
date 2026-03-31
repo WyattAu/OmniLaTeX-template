@@ -1,0 +1,34 @@
+[module]
+name = "omnilatex-page"
+file = "lib/layout/omnilatex-page.sty"
+version = "2024-10-11 v6.0.0"
+description = "Page layout: headers, footers, page styles using SCRLayer, and deliberately blank page handling"
+line_count = 96
+
+[dependencies]
+requires = ["scrlayer-scrpage"]
+optionally_requires = []
+
+[[exports]]
+name = "\\headerrulelength"
+type = "length"
+signature = ""
+description = "Length controlling the height of the vertical header rule"
+
+[[exports]]
+name = "\\headerrule"
+type = "command"
+signature = ""
+description = "Draws a vertical rule in the header with height set by \\headerrulelength"
+
+[[exports]]
+name = "\\blankpage"
+type = "command"
+signature = ""
+description = "Typesets a centered message on deliberately blank pages using translated BlankPage text"
+
+[[exports]]
+name = "blank"
+type = "pagestyle"
+signature = ""
+description = "Page style for deliberately blank pages, registered as cleardoublepage style"
