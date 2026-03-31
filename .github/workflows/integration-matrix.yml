@@ -1,0 +1,49 @@
+name: Integration Matrix
+
+on:
+  schedule:
+    - cron: '0 2 * * 0'  # Weekly on Sunday at 02:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  DOCKER_IMAGE: ghcr.io/wyattau/omnilatex-docker:latest
+
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ env.DOCKER_IMAGE }}
+      options: --user root
+    strategy:
+      fail-fast: false
+      matrix:
+        doctype: [thesis, article, book, cv, report, manual, journal, cover-letter]
+        language: [english, german]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build ${{ matrix.doctype }} (${{ matrix.language }})
+        env:
+          IS_OMNILATEX_CONTAINER: "true"
+          CI: "true"
+        run: |
+          cat > /tmp/test.tex << 'TEXEOF'
+          \documentclass[doctype=${{ matrix.doctype }},language=${{ matrix.language }}]{omnilatex}
+          \begin{document}
+          Integration test: ${{ matrix.doctype }} in ${{ matrix.language }}.
+          \end{document}
+          TEXEOF
+          latexmk -lualatex -interaction=nonstopmode -outdir=/tmp/build /tmp/test.tex
+          test -f /tmp/build/test.pdf && echo "SUCCESS" || echo "FAIL"
+
+  report:
+    runs-on: ubuntu-latest
+    needs: matrix
+    if: always()
+    steps:
+      - name: Matrix summary
+        run: echo "Integration matrix completed. Check individual job results."

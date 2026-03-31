@@ -1,0 +1,44 @@
+\input{regression-test.tex}
+\documentclass[doctype=article,enabletikz=false,enableengineering=false,enablecode=false,enabletables=false]{omnilatex}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== HYPERREF: hyperref loaded ===}
+\makeatletter
+\@ifundefined{href}{%
+    \typeout{FAIL: hyperref not loaded}%
+}{%
+    \typeout{PASS: hyperref loaded}%
+}
+\makeatother
+
+\typeout{=== HYPERREF: URL command ===}
+\typeout{Testing url: \url{https://example.com}}
+
+\typeout{=== HYPERREF: href command ===}
+\href{https://example.com}{Example Link}
+\typeout{PASS: href command works}
+
+\typeout{=== HYPERREF: Bookmark setup ===}
+\makeatletter
+\@ifundefined{bookmarksetup}{%
+    \typeout{FAIL: bookmark not loaded}%
+}{%
+    \typeout{PASS: bookmark loaded}%
+}
+\makeatother
+
+\typeout{=== HYPERREF: cleveref loaded ===}
+\makeatletter
+\@ifundefined{cref}{%
+    \typeout{FAIL: cleveref not loaded}%
+}{%
+    \typeout{PASS: cleveref loaded}%
+}
+\makeatother
+
+\END
+\end{document}

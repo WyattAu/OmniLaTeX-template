@@ -1,0 +1,20 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+
+=== I18N: English translations ===
+Supervisor: Supervisor
+Examiner: Examiner
+Constant: const
+Listing: Code Listing
+Listings: Code Listings
+Gloss: Glossary
+Example: Example
+Examples: Examples
+Topic: Topic
+Task: Task
+=== I18N: Authorship declaration title ===
+AuthorshipDeclTitle: Declaration of Authorship
+=== I18N: Blank page ===
+BlankPage: Rest of this page intentionally left blank.
+=== I18N: Compiled on ===
+CompiledOn: Compiled on

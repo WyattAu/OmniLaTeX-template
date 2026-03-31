@@ -1,0 +1,31 @@
+\input{regression-test.tex}
+\documentclass[doctype=article,language=english,enabletikz=false,enableengineering=false,enablecode=false,enabletables=false]{omnilatex}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== I18N: English translations ===}
+\typeout{Supervisor: \GetTranslation{Supervisor}}
+\typeout{Examiner: \GetTranslation{Examiner}}
+\typeout{Constant: \GetTranslation{Constant}}
+\typeout{Listing: \GetTranslation{Listing}}
+\typeout{Listings: \GetTranslation{Listings}}
+\typeout{Gloss: \GetTranslation{Gloss}}
+\typeout{Example: \GetTranslation{Example}}
+\typeout{Examples: \GetTranslation{Examples}}
+\typeout{Topic: \GetTranslation{Topic}}
+\typeout{Task: \GetTranslation{Task}}
+
+\typeout{=== I18N: Authorship declaration title ===}
+\typeout{AuthorshipDeclTitle: \GetTranslation{AuthorshipDeclTitle}}
+
+\typeout{=== I18N: Blank page ===}
+\typeout{BlankPage: \GetTranslation{BlankPage}}
+
+\typeout{=== I18N: Compiled on ===}
+\typeout{CompiledOn: \GetTranslation{CompiledOn}}
+
+\END
+\end{document}

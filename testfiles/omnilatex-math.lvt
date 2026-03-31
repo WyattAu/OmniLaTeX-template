@@ -1,0 +1,49 @@
+\input{regression-test.tex}
+\documentclass[doctype=article,enabletikz=false,enableengineering=false,enablecode=false,enabletables=false]{omnilatex}
+
+\providecommand{\glsdisp}[2]{#2}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== MATH: Delimiter commands ===}
+\typeout{parens: $\parens{a+b}$}
+\typeout{brackets: $\brackets{a+b}$}
+\typeout{braces: $\braces{a+b}$}
+
+\typeout{=== MATH: Delimiter starred variants ===}
+\typeout{parens*: $\parens*{\frac{a}{b}}$}
+\typeout{brackets*: $\brackets*{\frac{a}{b}}$}
+\typeout{braces*: $\braces*{\frac{a}{b}}$}
+
+\typeout{=== MATH: Equation punctuation ===}
+\typeout{eqend: \eqend}
+\typeout{eqcomma: \eqcomma}
+
+\typeout{=== MATH: Text in math ===}
+\typeout{qq: $\qq{text}$}
+
+\typeout{=== MATH: Absolute value format ===}
+\typeout{absfmt: $\absfmt{x}$}
+\typeout{absfmt*: $\absfmt*{x}$}
+
+\typeout{=== MATH: Mean format ===}
+\typeout{meanfmt: $\meanfmt{x}$}
+
+\typeout{=== MATH: Vector format ===}
+\typeout{vectfmt: $\vectfmt{v}$}
+
+\typeout{=== MATH: Derivative format ===}
+\typeout{derivativefmt: $\derivativefmt{x}$}
+\typeout{partialderivativefmt: $\partialderivativefmt{x}$}
+
+\typeout{=== MATH: Flow format ===}
+\typeout{flowfmt: $\flowfmt{m}$}
+
+\typeout{=== MATH: Difference format ===}
+\typeout{differencefmt: $\differencefmt{T}$}
+
+\END
+\end{document}

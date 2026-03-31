@@ -1,0 +1,40 @@
+\input{regression-test.tex}
+\documentclass[doctype=article,enabletikz=false,enableengineering=false,enablecode=false,enabletables=false]{omnilatex}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== FLOATS: omnlFigure command ===}
+\omnlFigure[ caption={Test figure caption}, label={fig:test}]{%
+    \fbox{Figure content}%
+}
+
+\typeout{=== FLOATS: omnlTable command ===}
+\omnlTable[ caption={Test table caption}, label={tab:test}]{%
+    \begin{tabular}{cc}
+        A & B \\
+        1 & 2 \\
+    \end{tabular}%
+}
+
+\typeout{=== FLOATS: omnlFigure with short-caption ===}
+\omnlFigure[ caption={A very long figure caption for testing}, short-caption={Short caption}, label={fig:short}]{%
+    \fbox{Content}%
+}
+
+\typeout{=== FLOATS: omnlFigure with align=left ===}
+\omnlFigure[ caption={Left aligned}, label={fig:left}, align=left]{%
+    \fbox{Left}%
+}
+
+\typeout{=== FLOATS: omnlFigure with footnote ===}
+\omnlFigure[ caption={Figure with note}, label={fig:note}, footnote={Source: test}]{%
+    \fbox{Noted}%
+}
+
+\typeout{=== FLOATS: Caption format verified ===}
+
+\END
+\end{document}

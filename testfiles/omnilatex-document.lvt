@@ -1,0 +1,52 @@
+\input{regression-test.tex}
+\documentclass[doctype=article,enabletikz=false,enableengineering=false,enablecode=false,enabletables=false]{omnilatex}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== DOCUMENT: documenttype command ===}
+\documenttype{Test Document}
+\makeatletter
+\typeout{documenttype set to: \@documenttype}
+\makeatother
+
+\typeout{=== DOCUMENT: idnumber command ===}
+\idnumber{12345678}
+\makeatletter
+\typeout{idnumber set to: \@idnumber}
+\makeatother
+
+\typeout{=== DOCUMENT: supervisor command ===}
+\supervisor{Dr. Test Supervisor}
+\makeatletter
+\typeout{supervisor set to: \@supervisor}
+\makeatother
+
+\typeout{=== DOCUMENT: firstexamniner command ===}
+\firstexamniner{Prof. Test Examiner One}
+\makeatletter
+\typeout{firstexaminer set to: \@firstexamniner}
+\makeatother
+
+\typeout{=== DOCUMENT: secondexamniner command ===}
+\secondexamniner{Prof. Test Examiner Two}
+\makeatletter
+\typeout{secondexaminer set to: \@secondexamniner}
+\makeatother
+
+\typeout{=== DOCUMENT: sampletext command ===}
+\typeout{\sampletext}
+
+\typeout{=== DOCUMENT: iecfeg command ===}
+\typeout{\iecfeg{e.g.}}
+
+\typeout{=== DOCUMENT: documentfontsize ===}
+\documentfontsize{12pt}
+\makeatletter
+\typeout{fontsize set to: \@documentfontsize}
+\makeatother
+
+\END
+\end{document}

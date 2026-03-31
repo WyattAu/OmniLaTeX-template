@@ -1,0 +1,30 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+
+=== MATH: Delimiter commands ===
+parens: (a+b)
+brackets: [a+b]
+braces: {a+b}
+=== MATH: Delimiter starred variants ===
+parens*: (\frac {a}{b})
+brackets*: [\frac {a}{b}]
+braces*: {\frac {a}{b}}
+=== MATH: Equation punctuation ===
+eqend:  ,.
+eqcomma:  ,
+=== MATH: Text in math ===
+qq: text
+=== MATH: Absolute value format ===
+absfmt: |x|
+absfmt*: |x|
+=== MATH: Mean format ===
+meanfmt: x
+=== MATH: Vector format ===
+vectfmt: v
+=== MATH: Derivative format ===
+derivativefmt: dx
+partialderivativefmt: x
+=== MATH: Flow format ===
+flowfmt: m
+=== MATH: Difference format ===
+differencefmt: T

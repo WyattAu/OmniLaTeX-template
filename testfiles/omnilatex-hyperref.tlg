@@ -1,0 +1,13 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+
+=== HYPERREF: hyperref loaded ===
+PASS: hyperref loaded
+=== HYPERREF: URL command ===
+Testing url: https://example.com
+=== HYPERREF: href command ===
+PASS: href command works
+=== HYPERREF: Bookmark setup ===
+PASS: bookmark loaded
+=== HYPERREF: cleveref loaded ===
+PASS: cleveref loaded
