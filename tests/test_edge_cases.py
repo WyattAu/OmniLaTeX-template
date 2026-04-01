@@ -87,6 +87,7 @@ def test_deeply_nested_lists():
     assert has_pdf
 
 
+@pytest.mark.timeout(300)
 def test_large_document():
     """Document with many pages (100+ pages)."""
     content = "\\begin{document}\n"
@@ -97,6 +98,7 @@ def test_large_document():
     assert success and has_pdf
 
 
+@pytest.mark.timeout(300)
 def test_many_cross_references():
     """Hundreds of cross-references."""
     content = "\\begin{document}\n"

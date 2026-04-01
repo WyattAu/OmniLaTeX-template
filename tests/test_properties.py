@@ -109,6 +109,7 @@ def compile_tex(tex_content: str, timeout: int = 60) -> tuple:
 class TestDoctypeCompilation:
     """Test that every valid doctype compiles."""
 
+    @pytest.mark.timeout(120)
     @pytest.mark.parametrize("doctype", DOCTYPE_ALIASES)
     @pytest.mark.parametrize("language", LANGUAGES)
     def test_doctype_language_combination(self, doctype, language):
@@ -121,6 +122,7 @@ class TestDoctypeCompilation:
 class TestPropertyBasedFuzzing:
     """Fuzz test with hypothesis."""
 
+    @pytest.mark.timeout(120)
     @given(doctype=sampled_from(DOCTYPE_ALIASES))
     @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
     def test_random_doctype_compiles(self, doctype):

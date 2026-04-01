@@ -23,9 +23,13 @@
 
         pythonEnv = pkgs.python3.withPackages (ps: with ps; [
           pygments
-          pymupdf
           pytest
+          pytest-timeout
           hypothesis
+          pyyaml
+          python-dateutil
+          # NOTE: papersize is not in nixpkgs. test_pdfs.py (which depends on it)
+          # is automatically skipped when pymupdf/fitz is unavailable.
         ]);
 
         # NOTE: Custom fonts (Monaspace Neon, Atkinson Hyperlegible Next) are
@@ -40,6 +44,7 @@
             texlive
             pythonEnv
             pkgs.gnumake
+            pkgs.inkscape
           ];
 
           shellHook = ''

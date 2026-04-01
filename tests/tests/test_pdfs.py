@@ -19,7 +19,7 @@ Configuration:
 Example:
     Run all PDF tests:
         $ pytest tests/
-    
+
     Run specific test:
         $ pytest tests/test_pdfs.py::test_page_numbers -v
 """
@@ -48,8 +48,11 @@ warnings.filterwarnings(
     category=DeprecationWarning,
 )
 
-import fitz  # PyMuPDF
 import pytest
+
+fitz = pytest.importorskip(
+    "fitz", reason="PyMuPDF not available — skipping PDF validation tests"
+)
 import yaml  # PyYAML
 from dateutil.parser import parse as parse_date
 from papersize import parse_papersize
@@ -66,10 +69,10 @@ Rect = namedtuple("Rect", ["width", "height"])
 
 def get_project_root_files(suffix: str) -> List[Path]:
     """Find files with given suffix in project root or build directory.
-    
+
     Args:
         suffix: File extension to search for (without dot)
-    
+
     Yields:
         Path objects for matching files
     """
@@ -119,9 +122,9 @@ def test_bookmarks(pdf, config):
     """Checks if a table of contents (ToC) is present."""
     bookmarks = config["file"]["bookmarks"]
     not_ = "\b" if bookmarks else "not"  # ASCII backspace, remove on space char
-    assert bool(pdf.toc) == bool(
-        bookmarks
-    ), f"Bookmarks presence {not_} requested, but opposite found."
+    assert bool(pdf.toc) == bool(bookmarks), (
+        f"Bookmarks presence {not_} requested, but opposite found."
+    )
 
 
 def test_required_strings(pdf, config):
