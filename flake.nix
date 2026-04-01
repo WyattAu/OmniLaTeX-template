@@ -45,6 +45,7 @@
             pythonEnv
             pkgs.gnumake
             pkgs.inkscape
+            pkgs.gnuplot
           ];
 
           shellHook = ''
