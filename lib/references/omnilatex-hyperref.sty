@@ -141,6 +141,12 @@ pdfdisplaydoctitle,% https://tex.stackexchange.com/a/435434/120853
 ]{cleveref}%
 \creflabelformat{equation}{#2#1#3}% No (1), but 1, aka remove parentheses
 
+% Example environment (defined in omnilatex-boxes.sty with auto counter).
+% The crefname cannot be set inside \newtcolorbox because cleveref
+% requires hyperref to be loaded first, and boxes loads before hyperref.
+\crefname{example}{\GetTranslation{Example}}{\GetTranslation{Examples}}
+\Crefname{example}{\GetTranslation{Example}}{\GetTranslation{Examples}}
+
 % Since TexLive 2022 there is a bug with cleveref not working with polyglossia,
 % because it uses an old polyglossia command. Whith this "hack" it works again,
 % so that cleveref commands are also dynamically language dependent:

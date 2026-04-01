@@ -58,18 +58,16 @@
           buildPhase = ''
             export HOME=$(mktemp -d)
             export SOURCE_DATE_EPOCH=1700000000
-            latexmk -lualatex -interaction=nonstopmode \
-              examples/thesis/main.tex
+            export TEXINPUTS=$PWD/:
+            cd examples/thesis
+            ln -sf ../../.latexmkrc .
+            latexmk -lualatex -interaction=nonstopmode main.tex
           '';
 
           installPhase = ''
             mkdir -p $out
-            cp examples/thesis/main.pdf $out/omnilatex-example.pdf
+            cp main.pdf $out/omnilatex-example.pdf
           '';
-        };
-
-        overlays.default = final: prev: {
-          omnilatex = self.packages.${system}.default;
         };
 
         checks.reproducibility = pkgs.stdenvNoCC.mkDerivation {
@@ -79,21 +77,26 @@
           nativeBuildInputs = [ texlive pythonEnv ];
 
           buildPhase = ''
-            export HOME=$(mktemp -d)
             export SOURCE_DATE_EPOCH=1700000000
+            export TEXINPUTS=$PWD/:
+            cd examples/thesis
+            ln -sf ../../.latexmkrc .
 
-            latexmk -lualatex -interaction=nonstopmode \
-              -outdir=$TMPDIR/build1 \
-              examples/thesis/main.tex
-            hash1=$(sha256sum $TMPDIR/build1/main.pdf | cut -d' ' -f1)
-
-            rm -rf $TMPDIR/build1
+            # Build 1: in-place
             export HOME=$(mktemp -d)
+            latexmk -lualatex -interaction=nonstopmode main.tex
+            hash1=$(sha256sum main.pdf | cut -d' ' -f1)
+            cp main.pdf $TMPDIR/build1.pdf
 
-            latexmk -lualatex -interaction=nonstopmode \
-              -outdir=$TMPDIR/build2 \
-              examples/thesis/main.tex
-            hash2=$(sha256sum $TMPDIR/build2/main.pdf | cut -d' ' -f1)
+            # Clean all generated files
+            latexmk -C
+            # Also remove any leftover files latexmk -C might miss
+            rm -f main.bbl main.run.xml main-blx.bib main.fls main.fdb_latexmk main.acn main.acr main.aux main.glo main.ist main.log main.out main.toc main.loe main.xdv main.bcf main.glg main.glstex main.run tcache/
+
+            # Build 2: in-place (same environment, fresh HOME)
+            export HOME=$(mktemp -d)
+            latexmk -lualatex -interaction=nonstopmode main.tex
+            hash2=$(sha256sum main.pdf | cut -d' ' -f1)
 
             echo "Build 1 hash: $hash1"
             echo "Build 2 hash: $hash2"
@@ -112,10 +115,24 @@
           nativeBuildInputs = [ pkgs.python3 ];
           src = ./.;
         } ''
-          python3 -m py_compile $src/build.py
+          # Compile to /dev/null to avoid writing __pycache__ in read-only /nix/store
+          python3 -c "
+import py_compile, tempfile, shutil
+tmpdir = tempfile.mkdtemp()
+try:
+    py_compile.compile('$src/build.py', cfile=tmpdir + '/build.pyc', doraise=True)
+finally:
+    shutil.rmtree(tmpdir)
+"
           echo "PASS: Python syntax check"
           mkdir $out
         '';
       }
-    );
+    ) // {
+      # Overlays must be functions (not per-system sets), so they live
+      # outside eachDefaultSystem.
+      overlays.default = final: prev: {
+        omnilatex = final.callPackage self.packages.${final.system or final.stdenv.system}.default {};
+      };
+    };
 }

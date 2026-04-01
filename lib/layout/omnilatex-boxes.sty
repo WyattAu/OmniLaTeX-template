@@ -28,8 +28,9 @@
 \newtcolorbox[%
     auto counter,%
     number within=\ifomnilatex@haschapters chapter\else section\fi,%
-    % Set cleveref, see https://tex.stackexchange.com/a/126023/120853:
-    crefname={\GetTranslation{Example}}{\GetTranslation{Examples}},
+    % cleveref names are set in omnilatex-hyperref.sty (after cleveref loads),
+    % because cleveref requires hyperref to be loaded first and boxes is loaded
+    % before hyperref in omnilatex.cls.
     % List of Examples. *.loe file ending could clash with package thmtools,
     % careful if that is used!
     list inside=loe,
