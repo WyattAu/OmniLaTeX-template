@@ -11,13 +11,92 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
 
-        # TODO: Replace scheme-full with scheme-medium + explicit package list
-        # to reduce closure size. scheme-full is ~4 GB; scheme-medium + pkgs is
-        # ~1 GB. For now, scheme-full ensures all LaTeX packages are available
-        # without exhaustive enumeration.
+        # scheme-medium (~1 GB) + explicit packages replaces scheme-full (~4 GB).
+        # Packages already included in scheme-medium are harmlessly deduplicated
+        # by texlive.combine.  The list below was extracted from every
+        # \usepackage / \RequirePackage call in lib/*.sty and omnilatex.cls.
+        #
+        # Not listed here because they are already in scheme-medium:
+        #   expl3, multicol, scrlayer-scrpage, xparse, array, subcaption,
+        #   graphicx, pgfplotstable, longtable, flafter, shellesc, ifthen
+        #
+        # Bundled with their parent packages in nixpkgs:
+        #   amssymb → amsfonts, empheq → mathtools, pgfplotstable → pgfplots,
+        #   subcaption → caption, glossary-{longextra,bookindex,mcols} → glossaries-extra
         texlive = pkgs.texlive.combine {
           inherit (pkgs.texlive)
-            scheme-full
+            scheme-medium
+            # ── Collections for packages not available as standalone attrs ──
+            collection-fontsextra     # amssymb, fix-cm, libertinus, extra fonts
+            collection-latexextra     # extdash, nicefrac, suffix, todonotes extras
+            # ── Core (omnilatex.cls) ──
+            iftex
+            etoolbox
+            kvoptions
+            setspace
+            adjustbox
+            xkeyval
+            # ── lib/core/omnilatex-base ──
+            import
+            nth
+            xstring
+            datetime2
+            # ── lib/utils/* ──
+            xcolor
+            todonotes
+            hologo
+            censor
+            cancel
+            # ── lib/typography/omnilatex-fonts ──
+            fontspec
+            amsmath
+            amsfonts
+            lualatex-math
+            fontawesome5
+            unicode-math
+            # ── lib/typography/omnilatex-typesetting ──
+            microtype
+            ragged2e
+            blindtext
+            pdflscape
+            url
+            # ── lib/typography/omnilatex-lists ──
+            enumitem
+            # ── lib/typography/omnilatex-math ──
+            mathtools
+            chemmacros
+            siunitx
+            eurosym
+            xfrac
+            # ── lib/layout/* ──
+            caption
+            tcolorbox
+            # ── lib/graphics/* ──
+            svg
+            scalerel
+            contour
+            pgfplots
+            tikz-3dplot
+            circuitikz
+            # ── lib/code/omnilatex-listings ──
+            minted
+            accsupp
+            fvextra
+            # ── lib/tables/omnilatex-tables ──
+            multirow
+            booktabs
+            tabularray
+            # ── lib/references/* ──
+            hyperref
+            bookmark
+            glossaries-extra          # includes glossary-{longextra,bookindex,mcols}
+            biblatex-ext              # ext-authoryear, ext-numeric, etc.
+            biber                     # bibliography processor
+            bib2gls
+            # ── lib/language/omnilatex-i18n ──
+            polyglossia
+            translations
+            tracklang
           ;
         };
 
@@ -36,7 +115,7 @@
         # not available in nixpkgs. Users needing these fonts should either:
         #   1. Install them system-wide and use NIX_FONTS or fontconfig overrides
         #   2. Use the Docker image which bundles them
-        # Libertinus and Font Awesome 5 are included via scheme-full.
+        # Libertinus is in collection-fontsextra; Font Awesome 5 via fontawesome5 above.
       in
       {
         devShells.default = pkgs.mkShell {

@@ -41,8 +41,8 @@ def _compile_tex(content: str, options: str = "", timeout: int = 120) -> tuple:
 
 
 def test_empty_document():
-    """Minimal document: just begin/end."""
-    success, has_pdf = _compile_tex("\\begin{document}")
+    """Minimal document: just begin/end with mbox to ensure a page is output."""
+    success, has_pdf = _compile_tex("\\begin{document}\\mbox{}")
     assert success and has_pdf
 
 

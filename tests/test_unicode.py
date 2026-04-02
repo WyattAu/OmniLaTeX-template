@@ -21,7 +21,7 @@ UNICODE_TEST_CASES = [
     (
         "special_latex",
         "Special LaTeX chars",
-        "& \\% \\$ \\# \\_ \\{ \\} \\textasciitilde{} \\textasciicircum{} \\textbackslash{}",
+        "\\& \\% \\$ \\# \\_ \\{ \\} \\textasciitilde{} \\textasciicircum{} \\textbackslash{}",
     ),
 ]
 
