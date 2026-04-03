@@ -6,7 +6,7 @@
 [metadata]
 generated = "2026-03-31"
 generator = "manual"
-project_version = "0.1.1"
+project_version = "1.0.0"
 
 [texlive]
 # TeX Live release year and version

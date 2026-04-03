@@ -465,5 +465,8 @@ result-*
 # direnv
 .direnv/
 
-# windows thumbnail cache:
+# windows thumbnail cache
 Thumbs.db
+
+# Symlinked .latexmkrc created by build.py in example directories
+examples/*/.latexmkrc

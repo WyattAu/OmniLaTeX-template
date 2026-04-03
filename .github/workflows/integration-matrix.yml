@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        doctype: [thesis, article, book, cv, report, manual, journal, cover-letter]
+        doctype: [thesis, dissertation, article, paper, book, cv, resume, report, manual, journal, magazine, patent, dictionary, cover-letter]
         language: [english, german]
     steps:
       - uses: actions/checkout@v4
@@ -30,14 +30,17 @@ jobs:
         env:
           IS_OMNILATEX_CONTAINER: "true"
           CI: "true"
+          TEXINPUTS: ".:${{ github.workspace }}:"
         run: |
+          # Copy .latexmkrc so latexmk picks up project-specific config
+          cp .latexmkrc /tmp/.latexmkrc
           cat > /tmp/test.tex << 'TEXEOF'
           \documentclass[doctype=${{ matrix.doctype }},language=${{ matrix.language }}]{omnilatex}
           \begin{document}
           Integration test: ${{ matrix.doctype }} in ${{ matrix.language }}.
           \end{document}
           TEXEOF
-          latexmk -lualatex -interaction=nonstopmode -outdir=/tmp/build /tmp/test.tex
+          latexmk -lualatex -r /tmp/.latexmkrc -interaction=nonstopmode -outdir=/tmp/build /tmp/test.tex
           test -f /tmp/build/test.pdf && echo "SUCCESS" || echo "FAIL"
 
   report:

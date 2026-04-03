@@ -3,8 +3,8 @@
 > **Goal:** Maximize rigor, performance, low latency, correctness, determinism,
 > and mathematical proofs for a modular LaTeX template system.
 
-**Repository version:** v0.1.1 (2025-11-02)
-**Last updated:** 2026-03-31
+**Repository version:** v1.0.0 (2026-04-03)
+**Last updated:** 2026-04-03
 
 ---
 
@@ -159,11 +159,11 @@ Format: TOML, committed to repo, updated by `build.py preflight`.
 
 ### Phase 0 Completion Criteria
 
-- [ ] `.gitignore` blocks `examples/*/main.pdf`
+- [x] `.gitignore` blocks `examples/*/main.pdf`
 - [ ] Docker image pinned by digest in all 5 CI configs
-- [ ] `flake.nix` builds `main.tex` successfully
-- [ ] `reproducibility.lock` generated and committed
-- [ ] `build.py --timings` outputs structured metrics
+- [x] `flake.nix` builds `main.tex` successfully
+- [x] `reproducibility.lock` generated and committed
+- [x] `build.py --timings` outputs structured metrics
 - [ ] Font fallbacks work when custom fonts are missing
 - [ ] Custom fonts bundled in `assets/fonts/` for portable builds
 

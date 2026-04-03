@@ -168,7 +168,7 @@ jobs:
           IS_OMNILATEX_CONTAINER: "true"
           CI: "true"
         run: |
-          python3 build.py --mode prod --source-date-epoch 1700000000 build examples/thesis/main.tex
+          python3 build.py --mode prod --source-date-epoch 1700000000 build-example thesis
           cp build/examples/thesis/main.pdf /tmp/build1.pdf
 
       - name: Clean and rebuild
@@ -177,7 +177,7 @@ jobs:
           CI: "true"
         run: |
           python3 build.py clean
-          python3 build.py --mode prod --source-date-epoch 1700000000 build examples/thesis/main.tex
+          python3 build.py --mode prod --source-date-epoch 1700000000 build-example thesis
 
       - name: Verify bit-for-bit reproducibility
         run: |

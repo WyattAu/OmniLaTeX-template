@@ -757,16 +757,10 @@ class BuildTasks:
 
     def _rebuild_affected(self, changed_path: Path, files: List[str]):
         """Rebuild documents affected by a changed file."""
-        if changed_path.suffix in {".sty", ".cls", ".lua"}:
-            if files:
-                self.build_example(files)
-            else:
-                self.build_examples([])
+        if files:
+            self.build_example(files)
         else:
-            if files:
-                self.build_example(files)
-            else:
-                self.build_examples([])
+            self.build_examples([])
 
     def _check_tool(self, tool: str, desc: str, required: bool = True):
         path = shutil.which(tool)
@@ -850,15 +844,13 @@ class BuildTasks:
     def cmd_test(self, files=None):
         """Run test suite (l3build + pytest)."""
         results = []
-
         self.ui.info("Running l3build check...")
+        project_root = Path(__file__).resolve().parent.parent
         result = subprocess.run(
             ["l3build", "check"],
             capture_output=True,
             text=True,
-            cwd=self.config.project_root
-            if hasattr(self.config, "project_root")
-            else Path("."),
+            cwd=project_root,
         )
         results.append(("l3build check", result.returncode == 0))
         if result.returncode != 0:
@@ -871,9 +863,7 @@ class BuildTasks:
             [sys.executable, "-m", "pytest", "tests/", "-v", "--tb=short"],
             capture_output=True,
             text=True,
-            cwd=self.config.project_root
-            if hasattr(self.config, "project_root")
-            else Path("."),
+            cwd=project_root,
         )
         results.append(("pytest", result.returncode == 0))
         if result.returncode != 0:
