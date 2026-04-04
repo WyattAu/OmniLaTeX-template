@@ -45,17 +45,40 @@ If you're upgrading from a version using TeX Gyre Pagella and Inconsolata fonts:
 
 ### Prerequisites
 
-- LuaLaTeX with TeX Live 2025 or newer
-- Python 3.8+ for build script
+- LuaLaTeX with TeX Live 2024 or newer
+- Python 3.10+ for build script and test suite
 - Git for version control and verification
 
 ### Font Requirements
 
-- **Libertinus Serif** and **Libertinus Math** (for main text and mathematics)
-- **Monaspace Neon** (for monospace/code listings)
-- **Atkinson Hyperlegible Next** (for sans-serif elements)
+OmniLaTeX uses three font families:
 
-No additional font installation is required when using the provided Docker container or TeX Live 2025.
+| Font | Role | Source | Required? |
+|------|------|--------|-----------|
+| **Libertinus Serif** / **Math** | Main text + math | TeX Live (`libertinus` package) | Yes — always available |
+| **Monaspace Neon** | Monospace / code | [GitHub](https://github.com/chriskapp/neon-monospace) | Optional — falls back to Latin Modern Mono |
+| **Atkinson Hyperlegible Next** | Sans-serif | [GitHub](https://github.com/BrailleInstitute/Atkinson-Hyperlegible-Next-Font) | Optional — falls back to Libertinus Sans |
+
+**No additional font installation is required** when using the Docker container, Nix devShell, or TeX Live 2024+.
+Missing optional fonts trigger a `\ClassWarning` and degrade gracefully to bundled TeX Live fonts.
+
+#### Manual Font Installation (Linux)
+
+```bash
+# Download Monaspace Neon
+git clone https://github.com/chriskapp/neon-monospace /tmp/neon-monospace
+mkdir -p ~/.local/share/fonts/MonaspaceNeon
+cp /tmp/neon-monospace/fonts/otf/*.otf ~/.local/share/fonts/MonaspaceNeon/
+fc-cache -f
+
+# Download Atkinson Hyperlegible Next
+git clone https://github.com/BrailleInstitute/Atkinson-Hyperlegible-Next-Font /tmp/atkinson
+mkdir -p ~/.local/share/fonts/AtkinsonHyperlegibleNext
+cp /tmp/atkinson/fonts/Static/TTF/*.ttf ~/.local/share/fonts/AtkinsonHyperlegibleNext/
+fc-cache -f
+```
+
+Run `build.py doctor` to verify font availability.
 
 ### Quick Start
 

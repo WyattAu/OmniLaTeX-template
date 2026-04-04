@@ -160,11 +160,11 @@ Format: TOML, committed to repo, updated by `build.py preflight`.
 ### Phase 0 Completion Criteria
 
 - [x] `.gitignore` blocks `examples/*/main.pdf`
-- [ ] Docker image pinned by digest in all 5 CI configs
+- [ ] Docker image pinned by digest in CI configs (`.env.docker` created, awaiting digest)
 - [x] `flake.nix` builds `main.tex` successfully
-- [x] `reproducibility.lock` generated and committed
+- [x] `reproducibility.lock` generated and committed (populated with Nix devShell versions)
 - [x] `build.py --timings` outputs structured metrics
-- [ ] Font fallbacks work when custom fonts are missing
+- [x] Font fallbacks work when custom fonts are missing (`\IfFontExistsTF` in `omnilatex-fonts.sty`)
 - [ ] Custom fonts bundled in `assets/fonts/` for portable builds
 
 ---
