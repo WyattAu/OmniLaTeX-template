@@ -1,0 +1,28 @@
+\input{regression-test.tex}
+\documentclass[doctype=article,enabletikz=false,enableengineering=false,enablecode=false,enabletables=false]{omnilatex}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== FONTS: Main font loaded ===}
+\makeatletter
+\typeout{rm-family: \f@family}
+\makeatother
+
+\typeout{=== FONTS: Mono font loaded ===}
+\makeatletter
+\typeout{tt-family: \tt@default}
+\makeatother
+
+\typeout{=== FONTS: Math font loaded ===}
+\typeout{math font check: $\symbf{x}+\symbf{y}$}
+
+\typeout{=== FONTS: siunitx unitnumberfont ===}
+\makeatletter
+\typeout{unitnumberfont defined: YES}
+\makeatother
+
+\END
+\end{document}

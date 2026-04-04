@@ -4,48 +4,52 @@
 # Manual update: fill in values from your build environment.
 
 [metadata]
-generated = "2026-03-31"
+generated = "2026-04-03"
 generator = "manual"
 project_version = "1.0.0"
 
 [texlive]
 # TeX Live release year and version
 # Obtain: tex --version
-release = "2025"
-version_string = ""  # e.g., "TeX 3.141592653 (TeX Live 2025)"
+release = "2024"
+version_string = "TeX 3.141592653 (TeX Live 2024/nixos.org)"
 # Minimum required version
 minimum_release = "2024"
 
 [latexmk]
 # Obtain: latexmk --version
-version = ""
+version = "4.86a"
 
 [lua]
 # LuaTeX engine version
 # Obtain: lualatex --version
-version = ""
+version = "1.18.0"
 # Minimum required version for Lua API compatibility
 minimum_version = "1.15"
 
 [python]
-version = "3"
+version = "3.12"
 # From tests/pyproject.toml or requirements
 minimum_version = "3.10"
 
 [python_packages]
 # Obtain: pip list --format=freeze
-pygments = ""
-pymupdf = ""
-pytest = ""
-hypothesis = ""
+pygments = "2.19.1"
+pymupdf = "n/a"  # broken in nixpkgs; tests use pytest.importorskip
+pytest = "8.3.5"
+hypothesis = "n/a"
 
 [docker]
 image = "ghcr.io/wyattau/omnilatex-docker:latest"
-digest = ""  # sha256:... — obtain via: docker inspect --format='{{index .RepoDigests 0}}' IMAGE
+# Pin by digest for reproducible CI builds.
+# Obtain via: docker pull ghcr.io/wyattau/omnilatex-docker:latest
+#             docker inspect --format='{{index .RepoDigests 0}}' IMAGE
+# Then update .env.docker with the digest.
+digest = ""  # sha256:... — TODO: populate after next Docker image build
 
 [nix]
-# Nixpkgs commit hash from flake.lock (once generated)
-nixpkgs_commit = ""
+# Nixpkgs commit hash from flake.lock
+nixpkgs_commit = "ac62194c3917d5f474c1a844b6fd6da2db95077d"
 
 [fonts]
 # Fonts that ship with TeX Live (always available)

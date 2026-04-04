@@ -1,0 +1,32 @@
+\input{regression-test.tex}
+\documentclass[doctype=article,enabletikz=false,enableengineering=false,enablecode=false]{omnilatex}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== TABLES: booktabs commands ===}
+\typeout{toprule, midrule, bottomrule load test}
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lcc}
+\toprule
+Name & Value & Unit \\
+\midrule
+Alpha & 1.0 & m \\
+Beta  & 2.5 & kg \\
+\bottomrule
+\end{tabular}
+\caption{Test table}
+\label{tab:lvttest}
+\end{table}
+
+\typeout{=== TABLES: arraystretch check ===}
+\makeatletter
+\typeout{arraystretch: \arraystretch}
+\makeatother
+
+\END
+\end{document}

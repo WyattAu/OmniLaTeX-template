@@ -1,0 +1,26 @@
+\input{regression-test.tex}
+\documentclass[doctype=article,enabletikz=false,enableengineering=false,enablecode=false]{omnilatex}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== BASE: Build mode detection ===}
+\makeatletter
+\typeout{buildmode: \omnilatex@buildmode}
+\makeatother
+\typeout{OmniBuildMode: \OmniBuildMode}
+
+\typeout{=== BASE: Mode flags (default=dev) ===}
+\ifOmniDev  \typeout{OmniDev: TRUE}\else  \typeout{OmniDev: FALSE}\fi
+\ifOmniProd \typeout{OmniProd: TRUE}\else \typeout{OmniProd: FALSE}\fi
+\ifOmniUltra\typeout{OmniUltra: TRUE}\else \typeout{OmniUltra: FALSE}\fi
+
+\typeout{=== BASE: Ordinal numbers ===}
+\typeout{1st: \nth{1}}
+\typeout{2nd: \nth{2}}
+\typeout{3rd: \nth{3}}
+
+\END
+\end{document}
