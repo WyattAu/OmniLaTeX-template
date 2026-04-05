@@ -371,6 +371,12 @@ class BuildTasks:
             invoke.append(MAIN_TEX_FILENAME)
 
             with working_directory(example_dir):
+                # When --force is used, clean auxiliary files first to avoid
+                # stale artifacts from different package versions (e.g. .glstex
+                # from a different glossaries-extra version).
+                if self.force:
+                    self.runner.run([LATEXMK_COMMAND, "-C"])
+
                 for cache_dir in (Path(MINTED_CACHE_SUBDIR), Path(SVG_INKSCAPE_CACHE)):
                     cache_dir.mkdir(parents=True, exist_ok=True)
 
