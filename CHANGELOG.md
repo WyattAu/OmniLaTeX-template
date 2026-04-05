@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com).
 The This project adheres to [Semantic versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- README v2: comparison table, all 20 examples listed, engineering quality surfaced
+- CONTRIBUTING.md: architecture overview, institution/language/doctype tutorials, PR checklist
+- ROADMAP-v1.1.md: formal roadmap for v1.1–v1.4 (distribution, ecosystem, cross-platform, features)
+- CTAN packaging: `scripts/make-ctan-zip.sh` builds TDS-compliant upload package
+- Overleaf packaging: `scripts/make-overleaf-zip.sh` builds self-contained Overleaf template
+- CTAN documentation: `doc/omnilatex.tex` — 23-page user manual (compiles to PDF)
+- `build.py diff` command: SSIM-based visual regression with byte-level fallback
+- CI changelog check: enforces CHANGELOG.md update when `.sty`/`.cls` files change
+- l3build regression tests for all 21 modules (with `.tlg` baselines)
+
+### Changed
+- README no longer references non-existent `cv-bw` example
+- README identity: leads with value proposition instead of "fork from TUHH"
+
 ## [1.0.0] - 2026-04-03
 
 ### Added
