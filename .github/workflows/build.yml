@@ -169,7 +169,7 @@ jobs:
           CI: "true"
         run: |
           python3 build.py --mode prod --source-date-epoch 1700000000 build-example thesis
-          cp build/examples/thesis/main.pdf /tmp/build1.pdf
+          cp build/examples/thesis.pdf /tmp/build1.pdf
 
       - name: Clean and rebuild
         env:
@@ -184,8 +184,8 @@ jobs:
           echo "Build 1 hash:"
           sha256sum /tmp/build1.pdf
           echo "Build 2 hash:"
-          sha256sum build/examples/thesis/main.pdf
-          diff <(sha256sum /tmp/build1.pdf) <(sha256sum build/examples/thesis/main.pdf)
+          sha256sum build/examples/thesis.pdf
+          diff <(sha256sum /tmp/build1.pdf) <(sha256sum build/examples/thesis.pdf)
           echo "SUCCESS: Builds are bit-for-bit identical"
 
       - name: Dump PDF metadata diff on mismatch
@@ -197,7 +197,7 @@ jobs:
           python3 -c "
           import fitz
           doc1 = fitz.open('/tmp/build1.pdf')
-          doc2 = fitz.open('build/examples/thesis/main.pdf')
+          doc2 = fitz.open('build/examples/thesis.pdf')
           print('=== Build 1 metadata ===')
           print(doc1.metadata)
           print('=== Build 2 metadata ===')

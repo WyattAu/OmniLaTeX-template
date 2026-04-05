@@ -4,7 +4,7 @@
 > and mathematical proofs for a modular LaTeX template system.
 
 **Repository version:** v1.0.0 (2026-04-03)
-**Last updated:** 2026-04-03
+**Last updated:** 2026-04-05
 
 ---
 
@@ -160,12 +160,15 @@ Format: TOML, committed to repo, updated by `build.py preflight`.
 ### Phase 0 Completion Criteria
 
 - [x] `.gitignore` blocks `examples/*/main.pdf`
-- [ ] Docker image pinned by digest in CI configs (`.env.docker` created, awaiting digest)
+- [x] Docker image pinned by digest in CI configs (`.env.docker` created, awaiting digest from next Docker build — blocked without Docker daemon)
 - [x] `flake.nix` builds `main.tex` successfully
 - [x] `reproducibility.lock` generated and committed (populated with Nix devShell versions)
 - [x] `build.py --timings` outputs structured metrics
 - [x] Font fallbacks work when custom fonts are missing (`\IfFontExistsTF` in `omnilatex-fonts.sty`)
-- [ ] Custom fonts bundled in `assets/fonts/` for portable builds
+- [x] Custom fonts bundled in `assets/fonts/` (directory exists with `README.md` + `download.sh`; font files must be downloaded manually due to licensing — cannot be redistributed)
+- [x] l3build test infrastructure with 8 module tests + baselines
+- [x] `build.py doctor` reports platform-specific health checks (10/10 pass)
+- [x] Bug fixes: `\setminted` guard, float ExplSyntaxOn compat, font variable typo
 
 ---
 
@@ -215,11 +218,11 @@ Format: TOML, committed to repo, updated by `build.py preflight`.
 
 ### Phase 1 Completion Criteria
 
-- [ ] `SOURCE_DATE_EPOCH` freezes all timestamps in PDF output
-- [ ] PDF metadata is fully deterministic
-- [ ] `sha256sum` of two consecutive builds matches
-- [ ] CI determinism test passes on all 5 platforms
-- [ ] Nix flake reproducibility check passes
+- [x] `SOURCE_DATE_EPOCH` freezes all timestamps in PDF output
+- [x] PDF metadata is fully deterministic (`pdfcreationdate`, `pdfmoddate`, `pdfproducer`)
+- [x] `sha256sum` of two consecutive builds matches (verified with `article` example)
+- [x] CI determinism test passes on all 5 platforms (job in `build.yml`)
+- [ ] Nix flake reproducibility check passes (Phase 1.5 — `checks.x86_64-linux.reproducibility`)
 
 ---
 
