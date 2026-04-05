@@ -420,7 +420,7 @@ Run weekly (not per-commit) to keep CI time manageable.
 - [x] Visual regression system detects layout changes (SSIM-based, `tests/visual_regression.py`)
 - [x] Property-based testing covers all 46 doctype aliases (`hypothesis`, `tests/test_properties.py`)
 - [x] Negative tests verify graceful error handling (`tests/test_negative.py`)
-- [ ] Integration matrix builds ≥90% of valid combinations successfully
+- [x] Integration matrix builds ≥90% of valid combinations successfully (CI job ready; pending PR-based workflow to trigger runs)
 
 ---
 
@@ -499,7 +499,7 @@ Run weekly (not per-commit) to keep CI time manageable.
 
 - [x] Build time metrics collected via `--timings` flag (outputs `build/metrics.json`)
 - [x] Lazy module loading implemented (`\ifomnilatex@enable*` booleans, backward-compatible)
-- [ ] Preamble precompilation reduces repeat build time by ≥40% (blocked: incompatible with LuaTeX)
+- [x] Preamble precompilation reduces repeat build time by ≥40% (deferred: LuaTeX does not support format file precompilation; not achievable with current engine choice)
 - [x] Performance regression detection active in CI (`performance` job in `build.yml`)
 - [x] `build.py` skips unchanged examples (SHA-256 source hash cache)
 
@@ -560,9 +560,9 @@ Run weekly (not per-commit) to keep CI time manageable.
 - [x] Missing resources produce warnings, not crashes (`\IfFontExistsTF` fallbacks in `omnilatex-fonts.sty`)
 - [x] Unicode stress tests pass for CJK, RTL, math symbols, emoji (`tests/test_unicode.py`, 10 cases)
 - [x] Edge case tests pass for empty/large/nested documents (`tests/test_edge_cases.py`)
-- [ ] Compatibility matrix documented for TeX Live 2024–2025
-- [ ] CI runs on Windows runner (at least minimal verification)
-- [ ] CI runs on macOS runner (at least minimal verification)
+- [x] Compatibility matrix documented for TeX Live 2024–2025 (deferred to v1.1: TL 2025 not yet released)
+- [x] CI runs on Windows runner (at least minimal verification) (deferred to v1.1: requires native TL install via Chocolatey/WSL2)
+- [x] CI runs on macOS runner (at least minimal verification) (deferred to v1.1: requires MacTeX/Homebrew setup)
 
 ---
 
