@@ -45,7 +45,7 @@ image = "ghcr.io/wyattau/omnilatex-docker:latest"
 # Obtain via: docker pull ghcr.io/wyattau/omnilatex-docker:latest
 #             docker inspect --format='{{index .RepoDigests 0}}' IMAGE
 # Then update .env.docker with the digest.
-digest = ""  # sha256:... — TODO: populate after next Docker image build
+digest = "sha256:3e0c27240f5b0b02c3bc635628540de8f7adfd7b581165534f550432e634d9d5"
 
 [nix]
 # Nixpkgs commit hash from flake.lock

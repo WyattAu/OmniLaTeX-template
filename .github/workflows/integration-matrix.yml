@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 env:
-  DOCKER_IMAGE: ghcr.io/wyattau/omnilatex-docker:latest  # Pin by digest: see .env.docker
+  DOCKER_IMAGE: ghcr.io/wyattau/omnilatex-docker@sha256:3e0c27240f5b0b02c3bc635628540de8f7adfd7b581165534f550432e634d9d5  # See .env.docker
 
 jobs:
   matrix:
