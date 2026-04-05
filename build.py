@@ -884,6 +884,133 @@ class BuildTasks:
             return 1
         return 0
 
+    def cmd_diff(self, files: List[str]):
+        """Compare built PDFs against references to detect visual regressions."""
+        self.ui.header("Visual Regression Diff")
+
+        try:
+            from PIL import Image
+            import numpy as np
+
+            _has_ssim = True
+        except ImportError:
+            _has_ssim = False
+            self.ui.info(
+                "pillow/numpy not available; falling back to byte-level comparison"
+            )
+
+        ref_dir = self.config.build_dir / "references"
+        build_dir = self.config.build_dir / BUILD_EXAMPLES_SUBDIR
+        repo_root = Path(__file__).resolve().parent
+
+        if not files:
+            self.ui.warning("No examples specified.")
+            return
+
+        all_pass = True
+        for name in files:
+            example_dir = repo_root / "examples" / name
+            pdf_path = example_dir / "main.pdf"
+            ref_path = ref_dir / f"{name}.pdf"
+            build_copy = build_dir / f"{name}.pdf"
+
+            # Prefer the build output (already post-build) if available
+            source = build_copy if build_copy.exists() else pdf_path
+
+            if not source.exists():
+                self.ui.warning(f"SKIP: {name} \u2014 PDF not found")
+                continue
+
+            if not ref_path.exists():
+                self.ui.info(
+                    f"GENERATE: {name} \u2014 no reference, copying as baseline"
+                )
+                ref_path.parent.mkdir(parents=True, exist_ok=True)
+                import shutil
+
+                shutil.copy2(source, ref_path)
+                continue
+
+            # Compare using SSIM (requires pymupdf + pillow + numpy)
+            if _has_ssim:
+                try:
+                    import fitz  # noqa: F401
+
+                    ref_doc = fitz.open(str(ref_path))
+                    test_doc = fitz.open(str(source))
+                    if ref_doc.page_count != test_doc.page_count:
+                        self.ui.error(
+                            f"FAIL: {name} \u2014 page count mismatch "
+                            f"(ref={ref_doc.page_count}, test={test_doc.page_count})"
+                        )
+                        all_pass = False
+                        ref_doc.close()
+                        test_doc.close()
+                        continue
+
+                    for i in range(ref_doc.page_count):
+                        dpi = 150
+                        mat = fitz.Matrix(dpi / 72, dpi / 72)
+                        ref_pix = ref_doc[i].get_pixmap(matrix=mat)
+                        test_pix = test_doc[i].get_pixmap(matrix=mat)
+                        ref_img = Image.frombytes(
+                            "RGB", [ref_pix.width, ref_pix.height], ref_pix.samples
+                        )
+                        test_img = Image.frombytes(
+                            "RGB", [test_pix.width, test_pix.height], test_pix.samples
+                        )
+
+                        arr1 = np.array(ref_img.convert("L"), dtype=np.float64)
+                        arr2 = np.array(test_img.convert("L"), dtype=np.float64)
+                        if arr1.shape != arr2.shape:
+                            self.ui.error(
+                                f"FAIL: {name} page {i + 1} \u2014 dimension mismatch"
+                            )
+                            all_pass = False
+                            continue
+
+                        C1, C2 = (0.01 * 255) ** 2, (0.03 * 255) ** 2
+                        mu1 = np.mean(arr1)
+                        mu2 = np.mean(arr2)
+                        sigma1 = np.var(arr1)
+                        sigma2 = np.var(arr2)
+                        sigma12 = np.mean((arr1 - mu1) * (arr2 - mu2))
+                        ssim = ((2 * mu1 * mu2 + C1) * (2 * sigma12 + C2)) / (
+                            (mu1**2 + mu2**2 + C1) * (sigma1 + sigma2 + C2)
+                        )
+
+                        threshold = 0.95
+                        page_pass = ssim >= threshold
+                        status = "\u2705" if page_pass else "\u274c"
+                        self.ui.info(f"  Page {i + 1}: SSIM={ssim:.4f} {status}")
+                        if not page_pass:
+                            all_pass = False
+
+                    ref_doc.close()
+                    test_doc.close()
+                    continue  # SSIM comparison done, skip byte-level fallback
+
+                except ImportError:
+                    self.ui.info(
+                        f"  pymupdf not available for {name}; falling back to byte-level"
+                    )
+
+            # Byte-level fallback (no SSIM deps available)
+            import hashlib
+
+            ref_hash = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
+            test_hash = hashlib.sha256(ref_path.read_bytes()).hexdigest()[:16]
+            if ref_hash == test_hash:
+                self.ui.info(f"\u2705 PASS: {name} (byte-identical)")
+            else:
+                self.ui.error(f"\u274c FAIL: {name} (content differs)")
+                all_pass = False
+
+        if all_pass:
+            self.ui.success("All comparisons passed")
+        else:
+            self.ui.error("Visual regressions detected")
+
     def cmd_doctor(self, files=None):
         """Run comprehensive health diagnostics."""
         import platform as _platform
@@ -1040,6 +1167,11 @@ def main() -> None:
             BuildTasks.cmd_doctor,
             "Comprehensive environment health diagnostics.",
             False,
+        ),
+        "diff": (
+            BuildTasks.cmd_diff,
+            "Compare PDFs against references for visual regression.",
+            True,
         ),
     }
     for name, (handler, help_text, takes_files) in commands.items():

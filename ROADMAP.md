@@ -416,7 +416,7 @@ Run weekly (not per-commit) to keep CI time manageable.
 
 ### Phase 3 Completion Criteria
 
-- [ ] `l3build check` passes for all 21 modules (8/21 covered)
+- [x] `l3build check` passes for all 21 modules (21/21 with .tlg baselines)
 - [x] Visual regression system detects layout changes (SSIM-based, `tests/visual_regression.py`)
 - [x] Property-based testing covers all 46 doctype aliases (`hypothesis`, `tests/test_properties.py`)
 - [x] Negative tests verify graceful error handling (`tests/test_negative.py`)
@@ -695,7 +695,7 @@ checks.x86_64-linux = {
 - [x] `build.py watch` works on Linux and macOS (watchdog + inotifywait fallback)
 - [x] `build.py preflight` validates environment readiness (tools + packages)
 - [x] `build.py test` runs full test suite (l3build + pytest)
-- [ ] `build.py diff` detects visual regressions (not yet implemented)
+- [x] `build.py diff` detects visual regressions (SSIM + byte-level fallback)
 - [x] Nix flake provides `checks` for build, test, determinism, formatting
 - [x] Auto-generated API reference committed (`docs/api_reference.md`, 491 lines)
 - [x] `build.py doctor` reports platform-specific health checks (10/10 pass)
