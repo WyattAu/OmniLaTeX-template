@@ -222,7 +222,7 @@ Format: TOML, committed to repo, updated by `build.py preflight`.
 - [x] PDF metadata is fully deterministic (`pdfcreationdate`, `pdfmoddate`, `pdfproducer`)
 - [x] `sha256sum` of two consecutive builds matches (verified with `article` example)
 - [x] CI determinism test passes on all 5 platforms (job in `build.yml`)
-- [ ] Nix flake reproducibility check passes (Phase 1.5 — `checks.x86_64-linux.reproducibility`)
+- [x] Nix flake reproducibility check passes (`checks.x86_64-linux.reproducibility`)
 
 ---
 
