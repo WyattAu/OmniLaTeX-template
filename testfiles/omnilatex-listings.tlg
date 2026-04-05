@@ -1,0 +1,108 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+=== LISTINGS: minted loaded ===
+minted: OK
+=== LISTINGS: Code annotation commands ===
+LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/b/n' will be
+(Font)              scaled to size 10.89937pt on input line ....
+Underfull \hbox (badness 10000) in paragraph at lines 13--17
+[][]\TU/LibertinusSerif(0)/m/n/10.95 place-holder string[] []place-holder num[] []place-holder other[] []\TU/LibertinusSerif(0)/b/n/10.95 place-holder note[] 
+\hbox(7.67867+2.61823)x448.13095, glue set 5.24194, direction TLT
+.\localpar
+..\localinterlinepenalty=0
+..\localbrokenpenalty=0
+..\localleftbox=null
+..\localrightbox=null
+.\hbox(0.0+0.0)x0.0, direction TLT
+.\pdfcolorstack 0 push {0.81961 0 0.33725 rg 0.81961 0 0.33725 RG}
+.\TU/LibertinusSerif(0)/m/n/10.95 p
+.\TU/LibertinusSerif(0)/m/n/10.95 l
+.\TU/LibertinusSerif(0)/m/n/10.95 a
+.\TU/LibertinusSerif(0)/m/n/10.95 c
+.\TU/LibertinusSerif(0)/m/n/10.95 e
+.\discretionary (penalty 50)
+..< \TU/LibertinusSerif(0)/m/n/10.95 -
+.\TU/LibertinusSerif(0)/m/n/10.95 h
+.\TU/LibertinusSerif(0)/m/n/10.95 o
+.\TU/LibertinusSerif(0)/m/n/10.95 l
+.\TU/LibertinusSerif(0)/m/n/10.95 d
+.\TU/LibertinusSerif(0)/m/n/10.95 e
+.\TU/LibertinusSerif(0)/m/n/10.95 r
+.\glue(\spaceskip) 2.75024
+.\TU/LibertinusSerif(0)/m/n/10.95 s
+.\TU/LibertinusSerif(0)/m/n/10.95 t
+.\TU/LibertinusSerif(0)/m/n/10.95 r
+.\TU/LibertinusSerif(0)/m/n/10.95 i
+.\TU/LibertinusSerif(0)/m/n/10.95 n
+.\TU/LibertinusSerif(0)/m/n/10.95 g
+.\pdfcolorstack 0 pop
+.\glue(\spaceskip) 2.75024
+.\pdfcolorstack 0 push {0 0.5098 0.7255 rg 0 0.5098 0.7255 RG}
+.\TU/LibertinusSerif(0)/m/n/10.95 p
+.\TU/LibertinusSerif(0)/m/n/10.95 l
+.\TU/LibertinusSerif(0)/m/n/10.95 a
+.\TU/LibertinusSerif(0)/m/n/10.95 c
+.\TU/LibertinusSerif(0)/m/n/10.95 e
+.\discretionary (penalty 50)
+..< \TU/LibertinusSerif(0)/m/n/10.95 -
+.\TU/LibertinusSerif(0)/m/n/10.95 h
+.\TU/LibertinusSerif(0)/m/n/10.95 o
+.\TU/LibertinusSerif(0)/m/n/10.95 l
+.\TU/LibertinusSerif(0)/m/n/10.95 d
+.\TU/LibertinusSerif(0)/m/n/10.95 e
+.\TU/LibertinusSerif(0)/m/n/10.95 r
+.\glue(\spaceskip) 2.75024
+.\TU/LibertinusSerif(0)/m/n/10.95 n
+.\TU/LibertinusSerif(0)/m/n/10.95 u
+.\TU/LibertinusSerif(0)/m/n/10.95 m
+.\pdfcolorstack 0 pop
+.\glue(\spaceskip) 2.75024
+.\pdfcolorstack 0 push {0 0.50195 0.24707 rg 0 0.50195 0.24707 RG}
+.\TU/LibertinusSerif(0)/m/n/10.95 p
+.\TU/LibertinusSerif(0)/m/n/10.95 l
+.\TU/LibertinusSerif(0)/m/n/10.95 a
+.\TU/LibertinusSerif(0)/m/n/10.95 c
+.\TU/LibertinusSerif(0)/m/n/10.95 e
+.\discretionary (penalty 50)
+..< \TU/LibertinusSerif(0)/m/n/10.95 -
+.\TU/LibertinusSerif(0)/m/n/10.95 h
+.\TU/LibertinusSerif(0)/m/n/10.95 o
+.\TU/LibertinusSerif(0)/m/n/10.95 l
+.\TU/LibertinusSerif(0)/m/n/10.95 d
+.\TU/LibertinusSerif(0)/m/n/10.95 e
+.\TU/LibertinusSerif(0)/m/n/10.95 r
+.\glue(\spaceskip) 2.75024
+.\TU/LibertinusSerif(0)/m/n/10.95 o
+.\TU/LibertinusSerif(0)/m/n/10.95 t
+.\TU/LibertinusSerif(0)/m/n/10.95 h
+.\TU/LibertinusSerif(0)/m/n/10.95 e
+.\TU/LibertinusSerif(0)/m/n/10.95 r
+.\pdfcolorstack 0 pop
+.\glue 2.75024
+.\pdfcolorstack 0 push {0.95686 0.51373 0.25882 rg 0.95686 0.51373 0.25882 RG}
+.\TU/LibertinusSerif(0)/b/n/10.95 p
+.\TU/LibertinusSerif(0)/b/n/10.95 l
+.\TU/LibertinusSerif(0)/b/n/10.95 a
+.\TU/LibertinusSerif(0)/b/n/10.95 c
+.\TU/LibertinusSerif(0)/b/n/10.95 e
+.\discretionary (penalty 50)
+..< \TU/LibertinusSerif(0)/b/n/10.95 -
+.\TU/LibertinusSerif(0)/b/n/10.95 h
+.\TU/LibertinusSerif(0)/b/n/10.95 o
+.\TU/LibertinusSerif(0)/b/n/10.95 l
+.\TU/LibertinusSerif(0)/b/n/10.95 d
+.\TU/LibertinusSerif(0)/b/n/10.95 e
+.\TU/LibertinusSerif(0)/b/n/10.95 r
+.\glue(\spaceskip) 2.72484
+.\TU/LibertinusSerif(0)/b/n/10.95 n
+.\TU/LibertinusSerif(0)/b/n/10.95 o
+.\TU/LibertinusSerif(0)/b/n/10.95 t
+.\TU/LibertinusSerif(0)/b/n/10.95 e
+.\pdfcolorstack 0 pop
+.\penalty 10000
+.\glue(\parfillskip) 0.0
+.\glue(\rightskip) 0.0 plus 22.00189
+=== LISTINGS: emptyaccsupp command ===
+emptyaccsupp: defined
+=== LISTINGS: theFancyVerbLine redefined ===
+theFancyVerbLine: redefined

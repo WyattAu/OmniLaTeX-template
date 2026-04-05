@@ -1,0 +1,13 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+=== BIBLIO: biblatex loaded ===
+biblatex: OK
+=== BIBLIO: Name alias ===
+default alias: family-given
+sortname alias: family-given
+=== BIBLIO: Citation delimiters ===
+cite delims: bracket
+=== BIBLIO: Further reading heading ===
+notcited heading: defined
+=== BIBLIO: bibnonum environment ===
+bibnonum: defined

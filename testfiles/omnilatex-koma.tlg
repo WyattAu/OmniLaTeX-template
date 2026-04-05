@@ -1,0 +1,9 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+=== KOMA: documenttype font ===
+documenttype font defined: OK
+=== KOMA: TOC styles ===
+figure TOC style: OK
+table TOC style: OK
+=== KOMA: Base class check ===
+baseclass article: OK

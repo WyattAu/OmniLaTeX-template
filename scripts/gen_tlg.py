@@ -129,16 +129,13 @@ def main():
     os.makedirs(WORKDIR, exist_ok=True)
     os.chdir(WORKDIR)
 
-    tests = [
-        "omnilatex-base",
-        "omnilatex-fonts",
-        "omnilatex-tables",
-        "omnilatex-document",
-        "omnilatex-floats",
-        "omnilatex-hyperref",
-        "omnilatex-i18n",
-        "omnilatex-math",
-    ]
+    # Discover all .lvt files in testfiles/
+    tests = sorted(
+        os.path.splitext(f)[0] for f in os.listdir(TESTFILES) if f.endswith(".lvt")
+    )
+
+    env = os.environ.copy()
+    env["TEXINPUTS"] = TESTFILES + os.pathsep + ROOT + os.pathsep
 
     for name in tests:
         src = os.path.join(TESTFILES, f"{name}.lvt")
@@ -150,11 +147,13 @@ def main():
                     "lualatex",
                     "--interaction=nonstopmode",
                     "--halt-on-error",
+                    "--shell-escape",
                     f"{name}.lvt",
                 ],
                 capture_output=True,
                 text=True,
-                timeout=90,
+                timeout=120,
+                env=env,
             )
         except subprocess.TimeoutExpired:
             print(f"TIMEOUT: {name}")

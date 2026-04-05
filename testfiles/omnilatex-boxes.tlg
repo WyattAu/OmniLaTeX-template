@@ -1,0 +1,13 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+=== BOXES: example environment definition ===
+example env exists: OK
+Package hyperref Info: bookmark level for unknown tcolorbox defaults to 0 on input line ....
+LaTeX Font Info:    Font shape `TU/LibertinusSans(0)/m/n' will be
+(Font)              scaled to size 10.2596pt on input line ....
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `LibertinusSans' (encoding: TU).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+=== BOXES: tcolorbox loaded ===
+tcolorbox: loaded

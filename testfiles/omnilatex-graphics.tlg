@@ -1,0 +1,128 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+=== GRAPHICS: graphicx loaded ===
+graphicx: OK
+=== GRAPHICS: SVG package loaded ===
+svg: OK
+=== GRAPHICS: Contour commands ===
+contour: Using real outline for `\textcolor {black}{Test contour white}' on input line ....
+contour: Using real outline for `\textcolor {white}{Test contour black}' on input line ....
+Underfull \hbox (badness 10000) in paragraph at lines 16--18
+[][][][][][][] [][][][][][] 
+\hbox(7.67867+0.143)x448.13095, glue set 12.65033, direction TLT
+.\kern-0.33003 (left margin)
+.\localpar
+..\localinterlinepenalty=0
+..\localbrokenpenalty=0
+..\localleftbox=null
+..\localrightbox=null
+.\hbox(0.0+0.0)x0.0, direction TLT
+.\pdfcolorstack 0 push {1 g 1 G}
+.\pdfliteral origin{q 1 j 1 J 1 Tr 2.63023 w }
+.\hbox(7.67867+0.143)x0.0, glue set - 84.74033fil, direction TLT
+..\TU/LibertinusSerif(0)/m/n/10.95 T
+..\kern-0.69305 (font)
+..\TU/LibertinusSerif(0)/m/n/10.95 e
+..\TU/LibertinusSerif(0)/m/n/10.95 s
+..\TU/LibertinusSerif(0)/m/n/10.95 t
+..\glue(\spaceskip) 2.75024
+..\TU/LibertinusSerif(0)/m/n/10.95 c
+..\TU/LibertinusSerif(0)/m/n/10.95 o
+..\TU/LibertinusSerif(0)/m/n/10.95 n
+..\discretionary (penalty 50)
+...< \TU/LibertinusSerif(0)/m/n/10.95 -
+..\TU/LibertinusSerif(0)/m/n/10.95 t
+..\TU/LibertinusSerif(0)/m/n/10.95 o
+..\TU/LibertinusSerif(0)/m/n/10.95 u
+..\TU/LibertinusSerif(0)/m/n/10.95 r
+..\glue(\spaceskip) 2.75024
+..\TU/LibertinusSerif(0)/m/n/10.95 w
+..\TU/LibertinusSerif(0)/m/n/10.95 h
+..\TU/LibertinusSerif(0)/m/n/10.95 i
+..\TU/LibertinusSerif(0)/m/n/10.95 t
+..\TU/LibertinusSerif(0)/m/n/10.95 e
+..\glue 0.0 plus 1.0fil minus 1.0fil
+.\pdfliteral origin{Q }
+.\pdfcolorstack 0 pop
+.\hbox(7.67867+0.143)x84.74033, direction TLT
+..\pdfcolorstack 0 push {0 g 0 G}
+..\TU/LibertinusSerif(0)/m/n/10.95 T
+..\kern-0.69305 (font)
+..\TU/LibertinusSerif(0)/m/n/10.95 e
+..\TU/LibertinusSerif(0)/m/n/10.95 s
+..\TU/LibertinusSerif(0)/m/n/10.95 t
+..\glue(\spaceskip) 2.75024
+..\TU/LibertinusSerif(0)/m/n/10.95 c
+..\TU/LibertinusSerif(0)/m/n/10.95 o
+..\TU/LibertinusSerif(0)/m/n/10.95 n
+..\discretionary (penalty 50)
+...< \TU/LibertinusSerif(0)/m/n/10.95 -
+..\TU/LibertinusSerif(0)/m/n/10.95 t
+..\TU/LibertinusSerif(0)/m/n/10.95 o
+..\TU/LibertinusSerif(0)/m/n/10.95 u
+..\TU/LibertinusSerif(0)/m/n/10.95 r
+..\glue(\spaceskip) 2.75024
+..\TU/LibertinusSerif(0)/m/n/10.95 w
+..\TU/LibertinusSerif(0)/m/n/10.95 h
+..\TU/LibertinusSerif(0)/m/n/10.95 i
+..\TU/LibertinusSerif(0)/m/n/10.95 t
+..\TU/LibertinusSerif(0)/m/n/10.95 e
+..\pdfcolorstack 0 pop
+.\glue(\spaceskip) 2.75024
+.\pdfcolorstack 0 push {0 g 0 G}
+.\pdfliteral origin{q 1 j 1 J 1 Tr 2.63023 w }
+.\hbox(7.67867+0.143)x0.0, glue set - 82.92516fil, direction TLT
+..\TU/LibertinusSerif(0)/m/n/10.95 T
+..\kern-0.69305 (font)
+..\TU/LibertinusSerif(0)/m/n/10.95 e
+..\TU/LibertinusSerif(0)/m/n/10.95 s
+..\TU/LibertinusSerif(0)/m/n/10.95 t
+..\glue(\spaceskip) 2.75024
+..\TU/LibertinusSerif(0)/m/n/10.95 c
+..\TU/LibertinusSerif(0)/m/n/10.95 o
+..\TU/LibertinusSerif(0)/m/n/10.95 n
+..\discretionary (penalty 50)
+...< \TU/LibertinusSerif(0)/m/n/10.95 -
+..\TU/LibertinusSerif(0)/m/n/10.95 t
+..\TU/LibertinusSerif(0)/m/n/10.95 o
+..\TU/LibertinusSerif(0)/m/n/10.95 u
+..\TU/LibertinusSerif(0)/m/n/10.95 r
+..\glue(\spaceskip) 2.75024
+..\TU/LibertinusSerif(0)/m/n/10.95 b
+..\TU/LibertinusSerif(0)/m/n/10.95 l
+..\TU/LibertinusSerif(0)/m/n/10.95 a
+..\TU/LibertinusSerif(0)/m/n/10.95 c
+..\TU/LibertinusSerif(0)/m/n/10.95 k
+..\glue 0.0 plus 1.0fil minus 1.0fil
+.\pdfliteral origin{Q }
+.\pdfcolorstack 0 pop
+.\hbox(7.67867+0.143)x82.92516, direction TLT
+..\pdfcolorstack 0 push {1 g 1 G}
+..\TU/LibertinusSerif(0)/m/n/10.95 T
+..\kern-0.69305 (font)
+..\TU/LibertinusSerif(0)/m/n/10.95 e
+..\TU/LibertinusSerif(0)/m/n/10.95 s
+..\TU/LibertinusSerif(0)/m/n/10.95 t
+..\glue(\spaceskip) 2.75024
+..\TU/LibertinusSerif(0)/m/n/10.95 c
+..\TU/LibertinusSerif(0)/m/n/10.95 o
+..\TU/LibertinusSerif(0)/m/n/10.95 n
+..\discretionary (penalty 50)
+...< \TU/LibertinusSerif(0)/m/n/10.95 -
+..\TU/LibertinusSerif(0)/m/n/10.95 t
+..\TU/LibertinusSerif(0)/m/n/10.95 o
+..\TU/LibertinusSerif(0)/m/n/10.95 u
+..\TU/LibertinusSerif(0)/m/n/10.95 r
+..\glue(\spaceskip) 2.75024
+..\TU/LibertinusSerif(0)/m/n/10.95 b
+..\TU/LibertinusSerif(0)/m/n/10.95 l
+..\TU/LibertinusSerif(0)/m/n/10.95 a
+..\TU/LibertinusSerif(0)/m/n/10.95 c
+..\TU/LibertinusSerif(0)/m/n/10.95 k
+..\pdfcolorstack 0 pop
+.\penalty 10000
+.\kern-0.28603 (right margin)
+.\glue(\parfillskip) 0.0
+.\glue(\rightskip) 0.0 plus 22.00189
+=== GRAPHICS: scalerel loaded ===
+scalerel: OK

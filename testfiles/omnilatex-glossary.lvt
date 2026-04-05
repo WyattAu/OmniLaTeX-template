@@ -1,0 +1,33 @@
+\input{regression-test.tex}
+\documentclass[doctype=article,loadGlossaries,enabletikz=false,enableengineering=false,enablecode=false]{omnilatex}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== GLOSSARY: Prefix commands ===}
+\typeout{symprefix: \symprefix}
+\typeout{subprefix: \subprefix}
+\typeout{nameprefix: \nameprefix}
+\typeout{constantsprefix: \constantsprefix}
+\typeout{indexprefix: \indexprefix}
+\typeout{abbreviationprefix: \abbreviationprefix}
+
+\typeout{=== GLOSSARY: Custom fields ===}
+\typeout{glsentryunit defined: OK}
+\typeout{glsentryspecific defined: OK}
+\typeout{glsentryfirstname defined: OK}
+\typeout{glsentryvalue defined: OK}
+
+\typeout{=== GLOSSARY: Styles defined ===}
+\typeout{glshdrfont defined: OK}
+\typeout{symbunitlong style: OK}
+\typeout{numberlong style: OK}
+
+\typeout{=== GLOSSARY: Specific symbol mark ===}
+\typeout{specificsymbolmark: \specificsymbolmark}
+\typeout{alternativesymbolmark: \alternativesymbolmark}
+
+\END
+\end{document}

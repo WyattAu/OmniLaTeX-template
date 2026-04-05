@@ -1,0 +1,25 @@
+\input{regression-test.tex}
+\documentclass[doctype=article,enabletikz=false,enableengineering=false]{omnilatex}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== LISTINGS: minted loaded ===}
+\typeout{minted: OK}
+
+\typeout{=== LISTINGS: Code annotation commands ===}
+\phstring{placeholder string}
+\phnum{placeholder num}
+\phother{placeholder other}
+\phnote{placeholder note}
+
+\typeout{=== LISTINGS: emptyaccsupp command ===}
+\typeout{emptyaccsupp: defined}
+
+\typeout{=== LISTINGS: theFancyVerbLine redefined ===}
+\typeout{theFancyVerbLine: redefined}
+
+\END
+\end{document}

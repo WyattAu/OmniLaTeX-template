@@ -1,0 +1,53 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+=== TYPESETTING: extdash loaded ===
+extdash: OK
+=== TYPESETTING: microtype loaded ===
+microtype: OK
+=== TYPESETTING: ragged2e loaded ===
+ragged2e: OK
+=== TYPESETTING: csquotes loaded ===
+Underfull \hbox (badness 10000) in paragraph at lines 19--20
+[]\TU/LibertinusSerif(0)/m/n/10.95 “  Test quo-ta-tion” 
+\hbox(8.0967+2.57422)x448.13095, glue set 17.10052, direction TLT
+.\kern-1.2321 (left margin)
+.\localpar
+..\localinterlinepenalty=0
+..\localbrokenpenalty=0
+..\localleftbox=null
+..\localrightbox=null
+.\hbox(0.0+0.0)x0.0, direction TLT
+.\TU/LibertinusSerif(0)/m/n/10.95 “
+.\penalty 10000
+.\glue -0.0002
+.\glue 0.0002
+.\TU/LibertinusSerif(0)/m/n/10.95 T
+.\kern-0.69305 (font)
+.\TU/LibertinusSerif(0)/m/n/10.95 e
+.\TU/LibertinusSerif(0)/m/n/10.95 s
+.\TU/LibertinusSerif(0)/m/n/10.95 t
+.\glue(\spaceskip) 2.75024
+.\TU/LibertinusSerif(0)/m/n/10.95 q
+.\TU/LibertinusSerif(0)/m/n/10.95 u
+.\TU/LibertinusSerif(0)/m/n/10.95 o
+.\discretionary (penalty 50)
+..< \TU/LibertinusSerif(0)/m/n/10.95 -
+.\TU/LibertinusSerif(0)/m/n/10.95 t
+.\TU/LibertinusSerif(0)/m/n/10.95 a
+.\discretionary (penalty 50)
+..< \TU/LibertinusSerif(0)/m/n/10.95 -
+.\TU/LibertinusSerif(0)/m/n/10.95 t
+.\TU/LibertinusSerif(0)/m/n/10.95 i
+.\TU/LibertinusSerif(0)/m/n/10.95 o
+.\TU/LibertinusSerif(0)/m/n/10.95 n
+.\TU/LibertinusSerif(0)/m/n/10.95 ”
+.\penalty 10000
+.\kern-1.2321 (right margin)
+.\glue(\parfillskip) 0.0
+.\glue(\rightskip) 0.0 plus 22.00189
+=== TYPESETTING: blindtext loaded ===
+blindtext: OK
+=== TYPESETTING: pdflscape loaded ===
+pdflscape: OK
+=== TYPESETTING: url loaded ===
+url: OK

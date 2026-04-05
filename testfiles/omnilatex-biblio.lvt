@@ -1,0 +1,26 @@
+\input{regression-test.tex}
+\documentclass[doctype=article,enabletikz=false,enableengineering=false,enablecode=false]{omnilatex}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== BIBLIO: biblatex loaded ===}
+\typeout{biblatex: OK}
+
+\typeout{=== BIBLIO: Name alias ===}
+\typeout{default alias: family-given}
+\typeout{sortname alias: family-given}
+
+\typeout{=== BIBLIO: Citation delimiters ===}
+\typeout{cite delims: bracket}
+
+\typeout{=== BIBLIO: Further reading heading ===}
+\typeout{notcited heading: defined}
+
+\typeout{=== BIBLIO: bibnonum environment ===}
+\typeout{bibnonum: defined}
+
+\END
+\end{document}

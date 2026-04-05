@@ -1,0 +1,40 @@
+\input{regression-test.tex}
+\documentclass[doctype=article,enablecode=false]{omnilatex}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== TIKZ-ENGINEERING: Flow chart styles ===}
+\begin{tikzpicture}
+\node[startstop] (start) {Start};
+\node[process, below=of start] (proc) {Process};
+\node[decision, below=of proc] (dec) {Decision};
+\node[io, below=of dec] (io) {I/O};
+\draw[arrow] (start) -- (proc);
+\draw[arrow] (proc) -- (dec);
+\draw[arrow] (dec) -- (io);
+\end{tikzpicture}
+
+\typeout{=== TIKZ-ENGINEERING: Pipe styles ===}
+\begin{tikzpicture}
+\node[pump] (p1) {P};
+\node[valve, right=1cm of p1] (v1) {V};
+\node[pipe] at ($(p1)!0.5!(v1)$) {};
+\draw[pipe] (p1) -- (v1);
+\end{tikzpicture}
+
+\typeout{=== TIKZ-ENGINEERING: Symmetry cross ===}
+\begin{tikzpicture}
+\node[symmetrycross] {};
+\end{tikzpicture}
+
+\typeout{=== TIKZ-ENGINEERING: Wall and fluid ===}
+\begin{tikzpicture}
+\node[wall] at (0,0) {};
+\node[fluid, minimum size=1cm] at (1,0) {};
+\end{tikzpicture}
+
+\END
+\end{document}

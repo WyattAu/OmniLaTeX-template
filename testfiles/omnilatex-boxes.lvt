@@ -1,0 +1,20 @@
+\input{regression-test.tex}
+\documentclass[doctype=article,enabletikz=false,enableengineering=false,enablecode=false]{omnilatex}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== BOXES: example environment definition ===}
+\typeout{example env exists: OK}
+
+\begin{example}{Test example}
+This is a test example.
+\end{example}
+
+\typeout{=== BOXES: tcolorbox loaded ===}
+\typeout{tcolorbox: loaded}
+
+\END
+\end{document}

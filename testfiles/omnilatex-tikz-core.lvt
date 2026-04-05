@@ -1,0 +1,38 @@
+\input{regression-test.tex}
+\documentclass[doctype=article,enableengineering=false,enablecode=false]{omnilatex}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== TIKZ-CORE: pgfplots loaded ===}
+\typeout{pgfplots: OK}
+
+\typeout{=== TIKZ-CORE: forest loaded ===}
+\typeout{forest: OK}
+
+\typeout{=== TIKZ-CORE: tikz-3dplot loaded ===}
+\typeout{tikz-3dplot: OK}
+
+\typeout{=== TIKZ-CORE: circuitikz loaded ===}
+\typeout{circuitikz: OK}
+
+\typeout{=== TIKZ-CORE: pgfplotstable loaded ===}
+\typeout{pgfplotstable: OK}
+
+\typeout{=== TIKZ-CORE: Simple tikzpicture ===}
+\begin{tikzpicture}
+\draw (0,0) -- (1,1);
+\node at (0.5,0.5) {test};
+\end{tikzpicture}
+
+\typeout{=== TIKZ-CORE: Simple pgfplots axis ===}
+\begin{tikzpicture}
+\begin{axis}[regularplot, width=3cm, height=2cm]
+\addplot coordinates {(0,0) (1,1)};
+\end{axis}
+\end{tikzpicture}
+
+\END
+\end{document}

@@ -1,0 +1,40 @@
+\input{regression-test.tex}
+\documentclass[doctype=article,enabletikz=false,enableengineering=false,enablecode=false]{omnilatex}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== COLORS: Gradient colors ===}
+\typeout{g1 defined: OK}
+\typeout{g6 defined: OK}
+
+\typeout{=== COLORS: Fluid colors ===}
+\textcolor{Glass}{Glass}
+\textcolor{Air}{Air}
+\textcolor{HotFluid}{HotFluid}
+
+\typeout{=== COLORS: Plot colors ===}
+\textcolor{mBlue}{mBlue}
+\textcolor{mRed}{mRed}
+
+\typeout{=== COLORS: Code annotation colors ===}
+\textcolor{cRed}{cRed}
+\textcolor{cBlue}{cBlue}
+\textcolor{cGreen}{cGreen}
+\textcolor{cOrange}{cOrange}
+
+\typeout{=== COLORS: ColorBrewer ===}
+\textcolor{rdylbu1}{rdylbu1}
+\textcolor{rdylbu6}{rdylbu6}
+
+\typeout{=== COLORS: Set2 qualitative ===}
+\textcolor{Set2A}{Set2A}
+\textcolor{Set2H}{Set2H}
+
+\typeout{=== COLORS: darklink ===}
+\textcolor{darklink}{darklink}
+
+\END
+\end{document}

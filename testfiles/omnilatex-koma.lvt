@@ -1,0 +1,20 @@
+\input{regression-test.tex}
+\documentclass[doctype=article,enabletikz=false,enableengineering=false,enablecode=false]{omnilatex}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== KOMA: documenttype font ===}
+\typeout{documenttype font defined: OK}
+
+\typeout{=== KOMA: TOC styles ===}
+\typeout{figure TOC style: OK}
+\typeout{table TOC style: OK}
+
+\typeout{=== KOMA: Base class check ===}
+\typeout{baseclass article: OK}
+
+\END
+\end{document}

@@ -1,0 +1,37 @@
+\input{regression-test.tex}
+\documentclass[doctype=article,enabletikz=false,enableengineering=false,enablecode=false]{omnilatex}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== LISTS: Standard itemize ===}
+\begin{itemize}
+\item First item
+\item Second item
+\end{itemize}
+
+\typeout{=== LISTS: Standard enumerate ===}
+\begin{enumerate}
+\item First
+\item Second
+\end{enumerate}
+
+\typeout{=== LISTS: tabitemize ===}
+\begin{tabitemize}
+\item Compact item
+\end{tabitemize}
+
+\typeout{=== LISTS: tabenum ===}
+\begin{tabenum}
+\item Compact enum
+\end{tabenum}
+
+\typeout{=== LISTS: enumdescript ===}
+\begin{enumdescript}
+\item[Label] Description text
+\end{enumdescript}
+
+\END
+\end{document}

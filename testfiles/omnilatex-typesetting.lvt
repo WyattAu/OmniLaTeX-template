@@ -1,0 +1,31 @@
+\input{regression-test.tex}
+\documentclass[doctype=article,enabletikz=false,enableengineering=false,enablecode=false]{omnilatex}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== TYPESETTING: extdash loaded ===}
+\typeout{extdash: OK}
+
+\typeout{=== TYPESETTING: microtype loaded ===}
+\typeout{microtype: OK}
+
+\typeout{=== TYPESETTING: ragged2e loaded ===}
+\typeout{ragged2e: OK}
+
+\typeout{=== TYPESETTING: csquotes loaded ===}
+\enquote{Test quotation}
+
+\typeout{=== TYPESETTING: blindtext loaded ===}
+\typeout{blindtext: OK}
+
+\typeout{=== TYPESETTING: pdflscape loaded ===}
+\typeout{pdflscape: OK}
+
+\typeout{=== TYPESETTING: url loaded ===}
+\typeout{url: OK}
+
+\END
+\end{document}

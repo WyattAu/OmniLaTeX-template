@@ -1,0 +1,30 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+=== PAGE: scrlayer-scrpage loaded ===
+scrlayer-scrpage: OK
+=== PAGE: headerrule command ===
+headerrule: OK
+Underfull \hbox (badness 10000) in paragraph at lines 13--15
+[][] 
+\hbox(9.43881+4.7194)x448.13095, glue set 20.31784, direction TLT
+.\localpar
+..\localinterlinepenalty=0
+..\localbrokenpenalty=0
+..\localleftbox=null
+..\localrightbox=null
+.\hbox(0.0+0.0)x0.0, direction TLT
+.\hbox(9.43881+4.7194)x1.10016, direction TLT
+..\rule(9.43881+4.7194)x1.10016
+.\penalty 10000
+.\glue(\parfillskip) 0.0
+.\glue(\rightskip) 0.0 plus 22.00189
+=== PAGE: headerrulelength ===
+headerrulelength: 14.15822pt
+=== PAGE: blankpage command ===
+blankpage: defined
+=== PAGE: pagestyle ===
+pagestyle scrheadings: active
+=== PAGE: page fonts ===
+pagehead font: OK
+pagefoot font: OK
+pagenumber font: OK

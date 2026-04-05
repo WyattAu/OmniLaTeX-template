@@ -1,0 +1,23 @@
+\input{regression-test.tex}
+\documentclass[doctype=article]{omnilatex}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== GRAPHICS: graphicx loaded ===}
+\typeout{graphicx: OK}
+
+\typeout{=== GRAPHICS: SVG package loaded ===}
+\typeout{svg: OK}
+
+\typeout{=== GRAPHICS: Contour commands ===}
+\ctrw{Test contour white}
+\ctrb{Test contour black}
+
+\typeout{=== GRAPHICS: scalerel loaded ===}
+\typeout{scalerel: OK}
+
+\END
+\end{document}

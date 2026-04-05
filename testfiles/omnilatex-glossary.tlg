@@ -1,0 +1,21 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+=== GLOSSARY: Prefix commands ===
+symprefix: sym.
+subprefix: sub.
+nameprefix: name.
+constantsprefix: cons.
+indexprefix: idx.
+abbreviationprefix: abb.
+=== GLOSSARY: Custom fields ===
+glsentryunit defined: OK
+glsentryspecific defined: OK
+glsentryfirstname defined: OK
+glsentryvalue defined: OK
+=== GLOSSARY: Styles defined ===
+glshdrfont defined: OK
+symbunitlong style: OK
+numberlong style: OK
+=== GLOSSARY: Specific symbol mark ===
+specificsymbolmark: *
+alternativesymbolmark: /

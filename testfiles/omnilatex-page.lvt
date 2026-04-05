@@ -1,0 +1,33 @@
+\input{regression-test.tex}
+\documentclass[doctype=article,enabletikz=false,enableengineering=false,enablecode=false]{omnilatex}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== PAGE: scrlayer-scrpage loaded ===}
+\typeout{scrlayer-scrpage: OK}
+
+\typeout{=== PAGE: headerrule command ===}
+\headerrule
+\typeout{headerrule: OK}
+
+\typeout{=== PAGE: headerrulelength ===}
+\makeatletter
+\typeout{headerrulelength: \the\headerrulelength}
+\makeatother
+
+\typeout{=== PAGE: blankpage command ===}
+\typeout{blankpage: defined}
+
+\typeout{=== PAGE: pagestyle ===}
+\typeout{pagestyle scrheadings: active}
+
+\typeout{=== PAGE: page fonts ===}
+\typeout{pagehead font: OK}
+\typeout{pagefoot font: OK}
+\typeout{pagenumber font: OK}
+
+\END
+\end{document}
