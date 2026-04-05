@@ -1,0 +1,310 @@
+% OmniLaTeX User Manual
+% Compile with: latexmk -lualatex omnilatex.tex
+%
+% This is the CTAN documentation for the omnilatex package.
+
+\documentclass[
+  doctype=manual,
+  language=english,
+]{omnilatex}
+
+% ── Manual-specific setup ────────────────────────────
+\usepackage{bookmark}
+\usepackage{multicol}
+\usepackage{longtable}
+
+\hypersetup{
+  pdftitle={OmniLaTeX User Manual},
+  pdfauthor={Wyatt Au},
+}
+
+% ── Helper commands ──────────────────────────────────
+\newcommand{\option}[1]{\texttt{#1}}
+\newcommand{\module}[1]{\texttt{#1}}
+\newcommand{\file}[1]{\texttt{#1}}
+
+\title{OmniLaTeX}
+\subtitle{A Modular Document Class for Academic and Professional Documents}
+\author{Wyatt Au}
+\date{Version 1.0.0 — 2026-04-03}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+%% ─────────────────────────────────────────────────────
+\chapter{Introduction}
+%% ─────────────────────────────────────────────────────
+
+OmniLaTeX is a modular LaTeX document class built on LuaLaTeX and KOMA-Script.
+It provides 46 doctype aliases, 21 modular packages, and support for
+academic and professional documents including theses, articles, CVs,
+technical reports, patents, and more.
+
+\section{Requirements}
+
+\begin{itemize}
+	\item LuaLaTeX (TeX Live 2024 or newer)
+	\item KOMA-Script (bundled with TeX Live)
+	\item polyglossia (for multilingual support)
+\end{itemize}
+
+\section{Installation}
+
+\subsection{From CTAN (recommended)}
+
+Once published on CTAN, install via:
+
+\begin{minted}{bash}
+tlmgr install omnilatex
+\end{minted}
+
+\subsection{From Source}
+
+Clone the repository and ensure the \file{lib/} and \file{config/}
+directories are in your \texttt{TEXINPUTS} path.
+
+\section{Quick Start}
+
+\begin{minted}{latex}
+\documentclass[doctype=article]{omnilatex}
+\begin{document}
+\title{My Document}
+\author{Author Name}
+\maketitle
+\tableofcontents
+\section{Introduction}
+Hello, world!
+\end{document}
+\end{minted}
+
+Compile with:
+
+\begin{minted}{bash}
+latexmk -lualatex main.tex
+\end{minted}
+
+%% ─────────────────────────────────────────────────────
+\chapter{Class Options}
+%% ─────────────────────────────────────────────────────
+
+OmniLaTeX accepts the following options via \texttt{\textbackslash documentclass}:
+
+\begin{longtable}{lp{8cm}}
+	\toprule
+	\textbf{Option}            & \textbf{Description}                                                                   \\
+	\midrule
+	\option{language}          & Document language (default: \option{english}). Passed to polyglossia.                  \\
+	\option{doctype}           & Document type alias (default: \option{thesis}). See Chapter~\ref{ch:doctypes}.         \\
+	\option{titlestyle}        & Title page style (default: \option{book}).                                             \\
+	\option{institution}       & Institution configuration (default: \option{none}). See Chapter~\ref{ch:institutions}. \\
+	\option{censoring}         & Enable redaction support (default: \option{false}).                                    \\
+	\option{loadGlossaries}    & Enable glossaries module (default: \option{false}).                                    \\
+	\option{todonotes}         & Enable TODO notes (default: \option{false}).                                           \\
+	\option{enablefonts}       & Enable custom font loading (default: \option{false}).                                  \\
+	\option{enablegraphics}    & Enable graphics module (default: \option{false}).                                      \\
+	\option{enablemath}        & Enable math module (default: \option{true}).                                           \\
+	\option{enabletikz}        & Enable TikZ modules (default: \option{true}).                                          \\
+	\option{enableengineering} & Enable engineering TikZ shapes (default: \option{true}).                               \\
+	\option{enablecode}        & Enable code listings (default: \option{true}).                                         \\
+	\option{enabletables}      & Enable table module (default: \option{true}).                                          \\
+	\bottomrule
+\end{longtable}
+
+%% ─────────────────────────────────────────────────────
+\chapter{Document Types}
+\label{ch:doctypes}
+%% ─────────────────────────────────────────────────────
+
+OmniLaTeX provides 46 doctype aliases that resolve to 13 document profiles
+across 3 KOMA-Script base classes.
+
+\section{Available Doctypes}
+
+\begin{longtable}{lll}
+	\toprule
+	\textbf{Alias}  & \textbf{Profile} & \textbf{Base Class} \\
+	\midrule
+	thesis          & Thesis           & scrbook             \\
+	dissertation    & Dissertation     & scrbook             \\
+	book            & Book             & scrbook             \\
+	manual          & Manual           & scrbook             \\
+	article         & Article          & scrartcl            \\
+	journal         & Journal          & scrartcl            \\
+	cv              & CV               & scrartcl            \\
+	cover-letter    & Cover Letter     & scrartcl            \\
+	technicalreport & Technical Report & scrreprt            \\
+	standard        & Standard         & scrreprt            \\
+	patent          & Patent           & scrreprt            \\
+	dictionary      & Dictionary       & scrbook             \\
+	inlinepaper     & Inline Paper     & scrartcl            \\
+	\bottomrule
+\end{longtable}
+
+Additional aliases exist for common variations (e.g., \option{report},
+\option{paper}, \option{resume}, \option{letter}).
+See \file{omnilatex.cls} for the complete alias table.
+
+\section{Doctype Profiles}
+
+Each doctype profile (in \file{config/document-types/}) defines:
+
+\begin{itemize}
+	\item Page layout (\texttt{DIV}, margins, headers/footers)
+	\item Font size
+	\item Line spacing
+	\item Title page style
+	\item Section numbering depth
+	\item Table of contents depth
+	\item Color mode (color, grayscale, bw)
+\end{itemize}
+
+%% ─────────────────────────────────────────────────────
+\chapter{Institution Configuration}
+\label{ch:institutions}
+%% ─────────────────────────────────────────────────────
+
+OmniLaTeX supports pluggable institution branding via
+\file{config/institutions/}.
+
+\section{Using an Institution}
+
+\begin{minted}{latex}
+\documentclass[doctype=thesis,institution=tuhh]{omnilatex}
+\end{minted}
+
+This loads \file{config/institutions/tuhh/tuhh.sty}, which provides:
+
+\begin{itemize}
+	\item Logo definitions (language-aware via \texttt{\textbackslash DeclareTranslation})
+	\item Institution links
+	\item Color palette
+	\item Custom commands (degree names, department names, etc.)
+\end{itemize}
+
+\section{Creating a Custom Institution}
+
+See \texttt{CONTRIBUTING.md} for a step-by-step guide.
+
+%% ─────────────────────────────────────────────────────
+\chapter{Modules}
+\label{ch:modules}
+%% ─────────────────────────────────────────────────────
+
+OmniLaTeX is organized into 21 modules across 9 subdirectories:
+
+\section{Core (\module{lib/core/})}
+
+\begin{description}
+	\item[\module{omnilatex-base}] Build mode detection (dev/prod/ultra), date/time utilities.
+\end{description}
+
+\section{Layout (\module{lib/layout/})}
+
+\begin{description}
+	\item[\module{omnilatex-page}] Headers, footers, page makeup via scrlayer-scrpage.
+	\item[\module{omnilatex-floats}] Float placement, captions, subfloats, source notation.
+	\item[\module{omnilatex-document}] Document metadata, custom \texttt{\textbackslash document*} commands.
+	\item[\module{omnilatex-boxes}] Color boxes via tcolorbox.
+	\item[\module{omnilatex-koma}] KOMA-Script sectioning, titlepage, TOC customization.
+\end{description}
+
+\section{Typography (\module{lib/typography/})}
+
+\begin{description}
+	\item[\module{omnilatex-fonts}] Font loading with graceful fallbacks.
+	\item[\module{omnilatex-typesetting}] Line spacing, dashes, quotation marks.
+	\item[\module{omnilatex-math}] Math typesetting, delimiters, physics macros, big-O notation.
+	\item[\module{omnilatex-lists}] Custom list environments via enumitem.
+\end{description}
+
+\section{References (\module{lib/references/})}
+
+\begin{description}
+	\item[\module{omnilatex-hyperref}] Hyperlinks, PDF metadata, git SHA embedding.
+	\item[\module{omnilatex-biblio}] Bibliography via biblatex (biber backend).
+	\item[\module{omnilatex-glossary}] Glossaries, abbreviations, symbols via bib2gls.
+\end{description}
+
+\section{Language (\module{lib/language/})}
+
+\begin{description}
+	\item[\module{omnilatex-i18n}] Polyglossia integration, translations.
+\end{description}
+
+\section{Graphics (\module{lib/graphics/})}
+
+\begin{description}
+	\item[\module{omnilatex-graphics}] Image handling, SVG support (Inkscape).
+	\item[\module{omnilatex-tikz-core}] TikZ/PGFPlots core, forest trees.
+	\item[\module{omnilatex-tikz-engineering}] Engineering diagrams, P\&ID, flowcharts.
+\end{description}
+
+\section{Code (\module{lib/code/})}
+
+\begin{description}
+	\item[\module{omnilatex-listings}] Source code highlighting via minted.
+\end{description}
+
+\section{Tables (\module{lib/tables/})}
+
+\begin{description}
+	\item[\module{omnilatex-tables}] Table formatting (booktabs, tabularray, longtable).
+\end{description}
+
+\section{Utilities (\module{lib/utils/})}
+
+\begin{description}
+	\item[\module{omnilatex-utils}] TODO notes, git metadata, keyboard macros, censoring.
+	\item[\module{omnilatex-colors}] Color definitions and schemes.
+\end{description}
+
+%% ─────────────────────────────────────────────────────
+\chapter{Font System}
+%% ─────────────────────────────────────────────────────
+
+OmniLaTeX uses a three-font stack:
+
+\begin{description}
+	\item[Libertinus Serif + Math] Main text and mathematics. Always available via TeX Live.
+	\item[Monaspace Neon] Monospace and code listings. Optional — falls back to Latin Modern Mono.
+	\item[Atkinson Hyperlegible Next] Sans-serif elements. Optional — falls back to Libertinus Sans.
+\end{description}
+
+Missing optional fonts trigger a \texttt{\textbackslash ClassWarning} and degrade
+gracefully. No manual configuration is needed.
+
+%% ─────────────────────────────────────────────────────
+\chapter{Build Modes}
+%% ─────────────────────────────────────────────────────
+
+OmniLaTeX supports three build modes, controlled via the \texttt{OMNILATEX\_MODE}
+environment variable:
+
+\begin{description}
+	\item[dev] Development mode. Code listings use basic formatting, debug output enabled.
+	\item[prod] Production mode (default). Full formatting, no debug output.
+	\item[ultra] Ultra mode. Maximum quality, SVG conversion, no compromises.
+\end{description}
+
+%% ─────────────────────────────────────────────────────
+\chapter{Reproducible Builds}
+%% ─────────────────────────────────────────────────────
+
+OmniLaTeX supports deterministic PDF generation via \texttt{SOURCE\_DATE\_EPOCH}:
+
+\begin{minted}{bash}
+SOURCE_DATE_EPOCH=$(git log -1 --format=%ct) latexmk -lualatex main.tex
+\end{minted}
+
+This sets all PDF timestamps to the git commit date, enabling byte-for-byte
+reproducible builds.
+
+%% ─────────────────────────────────────────────────────
+\chapter{License}
+%% ─────────────────────────────────────────────────────
+
+OmniLaTeX is licensed under the Apache License 2.0.
+
+\end{document}

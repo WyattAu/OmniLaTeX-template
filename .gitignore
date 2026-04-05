@@ -470,3 +470,7 @@ Thumbs.db
 
 # Symlinked .latexmkrc created by build.py in example directories
 examples/*/.latexmkrc
+overleaf/*.zip
+
+# CTAN packaging output
+ctan/

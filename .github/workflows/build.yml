@@ -268,3 +268,38 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  changelog:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check CHANGELOG.md updated for .sty/.cls changes
+        run: |
+          # Get the list of changed .sty and .cls files vs the base branch
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.sty' '*.cls' 2>/dev/null || true)
+          if [ -z "$CHANGED" ]; then
+            echo "No .sty or .cls files changed — changelog check skipped."
+            exit 0
+          fi
+
+          echo "Changed source files:"
+          echo "$CHANGED"
+          echo ""
+
+          # Check if CHANGELOG.md was also modified
+          CHANGELOG_CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- 'CHANGELOG.md' 2>/dev/null || true)
+          if [ -z "$CHANGELOG_CHANGED" ]; then
+            echo "::error::.sty or .cls files were modified but CHANGELOG.md was not updated."
+            echo "Please add an entry under [Unreleased] describing your changes."
+            echo "See CONTRIBUTING.md for the changelog format."
+            exit 1
+          fi
+
+          echo "CHANGELOG.md was updated."
+
