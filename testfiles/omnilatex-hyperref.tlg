@@ -1,12 +1,62 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
-
 === HYPERREF: hyperref loaded ===
 PASS: hyperref loaded
 === HYPERREF: URL command ===
-Testing url: https://example.com
+Testing url: \url {https://example.com}
 === HYPERREF: href command ===
 PASS: href command works
+Underfull \hbox (badness 10000) in paragraph at lines 22--24
+[][][][][]\TU/LibertinusSerif(0)/m/n/10.95 Ex-am-ple Link[][][][][][][][][][][][][][]  
+\hbox(7.67867+2.57422)x448.13095, glue set 17.37556, direction TLT
+.\localpar
+..\localinterlinepenalty=0
+..\localbrokenpenalty=0
+..\localleftbox=null
+..\localrightbox=null
+.\hbox(0.0+0.0)x0.0, direction TLT
+.\pdfstartlink(*+*)x* attr{/Border[0 0 0]/H/I/C[0 1 1]} action user{/Subtype/Link/A<</Type/Action/S/URI/URI(https://example.com)>>}
+.\hbox(0.0+0.0)x0.0, glue set - 0.00278fil, direction TLT
+..\glue 0.0 plus 1.0fil minus 1.0fil
+..\l_tmpa_tl  
+.\pdfliteral page{q 7 Tr}
+.\write1{\ocgxii@lnkcol@stack@on@page{\int_use:N \g_ocgxii_page_int }{{darklin\ETC.}
+.\TU/LibertinusSerif(0)/m/n/10.95 E
+.\TU/LibertinusSerif(0)/m/n/10.95 x
+.\discretionary (penalty 50)
+..< \TU/LibertinusSerif(0)/m/n/10.95 -
+.\TU/LibertinusSerif(0)/m/n/10.95 a
+.\TU/LibertinusSerif(0)/m/n/10.95 m
+.\discretionary (penalty 50)
+..< \TU/LibertinusSerif(0)/m/n/10.95 -
+.\TU/LibertinusSerif(0)/m/n/10.95 p
+.\TU/LibertinusSerif(0)/m/n/10.95 l
+.\TU/LibertinusSerif(0)/m/n/10.95 e
+.\glue(\spaceskip) 2.75024
+.\TU/LibertinusSerif(0)/m/n/10.95 L
+.\TU/LibertinusSerif(0)/m/n/10.95 i
+.\TU/LibertinusSerif(0)/m/n/10.95 n
+.\TU/LibertinusSerif(0)/m/n/10.95 k
+.\write1{\ocgxii@lnkcol@stack@on@page{\int_use:N \g_ocgxii_page_int }{}}
+.\hbox(0.0+0.0)x0.0, glue set - 0.00278fil, direction TLT
+..\glue 0.0 plus 1.0fil minus 1.0fil
+..\l_tmpa_tl  
+.\pdfliteral page{/OC/rm@oc0 BDC}
+.\write1{\pbs@seq@push@cx{pbs@props@\int_use:N \g_pbs_page_int }{/rm@oc0 31 0 \ETC.}
+.\pdfliteral page{-88888 -88888 99999 99999 re f}
+.\pdfliteral page{EMC}
+.\pdfliteral page{/OC/rm@oc1 BDC}
+.\write1{\pbs@seq@push@cx{pbs@props@\int_use:N \g_pbs_page_int }{/rm@oc1 30 0 \ETC.}
+.\pdfcolorstack 0 push {0.18825 0.24315 0.4549 rg 0.18825 0.24315 0.4549 RG}
+.\pdfliteral page{-88888 -88888 99999 99999 re f}
+.\pdfcolorstack 0 pop
+.\pdfliteral page{EMC}
+.\pdfliteral page{0 Tr Q}
+.\pdfendlink
+.\glue(\spaceskip) 2.75024
+.\penalty 10000
+.\glue(\parfillskip) 0.0
+.\glue(\rightskip) 0.0 plus 22.00189
 === HYPERREF: Bookmark setup ===
 PASS: bookmark loaded
 === HYPERREF: cleveref loaded ===

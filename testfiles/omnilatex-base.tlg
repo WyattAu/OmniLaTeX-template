@@ -1,0 +1,13 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+=== BASE: Build mode detection ===
+buildmode: dev
+OmniBuildMode: dev
+=== BASE: Mode flags (default=dev) ===
+OmniDev: TRUE
+OmniProd: FALSE
+OmniUltra: FALSE
+=== BASE: Ordinal numbers ===
+1st: 1\relax \textsuperscript {st}
+2nd: 2\relax \textsuperscript {nd}
+3rd: 3\relax \textsuperscript {rd}

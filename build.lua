@@ -28,3 +28,4 @@ typesetfiles = {
 tdsroot = ""
 
 typesetexe = "lualatex"
+checkexe = "lualatex"

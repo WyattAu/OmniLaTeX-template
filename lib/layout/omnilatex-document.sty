@@ -162,11 +162,13 @@
         }%
     \fi
     \ifx\@documentcodestyle\@empty\else
-        \ifdefstring{\@documentcodestyle}{color}{\setminted{style=default}}{%
-            \ifdefstring{\@documentcodestyle}{bw}{\setminted{style=default}}{%
-                \setminted{style=\@documentcodestyle}%
+        \@ifpackageloaded{minted}{%
+            \ifdefstring{\@documentcodestyle}{color}{\setminted{style=default}}{%
+                \ifdefstring{\@documentcodestyle}{bw}{\setminted{style=default}}{%
+                    \setminted{style=\@documentcodestyle}%
+                }%
             }%
-        }%
+        }{}%
     \fi
 }
 

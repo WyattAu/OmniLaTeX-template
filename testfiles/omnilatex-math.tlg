@@ -1,30 +1,29 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
-
 === MATH: Delimiter commands ===
-parens: (a+b)
-brackets: [a+b]
-braces: {a+b}
+parens: $\parens {a+b}$
+brackets: $\brackets {a+b}$
+braces: $\braces {a+b}$
 === MATH: Delimiter starred variants ===
-parens*: (\frac {a}{b})
-brackets*: [\frac {a}{b}]
-braces*: {\frac {a}{b}}
+parens*: $\parens *{\frac {a}{b}}$
+brackets*: $\brackets *{\frac {a}{b}}$
+braces*: $\braces *{\frac {a}{b}}$
 === MATH: Equation punctuation ===
-eqend:  ,.
-eqcomma:  ,
+eqend: \,.
+eqcomma: \,,
 === MATH: Text in math ===
-qq: text
+qq: $\hskip 1em\relax \text {text}\hskip 1em\relax $
 === MATH: Absolute value format ===
-absfmt: |x|
-absfmt*: |x|
+absfmt: $\absfmt {x}$
+absfmt*: $\absfmt *{x}$
 === MATH: Mean format ===
-meanfmt: x
+meanfmt: $\ensuremath {\mkern 1.5mu\overline {\mkern -1.5mux\mkern -1.5mu}\mkern 1.5mu}$
 === MATH: Vector format ===
-vectfmt: v
+vectfmt: $\ensuremath {\symbf {v}}$
 === MATH: Derivative format ===
-derivativefmt: dx
-partialderivativefmt: x
+derivativefmt: $\ensuremath {\mathup {d}x}$
+partialderivativefmt: $\ensuremath {\partial x}$
 === MATH: Flow format ===
-flowfmt: m
+flowfmt: $\ensuremath {\dot {m}}$
 === MATH: Difference format ===
-differencefmt: T
+differencefmt: $\ensuremath {\mitDelta T}$

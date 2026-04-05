@@ -189,6 +189,11 @@
   { \caption*{\tl_use:N \l__omnilatex_float_footnote_tl} }
 }
 
+\cs_new_protected:Npn \__omnilatex_float_begin_with_placement:nn #1#2
+{
+  \use:e { \exp_not:N \begin {#1} [#2] }
+}
+
 \cs_new_protected:Npn \__omnilatex_float_begin_internal:nn #1#2
 {
   \omnilatex_float_reset:
@@ -225,12 +230,7 @@
     { \msg_warning:nnn { omnilatex / float } { missing-manual-caption } { \l__omnilatex_float_type_tl } }
   }
   \tl_set:Nx \l_tmpa_tl { \tl_to_str:N \l__omnilatex_float_type_tl }
-  \str_case:Vn \l_tmpa_tl
-  {
-    { figure } { \end{figure} }
-      { table }  { \end{table} }
-  }
-  { \end{\tl_use:N \l_tmpa_tl} }
+  \use:e { \exp_not:N \end { \tl_use:N \l_tmpa_tl } }
 }
 
 \NewDocumentCommand{\omnlFigure}{ O{} +m }

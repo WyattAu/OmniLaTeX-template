@@ -1,0 +1,10 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+=== FONTS: Main font loaded ===
+rm-family: LibertinusSerif(0)
+=== FONTS: Mono font loaded ===
+tt-family: LatinModernMono(0)
+=== FONTS: Math font loaded ===
+math font check: $\symbf {x}+\symbf {y}$
+=== FONTS: siunitx unitnumberfont ===
+unitnumberfont defined: YES

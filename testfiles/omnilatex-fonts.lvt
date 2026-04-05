@@ -13,16 +13,14 @@
 
 \typeout{=== FONTS: Mono font loaded ===}
 \makeatletter
-\typeout{tt-family: \tt@default}
+\typeout{tt-family: \ttdefault}
 \makeatother
 
 \typeout{=== FONTS: Math font loaded ===}
 \typeout{math font check: $\symbf{x}+\symbf{y}$}
 
 \typeout{=== FONTS: siunitx unitnumberfont ===}
-\makeatletter
 \typeout{unitnumberfont defined: YES}
-\makeatother
 
 \END
 \end{document}

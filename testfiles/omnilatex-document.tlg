@@ -1,6 +1,5 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
-
 === DOCUMENT: documenttype command ===
 documenttype set to: Test Document
 === DOCUMENT: idnumber command ===
@@ -14,6 +13,31 @@ secondexaminer set to: Prof. Test Examiner Two
 === DOCUMENT: sampletext command ===
 The quick brown Fox jumps over the lazy Dog 13 times!
 === DOCUMENT: iecfeg command ===
-e.g.
+\textit {e.g.}
 === DOCUMENT: documentfontsize ===
+Class scrartcl Info: File `scrsize12pt.clo' used to setup font sizes on input line ....
+(../scrsize12pt.clo
+File: scrsize12pt.clo ....-..-.. v... KOMA-Script font size class option (12pt)
+LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
+(Font)              scaled to size 12.05585pt on input line ....
+)
+Package typearea Info: These are the values describing the layout:
+(typearea)             DIV  = 12
+(typearea)             BCOR = 0.0pt
+(typearea)             \paperwidth      = 597.50793pt
+(typearea)              \textwidth      = 448.13095pt
+(typearea)              DIV departure   = -9%
+(typearea)              \evensidemargin = 2.4185pt
+(typearea)              \oddsidemargin  = 2.4185pt
+(typearea)             \paperheight     = 845.04694pt
+(typearea)              \textheight     = 642.42847pt
+(typearea)              \topmargin      = -50.00714pt
+(typearea)              \headheight     = 21.88988pt
+(typearea)              \headsep        = 26.26785pt
+(typearea)              \topskip        = 12.0pt
+(typearea)              \footskip       = 61.29166pt
+(typearea)              \baselineskip   = 17.5119pt
+(typearea)              on input line ....
+Package typearea Info: Using dirty hack to recalculate internal output
+(typearea)             dimensions of LaTeX on input line ....
 fontsize set to: 12pt
