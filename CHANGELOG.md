@@ -22,10 +22,18 @@ This project adheres to [Semantic versioning](https://semver.org/).
 - `build.py scaffold-institution <name>`: creates institution config from generic template
 - `build.py init <name>`: initialize a new OmniLaTeX project from minimal-starter template
 - Generic institution config: `config/institutions/generic/` — customizable template
+- Interactive TUI menu: run `build.py` without args for a rich command selector
+- Rich build dashboard: live progress, elapsed timer, and log output during builds
+- Lua utility scripts: `word-count.lua`, `todo-tracker.lua`, `conditional-include.lua`
 
 ### Changed
 - README no longer references non-existent `cv-bw` example
 - README identity: leads with value proposition instead of "fork from TUHH"
+
+### Fixed
+- CI workflows: `env.DOCKER_IMAGE` not supported in `container.image` — inlined the digest
+- Rich concurrent build: active workers panel now correctly shows running jobs (was always empty)
+- `build.py build-root`: now shows rich dashboard with live log output (was completely silent)
 
 ## [1.0.0] - 2026-04-03
 

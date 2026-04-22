@@ -320,7 +320,7 @@ templates.
       (add optional flags for doctype/institution/language)
 - [x] `build.py scaffold-institution NAME` — creates institution config skeleton
 - [ ] `build.py scaffold-language LANG` — creates language addition guide
-- [ ] Interactive prompts with sensible defaults
+- [x] Interactive prompts with sensible defaults (full TUI menu + rich dashboard)
 
 ### P4.3 — Performance Baseline
 

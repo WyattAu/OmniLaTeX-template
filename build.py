@@ -151,6 +151,7 @@ class CommandRunner:
         *,
         extra_env: Optional[Dict[str, str]] = None,
         cwd: Optional[Path] = None,
+        on_line: Optional[Callable[[str], None]] = None,
     ) -> Tuple[int, List[str]]:
         """Executes a command, streams output, and returns (exit_code, logs). Does NOT raise on failure."""
         if self.verbose:
@@ -175,6 +176,8 @@ class CommandRunner:
             if process.stdout:
                 for line in iter(process.stdout.readline, ""):
                     logs.append(line.rstrip())
+                    if on_line:
+                        on_line(line.rstrip())
             return_code = process.wait()
             return return_code, logs
         except FileNotFoundError as e:
@@ -491,7 +494,9 @@ class BuildTasks:
 
     def _build_examples_rich_concurrent(self, example_names: List[str]):
         console = Console()
-        log_lines, log_lock, active_jobs = deque(maxlen=200), threading.Lock(), []
+        log_lines, log_lock = deque(maxlen=200), threading.Lock()
+        active_jobs: Dict[str, float] = {}  # name -> start_time
+        active_lock = threading.Lock()
         overall_progress = Progress(
             TextColumn("[b blue]Overall"),
             MofNCompleteColumn(),
@@ -521,17 +526,27 @@ class BuildTasks:
             )
         )
 
+        def _refresh_active():
+            """Rebuild the active workers display from the dict."""
+            lines = []
+            for name, t0 in active_jobs.items():
+                elapsed = time.perf_counter() - t0
+                lines.append(f"[cyan]⠋ {name}[/cyan]  [dim]{elapsed:.1f}s[/dim]")
+            active_jobs_text.plain = "\n".join(lines) if lines else "[dim]—[/dim]"
+
         results = []
         with Live(layout, console=console, screen=True, refresh_per_second=10):
             with ThreadPoolExecutor(max_workers=self.jobs) as executor:
-                futures = {
-                    executor.submit(self._compile_example_worker, name): name
-                    for name in example_names
-                }
+                futures = {}
+                for name in example_names:
+                    future = executor.submit(self._compile_example_worker, name)
+                    futures[future] = name
+                    with active_lock:
+                        active_jobs[name] = time.perf_counter()
+                    _refresh_active()
+
                 for future in as_completed(futures):
                     name = futures[future]
-                    with log_lock:
-                        active_jobs.append(name)
                     try:
                         _, success, logs = future.result()
                         results.append(success)
@@ -541,12 +556,9 @@ class BuildTasks:
                         results.append(False)
                         log_lines.append(f"[b red]FATAL ERROR: {name}: {exc}[/b red]")
                     finally:
-                        with log_lock:
-                            active_jobs.remove(name)
-                            active_jobs_text.plain = "\n".join(
-                                f"[yellow]• Compiling {j}...[/yellow]"
-                                for j in active_jobs
-                            )
+                        with active_lock:
+                            active_jobs.pop(name, None)
+                            _refresh_active()
                             log_panel_text.plain = "\n".join(log_lines)
                         overall_progress.update(overall_task, advance=1)
         self.ui.header(
@@ -640,10 +652,18 @@ class BuildTasks:
 
     def build_root(self, _=None):
         self.ui.header("Building Root")
-        exit_code, logs = self.runner.run(
-            [LATEXMK_COMMAND, INTERACTION_NONSTOP, MAIN_TEX_FILENAME]
-        )
         pdf_path = Path(MAIN_TEX_FILENAME).with_suffix(".pdf")
+
+        if RICH_AVAILABLE and not self.config.is_ci():
+            exit_code, logs = self._run_with_dashboard(
+                [LATEXMK_COMMAND, INTERACTION_NONSTOP, MAIN_TEX_FILENAME],
+                title="Building Root",
+            )
+        else:
+            exit_code, logs = self.runner.run(
+                [LATEXMK_COMMAND, INTERACTION_NONSTOP, MAIN_TEX_FILENAME]
+            )
+
         if pdf_path.exists():
             self.ui.success("Root build complete.")
             build_dir = self.config.build_dir
@@ -653,6 +673,68 @@ class BuildTasks:
         else:
             self.ui.error("Build failure: PDF not generated.")
             raise SystemExit(1)
+
+    def _run_with_dashboard(
+        self, cmd_args: List[str], *, title: str = "Building"
+    ) -> Tuple[int, List[str]]:
+        """Run a command with a rich live dashboard showing progress and logs."""
+        console = Console()
+        log_lines: deque = deque(maxlen=50)
+        start_time = time.perf_counter()
+
+        # Build status table
+        from rich.table import Table as RichTable
+
+        status_table = RichTable(show_header=False, expand=True, box=None)
+        status_table.add_column("Key", style="bold cyan", width=12)
+        status_table.add_column("Value")
+        status_table.add_row("Status", "[yellow]⏳ Running...[/yellow]")
+        status_table.add_row("Elapsed", "0.0s")
+        status_table.add_row("Engine", "lualatex")
+
+        log_panel_text = Text("")
+
+        layout = Layout()
+        layout.split(
+            Layout(
+                Panel(status_table, title=f"[b]{title}[/b]", border_style="blue"),
+                size=5,
+            ),
+            Layout(
+                Panel(
+                    log_panel_text,
+                    title="[b dim]Build Log[/b dim]",
+                    border_style="dim",
+                ),
+                name="logs",
+            ),
+        )
+
+        def on_line(line: str):
+            log_lines.append(line)
+            log_panel_text.plain = "\n".join(log_lines)
+            elapsed = time.perf_counter() - start_time
+            status_table.rows[1].cells[1] = Text(f"{elapsed:.1f}s")
+
+        exit_code = 0
+        logs: List[str] = []
+        try:
+            with Live(layout, console=console, refresh_per_second=5):
+                exit_code, logs = self.runner.run(cmd_args, on_line=on_line)
+                elapsed = time.perf_counter() - start_time
+                if exit_code == 0:
+                    status_table.rows[0].cells[1] = Text("[green]✓ Complete[/green]")
+                else:
+                    status_table.rows[0].cells[1] = Text(
+                        f"[red]✗ Failed (exit {exit_code})[/red]"
+                    )
+                status_table.rows[1].cells[1] = Text(f"{elapsed:.1f}s")
+        except Exception:
+            # Dashboard failed, fall back to simple run
+            self.ui.warning("Dashboard error, falling back to simple output.")
+            return self.runner.run(cmd_args)
+
+        return exit_code, logs
 
     def clean_all(self, _=None):
         self.ui.header("Full clean"), self.clean_aux()
@@ -1017,7 +1099,9 @@ class BuildTasks:
 
         if not files:
             self.ui.warning("Usage: build.py scaffold-institution <name>")
-            self.ui.info("Creates config/institutions/<name>/<name>.sty from the generic template.")
+            self.ui.info(
+                "Creates config/institutions/<name>/<name>.sty from the generic template."
+            )
             return
 
         name = files[0]
@@ -1052,8 +1136,13 @@ class BuildTasks:
         # Update ProvidesPackage and comments
         if new_sty.exists():
             content = new_sty.read_text()
-            content = content.replace("config/institutions/generic/generic", f"config/institutions/{name}/{name}")
-            content = content.replace("Generic Institution Configuration", f"{name} Institution Configuration")
+            content = content.replace(
+                "config/institutions/generic/generic",
+                f"config/institutions/{name}/{name}",
+            )
+            content = content.replace(
+                "Generic Institution Configuration", f"{name} Institution Configuration"
+            )
             content = content.replace("assets/logos/generic", f"assets/logos/{name}")
             content = content.replace("institution=generic]", f"institution={name}]")
             new_sty.write_text(content)
@@ -1062,7 +1151,9 @@ class BuildTasks:
         self.ui.info(f"  Config: {dst / f'{name}.sty'}")
         self.ui.info(f"  Assets: {dst / 'assets' / 'logos' / name}")
         self.ui.info(f"  Next: customize the .sty file, add your logo, update colors")
-        self.ui.info(f"  Usage: \\documentclass[doctype=thesis,institution={name}]{{omnilatex}}")
+        self.ui.info(
+            f"  Usage: \\documentclass[doctype=thesis,institution={name}]{{omnilatex}}"
+        )
 
     def cmd_init(self, files: List[str]):
         """Initialize a new OmniLaTeX project from a template."""
@@ -1070,7 +1161,9 @@ class BuildTasks:
 
         if not files:
             self.ui.warning("Usage: build.py init <project-name>")
-            self.ui.info("Creates a new OmniLaTeX project from the minimal-starter template.")
+            self.ui.info(
+                "Creates a new OmniLaTeX project from the minimal-starter template."
+            )
             return
 
         project_name = files[0]
@@ -1090,12 +1183,34 @@ class BuildTasks:
 
         # Copy template (exclude build artifacts)
         ignore = shutil.ignore_patterns(
-            "*.aux", "*.log", "*.out", "*.toc", "*.pdf", "*.fls",
-            "*.fdb_latexmk", "*.synctex*", "*.bbl", "*.bcf", "*.blg",
-            "*.run.xml", "*-blx.*", "*SAVE-ERROR",
-            "*.glg", "*.glo", "*.gls", "*.acn", "*.acr",
-            "*.glstex", "*.syi", "*.syg", "*.pyc", "__pycache__",
-            "_minted*", "*.indent.log", "build/", ".git/",
+            "*.aux",
+            "*.log",
+            "*.out",
+            "*.toc",
+            "*.pdf",
+            "*.fls",
+            "*.fdb_latexmk",
+            "*.synctex*",
+            "*.bbl",
+            "*.bcf",
+            "*.blg",
+            "*.run.xml",
+            "*-blx.*",
+            "*SAVE-ERROR",
+            "*.glg",
+            "*.glo",
+            "*.gls",
+            "*.acn",
+            "*.acr",
+            "*.glstex",
+            "*.syi",
+            "*.syg",
+            "*.pyc",
+            "__pycache__",
+            "_minted*",
+            "*.indent.log",
+            "build/",
+            ".git/",
             "node_modules/",
         )
         shutil.copytree(src, dst, ignore=ignore)
@@ -1201,6 +1316,254 @@ class BuildTasks:
 
 
 # -----------------------------------------------------------------------------
+# Interactive Menu (TUI)
+# -----------------------------------------------------------------------------
+def interactive_menu(tasks: BuildTasks, commands: dict) -> None:
+    """Show an interactive terminal menu when no command is specified."""
+
+    # Menu categories with their commands
+    menu_sections = [
+        (
+            "Build",
+            [
+                ("build-all", "Build root + all examples"),
+                ("build-root", "Build root document"),
+                ("build-examples", "Build all examples"),
+                ("build-example", "Build specific example(s)"),
+            ],
+        ),
+        (
+            "Clean",
+            [
+                ("clean", "Full cleanup"),
+                ("clean-aux", "Clean auxiliary files"),
+                ("clean-pdf", "Clean all PDFs"),
+                ("clean-example", "Clean specific example(s)"),
+            ],
+        ),
+        (
+            "Quality",
+            [
+                ("test", "Run test suite"),
+                ("preflight", "Run preflight checks"),
+                ("doctor", "Health diagnostics"),
+                ("diff", "Visual regression diff"),
+            ],
+        ),
+        (
+            "Utilities",
+            [
+                ("list-examples", "List all examples"),
+                ("init", "New project from template"),
+                ("scaffold-institution", "New institution config"),
+                ("watch", "Watch files & rebuild"),
+            ],
+        ),
+    ]
+
+    # Build flat lookup: number -> (cmd_name, takes_files)
+    flat_commands = {}
+    idx = 1
+    for _section, items in menu_sections:
+        for cmd_name, desc in items:
+            flat_commands[str(idx)] = (cmd_name, desc, commands[cmd_name][2])
+            idx += 1
+
+    if RICH_AVAILABLE:
+        _rich_menu(tasks, commands, menu_sections, flat_commands)
+    else:
+        _simple_menu(tasks, commands, menu_sections, flat_commands)
+
+
+def _rich_menu(tasks, commands, menu_sections, flat_commands):
+    """Render the interactive menu using rich."""
+    from rich.console import Console
+    from rich.table import Table as RichTable
+    from rich.panel import Panel
+    from rich.text import Text as RichText
+
+    console = Console()
+
+    while True:
+        console.clear()
+        console.print()
+        title = RichText("OmniLaTeX Build System", style="bold cyan")
+        subtitle = RichText(
+            f"v1.1.0  •  {len(tasks.discover_examples())} examples  •  "
+            f"{len([f for f in Path('.').rglob('*.sty')])} modules",
+            style="dim",
+        )
+        console.print(
+            Panel(title + "\n" + subtitle, border_style="blue", padding=(0, 1))
+        )
+        console.print()
+
+        # Render each section
+        for section_name, items in menu_sections:
+            table = RichTable(show_header=False, box=None, padding=(0, 1))
+            table.add_column("num", style="bold cyan", width=4, justify="right")
+            table.add_column("command", style="bold white", width=22)
+            table.add_column("description", style="dim")
+            for i, (cmd_name, desc) in enumerate(items, 1):
+                num = str(
+                    sum(
+                        len(s[1])
+                        for s in menu_sections[
+                            : menu_sections.index((section_name, items))
+                        ]
+                    )
+                    + i
+                )
+                table.add_row(num + ".", cmd_name, desc)
+            console.print(RichText(f"  [bold]{section_name}[/bold]", style=""))
+            console.print(table)
+            console.print()
+
+        console.print(
+            RichText(
+                "  [dim]Enter command number or name, or [bold]q[/bold] to quit.[/dim]"
+            )
+        )
+
+        try:
+            choice = input("\n  Select > ").strip().lower()
+        except (EOFError, KeyboardInterrupt):
+            console.print("\n[dim]Goodbye![/dim]")
+            return
+
+        if choice in ("q", "quit", "exit", ""):
+            console.print("[dim]Goodbye![/dim]")
+            return
+
+        # Resolve the choice
+        cmd_name = None
+        takes_files = False
+
+        # Check by number
+        if choice in flat_commands:
+            cmd_name, _, takes_files = flat_commands[choice]
+        # Check by name
+        elif choice in commands:
+            cmd_name = choice
+            takes_files = commands[choice][2]
+        else:
+            # Fuzzy match partial names
+            for name in commands:
+                if name.startswith(choice) or choice in name:
+                    cmd_name = name
+                    takes_files = commands[name][2]
+                    break
+
+        if not cmd_name:
+            console.print(f"[red]  Unknown command: {choice}[/red]")
+            time.sleep(1)
+            continue
+
+        # If command needs files, prompt for them
+        files = None
+        if takes_files:
+            if cmd_name == "build-example":
+                examples = [e.name for e in tasks.discover_examples()]
+                console.print(
+                    f"  [dim]Available: {', '.join(examples[:10])}{'...' if len(examples) > 10 else ''}[/dim]"
+                )
+            try:
+                arg = input(f"  {cmd_name} > ").strip()
+                files = arg.split() if arg else []
+            except (EOFError, KeyboardInterrupt):
+                console.print("\n[dim]Cancelled.[/dim]")
+                time.sleep(0.5)
+                continue
+
+        # Execute
+        console.print()
+        handler = commands[cmd_name][0]
+        try:
+            handler(tasks, files)
+        except SystemExit:
+            pass
+        except Exception as e:
+            console.print(f"[red]  Error: {e}[/red]")
+
+        console.print()
+        try:
+            input("  Press Enter to continue...")
+        except (EOFError, KeyboardInterrupt):
+            return
+
+
+def _simple_menu(tasks, commands, menu_sections, flat_commands):
+    """Render the interactive menu using plain terminal output."""
+    ui = tasks.ui
+
+    while True:
+        print()
+        ui.info("OmniLaTeX Build System")
+        print()
+
+        for section_name, items in menu_sections:
+            print(f"  {section_name}")
+            for i, (cmd_name, desc) in enumerate(items, 1):
+                offset = sum(
+                    len(s[1])
+                    for s in menu_sections[: menu_sections.index((section_name, items))]
+                )
+                print(f"    [{offset + i}] {cmd_name:<22} {desc}")
+            print()
+
+        print("  [q] Quit")
+        print()
+
+        try:
+            choice = input("  Select > ").strip().lower()
+        except (EOFError, KeyboardInterrupt):
+            print("\nGoodbye!")
+            return
+
+        if choice in ("q", "quit", "exit", ""):
+            print("Goodbye!")
+            return
+
+        cmd_name = None
+        takes_files = False
+
+        if choice in flat_commands:
+            cmd_name, _, takes_files = flat_commands[choice]
+        elif choice in commands:
+            cmd_name = choice
+            takes_files = commands[choice][2]
+
+        if not cmd_name:
+            print(f"  Unknown command: {choice}")
+            time.sleep(1)
+            continue
+
+        files = None
+        if takes_files:
+            try:
+                arg = input(f"  {cmd_name} > ").strip()
+                files = arg.split() if arg else []
+            except (EOFError, KeyboardInterrupt):
+                print("\nCancelled.")
+                continue
+
+        print()
+        handler = commands[cmd_name][0]
+        try:
+            handler(tasks, files)
+        except SystemExit:
+            pass
+        except Exception as e:
+            ui.error(str(e))
+
+        print()
+        try:
+            input("  Press Enter to continue...")
+        except (EOFError, KeyboardInterrupt):
+            return
+
+
+# -----------------------------------------------------------------------------
 # CLI
 # -----------------------------------------------------------------------------
 def main() -> None:
@@ -1241,7 +1604,9 @@ def main() -> None:
         help=f"Parallel jobs. Default: {default_jobs}",
     )
 
-    subparsers = parser.add_subparsers(dest="command", required=True)
+    subparsers = parser.add_subparsers(dest="command")
+    # Note: subparsers are NOT required — running without a command shows the
+    # interactive menu (in terminals) or prints help (in CI).
     commands = {
         "build": (BuildTasks.build_all, "Build root and all examples.", False),
         "build-tex": (BuildTasks.build_tex, "Build specific .tex files.", True),
@@ -1295,9 +1660,10 @@ def main() -> None:
             sub.add_argument("files", nargs="*", default=None)
 
     args = parser.parse_args()
+
     if args.source_date_epoch is not None:
         os.environ["SOURCE_DATE_EPOCH"] = str(args.source_date_epoch)
-    if "build" in args.command:
+    if args.command and "build" in args.command:
         ui.info(f"Using up to {args.jobs} parallel jobs.")
     runner = CommandRunner(
         ui, build_mode=args.mode, verbose=(args.verbose or config.verbose_enabled())
@@ -1305,6 +1671,14 @@ def main() -> None:
     tasks = BuildTasks(
         config, runner, ui, jobs=args.jobs, timings=args.timings, force=args.force
     )
+
+    # No command given — show interactive menu (TTY) or help (CI)
+    if not args.command:
+        if config.is_ci() or not sys.stdout.isatty():
+            parser.print_help()
+            return
+        interactive_menu(tasks, commands)
+        return
 
     try:
         args.handler(tasks, getattr(args, "files", None))

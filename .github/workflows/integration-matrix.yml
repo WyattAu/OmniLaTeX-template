@@ -8,14 +8,15 @@ on:
 permissions:
   contents: read
 
-env:
-  DOCKER_IMAGE: ghcr.io/wyattau/omnilatex-docker@sha256:3e0c27240f5b0b02c3bc635628540de8f7adfd7b581165534f550432e634d9d5  # See .env.docker
+# NOTE: GitHub Actions does NOT support env context in container.image.
+# Docker image digest managed in .env.docker — update both files together.
+# Image: ghcr.io/wyattau/omnilatex-docker@sha256:3e0c27240f5b0b02c3bc635628540de8f7adfd7b581165534f550432e634d9d5
 
 jobs:
   matrix:
     runs-on: ubuntu-latest
     container:
-      image: ${{ env.DOCKER_IMAGE }}
+      image: ghcr.io/wyattau/omnilatex-docker@sha256:3e0c27240f5b0b02c3bc635628540de8f7adfd7b581165534f550432e634d9d5
       options: --user root
     strategy:
       fail-fast: false
