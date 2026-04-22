@@ -1064,6 +1064,57 @@ class BuildTasks:
         self.ui.info(f"  Next: customize the .sty file, add your logo, update colors")
         self.ui.info(f"  Usage: \\documentclass[doctype=thesis,institution={name}]{{omnilatex}}")
 
+    def cmd_init(self, files: List[str]):
+        """Initialize a new OmniLaTeX project from a template."""
+        self.ui.header("Initialize Project")
+
+        if not files:
+            self.ui.warning("Usage: build.py init <project-name>")
+            self.ui.info("Creates a new OmniLaTeX project from the minimal-starter template.")
+            return
+
+        project_name = files[0]
+        repo_root = Path(__file__).resolve().parent
+        src = repo_root / "examples" / "minimal-starter"
+        dst = Path.cwd() / project_name
+
+        if not src.exists():
+            self.ui.error(f"Template not found at {src}")
+            return
+
+        if dst.exists():
+            self.ui.error(f"Directory '{project_name}' already exists")
+            return
+
+        import shutil
+
+        # Copy template (exclude build artifacts)
+        ignore = shutil.ignore_patterns(
+            "*.aux", "*.log", "*.out", "*.toc", "*.pdf", "*.fls",
+            "*.fdb_latexmk", "*.synctex*", "*.bbl", "*.bcf", "*.blg",
+            "*.run.xml", "*-blx.*", "*SAVE-ERROR",
+            "*.glg", "*.glo", "*.gls", "*.acn", "*.acr",
+            "*.glstex", "*.syi", "*.syg", "*.pyc", "__pycache__",
+            "_minted*", "*.indent.log", "build/", ".git/",
+            "node_modules/",
+        )
+        shutil.copytree(src, dst, ignore=ignore)
+
+        # Create a .latexmkrc symlink pointing to the root
+        latexmkrc_src = repo_root / ".latexmkrc"
+        latexmkrc_dst = dst / ".latexmkrc"
+        if latexmkrc_src.exists() and not latexmkrc_dst.exists():
+            latexmkrc_dst.symlink_to(latexmkrc_src)
+
+        self.ui.success(f"Initialized project: {project_name}")
+        self.ui.info(f"  Location: {dst}")
+        self.ui.info(f"  Template: minimal-starter")
+        self.ui.info(f"  Next steps:")
+        self.ui.info(f"    1. cd {project_name}")
+        self.ui.info(f"    2. Edit main.tex to set your title, author, and content")
+        self.ui.info(f"    3. python build.py build-root    (from repo root)")
+        self.ui.info(f"       or latexmk -lualatex main.tex  (standalone)")
+
     def cmd_doctor(self, files=None):
         """Run comprehensive health diagnostics."""
         import platform as _platform
@@ -1229,6 +1280,11 @@ def main() -> None:
         "scaffold-institution": (
             BuildTasks.cmd_scaffold_institution,
             "Create a new institution config from the generic template.",
+            True,
+        ),
+        "init": (
+            BuildTasks.cmd_init,
+            "Initialize a new OmniLaTeX project from a template.",
             True,
         ),
     }

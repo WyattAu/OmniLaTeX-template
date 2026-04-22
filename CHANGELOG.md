@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com).
-The This project adheres to [Semantic versioning](https://semver.org/).
+This project adheres to [Semantic versioning](https://semver.org/).
 
 ## [Unreleased]
 
@@ -20,6 +20,7 @@ The This project adheres to [Semantic versioning](https://semver.org/).
 - Template gallery: `docs/gallery.md` — all 20 examples with PDF links, categorized
 - In-repo Dockerfile: reproducible build environment based on TeX Live 2024
 - `build.py scaffold-institution <name>`: creates institution config from generic template
+- `build.py init <name>`: initialize a new OmniLaTeX project from minimal-starter template
 - Generic institution config: `config/institutions/generic/` — customizable template
 
 ### Changed

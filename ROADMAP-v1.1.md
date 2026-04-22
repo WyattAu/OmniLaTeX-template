@@ -4,7 +4,7 @@
 > distribution, discoverability, and ecosystem expansion.
 
 **Base version:** v1.0.0 (2026-04-03)
-**Last updated:** 2026-04-05
+**Last updated:** 2026-04-22
 
 ---
 
@@ -46,7 +46,8 @@ OmniLaTeX is automatically included in TeX Live and MiKTeX. Users run
 `tlmgr install omnilatex` and it just works.
 
 **Action:**
-- [ ] Create CTAN-ready package structure:
+- [x] Create CTAN-ready package structure: → `scripts/make-ctan-zip.sh` produces
+      TDS-compliant 236 KB upload zip
   ```
   omnilatex/
   ├── README.md            # CTAN README (different from GitHub README)
@@ -59,18 +60,18 @@ OmniLaTeX is automatically included in TeX Live and MiKTeX. Users run
       ├── omnilatex.pdf    # User manual (required by CTAN)
       └── omnilatex.tex    # Manual source
   ```
-- [ ] Write `doc/omnilatex.tex` — user manual covering all options,
+- [x] Write `doc/omnilatex.tex` — user manual covering all options,
       doctypes, modules, configuration, and migration from TUHH template
-- [ ] Build documentation PDF
+- [x] Build documentation PDF — compiles to 23-page PDF
 - [ ] Test `.tds.zip` installation in clean TeX Live environment
 - [ ] Submit to CTAN via upload form
 
 **CTAN Requirements Checklist:**
-- [ ] README in plain text (no Markdown, no HTML)
-- [ ] LICENSE file present
-- [ ] Documentation PDF (`doc/omnilatex.pdf`)
-- [ ] No external dependencies at install time (fonts are optional runtime deps)
-- [ ] Clean `.tds.zip` respecting TDS directory structure
+- [x] README in plain text (no Markdown, no HTML)
+- [x] LICENSE file present
+- [x] Documentation PDF (`doc/omnilatex.pdf`)
+- [x] No external dependencies at install time (fonts are optional runtime deps)
+- [x] Clean `.tds.zip` respecting TDS directory structure
 
 ### P1.2 — Overleaf-Compatible Template
 
@@ -78,7 +79,8 @@ OmniLaTeX is automatically included in TeX Live and MiKTeX. Users run
 template exposes OmniLaTeX to millions of users.
 
 **Action:**
-- [ ] Create `overleaf/` directory with minimal self-contained project:
+- [x] Create `overleaf/` directory with minimal self-contained project:
+      → `scripts/make-overleaf-zip.sh` produces 456 KB self-contained zip
   ```
   overleaf/
   ├── main.tex              # \documentclass{omnilatex}
@@ -90,7 +92,7 @@ template exposes OmniLaTeX to millions of users.
   ├── assets/               # Sample images
   └── .latexmkrc            # Simplified for Overleaf
   ```
-- [ ] Overleaf uses `latexmk -lualatex` — verify no custom flags needed
+- [x] Overleaf uses `latexmk -lualatex` — verify no custom flags needed
 - [ ] Test on Overleaf (free tier, TeX Live 2024)
 - [ ] Submit to Overleaf Gallery
 - [ ] Add "Open in Overleaf" badge to README
@@ -105,18 +107,18 @@ template exposes OmniLaTeX to millions of users.
 - Engineering quality (tests, proofs, 5 CI platforms) not surfaced
 
 **Action:**
-- [ ] Rewrite opening paragraph — lead with value proposition
-- [ ] Add screenshot or PDF gallery (5–6 document types)
-- [ ] List all 20 examples with one-line descriptions
-- [ ] Fix stale reference: `cv-bw` → `cv-twopage`
-- [ ] Add badges: CI status, CTAN version (after P1.1), license
-- [ ] Surface unique engineering:
+- [x] Rewrite opening paragraph — lead with value proposition
+- [x] Add screenshot or PDF gallery (5–6 document types)
+- [x] List all 20 examples with one-line descriptions
+- [x] Fix stale reference: `cv-bw` → `cv-twopage`
+- [x] Add badges: CI status, CTAN version (after P1.1), license
+- [x] Surface unique engineering:
       - 21 modules with formal interface contracts
       - 239 test cases, 5 CI platforms
       - Byte-for-byte reproducible builds
       - Lean 4 mathematical proofs
-- [ ] Improve quickstart: working 5-minute path to first PDF
-- [ ] Add "Why OmniLaTeX?" section comparing to alternatives
+- [x] Improve quickstart: working 5-minute path to first PDF
+- [x] Add "Why OmniLaTeX?" section comparing to alternatives
 
 ### P1.4 — Contributing Guide
 
@@ -125,14 +127,14 @@ powerful but undocumented for contributors. A clear guide lowers the bar
 for community contributions.
 
 **Action:**
-- [ ] Create `CONTRIBUTING.md` with:
-  - [ ] Architecture overview (module system, option resolution, build pipeline)
-  - [ ] "Adding a new institution in 30 minutes" tutorial
-  - [ ] "Adding a new language in 30 minutes" tutorial
-  - [ ] "Adding a new doctype" tutorial
-  - [ ] Development setup (Docker / Nix / local TeX Live)
-  - [ ] PR checklist (tests pass, CHANGELOG updated, no new warnings)
-  - [ ] Code style conventions (LaTeX3/expl3 naming, comments)
+- [x] Create `CONTRIBUTING.md` with:
+  - [x] Architecture overview (module system, option resolution, build pipeline)
+  - [x] "Adding a new institution in 30 minutes" tutorial
+  - [x] "Adding a new language in 30 minutes" tutorial
+  - [x] "Adding a new doctype" tutorial
+  - [x] Development setup (Docker / Nix / local TeX Live)
+  - [x] PR checklist (tests pass, CHANGELOG updated, no new warnings)
+  - [x] Code style conventions (LaTeX3/expl3 naming, comments)
 - [ ] Ensure issue templates exist (Bug, Feature, Institution Request)
 - [ ] Label strategy: `good-first-issue`, `help wanted`, `documentation`
 
@@ -141,18 +143,18 @@ for community contributions.
 **Why:** Enforce changelog discipline so every release has a complete record.
 
 **Action:**
-- [ ] Add CI job: if PR modifies `.sty` or `.cls` files, CHANGELOG.md
+- [x] Add CI job: if PR modifies `.sty` or `.cls` files, CHANGELOG.md
       must also be modified
-- [ ] Document Keep-a-Changelog format in CONTRIBUTING.md
-- [ ] Add unreleased section template to CHANGELOG.md
+- [x] Document Keep-a-Changelog format in CONTRIBUTING.md
+- [x] Add unreleased section template to CHANGELOG.md
 
 ### v1.1 Completion Criteria
 
-- [ ] CTAN package submitted and accepted (or submission ready with all artifacts)
+- [x] CTAN package submitted and accepted (or submission ready with all artifacts)
 - [ ] Overleaf template tested and gallery submission ready
-- [ ] README v2 committed with all fixes
-- [ ] CONTRIBUTING.md committed with all tutorials
-- [ ] CHANGELOG CI check active
+- [x] README v2 committed with all fixes
+- [x] CONTRIBUTING.md committed with all tutorials
+- [x] CHANGELOG CI check active
 
 ---
 
@@ -167,12 +169,12 @@ for community contributions.
 branding. Making this easy is the path to adoption at universities.
 
 **Action:**
-- [ ] Document `config/institutions/NAME/NAME.sty` convention in CONTRIBUTING.md
-- [ ] Add `build.py scaffold-institution NAME` command:
+- [x] Document `config/institutions/NAME/NAME.sty` convention in CONTRIBUTING.md
+- [x] Add `build.py scaffold-institution NAME` command:
       creates `config/institutions/NAME/` with template `.sty`,
       logo placeholder, color definitions
 - [ ] Create example institution configs:
-  - [ ] `generic` — minimal branding (university name, logo placeholder, colors)
+  - [x] `generic` — minimal branding (university name, logo placeholder, colors)
   - [ ] `tum` — TU Munich (large German university)
   - [ ] `eth` — ETH Zürich (international demand)
 - [ ] Add institution to integration matrix CI
@@ -185,23 +187,24 @@ user base.
 
 **Action:**
 - [ ] Add language configs for:
-  - [ ] French (`french`)
-  - [ ] Spanish (`spanish`)
-  - [ ] Chinese Simplified (`simplified-chinese`)
-  - [ ] Japanese (`japanese`)
-- [ ] For each: verify polyglossia support, add OmniLaTeX-specific strings
+  - [x] French (`french`)
+  - [x] Spanish (`spanish`)
+  - [ ] Chinese Simplified (`simplified-chinese`) — blocked: `translations`
+        package does not support CJK; polyglossia handles captions natively
+  - [ ] Japanese (`japanese`) — blocked: same as above
+- [x] For each: verify polyglossia support, add OmniLaTeX-specific strings
       (captions, TOC headings, etc.)
-- [ ] Update `omnilatex-i18n.sty` with new `\setotherlanguages` entries
+- [x] Update `omnilatex-i18n.sty` with new `\setotherlanguages` entries
 - [ ] Add language tests to CI matrix
-- [ ] Document "Adding a new language" in CONTRIBUTING.md
+- [x] Document "Adding a new language" in CONTRIBUTING.md
 
 ### P2.3 — Template Gallery
 
 **Why:** Users pick templates based on visual output, not feature lists.
 
 **Action:**
-- [ ] Build all 20 examples → collect PDFs
-- [ ] Create `docs/gallery.md` with thumbnails or links
+- [x] Build all 20 examples → collect PDFs
+- [x] Create `docs/gallery.md` with thumbnails or links
 - [ ] Optionally deploy to GitHub Pages
 - [ ] Add gallery link to README
 
@@ -211,19 +214,19 @@ user base.
 the repo means the build environment is fully reproducible and auditable.
 
 **Action:**
-- [ ] Create `Dockerfile` in repo root:
+- [x] Create `Dockerfile` in repo root:
       base `texlive/texlive:TL2024-historic` + required packages + fonts
-- [ ] Pin base image by digest
+- [x] Pin base image by digest
 - [ ] Update `.env.docker` to reference local build
 - [ ] Add `docker build` step to CI for image verification
 - [ ] Document in README
 
 ### v1.2 Completion Criteria
 
-- [ ] 3+ institution configs with scaffolding command
-- [ ] 6+ languages supported and tested
-- [ ] Template gallery published
-- [ ] Docker image buildable from repo
+- [ ] 3+ institution configs with scaffolding command (1/3: generic)
+- [ ] 6+ languages supported and tested (4/6: english, german, french, spanish)
+- [x] Template gallery published
+- [x] Docker image buildable from repo
 
 ---
 
@@ -274,10 +277,10 @@ Verifying them closes the loop on the mathematical proof infrastructure.
 reduces friction.
 
 **Action:**
-- [ ] Create `docs/editor-integration.md` with configs for:
-  - [ ] VS Code: LaTeX Workshop + build task + PDF preview
-  - [ ] Vim/Neovim: VimTeX config snippet
-  - [ ] Emacs: AUCTeX config snippet
+- [x] Create `docs/editor-integration.md` with configs for:
+  - [x] VS Code: LaTeX Workshop + build task + PDF preview
+  - [x] Vim/Neovim: VimTeX config snippet
+  - [x] Emacs: AUCTeX config snippet
 - [ ] Add OmniLaTeX-specific completions for texlab (LSP)
 
 ### v1.3 Completion Criteria
@@ -285,7 +288,7 @@ reduces friction.
 - [ ] CI green on Linux, Windows, macOS
 - [ ] TeX Live 2024 + 2025 compatibility documented
 - [ ] All Lean 4 proofs verified in CI
-- [ ] Editor integration docs for 3 editors
+- [x] Editor integration docs for 3 editors
 
 ---
 
@@ -311,9 +314,11 @@ templates.
 **Why:** Starting a new document from scratch should be one command.
 
 **Action:**
+- [x] `build.py init NAME` — copies minimal-starter as template, creates
+      `.latexmkrc` symlink to repo root
 - [ ] `build.py init NAME --doctype=thesis --institution=tuhh --language=english`
-- [ ] Copies minimal-starter as template, renames, fills in metadata
-- [ ] `build.py scaffold-institution NAME` — creates institution config skeleton
+      (add optional flags for doctype/institution/language)
+- [x] `build.py scaffold-institution NAME` — creates institution config skeleton
 - [ ] `build.py scaffold-language LANG` — creates language addition guide
 - [ ] Interactive prompts with sensible defaults
 
@@ -342,7 +347,7 @@ templates.
 ### v1.4 Completion Criteria
 
 - [ ] 3 new doctypes with examples
-- [ ] `build.py init` creates working project
+- [x] `build.py init` creates working project
 - [ ] Performance baselines established for all examples
 - [ ] Tagged PDF option available
 
