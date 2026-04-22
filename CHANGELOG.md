@@ -5,12 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com).
 This project adheres to [Semantic versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.1.0] - 2026-04-22
 
 ### Added
 - README v2: comparison table, all 20 examples listed, engineering quality surfaced
 - CONTRIBUTING.md: architecture overview, institution/language/doctype tutorials, PR checklist
-- ROADMAP-v1.1.md: formal roadmap for v1.1–v1.4 (distribution, ecosystem, cross-platform, features)
 - CTAN packaging: `scripts/make-ctan-zip.sh` builds TDS-compliant upload package
 - Overleaf packaging: `scripts/make-overleaf-zip.sh` builds self-contained Overleaf template
 - CTAN documentation: `doc/omnilatex.tex` — 23-page user manual (compiles to PDF)
@@ -25,6 +24,7 @@ This project adheres to [Semantic versioning](https://semver.org/).
 - Interactive TUI menu: run `build.py` without args for a rich command selector
 - Rich build dashboard: live progress, elapsed timer, and log output during builds
 - Lua utility scripts: `word-count.lua`, `todo-tracker.lua`, `conditional-include.lua`
+- French and Spanish language support (40+ translations each)
 
 ### Changed
 - README no longer references non-existent `cv-bw` example
@@ -34,6 +34,8 @@ This project adheres to [Semantic versioning](https://semver.org/).
 - CI workflows: `env.DOCKER_IMAGE` not supported in `container.image` — inlined the digest
 - Rich concurrent build: active workers panel now correctly shows running jobs (was always empty)
 - `build.py build-root`: now shows rich dashboard with live log output (was completely silent)
+
+## [Unreleased]
 
 ## [1.0.0] - 2026-04-03
 
