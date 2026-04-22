@@ -17,6 +17,10 @@ The This project adheres to [Semantic versioning](https://semver.org/).
 - `build.py diff` command: SSIM-based visual regression with byte-level fallback
 - CI changelog check: enforces CHANGELOG.md update when `.sty`/`.cls` files change
 - l3build regression tests for all 21 modules (with `.tlg` baselines)
+- Template gallery: `docs/gallery.md` — all 20 examples with PDF links, categorized
+- In-repo Dockerfile: reproducible build environment based on TeX Live 2024
+- `build.py scaffold-institution <name>`: creates institution config from generic template
+- Generic institution config: `config/institutions/generic/` — customizable template
 
 ### Changed
 - README no longer references non-existent `cv-bw` example

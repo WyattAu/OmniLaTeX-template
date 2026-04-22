@@ -1011,6 +1011,59 @@ class BuildTasks:
         else:
             self.ui.error("Visual regressions detected")
 
+    def cmd_scaffold_institution(self, files: List[str]):
+        """Create a new institution config from the generic template."""
+        self.ui.header("Scaffold Institution")
+
+        if not files:
+            self.ui.warning("Usage: build.py scaffold-institution <name>")
+            self.ui.info("Creates config/institutions/<name>/<name>.sty from the generic template.")
+            return
+
+        name = files[0]
+        repo_root = Path(__file__).resolve().parent
+        src = repo_root / "config" / "institutions" / "generic"
+        dst = repo_root / "config" / "institutions" / name
+
+        if not src.exists():
+            self.ui.error(f"Generic template not found at {src}")
+            return
+
+        if dst.exists():
+            self.ui.error(f"Institution '{name}' already exists at {dst}")
+            return
+
+        import shutil
+
+        shutil.copytree(src, dst)
+
+        # Rename generic.sty -> <name>.sty
+        old_sty = dst / "generic.sty"
+        new_sty = dst / f"{name}.sty"
+        if old_sty.exists():
+            old_sty.rename(new_sty)
+
+        # Rename logo directory
+        old_logo_dir = dst / "assets" / "logos" / "generic"
+        new_logo_dir = dst / "assets" / "logos" / name
+        if old_logo_dir.exists():
+            old_logo_dir.rename(new_logo_dir)
+
+        # Update ProvidesPackage and comments
+        if new_sty.exists():
+            content = new_sty.read_text()
+            content = content.replace("config/institutions/generic/generic", f"config/institutions/{name}/{name}")
+            content = content.replace("Generic Institution Configuration", f"{name} Institution Configuration")
+            content = content.replace("assets/logos/generic", f"assets/logos/{name}")
+            content = content.replace("institution=generic]", f"institution={name}]")
+            new_sty.write_text(content)
+
+        self.ui.success(f"Scaffolded institution: {name}")
+        self.ui.info(f"  Config: {dst / f'{name}.sty'}")
+        self.ui.info(f"  Assets: {dst / 'assets' / 'logos' / name}")
+        self.ui.info(f"  Next: customize the .sty file, add your logo, update colors")
+        self.ui.info(f"  Usage: \\documentclass[doctype=thesis,institution={name}]{{omnilatex}}")
+
     def cmd_doctor(self, files=None):
         """Run comprehensive health diagnostics."""
         import platform as _platform
@@ -1171,6 +1224,11 @@ def main() -> None:
         "diff": (
             BuildTasks.cmd_diff,
             "Compare PDFs against references for visual regression.",
+            True,
+        ),
+        "scaffold-institution": (
+            BuildTasks.cmd_scaffold_institution,
+            "Create a new institution config from the generic template.",
             True,
         ),
     }

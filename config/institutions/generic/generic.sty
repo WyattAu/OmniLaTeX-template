@@ -1,0 +1,46 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Generic Institution Configuration
+%
+% A minimal, customizable institution template.
+% Copy this directory and customize for your institution.
+%
+% Usage: \documentclass[doctype=thesis,institution=generic]{omnilatex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/institutions/generic/generic}[2026-04-05 v1.0.0 Generic Institution Configuration]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Logo Definitions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Replace the placeholder text with your institution's logo file.
+% Supported formats: PDF, PNG, JPG, SVG (requires Inkscape).
+% Place your logo in: assets/logos/generic/logo.{pdf,png,jpg}
+%
+% \DeclareTranslation{english}{LogoInstitution}{%
+%     \includegraphics[height=3cm]{assets/logos/generic/logo}%
+% }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Name
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Override the default name by uncommenting and editing below:
+
+% \renewcommand{\GetTranslation{english}{InstitutionName}}{Your University Name}
+% \renewcommand{\GetTranslation{german}{InstitutionName}}{Dein Universitätsname}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Link
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \DeclareTranslation{english}{LinkInstitution}{https://www.example.edu}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Color Palette
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Define your institution's brand colors here:
+
+% \definecolor{universityprimary}{RGB}{0, 63, 114}
+% \definecolor{universitysecondary}{RGB}{0, 113, 188}
+
+\endinput
