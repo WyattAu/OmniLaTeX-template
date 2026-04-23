@@ -1,0 +1,6 @@
+name = "OmniLaTeXProofs"
+version = "0.1.0"
+defaultTargets = ["OmniLaTeXProofs"]
+
+[[lean_lib]]
+name = "OmniLaTeXProofs"

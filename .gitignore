@@ -476,3 +476,8 @@ overleaf/*.zip
 
 # CTAN packaging output
 ctan/
+
+# Lean 4 / Lake build artifacts
+specs/proofs/.lake/
+specs/proofs/lake-manifest.json
+specs/proofs/build/
