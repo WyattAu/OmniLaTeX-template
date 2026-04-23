@@ -229,6 +229,15 @@ CJK languages (Chinese, Japanese, Korean) require appropriate fonts.
 If the default fonts don't cover your script, add a font override in
 the language section of `lib/language/omnilatex-i18n.sty`.
 
+**Note:** The `translations` package does not support CJK languages
+(simplified-chinese, japanese, korean), so OmniLaTeX-specific string
+translations (TOC headings, figure/table captions, etc.) cannot use
+`\DeclareTranslation`. However, polyglossia handles CJK captions
+natively via its own language modules, so `\documentclass[language=simplified-chinese]{omnilatex}`
+works correctly for captions and hyphenation. Only the custom OmniLaTeX
+strings (e.g., "Glossary", "List of Abbreviations") will fall back to
+English.
+
 ---
 
 ## Adding a Document Type

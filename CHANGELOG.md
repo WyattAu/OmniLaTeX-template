@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com).
 This project adheres to [Semantic versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+- TUM institution config: official brand colors (TUM Blue #0065BD), logo placeholder, link
+- ETH Zürich institution config: official brand colors (ETH Blue #1F407A), logo placeholder, link
+- Cross-platform CI: `cross-platform.yml` with Windows (basictex) + macOS (mactex) smoke tests
+- Lean 4 added to Nix flake devShell (v4.29.0)
+- CJK language support documented in CONTRIBUTING.md (polyglossia handles captions natively)
+
+### Changed
+- Roadmap restructured: v1.2 (Ecosystem & Quality), v1.3 (Features & Polish)
+
 ## [1.1.0] - 2026-04-22
 
 ### Added

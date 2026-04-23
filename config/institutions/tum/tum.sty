@@ -1,0 +1,73 @@
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Technische Universität München (TUM) Configuration
+%
+% Official brand colors and identity.
+% Usage: \documentclass[doctype=thesis,institution=tum]{omnilatex}
+%
+% Brand guidelines: https://www.tum.de/en/about-tum/our-profile/corporate-design
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/institutions/tum/tum}[2026-04-22 v1.0.0 TUM Institution Configuration]
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Color Palette (Official TUM Corporate Design)
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Primary: TUM Blue
+\definecolor{universityprimary}{RGB}{0, 101, 189}
+% Secondary: TUM Dark Blue
+\definecolor{universitysecondary}{RGB}{0, 51, 89}
+% Accent: TUM Light Blue
+\definecolor{universityaccent}{RGB}{100, 160, 200}
+% Neutral: TUM Black
+\definecolor{universityblack}{RGB}{0, 0, 0}
+% White
+\definecolor{universitywhite}{RGB}{255, 255, 255}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Logo
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Place your TUM logo in: assets/logos/tum/logo.pdf
+% Official logo download: https://www.tum.de/en/about-tum/our-profile/corporate-design/logos
+%
+% \DeclareTranslation{english}{LogoInstitution}{%
+%     \includegraphics[height=1.5cm]{assets/logos/tum/logo}%
+% }
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Name
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% The TUM logo typically includes the text, so a separate
+% text name may not be needed. Uncomment if required:
+%
+% \DeclareTranslation{english}{InstitutionName}{Technical University of Munich}
+% \DeclareTranslation{german}{InstitutionName}{Technische Universität München}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Link
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareTranslation{english}{LinkInstitution}{https://www.tum.de}
+\DeclareTranslation{german}{LinkInstitution}{https://www.tum.de}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Apply Colors to Document Elements
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% These override the default OmniLaTeX color assignments.
+% Uncomment the lines you want to activate:
+
+% Header / title page background
+% \colorlet{colorTitleBack}{universityprimary}
+
+% Section headings
+% \colorlet{colorSection}{universityprimary}
+
+% Links and URLs
+% \colorlet{colorLink}{universityprimary}
+
+% Table rules
+% \colorlet{colorTableRule}{universityprimary}
+
+% Footer line
+% \colorlet{colorFooter}{universitysecondary}
+
+\endinput

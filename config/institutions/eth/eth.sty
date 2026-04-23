@@ -1,0 +1,69 @@
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ETH Zürich Configuration
+%
+% Official brand colors and identity.
+% Usage: \documentclass[doctype=thesis,institution=eth]{omnilatex}
+%
+% Brand guidelines: https://ethz.ch/en/services/service-portfolio/corporate-design.html
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/institutions/eth/eth}[2026-04-22 v1.0.0 ETH Zürich Institution Configuration]
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Color Palette (Official ETH Corporate Design)
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Primary: ETH Blue (also called "ETH-Blue" or "Petrol")
+\definecolor{universityprimary}{RGB}{31, 64, 122}
+% Secondary: ETH Dark (near-black)
+\definecolor{universitysecondary}{RGB}{35, 31, 32}
+% Accent: ETH Teal
+\definecolor{universityaccent}{RGB}{0, 122, 146}
+% Neutral: Grey
+\definecolor{universitygrey}{RGB}{144, 144, 144}
+% White
+\definecolor{universitywhite}{RGB}{255, 255, 255}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Logo
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Place your ETH logo in: assets/logos/eth/logo.pdf
+% Official logo download: https://ethz.ch/en/services/service-portfolio/corporate-design/logo.html
+%
+% \DeclareTranslation{english}{LogoInstitution}{%
+%     \includegraphics[height=1.5cm]{assets/logos/eth/logo}%
+% }
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Name
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \DeclareTranslation{english}{InstitutionName}{ETH Zürich}
+% \DeclareTranslation{german}{InstitutionName}{ETH Zürich}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Link
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareTranslation{english}{LinkInstitution}{https://ethz.ch}
+\DeclareTranslation{german}{LinkInstitution}{https://ethz.ch}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Apply Colors to Document Elements
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Uncomment the lines you want to activate:
+
+% Header / title page background
+% \colorlet{colorTitleBack}{universityprimary}
+
+% Section headings
+% \colorlet{colorSection}{universityprimary}
+
+% Links and URLs
+% \colorlet{colorLink}{universityaccent}
+
+% Table rules
+% \colorlet{colorTableRule}{universitygrey}
+
+% Footer line
+% \colorlet{colorFooter}{universitysecondary}
+
+\endinput

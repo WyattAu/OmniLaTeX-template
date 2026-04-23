@@ -125,12 +125,14 @@
             pkgs.gnumake
             pkgs.inkscape
             pkgs.gnuplot
+            pkgs.lean4
           ];
 
           shellHook = ''
             echo "OmniLaTeX development environment"
             echo "TeX Live: $(tex --version | head -1)"
             echo "Python: $(python3 --version)"
+            echo "Lean 4: $(lean --version 2>/dev/null | head -1 || echo 'not found')"
           '';
         };
 
