@@ -23,6 +23,32 @@ This project adheres to [Semantic versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Three new document types: `poster` (A1 landscape conference poster), `presentation` (KOMA-based slides with tcolorbox), `letter` (formal letter with sender/recipient/closing commands)
+- Doctype aliases: `posters`, `presentations`, `slides`, `talk`, `talks`, `letters`
+- `build.py init` flags: `--doctype`, `--institution`, `--language` for pre-configuring new projects
+- Examples for poster, presentation, and letter doctypes (all compile successfully)
+
+### Changed
+- Doctype resolution Lean 4 proof: 16 profiles, 55 aliases (was 13 profiles, 46 aliases)
+- TUI menu version string updated to v1.3.0-dev
+
+## [1.2.0] - 2026-04-23
+
+### Added
+- TUM institution config: official brand colors (TUM Blue #0065BD), logo placeholder, link
+- ETH Zürich institution config: official brand colors (ETH Blue #1F407A), logo placeholder, link
+- Cross-platform CI: `cross-platform.yml` with Windows (basictex) + macOS (mactex) smoke tests
+- Lean 4 added to Nix flake devShell (v4.29.0)
+- CJK language support documented in CONTRIBUTING.md (polyglossia handles captions natively)
+- `omnilatex.cwl`: 80+ commands for texlab/VS Code auto-completion
+- Lean 4 proofs: all 5 files compile, Lake project configured (7/20 theorems fully proven)
+
+### Changed
+- Roadmap restructured: v1.2 (Ecosystem & Quality), v1.3 (Features & Polish)
+- Lean 4 proof files: removed VERIFICATION PENDING tags, fixed syntax errors
+- Lean 4 proof files: renamed to PascalCase for Lake compatibility
+
 ## [1.1.0] - 2026-04-22
 
 ### Added
@@ -52,8 +78,6 @@ This project adheres to [Semantic versioning](https://semver.org/).
 - CI workflows: `env.DOCKER_IMAGE` not supported in `container.image` — inlined the digest
 - Rich concurrent build: active workers panel now correctly shows running jobs (was always empty)
 - `build.py build-root`: now shows rich dashboard with live log output (was completely silent)
-
-## [Unreleased]
 
 ## [1.0.0] - 2026-04-03
 

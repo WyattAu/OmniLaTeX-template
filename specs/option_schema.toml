@@ -148,7 +148,7 @@ used_by = ["manual", "technicalreport", "standard", "patent"]
 
 [doctype_resolution._option_sets.article_opts]
 value = "bibliography=totoc,numbers=noenddot,parskip=half"
-used_by = ["article", "cover-letter"]
+used_by = ["article", "cover-letter", "poster", "presentation", "letter"]
 
 [doctype_resolution._option_sets.inlinepaper_opts]
 value = "bibliography=totoc,numbers=noenddot,parskip=half,titlepage=false"
@@ -283,6 +283,33 @@ koma_options = "article_opts"
 has_chapters = false
 aliases = ["cover-letter", "coverletter"]
 
+# -- Profile: poster ------------------------------------------------------
+
+[doctype_resolution.poster]
+profile = "poster"
+base_class = "scrartcl"
+koma_options = "article_opts"
+has_chapters = false
+aliases = ["poster", "posters"]
+
+# -- Profile: presentation ------------------------------------------------
+
+[doctype_resolution.presentation]
+profile = "presentation"
+base_class = "scrartcl"
+koma_options = "article_opts"
+has_chapters = false
+aliases = ["presentation", "presentations", "slides", "talk", "talks"]
+
+# -- Profile: letter ------------------------------------------------------
+
+[doctype_resolution.letter]
+profile = "letter"
+base_class = "scrartcl"
+koma_options = "article_opts"
+has_chapters = false
+aliases = ["letter", "letters"]
+
 # ---------------------------------------------------------------------------
 # Validation Rules
 # ---------------------------------------------------------------------------
@@ -360,6 +387,15 @@ false_values = ["false", "off", "no", "0"]
 "curriculumvitae" = "cv"
 "cover-letter" = "cover-letter"
 "coverletter" = "cover-letter"
+"poster" = "poster"
+"posters" = "poster"
+"presentation" = "presentation"
+"presentations" = "presentation"
+"slides" = "presentation"
+"talk" = "presentation"
+"talks" = "presentation"
+"letter" = "letter"
+"letters" = "letter"
 
 # ---------------------------------------------------------------------------
 # Unconditional Module Load List (21 OmniLaTeX modules)

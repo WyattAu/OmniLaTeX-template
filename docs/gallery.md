@@ -1,6 +1,6 @@
 # Template Gallery
 
-Visual showcase of all 20 OmniLaTeX example templates.
+Visual showcase of all 23 OmniLaTeX example templates.
 
 ## Quick Start
 
@@ -33,6 +33,9 @@ python build.py build-example <name>
 | `cover-letter-formal` | cover-letter | Formal cover letter variant | [cover-letter-formal.pdf](build/examples/cover-letter-formal.pdf) |
 | `cv` | cv | Curriculum vitae template | [cv.pdf](build/examples/cv.pdf) |
 | `cv-twopage` | cv | Two-page CV variant | [cv-twopage.pdf](build/examples/cv-twopage.pdf) |
+| `poster` | poster | Conference poster (A1 landscape) | [poster.pdf](build/examples/poster.pdf) |
+| `presentation` | presentation | Presentation slides (KOMA-based) | [presentation.pdf](build/examples/presentation.pdf) |
+| `letter` | letter | Formal letter | [letter.pdf](build/examples/letter.pdf) |
 
 ### Books & Reference
 

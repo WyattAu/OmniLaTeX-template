@@ -103,20 +103,20 @@ Verifying them closes the mathematical proof loop.
 **Why:** Cover more document categories to reduce need for alternative templates.
 
 **Action:**
-- [ ] `poster` — conference poster (a4 landscape, large fonts, TikZ grid)
-- [ ] `presentation` — beamer-based slides (new base class)
-- [ ] `letter` — formal letter (DIN 676 / ISO standard)
-- [ ] Add examples for each new doctype
-- [ ] Update doctype alias table in `omnilatex.cls` and `specs/option_schema.toml`
+- [x] `poster` — conference poster (A1 landscape, tcolorbox blocks, multicol)
+- [x] `presentation` — KOMA-based slides (tcolorbox slideframe environment)
+- [x] `letter` — formal letter (sender/recipient/closing commands)
+- [x] Add examples for each new doctype
+- [x] Update doctype alias table in `omnilatex.cls` and `specs/option_schema.toml`
 
 ### P3.2 — `build.py init` Enhancements
 
 **Why:** Starting a project should be one command with sensible defaults.
 
 **Action:**
-- [ ] `build.py init NAME --doctype=thesis --institution=tuhh --language=english`
+- [x] `build.py init NAME --doctype=thesis --institution=tuhh --language=english`
 - [ ] `build.py scaffold-language LANG` — creates language addition guide
-- [ ] Fill in metadata from flags when creating project
+- [x] Fill in metadata from flags when creating project
 
 ### P3.3 — Performance Baseline
 
@@ -140,8 +140,8 @@ Verifying them closes the mathematical proof loop.
 
 ### v1.3 Completion Criteria
 
-- [ ] 3 new doctypes with examples
-- [ ] `build.py init` supports --doctype/--institution/--language flags
+- [x] 3 new doctypes with examples
+- [x] `build.py init` supports --doctype/--institution/--language flags
 - [ ] Performance baselines established
 - [ ] Tagged PDF option available
 
