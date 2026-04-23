@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com).
 This project adheres to [Semantic versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.2.0] - 2026-04-23
 
 ### Added
 - TUM institution config: official brand colors (TUM Blue #0065BD), logo placeholder, link
@@ -14,11 +14,14 @@ This project adheres to [Semantic versioning](https://semver.org/).
 - Lean 4 added to Nix flake devShell (v4.29.0)
 - CJK language support documented in CONTRIBUTING.md (polyglossia handles captions natively)
 - `omnilatex.cwl`: 80+ commands for texlab/VS Code auto-completion
-- Lean 4 proofs: all 5 files compile (4 fully proven, 1 partial)
+- Lean 4 proofs: all 5 files compile, Lake project configured (7/20 theorems fully proven)
 
 ### Changed
 - Roadmap restructured: v1.2 (Ecosystem & Quality), v1.3 (Features & Polish)
 - Lean 4 proof files: removed VERIFICATION PENDING tags, fixed syntax errors
+- Lean 4 proof files: renamed to PascalCase for Lake compatibility
+
+## [Unreleased]
 
 ## [1.1.0] - 2026-04-22
 
