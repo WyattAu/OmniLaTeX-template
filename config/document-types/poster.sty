@@ -1,0 +1,72 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/poster}[2026-04-23 OmniLaTeX poster profile]
+
+\documenttype{Conference Poster}
+\documentfontsize{20pt}
+\documentlayout{DIV=20,headinclude=false,footinclude=false,paper=a1}
+\KOMAoptions{titlepage=false,twoside=false}
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setcounter{tocdepth}{0}
+
+\documentcolormode{color}
+\documentlinespacing{single}
+\documentparspacing{half}
+\documentitemspacing{normal}
+\documentfontmode{sans}
+\documentlinkstyle{color}
+\documentcodestyle{color}
+
+\RequirePackage{multicol}
+
+\AtBeginDocument{%
+    \setlength{\paperwidth}{841mm}%
+    \setlength{\paperheight}{594mm}%
+}
+
+\providecommand{\posterwidth}{0.9\textwidth}
+
+\newtcolorbox{posterblock}[1][]{%
+    enhanced,
+    colback=white,
+    colframe=black!70,
+    coltitle=white,
+    fonttitle=\bfseries\Large,
+    title=#1,
+    arc=3mm,
+    boxrule=1.5pt,
+    top=8mm,
+    bottom=8mm,
+    left=8mm,
+    right=8mm,
+}
+
+\newtcolorbox{posterblocknotitle}{%
+    enhanced,
+    colback=white,
+    colframe=black!70,
+    arc=3mm,
+    boxrule=1.5pt,
+    top=8mm,
+    bottom=8mm,
+    left=8mm,
+    right=8mm,
+}
+
+\makeatletter
+
+\renewcommand{\maketitle}{%
+    \begingroup
+    \centering
+    {\fontsize{60}{72}\selectfont\bfseries \@title}\par
+    \vspace{6mm}
+    {\LARGE \@author}\par
+    \vspace{3mm}
+    {\Large \@date}\par
+    \endgroup
+    \vspace{8mm}
+}
+
+\makeatother
+
+\endinput

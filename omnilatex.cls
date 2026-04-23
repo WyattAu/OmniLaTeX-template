@@ -122,13 +122,16 @@
 \omnilatex@matchdoctypes{dictionary,dictionaries,lexicon,lexicons}{\omnilatex@setdoctype{dictionary}{scrbook}{\omnilatex@bookoptions}}%
 \omnilatex@matchdoctypes{cv,resume,resumes,curriculumvitae}{\omnilatex@setdoctype{cv}{scrartcl}{\omnilatex@cvoptions}}%
 \omnilatex@matchdoctypes{cover-letter,coverletter}{\omnilatex@setdoctype{cover-letter}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{poster,posters}{\omnilatex@setdoctype{poster}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{presentation,presentations,slides,talk,talks}{\omnilatex@setdoctype{presentation}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{letter,letters}{\omnilatex@setdoctype{letter}{scrartcl}{\omnilatex@articleoptions}}%
 
 % Validate doctype: warn if user passed an unknown doctype that didn't match
 \ifomnilatex@doctypematched\else
     \ClassWarning{omnilatex}{Unknown doctype '\omnilatex@doctype'.%
         Falling back to 'book'. Valid options: book, thesis, dissertation,%
         manual, guide, handbook, report, technicalreport, standard, patent,%
-        article, inlinepaper, journal, dictionary, cv, cover-letter}%
+        article, inlinepaper, journal, dictionary, cv, cover-letter, poster, presentation, letter}%
 \fi
 
 % Validate titlestyle

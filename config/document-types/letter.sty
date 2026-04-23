@@ -1,0 +1,66 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/letter}[2026-04-23 OmniLaTeX letter profile]
+
+\documenttype{Formal Letter}
+\documentfontsize{12pt}
+\documentlayout{DIV=12,headinclude=false,footinclude=true}
+\KOMAoptions{titlepage=false,twoside=false}
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setcounter{tocdepth}{0}
+
+\documentcolormode{color}
+\documentlinespacing{onehalf}
+\documentparspacing{half}
+\documentitemspacing{normal}
+\documentfontmode{serif}
+\documentlinkstyle{color}
+\documentcodestyle{color}
+
+\makeatletter
+
+\providecommand*{\@letterrecipient}{}
+\newcommand*{\letterrecipient}[1]{\gdef\@letterrecipient{#1}}
+\providecommand*{\@lettersubject}{}
+\newcommand*{\lettersubject}[1]{\gdef\@lettersubject{#1}}
+\providecommand*{\@letterdate}{\today}
+\newcommand*{\letterdate}[1]{\gdef\@letterdate{#1}}
+\providecommand*{\@letteropening}{Dear Sir or Madam,}
+\newcommand*{\letteropening}[1]{\gdef\@letteropening{#1}}
+\providecommand*{\@lettersender}{}
+\newcommand*{\lettersender}[1]{\gdef\@lettersender{#1}}
+\providecommand*{\@letterclosing}{Sincerely,}
+\newcommand*{\letterclosing}[1]{\gdef\@letterclosing{#1}}
+
+\renewcommand{\maketitle}{%
+    \noindent\begin{minipage}[t]{0.45\textwidth}
+        \raggedright
+        \@lettersender
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[t]{0.45\textwidth}
+        \raggedleft
+        \@letterdate
+    \end{minipage}
+    \par\vspace{12mm}
+    \noindent\begin{minipage}[t]{\textwidth}
+        \raggedright
+        \@letterrecipient
+    \end{minipage}
+    \par\vspace{8mm}
+    \noindent\textbf{\@lettersubject}\par
+    \vspace{4mm}
+    \noindent\@letteropening\par
+    \vspace{2mm}
+}
+
+\newcommand{\letterclosingblock}{%
+    \par\vspace{6mm}
+    \noindent\@letterclosing\par
+    \vspace{20mm}
+    \noindent\@lettersender
+}
+
+\makeatother
+
+\endinput

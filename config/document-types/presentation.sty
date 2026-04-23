@@ -1,0 +1,72 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/presentation}[2026-04-23 OmniLaTeX presentation profile]
+
+\documenttype{Presentation}
+\documentfontsize{14pt}
+\documentlayout{DIV=12,headinclude=false,footinclude=false}
+\KOMAoptions{titlepage=false,twoside=false}
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setcounter{tocdepth}{0}
+
+\documentcolormode{color}
+\documentlinespacing{single}
+\documentparspacing{half}
+\documentitemspacing{normal}
+\documentfontmode{sans}
+\documentlinkstyle{color}
+\documentcodestyle{color}
+
+\RequirePackage{tcolorbox}
+\RequirePackage{multicol}
+
+\tcbuselibrary{skins,breakable}
+
+\AtBeginDocument{%
+    \setlength{\paperwidth}{254mm}%
+    \setlength{\paperheight}{190.5mm}%
+}
+
+\newtcolorbox{slideframe}[1][]{%
+    enhanced,
+    colback=white,
+    colframe=black!60,
+    arc=4mm,
+    boxrule=1pt,
+    top=10mm,
+    bottom=10mm,
+    left=12mm,
+    right=12mm,
+    before upper={\par\vspace{2mm}},
+    #1
+}
+
+\newcommand{\slidetitle}[1]{%
+    \begin{center}
+        {\LARGE\bfseries\color{black!85}#1}\par
+        \vspace{2mm}
+        {\color{black!40}\rule{0.6\textwidth}{0.8pt}}
+    \end{center}
+    \vspace{4mm}
+}
+
+\makeatletter
+
+\renewcommand{\maketitle}{%
+    \begin{slideframe}
+        \begin{center}
+            \vfill
+            {\Huge\bfseries \@title}\par
+            \vspace{8mm}
+            {\Large \@author}\par
+            \vspace{4mm}
+            {\large \@date}
+            \vfill
+        \end{center}
+    \end{slideframe}
+    \newpage
+}
+
+\makeatother
+
+\endinput

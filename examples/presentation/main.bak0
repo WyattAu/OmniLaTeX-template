@@ -1,0 +1,98 @@
+\documentclass[
+    language=english,
+    doctype=presentation,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\title{Introduction to OmniLaTeX}
+\author{Jane Doe}
+\date{April 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}
+\slidetitle{Overview}
+
+OmniLaTeX is a universal \LaTeX{} template system designed to simplify
+document creation across academic and professional contexts.
+
+\begin{itemize}
+    \item Built on KOMA-Script (scrbook, scrreprt, scrartcl)
+    \item Compiled with LuaLaTeX for modern font and Unicode support
+    \item Modular architecture with pluggable document types
+    \item Reproducible builds via Docker and Nix
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\slidetitle{Key Features}
+
+\begin{description}
+    \item[Modularity] Each document type is a self-contained profile
+    \item[Typography] Consistent, professional typesetting out of the box
+    \item[Bibliography] Integrated biblatex with automatic citation management
+    \item[Code Listings] Syntax highlighting via the minted package
+    \item[Multi-language] Full polyglossia support for international documents
+    \item[Reproducibility] Docker and Nix flakes for deterministic builds
+\end{description}
+\end{frame}
+
+\begin{frame}
+\slidetitle{Architecture}
+
+The template follows a layered architecture:
+
+\begin{enumerate}
+    \item \textbf{Core Layer} --- Base class, utilities, colors
+    \item \textbf{Typography Layer} --- Fonts, math, lists, typesetting
+    \item \textbf{Layout Layer} --- Page geometry, floats, boxes, KOMA config
+    \item \textbf{Content Layer} --- Document types, institution profiles
+    \item \textbf{Reference Layer} --- Hyperlinks, bibliography, glossaries
+\end{enumerate}
+
+\vspace{4mm}
+Each layer is independently configurable, allowing users to override
+any aspect of the template without modifying core files.
+\end{frame}
+
+\begin{frame}
+\slidetitle{Document Types}
+
+OmniLaTeX supports 16+ document types:
+
+\begin{multicols}{2}
+\begin{itemize}
+    \item Thesis / Dissertation
+    \item Technical Report
+    \item Journal Article
+    \item Conference Paper
+    \item Book / Manual
+    \item CV / Resume
+    \item Cover Letter
+    \item Standard / Patent
+    \item Poster
+    \item Presentation
+    \item Letter
+    \item Dictionary
+    \item Inline Paper
+\end{itemize}
+\end{multicols}
+\end{frame}
+
+\begin{frame}
+\begin{center}
+    \vfill
+    {\Huge\bfseries Thank You!}\par
+    \vspace{8mm}
+    {\Large Questions?}\par
+    \vspace{12mm}
+    {\large\texttt{github.com/WyattAu/OmniLaTeX-template}}
+    \vfill
+\end{center}
+\end{frame}
+
+\end{document}
