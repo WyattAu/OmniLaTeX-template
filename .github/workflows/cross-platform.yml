@@ -1,4 +1,4 @@
-name: Cross-Platform CI
+name: Cross-Platform Docker CI
 
 on:
   push:
@@ -9,145 +9,109 @@ on:
 
 permissions:
   contents: read
+  packages: read
+
+env:
+  DOCKER_IMAGE: ghcr.io/wyattau/omnilatex-docker:latest
 
 jobs:
-  windows:
-    runs-on: windows-latest
-    timeout-minutes: 30
-
+  linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Install TeX Live (small)
-        shell: pwsh
-        run: |
-          # Download TeX Live installer
-          Invoke-WebRequest -Uri "https://mirror.ctan.org/systems/texlive/tlnet/install-tl.zip" -OutFile install-tl.zip
-          Expand-Archive install-tl.zip -DestinationPath install-tl
+      - name: Pull Docker image
+        run: docker pull ${{ env.DOCKER_IMAGE }}
 
-          # Create a profile that installs only what we need
-          @'
-          selected_scheme scheme-small
-          texmf_distro ''
-          TEXDIR C:\texlive\2024
-          binary_win32 1
-          instopt_portable 0
-          instopt_adjustpath 0
-          instopt_adjustrepo 1
-          tlpdbopt_autobackup 1
-          tlpdbopt_create_formats 1
-          tlpdbopt_postaction none
-          '@ | Out-File -Encoding ascii profile.txt
-
-          # Run installer
-          .\install-tl\install-tl-windows.exe --profile=profile.txt --no-interaction
-
-          # Add to PATH
-          echo "C:\texlive\2024\bin\windows" | Out-File -FilePath $env:GITHUB_PATH -Append
-
-      - name: Install required TeX packages
-        shell: pwsh
-        run: |
-          $packages = @(
-            "lualatex", "latexmk",
-            "fontspec", "unicode-math", "hyperref", "minted",
-            "biblatex", "biber", "siunitx", "circuitikz", "forest",
-            "polyglossia", "translations", "glossaries-extra", "bib2gls",
-            "koma-script", "bookmark", "tcolorbox", "pgfplots", "tikz",
-            "booktabs", "caption", "subcaption", "enumitem", "xcolor",
-            "amsmath", "mathtools", "microtype", "setspace",
-            "adjustbox", "import", "todonotes", "blindtext",
-            "svg", "scalerel", "multirow", "tabularray", "longtable",
-            "chemmacros", "eurosym", "xfrac", "empheq", "fix-cm"
-          )
-          $pkgList = $packages -join " "
-          tlmgr install $pkgList
-
-      - name: Install Python dependencies
-        shell: pwsh
-        run: pip install pygments
-
-      - name: Smoke test — build a simple article
-        shell: pwsh
+      - name: Build article example
         env:
-          PYTHONIOENCODING: utf-8
+          IS_OMNILATEX_CONTAINER: "true"
+          CI: "true"
         run: |
-          $testTex = @"
-          \documentclass[doctype=article,language=english]{omnilatex}
-          \begin{document}
-          OmniLaTeX smoke test on Windows.
-          \end{document}
-          "@
-          $testTex | Out-File -Encoding utf8 test-windows.tex
-          latexmk -lualatex -interaction=nonstopmode test-windows.tex
-          if (Test-Path test-windows.pdf) {
-            Write-Host "SUCCESS: PDF generated"
-          } else {
-            Write-Host "FAIL: PDF not generated"
-            exit 1
-          }
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            -w /workspace \
+            -u root \
+            -e IS_OMNILATEX_CONTAINER=true \
+            -e CI=true \
+            ${{ env.DOCKER_IMAGE }} \
+            python3 build.py --mode prod build-example article
+
+      - name: Verify PDF
+        run: |
+          test -f build/examples/article.pdf && echo "✅ PDF generated" || (echo "❌ PDF not found" && exit 1)
+
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Pull Docker image
+        run: docker pull ${{ env.DOCKER_IMAGE }}
+
+      - name: Build article example
+        shell: bash
+        env:
+          IS_OMNILATEX_CONTAINER: "true"
+          CI: "true"
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            -w /workspace \
+            -u root \
+            -e IS_OMNILATEX_CONTAINER=true \
+            -e CI=true \
+            ${{ env.DOCKER_IMAGE }} \
+            python3 build.py --mode prod build-example article
+
+      - name: Verify PDF
+        shell: bash
+        run: |
+          test -f build/examples/article.pdf && echo "✅ PDF generated" || (echo "❌ PDF not found" && exit 1)
 
   macos:
     runs-on: macos-latest
-    timeout-minutes: 30
-
+    timeout-minutes: 15
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Install MacTeX (minimal)
-        run: |
-          # Install basictex (much smaller than full mactex)
-          brew install --cask basictex
+      - name: Pull Docker image
+        run: docker pull ${{ env.DOCKER_IMAGE }}
 
-          # Add to PATH
-          echo "/Library/TeX/texbin" >> $GITHUB_PATH
-
-      - name: Install required TeX packages
-        run: |
-          sudo tlmgr update --self
-          tlmgr install lualatex latexmk \
-            fontspec unicode-math hyperref minted \
-            biblatex biber siunitx circuitikz forest \
-            polyglossia translations glossaries-extra bib2gls \
-            koma-script bookmark tcolorbox pgfplots tikz \
-            booktabs caption subcaption enumitem xcolor \
-            amsmath mathtools microtype setspace \
-            adjustbox import todonotes blindtext \
-            svg scalerel multirow tabularray longtable \
-            chemmacros eurosym xfrac empheq fix-cm
-
-      - name: Install Python dependencies
-        run: pip3 install pygments
-
-      - name: Smoke test — build a simple article
+      - name: Build article example
         env:
-          PYTHONIOENCODING: utf-8
+          IS_OMNILATEX_CONTAINER: "true"
+          CI: "true"
         run: |
-          cat > test-macos.tex << 'TEXEOF'
-          \documentclass[doctype=article,language=english]{omnilatex}
-          \begin{document}
-          OmniLaTeX smoke test on macOS.
-          \end{document}
-          TEXEOF
-          latexmk -lualatex -interaction=nonstopmode test-macos.tex
-          test -f test-macos.pdf && echo "SUCCESS: PDF generated" || (echo "FAIL: PDF not generated" && exit 1)
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            -w /workspace \
+            -u root \
+            -e IS_OMNILATEX_CONTAINER=true \
+            -e CI=true \
+            ${{ env.DOCKER_IMAGE }} \
+            python3 build.py --mode prod build-example article
+
+      - name: Verify PDF
+        run: |
+          test -f build/examples/article.pdf && echo "✅ PDF generated" || (echo "❌ PDF not found" && exit 1)
 
   report:
     runs-on: ubuntu-latest
-    needs: [windows, macos]
+    needs: [linux, windows, macos]
     if: always()
     steps:
       - name: Cross-platform summary
         run: |
-          echo "## Cross-Platform CI Summary" >> $GITHUB_STEP_SUMMARY
+          echo "## Cross-Platform Docker CI Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Platform | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|----------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Linux    | ${{ needs.linux.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Windows  | ${{ needs.windows.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| macOS    | ${{ needs.macos.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
