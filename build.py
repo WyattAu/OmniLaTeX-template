@@ -1155,15 +1155,75 @@ class BuildTasks:
             f"  Usage: \\documentclass[doctype=thesis,institution={name}]{{omnilatex}}"
         )
 
-    def cmd_init(self, files: List[str]):
+    VALID_DOCTYPES = [
+        "book",
+        "thesis",
+        "dissertation",
+        "manual",
+        "guide",
+        "handbook",
+        "report",
+        "technicalreport",
+        "standard",
+        "patent",
+        "article",
+        "inlinepaper",
+        "journal",
+        "dictionary",
+        "cv",
+        "cover-letter",
+        "poster",
+        "presentation",
+        "letter",
+    ]
+
+    VALID_LANGUAGES = [
+        "english",
+        "german",
+        "french",
+        "spanish",
+        "polish",
+        "dutch",
+        "catalan",
+        "brazilian",
+        "italian",
+        "portuguese",
+        "romanian",
+        "turkish",
+        "greek",
+        "russian",
+        "ukrainian",
+        "czech",
+        "slovak",
+        "slovenian",
+        "serbian",
+        "croatian",
+        "bulgarian",
+        "mongolian",
+        "chinese",
+        "japanese",
+        "korean",
+    ]
+
+    def cmd_init(
+        self,
+        files: List[str],
+        doctype: str = None,
+        institution: str = None,
+        language: str = None,
+    ):
         """Initialize a new OmniLaTeX project from a template."""
         self.ui.header("Initialize Project")
 
         if not files:
-            self.ui.warning("Usage: build.py init <project-name>")
+            self.ui.warning("Usage: build.py init [OPTIONS] <project-name>")
             self.ui.info(
                 "Creates a new OmniLaTeX project from the minimal-starter template."
             )
+            self.ui.info("Options:")
+            self.ui.info("  --doctype TYPE      Set document type (default: book)")
+            self.ui.info("  --institution NAME  Set institution (default: none)")
+            self.ui.info("  --language LANG     Set language (default: english)")
             return
 
         project_name = files[0]
@@ -1178,6 +1238,26 @@ class BuildTasks:
         if dst.exists():
             self.ui.error(f"Directory '{project_name}' already exists")
             return
+
+        # Validate doctype
+        if doctype is not None:
+            if doctype.lower() not in self.VALID_DOCTYPES:
+                self.ui.error(
+                    f"Unknown doctype '{doctype}'. Valid options: "
+                    + ", ".join(self.VALID_DOCTYPES)
+                )
+                return
+            doctype = doctype.lower()
+
+        # Validate language
+        if language is not None:
+            if language.lower() not in self.VALID_LANGUAGES:
+                self.ui.error(
+                    f"Unknown language '{language}'. Valid options: "
+                    + ", ".join(self.VALID_LANGUAGES)
+                )
+                return
+            language = language.lower()
 
         import shutil
 
@@ -1221,9 +1301,58 @@ class BuildTasks:
         if latexmkrc_src.exists() and not latexmkrc_dst.exists():
             latexmkrc_dst.symlink_to(latexmkrc_src)
 
+        # Patch main.tex if any options were specified
+        main_tex = dst / "main.tex"
+        if (doctype or institution or language) and main_tex.exists():
+            import re
+
+            content = main_tex.read_text(encoding="utf-8")
+
+            # Multi-line regex: \documentclass[...options...]{class}
+            m = re.search(r"(\\documentclass\s*\[)([\s\S]*?)(\]\{[^}]+\})", content)
+            if m:
+                prefix, opts_str, suffix = m.groups()
+                existing_opts = [
+                    o.strip()
+                    for o in opts_str.replace("\n", " ").split(",")
+                    if o.strip() and not o.strip().startswith("%")
+                ]
+                # Strip inline comments from option values
+                cleaned_opts = []
+                for o in existing_opts:
+                    if "%" in o:
+                        o = o[: o.index("%")].strip()
+                    if o:
+                        cleaned_opts.append(o)
+                existing_opts = cleaned_opts
+                # Remove options we're overriding
+                existing_opts = [
+                    o
+                    for o in existing_opts
+                    if not o.startswith("doctype=")
+                    and not o.startswith("institution=")
+                    and not o.startswith("language=")
+                ]
+                # Apply overrides
+                if doctype:
+                    existing_opts.insert(0, f"doctype={doctype}")
+                if institution:
+                    existing_opts.append(f"institution={institution}")
+                if language:
+                    existing_opts.append(f"language={language}")
+                new_docclass = f"{prefix}{', '.join(existing_opts)}{suffix}"
+                content = content[: m.start()] + new_docclass + content[m.end() :]
+                main_tex.write_text(content, encoding="utf-8")
+
         self.ui.success(f"Initialized project: {project_name}")
         self.ui.info(f"  Location: {dst}")
         self.ui.info(f"  Template: minimal-starter")
+        if doctype:
+            self.ui.info(f"  Doctype: {doctype}")
+        if institution:
+            self.ui.info(f"  Institution: {institution}")
+        if language:
+            self.ui.info(f"  Language: {language}")
         self.ui.info(f"  Next steps:")
         self.ui.info(f"    1. cd {project_name}")
         self.ui.info(f"    2. Edit main.tex to set your title, author, and content")
@@ -1389,7 +1518,7 @@ def _rich_menu(tasks, commands, menu_sections, flat_commands):
         console.print()
         title = RichText("OmniLaTeX Build System", style="bold cyan")
         subtitle = RichText(
-            f"v1.1.0  •  {len(tasks.discover_examples())} examples  •  "
+            f"v1.3.0-dev  •  {len(tasks.discover_examples())} examples  •  "
             f"{len([f for f in Path('.').rglob('*.sty')])} modules",
             style="dim",
         )
@@ -1653,11 +1782,33 @@ def main() -> None:
             True,
         ),
     }
+    init_subparser = None
     for name, (handler, help_text, takes_files) in commands.items():
         sub = subparsers.add_parser(name, help=help_text)
         sub.set_defaults(handler=handler)
         if takes_files:
             sub.add_argument("files", nargs="*", default=None)
+        if name == "init":
+            init_subparser = sub
+    if init_subparser is not None:
+        init_subparser.add_argument(
+            "--doctype",
+            type=str,
+            default=None,
+            help="Document type (e.g. book, thesis, article, poster, presentation, letter)",
+        )
+        init_subparser.add_argument(
+            "--institution",
+            type=str,
+            default=None,
+            help="Institution config name (e.g. tum, eth, none)",
+        )
+        init_subparser.add_argument(
+            "--language",
+            type=str,
+            default=None,
+            help="Document language (e.g. english, german, chinese)",
+        )
 
     args = parser.parse_args()
 
@@ -1681,7 +1832,16 @@ def main() -> None:
         return
 
     try:
-        args.handler(tasks, getattr(args, "files", None))
+        if args.command == "init":
+            args.handler(
+                tasks,
+                getattr(args, "files", None),
+                doctype=getattr(args, "doctype", None),
+                institution=getattr(args, "institution", None),
+                language=getattr(args, "language", None),
+            )
+        else:
+            args.handler(tasks, getattr(args, "files", None))
     except Exception as e:
         ui.error(f"An unexpected top-level error occurred: {e}")
         sys.exit(1)
