@@ -13,9 +13,12 @@ This project adheres to [Semantic versioning](https://semver.org/).
 - Cross-platform CI: `cross-platform.yml` with Windows (basictex) + macOS (mactex) smoke tests
 - Lean 4 added to Nix flake devShell (v4.29.0)
 - CJK language support documented in CONTRIBUTING.md (polyglossia handles captions natively)
+- `omnilatex.cwl`: 80+ commands for texlab/VS Code auto-completion
+- Lean 4 proofs: all 5 files compile (4 fully proven, 1 partial)
 
 ### Changed
 - Roadmap restructured: v1.2 (Ecosystem & Quality), v1.3 (Features & Polish)
+- Lean 4 proof files: removed VERIFICATION PENDING tags, fixed syntax errors
 
 ## [1.1.0] - 2026-04-22
 

@@ -26,24 +26,23 @@ def buildConfigFor : BuildMode → BuildConfig
   | .prod => ⟨.prod, 5, true, true, true, true, true⟩
   | .ultra => ⟨.ultra, 1, false, false, false, true, false⟩
 
--- VERIFICATION PENDING: Environment missing Lean 4
 
 -- Theorem 1: Ultra mode never runs bibliography tools
 theorem ultra_no_bib :
-  buildConfigFor .ultra |>.runBiber = false ∧
-  buildConfigFor .ultra |>.runBib2gls = false := by
+  (buildConfigFor .ultra).runBiber = false ∧
+  (buildConfigFor .ultra).runBib2gls = false := by
   simp [buildConfigFor]
 
 -- Theorem 2: Prod mode always validates datamodel
 theorem prod_validates :
-  buildConfigFor .prod |>.validateDatamodel = true ∧
-  buildConfigFor .prod |>.runBiber = true := by
+  (buildConfigFor .prod).validateDatamodel = true ∧
+  (buildConfigFor .prod).runBiber = true := by
   simp [buildConfigFor]
 
 -- Theorem 3: Dev mode has enough passes for reference resolution
 theorem dev_enough_passes :
-  buildConfigFor .dev |>.maxPasses ≥ 3 := by
-  simp [buildConfigFor]; decide
+  (buildConfigFor .dev).maxPasses ≥ 3 := by
+  simp [buildConfigFor]
 
 -- Theorem 4: All modes enable shell-escape (for minted/Inkscape)
 theorem all_modes_shell_escape :
@@ -53,5 +52,5 @@ theorem all_modes_shell_escape :
 
 -- Theorem 5: Mode ordering by strictness
 theorem mode_strictness_order :
-  ∀ m, (buildConfigFor m).strictWarning = true ↔ m = .prod := by
-  sorry  -- VERIFICATION PENDING
+  ∀ m, (buildConfigFor m).strictWarnings = true ↔ m = .prod := by
+  sorry

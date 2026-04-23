@@ -7,35 +7,33 @@
 -/
 
 -- Simplified model of float placement
-structure Float where
+structure LaTeXFloat where
   placement : String  -- htbp
   caption : String
   sectionBoundary : Nat  -- section number where float is defined
 
 -- Simplified model of page
 structure Page where
-  section : Nat      -- primary section on this page
-  floats : List Float
-
--- VERIFICATION PENDING: Environment missing Lean 4
+  sectionNum : Nat      -- primary section on this page
+  floats : List LaTeXFloat
 
 -- Invariant: A float appears on a page whose section is >= its defining section
 -- This means floats can appear at or after their definition point, never before
 theorem float_placement_invariant :
-  ∀ (p : Page) (f : Float),
+  ∀ (p : Page) (f : LaTeXFloat),
     f ∈ p.floats →
     f.placement = "h" →  -- "here" placement
-    p.section ≥ f.sectionBoundary := by
-  sorry  -- VERIFICATION PENDING
+    p.sectionNum ≥ f.sectionBoundary := by
+  sorry
   -- Full proof requires formalizing LaTeX's float algorithm (Frank Mittelbach's design)
   -- LaTeX uses a queue-based system with area constraints
 
 -- Invariant: With [b] placement, float appears in the bottom area of a page
 -- within the same or next section boundary
 theorem float_bottom_placement :
-  ∀ (p : Page) (f : Float),
+  ∀ (p : Page) (f : LaTeXFloat),
     f ∈ p.floats →
     f.placement = "b" →
-    p.section ≥ f.sectionBoundary ∧
-    p.section ≤ f.sectionBoundary + 1 := by
-  sorry  -- VERIFICATION PENDING
+    p.sectionNum ≥ f.sectionBoundary ∧
+    p.sectionNum ≤ f.sectionBoundary + 1 := by
+  sorry

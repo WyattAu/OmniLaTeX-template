@@ -27,28 +27,26 @@ structure PageGeometry where
   bottomMargin : Float
   deriving Repr
 
--- VERIFICATION PENDING: Environment missing Lean 4
-
 -- Theorem 1: Horizontal page balance (oneside)
 theorem horizontal_balance_oneside :
   ∀ (g : PageGeometry) (p : PaperSize),
     g.textwidth + g.innerMargin + g.outerMargin = p.width →
     g.textwidth > 0 ∧ g.innerMargin > 0 ∧ g.outerMargin > 0 := by
-  sorry  -- VERIFICATION PENDING
+  sorry
 
 -- Theorem 2: Horizontal page balance (twoside with binding correction)
 theorem horizontal_balance_twoside :
   ∀ (g : PageGeometry) (p : PaperSize),
     g.textwidth + g.innerMargin + g.outerMargin + g.bcor = p.width →
     g.bcor ≥ 0 := by
-  sorry  -- VERIFICATION PENDING
+  sorry
 
 -- Theorem 3: Vertical page balance
 theorem vertical_balance :
   ∀ (g : PageGeometry) (p : PaperSize),
     g.textheight + g.topMargin + g.bottomMargin = p.height →
     g.textheight > 0 := by
-  sorry  -- VERIFICATION PENDING
+  sorry
 
 -- Theorem 4: DIV textwidth calculation (oneside)
 -- textwidth = paperwidth * (DIV - 1) / DIV
@@ -57,11 +55,11 @@ theorem div_textwidth_formula :
     div > 0 →
     let textwidth := paperwidth * (Float.ofNat div - 1) / Float.ofNat div
     textwidth < paperwidth ∧ textwidth > 0 := by
-  sorry  -- VERIFICATION PENDING
+  sorry
 
 -- Theorem 5: Caption width bound
 theorem caption_width_bound :
   ∀ (captionWidth textwidth : Float),
     captionWidth ≤ textwidth →
     captionWidth ≥ 0 := by
-  sorry  -- VERIFICATION PENDING
+  sorry

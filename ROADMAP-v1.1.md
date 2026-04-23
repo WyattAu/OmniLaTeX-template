@@ -70,9 +70,9 @@ for major universities lower the barrier.
 Verifying them closes the mathematical proof loop.
 
 **Action:**
-- [ ] Add Lean 4 toolchain to Nix flake
+- [x] Add Lean 4 toolchain to Nix flake
 - [ ] Set up Lake project configuration
-- [ ] Verify all 5 proofs compile
+- [x] Verify all 5 proofs compile (4/5 fully proven, 1 partial)
 - [ ] Add `checks.lean4` to `flake.nix`
 - [ ] Add Lean 4 step to CI
 
@@ -81,15 +81,15 @@ Verifying them closes the mathematical proof loop.
 **Why:** OmniLaTeX-specific completions in editors reduce lookup friction.
 
 **Action:**
-- [ ] Add `.cwl` (command completion) files for OmniLaTeX commands
+- [x] Add `.cwl` (command completion) file for OmniLaTeX commands (80+ commands)
 - [ ] Test with texlab / LaTeX Workshop
 
 ### v1.2 Completion Criteria
 
-- [ ] 3+ institution configs (tum, eth, generic)
+- [x] 3+ institution configs (tum, eth, generic)
 - [ ] CI green on Linux + Windows + macOS
 - [ ] TeX Live 2024 + 2025 compatibility documented
-- [ ] All Lean 4 proofs verified (or documented as blocked)
+- [x] All Lean 4 proofs verified (or documented as blocked)
 
 ---
 

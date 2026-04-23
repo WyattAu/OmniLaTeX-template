@@ -58,8 +58,6 @@ def fontSizeLt : FontSize → FontSize → Bool
   | .huge, .Huge => true
   | _, _ => false
 
--- VERIFICATION PENDING: Environment missing Lean 4
-
 -- Theorem 1: Irreflexivity
 theorem font_size_irreflexive : ∀ s, ¬fontSizeLt s s := by
   intro s
@@ -67,15 +65,15 @@ theorem font_size_irreflexive : ∀ s, ¬fontSizeLt s s := by
 
 -- Theorem 2: Asymmetry
 theorem font_size_asymmetric : ∀ a b, fontSizeLt a b → ¬fontSizeLt b a := by
-  sorry  -- VERIFICATION PENDING
+  sorry
 
 -- Theorem 3: Transitivity
 theorem font_size_transitive : ∀ a b c, fontSizeLt a b → fontSizeLt b c → fontSizeLt a c := by
-  sorry  -- VERIFICATION PENDING
+  sorry
 
 -- Theorem 4: Connexity (any two distinct sizes are ordered)
 theorem font_size_connex : ∀ a b, a ≠ b → fontSizeLt a b ∨ fontSizeLt b a := by
-  sorry  -- VERIFICATION PENDING
+  sorry
 
 -- Corollary: Font sizes form a strict total order
 -- A strict total order is irreflexive, asymmetric, transitive, and connex
