@@ -28,6 +28,10 @@ This project adheres to [Semantic versioning](https://semver.org/).
 - Doctype aliases: `posters`, `presentations`, `slides`, `talk`, `talks`, `letters`
 - `build.py init` flags: `--doctype`, `--institution`, `--language` for pre-configuring new projects
 - Examples for poster, presentation, and letter doctypes (all compile successfully)
+- `scripts/benchmark_examples.py`: performance benchmarking tool for all examples
+- `specs/performance_baselines.toml`: baseline timings for 22/23 examples
+- `lib/layout/omnilatex-accessibility.sty`: PDF/UA-1 tagged PDF support via tagpdf
+- `examples/accessibility-test/`: working tagged PDF example
 
 ### Changed
 - Doctype resolution Lean 4 proof: 16 profiles, 55 aliases (was 13 profiles, 46 aliases)

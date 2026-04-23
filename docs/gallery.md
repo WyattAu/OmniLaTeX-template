@@ -1,6 +1,6 @@
 # Template Gallery
 
-Visual showcase of all 23 OmniLaTeX example templates.
+Visual showcase of all 24 OmniLaTeX example templates.
 
 ## Quick Start
 
@@ -53,6 +53,12 @@ python build.py build-example <name>
 | `minimal-starter` | thesis | Minimal starter demonstrating all major features | [minimal-starter.pdf](build/examples/minimal-starter.pdf) |
 | `minimal-custom` | thesis | Minimal template showing customization options | [minimal-custom.pdf](build/examples/minimal-custom.pdf) |
 | `multi-language` | article | Multilingual document (English/German) | [multi-language.pdf](build/examples/multi-language.pdf) |
+
+### Accessibility
+
+| Example | Doctype | Description | PDF |
+|---------|---------|-------------|-----|
+| `accessibility-test` | article | Tagged PDF (PDF/UA-1) via tagpdf | [accessibility-test.pdf](build/examples/accessibility-test.pdf) |
 
 ## Build All Examples
 
