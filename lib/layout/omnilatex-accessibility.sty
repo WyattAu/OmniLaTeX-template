@@ -1,0 +1,24 @@
+% OmniLaTeX Accessibility Support
+% PDF/UA-1 tagged PDF via tagpdf
+%
+% USAGE (in document preamble, after \documentclass):
+%   \RequirePackage{lib/layout/omnilatex-accessibility}
+%
+% PREREQUISITE (before \documentclass in the document):
+%   \RequirePackage{pdfmanagement-testphase}
+%   \DocumentMetadata{lang=<language>, pdfversion=2.0}
+
+\ProvidesPackage{lib/layout/omnilatex-accessibility}%
+  [2026-04-23 v1.3.0 OmniLaTeX PDF accessibility support (PDF/UA-1)]
+
+% tagpdf must be loaded at top level (not inside conditionals/groups).
+\RequirePackage{tagpdf}
+
+% Configure tagpdf for accessibility
+\tagpdfsetup{
+  activate=all,
+  interwordspace=true,
+}
+
+\PackageInfo{omnilatex-accessibility}{PDF tagging activated (PDF/UA-1)}%
+\PackageInfo{omnilatex-accessibility}{Ensure pdfmanagement-testphase and DocumentMetadata are set before \string\documentclass}%

@@ -1,0 +1,59 @@
+% OmniLaTeX Accessibility Test
+% Demonstrates tagged PDF (PDF/UA-1) support
+
+%!TEX TS-program = lualatex
+
+% IMPORTANT: Load pdfmanagement-testphase BEFORE \documentclass for tagged PDF
+\RequirePackage{pdfmanagement-testphase}
+\DocumentMetadata{
+  lang=english,
+  pdfversion=2.0,
+}
+
+\documentclass[
+    doctype=article,
+    institution=none,
+]{../../omnilatex}
+
+% Document settings
+\RequirePackage{config/document-settings}
+
+% Enable accessibility support
+\RequirePackage{lib/layout/omnilatex-accessibility}
+
+\begin{document}
+
+\section{Accessibility Test}
+
+This is a test document with PDF tagging enabled for accessibility (PDF/UA-1).
+
+The document uses the \texttt{tagpdf} package via \texttt{omnilatex-accessibility.sty}
+to produce a tagged PDF compatible with screen readers.
+
+\begin{itemize}
+    \item First item
+    \item Second item
+    \item Third item
+\end{itemize}
+
+\section{Mathematics}
+
+The quadratic formula: $x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$.
+
+\section{Tables}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Sample data table}
+    \begin{tabular}{lc}
+        \toprule
+        \textbf{Item} & \textbf{Value} \\
+        \midrule
+        Alpha & 1.0 \\
+        Beta  & 2.0 \\
+        Gamma & 3.0 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\end{document}
