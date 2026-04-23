@@ -27,15 +27,18 @@ This project adheres to [Semantic versioning](https://semver.org/).
 - Three new document types: `poster` (A1 landscape conference poster), `presentation` (KOMA-based slides with tcolorbox), `letter` (formal letter with sender/recipient/closing commands)
 - Doctype aliases: `posters`, `presentations`, `slides`, `talk`, `talks`, `letters`
 - `build.py init` flags: `--doctype`, `--institution`, `--language` for pre-configuring new projects
-- Examples for poster, presentation, and letter doctypes (all compile successfully)
+- `build.py scaffold-language <lang>`: generates translation guide with 47 stubs
+- Examples for poster, presentation, letter, and accessibility-test (all compile)
 - `scripts/benchmark_examples.py`: performance benchmarking tool for all examples
 - `specs/performance_baselines.toml`: baseline timings for 22/23 examples
 - `lib/layout/omnilatex-accessibility.sty`: PDF/UA-1 tagged PDF support via tagpdf
-- `examples/accessibility-test/`: working tagged PDF example
 
 ### Changed
 - Doctype resolution Lean 4 proof: 16 profiles, 55 aliases (was 13 profiles, 46 aliases)
 - TUI menu version string updated to v1.3.0-dev
+- CI performance job: added regression detection against baselines (>50% threshold)
+
+## [1.3.0] - 2026-04-23
 
 ## [1.2.0] - 2026-04-23
 
