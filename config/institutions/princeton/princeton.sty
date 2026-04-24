@@ -1,0 +1,65 @@
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Princeton University Configuration
+%
+% Official brand colors and identity.
+% Usage: \documentclass[doctype=thesis,institution=princeton]{omnilatex}
+%
+% Brand guidelines: https://communications.princeton.edu/guidelines/visual-identity/
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/institutions/princeton/princeton}[2026-04-24 v1.0.0 Princeton University Institution Configuration]
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Color Palette (Official Princeton Brand Guidelines)
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Primary: Princeton Orange
+\definecolor{universityprimary}{RGB}{231, 117, 0}
+% Secondary: Black
+\definecolor{universitysecondary}{RGB}{0, 0, 0}
+% Accent: Princeton Blue
+\definecolor{universityaccent}{RGB}{74, 111, 165}
+% Neutral: White
+\definecolor{universitywhite}{RGB}{255, 255, 255}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Logo
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Place your Princeton logo in: assets/images/institutions/princeton-logo.pdf
+% Official logo download: https://communications.princeton.edu/guidelines/visual-identity/
+%
+% \DeclareTranslation{english}{LogoInstitution}{%
+%     \includegraphics[height=1.5cm]{assets/images/institutions/princeton-logo}%
+% }
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Name
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \DeclareTranslation{english}{InstitutionName}{Princeton University}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Link
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareTranslation{english}{LinkInstitution}{https://www.princeton.edu}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Apply Colors to Document Elements
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Uncomment the lines you want to activate:
+
+% Header / title page background
+% \colorlet{colorTitleBack}{universitysecondary}
+
+% Section headings
+% \colorlet{colorSection}{universitysecondary}
+
+% Links and URLs
+% \colorlet{colorLink}{universityprimary}
+
+% Table rules
+% \colorlet{colorTableRule}{universityaccent}
+
+% Footer line
+% \colorlet{colorFooter}{universitysecondary}
+
+\endinput

@@ -36,15 +36,27 @@ to produce a tagged PDF compatible with screen readers.
     \item Third item
 \end{itemize}
 
-\section{Mathematics}
+\section{Alt Text for Figures}
 
-The quadratic formula: $x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$.
+% Set alt text before the figure environment
+\alttext{A bar chart showing increasing sales figures from 2020 to 2024}
+\begin{figure}[htbp]
+    \centering
+    \fbox{\parbox{0.6\textwidth}{\centering\vspace{2cm}[Placeholder chart]\vspace{2cm}}}
+    \caption{Sales growth over five years}
+\end{figure}
 
-\section{Tables}
+\section{Accessible Links}
 
+% \accessiblelink{display text}{URL}{screen reader description}
+\accessiblelink{Visit the OmniLaTeX repository}{https://github.com/WyattAu/OmniLaTeX-template}{Opens the OmniLaTeX GitHub repository in a new tab}
+
+\section{Table with Header Markup}
+
+% Tables are automatically tagged with role=table by the accessibility module.
 \begin{table}[htbp]
     \centering
-    \caption{Sample data table}
+    \caption{Accessible data table}
     \begin{tabular}{lc}
         \toprule
         \textbf{Item} & \textbf{Value} \\
@@ -55,5 +67,33 @@ The quadratic formula: $x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$.
         \bottomrule
     \end{tabular}
 \end{table}
+
+\section{Color Contrast}
+
+% Informative check — verify the contrast ratio manually with a color tool.
+% WCAG 2.1 AA requires at least 4.5:1 for normal text, 3:1 for large text.
+\checkcontrast{white}{black}
+
+\section{Reading Order}
+
+% In complex layouts, use \readingorder{n} to hint at content sequence.
+\readingorder{1}
+This content should be read first.
+
+\readingorder{2}
+This content should be read second.
+
+\section{Language Tagging}
+
+% Use \langtag{ISO code}{text} to mark passages in a different language.
+This paragraph is in English, but here is a phrase in German:
+\langtag{german}{Vielen Dank für Ihre Aufmerksamkeit}.
+
+And a phrase in French: \langtag{french}{Merci beaucoup}.
+
+\section{Structure Validation}
+
+% Run at the end of the document to check heading hierarchy.
+\validatstructure
 
 \end{document}

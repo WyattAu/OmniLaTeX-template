@@ -1,0 +1,332 @@
+%% OmniLaTeX Color Theme System
+%% Light/dark mode and color presets
+%%
+%% Usage: \usepackage{lib/utils/omnilatex-themes}
+%%        \usetheme{midnight}    % Apply a theme
+%%        \darkmode              % Switch to dark mode
+%%        \lightmode             % Switch to light mode
+%%
+%% Themes:
+%%   default     — White bg, dark text, blue accents (OmniLaTeX standard)
+%%   midnight    — Dark navy/blue theme
+%%   forest      — Dark green theme
+%%   rose        — Dark pink/magenta theme
+%%   monochrome  — Pure black/white, no color
+%%   sepia       — Warm paper-like tones
+%%
+%% Themes respect institution primary/secondary colors when defined.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/utils/omnilatex-themes}[2026/04/24 v1.0.0 OmniLaTeX color theme system]
+
+\RequirePackage{xcolor}
+\RequirePackage{kvoptions}
+
+%% ── Theme Option ──────────────────────────────────
+%% Pass theme=NAME as a package option, e.g.:
+%%   \usepackage[theme=midnight]{lib/utils/omnilatex-themes}
+
+\DeclareStringOption[default]{theme}
+\ProcessKeyvalOptions*
+
+%% ── State Tracking ────────────────────────────────
+%% \ifdarkmode is true when the document is in dark mode.
+
+\newif\ifdarkmode
+\darkmodefalse
+
+%% ── Current Theme Storage ─────────────────────────
+%% Stores the base theme name (without -dark suffix) so that
+%% \darkmode and \lightmode can toggle without remembering which
+%% theme was originally selected.
+
+\newcommand{\omnilatex@currenttheme}{default}
+
+%% ── Color Palettes ────────────────────────────────
+%% Each palette defines 11 semantic color slots:
+%%   bg          — page background
+%%   fg          — default text color
+%%   heading     — section/chapter headings
+%%   body        — running body text
+%%   accent      — emphasis, highlights, footnote marks
+%%   blockbg     — block environment body background
+%%   blockframe  — block environment title bar / frame
+%%   link        — hyperlink color
+%%   rule        — horizontal rules, separators
+%%   codebg      — inline/code listing background
+%%   footernote  — footnotes, page headers/footers
+
+%% --- Default (Light) ---
+%% OmniLaTeX standard: clean white background, dark text, blue accents.
+
+\newcommand{\theme@default@bg}{white}
+\newcommand{\theme@default@fg}{black}
+\newcommand{\theme@default@heading}{black}
+\newcommand{\theme@default@body}{black!85}
+\newcommand{\theme@default@accent}{blue!70!black}
+\newcommand{\theme@default@blockbg}{black!5}
+\newcommand{\theme@default@blockframe}{blue!60!black}
+\newcommand{\theme@default@link}{blue!70!black}
+\newcommand{\theme@default@rule}{black!30}
+\newcommand{\theme@default@codebg}{black!5}
+\newcommand{\theme@default@footernote}{black!60}
+
+%% --- Midnight ---
+%% Dark navy theme with cyan accents.
+
+\newcommand{\theme@midnight@bg}{black!90!blue}
+\newcommand{\theme@midnight@fg}{white!90}
+\newcommand{\theme@midnight@heading}{blue!40!white}
+\newcommand{\theme@midnight@body}{white!80}
+\newcommand{\theme@midnight@accent}{cyan!60!white}
+\newcommand{\theme@midnight@blockbg}{blue!20!black}
+\newcommand{\theme@midnight@blockframe}{cyan!50!white}
+\newcommand{\theme@midnight@link}{cyan!70!white}
+\newcommand{\theme@midnight@rule}{white!20}
+\newcommand{\theme@midnight@codebg}{black!80!blue}
+\newcommand{\theme@midnight@footernote}{white!50}
+
+%% --- Forest ---
+%% Dark green theme with green accents.
+
+\newcommand{\theme@forest@bg}{black!85!green}
+\newcommand{\theme@forest@fg}{white!90}
+\newcommand{\theme@forest@heading}{green!50!white}
+\newcommand{\theme@forest@body}{white!80}
+\newcommand{\theme@forest@accent}{green!60!white}
+\newcommand{\theme@forest@blockbg}{green!15!black}
+\newcommand{\theme@forest@blockframe}{green!50!white}
+\newcommand{\theme@forest@link}{green!70!white}
+\newcommand{\theme@forest@rule}{white!20}
+\newcommand{\theme@forest@codebg}{black!80!green}
+\newcommand{\theme@forest@footernote}{white!50}
+
+%% --- Rose ---
+%% Dark pink/magenta theme.
+
+\newcommand{\theme@rose@bg}{black!85!red}
+\newcommand{\theme@rose@fg}{white!90}
+\newcommand{\theme@rose@heading}{red!40!white}
+\newcommand{\theme@rose@body}{white!80}
+\newcommand{\theme@rose@accent}{magenta!60!white}
+\newcommand{\theme@rose@blockbg}{red!15!black}
+\newcommand{\theme@rose@blockframe}{magenta!50!white}
+\newcommand{\theme@rose@link}{magenta!70!white}
+\newcommand{\theme@rose@rule}{white!20}
+\newcommand{\theme@rose@codebg}{black!80!red}
+\newcommand{\theme@rose@footernote}{white!50}
+
+%% --- Monochrome (Light) ---
+%% Pure black and white — no color whatsoever.
+
+\newcommand{\theme@monochrome@bg}{white}
+\newcommand{\theme@monochrome@fg}{black}
+\newcommand{\theme@monochrome@heading}{black}
+\newcommand{\theme@monochrome@body}{black!80}
+\newcommand{\theme@monochrome@accent}{black!70}
+\newcommand{\theme@monochrome@blockbg}{black!5}
+\newcommand{\theme@monochrome@blockframe}{black!60}
+\newcommand{\theme@monochrome@link}{black!70}
+\newcommand{\theme@monochrome@rule}{black!30}
+\newcommand{\theme@monochrome@codebg}{black!5}
+\newcommand{\theme@monochrome@footernote}{black!50}
+
+%% --- Monochrome (Dark) ---
+\newcommand{\theme@monochrome@dark@bg}{black!90}
+\newcommand{\theme@monochrome@dark@fg}{white!90}
+\newcommand{\theme@monochrome@dark@heading}{white}
+\newcommand{\theme@monochrome@dark@body}{white!75}
+\newcommand{\theme@monochrome@dark@accent}{white!60}
+\newcommand{\theme@monochrome@dark@blockbg}{white!10}
+\newcommand{\theme@monochrome@dark@blockframe}{white!50}
+\newcommand{\theme@monochrome@dark@link}{white!60}
+\newcommand{\theme@monochrome@dark@rule}{white!20}
+\newcommand{\theme@monochrome@dark@codebg}{white!8}
+\newcommand{\theme@monochrome@dark@footernote}{white!45}
+
+%% --- Sepia ---
+%% Warm paper-like tones for comfortable reading.
+
+\newcommand{\theme@sepia@bg}{orange!8!white}
+\newcommand{\theme@sepia@fg}{black!80!orange}
+\newcommand{\theme@sepia@heading}{black!70!orange}
+\newcommand{\theme@sepia@body}{black!65!orange}
+\newcommand{\theme@sepia@accent}{orange!70!black}
+\newcommand{\theme@sepia@blockbg}{orange!10!white}
+\newcommand{\theme@sepia@blockframe}{orange!50!black}
+\newcommand{\theme@sepia@link}{orange!60!black}
+\newcommand{\theme@sepia@rule}{orange!30!black}
+\newcommand{\theme@sepia@codebg}{orange!8!white}
+\newcommand{\theme@sepia@footernote}{black!50!orange}
+
+%% ── Internal: Load Palette ────────────────────────
+%% \applytheme@{name} copies the palette's 11 slots into
+%% omnilatex@* color names using \colorlet.
+
+\newcommand{\applytheme@}[1]{%
+    \colorlet{omnilatex@bg}{\csname theme@#1@bg\endcsname}%
+    \colorlet{omnilatex@fg}{\csname theme@#1@fg\endcsname}%
+    \colorlet{omnilatex@heading}{\csname theme@#1@heading\endcsname}%
+    \colorlet{omnilatex@body}{\csname theme@#1@body\endcsname}%
+    \colorlet{omnilatex@accent}{\csname theme@#1@accent\endcsname}%
+    \colorlet{omnilatex@blockbg}{\csname theme@#1@blockbg\endcsname}%
+    \colorlet{omnilatex@blockframe}{\csname theme@#1@blockframe\endcsname}%
+    \colorlet{omnilatex@link}{\csname theme@#1@link\endcsname}%
+    \colorlet{omnilatex@rule}{\csname theme@#1@rule\endcsname}%
+    \colorlet{omnilatex@codebg}{\csname theme@#1@codebg\endcsname}%
+    \colorlet{omnilatex@footernote}{\csname theme@#1@footernote\endcsname}%
+}
+
+%% ── Internal: Apply Colors to Document Elements ───
+%% \applytheme@colors wires the omnilatex@* colors into
+%% KOMA-Script elements, hyperref, and page background.
+
+\newcommand{\applytheme@colors}{%
+    %% Page background (requires \pagecolor support — LuaLaTeX)
+    \pagecolor{omnilatex@bg}%
+    %% Default text color
+    \color{omnilatex@fg}%
+    %% KOMA-Script color integration
+    \setkomacolor{title}{fg=omnilatex@heading}%
+    \setkomacolor{titlepage}{bg=omnilatex@bg, fg=omnilatex@fg}%
+    \setkomacolor{sectioning}{fg=omnilatex@heading}%
+    \setkomacolor{section entry}{fg=omnilatex@heading}%
+    \setkomacolor{footnote}{fg=omnilatex@footernote}%
+    \setkomacolor{footnote mark}{fg=omnilatex@accent}%
+    \setkomacolor{rule}{fg=omnilatex@rule}%
+    \setkomacolor{caption}{fg=omnilatex@fg}%
+    \setkomacolor{caption label}{fg=omnilatex@accent}%
+    \setkomacolor{head}{fg=omnilatex@footernote}%
+    \setkomacolor{foot}{fg=omnilatex@footernote}%
+    \setkomacolor{toc}{fg=omnilatex@fg}%
+    \setkomacolor{toc line}{fg=omnilatex@rule}%
+    %% Block environments
+    \setkomacolor{block title}{fg=white, bg=omnilatex@blockframe}%
+    \setkomacolor{block body}{bg=omnilatex@blockbg}%
+    \setkomacolor{block title alerted}{fg=white, bg=red!70!black}%
+    \setkomacolor{block body alerted}{bg=red!5}%
+    \setkomacolor{block title example}{fg=white, bg=green!50!black}%
+    \setkomacolor{block body example}{bg=green!5}%
+    %% Hyperref link colors (safe to call after hyperref is loaded;
+    %% hypersetup is a no-op if hyperref hasn't been loaded yet).
+    \hypersetup{%
+        colorlinks=true,
+        linkcolor=omnilatex@link,
+        urlcolor=omnilatex@link,
+        citecolor=omnilatex@accent,%
+    }%
+    %% PDF metadata: hint to viewers about preferred background
+    \ifdarkmode
+        \hypersetup{pdfpagelayout=SinglePage}%
+    \fi
+    %% Integrate institution colors if they are defined.
+    %% If universityprimary exists, use it as the accent and
+    %% block frame color so that institutional branding is
+    %% preserved regardless of the selected theme.
+    \@ifundefined{color@universityprimary}{}{%
+        \colorlet{omnilatex@accent}{universityprimary}%
+        \colorlet{omnilatex@blockframe}{universityprimary}%
+        \colorlet{omnilatex@link}{universityprimary}%
+        \setkomacolor{block title}{fg=white, bg=omnilatex@blockframe}%
+        \setkomacolor{footnote mark}{fg=omnilatex@accent}%
+        \setkomacolor{caption label}{fg=omnilatex@accent}%
+        \hypersetup{%
+            linkcolor=omnilatex@link,
+            urlcolor=omnilatex@link,
+            citecolor=omnilatex@accent,%
+        }%
+    }%
+}
+
+%% ── Theme Application ─────────────────────────────
+%% \usetheme{name} applies a complete color theme.
+%%
+%% If the name contains "-dark" (e.g. "monochrome-dark"), dark mode
+%% is enabled automatically and the suffix is stripped to find the
+%% palette name.
+%%
+%% Themes that are inherently dark (midnight, forest, rose) do NOT
+%% have a separate -dark variant; the base palette is already dark.
+%% For these themes, \lightmode has no effect (they stay dark).
+%% For default/monochrome/sepia, a -dark variant can be requested.
+
+\newcommand{\usetheme}[1]{%
+    %% Store requested name
+    \def\@theme@request{#1}%
+    %% Check for -dark suffix
+    \IfSubStr{\@theme@request}{-dark}{%
+        \darkmodetrue
+        \StrBefore{\@theme@request}{-dark}[\@theme@base]%
+    }{%
+        \darkmodefalse
+        \def\@theme@base{\@theme@request}%
+    }%
+    %% Record the base theme name for \darkmode / \lightmode toggles
+    \renewcommand{\omnilatex@currenttheme}{\@theme@base}%
+    %% Determine which palette to actually load.
+    %% Dark themes (midnight, forest, rose) are always dark — ignore
+    %% any -dark suffix and force dark mode off so toggling works.
+    \def\@dark@themes{midnight,forest,rose}%
+    \IfSubStr{\@dark@themes}{\@theme@base}{%
+        %% This theme is inherently dark
+        \darkmodetrue
+        \applytheme@{\@theme@base}%
+    }{%
+        %% Light or toggleable theme
+        \ifdarkmode
+            %% Check if a dark variant palette exists
+            \@ifundefined{theme@\@theme@base @dark@bg}{%
+                %% No explicit dark variant — fall back to monochrome-dark
+                \applytheme@{monochrome-dark}%
+            }{%
+                \applytheme@{\@theme@base-dark}%
+            }%
+        \else
+            \applytheme@{\@theme@base}%
+        \fi
+    }%
+    %% Wire all colors into document elements
+    \applytheme@colors
+}
+
+%% ── Dark/Light Mode Toggle ────────────────────────
+%% These commands switch between light and dark variants
+%% of the currently selected theme.
+
+\newcommand{\darkmode}{%
+    \darkmodetrue
+    \usetheme{\omnilatex@currenttheme-dark}%
+}
+
+\newcommand{\lightmode}{%
+    \darkmodefalse
+    \usetheme{\omnilatex@currenttheme}%
+}
+
+%% ── Custom Color Override ─────────────────────────
+%% \setthemecolor{<slot>}{<color>} allows per-slot overrides.
+%% Slot names match the omnilatex@* names (without the prefix):
+%%   bg, fg, heading, body, accent, blockbg, blockframe,
+%%   link, rule, codebg, footernote
+%%
+%% After overriding, all document elements are refreshed.
+
+\newcommand{\setthemecolor}[2]{%
+    \colorlet{omnilatex@#1}{#2}%
+    \applytheme@colors
+}
+
+%% ── Convenience: Theme Query ──────────────────────
+%% \ifthememode{dark}{<true>}{<false>} executes code depending
+%% on whether dark mode is active.
+
+\newcommand{\ifthememode}[3]{%
+    \ifdarkmode #1\else #2\fi
+}
+
+%% ── Initialize ────────────────────────────────────
+%% Apply the theme requested via the package option (default).
+
+\usetheme{\omnilatex@theme}
+
+\endinput

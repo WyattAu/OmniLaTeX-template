@@ -1,0 +1,216 @@
+%% OmniLaTeX RTL Language Support
+%% Arabic and Hebrew right-to-left typography
+%%
+%% Usage: Loaded automatically when language=arabic or language=hebrew
+%%        Or: \usepackage{lib/language/omnilatex-rtl}
+%%
+%% Features:
+%%   - Bidi paragraph direction via the bidi package
+%%   - RTL-aware page layout (mirrored margins, binding side)
+%%   - Script-specific font configuration (Arabic, Hebrew)
+%%   - Arabic-Indic numeral option
+%%   - LTR math mode within RTL text
+%%   - Right-aligned list markers and TOC dot leaders
+%%
+%% Requirements: LuaLaTeX + bidi + fontspec (bundled with TeX Live)
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/language/omnilatex-rtl}[2026/04/24 v1.0.0 OmniLaTeX RTL language support]
+
+% ── Core Bidi Engine ────────────────────────────────────────────────────────
+% The bidi package provides the fundamental RTL typesetting layer for LuaLaTeX.
+% It redefines many LaTeX internals to be direction-aware, including paragraph
+% layout, list environments, TOC leaders, and float placement.
+
+\RequirePackage{bidi}
+
+% ── Font Configuration ──────────────────────────────────────────────────────
+% Default Arabic and Hebrew font families. These are widely available in TeX
+% Live or as system fonts. Users can override per-script with the setter
+% commands below.
+
+\newcommand{\arabicfont}{Amiri}
+\newcommand{\arabicfont@bold}{Amiri Bold}
+\newcommand{\hebrewfont}{David CLM}
+\newcommand{\hebrewfont@bold}{David CLM Bold}
+
+% ── Font Setter Commands ────────────────────────────────────────────────────
+% Users call these in the preamble to change fonts before setup is applied.
+% Changing the font after \begin{document} is not supported.
+
+\newcommand{\setArabicFont}[1]{%
+  \renewcommand{\arabicfont}{#1}%
+}
+\newcommand{\setArabicBoldFont}[1]{%
+  \renewcommand{\arabicfont@bold}{#1}%
+}
+\newcommand{\setHebrewFont}[1]{%
+  \renewcommand{\hebrewfont}{#1}%
+}
+\newcommand{\setHebrewBoldFont}[1]{%
+  \renewcommand{\hebrewfont@bold}{#1}%
+}
+
+% ── Script Detection ────────────────────────────────────────────────────────
+% Track which RTL script is active so other parts of the template can query it.
+% Valid values: arabic, hebrew.
+
+\newcommand{\omnilatex@rtlscript}{arabic}
+
+% ── Arabic-Indic Numerals ───────────────────────────────────────────────────
+% When enabled, Arabic documents use Arabic-Indic digits (٠١٢٣٤٥٦٧٨٩)
+% instead of Western Arabic digits (0123456789). Off by default.
+
+\newif\ifomnilatex@arabicindic
+\omnilatex@arabicindicfalse
+
+\newcommand{\arabicindictrue}{\omnilatex@arabicindictrue}
+\newcommand{\arabicindicfalse}{\omnilatex@arabicindicfalse}
+
+% ── RTL Page Layout ─────────────────────────────────────────────────────────
+% For RTL documents, mirror the margins so the binding edge is on the right
+% side (the "inner" edge for RTL). Adjust KOMA-Script's typearea binding
+% correction accordingly.
+
+\newcommand{\omnilatex@setup@rtl@layout}{%
+  \PassOptionsToClass{twoside=true}{scrbook}%
+  \PassOptionsToClass{twoside=true}{scrreprt}%
+  \PassOptionsToClass{twoside=true}{scrartcl}%
+  % bidi package handles margin mirroring automatically when the document
+  % direction is set to RTL via \setdefaultlanguage{arabic/hebrew}.
+  % The following ensures KOMA's binding correction is applied on the right.
+  \KOMAoptions{BCOR=0mm}%
+}
+
+% ── Math Mode Direction ─────────────────────────────────────────────────────
+% Mathematical expressions must remain left-to-right even inside RTL text.
+% The bidi package handles this automatically for display math, but inline
+% math ($...$) needs explicit direction enforcement.
+
+\newcommand{\omnilatex@setup@rtl@math}{%
+  \everymath{\displaystyle\textdirection=0}%
+}
+
+% ── List Alignment ──────────────────────────────────────────────────────────
+% RTL list environments should have markers on the right side.
+% The bidi package redefines itemize/enumerate automatically, but we
+% provide explicit hook points for further customization.
+
+\newcommand{\omnilatex@setup@rtl@lists}{%
+  % bidi package handles list marker placement.
+  % Adjust labelsep for slightly tighter RTL lists.
+  \setlength{\labelsep}{0.5em}%
+}
+
+% ── TOC Dot Leaders ─────────────────────────────────────────────────────────
+% The bidi package redefines TOC leaders to be right-aligned for RTL.
+% No additional configuration is needed.
+
+% ── Font Application: Arabic ────────────────────────────────────────────────
+% Set up Arabic script fonts with graceful fallback. If the requested font is
+% not found, emit a ClassWarning and fall back to Noto Naskh Arabic (bundled
+% with TeX Live).
+
+\newcommand{\omnilatex@apply@arabicfonts}{%
+  \IfFontExistsTF{\arabicfont}{%
+    \IfFontExistsTF{\arabicfont@bold}{%
+      \newfontfamily\arabicfontfamily[Script=Arabic,
+        BoldFont=\arabicfont@bold]{\arabicfont}%
+    }{%
+      \newfontfamily\arabicfontfamily[Script=Arabic,
+        BoldFont=\arabicfont,
+        BoldFeatures={FakeBold=2}]{\arabicfont}%
+    }%
+  }{%
+    \ClassWarning{omnilatex-rtl}{%
+      Arabic font '\arabicfont' not found, using Noto Naskh Arabic\MessageBreak}%
+    \newfontfamily\arabicfontfamily[Script=Arabic]{Noto Naskh Arabic}%
+  }%
+}
+
+% ── Font Application: Hebrew ────────────────────────────────────────────────
+% Set up Hebrew script fonts with graceful fallback. Falls back to Frank Ruehl
+% CLM if the requested font is not available.
+
+\newcommand{\omnilatex@apply@hebrewfonts}{%
+  \IfFontExistsTF{\hebrewfont}{%
+    \IfFontExistsTF{\hebrewfont@bold}{%
+      \newfontfamily\hebrewfontfamily[Script=Hebrew,
+        BoldFont=\hebrewfont@bold]{\hebrewfont}%
+    }{%
+      \newfontfamily\hebrewfontfamily[Script=Hebrew,
+        BoldFont=\hebrewfont,
+        BoldFeatures={FakeBold=2}]{\hebrewfont}%
+    }%
+  }{%
+    \ClassWarning{omnilatex-rtl}{%
+      Hebrew font '\hebrewfont' not found, using Frank Ruehl CLM\MessageBreak}%
+    \newfontfamily\hebrewfontfamily[Script=Hebrew]{Frank Ruehl CLM}%
+  }%
+}
+
+% ── Setup: Arabic ───────────────────────────────────────────────────────────
+% Complete Arabic RTL setup: fonts, numerals, polyglossia, math, lists.
+
+\newcommand{\omnilatex@setup@arabic}{%
+  \renewcommand{\omnilatex@rtlscript}{arabic}%
+  \omnilatex@setup@rtl@layout%
+  \omnilatex@apply@arabicfonts%
+  \omnilatex@setup@rtl@math%
+  \omnilatex@setup@rtl@lists%
+  % Arabic-Indic numerals
+  \ifomnilatex@arabicindic
+    \makeatletter
+    \def\@arabic#1{\expandafter\arabic@indic\expandafter{\the\numexpr#1\relax}}%
+    \newcount\@indic@temp
+    \def\arabic@indic#1{%
+      \@indic@temp=#1\relax
+      \ifcase\@indic@temp\or ٠\or ١\or ٢\or ٣\or ٤\or
+      ٥\or ٦\or ٧\or ٨\or ٩\fi
+      \ifnum\@indic@temp>9\relax
+        \expandafter\arabic@indic\expandafter
+          {\the\numexpr\@indic@temp/10\relax}%
+        \expandafter\arabic@indic\expandafter
+          {\the\numexpr\@indic@temp-10*(\@indic@temp/10)\relax}%
+      \fi
+    }%
+    \makeatother
+  \fi
+}
+
+% ── Setup: Hebrew ───────────────────────────────────────────────────────────
+% Complete Hebrew RTL setup: fonts, polyglossia, math, lists.
+
+\newcommand{\omnilatex@setup@hebrew}{%
+  \renewcommand{\omnilatex@rtlscript}{hebrew}%
+  \omnilatex@setup@rtl@layout%
+  \omnilatex@apply@hebrewfonts%
+  \omnilatex@setup@rtl@math%
+  \omnilatex@setup@rtl@lists%
+}
+
+% ── Auto-Script Detection ───────────────────────────────────────────────────
+% When this package is loaded, detect the document language from
+% \omnilatex@language (set by omnilatex.cls) and apply the appropriate
+% RTL setup. This runs unconditionally; the class guards loading to only
+% arabic/hebrew languages.
+
+\providecommand{\omnilatex@language}{}
+\@ifundefined{omnilatex@language}{}{%
+  \IfStrEq{\omnilatex@language}{arabic}{\omnilatex@setup@arabic}{}%
+  \IfStrEq{\omnilatex@language}{hebrew}{\omnilatex@setup@hebrew}{}%
+}
+
+% ── Convenience: LTR Inline Override ────────────────────────────────────────
+% For short inline passages of LTR text inside an RTL document, use
+% \LTRinline{...}. This is a thin wrapper around bidi's \textLR.
+
+\newcommand{\LTRinline}[1]{\textLR{#1}}
+
+% ── Convenience: RTL Inline Override ────────────────────────────────────────
+% For short inline passages of RTL text inside an LTR document, use
+% \RTLinline{...}. This wraps bidi's \textRL.
+
+\newcommand{\RTLinline}[1]{\textRL{#1}}
+
+\endinput

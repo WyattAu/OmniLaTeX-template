@@ -6,15 +6,16 @@
 #
 # The zip contains everything needed to compile on Overleaf with LuaLaTeX:
 #   - omnilatex.cls
-#   - lib/ (all 21 modules)
-#   - config/ (document types, settings)
+#   - lib/ (all 27 modules across 9 subdirectories)
+#   - config/ (document types, settings, 14 institution configs)
 #   - lua/ (git-metadata.lua)
+#   - examples/ (citation-styles, color-themes)
 #   - Minimal main.tex with instructions
 #
 # NOT included (Overleaf doesn't need these):
 #   - build.py, build.lua, .latexmkrc, flake.nix
 #   - tests/, specs/, docs/
-#   - examples/ (use the generated template instead)
+#   - other examples/ (use the full repo instead)
 
 set -euo pipefail
 
@@ -29,13 +30,15 @@ echo "Building Overleaf zip..."
 # Core class
 cp "$REPO_ROOT/omnilatex.cls" "$TMPDIR/"
 
-# Modules
+# Modules (all subdirectories: code, core, graphics, language, layout,
+#          references, tables, typography, utils)
 cp -r "$REPO_ROOT/lib" "$TMPDIR/"
 
-# Config (document types + settings, no institutions)
+# Config (document types + settings + all 14 institution configs)
 mkdir -p "$TMPDIR/config/document-types"
 cp -r "$REPO_ROOT/config/document-types/"*.sty "$TMPDIR/config/document-types/"
 cp "$REPO_ROOT/config/document-settings.sty" "$TMPDIR/config/" 2>/dev/null || true
+cp -r "$REPO_ROOT/config/institutions" "$TMPDIR/config/institutions"
 
 # Lua scripts
 mkdir -p "$TMPDIR/lua"
@@ -45,6 +48,20 @@ cp "$REPO_ROOT/lua/"*.lua "$TMPDIR/lua/" 2>/dev/null || true
 mkdir -p "$TMPDIR/bib"
 if [ -f "$REPO_ROOT/examples/minimal-starter/bib/bibliography.bib" ]; then
   cp "$REPO_ROOT/examples/minimal-starter/bib/bibliography.bib" "$TMPDIR/bib/"
+fi
+
+# ── Select examples ──────────────────────────────────────
+# citation-styles
+if [ -d "$REPO_ROOT/examples/citation-styles" ]; then
+  mkdir -p "$TMPDIR/examples/citation-styles"
+  cp "$REPO_ROOT/examples/citation-styles/main.tex" "$TMPDIR/examples/citation-styles/"
+  cp "$REPO_ROOT/examples/citation-styles/refs.bib"  "$TMPDIR/examples/citation-styles/"
+fi
+
+# color-themes
+if [ -d "$REPO_ROOT/examples/color-themes" ]; then
+  mkdir -p "$TMPDIR/examples/color-themes"
+  cp "$REPO_ROOT/examples/color-themes/main.tex" "$TMPDIR/examples/color-themes/"
 fi
 
 # Sample assets (images only, no logos needed for generic template)
@@ -83,8 +100,13 @@ OmniLaTeX is a modular document class for academic and professional documents.
 \subsection{Features}
 
 \begin{itemize}
-  \item 46 doctype aliases (thesis, CV, patent, journal, \ldots)
+  \item 55 doctype aliases (thesis, CV, patent, journal, \ldots)
+  \item 16 document profiles across 3 KOMA-Script base classes
+  \item 14 institution configs (TUHH, MIT, Stanford, ETH, \ldots)
   \item Modern font stack with graceful fallbacks
+  \item CJK support: Chinese, Japanese, Korean
+  \item 9 citation styles (IEEE, ACM, APA, Nature, \ldots)
+  \item 6 color themes with dark/light mode
   \item Code listings with syntax highlighting
   \item Mathematical typesetting with unicode-math
   \item TikZ graphics and engineering diagrams
@@ -171,10 +193,46 @@ Change the document type in `main.tex`:
 \documentclass[doctype=report]{omnilatex}      % Report
 ```
 
+### Institution Configs (14 available)
+
+```latex
+\documentclass[institution=tuhh]{omnilatex}    % TUHH
+\documentclass[institution=mit]{omnilatex}     % MIT
+\documentclass[institution=stanford]{omnilatex}% Stanford
+```
+
+Full list: tuhh, tum, eth, mit, stanford, cambridge, tudelft, oxford,
+princeton, yale, cmu, epfl, imperial, generic
+
+### Citation Styles (9 available)
+
+```latex
+\citationstyle{ieee}    % IEEE
+\citationstyle{apa}     % APA
+\citationstyle{nature}  % Nature
+```
+
+Full list: ieee, acm, apa, chicago, nature, science, harvard,
+vancouver, mla
+
+See `examples/citation-styles/` for a demo.
+
+### Color Themes (6 + dark variants)
+
+```latex
+\usetheme{default}        % Clean white, blue accents
+\usetheme{midnight}       % Dark navy, cyan accents
+\usetheme{monochrome-dark}% Dark mode, no color
+```
+
+Full list: default, midnight, forest, rose, monochrome, sepia
+
+See `examples/color-themes/` for a visual comparison.
+
 ## Full Documentation
 
 - GitHub: https://github.com/WyattAu/OmniLaTeX-template
-- All 20 examples: https://github.com/WyattAu/OmniLaTeX-template/tree/main/examples
+- All 24 examples: https://github.com/WyattAu/OmniLaTeX-template/tree/main/examples
 MDEOF
 
 # Create zip

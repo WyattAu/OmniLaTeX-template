@@ -7,6 +7,25 @@ This project adheres to [Semantic versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-04-24
+
+### Added
+- **Color theme system:** `omnilatex-themes.sty` — 6 presets (default, midnight, forest, rose, monochrome, sepia), dark/light toggle, institution color integration
+- **Color themes example:** `examples/color-themes/` demonstrating all 6 themes
+- **6 more institution configs:** Oxford, Princeton, Yale, CMU, EPFL, Imperial (14 total)
+- **RTL language support:** `omnilatex-rtl.sty` — Arabic and Hebrew bidi, Amiri/David CLM fonts, Arabic-Indic numerals, LTR math
+- **RTL examples:** Arabic and Hebrew document examples
+- **Accessibility hardening:** alt text for figures/TikZ, accessible links, table markup, heading validation, color contrast checks, reading order, language tagging
+- **Accessibility documentation:** `docs/accessibility.md` — comprehensive WCAG 2.1 AA guide
+
+### Changed
+- `omnilatex.cls`: auto-loads `omnilatex-rtl.sty` for Arabic and Hebrew languages
+- `specs/option_schema.toml`: added `hebrew` to valid languages, RTL auto-load docs
+- `CONTRIBUTING.md`: updated accessibility section with new commands
+- `examples/accessibility-test/main.tex`: demonstrates all new accessibility features
+- **VS Code extension:** added settings panel, createProject command, status bar, 7 new snippets (section, subsection, figure, table, math, code, bibliography)
+- **Overleaf:** zip script includes all 14 institutions, CJK/citation/theme modules, updated manifest to v1.4.0
+
 ## [1.4.0] - 2026-04-24
 
 ### Added

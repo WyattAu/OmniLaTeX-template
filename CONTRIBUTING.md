@@ -243,7 +243,8 @@ English.
 ## PDF Accessibility (Tagged PDF / PDF/UA-1)
 
 OmniLaTeX supports generating tagged PDFs compatible with screen readers
-(NVDA, VoiceOver, JAWS) via the `tagpdf` package.
+(NVDA, VoiceOver, JAWS) via the `tagpdf` package. See
+[docs/accessibility.md](docs/accessibility.md) for the full guide.
 
 ### Quick Start
 
@@ -271,6 +272,18 @@ Add these lines **before** your `\documentclass`:
 - `tagpdf` package (included in TeX Live 2024+)
 - `pdfmanagement-testphase` package (included in TeX Live 2020+)
 
+### Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `\alttext{desc}` | Set alt text for the next figure environment |
+| `\tikzalttext{desc}` | Set alt text for the next TikZ picture |
+| `\accessiblelink{text}{url}{desc}` | Link with screen reader tooltip |
+| `\checkcontrast{bg}{fg}` | Log an informational contrast check reminder |
+| `\readingorder{n}` | Hint at logical reading order for complex layouts |
+| `\langtag{code}{text}` | Wrap text with a different language attribute |
+| `\validatstructure` | Log a heading hierarchy check |
+
 ### Limitations
 
 - `tagpdf` is under active development; some complex layouts may produce
@@ -278,6 +291,8 @@ Add these lines **before** your `\documentclass`:
 - TikZ diagrams and complex floats may need manual tagging adjustments
 - For full PDF/UA-1 compliance, additional metadata (title, author, subject)
   should be set via `\DocumentMetadata`
+- Color contrast checking is informational only (no runtime pixel analysis)
+- Reading order hints may not be respected by all PDF viewers
 
 ### Testing
 

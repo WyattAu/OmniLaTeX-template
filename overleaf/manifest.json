@@ -1,11 +1,11 @@
 {
   "name": "OmniLaTeX",
-  "description": "A modular, engineering-grade LaTeX document class with 55 doctype aliases, 16 document profiles, 8 institution configs, and 24 example templates. Built on LuaLaTeX + KOMA-Script.",
+  "description": "A modular, engineering-grade LaTeX document class with 55 doctype aliases, 16 document profiles, 14 institution configs, 27 modules, CJK support, 9 citation styles, 6 color themes, and 24 example templates. Built on LuaLaTeX + KOMA-Script.",
   "author": "Wyatt Au",
   "license": "Apache-2.0",
-  "categories": ["Academic", "Thesis", "Report", "Article", "CV"],
-  "tags": ["latex", "latex-class", "koma-script", "lualatex", "omnilatex", "thesis", "academic", "template"],
+  "categories": ["Academic", "Thesis", "Report", "Article", "CV", "Presentation", "Poster"],
+  "tags": ["latex", "latex-class", "koma-script", "lualatex", "omnilatex", "thesis", "academic", "template", "cjk", "citation-styles", "color-themes", "accessibility", "institution-configs", "overleaf"],
   "compiler": "LuaLaTeX",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "repository": "https://github.com/WyattAu/OmniLaTeX-template"
 }

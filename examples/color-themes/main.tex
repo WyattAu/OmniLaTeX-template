@@ -1,0 +1,326 @@
+%% OmniLaTeX Color Theme Preview
+%%
+%% Demonstrates all 6 built-in themes with dark/light mode
+%% and institution color integration.
+%%
+%% Build:  lualatex main.tex
+
+\documentclass[
+    language=english,
+    doctype=article,
+    institution=none,
+    titlestyle=simple,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\title{OmniLaTeX Color Themes}
+\subtitle{A visual comparison of all built-in color themes}
+\author{OmniLaTeX}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+%% ── Theme Comparison Table ────────────────────────
+
+\section{Theme Overview}
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{lll}
+        \textbf{Theme} & \textbf{Character} & \textbf{Dark Variant} \\
+        \hline
+        default    & White bg, blue accents   & monochrome-dark (fallback) \\
+        midnight   & Navy bg, cyan accents    & built-in (always dark) \\
+        forest     & Dark green, green accents & built-in (always dark) \\
+        rose       & Dark pink, magenta accents & built-in (always dark) \\
+        monochrome & Black/white only         & separate dark palette \\
+        sepia      & Warm paper tones         & monochrome-dark (fallback) \\
+    \end{tabular}
+    \caption{Available color themes and their dark mode behavior.}
+\end{table}
+
+\newpage
+
+%% ── Default Theme ─────────────────────────────────
+
+\section{Default Theme}
+
+\usetheme{default}
+
+This is the \textbf{default} OmniLaTeX theme: a clean white background with
+dark text and blue accents. It is designed for maximum readability in print
+and on screen.
+
+\subsection{Elements}
+
+\begin{itemize}
+    \item Body text in standard weight
+    \item \textbf{Bold text} for emphasis
+    \item \textit{Italic text} for secondary emphasis
+    \item A \href{https://github.com/WyattAu/OmniLaTeX-template}{hyperlink} in accent color
+\end{itemize}
+
+\begin{block}{Block Environment}
+    Blocks use the accent color for their title bar and a tinted background.
+\end{block}
+
+\begin{alertblock}{Alert Block}
+    Alert blocks retain their own red color regardless of theme.
+\end{alertblock}
+
+\begin{exampleblock}{Example Block}
+    Example blocks retain their green color regardless of theme.
+\end{exampleblock}
+
+\newpage
+
+%% ── Midnight Theme ────────────────────────────────
+
+\section{Midnight Theme}
+
+\usetheme{midnight}
+
+This is the \textbf{midnight} theme: a dark navy background with cyan accents.
+It is inherently dark — there is no light variant.
+
+\subsection{Elements}
+
+\begin{itemize}
+    \item Body text in light weight on dark background
+    \item \textbf{Bold text} for emphasis
+    \item \textit{Italic text} for secondary emphasis
+    \item A \href{https://github.com/WyattAu/OmniLaTeX-template}{hyperlink} in cyan
+\end{itemize}
+
+\begin{block}{Block Environment}
+    Blocks use cyan-tinted title bars against the dark background.
+\end{block}
+
+\begin{alertblock}{Alert Block}
+    Alert blocks retain their red color on the dark background.
+\end{alertblock}
+
+\begin{exampleblock}{Example Block}
+    Example blocks retain their green color on the dark background.
+\end{exampleblock}
+
+\newpage
+
+%% ── Forest Theme ──────────────────────────────────
+
+\section{Forest Theme}
+
+\usetheme{forest}
+
+This is the \textbf{forest} theme: a dark green background with green accents.
+Like midnight, it is inherently dark.
+
+\subsection{Elements}
+
+\begin{itemize}
+    \item Body text in light weight on dark green background
+    \item \textbf{Bold text} for emphasis
+    \item \textit{Italic text} for secondary emphasis
+    \item A \href{https://github.com/WyattAu/OmniLaTeX-template}{hyperlink} in green
+\end{itemize}
+
+\begin{block}{Block Environment}
+    Blocks use green-tinted title bars against the dark background.
+\end{block}
+
+\newpage
+
+%% ── Rose Theme ────────────────────────────────────
+
+\section{Rose Theme}
+
+\usetheme{rose}
+
+This is the \textbf{rose} theme: a dark pink background with magenta accents.
+It is inherently dark.
+
+\subsection{Elements}
+
+\begin{itemize}
+    \item Body text in light weight on dark pink background
+    \item \textbf{Bold text} for emphasis
+    \item \textit{Italic text} for secondary emphasis
+    \item A \href{https://github.com/WyattAu/OmniLaTeX-template}{hyperlink} in magenta
+\end{itemize}
+
+\begin{block}{Block Environment}
+    Blocks use magenta-tinted title bars against the dark background.
+\end{block}
+
+\newpage
+
+%% ── Monochrome Theme ──────────────────────────────
+
+\section{Monochrome Theme (Light)}
+
+\usetheme{monochrome}
+
+This is the \textbf{monochrome} theme in light mode: pure black and white
+with no color whatsoever.
+
+\subsection{Elements}
+
+\begin{itemize}
+    \item Body text in standard black
+    \item \textbf{Bold text} for emphasis
+    \item \textit{Italic text} for secondary emphasis
+    \item A \href{https://github.com/WyattAu/OmniLaTeX-template}{hyperlink} in dark gray
+\end{itemize}
+
+\begin{block}{Block Environment}
+    Blocks use grayscale title bars.
+\end{block}
+
+\newpage
+
+%% ── Monochrome Theme (Dark) ───────────────────────
+
+\section{Monochrome Theme (Dark)}
+
+\usetheme{monochrome-dark}
+
+This is the \textbf{monochrome} theme in dark mode: white text on a near-black
+background with no color.
+
+\subsection{Elements}
+
+\begin{itemize}
+    \item Body text in off-white
+    \item \textbf{Bold text} for emphasis
+    \item \textit{Italic text} for secondary emphasis
+    \item A \href{https://github.com/WyattAu/OmniLaTeX-template}{hyperlink} in light gray
+\end{itemize}
+
+\begin{block}{Block Environment}
+    Blocks use grayscale title bars on dark background.
+\end{block}
+
+\newpage
+
+%% ── Sepia Theme ───────────────────────────────────
+
+\section{Sepia Theme}
+
+\usetheme{sepia}
+
+This is the \textbf{sepia} theme: warm, paper-like tones designed for
+comfortable reading. It evokes the look of aged paper.
+
+\subsection{Elements}
+
+\begin{itemize}
+    \item Body text in warm dark brown
+    \item \textbf{Bold text} for emphasis
+    \item \textit{Italic text} for secondary emphasis
+    \item A \href{https://github.com/WyattAu/OmniLaTeX-template}{hyperlink} in warm orange-brown
+\end{itemize}
+
+\begin{block}{Block Environment}
+    Blocks use warm-toned title bars on the sepia background.
+\end{block}
+
+\newpage
+
+%% ── Dark/Light Toggle ─────────────────────────────
+
+\section{Dark/Light Mode Toggle}
+
+The theme system provides \texttt{\textbackslash darkmode} and
+\texttt{\textbackslash lightmode} commands to toggle between modes
+mid-document.
+
+\subsection{Starting in Light Mode}
+
+\usetheme{default}
+
+This paragraph is rendered in the \textbf{default} (light) theme.
+Links are \href{https://github.com/WyattAu/OmniLaTeX-template}{blue}.
+
+\subsection{Switching to Dark Mode}
+
+\darkmode
+
+After calling \texttt{\textbackslash darkmode}, the page switches to the
+monochrome-dark palette (the default theme has no explicit dark variant,
+so it falls back to monochrome-dark).
+
+Links are now \href{https://github.com/WyattAu/OmniLaTeX-template}{light gray}.
+
+\subsection{Switching Back to Light Mode}
+
+\lightmode
+
+Calling \texttt{\textbackslash lightmode} restores the original theme.
+Links are \href{https://github.com/WyattAu/OmniLaTeX-template}{blue} again.
+
+\newpage
+
+%% ── Institution Color Integration ─────────────────
+
+\section{Institution Color Integration}
+
+\usetheme{midnight}
+
+When an institution is configured (e.g., \texttt{institution=tuhh}), the
+institution's \texttt{universityprimary} color overrides the theme's accent,
+link, and block frame colors. This ensures institutional branding is preserved
+across all themes.
+
+\subsection{How It Works}
+
+\begin{enumerate}
+    \item The institution config defines \texttt{universityprimary} and
+          \texttt{universitysecondary} colors.
+    \item When \texttt{\textbackslash usetheme} is called, it checks whether
+          \texttt{universityprimary} is defined.
+    \item If present, the institution color replaces the theme's accent,
+          link, and block frame colors.
+    \item The background, foreground, and other semantic colors remain
+          governed by the theme.
+\end{enumerate}
+
+\begin{block}{Custom Override}
+    You can also use \texttt{\textbackslash setthemecolor\{accent\}\{red\}}
+    to override individual color slots after applying a theme.
+\end{block}
+
+\newpage
+
+%% ── Custom Color Override ─────────────────────────
+
+\section{Custom Color Overrides}
+
+\usetheme{default}
+
+The \texttt{\textbackslash setthemecolor} command allows fine-grained
+per-slot overrides. For example:
+
+\begin{center}
+    \texttt{\textbackslash setthemecolor\{accent\}\{red!70!black\}}\\[6pt]
+    \texttt{\textbackslash setthemecolor\{link\}\{teal\}}\\[6pt]
+    \texttt{\textbackslash setthemecolor\{heading\}\{purple\}}
+\end{center}
+
+Available slots: \texttt{bg}, \texttt{fg}, \texttt{heading}, \texttt{body},
+\texttt{accent}, \texttt{blockbg}, \texttt{blockframe}, \texttt{link},
+\texttt{rule}, \texttt{codebg}, \texttt{footernote}.
+
+\subsection{Example Override}
+
+\setthemecolor{accent}{red!70!black}
+
+After overriding the accent color, this \textbf{bold text} still uses the
+heading color, but footnote marks and caption labels now use red.
+
+\end{document}

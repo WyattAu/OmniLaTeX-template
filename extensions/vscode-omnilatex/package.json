@@ -4,6 +4,7 @@
   "description": "OmniLaTeX document class integration — doctype picker, institution switcher, build commands",
   "version": "0.1.0",
   "publisher": "wyattau",
+  "icon": "icon.png",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -45,6 +46,11 @@
         "command": "omnilatex.doctor",
         "title": "OmniLaTeX: Run Diagnostics",
         "category": "OmniLaTeX"
+      },
+      {
+        "command": "omnilatex.createProject",
+        "title": "OmniLaTeX: Create New Project",
+        "category": "OmniLaTeX"
       }
     ],
     "snippets": [
@@ -52,7 +58,28 @@
         "language": "latex",
         "path": "./snippets/omnilatex.json"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "OmniLaTeX",
+      "properties": {
+        "omnilatex.defaultDoctype": {
+          "type": "string",
+          "default": "thesis",
+          "enum": ["thesis", "dissertation", "article", "journal", "cv", "presentation", "poster", "letter", "book", "manual", "technicalreport", "standard", "patent", "cover-letter", "dictionary", "inlinepaper"],
+          "description": "Default document type for new OmniLaTeX projects"
+        },
+        "omnilatex.defaultLanguage": {
+          "type": "string",
+          "default": "english",
+          "description": "Default language for new OmniLaTeX projects"
+        },
+        "omnilatex.autoDetect": {
+          "type": "boolean",
+          "default": true,
+          "description": "Auto-detect OmniLaTeX projects by looking for omnilatex.cls"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

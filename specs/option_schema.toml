@@ -30,9 +30,11 @@ valid_values = [
     "japanese",
     "korean",
     "arabic",
+    "hebrew",
 ]
 validation = "Non-empty string. Normalized to lowercase. If tracklang does not recognize the tag, a warning is emitted at load time."
 cjk_auto_load = "When language is 'chinese', 'japanese', or 'korean', lib/language/omnilatex-cjk.sty is automatically loaded (provides luatexja fonts, ruby annotations, vertical text)."
+rtl_auto_load = "When language is 'arabic' or 'hebrew', lib/language/omnilatex-rtl.sty is automatically loaded (provides bidi layout, script-specific fonts, Arabic-Indic numerals, LTR math in RTL text)."
 
 [[option]]
 name = "doctype"
@@ -437,6 +439,7 @@ load_order = [
     { index = 10, path = "lib/graphics/omnilatex-tikz-engineering", category = "graphics" },
     { index = 11, path = "lib/language/omnilatex-i18n",            category = "language" },
     { index = 12, path = "lib/language/omnilatex-cjk",             category = "language", condition = "language in {chinese,japanese,korean}" },
+    { index = 12, path = "lib/language/omnilatex-rtl",             category = "language", condition = "language in {arabic,hebrew}" },
     { index = 12, path = "lib/tables/omnilatex-tables",            category = "tables" },
     { index = 13, path = "lib/code/omnilatex-listings",            category = "code" },
     { index = 14, path = "lib/layout/omnilatex-page",              category = "layout" },

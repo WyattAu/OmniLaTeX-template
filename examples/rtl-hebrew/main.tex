@@ -1,0 +1,72 @@
+\documentclass[doctype=article,language=hebrew]{omnilatex}
+
+\title{תמיכה בשפה העברית ב-OmniLaTeX}
+\subtitle{דוגמה לתבנית מימין לשמאל}
+\author{דוד כהן}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+מסמך זה מציג דוגמה לתמיכה בשפה העברית במערכת OmniLaTeX. הוא כולל
+פריסה מימין לשמאל עם גופנים עבריים והגדרות מתאימות לשפה.
+\end{abstract}
+
+\section{מבוא}
+
+השפה העברית היא אחת השפות העתיקות ביותר שעדיין בשימוש. היא נכתבת
+מימין לשמאל, דבר המצריך טיפול מיוחד במערכות הסדר טקסט. מערכת
+OmniLaTeX מספקת תמיכה מלאה בכיוון זה באמצעות חבילת ה-bidi.
+
+\section{מתמטיקה בטקסט עברי}
+
+ניתן לכתוב משוואות מתמטיות בתוך טקסט עברי תוך שמירה על הכיוון
+הנכון משמאל לימין. לדוגמה, משוואת אוילר:
+
+\begin{equation}
+  e^{i\pi} + 1 = 0
+  \label{eq:euler}
+\end{equation}
+
+וכן סדרת טיילור:
+
+\begin{equation}
+  f(x) = \sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n!}(x - a)^{n}
+  \label{eq:taylor}
+\end{equation}
+
+\section{רשימות}
+
+\begin{itemize}
+  \item פריט ראשון ברשימה
+  \item פריט שני
+  \item פריט שלישי עם הסבר נוסף
+\end{itemize}
+
+\begin{enumerate}
+  \item שלב ראשון
+  \item שלב שני
+  \item שלב שלישי
+\end{enumerate}
+
+\section{טבלאות}
+
+\begin{table}[htbp]
+  \caption{השוואה בין מערכות הסדר טקסט}
+  \begin{tabular}{llr}
+    \textbf{מערכת} & \textbf{סוג} & \textbf{שנה} \\
+    \hline
+    TeX  & קוד פתוח & 1978 \\
+    LaTeX & קוד פתוח & 1984 \\
+    OmniLaTeX & קוד פתוח & 2024 \\
+  \end{tabular}
+\end{table}
+
+\section{סיכום}
+
+דוגמה זו מוכיחה שמערכת OmniLaTeX מסוגלת לטפל בטקסטים עבריים
+ביעילות גבוהה, תוך שמירה על איכות הסדר ותמיכה במשוואות מתמטיות,
+טבלאות ורשימות בכיוון הנכון.
+
+\end{document}

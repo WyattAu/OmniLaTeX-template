@@ -187,6 +187,13 @@
 \omnilatex@cjk@check@lang{japanese}%
 \omnilatex@cjk@check@lang{korean}%
 
+% Auto-load RTL support for Arabic, Hebrew
+\def\omnilatex@rtl@check@lang#1{%
+  \IfStrEq{\omnilatex@language}{#1}{\RequirePackage{lib/language/omnilatex-rtl}}{}%
+}
+\omnilatex@rtl@check@lang{arabic}%
+\omnilatex@rtl@check@lang{hebrew}%
+
 \RequirePackage{setspace}
 
 % Conditional modules (default: all enabled for backward compatibility)

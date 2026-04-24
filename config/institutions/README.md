@@ -48,6 +48,36 @@ Each institution configuration file provides:
 - **Colors**: TU Delft Cyan, White, TU Delft Dark Blue
 - **Languages**: English and Dutch
 
+### University of Oxford
+- **File**: `oxford.sty`
+- **Colors**: Oxford Blue, Oxford Stone, Oxford Red
+- **Languages**: English
+
+### Princeton University
+- **File**: `princeton.sty`
+- **Colors**: Princeton Orange, Black, Princeton Blue
+- **Languages**: English
+
+### Yale University
+- **File**: `yale.sty`
+- **Colors**: Yale Blue, Yale Gold, Yale Bright Blue
+- **Languages**: English
+
+### Carnegie Mellon University (CMU)
+- **File**: `cmu.sty`
+- **Colors**: CMU Red, Black, CMU Gray
+- **Languages**: English
+
+### EPFL (École Polytechnique Fédérale de Lausanne)
+- **File**: `epfl.sty`
+- **Colors**: EPFL Red, Black, White
+- **Languages**: English and French
+
+### Imperial College London
+- **File**: `imperial.sty`
+- **Colors**: Imperial Blue, Imperial Crimson, Imperial Light Blue
+- **Languages**: English
+
 ### Generic (Template)
 - **File**: `generic.sty`
 - **Description**: Minimal template for creating new institution configs
@@ -57,8 +87,8 @@ Each institution configuration file provides:
 
 To create a configuration for your institution:
 
-1. Copy `tuhh-config.sty` as a template
-2. Rename to `yourinstitution-config.sty`
+1. Copy `generic.sty` as a template
+2. Rename to `yourinstitution.sty` and place in `config/institutions/yourinstitution/`
 3. Update the following sections:
    - Logo definitions (`\DeclareTranslation{LogoXXX}`)
    - Institution links and names
@@ -67,14 +97,15 @@ To create a configuration for your institution:
    - Any custom TikZ graphics or branding elements
 
 4. Use in your document:
-   ```latex
-   \documentclass[institution=yourinstitution]{academic}
-   ```
+    ```latex
+    \documentclass[institution=yourinstitution]{omnilatex}
+    ```
 
 ## Integration with academic.cls
 
-The `academic.cls` class automatically loads the configuration based on the `institution` option:
+The `omnilatex` class automatically loads the configuration based on the `institution` option:
 - `institution=tuhh` → loads `tuhh-config.sty`
+- `institution=oxford` → loads `oxford.sty`
 - `institution=none` → no institutional branding (generic template)
 
 If no `institution` option is provided, the class defaults to generic styling without institutional branding.

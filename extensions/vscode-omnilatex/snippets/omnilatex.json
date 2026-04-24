@@ -33,5 +33,66 @@
     "prefix": "censor",
     "body": ["\\censor{${1:redacted}}"],
     "description": "Censored text"
+  },
+  "OmniLaTeX Section": {
+    "prefix": "section",
+    "body": ["\\section{${1:Section Title}}", "$0"],
+    "description": "Section heading"
+  },
+  "OmniLaTeX Subsection": {
+    "prefix": "subsection",
+    "body": ["\\subsection{${1:Subsection Title}}", "$0"],
+    "description": "Subsection heading"
+  },
+  "OmniLaTeX Figure": {
+    "prefix": "figure",
+    "body": [
+      "\\begin{figure}[htbp]",
+      "  \\centering",
+      "  \\includegraphics[width=0.8\\textwidth]{${1:figure}}",
+      "  \\caption{${2:Caption}}",
+      "  \\label{fig:${3:label}}",
+      "\\end{figure}"
+    ],
+    "description": "Figure environment"
+  },
+  "OmniLaTeX Table": {
+    "prefix": "table",
+    "body": [
+      "\\begin{table}[htbp]",
+      "  \\centering",
+      "  \\begin{tabular}{${1|l|c|r|}}",
+      "    \\hline",
+      "    ${2:Header} \\\\ \\hline",
+      "    ${3:Data} \\\\ \\hline",
+      "  \\end{tabular}",
+      "  \\caption{${4:Caption}}",
+      "  \\label{tab:${5:label}}",
+      "\\end{table}"
+    ],
+    "description": "Table environment"
+  },
+  "OmniLaTeX Math Block": {
+    "prefix": "math",
+    "body": ["\\begin{equation}", "  $0", "\\end{equation}"],
+    "description": "Equation environment"
+  },
+  "OmniLaTeX Code Listing": {
+    "prefix": "code",
+    "body": [
+      "\\begin{listing}[htbp]",
+      "  \\begin{minted}{${1:python}}",
+      "    $0",
+      "  \\end{minted}",
+      "  \\caption{${2:Caption}}",
+      "  \\label{lst:${3:label}}",
+      "\\end{listing}"
+    ],
+    "description": "Code listing with minted"
+  },
+  "OmniLaTeX Bibliography": {
+    "prefix": "bibliography",
+    "body": ["\\printbibliography[heading=bibintoc]", "$0"],
+    "description": "Print bibliography"
   }
 }
