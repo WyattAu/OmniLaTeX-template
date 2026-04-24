@@ -1,0 +1,192 @@
+%% OmniLaTeX Citation Style Library
+%% Pre-configured biblatex styles for common academic publishers
+%%
+%% Usage: \usepackage{omnilatex-citations}
+%%        \citationstyle{ieee}
+%%
+%% Available styles:
+%%   ieee, acm, apa, chicago, nature, science, harvard, vancouver, mla
+%%
+%% Note: This package requires biblatex to already be loaded (as done by
+%%       omnilatex-biblio).  The dedicated biblatex style packages
+%%       (biblatex-ieee, biblatex-apa, etc.) must be installed in your
+%%       TeX distribution.  For styles without a dedicated package the
+%%       built-in numeric or authoryear style is used with appropriate
+%%       options.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/references/omnilatex-citations}[2026/04/24 v1.0.0 OmniLaTeX citation style library]
+
+\RequirePackage{kvoptions}
+
+% ── Helper: unknown style warning ─────────────────────
+
+\newcommand{\citationstyle@unknown}[1]{%
+  \PackageWarning{omnilatex-citations}{%
+    Unknown citation style '#1'.%
+    \MessageBreak
+    Available: ieee, acm, apa, chicago, nature, science, harvard, vancouver, mla%
+  }%
+}
+
+% ── Dispatcher ────────────────────────────────────────
+
+\newcommand{\citationstyle}[1]{%
+  \IfFileExists{biblatex-#1.sty}%
+    {\RequirePackage[#1]{biblatex-#1}}%
+    {}%
+  \IfDefined{citestyle@#1}%
+    {\csname citestyle@#1\endcsname}%
+    {\citationstyle@unknown{#1}}%
+}
+
+% ── Style: IEEE ───────────────────────────────────────
+% Numeric, [1] brackets, citation order, 3 max names.
+
+\newcommand{\citestyle@ieee}{%
+  \ExecuteBibliographyOptions{%
+    style=ieee,
+    sorting=none,
+    backend=biber,
+    maxbibnames=99,
+    maxcitenames=3,
+    mincitenames=1,
+    giveninits=true,
+  }%
+}
+
+% ── Style: ACM ────────────────────────────────────────
+% Numeric, [1], alphabetical by author, up to 9 names.
+
+\newcommand{\citestyle@acm}{%
+  \ExecuteBibliographyOptions{%
+    style=acmnumeric,
+    sorting=nyt,
+    backend=biber,
+    maxbibnames=9,
+    maxcitenames=3,
+    mincitenames=1,
+    giveninits=true,
+  }%
+}
+
+% ── Style: APA (7th edition) ─────────────────────────
+% Author-year, (Author, Year), alphabetical.
+
+\newcommand{\citestyle@apa}{%
+  \ExecuteBibliographyOptions{%
+    style=apa,
+    sorting=nyt,
+    backend=biber,
+    maxbibnames=99,
+    maxcitenames=2,
+    mincitenames=1,
+    uniquelist=false,
+    natbib=true,
+  }%
+}
+
+% ── Style: Chicago author-date ───────────────────────
+% Author-year, (Author Year), alphabetical.
+
+\newcommand{\citestyle@chicago}{%
+  \ExecuteBibliographyOptions{%
+    style=chicago-author-date,
+    sorting=nyt,
+    backend=biber,
+    maxbibnames=99,
+    maxcitenames=3,
+    mincitenames=1,
+    uniquelist=false,
+    ibidtracker=constrict,
+    idemtracker=constrict,
+    locctracker=constrict,
+  }%
+}
+
+% ── Style: Nature ────────────────────────────────────
+% Numeric, superscript, citation order.
+
+\newcommand{\citestyle@nature}{%
+  \ExecuteBibliographyOptions{%
+    style=nature,
+    sorting=none,
+    backend=biber,
+    maxbibnames=99,
+    maxcitenames=6,
+    mincitenames=1,
+    giveninits=true,
+  }%
+}
+
+% ── Style: Science ───────────────────────────────────
+% Numeric, [1], citation order, 10 max names before et al.
+% Falls back to numeric with science-appropriate options when
+% biblatex-science is not installed.
+
+\newcommand{\citestyle@science}{%
+  \ExecuteBibliographyOptions{%
+    style=numeric,
+    sorting=none,
+    backend=biber,
+    maxbibnames=10,
+    maxcitenames=10,
+    mincitenames=3,
+    giveninits=true,
+    doi=false,
+    eprint=false,
+    url=false,
+    isbn=false,
+  }%
+}
+
+% ── Style: Harvard ───────────────────────────────────
+% Author-year, (Author, Year), alphabetical.
+% Uses authoryear with harvard-specific punctuation.
+
+\newcommand{\citestyle@harvard}{%
+  \ExecuteBibliographyOptions{%
+    style=authoryear,
+    sorting=nyt,
+    backend=biber,
+    maxbibnames=99,
+    maxcitenames=2,
+    mincitenames=1,
+    uniquelist=false,
+    dashed=false,
+    punctfield=false,
+  }%
+}
+
+% ── Style: Vancouver ─────────────────────────────────
+% Numeric, [1], citation order, 6 max names.
+
+\newcommand{\citestyle@vancouver}{%
+  \ExecuteBibliographyOptions{%
+    style=numeric,
+    sorting=none,
+    backend=biber,
+    maxbibnames=6,
+    maxcitenames=6,
+    mincitenames=3,
+    giveninits=true,
+    uniquelist=false,
+    uniquenames=false,
+  }%
+}
+
+% ── Style: MLA (9th edition) ─────────────────────────
+% Author-page style, alphabetical by author.
+
+\newcommand{\citestyle@mla}{%
+  \ExecuteBibliographyOptions{%
+    style=mla,
+    sorting=nyt,
+    backend=biber,
+    maxbibnames=3,
+    maxcitenames=3,
+    mincitenames=1,
+  }%
+}
+
+\endinput

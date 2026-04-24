@@ -1,0 +1,42 @@
+\documentclass[
+    language=japanese,
+    doctype=article,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+
+\maketitle
+
+\section*{概要}
+この文書は、OmniLaTeX の日本語組版機能を示します。
+
+\tableofcontents
+
+\section{はじめに}
+OmniLaTeX は LuaLaTeX と luatexja エンジンに基づき、日本語文書のネイティブな組版を提供します。
+
+\section{日本語組版の機能}
+
+\subsection{基本組版}
+吾輩は猫である。名前はまだ無い。どこで生れたかとんと見当がつかぬ。
+何でも薄暗いじめじめした所でニャーニャー泣いていた事だけは記憶している。
+
+\subsection{ルビ（ふりがな）}
+OmniLaTeX はルビ注釈をサポートします：
+
+%furigana{漢}{かん}%furigana{字}{じ}の%furigana{読}{よ}み%furigana{方}{かた}
+
+\subsection{縦書きモード}
+伝統的な日本語文書では縦書きが使われます：
+
+\begin{vertical}
+吾輩は猫である。名前はまだ無い。どこで生れたか見当がつかぬ。
+\end{vertical}
+
+\section{まとめ}
+OmniLaTeX は日本語の学術文書に完全な組版ソリューションを提供します。
+
+\end{document}

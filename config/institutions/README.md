@@ -18,6 +18,41 @@ Each institution configuration file provides:
 - **Logos**: TUHH university and ITT institute logos
 - **Languages**: English and German
 
+### TUM (Technische Universität München)
+- **File**: `tum.sty`
+- **Colors**: TUM Blue, TUM Dark Blue, TUM Light Blue
+- **Languages**: English and German
+
+### ETH Zürich
+- **File**: `eth.sty`
+- **Colors**: ETH Blue, ETH Dark, ETH Teal
+- **Languages**: English and German
+
+### MIT (Massachusetts Institute of Technology)
+- **File**: `mit.sty`
+- **Colors**: MIT Crimson, Cool Gray, Black
+- **Languages**: English
+
+### Stanford University
+- **File**: `stanford.sty`
+- **Colors**: Stanford Cardinal, Stanford Sandstone, Stanford Green
+- **Languages**: English
+
+### University of Cambridge
+- **File**: `cambridge.sty`
+- **Colors**: Cambridge Green, Cambridge Blue, Cambridge Dark Gray
+- **Languages**: English
+
+### TU Delft (Delft University of Technology)
+- **File**: `tudelft.sty`
+- **Colors**: TU Delft Cyan, White, TU Delft Dark Blue
+- **Languages**: English and Dutch
+
+### Generic (Template)
+- **File**: `generic.sty`
+- **Description**: Minimal template for creating new institution configs
+- **Languages**: All (user-defined)
+
 ## Creating a New Institution Configuration
 
 To create a configuration for your institution:

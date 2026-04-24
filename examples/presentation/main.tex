@@ -8,91 +8,170 @@
 
 \title{Introduction to OmniLaTeX}
 \author{Jane Doe}
+\institute{Department of Computer Science, University of Examples}
 \date{April 2026}
 
 \begin{document}
 
+%% ── Title Page ────────────────────────────────────
+
 \maketitle
 
-\begin{slideframe}
-	\slidetitle{Overview}
+%% ── Outline ───────────────────────────────────────
 
-	OmniLaTeX is a universal \LaTeX{} template system designed to simplify
-	document creation across academic and professional contexts.
+\begin{presentationframe}
+    \slidetitle{Outline}
 
-	\begin{itemize}
-		\item Built on KOMA-Script (scrbook, scrreprt, scrartcl)
-		\item Compiled with LuaLaTeX for modern font and Unicode support
-		\item Modular architecture with pluggable document types
-		\item Reproducible builds via Docker and Nix
-	\end{itemize}
-\end{slideframe}
+    \begin{enumerate}
+        \item What is OmniLaTeX?
+        \item Key Features
+        \item Architecture Overview
+        \item Block Environments
+        \item Getting Started
+    \end{enumerate}
+\end{presentationframe}
 
-\begin{slideframe}
-	\slidetitle{Key Features}
+%% ── What is OmniLaTeX? ────────────────────────────
 
-	\begin{description}
-		\item[Modularity] Each document type is a self-contained profile
-		\item[Typography] Consistent, professional typesetting out of the box
-		\item[Bibliography] Integrated biblatex with automatic citation management
-		\item[Code Listings] Syntax highlighting via the minted package
-		\item[Multi-language] Full polyglossia support for international documents
-		\item[Reproducibility] Docker and Nix flakes for deterministic builds
-	\end{description}
-\end{slideframe}
+\begin{presentationframe}
+    \slidetitle{What is OmniLaTeX?}
 
-\begin{slideframe}
-	\slidetitle{Architecture}
+    OmniLaTeX is a universal \LaTeX{} template system designed to simplify
+    document creation across academic and professional contexts.
 
-	The template follows a layered architecture:
+    \begin{presentationblock}[Overview]{Core Idea}
+        Write once, compile anywhere. OmniLaTeX provides a single template
+        that supports 16+ document types with consistent branding and
+        professional typesetting.
+    \end{presentationblock}
 
-	\begin{enumerate}
-		\item \textbf{Core Layer} --- Base class, utilities, colors
-		\item \textbf{Typography Layer} --- Fonts, math, lists, typesetting
-		\item \textbf{Layout Layer} --- Page geometry, floats, boxes, KOMA config
-		\item \textbf{Content Layer} --- Document types, institution profiles
-		\item \textbf{Reference Layer} --- Hyperlinks, bibliography, glossaries
-	\end{enumerate}
+    \vspace{2mm}
+    Built on KOMA-Script and compiled with LuaLaTeX for modern font
+    and Unicode support.
+\end{presentationframe}
 
-	\vspace{4mm}
-	Each layer is independently configurable, allowing users to override
-	any aspect of the template without modifying core files.
-\end{slideframe}
+%% ── Key Features ──────────────────────────────────
 
-\begin{slideframe}
-	\slidetitle{Document Types}
+\begin{presentationframe}
+    \slidetitle{Key Features}
 
-	OmniLaTeX supports 16+ document types:
+    \begin{description}
+        \item[Modularity] Each document type is a self-contained profile
+        \item[Typography] Consistent, professional typesetting out of the box
+        \item[Bibliography] Integrated biblatex with automatic citation management
+        \item[Code Listings] Syntax highlighting via the minted package
+        \item[Multi-language] Full polyglossia support for international documents
+        \item[Reproducibility] Docker and Nix flakes for deterministic builds
+    \end{description}
+\end{presentationframe}
 
-	\begin{multicols}{2}
-		\begin{itemize}
-			\item Thesis / Dissertation
-			\item Technical Report
-			\item Journal Article
-			\item Conference Paper
-			\item Book / Manual
-			\item CV / Resume
-			\item Cover Letter
-			\item Standard / Patent
-			\item Poster
-			\item Presentation
-			\item Letter
-			\item Dictionary
-			\item Inline Paper
-		\end{itemize}
-	\end{multicols}
-\end{slideframe}
+%% ── Section Divider ───────────────────────────────
 
-\begin{slideframe}
-	\begin{center}
-		\vfill
-		{\Huge\bfseries Thank You!}\par
-		\vspace{8mm}
-		{\Large Questions?}\par
-		\vspace{12mm}
-		{\large\texttt{github.com/WyattAu/OmniLaTeX-template}}
-		\vfill
-	\end{center}
-\end{slideframe}
+\presentationSection{Architecture}
+
+%% ── Architecture ──────────────────────────────────
+
+\begin{presentationframe}
+    \slidetitle{Layered Architecture}
+
+    The template follows a layered architecture:
+
+    \begin{enumerate}
+        \item \textbf{Core Layer} --- Base class, utilities, colors
+        \item \textbf{Typography Layer} --- Fonts, math, lists, typesetting
+        \item \textbf{Layout Layer} --- Page geometry, floats, boxes, KOMA config
+        \item \textbf{Content Layer} --- Document types, institution profiles
+        \item \textbf{Reference Layer} --- Hyperlinks, bibliography, glossaries
+    \end{enumerate}
+
+    \begin{noteblock}[Tip]{Customization}
+        Each layer is independently configurable, allowing users to override
+        any aspect of the template without modifying core files.
+    \end{noteblock}
+\end{presentationframe}
+
+%% ── Block Environments ────────────────────────────
+
+\begin{presentationframe}
+    \slidetitle{Block Environments}
+
+    OmniLaTeX presentations provide several styled block environments:
+
+    \begin{definitionblock}[Definition]{Theorem (Euclid)}
+        There are infinitely many prime numbers.
+    \end{definitionblock}
+
+    \begin{exampleblock}[Example]{Usage}
+        Use \texttt{\textbackslash begin\{presentationblock\}\{Title\}}
+        for a standard highlighted block.
+    \end{exampleblock}
+
+    \begin{alertblock}[Warning]{Important}
+        Always compile with LuaLaTeX for full Unicode support.
+    \end{alertblock}
+\end{presentationframe}
+
+%% ── Document Types ────────────────────────────────
+
+\begin{presentationframe}
+    \slidetitle{Supported Document Types}
+
+    OmniLaTeX supports 16+ document types:
+
+    \begin{multicols}{2}
+        \begin{itemize}
+            \item Thesis / Dissertation
+            \item Technical Report
+            \item Journal Article
+            \item Conference Paper
+            \item Book / Manual
+            \item CV / Resume
+            \item Cover Letter
+            \item Standard / Patent
+            \item Poster
+            \item Presentation
+            \item Letter
+            \item Dictionary
+            \item Inline Paper
+        \end{itemize}
+    \end{multicols}
+\end{presentationframe}
+
+%% ── Getting Started ───────────────────────────────
+
+\begin{presentationframe}
+    \slidetitle{Getting Started}
+
+    \begin{presentationblock}[Quick Start]{Minimal Example}
+        \ttfamily\small
+        \textbackslash documentclass[doctype=presentation]\{omnilatex\}\\
+        \textbackslash title\{My Talk\}\\
+        \textbackslash author\{Jane Doe\}\\
+        \textbackslash begin\{document\}\\
+        \quad\textbackslash maketitle\\
+        \quad\textbackslash begin\{presentationframe\}\\
+        \quad\quad\textbackslash slidetitle\{Hello World\}\\
+        \quad\quad Content goes here.\\
+        \quad\textbackslash end\{presentationframe\}\\
+        \textbackslash end\{document\}
+    \end{presentationblock}
+
+    \vspace{2mm}
+    Compile with: \texttt{lualatex main.tex}
+\end{presentationframe}
+
+%% ── Thank You ─────────────────────────────────────
+
+\begin{presentationframe}
+    \vfill
+    \begin{center}
+        {\Huge\bfseries\color{universityprimary}Thank You!}\par
+        \vspace{8mm}
+        {\Large Questions?}\par
+        \vspace{6mm}
+        {\normalsize\texttt{github.com/WyattAu/OmniLaTeX-template}}
+    \end{center}
+    \vfill
+\end{presentationframe}
 
 \end{document}

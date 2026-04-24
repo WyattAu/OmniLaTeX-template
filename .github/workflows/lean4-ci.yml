@@ -1,0 +1,60 @@
+name: Lean 4 Proofs
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v16
+
+      - name: Setup Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@v8
+
+      - name: Build Lean 4 proofs
+        run: |
+          nix develop --command bash -c "
+            cd specs/proofs
+            lake build
+          "
+
+      - name: Verify proof status
+        if: always()
+        run: |
+          echo "## Lean 4 Proof Verification" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          nix develop --command bash -c "
+            cd specs/proofs
+            if lake build 2>&1 | grep -q 'sorry'; then
+              echo ':warning: Some proofs contain \`sorry\` (unproven theorems)' >> \$GITHUB_STEP_SUMMARY
+              echo 'This is expected for work-in-progress proofs.' >> \$GITHUB_STEP_SUMMARY
+            else
+              echo ':white_check_mark: All proofs compile without errors' >> \$GITHUB_STEP_SUMMARY
+            fi
+            echo '' >> \$GITHUB_STEP_SUMMARY
+            echo '| Module | Status |' >> \$GITHUB_STEP_SUMMARY
+            echo '|--------|--------|' >> \$GITHUB_STEP_SUMMARY
+            for f in OmniLaTeXProofs/BuildModes OmniLaTeXProofs/DoctypeResolution OmniLaTeXProofs/FloatInvariant OmniLaTeXProofs/FontHierarchy OmniLaTeXProofs/PageGeometry; do
+              if lake build \$f 2>/dev/null; then
+                echo \"| \\\`\$f\\\` | :white_check_mark: |\" >> \$GITHUB_STEP_SUMMARY
+              else
+                echo \"| \\\`\$f\\\` | :x: |\" >> \$GITHUB_STEP_SUMMARY
+              fi
+            done
+          "

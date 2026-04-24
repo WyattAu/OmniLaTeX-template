@@ -1,0 +1,40 @@
+\documentclass[
+    language=chinese,
+    doctype=article,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+
+\maketitle
+
+\section*{摘要}
+本文档展示了 OmniLaTeX 对中文排版的全面支持，包括字体配置、行距处理和拼音标注。
+
+\tableofcontents
+
+\section{引言}
+OmniLaTeX 基于 LuaLaTeX 和 luatexja 引擎，为中文文档提供原生排版支持。
+系统使用 Noto Serif CJK SC 作为默认中文字体，确保在各种操作系统上的一致显示效果。
+
+\section{中文排版特性}
+
+\subsection{基本排版}
+天地玄黄，宇宙洪荒。日月盈昃，辰宿列张。寒来暑往，秋收冬藏。
+闰余成岁，律吕调阳。云腾致雨，露结为霜。金生丽水，玉出昆冈。
+
+\subsection{现代汉语}
+中文与英文混排时，OmniLaTeX 会自动在中文和 Latin 字符之间插入适当的间距。
+例如：使用 LuaLaTeX 编译引擎和 luatexja 宏包可以实现高质量的中文排版效果。
+
+\subsection{拼音标注}
+OmniLaTeX 支持通过 ruby 标注为汉字添加拼音：
+
+%pinyin{汉}{hàn}\pinyin{字}{zì}\pinyin{拼}{pīn}\pinyin{音}{yīn}
+
+\section{结论}
+OmniLaTeX 为中文学术文档提供了完整的排版解决方案。
+
+\end{document}

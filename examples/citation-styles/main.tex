@@ -1,0 +1,63 @@
+%% OmniLaTeX Citation Style Library — Example
+%%
+%% This example demonstrates how to use \citationstyle{} to switch between
+%% pre-configured bibliography styles.  Compile with:
+%%   latexmk -xelatex main.tex
+%%
+%% Available styles: ieee, acm, apa, chicago, nature, science, harvard,
+%%                   vancouver, mla
+
+\documentclass[
+    language=english,
+    doctype=article,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{omnilatex-citations}
+
+%% Choose ONE citation style.  Uncomment the line you need:
+\citationstyle{ieee}
+% \citationstyle{acm}
+% \citationstyle{apa}
+% \citationstyle{chicago}
+% \citationstyle{nature}
+% \citationstyle{science}
+% \citationstyle{harvard}
+% \citationstyle{vancouver}
+% \citationstyle{mla}
+
+\addbibresource{refs.bib}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{Introduction}
+Citation styles vary across academic disciplines.  OmniLaTeX provides
+pre-configured wrappers for the most common publishers so you can switch
+styles with a single command.
+
+As demonstrated by Knuth~\cite{knuth1984}, literate programming bridges
+the gap between human-readable documentation and machine-executable code.
+The BibTeX system~\cite{lamport1994} and its successor
+biblatex~\cite{kime2020} provide powerful reference management.
+
+Section~\ref{sec:methods} describes the methodology, which builds on
+foundational work in software engineering~\cite{brooks1995}.
+
+\section{Methods}
+\label{sec:methods}
+Our approach follows the structured methodology outlined in the
+classic text by Brooks~\cite{brooks1995}, adapted for modern
+open-source toolchains~\cite{kime2020}.
+
+\section{Conclusion}
+Switching citation styles is straightforward: change the
+\texttt{\textbackslash citationstyle\{...\}} argument in the preamble
+and recompile.
+
+\printbibliography
+
+\end{document}

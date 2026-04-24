@@ -1,0 +1,67 @@
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TU Delft (Delft University of Technology) Configuration
+%
+% Official brand colors and identity.
+% Usage: \documentclass[doctype=thesis,institution=tudelft]{omnilatex}
+%
+% Brand guidelines: https://www.tudelft.nl/over-tu-delft/huisstijl
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/institutions/tudelft/tudelft}[2026-04-24 v1.0.0 TU Delft Institution Configuration]
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Color Palette (Official TU Delft Corporate Design)
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Primary: TU Delft Cyan
+\definecolor{universityprimary}{RGB}{0, 166, 214}
+% Secondary: White
+\definecolor{universitysecondary}{RGB}{255, 255, 255}
+% Accent: TU Delft Dark Blue
+\definecolor{universityaccent}{RGB}{12, 35, 64}
+% Neutral: TU Delft Black
+\definecolor{universityblack}{RGB}{0, 0, 0}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Logo
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Place your TU Delft logo in: assets/images/institutions/tudelft-logo.pdf
+% Official logo download: https://www.tudelft.nl/over-tu-delft/huisstijl
+%
+% \DeclareTranslation{english}{LogoInstitution}{%
+%     \includegraphics[height=1.5cm]{assets/images/institutions/tudelft-logo}%
+% }
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Name
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \DeclareTranslation{english}{InstitutionName}{Delft University of Technology}
+% \DeclareTranslation{dutch}{InstitutionName}{Technische Universiteit Delft}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Link
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareTranslation{english}{LinkInstitution}{https://www.tudelft.nl}
+\DeclareTranslation{dutch}{LinkInstitution}{https://www.tudelft.nl}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Apply Colors to Document Elements
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Uncomment the lines you want to activate:
+
+% Header / title page background
+% \colorlet{colorTitleBack}{universityaccent}
+
+% Section headings
+% \colorlet{colorSection}{universityaccent}
+
+% Links and URLs
+% \colorlet{colorLink}{universityprimary}
+
+% Table rules
+% \colorlet{colorTableRule}{universityprimary}
+
+% Footer line
+% \colorlet{colorFooter}{universityaccent}
+
+\endinput

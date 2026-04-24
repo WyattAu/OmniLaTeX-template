@@ -1,0 +1,65 @@
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% University of Cambridge Configuration
+%
+% Official brand colors and identity.
+% Usage: \documentclass[doctype=thesis,institution=cambridge]{omnilatex}
+%
+% Brand guidelines: https://www.cam.ac.uk/brand-guidelines/
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/institutions/cambridge/cambridge}[2026-04-24 v1.0.0 University of Cambridge Institution Configuration]
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Color Palette (Official Cambridge Brand Guidelines)
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Primary: Cambridge Green
+\definecolor{universityprimary}{RGB}{163, 193, 173}
+% Secondary: Cambridge Blue
+\definecolor{universitysecondary}{RGB}{0, 62, 125}
+% Accent: Cambridge Dark Gray
+\definecolor{universityaccent}{RGB}{118, 118, 118}
+% Neutral: White
+\definecolor{universitywhite}{RGB}{255, 255, 255}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Logo
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Place your Cambridge logo in: assets/images/institutions/cambridge-logo.pdf
+% Official logo download: https://www.cam.ac.uk/brand-guidelines/
+%
+% \DeclareTranslation{english}{LogoInstitution}{%
+%     \includegraphics[height=1.5cm]{assets/images/institutions/cambridge-logo}%
+% }
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Name
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \DeclareTranslation{english}{InstitutionName}{University of Cambridge}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Link
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareTranslation{english}{LinkInstitution}{https://www.cam.ac.uk}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Apply Colors to Document Elements
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Uncomment the lines you want to activate:
+
+% Header / title page background
+% \colorlet{colorTitleBack}{universitysecondary}
+
+% Section headings
+% \colorlet{colorSection}{universitysecondary}
+
+% Links and URLs
+% \colorlet{colorLink}{universitysecondary}
+
+% Table rules
+% \colorlet{colorTableRule}{universityaccent}
+
+% Footer line
+% \colorlet{colorFooter}{universitysecondary}
+
+\endinput

@@ -178,6 +178,15 @@
 \RequirePackage{lib/layout/omnilatex-document}
 \RequirePackage{lib/references/omnilatex-hyperref}
 \RequirePackage{lib/language/omnilatex-i18n}
+
+% Auto-load CJK support for Chinese, Japanese, Korean
+\def\omnilatex@cjk@check@lang#1{%
+  \IfStrEq{\omnilatex@language}{#1}{\RequirePackage{lib/language/omnilatex-cjk}}{}%
+}
+\omnilatex@cjk@check@lang{chinese}%
+\omnilatex@cjk@check@lang{japanese}%
+\omnilatex@cjk@check@lang{korean}%
+
 \RequirePackage{setspace}
 
 % Conditional modules (default: all enabled for backward compatibility)

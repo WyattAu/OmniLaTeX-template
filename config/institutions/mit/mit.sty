@@ -1,0 +1,65 @@
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Massachusetts Institute of Technology (MIT) Configuration
+%
+% Official brand colors and identity.
+% Usage: \documentclass[doctype=thesis,institution=mit]{omnilatex}
+%
+% Brand guidelines: https://brand.mit.edu/
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/institutions/mit/mit}[2026-04-24 v1.0.0 MIT Institution Configuration]
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Color Palette (Official MIT Brand Guidelines)
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Primary: MIT Crimson
+\definecolor{universityprimary}{RGB}{163, 31, 52}
+% Secondary: Cool Gray
+\definecolor{universitysecondary}{RGB}{138, 139, 140}
+% Accent: Black
+\definecolor{universityaccent}{RGB}{0, 0, 0}
+% Neutral: White
+\definecolor{universitywhite}{RGB}{255, 255, 255}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Logo
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Place your MIT logo in: assets/images/institutions/mit-logo.pdf
+% Official logo download: https://brand.mit.edu/logos/
+%
+% \DeclareTranslation{english}{LogoInstitution}{%
+%     \includegraphics[height=1.5cm]{assets/images/institutions/mit-logo}%
+% }
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Name
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \DeclareTranslation{english}{InstitutionName}{Massachusetts Institute of Technology}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Link
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareTranslation{english}{LinkInstitution}{https://www.mit.edu}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Apply Colors to Document Elements
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Uncomment the lines you want to activate:
+
+% Header / title page background
+% \colorlet{colorTitleBack}{universityprimary}
+
+% Section headings
+% \colorlet{colorSection}{universityprimary}
+
+% Links and URLs
+% \colorlet{colorLink}{universityprimary}
+
+% Table rules
+% \colorlet{colorTableRule}{universitysecondary}
+
+% Footer line
+% \colorlet{colorFooter}{universitysecondary}
+
+\endinput

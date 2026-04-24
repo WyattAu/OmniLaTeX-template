@@ -1,6 +1,6 @@
 # OmniLaTeX
 
-A modular, engineering-grade LaTeX document class for academic and professional documents. 46 doctype aliases, 21 modules, 20 example templates, byte-for-byte reproducible builds, and 239 test cases.
+A modular, engineering-grade LaTeX document class for academic and professional documents. 55 doctype aliases, 21 modules, 24 example templates, byte-for-byte reproducible builds, and 239 test cases.
 
 Built on LuaLaTeX + KOMA-Script. Compile with `latexmk -lualatex` or `build.py`.
 
@@ -8,7 +8,7 @@ Built on LuaLaTeX + KOMA-Script. Compile with `latexmk -lualatex` or `build.py`.
 
 | | OmniLaTeX | Typical template |
 |---|---|---|
-| **Document types** | 46 aliases (thesis, CV, patent, journal, ...) | 1–3 |
+| **Document types** | 55 aliases (thesis, CV, patent, journal, ...) | 1–3 |
 | **Test coverage** | 239 test cases + 21 l3build modules | 0 |
 | **Reproducible builds** | Byte-for-byte deterministic | No |
 | **Formal verification** | Lean 4 proofs | No |
@@ -35,13 +35,13 @@ python build.py build-example minimal-starter
 
 ## Features
 
-- **46 doctype aliases** resolving to 13 document profiles across 3 KOMA-Script base classes
+- **55 doctype aliases** resolving to 16 document profiles across 3 KOMA-Script base classes
 - **21 modular `.sty` packages** with formal interface contracts
 - **Lazy module loading** — only load what you need (`enablemath`, `enabletikz`, `enablecode`, ...)
 - **Modern font stack** — Libertinus Serif + Math, Monaspace Neon, Atkinson Hyperlegible Next (with graceful fallback)
 - **Reproducible builds** — `SOURCE_DATE_EPOCH` support, byte-for-byte deterministic PDFs
-- **Multi-language** — English and German via polyglossia; infrastructure for 80+ languages
-- **Institution branding** — pluggable configs in `config/institutions/` (TUHH included)
+- **Multi-language** — 12 languages via polyglossia (EN, DE, FR, ES, PT, IT, NL, RU, ZH, JA, KO, AR); infrastructure for 80+ more
+- **Institution branding** — pluggable configs in `config/institutions/` (TUHH, TUM, ETH Zürich included)
 - **Code listings** — syntax highlighting via minted with cached compilation
 - **Engineering diagrams** — 1,000+ lines of TikZ shapes: thermodynamics, P&ID, flowcharts
 - **Build automation** — `build.py` with watch mode, concurrent builds, timing metrics, and health diagnostics
@@ -62,13 +62,16 @@ python build.py build-example minimal-starter
 \documentclass[doctype=cover-letter]{omnilatex}      % Cover letter
 \documentclass[doctype=dictionary]{omnilatex}        % Dictionary / lexicon
 \documentclass[doctype=inlinepaper]{omnilatex}       % Inline research paper
+\documentclass[doctype=poster]{omnilatex}            % Conference poster
+\documentclass[doctype=presentation]{omnilatex}      % Presentation slides
+\documentclass[doctype=letter]{omnilatex}            % Formal letter
 ```
 
 All options: `language`, `doctype`, `titlestyle`, `institution`, `censoring`, `loadGlossaries`, `todonotes`, `enablefonts`, `enablegraphics`, `enablemath`, `enabletikz`, `enableengineering`, `enablecode`, `enabletables`.
 
 ## Examples
 
-20 ready-to-use templates in `examples/`:
+24 ready-to-use templates in `examples/`:
 
 | Example | Doctype | Description |
 |---------|---------|-------------|
@@ -92,6 +95,10 @@ All options: `language`, `doctype`, `titlestyle`, `institution`, `censoring`, `l
 | `standard` | standard | Standards document |
 | `dictionary` | dictionary | Dictionary / lexicon |
 | `multi-language` | article | Multilingual document (English/German) |
+| `poster` | poster | Conference poster (A1 landscape) |
+| `presentation` | presentation | Presentation slides (KOMA-based) |
+| `letter` | letter | Formal letter |
+| `accessibility-test` | article | Tagged PDF (PDF/UA-1) via tagpdf |
 
 ```bash
 python build.py build-example <name>
@@ -127,10 +134,14 @@ python build.py build-example minimal-starter
 
 ### Docker
 
+A pre-built image with TeX Live, fonts, and all tools:
+
 ```bash
 docker run -it --rm -v $(pwd):/workspace ghcr.io/wyattau/omnilatex-docker:latest
 python build.py build-example minimal-starter
 ```
+
+For development, use `docker-compose.yml.example` or `devcontainer.json.example` (VS Code). The Docker image is built automatically via [`.github/workflows/docker-ci.yml`](.github/workflows/docker-ci.yml) on every push to `main` and on version tags.
 
 ### Local TeX Live
 
@@ -199,18 +210,20 @@ config/
 ├── document-types/
 │   ├── thesis.sty               # Thesis profile
 │   ├── article.sty              # Article profile
-│   └── ...                      # 13 document type profiles
+│   └── ...                      # 16 document type profiles
 └── institutions/
-    ├── tuhh/
-    │   └── tuhh.sty             # TUHH branding
+    ├── tuhh/                    # TUHH branding
+    ├── tum/                     # TU Munich branding
+    ├── eth/                     # ETH Zürich branding
+    ├── generic/                 # Customizable template
     └── README.md                # How to add your institution
 ```
 
 ## Project Structure
 
 ```
-├── omnilatex.cls                # Main document class (245 lines)
-├── build.py                     # Build automation (1,200 lines)
+├── omnilatex.cls                # Main document class (249 lines)
+├── build.py                     # Build automation (1,857 lines)
 ├── build.lua                    # l3build configuration
 ├── .latexmkrc                   # LaTeX compilation settings (260 lines)
 ├── flake.nix                    # Nix flake (devShell + checks)
@@ -226,7 +239,7 @@ config/
 │   ├── tables/                  # Table formatting
 │   └── utils/                   # Colors, TODO notes, censoring
 ├── lua/                         # Lua scripts (git metadata)
-├── examples/                    # 20 example templates
+├── examples/                    # 24 example templates
 ├── specs/                       # Formal specifications and Lean 4 proofs
 ├── tests/                       # Test suite (l3build + pytest + visual regression)
 ├── docs/                        # API reference (auto-generated)

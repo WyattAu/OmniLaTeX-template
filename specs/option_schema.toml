@@ -32,6 +32,7 @@ valid_values = [
     "arabic",
 ]
 validation = "Non-empty string. Normalized to lowercase. If tracklang does not recognize the tag, a warning is emitted at load time."
+cjk_auto_load = "When language is 'chinese', 'japanese', or 'korean', lib/language/omnilatex-cjk.sty is automatically loaded (provides luatexja fonts, ruby annotations, vertical text)."
 
 [[option]]
 name = "doctype"
@@ -108,6 +109,26 @@ default = false
 internal = "omnilatex@enablegraphics"
 description = "Enable extended graphics support (graphicx extras, image helpers)"
 applied_at = "available after module load"
+
+[[option]]
+name = "citation-style"
+type = "string"
+default = "ieee"
+internal = "omnilatex@citationstyle"
+description = "Pre-configured biblatex citation style loaded by lib/references/omnilatex-citations.sty"
+applied_at = "after module load — passed to \\citationstyle{<value>}"
+valid_values = [
+    "ieee",       # IEEE numeric, [1] brackets
+    "acm",        # ACM numeric
+    "apa",        # APA 7th edition, author-year
+    "chicago",    # Chicago author-date
+    "nature",     # Nature numeric, superscript
+    "science",    # Science numeric
+    "harvard",    # Harvard author-date
+    "vancouver",  # Vancouver numeric
+    "mla",        # MLA 9th edition
+]
+validation = "Normalized to lowercase and trimmed. Unrecognized values emit a PackageWarning and leave biblatex defaults unchanged."
 
 # ---------------------------------------------------------------------------
 # Void (non-keyval) Options
@@ -402,7 +423,7 @@ false_values = ["false", "off", "no", "0"]
 # ---------------------------------------------------------------------------
 
 [modules]
-count = 21
+count = 22
 load_order = [
     { index = 1,  path = "lib/core/omnilatex-base",                category = "core" },
     { index = 2,  path = "lib/utils/omnilatex-colors",             category = "utils" },
@@ -415,6 +436,7 @@ load_order = [
     { index = 9,  path = "lib/graphics/omnilatex-tikz-core",       category = "graphics" },
     { index = 10, path = "lib/graphics/omnilatex-tikz-engineering", category = "graphics" },
     { index = 11, path = "lib/language/omnilatex-i18n",            category = "language" },
+    { index = 12, path = "lib/language/omnilatex-cjk",             category = "language", condition = "language in {chinese,japanese,korean}" },
     { index = 12, path = "lib/tables/omnilatex-tables",            category = "tables" },
     { index = 13, path = "lib/code/omnilatex-listings",            category = "code" },
     { index = 14, path = "lib/layout/omnilatex-page",              category = "layout" },

@@ -1,0 +1,65 @@
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Stanford University Configuration
+%
+% Official brand colors and identity.
+% Usage: \documentclass[doctype=thesis,institution=stanford]{omnilatex}
+%
+% Brand guidelines: https://identity.stanford.edu/
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/institutions/stanford/stanford}[2026-04-24 v1.0.0 Stanford University Institution Configuration]
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Color Palette (Official Stanford Brand Guidelines)
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Primary: Stanford Cardinal
+\definecolor{universityprimary}{RGB}{140, 21, 21}
+% Secondary: Stanford Sandstone
+\definecolor{universitysecondary}{RGB}{249, 246, 239}
+% Accent: Stanford Green
+\definecolor{universityaccent}{RGB}{23, 94, 84}
+% Neutral: White
+\definecolor{universitywhite}{RGB}{255, 255, 255}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Logo
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Place your Stanford logo in: assets/images/institutions/stanford-logo.pdf
+% Official logo download: https://identity.stanford.edu/logos/
+%
+% \DeclareTranslation{english}{LogoInstitution}{%
+%     \includegraphics[height=1.5cm]{assets/images/institutions/stanford-logo}%
+% }
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Name
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \DeclareTranslation{english}{InstitutionName}{Stanford University}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Link
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareTranslation{english}{LinkInstitution}{https://www.stanford.edu}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Apply Colors to Document Elements
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Uncomment the lines you want to activate:
+
+% Header / title page background
+% \colorlet{colorTitleBack}{universityprimary}
+
+% Section headings
+% \colorlet{colorSection}{universityprimary}
+
+% Links and URLs
+% \colorlet{colorLink}{universityprimary}
+
+% Table rules
+% \colorlet{colorTableRule}{universityaccent}
+
+% Footer line
+% \colorlet{colorFooter}{universityprimary}
+
+\endinput

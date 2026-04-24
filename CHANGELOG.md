@@ -7,6 +7,34 @@ This project adheres to [Semantic versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-04-24
+
+### Added
+- **Institution configs:** MIT, Stanford, Cambridge, TU Delft (8 total)
+- **CJK full support:** `omnilatex-cjk.sty` — Noto CJK fonts, line breaking, ruby annotations (furigana/pinyin), vertical text mode
+- **CJK examples:** Chinese, Japanese, Korean document examples
+- **Citation style library:** `omnilatex-citations.sty` — 9 pre-configured styles (IEEE, ACM, APA, Chicago, Nature, Science, Harvard, Vancouver, MLA)
+- **Citation styles example:** `examples/citation-styles/` with sample bibliography
+- **Presentation overhaul:** `omnilatex-presentation.sty` — branded headers/footers, progress bar, block environments, section dividers, TikZ overlays
+- **Lean 4 CI:** `.github/workflows/lean4-ci.yml` — automated proof verification via Nix + Lake
+- **Docker digest sync:** `.github/workflows/docker-digest-sync.yml` — auto-updates pinned digests in build.yml and .env.docker via PR
+- **VS Code extension skeleton:** `extensions/vscode-omnilatex/` — doctype/institution/language QuickPick, build commands, LaTeX snippets
+- **Template marketplace:** `pages/gallery.html` — interactive doctype picker with live preview and download
+- **Overleaf submission prep:** `overleaf/` — README, manifest.json, starter main.tex
+
+### Changed
+- README: updated counts to 55 aliases, 24 examples, 16 profiles, 12 languages
+- README: expanded Docker section with dev container references
+- README: added 4 missing examples (poster, presentation, letter, accessibility-test)
+- README: updated institution listing (TUHH, TUM, ETH Zürich + 4 new)
+- `omnilatex.cls`: auto-loads `omnilatex-cjk.sty` for CJK languages
+- `config/document-types/presentation.sty`: loads new presentation module
+- `examples/presentation/main.tex`: demonstrates headers, footers, progress bar, blocks, sections
+- `specs/option_schema.toml`: added citation-style option, CJK auto-load docs, module count → 22
+- Roadmap: archived `ROADMAP-v1.1.md`, wrote fresh `ROADMAP.md` covering v1.4–v1.7+
+
+## [1.3.1] - 2026-04-24
+
 ### Changed
 - Merged OmniLaTeX-docker repository into template repository (monorepo)
 - Cross-platform CI now uses pre-built Docker image instead of native TeX Live installation

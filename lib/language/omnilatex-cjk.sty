@@ -1,0 +1,194 @@
+%% OmniLaTeX CJK Support
+%% Full Chinese/Japanese/Korean typography support
+%%
+%% Usage: \usepackage{omnilatex-cjk}
+%%        Or loaded automatically when language=chinese/japanese/korean
+%%
+%% Features:
+%%   - CJK font configuration with Noto CJK fallback chain
+%%   - Proper CJK line breaking via luatexja
+%%   - CJK punctuation width and spacing
+%%   - Ruby annotations (furigana, pinyin)
+%%   - Vertical writing mode environment
+%%   - Configurable CJK–Latin inter-character spacing
+%%
+%% Requirements: LuaLaTeX (luatexja bundle from TeX Live)
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{omnilatex-cjk}[2026/04/24 v1.0.0 OmniLaTeX CJK typography support]
+
+% ── Core CJK Engine ─────────────────────────────────────────────────────────
+% luatexja provides the fundamental CJK typesetting layer for LuaLaTeX.
+% luatexja-fontspec bridges fontspec (Latin fonts) with CJK font selection.
+
+\RequirePackage{luatexja}
+\RequirePackage{luatexja-fontspec}
+\RequirePackage{luatexja-ruby}
+
+% ── Font Configuration ──────────────────────────────────────────────────────
+% Default CJK font family. Noto CJK fonts are bundled with TeX Live and cover
+% SC (Simplified Chinese), TC (Traditional Chinese), JP (Japanese), KR (Korean).
+% Users can override per-script with \setCJKMainFont, \setCJKSansFont, etc.
+
+\newcommand{\cjkmainfont}{Noto Serif CJK SC}
+\newcommand{\cjksansfont}{Noto Sans CJK SC}
+\newcommand{\cjkmonofont}{Noto Sans Mono CJK SC}
+
+\newcommand{\setCJKMainFont}[1]{\renewcommand{\cjkmainfont}{#1}\omnilatex@apply@cjkfonts}
+\newcommand{\setCJKSansFont}[1]{\renewcommand{\cjksansfont}{#1}\omnilatex@apply@cjkfonts}
+\newcommand{\setCJKMonoFont}[1]{\renewcommand{\cjkmonofont}{#1}\omnilatex@apply@cjkfonts}
+
+% Apply CJK fonts with graceful fallback via \IfFontExistsTF (fontspec).
+% If the requested font is not installed, emit a ClassWarning and fall back
+% to the luatexja defaults (Haranoaji fonts in modern TeX Live).
+
+\newcommand{\omnilatex@apply@cjkfonts}{%
+  \IfFontExistsTF{\cjkmainfont}{%
+    \setmainjfont[BoldFont={\cjkmainfont} BoldFeatures={FakeBold=2}]{\cjkmainfont}%
+  }{%
+    \ClassWarning{omnilatex-cjk}{%
+      CJK main font '\cjkmainfont' not found, using default\MessageBreak}%
+  }%
+  \IfFontExistsTF{\cjksansfont}{%
+    \setsansjfont[BoldFont={\cjksansfont} BoldFeatures={FakeBold=2}]{\cjksansfont}%
+  }{%
+    \ClassWarning{omnilatex-cjk}{%
+      CJK sans font '\cjksansfont' not found, using default\MessageBreak}%
+  }%
+  \IfFontExistsTF{\cjkmonofont}{%
+    \setmonojfont{\cjkmonofont}%
+  }{%
+    \ClassWarning{omnilatex-cjk}{%
+      CJK mono font '\cjkmonofont' not found, using default\MessageBreak}%
+  }%
+}
+
+% Apply defaults on first load
+\omnilatex@apply@cjkfonts
+
+% ── Line Breaking ───────────────────────────────────────────────────────────
+% LuaTeX-ja handles CJK line breaking natively — line breaks are allowed at
+% every inter-character boundary, and no extra space is inserted between
+% adjacent CJK characters. This section configures the finer details.
+
+% jacharrange controls which Unicode ranges are treated as CJK characters.
+% Default: all ranges enabled.  Range 2 = CJK compatibility, often disabled
+% to prevent spurious CJK treatment of punctuation in mixed scripts.
+\ltjsetparameter{jacharrange={-2}}
+
+% alcharjacharrange controls the character class for alphabetic characters
+% adjacent to CJK characters, affecting boundary spacing rules.
+\ltjsetparameter{alcharjacharrange={-1}}
+
+% ── Inter-Character Spacing ────────────────────────────────────────────────
+% A small amount of space is conventionally inserted between adjacent CJK and
+% Latin characters to improve readability. This is configurable.
+
+\newlength{\cjklatinspacing}
+\setlength{\cjklatinspacing}{0.25em}
+
+% xkanjiskip: extra glue inserted between a CJK character and a non-CJK character.
+% Setting this to \cjklatinspacing provides consistent CJK–Latin separation.
+\ltjsetparameter{xkanjiskip=\cjklatinspacing plus 0.125em minus 0.125em}
+
+% Allow users to adjust spacing at any point
+\newcommand{\setCJKLatinSpacing}[1]{%
+  \setlength{\cjklatinspacing}{#1}%
+  \ltjsetparameter{xkanjiskip=\cjklatinspacing plus 0.125em minus 0.125em}%
+}
+
+% ── Punctuation Handling ────────────────────────────────────────────────────
+% LuaTeX-ja provides built-in CJK punctuation processing (kinsoku).
+% The following parameters fine-tune punctuation behaviour.
+
+% Enable automatic punctuation compression at line ends
+\ltjsetparameter{autopunctuation=true}
+
+% Prevent line breaks inside these character classes (kinsoku)
+\ltjsetparameter{kinsoku={""}, % Opening brackets (default set)
+                 outkinsoku={""}} % Closing brackets (default set)
+
+% ── Ruby Annotations ────────────────────────────────────────────────────────
+% Ruby annotations place small text (phonetic guides) above base characters.
+% Uses luatexja-ruby which provides \ruby and \rubytwo.
+
+% Base ruby command — wraps luatexja-ruby's \ruby
+\providecommand{\ruby}[2]{\ltjruby{#1}{#2}}
+
+% Two-character-per-group ruby (e.g., for pinyin with tone marks)
+\providecommand{\rubytwo}[2]{\ltjrubytwo{#1}{#2}}
+
+% Ruby font size relative to the base font (default: 0.5 = half-size)
+\newcommand{\omnilatex@ruby@scale}{0.5}
+\newcommand{\setRubyScale}[1]{\renewcommand{\omnilatex@ruby@scale}{#1}}
+
+% Configure luatexja-ruby global defaults
+\ltjsetparameter{ruby={%
+  intergap=0pt,%
+  beforejglue=0pt,%
+  afterjglue=0pt,%
+}}
+
+% Convenience commands for language-specific ruby
+\newcommand{\furigana}[2]{\ruby{#1}{#2}}
+\newcommand{\pinyin}[2]{\ruby{#1}{#2}}
+
+% ── Vertical Writing Mode ──────────────────────────────────────────────────
+% The vertical environment switches the text direction to vertical
+% (right-to-left columns, top-to-bottom lines) as used in traditional
+% Chinese, Japanese, and Korean documents.
+
+\newenvironment{vertical}{%
+  \par
+  \ltjsetparameter{direction=3}%
+  \begin{minipage}[t]{\textheight}%
+}{%
+  \end{minipage}%
+  \par
+}
+
+% Inline vertical text command for short passages
+\newcommand{\verticaltext}[1]{%
+  \begin{vertical}#1\end{vertical}%
+}
+
+% ── Per-Script Font Presets ─────────────────────────────────────────────────
+% Quick-setup commands for common CJK scripts. These set all three font
+% families at once and re-apply them.
+
+\newcommand{\setCJKScript}[1]{%
+  \IfStrEq{#1}{sc}{%  Simplified Chinese
+    \renewcommand{\cjkmainfont}{Noto Serif CJK SC}%
+    \renewcommand{\cjksansfont}{Noto Sans CJK SC}%
+    \renewcommand{\cjkmonofont}{Noto Sans Mono CJK SC}%
+  }{}%
+  \IfStrEq{#1}{tc}{%  Traditional Chinese
+    \renewcommand{\cjkmainfont}{Noto Serif CJK TC}%
+    \renewcommand{\cjksansfont}{Noto Sans CJK TC}%
+    \renewcommand{\cjkmonofont}{Noto Sans Mono CJK TC}%
+  }{}%
+  \IfStrEq{#1}{jp}{%  Japanese
+    \renewcommand{\cjkmainfont}{Noto Serif CJK JP}%
+    \renewcommand{\cjksansfont}{Noto Sans CJK JP}%
+    \renewcommand{\cjkmonofont}{Noto Sans Mono CJK JP}%
+  }{}%
+  \IfStrEq{#1}{kr}{%  Korean
+    \renewcommand{\cjkmainfont}{Noto Serif CJK KR}%
+    \renewcommand{\cjksansfont}{Noto Sans CJK KR}%
+    \renewcommand{\cjkmonofont}{Noto Sans Mono CJK KR}%
+  }{}%
+  \omnilatex@apply@cjkfonts%
+}
+
+% ── Auto-Script Detection ──────────────────────────────────────────────────
+% When this package is loaded, attempt to detect the document language from
+% \omnilatex@language (set by omnilatex.cls) and select appropriate fonts.
+
+\providecommand{\omnilatex@language}{}
+\@ifundefined{omnilatex@language}{}{%
+  \IfStrEq{\omnilatex@language}{chinese}{\setCJKScript{sc}}{}%
+  \IfStrEq{\omnilatex@language}{japanese}{\setCJKScript{jp}}{}%
+  \IfStrEq{\omnilatex@language}{korean}{\setCJKScript{kr}}{}%
+}
+
+\endinput
