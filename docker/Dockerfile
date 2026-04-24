@@ -9,7 +9,7 @@ ARG OS_VERSION="bookworm-slim"
 # Alternatively, you can specify *a past year* and it will download that version
 # from the TeXLive archives and use it (can take a long time).
 # For available years, see ftp://tug.org/historic/systems/texlive/ .
-ARG TL_VERSION="latest"
+ARG TL_VERSION="2025"
 ARG TL_MIRROR="https://mirror.ctan.org/systems/texlive/tlnet"
 ARG TL_ARCHIVE_MIRROR="ftp://tug.org/historic/systems/texlive"
 ARG TL_CACHE_BUSTER="0"

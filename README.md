@@ -119,7 +119,7 @@ Missing optional fonts trigger a `\ClassWarning` and degrade gracefully. Run `bu
 
 ### Prerequisites
 
-- TeX Live 2024+ with LuaLaTeX (`tlmgr install scheme-medium`)
+- TeX Live 2025+ with LuaLaTeX (`tlmgr install scheme-medium`)
 - Python 3.10+ (for `build.py` and test suite)
 - Git
 

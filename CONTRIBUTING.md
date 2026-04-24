@@ -39,7 +39,7 @@ python build.py test
 
 ### Option 3: Local TeX Live
 
-Requires TeX Live 2024+ with LuaLaTeX, Python 3.10+.
+Requires TeX Live 2025+ with LuaLaTeX, Python 3.10+.
 
 ```bash
 git clone https://github.com/WyattAu/OmniLaTeX-template.git

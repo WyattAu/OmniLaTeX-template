@@ -7,6 +7,10 @@ This project adheres to [Semantic versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- TeX Live 2024 → 2025 (Nixpkgs nixos-unstable, LuaHBTeX 1.21.0)
+- Docker image TL_VERSION updated to 2025
+
 ## [1.5.0] - 2026-04-24
 
 ### Added
