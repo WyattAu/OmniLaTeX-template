@@ -171,6 +171,7 @@ jobs:
           python3 build.py --mode prod --source-date-epoch 1700000000 build-example thesis
 
       - name: Verify bit-for-bit reproducibility
+        shell: bash
         run: |
           echo "Build 1 hash:"
           sha256sum /tmp/build1.pdf
@@ -181,19 +182,19 @@ jobs:
 
       - name: Dump PDF metadata diff on mismatch
         if: failure()
-        env:
-          IS_OMNILATEX_CONTAINER: "true"
-          CI: "true"
+        shell: bash
         run: |
+          echo "=== Build 1 metadata ==="
           python3 -c "
-          import fitz
-          doc1 = fitz.open('/tmp/build1.pdf')
-          doc2 = fitz.open('build/examples/thesis.pdf')
-          print('=== Build 1 metadata ===')
-          print(doc1.metadata)
-          print('=== Build 2 metadata ===')
-          print(doc2.metadata)
-          "
+          import subprocess, json
+          r = subprocess.run(['python3', '-m', 'markupsafe', '--version'], capture_output=True, text=True)
+          print(r.stdout or r.stderr)
+          " 2>/dev/null || true
+          # Use pdfinfo (always available in TeX Live) instead of PyMuPDF
+          echo "--- Build 1 ---"
+          pdfinfo /tmp/build1.pdf 2>/dev/null || echo "pdfinfo not available"
+          echo "--- Build 2 ---"
+          pdfinfo build/examples/thesis.pdf 2>/dev/null || echo "pdfinfo not available"
 
   test:
     runs-on: ubuntu-latest

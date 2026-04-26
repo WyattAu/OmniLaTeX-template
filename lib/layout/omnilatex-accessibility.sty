@@ -33,7 +33,6 @@
 \AddToHook{env/figure/begin}{%
   \ifx\omnilatex@alttext\empty\else
     \tagpdfsetup{%
-      alt-text-key={/Figure},
       alt-text={\omnilatex@alttext},
     }%
   \fi
@@ -48,7 +47,6 @@
 \AddToHook{env/tikzpicture/begin}{%
   \ifx\omnilatex@tikzalttext\empty\else
     \tagpdfsetup{%
-      alt-text-key={/Figure},
       alt-text={\omnilatex@tikzalttext},
     }%
   \fi
