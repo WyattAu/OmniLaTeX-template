@@ -1,20 +1,23 @@
 # OmniLaTeX
 
-A modular, engineering-grade LaTeX document class for academic and professional documents. 55 doctype aliases, 21 modules, 24 example templates, byte-for-byte reproducible builds, and 239 test cases.
+A modular, engineering-grade LaTeX document class for academic and professional documents. 55+ doctype aliases, 27 modules, 31 example templates, byte-for-byte reproducible builds, and formal Lean 4 verification.
 
-Built on LuaLaTeX + KOMA-Script. Compile with `latexmk -lualatex` or `build.py`.
+Built on LuaTeX (LuaHBTeX 1.21.0) + KOMA-Script + TeX Live 2025. Compile with `latexmk -lualatex` or `build.py`.
 
 ## Why OmniLaTeX
 
 | | OmniLaTeX | Typical template |
 |---|---|---|
-| **Document types** | 55 aliases (thesis, CV, patent, journal, ...) | 1–3 |
-| **Test coverage** | 239 test cases + 21 l3build modules | 0 |
+| **Document types** | 55+ aliases (thesis, CV, patent, journal, ...) | 1–3 |
+| **Test coverage** | 239 test cases + 27 l3build modules | 0 |
 | **Reproducible builds** | Byte-for-byte deterministic | No |
-| **Formal verification** | Lean 4 proofs | No |
-| **CI platforms** | 5 (GitHub, GitLab, Gitea, Forgejo, Woodpecker) | 0–1 |
+| **Formal verification** | Lean 4 proofs (8 modules, 13/20 theorems) | No |
+| **CI platforms** | 6 GitHub Actions workflows + 4 other platforms | 0–1 |
 | **Font fallbacks** | Graceful degradation with warnings | Crash or silent substitution |
-| **Institution configs** | Pluggable (`config/institutions/`) | Hardcoded |
+| **Institution configs** | 14 pluggable (`config/institutions/`) | Hardcoded |
+| **Languages** | 14 via polyglossia (EN, DE, FR, ES, PT, IT, NL, RU, ZH, JA, KO, AR, HE, DA) | 0–2 |
+| **Citation styles** | 9 (IEEE, ACM, APA, Chicago, Nature, Science, Harvard, Vancouver, MLA) | 0–1 |
+| **Color themes** | 6 + dark/light toggle (default, midnight, forest, rose, monochrome, sepia) | 0 |
 
 ## Quick Start
 
@@ -35,15 +38,21 @@ python build.py build-example minimal-starter
 
 ## Features
 
-- **55 doctype aliases** resolving to 16 document profiles across 3 KOMA-Script base classes
-- **21 modular `.sty` packages** with formal interface contracts
+- **55+ doctype aliases** resolving to 16 document profiles across 3 KOMA-Script base classes
+- **27 modular `.sty` packages** with formal interface contracts
 - **Lazy module loading** — only load what you need (`enablemath`, `enabletikz`, `enablecode`, ...)
 - **Modern font stack** — Libertinus Serif + Math, Monaspace Neon, Atkinson Hyperlegible Next (with graceful fallback)
 - **Reproducible builds** — `SOURCE_DATE_EPOCH` support, byte-for-byte deterministic PDFs
-- **Multi-language** — 12 languages via polyglossia (EN, DE, FR, ES, PT, IT, NL, RU, ZH, JA, KO, AR); infrastructure for 80+ more
-- **Institution branding** — pluggable configs in `config/institutions/` (TUHH, TUM, ETH Zürich included)
+- **Multi-language** — 14 languages via polyglossia (EN, DE, FR, ES, PT, IT, NL, DA, RU, ZH, JA, KO, AR, HE); CJK and RTL support auto-loaded per language
+- **Institution branding** — 14 pluggable configs in `config/institutions/` (ETH Zürich, TUHH, TUM, MIT, Stanford, Cambridge, TU Delft, Oxford, Princeton, Yale, CMU, EPFL, Imperial, generic)
+- **Citation styles** — 9 pre-configured styles via `\citationstyle{}` (IEEE, ACM, APA, Chicago, Nature, Science, Harvard, Vancouver, MLA)
+- **Color themes** — 6 themes with dark/light toggle: default, midnight, forest, rose, monochrome, sepia
+- **Accessibility** — PDF/UA-1 tagged PDF output via tagpdf
+- **CJK support** — automatic CJK font selection for Chinese, Japanese, Korean with Haranoaji/Noto fallback
+- **RTL support** — automatic bidirectional text for Arabic and Hebrew
 - **Code listings** — syntax highlighting via minted with cached compilation
 - **Engineering diagrams** — 1,000+ lines of TikZ shapes: thermodynamics, P&ID, flowcharts
+- **Formal verification** — Lean 4 proofs (8 modules, 13/20 theorems proven)
 - **Build automation** — `build.py` with watch mode, concurrent builds, timing metrics, and health diagnostics
 
 ## Document Types
@@ -71,7 +80,7 @@ All options: `language`, `doctype`, `titlestyle`, `institution`, `censoring`, `l
 
 ## Examples
 
-24 ready-to-use templates in `examples/`:
+31 ready-to-use templates in `examples/` (30 compile on TeX Live 2025; `thesis-tuhh` requires TUHH assets):
 
 | Example | Doctype | Description |
 |---------|---------|-------------|
@@ -99,6 +108,13 @@ All options: `language`, `doctype`, `titlestyle`, `institution`, `censoring`, `l
 | `presentation` | presentation | Presentation slides (KOMA-based) |
 | `letter` | letter | Formal letter |
 | `accessibility-test` | article | Tagged PDF (PDF/UA-1) via tagpdf |
+| `cjk-chinese` | article | Chinese document with CJK fonts |
+| `cjk-japanese` | article | Japanese document with CJK fonts |
+| `cjk-korean` | article | Korean document with CJK fonts |
+| `rtl-arabic` | article | Arabic document with RTL support |
+| `rtl-hebrew` | article | Hebrew document with RTL support |
+| `citation-styles` | article | Demonstrates all 9 citation styles |
+| `color-themes` | article | Demonstrates all 6 color themes + dark/light toggle |
 
 ```bash
 python build.py build-example <name>
@@ -134,14 +150,14 @@ python build.py build-example minimal-starter
 
 ### Docker
 
-A pre-built image with TeX Live, fonts, and all tools:
+A pre-built multi-arch image (linux/amd64, linux/arm64) with TeX Live 2025, fonts, and all tools. Built with BuildKit and digest-pinned in CI:
 
 ```bash
 docker run -it --rm -v $(pwd):/workspace ghcr.io/wyattau/omnilatex-docker:latest
 python build.py build-example minimal-starter
 ```
 
-For development, use `docker-compose.yml.example` or `devcontainer.json.example` (VS Code). The Docker image is built automatically via [`.github/workflows/docker-ci.yml`](.github/workflows/docker-ci.yml) on every push to `main` and on version tags.
+For development, use `docker-compose.yml.example` or `devcontainer.json.example` (VS Code). The Docker image is built automatically via [`.github/workflows/docker-ci.yml`](.github/workflows/docker-ci.yml) on every push to `main` and on version tags. Image digests are synchronized to CI workflows automatically via [`.github/workflows/docker-digest-sync.yml`](.github/workflows/docker-digest-sync.yml).
 
 ### Local TeX Live
 
@@ -173,11 +189,23 @@ python build.py clean                    # Remove build artifacts
 
 ## CI/CD Integration
 
-Built-in pipelines for 5 platforms:
+### GitHub Actions
+
+6 workflows using digest-pinned Docker images for reproducibility:
+
+| Workflow | Purpose |
+|----------|---------|
+| `build.yml` | Build all examples and run test suite |
+| `cross-platform.yml` | Test across multiple platforms |
+| `docker-ci.yml` | Build and push Docker image (multi-arch) |
+| `docker-digest-sync.yml` | Sync image digests to CI workflows |
+| `lean4-ci.yml` | Compile and verify Lean 4 proofs |
+| `integration-matrix.yml` | Cross-version compatibility matrix |
+
+### Other Platforms
 
 | Platform | Config |
 |----------|--------|
-| GitHub Actions | `.github/workflows/build.yml` |
 | GitLab CI | `.gitlab/ci/pipeline.yml` |
 | Gitea | `.gitea/workflows/build.yml` |
 | Forgejo | `.forgejo/workflows/build.yml` |
@@ -212,9 +240,19 @@ config/
 │   ├── article.sty              # Article profile
 │   └── ...                      # 16 document type profiles
 └── institutions/
+    ├── eth/                     # ETH Zürich branding
     ├── tuhh/                    # TUHH branding
     ├── tum/                     # TU Munich branding
-    ├── eth/                     # ETH Zürich branding
+    ├── mit/                     # MIT branding
+    ├── stanford/                # Stanford branding
+    ├── cambridge/               # Cambridge branding
+    ├── tudelft/                 # TU Delft branding
+    ├── oxford/                  # Oxford branding
+    ├── princeton/               # Princeton branding
+    ├── yale/                    # Yale branding
+    ├── cmu/                     # CMU branding
+    ├── epfl/                    # EPFL branding
+    ├── imperial/                # Imperial College London branding
     ├── generic/                 # Customizable template
     └── README.md                # How to add your institution
 ```
@@ -222,24 +260,24 @@ config/
 ## Project Structure
 
 ```
-├── omnilatex.cls                # Main document class (249 lines)
-├── build.py                     # Build automation (1,857 lines)
+├── omnilatex.cls                # Main document class (363 lines)
+├── build.py                     # Build automation
 ├── build.lua                    # l3build configuration
-├── .latexmkrc                   # LaTeX compilation settings (260 lines)
+├── .latexmkrc                   # LaTeX compilation settings
 ├── flake.nix                    # Nix flake (devShell + checks)
 ├── config/                      # Document type and institution configs
-├── lib/                         # 21 modules across 9 subdirectories
+├── lib/                         # 27 modules across 9 subdirectories
 │   ├── core/                    # Build modes, utilities
-│   ├── layout/                  # Page layout, floats, KOMA-Script
+│   ├── layout/                  # Page layout, floats, KOMA-Script, accessibility
 │   ├── typography/              # Fonts, math, typesetting, lists
-│   ├── references/              # Bibliography, glossary, hyperref
-│   ├── language/                # Internationalization (polyglossia)
+│   ├── references/              # Bibliography, glossary, hyperref, citations
+│   ├── language/                # Internationalization (polyglossia, CJK, RTL)
 │   ├── graphics/                # Images, SVG, TikZ
 │   ├── code/                    # Code listings (minted)
 │   ├── tables/                  # Table formatting
-│   └── utils/                   # Colors, TODO notes, censoring
+│   └── utils/                   # Colors, themes, TODO notes, censoring
 ├── lua/                         # Lua scripts (git metadata)
-├── examples/                    # 24 example templates
+├── examples/                    # 31 example templates
 ├── specs/                       # Formal specifications and Lean 4 proofs
 ├── tests/                       # Test suite (l3build + pytest + visual regression)
 ├── docs/                        # API reference (auto-generated)
@@ -250,7 +288,7 @@ config/
 
 | Suite | Tool | Coverage |
 |-------|------|----------|
-| Module unit tests | l3build | 21 modules with `.tlg` baselines |
+| Module unit tests | l3build | 27 modules with `.tlg` baselines |
 | Property-based tests | hypothesis + pytest | 92 doctype × language combinations |
 | Unicode stress tests | pytest | 10 scripts (CJK, RTL, emoji, combining) |
 | Edge case tests | pytest | Empty, large, nested documents |

@@ -7,9 +7,47 @@ This project adheres to [Semantic versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-04-26
+
 ### Changed
 - TeX Live 2024 → 2025 (Nixpkgs nixos-unstable, LuaHBTeX 1.21.0)
 - Docker image TL_VERSION updated to 2025
+- `omnilatex.cls`: version string v1.3.0 → v1.6.0
+- `build.py`: CI default parallel jobs 2 → 4
+- `build.py`: fix `clean_all` tuple-eval side effect → proper sequential statements
+
+### Fixed
+- **TL2025 compatibility:** `\directlua` escape sequence in `omnilatex-base.sty` (LuaTeX 1.21 changed `tex.print` backslash handling)
+- **TL2025 compatibility:** Libertinus font shape `TU/libertinus/b/n` undefined — added font shape substitution
+- **11 broken examples stabilized:** accessibility-test, citation-styles, color-themes, cjk-chinese, cjk-japanese, cjk-korean, presentation, dissertation, rtl-arabic, rtl-hebrew
+- `omnilatex-themes.sty`: palette definitions changed from `\newcommand` to `\colorlet` (prevented `\applytheme@` from working)
+- `omnilatex-themes.sty`: fixed infinite `\usetheme` recursion via `\edef` for theme base name
+- `omnilatex-themes.sty`: fixed hyphen-in-control-sequence issue (`-dark` suffix in csname)
+- `omnilatex-themes.sty`: added missing `xstring` dependency
+- `omnilatex-cjk.sty`: added missing `xstring` dependency
+- `omnilatex-cjk.sty`: added luaotfload `ScriptExtensions.txt` workaround for Nix TL2025
+- `omnilatex-cjk.sty`: fixed font option commas for TL2025 luatexja
+- `omnilatex-rtl.sty`: switched from `bidi` to `luabidi` (bidi incompatible with LuaLaTeX)
+- `omnilatex-rtl.sty`: fixed `#1` → `##1` parameter doubling
+- `omnilatex-citations.sty`: replaced undefined `\IfDefined` with `\@ifundefined`
+- `omnilatex-citations.sty`: removed invalid runtime biblatex options
+- `omnilatex-presentation.sty`: renamed `\endpresentationcolumn` to avoid KOMA-Script collision
+- `omnilatex-accessibility.sty`: added missing `pdfcomment` dependency
+- `omnilatex-typesetting.sty`: removed duplicate `setspaceenhanced` load
+- `omnilatex-cjk.sty`: fixed `\ProvidesPackage` name (added path prefix)
+- `flake.nix`: added `tqdm`, `rich` (Python), `luatexja`, `haranoaji`, `luabidi`, `bidi`, `tagpdf`, `setspaceenhanced` (TeX Live)
+
+### Security / Hardening
+- All 6 CI workflows: added `timeout-minutes` to prevent hung workflow billing
+- `cross-platform.yml`: pinned Docker image from mutable `:latest` to digest
+- `docker-ci.yml`: pinned BuildKit driver from `:master` to `v0.29.0`
+- Dockerfile: pinned Monaspace font to v1.301, Atkinson Hyperlegible Next to commit 7925f50f, Eisvogel to v3.4.0
+- Dockerfile: added `RUNTIME_USER=tex` default
+- `lean-toolchain`: pinned from RC `v4.30.0-rc2` to stable `v4.29.0`
+- `.gitignore`: added `*.ltjruby` pattern
+
+### Removed
+- ~130 stale build artifacts removed from git tracking (aux, log, bcf, glstex, pdf files in repo root)
 
 ## [1.5.0] - 2026-04-24
 

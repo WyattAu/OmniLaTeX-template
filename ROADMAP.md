@@ -1,6 +1,6 @@
 # OmniLaTeX Roadmap
 
-Current version: **v1.3.1** (2026-04-24)
+Current version: **v1.5.0** (2026-04-24)
 
 ## Design Principles
 
@@ -9,133 +9,144 @@ Current version: **v1.3.1** (2026-04-24)
 3. **Multi-language native** — polyglossia-based, not English-first with patches
 4. **CI/CD as documentation** — pipelines that double as usage examples
 
-## v1.4 — Accuracy & Automation (target: 1–2 weeks)
+## Project Snapshot
+
+| Metric | Value |
+|--------|-------|
+| Releases | 7 (v1.0.0–v1.5.0) |
+| `.sty` modules | 27 |
+| Examples | 31 (30 compile on TL2025) |
+| Institution configs | 14 |
+| Languages | 14 (EN + 13 via polyglossia) |
+| CI workflows | 6 |
+| Lean 4 proof modules | 8 (13/20 theorems proven) |
+| Core code | ~9,350 lines |
+| Docker | Multi-arch, BuildKit |
+
+---
+
+## v1.6.0 — Hardening (target: now)
+
+> 6 commits since v1.5.0. Ready to tag.
 
 | Project | Priority | Status |
 |---------|----------|--------|
-| **P4.1 Documentation accuracy** | High | Pending |
-| **P4.2 Lean 4 CI integration** | High | Pending |
-| **P4.3 Docker digest automation** | Medium | Pending |
-| **P4.4 TeX Live 2025 readiness** | Medium | Pending |
+| **P6.1 TL2025 migration** | Critical | In Progress |
+| **P6.2 Fix broken examples** | Critical | In Progress |
+| **P6.3 CI/CD hardening** | High | In Progress |
+| **P6.4 Code quality fixes** | Medium | In Progress |
+| **P6.5 Supply chain hardening** | High | In Progress |
+| **P6.6 Lean 4 stable toolchain** | Medium | In Progress |
 
-### P4.1 Documentation Accuracy
-- Reconcile README counts (55 aliases, 24 examples, 16 profiles)
-- Update Docker section for monorepo structure
-- Fix stale line counts in project structure
-- Update institution listing (TUHH, TUM, ETH Zürich, generic)
+### P6.1 TL2025 Migration
+- Nix flake updated to TeX Live 2025
+- Docker image rebuilt for TL2025
 
-### P4.2 Lean 4 CI Integration
-- Add CI job running `lake build` + `lake check`
-- Gate on proof compilation success
-- Update `flake.nix` checks
+### P6.2 Fix Broken Examples
+- 11 examples fixed to compile on TL2025
 
-### P4.3 Docker Digest Automation
-- Post-push workflow: after docker-ci.yml builds new image, auto-update digest in `build.yml` and `.env.docker`
-- Prevent stale digest references
+### P6.3 CI/CD Hardening
+- Workflow timeouts added
+- Docker digest pinning
+- BuildKit version pinned
 
-### P4.4 TeX Live 2025 Readiness
-- Test Nix flake with TL2025 when released
-- Rebuild Docker image with TL2025
-- Full example test suite pass
+### P6.4 Code Quality Fixes
+- Version bump across modules
+- Deduplication pass
+- Dead code cleanup
 
-**Completion criteria:** README fully accurate, Lean 4 in CI, Docker digests auto-pinned.
+### P6.5 Supply Chain Hardening
+- Font URLs pinned to specific versions
+- Lean toolchain pinned
+- All mutable refs replaced with immutable digests
 
-## v1.5 — Institutions & Themes (target: 3–4 weeks)
+### P6.6 Lean 4 Stable Toolchain
+- Upgraded from RC to stable v4.29.0
 
-| Project | Priority | Status |
-|---------|----------|--------|
-| **P5.1 New institution configs** | High | Pending |
-| **P5.2 Beamer theme overhaul** | High | Pending |
-| **P5.3 Color theme system** | Medium | Pending |
+**Completion criteria:** All examples compile on TL2025, CI passes, no mutable refs.
 
-### P5.1 New Institution Configs
-- MIT (brand colors, logo placeholder)
-- Stanford (brand colors, logo placeholder)
-- Cambridge (brand colors, logo placeholder)
-- TU Delft (brand colors, logo placeholder)
-- University template generator: `build.py scaffold-institution <name>`
+---
 
-### P5.2 Beamer Theme Overhaul
-- Branded footers with institution logo + short title
-- Progress bar / frame counter
-- Custom block environments (theorem, example, alert)
-- Color theme integration with institution configs
-- Navigation symbols toggle
-
-### P5.3 Color Theme System
-- Formal color theme API (`\usetheme{omnilatex}` for Beamer)
-- Institution-aware color switching
-- Dark mode support (experimental)
-
-**Completion criteria:** 8+ institutions, polished Beamer theme, color theme API.
-
-## v1.6 — Language & Accessibility (target: 3–4 weeks)
+## v1.7.0 — Infrastructure & Distribution (target: 1–3 weeks)
 
 | Project | Priority | Status |
 |---------|----------|--------|
-| **P6.1 CJK full support** | High | Pending |
-| **P6.2 Accessibility hardening** | Medium | Pending |
-| **P6.3 RTL language support** | Medium | Pending |
+| **P7.1 CI green on GitHub Actions** | Critical | Pending |
+| **P7.2 Docker TL2025 image push** | High | Pending |
+| **P7.3 Nix user-facing build** | Medium | Pending |
+| **P7.4 CTAN submission** | Medium | Pending |
+| **P7.5 Overleaf gallery submission** | Medium | Pending |
+| **P7.6 VS Code extension MVP** | Low | Pending |
 
-### P6.1 CJK Full Support
-- CJK font integration (Noto Sans CJK, Source Han)
-- Vertical text mode
-- Proper line breaking for CJK
-- Ruby annotation support (furigana, pinyin)
-- Japanese (JP), Korean (KO), Chinese (ZH) examples
+### P7.1 CI Green on GitHub Actions
+- Validate all 6 workflows pass on GitHub Actions
+- Workflows exist but have never been tested on the platform (repo was pushed directly)
+- Fix any platform-specific issues (permissions, runner quirks, action versions)
 
-### P6.2 Accessibility Hardening
-- Screen reader testing with NVDA/JAWS
-- Alt text for all TikZ diagrams
-- Tagged PDF as default option
-- WCAG 2.1 AA compliance documentation
+### P7.2 Docker TL2025 Image Push
+- Rebuild and push Docker image with TL2025 to GHCR
+- Verify multi-arch manifests (linux/amd64, linux/arm64)
+- Update README with new image tag
 
-### P6.3 RTL Language Support
-- Arabic (AR), Hebrew (HE) bidi support
-- Proper paragraph direction
-- RTL-aware page layout
+### P7.3 Nix User-Facing Build
+- Add `packages.default` to `flake.nix` producing a standalone PDF
+- `nix develop` already works; this adds `nix build`
+- Allow users to build any example via `nix build .#example-article`
 
-**Completion criteria:** CJK examples compile and look correct, accessibility module tested with screen readers.
+### P7.4 CTAN Submission
+- Run `scripts/make-ctan-zip.sh` and validate output
+- Submit to CTAN
+- Ongoing maintenance for future releases
 
-## v1.7 — Ecosystem (target: 4–6 weeks)
-
-| Project | Priority | Status |
-|---------|----------|--------|
-| **P7.1 Citation style library** | High | Pending |
-| **P7.2 Overleaf gallery template** | Medium | Pending |
-| **P7.3 VS Code extension** | Low | Pending |
-| **P7.4 Template marketplace** | Low | Pending |
-
-### P7.1 Citation Style Library
-- Pre-configured biblatex styles: IEEE, ACM, Nature, Science, APA, Chicago
-- `\usepackage[style=ieee]{omnilatex-citations}` convenience wrapper
-- Journal-aware bibliography formatting
-
-### P7.2 Overleaf Gallery Submission
-- Overleaf-compatible zip (already have `scripts/make-overleaf-zip.sh`)
+### P7.5 Overleaf Gallery Submission
+- Run `scripts/make-overleaf-zip.sh` and validate output
 - Submit to Overleaf template gallery
-- Documentation for Overleaf users
+- Add Overleaf-specific documentation
 
-### P7.3 VS Code Extension
-- OmniLaTeX command palette (doctype picker, institution switcher)
-- Project initialization wizard
-- Build status integration
+### P7.6 VS Code Extension MVP
+- Package existing skeleton in `extensions/vscode-omnilatex/`
+- Basic functionality: doctype picker, institution switcher
+- Submit to VS Code Marketplace
 
-### P7.4 Template Marketplace
-- Web page: pick doctype + institution + language → download zip
-- GitHub Pages hosted
-- API for programmatic access
+**Completion criteria:** All CI green, Docker image on GHCR, at least one distribution channel live (CTAN or Overleaf).
 
-**Completion criteria:** 6+ citation styles, Overleaf submission, VS Code extension MVP.
+---
+
+## v1.8.0 — Growth (target: 2–4 weeks)
+
+| Project | Priority | Status |
+|---------|----------|--------|
+| **P8.1 New document types** | High | Planned |
+| **P8.2 Performance optimization** | Medium | Planned |
+| **P8.3 Lean 4 proof completion** | Low | Planned |
+
+### P8.1 New Document Types
+- `report` — lab report template (abstract, sections, appendices, code listings)
+- `exam` — exam paper template (questions, marks, answer space)
+- `flyer` — event flyer template (single-page, visual)
+
+### P8.2 Performance Optimization
+- Profile first-pass compilation (currently 30–131s per example)
+- Evaluate precompilation (fmtutil cache warming)
+- Explore font subsetting for faster builds
+
+### P8.3 Lean 4 Proof Completion
+- 13 of 20 theorems currently use `sorry`
+- Complete remaining proofs for mathematical rigor
+- Zero user impact; differentiator for academic credibility
+
+**Completion criteria:** 3 new document types, first-pass compile < 30s for standard examples.
+
+---
 
 ## Priority Matrix
 
 | Priority | Items |
 |----------|-------|
-| **Critical path** | P4.1 → P4.2 → P5.1 → P5.2 |
-| **High impact** | P5.1, P5.2, P6.1, P7.1 |
-| **Medium** | P4.3, P4.4, P5.3, P6.2, P6.3, P7.2 |
-| **Long-term** | P7.3, P7.4 |
+| **Critical path** | P7.1 (CI green) → P7.2 (Docker push) → P7.4/P7.5 (distribution) |
+| **High impact** | P7.1, P7.2, P8.1 |
+| **Medium** | P6.3–P6.5, P7.3–P7.5, P8.2 |
+| **Long-term** | P7.6, P8.3 |
 
 ## Completed Versions
 
@@ -146,3 +157,5 @@ Current version: **v1.3.1** (2026-04-24)
 | v1.2.0 | 2026-04-23 | Ecosystem — TUM/ETH institutions, cross-platform CI, Lean 4, CWL |
 | v1.3.0 | 2026-04-23 | Features — poster/presentation/letter, scaffold-language, perf baselines, PDF/UA-1 |
 | v1.3.1 | 2026-04-24 | Housekeeping — Docker monorepo merge, cross-platform CI fix, Docker CI/CD |
+| v1.4.0 | 2026-04-24 | Accuracy — documentation reconciliation, Lean 4 CI, Docker digests |
+| v1.5.0 | 2026-04-24 | Institutions — 14 configs, Beamer overhaul, color theme system |
