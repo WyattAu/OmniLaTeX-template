@@ -144,26 +144,52 @@
           '';
         };
 
-        packages.default = pkgs.stdenvNoCC.mkDerivation {
-          name = "omnilatex-example";
-          src = ./.;
+        packages = {
+          default = pkgs.stdenvNoCC.mkDerivation {
+            name = "omnilatex-manual";
+            src = ./.;
+            nativeBuildInputs = [ texlive pythonEnv pkgs.inkscape pkgs.gnuplot ];
+            buildPhase = ''
+              export HOME=$(mktemp -d)
+              export SOURCE_DATE_EPOCH=1700000000
+              export TEXINPUTS=$PWD/:
+              latexmk -lualatex -interaction=nonstopmode -f main.tex
+            '';
+            installPhase = ''
+              mkdir -p $out
+              cp main.pdf $out/
+            '';
+          };
 
-          nativeBuildInputs = [ texlive pythonEnv ];
-
-          buildPhase = ''
-            export HOME=$(mktemp -d)
-            export SOURCE_DATE_EPOCH=1700000000
-            export TEXINPUTS=$PWD/:
-            cd examples/thesis
-            ln -sf ../../.latexmkrc .
-            latexmk -lualatex -interaction=nonstopmode main.tex
-          '';
-
-          installPhase = ''
-            mkdir -p $out
-            cp main.pdf $out/omnilatex-example.pdf
-          '';
-        };
+          # Individual example PDFs: nix build .#examples-article
+          # Each example becomes packages.examples-<name>
+        } // pkgs.lib.attrsets.mapAttrs' (name: value: {
+          name = "examples-${name}";
+          inherit value;
+        }) (pkgs.lib.attrsets.genAttrs
+          [ "article" "thesis" "presentation" "cv" "book" "report" "letter" "poster"
+            "dissertation" "journal" "manual" "guide" "minimal-starter" "minimal-custom"
+            "technical-report" "multi-language" "standard" "dictionary" "cover-letter"
+            "cover-letter-formal" "cv-twopage" "inline-paper" "article-color" "accessibility-test"
+            "citation-styles" "color-themes" "cjk-chinese" "cjk-japanese" "cjk-korean"
+            "rtl-arabic" "rtl-hebrew" ]
+          (name: pkgs.stdenvNoCC.mkDerivation {
+            name = "omnilatex-${name}";
+            src = ./.;
+            nativeBuildInputs = [ texlive pythonEnv ];
+            buildPhase = ''
+              export HOME=$(mktemp -d)
+              export SOURCE_DATE_EPOCH=1700000000
+              export TEXINPUTS=$PWD/:
+              cd examples/${name}
+              ln -sf ../../.latexmkrc .
+              latexmk -lualatex -interaction=nonstopmode main.tex
+            '';
+            installPhase = ''
+              mkdir -p $out
+              cp main.pdf $out/omnilatex-${name}.pdf
+            '';
+          }));
 
         checks.reproducibility = pkgs.stdenvNoCC.mkDerivation {
           name = "omnilatex-reproducibility-check";

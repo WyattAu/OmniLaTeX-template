@@ -1,6 +1,6 @@
 # OmniLaTeX Roadmap
 
-Current version: **v1.5.0** (2026-04-24)
+Current version: **v1.6.0** (2026-04-26)
 
 ## Design Principles
 
@@ -13,7 +13,7 @@ Current version: **v1.5.0** (2026-04-24)
 
 | Metric | Value |
 |--------|-------|
-| Releases | 7 (v1.0.0–v1.5.0) |
+| Releases | 8 (v1.0.0–v1.6.0) |
 | `.sty` modules | 27 |
 | Examples | 31 (30 compile on TL2025) |
 | Institution configs | 14 |
@@ -31,12 +31,12 @@ Current version: **v1.5.0** (2026-04-24)
 
 | Project | Priority | Status |
 |---------|----------|--------|
-| **P6.1 TL2025 migration** | Critical | In Progress |
-| **P6.2 Fix broken examples** | Critical | In Progress |
-| **P6.3 CI/CD hardening** | High | In Progress |
-| **P6.4 Code quality fixes** | Medium | In Progress |
-| **P6.5 Supply chain hardening** | High | In Progress |
-| **P6.6 Lean 4 stable toolchain** | Medium | In Progress |
+| **P6.1 TL2025 migration** | Critical | Done |
+| **P6.2 Fix broken examples** | Critical | Done |
+| **P6.3 CI/CD hardening** | High | Done |
+| **P6.4 Code quality fixes** | Medium | Done |
+| **P6.5 Supply chain hardening** | High | Done |
+| **P6.6 Lean 4 stable toolchain** | Medium | Done |
 
 ### P6.1 TL2025 Migration
 - Nix flake updated to TeX Live 2025
@@ -159,3 +159,4 @@ Current version: **v1.5.0** (2026-04-24)
 | v1.3.1 | 2026-04-24 | Housekeeping — Docker monorepo merge, cross-platform CI fix, Docker CI/CD |
 | v1.4.0 | 2026-04-24 | Accuracy — documentation reconciliation, Lean 4 CI, Docker digests |
 | v1.5.0 | 2026-04-24 | Institutions — 14 configs, Beamer overhaul, color theme system |
+| v1.6.0 | 2026-04-26 | Hardening — TL2025 migration, CI/CD hardening, supply chain pinning |
