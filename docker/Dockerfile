@@ -339,10 +339,10 @@ RUN wget -qO /tmp/monaspace.zip https://github.com/githubnext/monaspace/releases
 # Download and install Atkinson Hyperlegible Next font
 # Pinned 2026-04-26
 RUN wget -qO /tmp/atkinson-next.zip https://github.com/googlefonts/atkinson-hyperlegible-next/archive/7925f50f649b3813257faf2f4c0b381011f434f1.zip && \
-    unzip -q /tmp/atkinson-next.zip -d /tmp/atkinson-next && \
+    unzip -qo /tmp/atkinson-next.zip -d /tmp/atkinson-next && \
     mkdir -p /usr/local/share/fonts/atkinsonhyperlegiblenext && \
-    find /tmp/atkinson-next/atkinson-hyperlegible-next-main/fonts/otf/ -name "*.otf" -exec cp {} /usr/local/share/fonts/atkinsonhyperlegiblenext/ \; && \
-    find /tmp/atkinson-next/atkinson-hyperlegible-next-main/fonts/ttf/ -name "*.ttf" -exec cp {} /usr/local/share/fonts/atkinsonhyperlegiblenext/ \; && \
+    find /tmp/atkinson-next/ -path '*/fonts/otf/*.otf' -exec cp {} /usr/local/share/fonts/atkinsonhyperlegiblenext/ \; && \
+    find /tmp/atkinson-next/ -path '*/fonts/ttf/*.ttf' -exec cp {} /usr/local/share/fonts/atkinsonhyperlegiblenext/ \; && \
     rm -rf /tmp/atkinson-next.zip /tmp/atkinson-next && \
     fc-cache -f -v
 
