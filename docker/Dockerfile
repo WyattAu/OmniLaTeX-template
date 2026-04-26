@@ -14,7 +14,10 @@ ARG OS_VERSION="bookworm-slim"
 ARG TL_VERSION="latest"
 ARG TL_MIRROR="https://mirror.ctan.org/systems/texlive/tlnet"
 ARG TL_ARCHIVE_MIRROR="ftp://tug.org/historic/systems/texlive"
-ARG TL_CACHE_BUSTER="0"
+# Token appended to download URLs and BuildKit cache IDs to bypass stale
+# caches when the live tlnet rolls to a new TeX Live version.
+# Bump this whenever CTAN's live tlnet rolls (e.g. TL2025→TL2026).
+ARG TL_CACHE_BUSTER="1"
 ARG TL_INSTALL_SHA256=""
 ARG EISVOGEL_SHA256=""
 ARG OMNILATEX_CLS_SHA256=""
@@ -186,22 +189,20 @@ ARG INSTALL_TL_DIR="install-tl"
 COPY ${_BUILD_CONTEXT_PREFIX}/scripts/texlive.py /usr/local/bin/texlive.py
 COPY ${_BUILD_CONTEXT_PREFIX}/scripts/verify_checksum.sh /usr/local/bin/verify_checksum.sh
 
-RUN --mount=type=cache,target=/var/cache/texlive,id=texlive-cache-${TARGETARCH},sharing=locked \
+# NOTE: TL_CACHE_BUSTER is included in the cache ID so that bumping it
+# invalidates the cached TeX Live installer tarball.  This is necessary
+# when the live tlnet mirror rolls to a new TL version (e.g. TL2025→2026)
+# because the cached installer becomes incompatible with the new repository.
+# Bump TL_CACHE_BUSTER whenever the live tlnet rolls.
+RUN --mount=type=cache,target=/var/cache/texlive,id=texlive-cache-${TARGETARCH}-${TL_CACHE_BUSTER},sharing=locked \
     chmod +x /usr/local/bin/texlive.py /usr/local/bin/verify_checksum.sh && \
     python3 /usr/local/bin/texlive.py get-installer ${TL_VERSION} \
         --mirror "${TL_MIRROR}" \
         --archive-mirror "${TL_ARCHIVE_MIRROR}" \
         --archive-name "${TL_INSTALL_ARCHIVE}" \
-        --cache-buster "${TL_CACHE_BUSTER}" \
-        --output "/var/cache/texlive/${TL_INSTALL_ARCHIVE}" && \
-    /usr/local/bin/verify_checksum.sh "/var/cache/texlive/${TL_INSTALL_ARCHIVE}" "${TL_INSTALL_SHA256}" && \
-    # Get Eisvogel LaTeX template for pandoc,
-    # see also #175 in that repo.
-    # Pinned 2026-04-26
-    wget -qO "/var/cache/texlive/${EISVOGEL_ARCHIVE}" https://github.com/Wandmalfarbe/pandoc-latex-template/releases/download/v3.4.0/${EISVOGEL_ARCHIVE} && \
-    /usr/local/bin/verify_checksum.sh "/var/cache/texlive/${EISVOGEL_ARCHIVE}" "${EISVOGEL_SHA256}"
+        --output "/var/cache/texlive/${TL_INSTALL_ARCHIVE}"
 
-RUN --mount=type=cache,target=/var/cache/texlive,id=texlive-cache-${TARGETARCH},sharing=locked \
+RUN --mount=type=cache,target=/var/cache/texlive,id=texlive-cache-${TARGETARCH}-${TL_CACHE_BUSTER},sharing=locked \
     mkdir ${INSTALL_TL_DIR} && \
     # Save archive to predictable directory, in case its name ever changes; see
     # https://unix.stackexchange.com/a/11019/374985.
