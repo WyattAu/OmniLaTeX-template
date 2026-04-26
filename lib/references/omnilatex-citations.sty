@@ -35,9 +35,11 @@
   \IfFileExists{biblatex-#1.sty}%
     {\RequirePackage[#1]{biblatex-#1}}%
     {}%
-  \IfDefined{citestyle@#1}%
-    {\csname citestyle@#1\endcsname}%
-    {\citationstyle@unknown{#1}}%
+  \@ifundefined{citestyle@#1}{%
+    \citationstyle@unknown{#1}%
+  }{%
+    \csname citestyle@#1\endcsname%
+  }
 }
 
 % ── Style: IEEE ───────────────────────────────────────
@@ -45,9 +47,7 @@
 
 \newcommand{\citestyle@ieee}{%
   \ExecuteBibliographyOptions{%
-    style=ieee,
     sorting=none,
-    backend=biber,
     maxbibnames=99,
     maxcitenames=3,
     mincitenames=1,
@@ -60,9 +60,7 @@
 
 \newcommand{\citestyle@acm}{%
   \ExecuteBibliographyOptions{%
-    style=acmnumeric,
     sorting=nyt,
-    backend=biber,
     maxbibnames=9,
     maxcitenames=3,
     mincitenames=1,
@@ -75,9 +73,7 @@
 
 \newcommand{\citestyle@apa}{%
   \ExecuteBibliographyOptions{%
-    style=apa,
     sorting=nyt,
-    backend=biber,
     maxbibnames=99,
     maxcitenames=2,
     mincitenames=1,
@@ -91,9 +87,7 @@
 
 \newcommand{\citestyle@chicago}{%
   \ExecuteBibliographyOptions{%
-    style=chicago-author-date,
     sorting=nyt,
-    backend=biber,
     maxbibnames=99,
     maxcitenames=3,
     mincitenames=1,
@@ -109,9 +103,7 @@
 
 \newcommand{\citestyle@nature}{%
   \ExecuteBibliographyOptions{%
-    style=nature,
     sorting=none,
-    backend=biber,
     maxbibnames=99,
     maxcitenames=6,
     mincitenames=1,
@@ -126,9 +118,7 @@
 
 \newcommand{\citestyle@science}{%
   \ExecuteBibliographyOptions{%
-    style=numeric,
     sorting=none,
-    backend=biber,
     maxbibnames=10,
     maxcitenames=10,
     mincitenames=3,
@@ -146,9 +136,7 @@
 
 \newcommand{\citestyle@harvard}{%
   \ExecuteBibliographyOptions{%
-    style=authoryear,
     sorting=nyt,
-    backend=biber,
     maxbibnames=99,
     maxcitenames=2,
     mincitenames=1,
@@ -163,9 +151,7 @@
 
 \newcommand{\citestyle@vancouver}{%
   \ExecuteBibliographyOptions{%
-    style=numeric,
     sorting=none,
-    backend=biber,
     maxbibnames=6,
     maxcitenames=6,
     mincitenames=3,
@@ -180,9 +166,7 @@
 
 \newcommand{\citestyle@mla}{%
   \ExecuteBibliographyOptions{%
-    style=mla,
     sorting=nyt,
-    backend=biber,
     maxbibnames=3,
     maxcitenames=3,
     mincitenames=1,

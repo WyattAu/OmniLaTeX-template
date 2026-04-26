@@ -97,16 +97,24 @@
             polyglossia
             translations
             tracklang
+            luatexja
+            haranoaji
+            luabidi
+            bidi
+            tagpdf
+            setspaceenhanced
           ;
         };
 
-        pythonEnv = pkgs.python3.withPackages (ps: with ps; [
-          pygments
-          pytest
-          pytest-timeout
-          hypothesis
-          pyyaml
-          python-dateutil
+         pythonEnv = pkgs.python3.withPackages (ps: with ps; [
+           pygments
+           pytest
+           pytest-timeout
+           hypothesis
+           pyyaml
+           python-dateutil
+           tqdm
+           rich
           # NOTE: papersize is not in nixpkgs. test_pdfs.py (which depends on it)
           # is automatically skipped when pymupdf/fitz is unavailable.
         ]);

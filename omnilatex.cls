@@ -177,6 +177,105 @@
 \RequirePackage{lib/layout/omnilatex-boxes}
 \RequirePackage{lib/layout/omnilatex-document}
 \RequirePackage{lib/references/omnilatex-hyperref}
+% Workaround: luaotfload-multiscript.lua calls kpse.find_file('ScriptExtensions.txt')
+% which returns nil in Nix/TL2025, then calls os.exit(-1). Patch kpse.find_file
+% to return a dummy temp file when the real file is missing.
+\directlua{dofile(kpse.find_file("lib/utils/luaotfload-workaround.lua") or "lib/utils/luaotfload-workaround.lua")}%
+
+% Pre-define script fonts for polyglossia (TL2025 checks main font).
+% Without these, polyglossia errors with --halt-on-error.
+\@ifundefined{cjkfont}{%
+  \def\omnilatex@check@cjk@lang#1{%
+    \IfStrEq{\omnilatex@language}{#1}{%
+      \IfFontExistsTF{Noto Serif CJK SC}{%
+        \newfontfamily\cjkfont[Script=CJK]{Noto Serif CJK SC}%
+      }{%
+        \IfFontExistsTF{Haranoaji Mincho}{%
+          \newfontfamily\cjkfont[Script=CJK]{Haranoaji Mincho}%
+        }{}%
+      }%
+    }{}%
+  }%
+  \omnilatex@check@cjk@lang{chinese}%
+  \omnilatex@check@cjk@lang{japanese}%
+  \omnilatex@check@cjk@lang{korean}%
+}{}%
+\@ifundefined{cjkfontsf}{%
+  \def\omnilatex@check@cjk@sf@lang#1{%
+    \IfStrEq{\omnilatex@language}{#1}{%
+      \IfFontExistsTF{Noto Sans CJK SC}{%
+        \newfontfamily\cjkfontsf[Script=CJK]{Noto Sans CJK SC}%
+      }{%
+        \IfFontExistsTF{Noto Sans CJK JP}{%
+          \newfontfamily\cjkfontsf[Script=CJK]{Noto Sans CJK JP}%
+        }{}%
+      }%
+    }{}%
+  }%
+  \omnilatex@check@cjk@sf@lang{chinese}%
+  \omnilatex@check@cjk@sf@lang{japanese}%
+  \omnilatex@check@cjk@sf@lang{korean}%
+}{}%
+\@ifundefined{hangulfont}{%
+  \IfStrEq{\omnilatex@language}{korean}{%
+    \IfFontExistsTF{Noto Sans CJK KR}{%
+      \newfontfamily\hangulfont[Script=Hangul]{Noto Sans CJK KR}%
+    }{%
+      \IfFontExistsTF{Noto Serif CJK KR}{%
+        \newfontfamily\hangulfont[Script=Hangul]{Noto Serif CJK KR}%
+      }{}%
+    }%
+  }{}%
+}{}%
+\@ifundefined{hangulfontsf}{%
+  \IfStrEq{\omnilatex@language}{korean}{%
+    \IfFontExistsTF{Noto Sans CJK KR}{%
+      \newfontfamily\hangulfontsf[Script=Hangul,BoldFont=Noto Sans CJK KR,BoldFeatures={FakeBold=2}]{Noto Sans CJK KR}%
+    }{%
+      \IfFontExistsTF{Noto Serif CJK KR}{%
+        \newfontfamily\hangulfontsf[Script=Hangul,BoldFont=Noto Serif CJK KR,BoldFeatures={FakeBold=2}]{Noto Serif CJK KR}%
+      }{}%
+    }%
+  }{}%
+}{}%
+\@ifundefined{arabicfont}{%
+  \IfStrEq{\omnilatex@language}{arabic}{%
+    \IfFontExistsTF{Noto Naskh Arabic}{%
+      \newfontfamily\arabicfont[Script=Arabic,BoldFont=Noto Naskh Arabic,BoldFeatures={FakeBold=2}]{Noto Naskh Arabic}%
+      \newfontfamily\arabicfontfamily[Script=Arabic,BoldFont=Noto Naskh Arabic,BoldFeatures={FakeBold=2}]{Noto Naskh Arabic}%
+      \newfontfamily\arabicfontsf[Script=Arabic,BoldFont=Noto Naskh Arabic,BoldFeatures={FakeBold=2}]{Noto Naskh Arabic}%
+    }{%
+      \IfFontExistsTF{Amiri}{%
+        \newfontfamily\arabicfont[Script=Arabic,BoldFont=Amiri,BoldFeatures={FakeBold=2}]{Amiri}%
+        \newfontfamily\arabicfontfamily[Script=Arabic,BoldFont=Amiri,BoldFeatures={FakeBold=2}]{Amiri}%
+        \newfontfamily\arabicfontsf[Script=Arabic,BoldFont=Amiri,BoldFeatures={FakeBold=2}]{Amiri}%
+      }{}%
+    }%
+  }{}%
+}{}%
+\@ifundefined{hebrewfont}{%
+  \IfStrEq{\omnilatex@language}{hebrew}{%
+    \IfFontExistsTF{Noto Serif Hebrew}{%
+      \newfontfamily\hebrewfont[Script=Hebrew,
+        BoldFont=Noto Serif Hebrew,BoldFeatures={FakeBold=2}]{Noto Serif Hebrew}%
+      \newfontfamily\hebrewfontfamily[Script=Hebrew,BoldFont=Noto Serif Hebrew,BoldFeatures={FakeBold=2}]{Noto Serif Hebrew}%
+      \newfontfamily\hebrewfontsf[Script=Hebrew,BoldFont=Noto Serif Hebrew,BoldFeatures={FakeBold=2}]{Noto Serif Hebrew}%
+    }{%
+      \IfFontExistsTF{Frank Ruehl CLM}{%
+        \newfontfamily\hebrewfont[Script=Hebrew,BoldFont=Frank Ruehl CLM,BoldFeatures={FakeBold=2}]{Frank Ruehl CLM}%
+        \newfontfamily\hebrewfontfamily[Script=Hebrew,BoldFont=Frank Ruehl CLM,BoldFeatures={FakeBold=2}]{Frank Ruehl CLM}%
+        \newfontfamily\hebrewfontsf[Script=Hebrew,BoldFont=Frank Ruehl CLM,BoldFeatures={FakeBold=2}]{Frank Ruehl CLM}%
+      }{%
+        \IfFontExistsTF{David CLM}{%
+          \newfontfamily\hebrewfont[Script=Hebrew,BoldFont=David CLM,BoldFeatures={FakeBold=2}]{David CLM}%
+          \newfontfamily\hebrewfontfamily[Script=Hebrew,BoldFont=David CLM,BoldFeatures={FakeBold=2}]{David CLM}%
+          \newfontfamily\hebrewfontsf[Script=Hebrew,BoldFont=David CLM,BoldFeatures={FakeBold=2}]{David CLM}%
+        }{}%
+      }%
+    }%
+  }{}%
+}{}%
+
 \RequirePackage{lib/language/omnilatex-i18n}
 
 % Auto-load CJK support for Chinese, Japanese, Korean

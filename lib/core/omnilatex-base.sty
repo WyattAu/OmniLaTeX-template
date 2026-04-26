@@ -3,7 +3,7 @@
 %
 % Core functionality and base setup
 % Part of OmniLaTeX-template modular architecture
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{lib/core/omnilatex-base}[2024-10-11 v6.0.0 OmniLaTeX base module]
@@ -20,10 +20,11 @@
 \newcommand*{\omnilatex@buildmode}{dev}
 
 \begingroup
-\directlua{
+\catcode`\|=0
+|directlua{
   local mode = os.getenv("BUILD_MODE") or "dev"
   mode = string.lower(mode)
-  tex.print("\\gdef\\omnilatex@buildmode{" .. mode .. "}")
+  tex.sprint(string.char(92) .. "gdef" .. string.char(92) .. "omnilatex@buildmode{" .. mode .. "}")
 }
 \endgroup
 

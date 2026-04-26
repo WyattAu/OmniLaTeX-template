@@ -4,11 +4,10 @@
     institution=none,
 ]{../../omnilatex}
 
-\RequirePackage{config/document-settings}
 
 \title{Introduction to OmniLaTeX}
 \author{Jane Doe}
-\institute{Department of Computer Science, University of Examples}
+\makeatletter\newcommand{\institute}[1]{\gdef\@institute{#1}}\makeatother\institute{Department of Computer Science, University of Examples}
 \date{April 2026}
 
 \begin{document}
@@ -39,7 +38,7 @@
     OmniLaTeX is a universal \LaTeX{} template system designed to simplify
     document creation across academic and professional contexts.
 
-    \begin{presentationblock}[Overview]{Core Idea}
+    \begin{presentationblock}{Core Idea}
         Write once, compile anywhere. OmniLaTeX provides a single template
         that supports 16+ document types with consistent branding and
         professional typesetting.
@@ -84,7 +83,7 @@
         \item \textbf{Reference Layer} --- Hyperlinks, bibliography, glossaries
     \end{enumerate}
 
-    \begin{noteblock}[Tip]{Customization}
+    \begin{noteblock}{Customization}
         Each layer is independently configurable, allowing users to override
         any aspect of the template without modifying core files.
     \end{noteblock}
@@ -97,16 +96,16 @@
 
     OmniLaTeX presentations provide several styled block environments:
 
-    \begin{definitionblock}[Definition]{Theorem (Euclid)}
+    \begin{definitionblock}{Theorem (Euclid)}
         There are infinitely many prime numbers.
     \end{definitionblock}
 
-    \begin{exampleblock}[Example]{Usage}
+    \begin{exampleblock}{Usage}
         Use \texttt{\textbackslash begin\{presentationblock\}\{Title\}}
         for a standard highlighted block.
     \end{exampleblock}
 
-    \begin{alertblock}[Warning]{Important}
+    \begin{alertblock}{Important}
         Always compile with LuaLaTeX for full Unicode support.
     \end{alertblock}
 \end{presentationframe}
@@ -142,7 +141,7 @@
 \begin{presentationframe}
     \slidetitle{Getting Started}
 
-    \begin{presentationblock}[Quick Start]{Minimal Example}
+    \begin{presentationblock}{Minimal Example}
         \ttfamily\small
         \textbackslash documentclass[doctype=presentation]\{omnilatex\}\\
         \textbackslash title\{My Talk\}\\

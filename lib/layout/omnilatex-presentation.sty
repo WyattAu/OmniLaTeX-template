@@ -265,7 +265,7 @@
     \begin{column}{#1\textwidth}%
 }
 
-\newcommand{\endpresentationcolumn}{%
+\newcommand{\omnilatex@endpresentationcolumn}{%
     \end{column}%
 }
 
@@ -284,11 +284,19 @@
 %% ── Backward-Compatible slideframe ─────────────────
 %% Wraps the old slideframe in the new frame system
 
-\let\presentation@origslideframe\slideframe
-\renewenvironment{slideframe}[1][]{%
-    \presentationframe
+\@ifundefined{slideframe}{%
+    \newenvironment{slideframe}[1][]{%
+        \presentationframe
+    }{%
+        \endpresentationframe
+    }%
 }{%
-    \endpresentationframe
+    \let\presentation@origslideframe\slideframe
+    \renewenvironment{slideframe}[1][]{%
+        \presentationframe
+    }{%
+        \endpresentationframe
+    }%
 }
 
 \makeatother

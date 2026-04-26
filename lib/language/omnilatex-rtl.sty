@@ -22,17 +22,16 @@
 % It redefines many LaTeX internals to be direction-aware, including paragraph
 % layout, list environments, TOC leaders, and float placement.
 
-\RequirePackage{bidi}
 
 % ── Font Configuration ──────────────────────────────────────────────────────
 % Default Arabic and Hebrew font families. These are widely available in TeX
 % Live or as system fonts. Users can override per-script with the setter
 % commands below.
 
-\newcommand{\arabicfont}{Amiri}
-\newcommand{\arabicfont@bold}{Amiri Bold}
-\newcommand{\hebrewfont}{David CLM}
-\newcommand{\hebrewfont@bold}{David CLM Bold}
+\providecommand{\arabicfont}{Amiri}
+\providecommand{\arabicfont@bold}{Amiri Bold}
+\providecommand{\hebrewfont}{David CLM}
+\providecommand{\hebrewfont@bold}{David CLM Bold}
 
 % ── Font Setter Commands ────────────────────────────────────────────────────
 % Users call these in the preamble to change fonts before setup is applied.
@@ -73,13 +72,7 @@
 % correction accordingly.
 
 \newcommand{\omnilatex@setup@rtl@layout}{%
-  \PassOptionsToClass{twoside=true}{scrbook}%
-  \PassOptionsToClass{twoside=true}{scrreprt}%
-  \PassOptionsToClass{twoside=true}{scrartcl}%
-  % bidi package handles margin mirroring automatically when the document
-  % direction is set to RTL via \setdefaultlanguage{arabic/hebrew}.
-  % The following ensures KOMA's binding correction is applied on the right.
-  \KOMAoptions{BCOR=0mm}%
+  \KOMAoptions{twoside=true,BCOR=0mm}%
 }
 
 % ── Math Mode Direction ─────────────────────────────────────────────────────
@@ -112,20 +105,22 @@
 % with TeX Live).
 
 \newcommand{\omnilatex@apply@arabicfonts}{%
-  \IfFontExistsTF{\arabicfont}{%
-    \IfFontExistsTF{\arabicfont@bold}{%
-      \newfontfamily\arabicfontfamily[Script=Arabic,
-        BoldFont=\arabicfont@bold]{\arabicfont}%
+  \@ifundefined{arabicfontfamily}{%
+    \IfFontExistsTF{\arabicfont}{%
+      \IfFontExistsTF{\arabicfont@bold}{%
+        \newfontfamily\arabicfontfamily[Script=Arabic,
+          BoldFont=\arabicfont@bold]{\arabicfont}%
+      }{%
+        \newfontfamily\arabicfontfamily[Script=Arabic,
+          BoldFont=\arabicfont,
+          BoldFeatures={FakeBold=2}]{\arabicfont}%
+      }%
     }{%
-      \newfontfamily\arabicfontfamily[Script=Arabic,
-        BoldFont=\arabicfont,
-        BoldFeatures={FakeBold=2}]{\arabicfont}%
+      \ClassWarning{omnilatex-rtl}{%
+        Arabic font '\arabicfont' not found, using Noto Naskh Arabic\MessageBreak}%
+      \newfontfamily\arabicfontfamily[Script=Arabic]{Noto Naskh Arabic}%
     }%
-  }{%
-    \ClassWarning{omnilatex-rtl}{%
-      Arabic font '\arabicfont' not found, using Noto Naskh Arabic\MessageBreak}%
-    \newfontfamily\arabicfontfamily[Script=Arabic]{Noto Naskh Arabic}%
-  }%
+  }{}%
 }
 
 % ── Font Application: Hebrew ────────────────────────────────────────────────
@@ -133,20 +128,22 @@
 % CLM if the requested font is not available.
 
 \newcommand{\omnilatex@apply@hebrewfonts}{%
-  \IfFontExistsTF{\hebrewfont}{%
-    \IfFontExistsTF{\hebrewfont@bold}{%
-      \newfontfamily\hebrewfontfamily[Script=Hebrew,
-        BoldFont=\hebrewfont@bold]{\hebrewfont}%
+  \@ifundefined{hebrewfontfamily}{%
+    \IfFontExistsTF{\hebrewfont}{%
+      \IfFontExistsTF{\hebrewfont@bold}{%
+        \newfontfamily\hebrewfontfamily[Script=Hebrew,
+          BoldFont=\hebrewfont@bold]{\hebrewfont}%
+      }{%
+        \newfontfamily\hebrewfontfamily[Script=Hebrew,
+          BoldFont=\hebrewfont,
+          BoldFeatures={FakeBold=2}]{\hebrewfont}%
+      }%
     }{%
-      \newfontfamily\hebrewfontfamily[Script=Hebrew,
-        BoldFont=\hebrewfont,
-        BoldFeatures={FakeBold=2}]{\hebrewfont}%
+      \ClassWarning{omnilatex-rtl}{%
+        Hebrew font '\hebrewfont' not found, using Frank Ruehl CLM\MessageBreak}%
+      \newfontfamily\hebrewfontfamily[Script=Hebrew]{Frank Ruehl CLM}%
     }%
-  }{%
-    \ClassWarning{omnilatex-rtl}{%
-      Hebrew font '\hebrewfont' not found, using Frank Ruehl CLM\MessageBreak}%
-    \newfontfamily\hebrewfontfamily[Script=Hebrew]{Frank Ruehl CLM}%
-  }%
+  }{}%
 }
 
 % ── Setup: Arabic ───────────────────────────────────────────────────────────
@@ -161,10 +158,10 @@
   % Arabic-Indic numerals
   \ifomnilatex@arabicindic
     \makeatletter
-    \def\@arabic#1{\expandafter\arabic@indic\expandafter{\the\numexpr#1\relax}}%
+    \def\@arabic##1{\expandafter\arabic@indic\expandafter{\the\numexpr##1\relax}}%
     \newcount\@indic@temp
-    \def\arabic@indic#1{%
-      \@indic@temp=#1\relax
+    \def\arabic@indic##1{%
+      \@indic@temp=##1\relax
       \ifcase\@indic@temp\or ٠\or ١\or ٢\or ٣\or ٤\or
       ٥\or ٦\or ٧\or ٨\or ٩\fi
       \ifnum\@indic@temp>9\relax
@@ -187,6 +184,7 @@
   \omnilatex@apply@hebrewfonts%
   \omnilatex@setup@rtl@math%
   \omnilatex@setup@rtl@lists%
+  \AtBeginDocument{\rlap{\hebrewfont א}}%
 }
 
 % ── Auto-Script Detection ───────────────────────────────────────────────────

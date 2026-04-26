@@ -13,6 +13,7 @@
 
 % tagpdf must be loaded at top level (not inside conditionals/groups).
 \RequirePackage{tagpdf}
+\RequirePackage{pdfcomment}
 
 % Configure tagpdf for accessibility
 \tagpdfsetup{
@@ -57,7 +58,7 @@
 % WCAG 2.1 AA 2.4.4: Link purpose should be determinable from link text alone.
 % \accessiblelink{display text}{url}{screen reader description}
 \newcommand{\accessiblelink}[3]{%
-  \pdfstringdefaliasuriexp\omnilatex@linkurl{#2}%
+  %
   \href{#2}{\pdftooltip{#1}{#3}}%
 }
 

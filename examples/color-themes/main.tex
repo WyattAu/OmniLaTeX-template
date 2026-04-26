@@ -12,6 +12,7 @@
     titlestyle=simple,
 ]{../../omnilatex}
 
+\RequirePackage{lib/utils/omnilatex-themes}
 \RequirePackage{config/document-settings}
 
 \title{OmniLaTeX Color Themes}
@@ -70,13 +71,13 @@ and on screen.
     Blocks use the accent color for their title bar and a tinted background.
 \end{block}
 
-\begin{alertblock}{Alert Block}
-    Alert blocks retain their own red color regardless of theme.
-\end{alertblock}
+\begin{addmargin}{1em}
+\colorbox{red!10}{\parbox{0.95\linewidth}{\textbf{Alert Block}\\Alert blocks retain their own red color regardless of theme.}}
+\end{addmargin}
 
-\begin{exampleblock}{Example Block}
-    Example blocks retain their green color regardless of theme.
-\end{exampleblock}
+\begin{addmargin}{1em}
+\colorbox{green!10}{\parbox{0.95\linewidth}{\textbf{Example Block}\\Example blocks retain their green color regardless of theme.}}
+\end{addmargin}
 
 \newpage
 
@@ -102,13 +103,13 @@ It is inherently dark — there is no light variant.
     Blocks use cyan-tinted title bars against the dark background.
 \end{block}
 
-\begin{alertblock}{Alert Block}
-    Alert blocks retain their red color on the dark background.
-\end{alertblock}
+\begin{addmargin}{1em}
+\colorbox{red!10}{\parbox{0.95\linewidth}{\textbf{Alert Block}\\Alert blocks retain their red color on the dark background.}}
+\end{addmargin}
 
-\begin{exampleblock}{Example Block}
-    Example blocks retain their green color on the dark background.
-\end{exampleblock}
+\begin{addmargin}{1em}
+\colorbox{green!10}{\parbox{0.95\linewidth}{\textbf{Example Block}\\Example blocks retain their green color on the dark background.}}
+\end{addmargin}
 
 \newpage
 

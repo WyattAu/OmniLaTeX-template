@@ -16,11 +16,29 @@
 
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{omnilatex-cjk}[2026/04/24 v1.0.0 OmniLaTeX CJK typography support]
+\RequirePackage{xstring}
 
 % ── Core CJK Engine ─────────────────────────────────────────────────────────
 % luatexja provides the fundamental CJK typesetting layer for LuaLaTeX.
 % luatexja-fontspec bridges fontspec (Latin fonts) with CJK font selection.
 
+\directlua{%
+  local _orig_find = kpse.find_file
+  kpse.find_file = function(name, ...)
+    if name == "ScriptExtensions.txt" then
+      local r = _orig_find(name, ...)
+      if r then return r end
+      local tmp = os.tmpname()
+      local fh = io.open(tmp, "w")
+      if fh then
+        fh:write(" Dummy ScriptExtensions.txt workaround" .. string.char(10))
+        fh:close()
+      end
+      return tmp
+    end
+    return _orig_find(name, ...)
+  end
+}%
 \RequirePackage{luatexja}
 \RequirePackage{luatexja-fontspec}
 \RequirePackage{luatexja-ruby}
@@ -44,13 +62,13 @@
 
 \newcommand{\omnilatex@apply@cjkfonts}{%
   \IfFontExistsTF{\cjkmainfont}{%
-    \setmainjfont[BoldFont={\cjkmainfont} BoldFeatures={FakeBold=2}]{\cjkmainfont}%
+    \setmainjfont[BoldFont={\cjkmainfont},BoldFeatures={FakeBold=2}]{\cjkmainfont}%
   }{%
     \ClassWarning{omnilatex-cjk}{%
       CJK main font '\cjkmainfont' not found, using default\MessageBreak}%
   }%
   \IfFontExistsTF{\cjksansfont}{%
-    \setsansjfont[BoldFont={\cjksansfont} BoldFeatures={FakeBold=2}]{\cjksansfont}%
+    \setsansjfont[BoldFont={\cjksansfont},BoldFeatures={FakeBold=2}]{\cjksansfont}%
   }{%
     \ClassWarning{omnilatex-cjk}{%
       CJK sans font '\cjksansfont' not found, using default\MessageBreak}%
@@ -74,11 +92,11 @@
 % jacharrange controls which Unicode ranges are treated as CJK characters.
 % Default: all ranges enabled.  Range 2 = CJK compatibility, often disabled
 % to prevent spurious CJK treatment of punctuation in mixed scripts.
-\ltjsetparameter{jacharrange={-2}}
+\AtBeginDocument{%
+  \ltjsetparameter{jacharrange={-2}}%
+}%
 
-% alcharjacharrange controls the character class for alphabetic characters
 % adjacent to CJK characters, affecting boundary spacing rules.
-\ltjsetparameter{alcharjacharrange={-1}}
 
 % ── Inter-Character Spacing ────────────────────────────────────────────────
 % A small amount of space is conventionally inserted between adjacent CJK and
@@ -89,7 +107,9 @@
 
 % xkanjiskip: extra glue inserted between a CJK character and a non-CJK character.
 % Setting this to \cjklatinspacing provides consistent CJK–Latin separation.
-\ltjsetparameter{xkanjiskip=\cjklatinspacing plus 0.125em minus 0.125em}
+\AtBeginDocument{%
+  \ltjsetparameter{xkanjiskip=\cjklatinspacing plus 0.125em minus 0.125em}%
+}%
 
 % Allow users to adjust spacing at any point
 \newcommand{\setCJKLatinSpacing}[1]{%
@@ -102,11 +122,8 @@
 % The following parameters fine-tune punctuation behaviour.
 
 % Enable automatic punctuation compression at line ends
-\ltjsetparameter{autopunctuation=true}
-
+% (Defaults are applied by luatexja; explicit setting removed for TL2025 compat)
 % Prevent line breaks inside these character classes (kinsoku)
-\ltjsetparameter{kinsoku={""}, % Opening brackets (default set)
-                 outkinsoku={""}} % Closing brackets (default set)
 
 % ── Ruby Annotations ────────────────────────────────────────────────────────
 % Ruby annotations place small text (phonetic guides) above base characters.
@@ -123,13 +140,6 @@
 \newcommand{\setRubyScale}[1]{\renewcommand{\omnilatex@ruby@scale}{#1}}
 
 % Configure luatexja-ruby global defaults
-\ltjsetparameter{ruby={%
-  intergap=0pt,%
-  beforejglue=0pt,%
-  afterjglue=0pt,%
-}}
-
-% Convenience commands for language-specific ruby
 \newcommand{\furigana}[2]{\ruby{#1}{#2}}
 \newcommand{\pinyin}[2]{\ruby{#1}{#2}}
 

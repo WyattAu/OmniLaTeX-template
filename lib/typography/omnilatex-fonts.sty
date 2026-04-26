@@ -91,6 +91,11 @@
     SmallCapsFont={},%
 ]{Libertinus Math}
 
+% Suppress the Libertinus b/n font shape warning by providing a fallback.
+% The NFSSFamily=libertinus created by \setmathfont above does not include a
+% bold upright (b/n) shape in Libertinus Math.  Map it to the regular (m/n) shape.
+\DeclareFontShape{TU}{libertinus}{b}{n}{<->ssub*libertinus/m/n}{}
+
 % Provide a new font family for siunitx to work.
 % See: https://tex.stackexchange.com/a/468031/120853.
 % \newfontfamily is used similarly to \setmainfont etc,

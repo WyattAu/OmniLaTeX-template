@@ -20,14 +20,20 @@
 \ProvidesPackage{lib/utils/omnilatex-themes}[2026/04/24 v1.0.0 OmniLaTeX color theme system]
 
 \RequirePackage{xcolor}
+\RequirePackage{xstring}
 \RequirePackage{kvoptions}
+
+%% ── KOMA-Script Compatibility ──
+%% KOMA 3.49+ (TL2025) removed \setkomacolor.
+%% KOMA 3.43 (TL2024) has it but it is preamble-only.
+%% Provide a no-op shim so palette application works in the body.
+\providecommand{\setkomacolor}[2]{}
 
 %% ── Theme Option ──────────────────────────────────
 %% Pass theme=NAME as a package option, e.g.:
 %%   \usepackage[theme=midnight]{lib/utils/omnilatex-themes}
 
-\DeclareStringOption[default]{theme}
-\ProcessKeyvalOptions*
+\def\omnilatex@theme{default}
 
 %% ── State Tracking ────────────────────────────────
 %% \ifdarkmode is true when the document is in dark mode.
@@ -182,11 +188,8 @@
 %% KOMA-Script elements, hyperref, and page background.
 
 \newcommand{\applytheme@colors}{%
-    %% Page background (requires \pagecolor support — LuaLaTeX)
     \pagecolor{omnilatex@bg}%
-    %% Default text color
     \color{omnilatex@fg}%
-    %% KOMA-Script color integration
     \setkomacolor{title}{fg=omnilatex@heading}%
     \setkomacolor{titlepage}{bg=omnilatex@bg, fg=omnilatex@fg}%
     \setkomacolor{sectioning}{fg=omnilatex@heading}%
@@ -200,29 +203,21 @@
     \setkomacolor{foot}{fg=omnilatex@footernote}%
     \setkomacolor{toc}{fg=omnilatex@fg}%
     \setkomacolor{toc line}{fg=omnilatex@rule}%
-    %% Block environments
     \setkomacolor{block title}{fg=white, bg=omnilatex@blockframe}%
     \setkomacolor{block body}{bg=omnilatex@blockbg}%
     \setkomacolor{block title alerted}{fg=white, bg=red!70!black}%
     \setkomacolor{block body alerted}{bg=red!5}%
     \setkomacolor{block title example}{fg=white, bg=green!50!black}%
     \setkomacolor{block body example}{bg=green!5}%
-    %% Hyperref link colors (safe to call after hyperref is loaded;
-    %% hypersetup is a no-op if hyperref hasn't been loaded yet).
     \hypersetup{%
         colorlinks=true,
         linkcolor=omnilatex@link,
         urlcolor=omnilatex@link,
         citecolor=omnilatex@accent,%
     }%
-    %% PDF metadata: hint to viewers about preferred background
     \ifdarkmode
         \hypersetup{pdfpagelayout=SinglePage}%
     \fi
-    %% Integrate institution colors if they are defined.
-    %% If universityprimary exists, use it as the accent and
-    %% block frame color so that institutional branding is
-    %% preserved regardless of the selected theme.
     \@ifundefined{color@universityprimary}{}{%
         \colorlet{omnilatex@accent}{universityprimary}%
         \colorlet{omnilatex@blockframe}{universityprimary}%
@@ -238,6 +233,8 @@
     }%
 }
 
+
+
 %% ── Theme Application ─────────────────────────────
 %% \usetheme{name} applies a complete color theme.
 %%
@@ -251,47 +248,18 @@
 %% For default/monochrome/sepia, a -dark variant can be requested.
 
 \newcommand{\usetheme}[1]{%
-    %% Store requested name
-    \def\@theme@request{#1}%
-    %% Check for -dark suffix
-    \IfSubStr{\@theme@request}{-dark}{%
-        \darkmodetrue
-        \StrBefore{\@theme@request}{-dark}[\@theme@base]%
-    }{%
-        \darkmodefalse
-        \def\@theme@base{\@theme@request}%
-    }%
-    %% Record the base theme name for \darkmode / \lightmode toggles
-    \renewcommand{\omnilatex@currenttheme}{\@theme@base}%
-    %% Determine which palette to actually load.
-    %% Dark themes (midnight, forest, rose) are always dark — ignore
-    %% any -dark suffix and force dark mode off so toggling works.
-    \def\@dark@themes{midnight,forest,rose}%
-    \IfSubStr{\@dark@themes}{\@theme@base}{%
-        %% This theme is inherently dark
-        \darkmodetrue
-        \applytheme@{\@theme@base}%
-    }{%
-        %% Light or toggleable theme
-        \ifdarkmode
-            %% Check if a dark variant palette exists
-            \@ifundefined{theme@\@theme@base @dark@bg}{%
-                %% No explicit dark variant — fall back to monochrome-dark
-                \applytheme@{monochrome-dark}%
-            }{%
-                \applytheme@{\@theme@base-dark}%
-            }%
-        \else
-            \applytheme@{\@theme@base}%
-        \fi
-    }%
+    \def\@theme@base{#1}%
+    %% Handle -dark suffix
+    \IfSubStr{\@theme@base}{-dark}{%
+        \StrBefore{\@theme@base}{-dark}[\@theme@base]%
+    }{}%
+    \edef\omnilatex@currenttheme{\@theme@base}%
+    \applytheme@{\@theme@base}%
     %% Wire all colors into document elements
     \applytheme@colors
 }
 
 %% ── Dark/Light Mode Toggle ────────────────────────
-%% These commands switch between light and dark variants
-%% of the currently selected theme.
 
 \newcommand{\darkmode}{%
     \darkmodetrue
@@ -313,7 +281,6 @@
 
 \newcommand{\setthemecolor}[2]{%
     \colorlet{omnilatex@#1}{#2}%
-    \applytheme@colors
 }
 
 %% ── Convenience: Theme Query ──────────────────────
