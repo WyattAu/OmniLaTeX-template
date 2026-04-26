@@ -200,7 +200,12 @@ RUN --mount=type=cache,target=/var/cache/texlive,id=texlive-cache-${TARGETARCH}-
         --mirror "${TL_MIRROR}" \
         --archive-mirror "${TL_ARCHIVE_MIRROR}" \
         --archive-name "${TL_INSTALL_ARCHIVE}" \
-        --output "/var/cache/texlive/${TL_INSTALL_ARCHIVE}"
+        --output "/var/cache/texlive/${TL_INSTALL_ARCHIVE}" && \
+    # Get Eisvogel LaTeX template for pandoc,
+    # see also #175 in that repo.
+    # Pinned 2026-04-26
+    wget -qO "/var/cache/texlive/${EISVOGEL_ARCHIVE}" https://github.com/Wandmalfarbe/pandoc-latex-template/releases/download/v3.4.0/${EISVOGEL_ARCHIVE} && \
+    /usr/local/bin/verify_checksum.sh "/var/cache/texlive/${EISVOGEL_ARCHIVE}" "${EISVOGEL_SHA256}"
 
 RUN --mount=type=cache,target=/var/cache/texlive,id=texlive-cache-${TARGETARCH}-${TL_CACHE_BUSTER},sharing=locked \
     mkdir ${INSTALL_TL_DIR} && \
