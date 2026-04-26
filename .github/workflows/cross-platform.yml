@@ -12,7 +12,8 @@ permissions:
   packages: read
 
 env:
-  DOCKER_IMAGE: ghcr.io/wyattau/omnilatex-docker@sha256:3e0c27240f5b0b02c3bc635628540de8f7adfd7b581165534f550432e634d9d5
+  # TODO: Re-pin digest once docker-ci pushes TL2025 image and docker-digest-sync updates it
+  DOCKER_IMAGE: ghcr.io/wyattau/omnilatex-docker:latest
 
 jobs:
   linux:

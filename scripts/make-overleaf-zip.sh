@@ -20,7 +20,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-OUTPUT="${1:-overleaf/omnilatex-overleaf.zip}"
+OUTPUT="${1:-$REPO_ROOT/overleaf/omnilatex-overleaf.zip}"
 TMPDIR="$(mktemp -d)"
 
 trap 'rm -rf "$TMPDIR"' EXIT

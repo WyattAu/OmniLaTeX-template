@@ -4,7 +4,6 @@
   "description": "OmniLaTeX document class integration — doctype picker, institution switcher, build commands",
   "version": "0.1.0",
   "publisher": "wyattau",
-  "icon": "icon.png",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -86,6 +85,15 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "lint": "eslint src --ext ts"
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WyattAu/OmniLaTeX-template.git",
+    "directory": "extensions/vscode-omnilatex"
+  },
+  "bugs": {
+    "url": "https://github.com/WyattAu/OmniLaTeX-template/issues"
   },
   "devDependencies": {
     "@types/vscode": "^1.85.0",

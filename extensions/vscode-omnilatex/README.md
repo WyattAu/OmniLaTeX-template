@@ -20,6 +20,7 @@ VS Code extension for the OmniLaTeX document class — provides quick commands f
 | `OmniLaTeX: Build Current Document` | Builds the current `.tex` file via `build.py` |
 | `OmniLaTeX: Build All Examples` | Builds all example documents |
 | `OmniLaTeX: Run Diagnostics` | Runs `build.py doctor` to check the setup |
+| `OmniLaTeX: Create New Project` | Creates a new OmniLaTeX project via `build.py init` |
 
 ## Installation
 

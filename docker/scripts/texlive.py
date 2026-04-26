@@ -49,9 +49,17 @@ def download_installer(version: str, archive_name: str, mirror: str, archive_mir
     try:
         with urlopen(url) as response, output_path.open("wb") as target:
             shutil.copyfileobj(response, target)
-    except URLError as exc:
-        logging.error("Failed to download installer from %s: %s", url, exc)
-        raise SystemExit(1) from exc
+    except URLError:
+        fallback_base = mirror.rstrip("/")
+        fallback_url = f"{fallback_base}/{version}/tlnet-final/{archive_name}"
+        fallback_url = append_cache_buster(fallback_url, cache_buster)
+        logging.warning("Archive mirror failed, trying regular mirror: %s", fallback_url)
+        try:
+            with urlopen(fallback_url) as response, output_path.open("wb") as target:
+                shutil.copyfileobj(response, target)
+        except URLError as exc:
+            logging.error("Failed to download installer from %s: %s", fallback_url, exc)
+            raise SystemExit(1) from exc
 
     logging.info("Downloaded installer to %s", output_path)
 
