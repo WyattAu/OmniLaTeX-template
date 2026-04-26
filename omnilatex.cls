@@ -5,7 +5,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{omnilatex}[2026-04-23 v1.3.0 OmniLaTeX universal class]
+\ProvidesClass{omnilatex}[2026-04-25 v1.5.0 OmniLaTeX universal class]
 
 \RequirePackage{iftex}
 \RequirePackage{etoolbox}
@@ -293,7 +293,7 @@
 \omnilatex@rtl@check@lang{arabic}%
 \omnilatex@rtl@check@lang{hebrew}%
 
-\RequirePackage{setspace}
+%% setspaceenhanced is loaded by omnilatex-base.sty instead
 
 % Conditional modules (default: all enabled for backward compatibility)
 \ifomnilatex@enablemath

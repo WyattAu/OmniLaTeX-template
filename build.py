@@ -737,11 +737,10 @@ class BuildTasks:
         return exit_code, logs
 
     def clean_all(self, _=None):
-        self.ui.header("Full clean"), self.clean_aux()
-        (
-            shutil.rmtree(self.config.build_dir, ignore_errors=True),
-            self.ui.success("Full cleanup finished."),
-        )
+        self.ui.header("Full cleanup")
+        self.clean_aux()
+        shutil.rmtree(self.config.build_dir, ignore_errors=True)
+        self.ui.success("Full cleanup finished.")
 
     def clean_aux(self, _=None):
         self.ui.header("Cleaning auxiliary files")
@@ -1789,7 +1788,7 @@ def _simple_menu(tasks, commands, menu_sections, flat_commands):
 # -----------------------------------------------------------------------------
 def main() -> None:
     ui, config = TerminalOutput(), ProjectConfig()
-    default_jobs = 2 if config.is_ci() else (os.cpu_count() or 2)
+    default_jobs = 4 if config.is_ci() else (os.cpu_count() or 4)
     parser = argparse.ArgumentParser(
         description="OmniLaTeX build tool.",
         formatter_class=argparse.RawTextHelpFormatter,
