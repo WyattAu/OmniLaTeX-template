@@ -17,6 +17,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     container:
       image: ghcr.io/wyattau/omnilatex-docker@sha256:3e0c27240f5b0b02c3bc635628540de8f7adfd7b581165534f550432e634d9d5
       options: --user root
@@ -97,6 +98,7 @@ jobs:
   
   performance:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: build
     container:
       image: ghcr.io/wyattau/omnilatex-docker@sha256:3e0c27240f5b0b02c3bc635628540de8f7adfd7b581165534f550432e634d9d5
@@ -250,6 +252,7 @@ if regressions:
 
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: build
     
     steps:
@@ -299,6 +302,7 @@ if regressions:
 
   deploy-pages:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:

@@ -195,7 +195,8 @@ RUN --mount=type=cache,target=/var/cache/texlive,id=texlive-cache-${TARGETARCH},
     /usr/local/bin/verify_checksum.sh "/var/cache/texlive/${TL_INSTALL_ARCHIVE}" "${TL_INSTALL_SHA256}" && \
     # Get Eisvogel LaTeX template for pandoc,
     # see also #175 in that repo.
-    wget -qO "/var/cache/texlive/${EISVOGEL_ARCHIVE}" https://github.com/Wandmalfarbe/pandoc-latex-template/releases/latest/download/${EISVOGEL_ARCHIVE} && \
+    # Pinned 2026-04-26
+    wget -qO "/var/cache/texlive/${EISVOGEL_ARCHIVE}" https://github.com/Wandmalfarbe/pandoc-latex-template/releases/download/v3.4.0/${EISVOGEL_ARCHIVE} && \
     /usr/local/bin/verify_checksum.sh "/var/cache/texlive/${EISVOGEL_ARCHIVE}" "${EISVOGEL_SHA256}"
 
 RUN --mount=type=cache,target=/var/cache/texlive,id=texlive-cache-${TARGETARCH},sharing=locked \
@@ -221,7 +222,7 @@ ARG TL_ARCHIVE_MIRROR
 ARG USER_ID
 ARG GROUP_ID
 ARG USER
-ARG RUNTIME_USER
+ARG RUNTIME_USER=tex
 
 ARG TL_PROFILE="texlive.profile"
 # Auxiliary, intermediate file:
@@ -324,7 +325,8 @@ RUN wget -qO /tmp/libertinus.zip https://github.com/alerque/libertinus/releases/
     rm -rf /tmp/libertinus.zip /tmp/libertinus
 
 # Download and install Monaspace font
-RUN wget -qO /tmp/monaspace.zip https://github.com/githubnext/monaspace/releases/latest/download/monaspace-static-v1.301.zip && \
+# Pinned 2026-04-26
+RUN wget -qO /tmp/monaspace.zip https://github.com/githubnext/monaspace/releases/download/v1.301/monaspace-static-v1.301.zip && \
     unzip -q /tmp/monaspace.zip -d /tmp/monaspace && \
     mkdir -p /usr/local/share/fonts/monaspace && \
     find /tmp/monaspace \( -name "*.otf" -o -name "*.ttf" \) -exec cp {} /usr/local/share/fonts/monaspace/ \; && \
@@ -333,7 +335,8 @@ RUN wget -qO /tmp/monaspace.zip https://github.com/githubnext/monaspace/releases
     fc-cache -f -v
 
 # Download and install Atkinson Hyperlegible Next font
-RUN wget -qO /tmp/atkinson-next.zip https://github.com/googlefonts/atkinson-hyperlegible-next/archive/refs/heads/main.zip && \
+# Pinned 2026-04-26
+RUN wget -qO /tmp/atkinson-next.zip https://github.com/googlefonts/atkinson-hyperlegible-next/archive/7925f50f649b3813257faf2f4c0b381011f434f1.zip && \
     unzip -q /tmp/atkinson-next.zip -d /tmp/atkinson-next && \
     mkdir -p /usr/local/share/fonts/atkinsonhyperlegiblenext && \
     find /tmp/atkinson-next/atkinson-hyperlegible-next-main/fonts/otf/ -name "*.otf" -exec cp {} /usr/local/share/fonts/atkinsonhyperlegiblenext/ \; && \
