@@ -8,19 +8,9 @@ def pytest_configure(config):
     config.addinivalue_line(
         "markers", "slow: marks tests as slow (deselect with '-m not slow')"
     )
-
-
-def pytest_collection_modifyitems(config, items):
-    """Add timeout marker to slow tests if pytest-timeout is available."""
-    try:
-        import pytest_timeout
-
-        has_timeout = True
-    except ImportError:
-        has_timeout = False
-
-    if not has_timeout:
-        for item in items:
-            if item.get_closest_marker("timeout"):
-                # Strip the marker so pytest doesn't complain about unknown marker
-                item.remove_marker("timeout")
+    # Always register 'timeout' marker so pytest never complains about unknown
+    # markers when pytest-timeout is not installed.  If pytest-timeout IS
+    # present it will handle the marker automatically.
+    config.addinivalue_line(
+        "markers", "timeout: mark test with a timeout (handled by pytest-timeout)"
+    )

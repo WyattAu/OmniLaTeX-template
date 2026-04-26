@@ -187,9 +187,14 @@ def symlink_binaries(bin_dir: Path, destination: Path) -> bool:
 
 def run_install(version: str, profile: str, mirror: str, archive_mirror: str, workdir: Path) -> None:
     installer = locate_install_tl(workdir)
-    mirror_url = mirror.rstrip("/") + "/"
-    args = ["perl", str(installer), f"--profile={profile}", f"--location={mirror_url}"]
-    if version != "latest":
+    args = ["perl", str(installer), f"--profile={profile}"]
+    if version == "latest":
+        # Do NOT pass --location.  The live tlnet mirror can roll to a new TL
+        # version mid-build (e.g. amd64 sees TL2025, arm64 sees TL2026), causing
+        # a version mismatch error.  Without --location, install-tl uses its own
+        # embedded repository URL, which is guaranteed to match the installer.
+        pass
+    else:
         repository = archive_mirror.rstrip("/") + f"/{version}/tlnet-final"
         args.append(f"--repository={repository}")
 
