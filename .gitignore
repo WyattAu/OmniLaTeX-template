@@ -482,3 +482,4 @@ ctan/
 specs/proofs/.lake/
 specs/proofs/lake-manifest.json
 specs/proofs/build/
+*.ltjruby
