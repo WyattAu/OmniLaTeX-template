@@ -50,7 +50,15 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.CR_PAT || secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.CR_PAT }}
+
+      - name: Debug - check PAT availability
+        run: |
+          if [ -n "${{ secrets.CR_PAT }}" ]; then
+            echo "::notice::CR_PAT secret is set (length: $(echo -n "${{ secrets.CR_PAT }}" | wc -c))"
+          else
+            echo "::warning::CR_PAT secret is NOT set. GHCR push will fail with write_package denied."
+          fi
 
       - name: Extract Docker metadata
         id: meta
