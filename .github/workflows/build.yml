@@ -5,7 +5,7 @@ permissions:
 
 # NOTE: GitHub Actions does NOT support env context in container.image.
 # The Docker image digest is managed in .env.docker — update both files together.
-# Image: ghcr.io/wyattau/omnilatex-docker@sha256:3e0c27240f5b0b02c3bc635628540de8f7adfd7b581165534f550432e634d9d5
+# Image: ghcr.io/wyattau/omnilatex-docker@sha256:138f651baf0f53b6eb50317ce526c9fcff04e1ca1787bb478e93cfea4e4b88e2
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     container:
-      image: ghcr.io/wyattau/omnilatex-docker@sha256:3e0c27240f5b0b02c3bc635628540de8f7adfd7b581165534f550432e634d9d5
+      image: ghcr.io/wyattau/omnilatex-docker@sha256:138f651baf0f53b6eb50317ce526c9fcff04e1ca1787bb478e93cfea4e4b88e2
       options: --user root
     
     steps:
@@ -101,7 +101,7 @@ jobs:
     timeout-minutes: 30
     needs: build
     container:
-      image: ghcr.io/wyattau/omnilatex-docker@sha256:3e0c27240f5b0b02c3bc635628540de8f7adfd7b581165534f550432e634d9d5
+      image: ghcr.io/wyattau/omnilatex-docker@sha256:138f651baf0f53b6eb50317ce526c9fcff04e1ca1787bb478e93cfea4e4b88e2
       options: --user root
 
     steps:
@@ -145,7 +145,7 @@ jobs:
   determinism:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/wyattau/omnilatex-docker@sha256:3e0c27240f5b0b02c3bc635628540de8f7adfd7b581165534f550432e634d9d5
+      image: ghcr.io/wyattau/omnilatex-docker@sha256:138f651baf0f53b6eb50317ce526c9fcff04e1ca1787bb478e93cfea4e4b88e2
       options: --user root
 
     steps:
