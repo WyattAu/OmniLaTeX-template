@@ -189,11 +189,14 @@ def run_install(version: str, profile: str, mirror: str, archive_mirror: str, wo
     installer = locate_install_tl(workdir)
     args = ["perl", str(installer), f"--profile={profile}"]
     if version == "latest":
-        # Do NOT pass --location.  The live tlnet mirror can roll to a new TL
-        # version mid-build (e.g. amd64 sees TL2025, arm64 sees TL2026), causing
-        # a version mismatch error.  Without --location, install-tl uses its own
-        # embedded repository URL, which is guaranteed to match the installer.
-        pass
+        # Always pass --location pointing to the same mirror used for
+        # download.  The installer's embedded URL can point to a specific
+        # CTAN backend (e.g. latex.us) which may be unreachable.  By
+        # explicitly passing the mirror CDN URL we ensure a reliable
+        # repository.  The version match is guaranteed because both
+        # download and install use the same live mirror.
+        mirror_url = mirror.rstrip("/") + "/"
+        args.append(f"--location={mirror_url}")
     else:
         repository = archive_mirror.rstrip("/") + f"/{version}/tlnet-final"
         args.append(f"--repository={repository}")
