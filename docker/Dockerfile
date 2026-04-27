@@ -214,6 +214,11 @@ RUN --mount=type=cache,target=/var/cache/texlive,id=texlive-cache-${TARGETARCH}-
     # The archive comes with a name in the form of 'install-tl-YYYYMMDD' from the source,
     # which is of course unpredictable.
     tar --extract --file=/var/cache/texlive/${TL_INSTALL_ARCHIVE} --directory=${INSTALL_TL_DIR} --strip-components 1 && \
+    # Write TL_CACHE_BUSTER into the layer to invalidate the GHA layer cache when
+    # bumped. Without this, the GHA cache restores the old extracted installer
+    # even after the mount cache is invalidated, causing version mismatch errors
+    # when the live tlnet rolls to a new TL version.
+    echo "${TL_CACHE_BUSTER}" > ${INSTALL_TL_DIR}/.tl-cache-bust && \
     \
     # Prepare Eisvogel pandoc template (yields `eisvogel.latex` among other things):
     # Update since 02.2025: The code is now packed in a directory, so we have to
