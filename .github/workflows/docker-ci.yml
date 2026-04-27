@@ -9,7 +9,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  CACHE_SCOPE: global-cache
+  CACHE_SCOPE: global-cache-v2
   PLATFORMS: linux/amd64,linux/arm64
 
 jobs:
