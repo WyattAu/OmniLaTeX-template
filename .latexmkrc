@@ -131,10 +131,15 @@ if ($build_mode eq 'prod') {
 # different engine. Check if this works with `latexmk --commands`.
 # The options are:
 # --shell-escape: enable system commands
-# --synctex=1: enable synctex (see man synctex)
+# --synctex=0: enable synctex (see man synctex)
 # --file-line-error: Writes out the concrete file line in which the error occured
-# --halt-on-error: stop processing at the first error
-set_tex_cmds("--shell-escape --synctex=0 --file-line-error --halt-on-error %O %S");
+#
+# NOTE: --halt-on-error is intentionally NOT used here. In multi-pass builds
+# (latexmk runs lualatex multiple times), intermediate passes naturally have
+# errors (undefined references, incomplete aux files). Halting on the first error
+# in an intermediate pass prevents the final pass from ever running.
+# latexmk already detects errors from the last pass and reports them.
+set_tex_cmds("--shell-escape --synctex=0 --file-line-error %O %S");
 
 # option 2 is same as 1 (run biber when necessary), but also deletes the
 # regeneratable bbl-file in a clenaup (`latexmk -c`). Do not use if original
