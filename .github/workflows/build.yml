@@ -205,7 +205,7 @@ jobs:
 
           echo "SUCCESS: Builds are reproducible (${PAGES1} pages, size diff: ${SIZE_DIFF} bytes)"
 
-test:
+  test:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: build
