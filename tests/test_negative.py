@@ -61,10 +61,13 @@ class TestEdgeCases:
         tex = r"""\documentclass{omnilatex}
 \begin{document}\end{document}"""
         success, log = compile_tex(tex)
-        # Empty document may fail due to missing glossary/bib resources,
-        # but should not produce a LuaTeX engine crash or segfault.
-        assert "segmentation fault" not in log.lower()
-        assert "fatal" not in log.lower() or success
+        # Empty document may fail due to missing glossary/bib resources.
+        # Only check for actual process crashes, not latexmk's "Fatal error"
+        # message (which just means no PDF was produced).
+        log_lower = log.lower()
+        assert "segmentation fault" not in log_lower
+        assert "memory access" not in log_lower
+        assert "panic" not in log_lower
 
     def test_minimal_content(self):
         tex = r"""\documentclass{omnilatex}
