@@ -33,7 +33,7 @@ jobs:
           IS_OMNILATEX_CONTAINER: "true"
           CI: "true"
         run: |
-          python3 build.py --mode prod build-all
+          python3 build.py --mode prod --verbose build-all
       
       - name: Upload root PDF
         uses: actions/upload-artifact@v4
