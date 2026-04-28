@@ -672,6 +672,12 @@ class BuildTasks:
             self.ui.success(f"Copied {pdf_path.name} to {build_dir}")
         else:
             self.ui.error("Build failure: PDF not generated.")
+            if exit_code != 0:
+                self.ui.error(f"latexmk exited with code {exit_code}")
+            # Print captured logs for debugging (especially in CI)
+            tail = logs[-50:] if len(logs) > 50 else logs
+            for line in tail:
+                print(line)
             raise SystemExit(1)
 
     def _run_with_dashboard(
