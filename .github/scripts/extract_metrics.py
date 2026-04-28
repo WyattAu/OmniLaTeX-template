@@ -21,7 +21,9 @@ for ex in data.get("examples", []):
     status = ":white_check_mark:" if ex["success"] else ":x:"
     size_kb = ex.get("pdf_size_bytes", 0) / 1024
     name = ex["name"]
-    wall = ex["wall_time_s"]
+    wall = ex.get("wall_time_s") or 0
+    size_kb = ex.get("pdf_size_bytes", 0) or 0
+    name = ex["name"]
 
     if name in baselines:
         baseline = baselines[name]
@@ -34,7 +36,9 @@ for ex in data.get("examples", []):
         baseline = None
         delta_str = "N/A"
 
-    print(f"| {name} | {wall:.1f} | {baseline:.1f if baseline else 'N/A':>8} | {delta_str:>6} | {size_kb:.0f} KB | {status} |")
+    wall_str = f"{wall:.1f}" if wall else "FAIL"
+    bl_str = f"{baseline:.1f}" if baseline else "N/A"
+    print(f"| {name} | {wall_str} | {bl_str:>8} | {delta_str:>6} | {size_kb:.0f} KB | {status} |")
 
 s = data.get("summary", {})
 print()
