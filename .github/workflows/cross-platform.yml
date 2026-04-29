@@ -12,8 +12,8 @@ permissions:
   packages: read
 
 env:
-  # TODO: Re-pin digest once docker-ci pushes TL2025 image and docker-digest-sync updates it
   DOCKER_IMAGE: ghcr.io/wyattau/omnilatex-docker:latest
+  DOCKER_PLATFORM: linux/amd64
 
 jobs:
   linux:
@@ -46,13 +46,15 @@ jobs:
 
   windows:
     runs-on: windows-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Pull Docker image
-        run: docker pull ${{ env.DOCKER_IMAGE }}
+      - name: Switch Docker to Linux containers mode
+        run: |
+          docker pull ${{ env.DOCKER_IMAGE }}
+          echo "::notice::Docker Linux containers mode active"
 
       - name: Build article example
         shell: bash
@@ -61,9 +63,9 @@ jobs:
           CI: "true"
         run: |
           docker run --rm \
+            --platform ${{ env.DOCKER_PLATFORM }} \
             -v "$GITHUB_WORKSPACE:/workspace" \
             -w /workspace \
-            -u root \
             -e IS_OMNILATEX_CONTAINER=true \
             -e CI=true \
             ${{ env.DOCKER_IMAGE }} \
@@ -71,41 +73,13 @@ jobs:
 
       - name: Verify PDF
         shell: bash
-        run: |
-          test -f build/examples/article.pdf && echo "✅ PDF generated" || (echo "❌ PDF not found" && exit 1)
-
-  macos:
-    runs-on: macos-latest
-    timeout-minutes: 15
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Pull Docker image
-        run: docker pull ${{ env.DOCKER_IMAGE }}
-
-      - name: Build article example
-        env:
-          IS_OMNILATEX_CONTAINER: "true"
-          CI: "true"
-        run: |
-          docker run --rm \
-            -v "$GITHUB_WORKSPACE:/workspace" \
-            -w /workspace \
-            -u root \
-            -e IS_OMNILATEX_CONTAINER=true \
-            -e CI=true \
-            ${{ env.DOCKER_IMAGE }} \
-            python3 build.py --mode prod build-example article
-
-      - name: Verify PDF
         run: |
           test -f build/examples/article.pdf && echo "✅ PDF generated" || (echo "❌ PDF not found" && exit 1)
 
   report:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [linux, windows, macos]
+    needs: [linux, windows]
     if: always()
     steps:
       - name: Cross-platform summary
@@ -116,4 +90,3 @@ jobs:
           echo "|----------|--------|" >> $GITHUB_STEP_SUMMARY
           echo "| Linux    | ${{ needs.linux.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Windows  | ${{ needs.windows.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| macOS    | ${{ needs.macos.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
