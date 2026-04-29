@@ -32,7 +32,7 @@ jobs:
 
       - name: Build all documents (Production mode)
         run: |
-          docker run --rm \
+          docker run --rm --entrypoint "" \
             -v "$GITHUB_WORKSPACE:/workspace" \
             -w /workspace \
             --user root \
@@ -127,7 +127,7 @@ jobs:
 
       - name: Build examples with timings
         run: |
-          docker run --rm \
+          docker run --rm --entrypoint "" \
             -v "$GITHUB_WORKSPACE:/workspace" \
             -w /workspace \
             --user root \
@@ -142,7 +142,7 @@ jobs:
           if [ -f build/metrics.json ]; then
             echo "## Build Performance Metrics" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
-            docker run --rm \
+            docker run --rm --entrypoint "" \
               -v "$GITHUB_WORKSPACE:/workspace" \
               -w /workspace \
               "${{ steps.digest.outputs.image }}" \
@@ -176,7 +176,7 @@ jobs:
 
       - name: First build
         run: |
-          docker run --rm \
+          docker run --rm --entrypoint "" \
             -v "$GITHUB_WORKSPACE:/workspace" \
             -w /workspace \
             --user root \
@@ -188,13 +188,13 @@ jobs:
 
       - name: Clean and rebuild
         run: |
-          docker run --rm \
+          docker run --rm --entrypoint "" \
             -v "$GITHUB_WORKSPACE:/workspace" \
             -w /workspace \
             --user root \
             "${{ steps.digest.outputs.image }}" \
             python3 build.py clean
-          docker run --rm \
+          docker run --rm --entrypoint "" \
             -v "$GITHUB_WORKSPACE:/workspace" \
             -w /workspace \
             --user root \
@@ -214,11 +214,11 @@ jobs:
           # LuaLaTeX is not fully bit-for-bit deterministic (PDF object ordering,
           # Lua hash table randomization, font subsetting). Compare page counts
           # and file sizes instead of exact SHA256.
-          PAGES1=$(docker run --rm \
+          PAGES1=$(docker run --rm --entrypoint "" \
             -v "$GITHUB_WORKSPACE:/workspace" \
             "${{ steps.digest.outputs.image }}" \
             pdfinfo /workspace/build/examples/thesis.pdf | grep "^Pages:" | awk '{print $2}')
-          PAGES2=$(docker run --rm \
+          PAGES2=$(docker run --rm --entrypoint "" \
             -v "$GITHUB_WORKSPACE:/workspace" \
             "${{ steps.digest.outputs.image }}" \
             pdfinfo /workspace/build/examples/thesis.pdf | grep "^Pages:" | awk '{print $2}')
