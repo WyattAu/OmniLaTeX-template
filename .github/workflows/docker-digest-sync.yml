@@ -22,6 +22,11 @@ jobs:
         with:
           token: ${{ secrets.CR_PAT }}
 
+      - name: Configure git credentials for push
+        run: |
+          git config user.name "OmniLaTeX Bot"
+          git config user.email "omnilatex-bot[bot]@users.noreply.github.com"
+
       - name: Get new image digest
         id: digest
         run: |
