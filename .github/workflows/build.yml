@@ -27,20 +27,19 @@ jobs:
         id: digest
         run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
 
-      - name: Start build container
+      - name: Pull Docker image
+        run: docker pull "${{ steps.digest.outputs.image }}"
+
+      - name: Build all documents (Production mode)
         run: |
-          docker pull "${{ steps.digest.outputs.image }}"
-          docker run -d --name builder \
+          docker run --rm \
             -v "$GITHUB_WORKSPACE:/workspace" \
             -w /workspace \
             --user root \
             -e IS_OMNILATEX_CONTAINER=true \
             -e CI=true \
             "${{ steps.digest.outputs.image }}" \
-            tail -f /dev/null
-
-      - name: Build all documents (Production mode)
-        run: docker exec builder python3 build.py --mode prod --verbose build-all
+            python3 build.py --mode prod --verbose build-all
 
       - name: Upload root PDF
         uses: actions/upload-artifact@v4
@@ -103,10 +102,6 @@ jobs:
         with:
           path: github-pages
 
-      - name: Cleanup
-        if: always()
-        run: docker rm -f builder
-
   performance:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -121,17 +116,8 @@ jobs:
         id: digest
         run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
 
-      - name: Start build container
-        run: |
-          docker pull "${{ steps.digest.outputs.image }}"
-          docker run -d --name builder \
-            -v "$GITHUB_WORKSPACE:/workspace" \
-            -w /workspace \
-            --user root \
-            -e IS_OMNILATEX_CONTAINER=true \
-            -e CI=true \
-            "${{ steps.digest.outputs.image }}" \
-            tail -f /dev/null
+      - name: Pull Docker image
+        run: docker pull "${{ steps.digest.outputs.image }}"
 
       - name: Download example PDFs
         uses: actions/download-artifact@v4
@@ -140,7 +126,15 @@ jobs:
           path: build/examples
 
       - name: Build examples with timings
-        run: docker exec builder python3 build.py --mode prod --timings --force build-examples
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            -w /workspace \
+            --user root \
+            -e IS_OMNILATEX_CONTAINER=true \
+            -e CI=true \
+            "${{ steps.digest.outputs.image }}" \
+            python3 build.py --mode prod --timings --force build-examples
 
       - name: Generate performance summary with regression detection
         if: always()
@@ -148,7 +142,11 @@ jobs:
           if [ -f build/metrics.json ]; then
             echo "## Build Performance Metrics" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
-            docker exec builder python3 .github/scripts/extract_metrics.py >> $GITHUB_STEP_SUMMARY
+            docker run --rm \
+              -v "$GITHUB_WORKSPACE:/workspace" \
+              -w /workspace \
+              "${{ steps.digest.outputs.image }}" \
+              python3 .github/scripts/extract_metrics.py >> $GITHUB_STEP_SUMMARY
           else
             echo "No metrics.json found" >> $GITHUB_STEP_SUMMARY
           fi
@@ -160,10 +158,6 @@ jobs:
           name: performance-metrics
           path: build/metrics.json
           retention-days: 90
-
-      - name: Cleanup
-        if: always()
-        run: docker rm -f builder
 
   determinism:
     runs-on: ubuntu-latest
@@ -177,27 +171,37 @@ jobs:
         id: digest
         run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
 
-      - name: Start build container
+      - name: Pull Docker image
+        run: docker pull "${{ steps.digest.outputs.image }}"
+
+      - name: First build
         run: |
-          docker pull "${{ steps.digest.outputs.image }}"
-          docker run -d --name builder \
+          docker run --rm \
             -v "$GITHUB_WORKSPACE:/workspace" \
             -w /workspace \
             --user root \
             -e IS_OMNILATEX_CONTAINER=true \
             -e CI=true \
             "${{ steps.digest.outputs.image }}" \
-            tail -f /dev/null
-
-      - name: First build
-        run: |
-          docker exec builder python3 build.py --mode prod --source-date-epoch 1700000000 build-example thesis
+            python3 build.py --mode prod --source-date-epoch 1700000000 build-example thesis
           cp build/examples/thesis.pdf /tmp/build1.pdf
 
       - name: Clean and rebuild
         run: |
-          docker exec builder python3 build.py clean
-          docker exec builder python3 build.py --mode prod --source-date-epoch 1700000000 build-example thesis
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            -w /workspace \
+            --user root \
+            "${{ steps.digest.outputs.image }}" \
+            python3 build.py clean
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            -w /workspace \
+            --user root \
+            -e IS_OMNILATEX_CONTAINER=true \
+            -e CI=true \
+            "${{ steps.digest.outputs.image }}" \
+            python3 build.py --mode prod --source-date-epoch 1700000000 build-example thesis
 
       - name: Verify build reproducibility
         shell: bash
@@ -210,8 +214,14 @@ jobs:
           # LuaLaTeX is not fully bit-for-bit deterministic (PDF object ordering,
           # Lua hash table randomization, font subsetting). Compare page counts
           # and file sizes instead of exact SHA256.
-          PAGES1=$(docker exec builder pdfinfo /workspace/build/examples/thesis.pdf | grep "^Pages:" | awk '{print $2}')
-          PAGES2=$(pdfinfo build/examples/thesis.pdf | grep "^Pages:" | awk '{print $2}')
+          PAGES1=$(docker run --rm \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            "${{ steps.digest.outputs.image }}" \
+            pdfinfo /workspace/build/examples/thesis.pdf | grep "^Pages:" | awk '{print $2}')
+          PAGES2=$(docker run --rm \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            "${{ steps.digest.outputs.image }}" \
+            pdfinfo /workspace/build/examples/thesis.pdf | grep "^Pages:" | awk '{print $2}')
           SIZE1=$(stat -c%s /tmp/build1.pdf)
           SIZE2=$(stat -c%s build/examples/thesis.pdf)
 
@@ -233,10 +243,6 @@ jobs:
           fi
 
           echo "SUCCESS: Builds are reproducible (${PAGES1} pages, size diff: ${SIZE_DIFF} bytes)"
-
-      - name: Cleanup
-        if: always()
-        run: docker rm -f builder
 
   test:
     runs-on: ubuntu-latest
