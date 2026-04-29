@@ -252,6 +252,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Read Docker image digest
+        id: digest
+        run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
+
+      - name: Pull Docker image
+        run: docker pull "${{ steps.digest.outputs.image }}"
+
       - name: Download root PDF
         uses: actions/download-artifact@v4
         with:
@@ -264,16 +271,14 @@ jobs:
           name: PDF-Examples
           path: build/examples
 
-      - name: Install test dependencies
+      - name: Install test deps and run tests
         run: |
-          pip install pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout
-
-      - name: Run PDF tests
-        working-directory: tests
-        env:
-          CI: "true"
-        run: |
-          pytest -v --tb=short --timeout=120
+          docker run --rm --entrypoint "" \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            -w /workspace \
+            -e CI=true \
+            "${{ steps.digest.outputs.image }}" \
+            bash -c "pip install -q pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout && cd tests && pytest -v --tb=short --timeout=120"
 
       - name: Upload test results
         if: always()
