@@ -19,13 +19,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.CR_PAT }}
-
-      - name: Configure git credentials for push
-        run: |
-          git config user.name "OmniLaTeX Bot"
-          git config user.email "omnilatex-bot[bot]@users.noreply.github.com"
 
       - name: Get new image digest
         id: digest
@@ -35,31 +28,24 @@ jobs:
           echo "digest=${DIGEST}" >> $GITHUB_OUTPUT
           echo "Image digest: ${DIGEST}"
 
-      - name: Update digest in build.yml
-        run: |
-          OLD_DIGEST=$(grep -oP 'sha256:[a-f0-9]+' .github/workflows/build.yml | head -1)
-          if [ "${OLD_DIGEST}" = "${{ steps.digest.outputs.digest }}" ]; then
-            echo "Digest already up to date, skipping."
-            exit 0
-          fi
-          echo "Updating digest: ${OLD_DIGEST} -> ${{ steps.digest.outputs.digest }}"
-          sed -i "s|${OLD_DIGEST}|${{ steps.digest.outputs.digest }}|g" .github/workflows/build.yml
-
       - name: Update digest in .env.docker
         run: |
           OLD_DIGEST=$(grep -oP 'sha256:[a-f0-9]+' .env.docker | head -1)
           if [ "${OLD_DIGEST}" = "${{ steps.digest.outputs.digest }}" ]; then
             echo "Digest already up to date, skipping."
-            exit 0
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "Updating digest: ${OLD_DIGEST} -> ${{ steps.digest.outputs.digest }}"
+            sed -i "s|${OLD_DIGEST}|${{ steps.digest.outputs.digest }}|g" .env.docker
+            TODAY=$(date +%Y-%m-%d)
+            sed -i "s|# Pinned digest (.*)|# Pinned digest (${TODAY})|" .env.docker
+            echo "skip=false" >> $GITHUB_OUTPUT
           fi
-          sed -i "s|${OLD_DIGEST}|${{ steps.digest.outputs.digest }}|g" .env.docker
-          TODAY=$(date +%Y-%m-%d)
-          sed -i "s|# Pinned digest (.*)|# Pinned digest (${TODAY})|" .env.docker
 
       - name: Create pull request
+        if: env.skip != 'true'
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.CR_PAT }}
           title: "chore: update Docker image digest to ${{ steps.digest.outputs.digest }}"
           body: |
             Automated digest sync from [Docker Image CI/CD](${{ github.event.workflow_run.html_url }}).
@@ -67,8 +53,9 @@ jobs:
             **New digest:** `${{ steps.digest.outputs.digest }}`
 
             This PR updates the pinned Docker image digest in:
-            - `.github/workflows/build.yml`
             - `.env.docker`
+
+            The `build.yml` workflow reads the digest from `.env.docker` at runtime — no workflow file changes needed.
           branch: chore/docker-digest-sync
           commit-message: "chore: update Docker image digest"
           delete-branch: true

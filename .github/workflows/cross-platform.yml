@@ -51,10 +51,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Pull Docker image
+      - name: Switch Docker to Linux containers
         run: |
-          docker pull --platform ${{ env.DOCKER_PLATFORM }} ${{ env.DOCKER_IMAGE }}
-          echo "::notice::Docker Linux containers mode active"
+          & "C:\Program Files\Docker\Docker\DockerCli.exe" -SwitchDaemon
+          Start-Sleep -Seconds 10
+          docker info -f '{{.OSType}}'
+
+      - name: Pull Docker image
+        run: docker pull ${{ env.DOCKER_IMAGE }}
 
       - name: Build article example
         shell: bash
@@ -63,7 +67,6 @@ jobs:
           CI: "true"
         run: |
           docker run --rm \
-            --platform ${{ env.DOCKER_PLATFORM }} \
             -v "$GITHUB_WORKSPACE:/workspace" \
             -w /workspace \
             -e IS_OMNILATEX_CONTAINER=true \
