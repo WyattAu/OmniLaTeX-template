@@ -31,7 +31,7 @@ jobs:
           IS_OMNILATEX_CONTAINER: "true"
           CI: "true"
         run: |
-          docker run --rm \
+          docker run --rm --entrypoint "" \
             -v "$GITHUB_WORKSPACE:/workspace" \
             -w /workspace \
             -u root \
@@ -51,28 +51,40 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Switch Docker to Linux containers
-        run: |
-          & "C:\Program Files\Docker\Docker\DockerCli.exe" -SwitchDaemon
-          Start-Sleep -Seconds 10
-          docker info -f '{{.OSType}}'
-
-      - name: Pull Docker image
-        run: docker pull ${{ env.DOCKER_IMAGE }}
-
-      - name: Build article example
+      - name: Build article example via WSL
         shell: bash
         env:
           IS_OMNILATEX_CONTAINER: "true"
           CI: "true"
         run: |
-          docker run --rm \
-            -v "$GITHUB_WORKSPACE:/workspace" \
-            -w /workspace \
-            -e IS_OMNILATEX_CONTAINER=true \
-            -e CI=true \
-            ${{ env.DOCKER_IMAGE }} \
-            python3 build.py --mode prod build-example article
+          # Docker Engine on windows-2025 runners may not support --platform
+          # for multi-arch images directly. Use WSL which provides native
+          # Linux container support.
+          if command -v wsl &>/dev/null && wsl --list &>/dev/null; then
+            echo "Using WSL for Linux container support"
+            wsl -- bash -c "
+              docker pull ${{ env.DOCKER_IMAGE }} 2>/dev/null || true
+              docker run --rm --entrypoint '' \
+                -v '$PWD:/workspace' \
+                -w /workspace \
+                -u root \
+                -e IS_OMNILATEX_CONTAINER=true \
+                -e CI=true \
+                ${{ env.DOCKER_IMAGE }} \
+                python3 build.py --mode prod build-example article
+            "
+          else
+            # Fallback: try direct Docker with --platform
+            docker pull --platform ${{ env.DOCKER_PLATFORM }} ${{ env.DOCKER_IMAGE }}
+            docker run --rm --entrypoint "" \
+              --platform ${{ env.DOCKER_PLATFORM }} \
+              -v "$GITHUB_WORKSPACE:/workspace" \
+              -w /workspace \
+              -e IS_OMNILATEX_CONTAINER=true \
+              -e CI=true \
+              ${{ env.DOCKER_IMAGE }} \
+              python3 build.py --mode prod build-example article
+          fi
 
       - name: Verify PDF
         shell: bash
