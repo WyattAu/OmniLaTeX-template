@@ -51,9 +51,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Switch Docker to Linux containers mode
+      - name: Pull Docker image
         run: |
-          docker pull ${{ env.DOCKER_IMAGE }}
+          docker pull --platform ${{ env.DOCKER_PLATFORM }} ${{ env.DOCKER_IMAGE }}
           echo "::notice::Docker Linux containers mode active"
 
       - name: Build article example
