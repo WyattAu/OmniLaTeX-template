@@ -276,6 +276,7 @@ jobs:
           docker run --rm --entrypoint "" \
             -v "$GITHUB_WORKSPACE:/workspace" \
             -w /workspace \
+            --user root \
             -e CI=true \
             "${{ steps.digest.outputs.image }}" \
             bash -c "pip install -q pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout && cd tests && pytest -v --tb=short --timeout=120"
