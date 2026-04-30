@@ -21,24 +21,10 @@
 % ── Core CJK Engine ─────────────────────────────────────────────────────────
 % luatexja provides the fundamental CJK typesetting layer for LuaLaTeX.
 % luatexja-fontspec bridges fontspec (Latin fonts) with CJK font selection.
+%
+% Note: The kpse.find_file workaround for ScriptExtensions.txt is loaded
+% by omnilatex.cls BEFORE this package, so we do not duplicate it here.
 
-\directlua{%
-  local _orig_find = kpse.find_file
-  kpse.find_file = function(name, ...)
-    if name == "ScriptExtensions.txt" then
-      local r = _orig_find(name, ...)
-      if r then return r end
-      local tmp = os.tmpname()
-      local fh = io.open(tmp, "w")
-      if fh then
-        fh:write(" Dummy ScriptExtensions.txt workaround" .. string.char(10))
-        fh:close()
-      end
-      return tmp
-    end
-    return _orig_find(name, ...)
-  end
-}%
 \RequirePackage{luatexja}
 \RequirePackage{luatexja-fontspec}
 \RequirePackage{luatexja-ruby}

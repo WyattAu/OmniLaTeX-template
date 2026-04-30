@@ -19,7 +19,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \RequirePackage{fontspec}
-\RequirePackage{fix-cm}% Computer Modern fixes
+% Note: fix-cm intentionally NOT loaded — it is a pdfLaTeX package for
+% scaling Computer Modern bitmaps. OmniLaTeX uses LuaLaTeX with fontspec
+% (OTF/TTF fonts), so fix-cm is unnecessary and can cause warnings.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Math Fonts (load before font setup)

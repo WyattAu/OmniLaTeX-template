@@ -27,27 +27,43 @@
 % Default Arabic and Hebrew font families. These are widely available in TeX
 % Live or as system fonts. Users can override per-script with the setter
 % commands below.
+%
+% IMPORTANT: Do NOT use \providecommand for \arabicfont/\hebrewfont here.
+% The cls pre-defines these as font families (\newfontfamily) for polyglossia
+% compatibility. Using \providecommand would create them as text macros,
+% preventing the cls from setting them up properly.
+%
+% Instead, we store defaults in internal macros and let the cls and
+% \omnilatex@apply@*fonts handle the actual \newfontfamily calls.
 
-\providecommand{\arabicfont}{Amiri}
-\providecommand{\arabicfont@bold}{Amiri Bold}
-\providecommand{\hebrewfont}{David CLM}
-\providecommand{\hebrewfont@bold}{David CLM Bold}
+\newcommand{\omnilatex@arabicfont@default}{Amiri}
+\newcommand{\omnilatex@arabicfont@bold@default}{Amiri Bold}
+\newcommand{\omnilatex@hebrewfont@default}{David CLM}
+\newcommand{\omnilatex@hebrewfont@bold@default}{David CLM Bold}
 
 % ── Font Setter Commands ────────────────────────────────────────────────────
 % Users call these in the preamble to change fonts before setup is applied.
 % Changing the font after \begin{document} is not supported.
 
 \newcommand{\setArabicFont}[1]{%
-  \renewcommand{\arabicfont}{#1}%
+  \renewcommand{\omnilatex@arabicfont@default}{#1}%
+  \@ifundefined{arabicfont}{}{%
+    \expandafter\newfontfamily\expandafter\arabicfont\expandafter[%
+      Script=Arabic,BoldFont=#1,BoldFeatures={FakeBold=2}]{#1}%
+  }%
 }
 \newcommand{\setArabicBoldFont}[1]{%
-  \renewcommand{\arabicfont@bold}{#1}%
+  \renewcommand{\omnilatex@arabicfont@bold@default}{#1}%
 }
 \newcommand{\setHebrewFont}[1]{%
-  \renewcommand{\hebrewfont}{#1}%
+  \renewcommand{\omnilatex@hebrewfont@default}{#1}%
+  \@ifundefined{hebrewfont}{}{%
+    \expandafter\newfontfamily\expandafter\hebrewfont\expandafter[%
+      Script=Hebrew,BoldFont=#1,BoldFeatures={FakeBold=2}]{#1}%
+  }%
 }
 \newcommand{\setHebrewBoldFont}[1]{%
-  \renewcommand{\hebrewfont@bold}{#1}%
+  \renewcommand{\omnilatex@hebrewfont@bold@default}{#1}%
 }
 
 % ── Script Detection ────────────────────────────────────────────────────────
@@ -106,18 +122,19 @@
 
 \newcommand{\omnilatex@apply@arabicfonts}{%
   \@ifundefined{arabicfontfamily}{%
-    \IfFontExistsTF{\arabicfont}{%
-      \IfFontExistsTF{\arabicfont@bold}{%
+    \IfFontExistsTF{\omnilatex@arabicfont@default}{%
+      \IfFontExistsTF{\omnilatex@arabicfont@bold@default}{%
         \newfontfamily\arabicfontfamily[Script=Arabic,
-          BoldFont=\arabicfont@bold]{\arabicfont}%
+          BoldFont=\omnilatex@arabicfont@bold@default]{\omnilatex@arabicfont@default}%
       }{%
         \newfontfamily\arabicfontfamily[Script=Arabic,
-          BoldFont=\arabicfont,
-          BoldFeatures={FakeBold=2}]{\arabicfont}%
+          BoldFont=\omnilatex@arabicfont@default,
+          BoldFeatures={FakeBold=2}]{\omnilatex@arabicfont@default}%
       }%
     }{%
       \ClassWarning{omnilatex-rtl}{%
-        Arabic font '\arabicfont' not found, using Noto Naskh Arabic\MessageBreak}%
+        Arabic font '\omnilatex@arabicfont@default' not found,
+        using Noto Naskh Arabic\MessageBreak}%
       \newfontfamily\arabicfontfamily[Script=Arabic]{Noto Naskh Arabic}%
     }%
   }{}%
@@ -129,18 +146,19 @@
 
 \newcommand{\omnilatex@apply@hebrewfonts}{%
   \@ifundefined{hebrewfontfamily}{%
-    \IfFontExistsTF{\hebrewfont}{%
-      \IfFontExistsTF{\hebrewfont@bold}{%
+    \IfFontExistsTF{\omnilatex@hebrewfont@default}{%
+      \IfFontExistsTF{\omnilatex@hebrewfont@bold@default}{%
         \newfontfamily\hebrewfontfamily[Script=Hebrew,
-          BoldFont=\hebrewfont@bold]{\hebrewfont}%
+          BoldFont=\omnilatex@hebrewfont@bold@default]{\omnilatex@hebrewfont@default}%
       }{%
         \newfontfamily\hebrewfontfamily[Script=Hebrew,
-          BoldFont=\hebrewfont,
-          BoldFeatures={FakeBold=2}]{\hebrewfont}%
+          BoldFont=\omnilatex@hebrewfont@default,
+          BoldFeatures={FakeBold=2}]{\omnilatex@hebrewfont@default}%
       }%
     }{%
       \ClassWarning{omnilatex-rtl}{%
-        Hebrew font '\hebrewfont' not found, using Frank Ruehl CLM\MessageBreak}%
+        Hebrew font '\omnilatex@hebrewfont@default' not found,
+        using Frank Ruehl CLM\MessageBreak}%
       \newfontfamily\hebrewfontfamily[Script=Hebrew]{Frank Ruehl CLM}%
     }%
   }{}%

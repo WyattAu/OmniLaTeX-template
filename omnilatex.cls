@@ -240,38 +240,31 @@
 }{}%
 \@ifundefined{arabicfont}{%
   \IfStrEq{\omnilatex@language}{arabic}{%
-    \IfFontExistsTF{Noto Naskh Arabic}{%
-      \newfontfamily\arabicfont[Script=Arabic,BoldFont=Noto Naskh Arabic,BoldFeatures={FakeBold=2}]{Noto Naskh Arabic}%
-      \newfontfamily\arabicfontfamily[Script=Arabic,BoldFont=Noto Naskh Arabic,BoldFeatures={FakeBold=2}]{Noto Naskh Arabic}%
-      \newfontfamily\arabicfontsf[Script=Arabic,BoldFont=Noto Naskh Arabic,BoldFeatures={FakeBold=2}]{Noto Naskh Arabic}%
+    \IfFontExistsTF{Amiri}{%
+      \newfontfamily\arabicfont[Script=Arabic,BoldFont=Amiri,BoldFeatures={FakeBold=2}]{Amiri}%
+      \newfontfamily\arabicfontfamily[Script=Arabic,BoldFont=Amiri,BoldFeatures={FakeBold=2}]{Amiri}%
+      \newfontfamily\arabicfontsf[Script=Arabic,BoldFont=Amiri,BoldFeatures={FakeBold=2}]{Amiri}%
     }{%
-      \IfFontExistsTF{Amiri}{%
-        \newfontfamily\arabicfont[Script=Arabic,BoldFont=Amiri,BoldFeatures={FakeBold=2}]{Amiri}%
-        \newfontfamily\arabicfontfamily[Script=Arabic,BoldFont=Amiri,BoldFeatures={FakeBold=2}]{Amiri}%
-        \newfontfamily\arabicfontsf[Script=Arabic,BoldFont=Amiri,BoldFeatures={FakeBold=2}]{Amiri}%
+      \IfFontExistsTF{Noto Naskh Arabic}{%
+        \newfontfamily\arabicfont[Script=Arabic,BoldFont=Noto Naskh Arabic,BoldFeatures={FakeBold=2}]{Noto Naskh Arabic}%
+        \newfontfamily\arabicfontfamily[Script=Arabic,BoldFont=Noto Naskh Arabic,BoldFeatures={FakeBold=2}]{Noto Naskh Arabic}%
+        \newfontfamily\arabicfontsf[Script=Arabic,BoldFont=Noto Naskh Arabic,BoldFeatures={FakeBold=2}]{Noto Naskh Arabic}%
       }{}%
     }%
   }{}%
 }{}%
 \@ifundefined{hebrewfont}{%
   \IfStrEq{\omnilatex@language}{hebrew}{%
-    \IfFontExistsTF{Noto Serif Hebrew}{%
-      \newfontfamily\hebrewfont[Script=Hebrew,
-        BoldFont=Noto Serif Hebrew,BoldFeatures={FakeBold=2}]{Noto Serif Hebrew}%
-      \newfontfamily\hebrewfontfamily[Script=Hebrew,BoldFont=Noto Serif Hebrew,BoldFeatures={FakeBold=2}]{Noto Serif Hebrew}%
-      \newfontfamily\hebrewfontsf[Script=Hebrew,BoldFont=Noto Serif Hebrew,BoldFeatures={FakeBold=2}]{Noto Serif Hebrew}%
+    \IfFontExistsTF{David CLM}{%
+      \newfontfamily\hebrewfont[Script=Hebrew,BoldFont=David CLM,BoldFeatures={FakeBold=2}]{David CLM}%
+      \newfontfamily\hebrewfontfamily[Script=Hebrew,BoldFont=David CLM,BoldFeatures={FakeBold=2}]{David CLM}%
+      \newfontfamily\hebrewfontsf[Script=Hebrew,BoldFont=David CLM,BoldFeatures={FakeBold=2}]{David CLM}%
     }{%
       \IfFontExistsTF{Frank Ruehl CLM}{%
         \newfontfamily\hebrewfont[Script=Hebrew,BoldFont=Frank Ruehl CLM,BoldFeatures={FakeBold=2}]{Frank Ruehl CLM}%
         \newfontfamily\hebrewfontfamily[Script=Hebrew,BoldFont=Frank Ruehl CLM,BoldFeatures={FakeBold=2}]{Frank Ruehl CLM}%
         \newfontfamily\hebrewfontsf[Script=Hebrew,BoldFont=Frank Ruehl CLM,BoldFeatures={FakeBold=2}]{Frank Ruehl CLM}%
-      }{%
-        \IfFontExistsTF{David CLM}{%
-          \newfontfamily\hebrewfont[Script=Hebrew,BoldFont=David CLM,BoldFeatures={FakeBold=2}]{David CLM}%
-          \newfontfamily\hebrewfontfamily[Script=Hebrew,BoldFont=David CLM,BoldFeatures={FakeBold=2}]{David CLM}%
-          \newfontfamily\hebrewfontsf[Script=Hebrew,BoldFont=David CLM,BoldFeatures={FakeBold=2}]{David CLM}%
-        }{}%
-      }%
+      }{}%
     }%
   }{}%
 }{}%

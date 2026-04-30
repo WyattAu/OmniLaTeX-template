@@ -24,10 +24,54 @@
 \RequirePackage{kvoptions}
 
 %% ── KOMA-Script Compatibility ──
-%% KOMA 3.49+ (TL2025) removed \setkomacolor.
+%% KOMA 3.49+ (TL2025) removed \setkomacolor entirely.
 %% KOMA 3.43 (TL2024) has it but it is preamble-only.
-%% Provide a no-op shim so palette application works in the body.
-\providecommand{\setkomacolor}[2]{}
+%% On TL2024, \providecommand does nothing (KOMA's real version is used).
+%% On TL2025+, we provide a working shim that stores fg/bg colors and
+%% patches \usekomafont to apply them, since KOMA no longer does.
+\@ifundefined{setkomacolor}{%
+  %% \omnilatex@clr@helper{element}{key=value}
+  %% Parses a single key=value pair using \StrBefore/\StrBehind (xstring).
+  \newcommand{\omnilatex@clr@helper}[2]{%
+    \StrBefore{#2}{=}{\omnilatex@clr@k}%
+    \StrBehind{#2}{=}{\omnilatex@clr@v}%
+    %% Trim leading space from value
+    \IfBeginWith{\omnilatex@clr@v}{ }{%
+      \StrGobbleLeft{\omnilatex@clr@v}{1}[\omnilatex@clr@v]%
+    }{}%
+    \ifdefstring{\omnilatex@clr@k}{fg}{%
+      \expandafter\edef\csname omnilatex@clr@#1@fg\endcsname{\omnilatex@clr@v}%
+    }{%
+      \ifdefstring{\omnilatex@clr@k}{bg}{%
+        \expandafter\edef\csname omnilatex@clr@#1@bg\endcsname{\omnilatex@clr@v}%
+      }{}%
+    }%
+  }
+  %% \omnilatex@setkomacolor@shim{element}{fg=color} or {bg=color, fg=color}
+  %% Handles single pair (no comma) and two pairs (one comma).
+  %% KOMA only ever uses fg, bg so we need at most 2 pairs.
+  \newcommand{\omnilatex@setkomacolor@shim}[2]{%
+    \IfSubStr{#2}{,}{%
+      %% Two pairs: split on comma
+      \StrBefore{#2}{,}{\omnilatex@clr@paira}%
+      \StrBehind{#2}{,}{\omnilatex@clr@pairb}%
+      \omnilatex@clr@helper{#1}{\omnilatex@clr@paira}%
+      \omnilatex@clr@helper{#1}{\omnilatex@clr@pairb}%
+    }{%
+      %% Single pair
+      \omnilatex@clr@helper{#1}{#2}%
+    }%
+  }
+  \let\setkomacolor\omnilatex@setkomacolor@shim
+  %% Patch \usekomafont to also apply stored fg color
+  \let\omnilatex@orig@usekomafont\usekomafont
+  \renewcommand{\usekomafont}[1]{%
+    \omnilatex@orig@usekomafont{#1}%
+    \@ifundefined{omnilatex@clr@#1@fg}{}{%
+      \expandafter\color\expandafter{\csname omnilatex@clr@#1@fg\endcsname}%
+    }%
+  }
+}{}% end \@ifundefined{setkomacolor}
 
 %% ── Theme Option ──────────────────────────────────
 %% Pass theme=NAME as a package option, e.g.:

@@ -25,7 +25,8 @@
 \RequirePackage{longtable}
 
 % Ensure extended longtable-based styles are available and configure fallbacks
-\RequirePackage{glossary-longextra}
+% Note: glossary-longextra is loaded later (after glossary-mcols) in the
+% styles section to keep package loading order consistent.
 \providecommand*{\OmniLaTeXAcronymStyle}{long3colheader}
 \newif\ifomnilatex@longtblr
 \IfFileExists{tblrliblongtblr.sty}{%
