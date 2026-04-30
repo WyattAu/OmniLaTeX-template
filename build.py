@@ -395,7 +395,7 @@ class BuildTasks:
             exit_code, logs_from_run = self.runner.run(
                 invoke, extra_env=extra_env, cwd=example_dir
             )
-                all_logs.extend(logs_from_run)
+            all_logs.extend(logs_from_run)
             # --- End: EXACT reproduction of original script's core logic ---
 
             # Create build/examples directory early to avoid race conditions in concurrent builds
