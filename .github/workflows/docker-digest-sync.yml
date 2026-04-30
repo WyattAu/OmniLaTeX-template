@@ -29,6 +29,7 @@ jobs:
           echo "Image digest: ${DIGEST}"
 
       - name: Update digest in .env.docker
+        id: update-digest
         run: |
           OLD_DIGEST=$(grep -oP 'sha256:[a-f0-9]+' .env.docker | head -1)
           if [ "${OLD_DIGEST}" = "${{ steps.digest.outputs.digest }}" ]; then
@@ -43,7 +44,7 @@ jobs:
           fi
 
       - name: Create pull request
-        if: env.skip != 'true'
+        if: steps.update-digest.outputs.skip != 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           title: "chore: update Docker image digest to ${{ steps.digest.outputs.digest }}"

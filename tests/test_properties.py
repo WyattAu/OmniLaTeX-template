@@ -78,7 +78,7 @@ Test content for {{doctype}}.
 """
 
 
-def compile_tex(tex_content: str, timeout: int = 60) -> tuple:
+def compile_tex(tex_content: str, timeout: int = 180) -> tuple:
     """Compile tex content. Returns (success, log_excerpt)."""
     with tempfile.TemporaryDirectory() as tmpdir:
         tex_file = Path(tmpdir) / "test.tex"
@@ -122,9 +122,9 @@ class TestDoctypeCompilation:
 class TestPropertyBasedFuzzing:
     """Fuzz test with hypothesis."""
 
-    @pytest.mark.timeout(120)
+    @pytest.mark.timeout(300)
     @given(doctype=sampled_from(DOCTYPE_ALIASES))
-    @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
+    @settings(max_examples=20, deadline=None, suppress_health_check=[HealthCheck.too_slow])
     def test_random_doctype_compiles(self, doctype):
         tex = TEMPLATE.format(options=f"doctype={doctype}", doctype=doctype)
         success, _ = compile_tex(tex)

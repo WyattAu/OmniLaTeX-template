@@ -373,30 +373,28 @@ class BuildTasks:
 
             invoke.append(MAIN_TEX_FILENAME)
 
-            with working_directory(example_dir):
-                # When --force is used, clean auxiliary files first to avoid
-                # stale artifacts from different package versions (e.g. .glstex
-                # from a different glossaries-extra version).
-                if self.force:
-                    self.runner.run([LATEXMK_COMMAND, "-C"])
+            # Use absolute paths to avoid thread-unsafe os.chdir().
+            # The runner.run() call already sets cwd=example_dir.
+            if self.force:
+                self.runner.run([LATEXMK_COMMAND, "-C"], cwd=example_dir)
 
-                for cache_dir in (Path(MINTED_CACHE_SUBDIR), Path(SVG_INKSCAPE_CACHE)):
-                    cache_dir.mkdir(parents=True, exist_ok=True)
+            for cache_dir in (Path(MINTED_CACHE_SUBDIR), Path(SVG_INKSCAPE_CACHE)):
+                (example_dir / cache_dir).mkdir(parents=True, exist_ok=True)
 
-                minted_cache_dir = self.config.build_dir / MINTED_CACHE_SUBDIR
-                minted_cache_dir.mkdir(parents=True, exist_ok=True)
+            minted_cache_dir = example_dir / MINTED_CACHE_SUBDIR
+            minted_cache_dir.mkdir(parents=True, exist_ok=True)
 
-                extra_env = {
-                    "MINTED_CACHE_DIR": str(minted_cache_dir.resolve()),
-                    "OMNILATEX_EXAMPLE_ROOT": str(Path.cwd()),
-                    "TEXINPUTS": os.pathsep.join([".", str(repo_root), ""]),
-                    "LC_ALL": "C.utf8",
-                }
+            extra_env = {
+                "MINTED_CACHE_DIR": str(minted_cache_dir.resolve()),
+                "OMNILATEX_EXAMPLE_ROOT": str(example_dir.resolve()),
+                "TEXINPUTS": os.pathsep.join([".", str(repo_root), ""]),
+                "LC_ALL": "C.utf8",
+            }
 
-                # Run the command but do not raise an exception on failure
-                exit_code, logs_from_run = self.runner.run(
-                    invoke, extra_env=extra_env, cwd=example_dir
-                )
+            # Run the command but do not raise an exception on failure
+            exit_code, logs_from_run = self.runner.run(
+                invoke, extra_env=extra_env, cwd=example_dir
+            )
                 all_logs.extend(logs_from_run)
             # --- End: EXACT reproduction of original script's core logic ---
 
@@ -1110,9 +1108,20 @@ class BuildTasks:
             return
 
         name = files[0]
+        if not re.match(r'^[a-zA-Z0-9_-]+$', name):
+            self.ui.error(
+                f"Invalid institution name '{name}'. "
+                "Use only alphanumeric characters, hyphens, and underscores."
+            )
+            return
         repo_root = Path(__file__).resolve().parent
         src = repo_root / "config" / "institutions" / "generic"
         dst = repo_root / "config" / "institutions" / name
+
+        # Verify resolved path stays within expected directory
+        if not dst.resolve().is_relative_to(repo_root / "config" / "institutions"):
+            self.ui.error(f"Institution name '{name}' resolves outside institutions directory")
+            return
 
         if not src.exists():
             self.ui.error(f"Generic template not found at {src}")
@@ -1324,9 +1333,20 @@ class BuildTasks:
             return
 
         project_name = files[0]
+        if not re.match(r'^[a-zA-Z0-9_-]+$', project_name):
+            self.ui.error(
+                f"Invalid project name '{project_name}'. "
+                "Use only alphanumeric characters, hyphens, and underscores."
+            )
+            return
         repo_root = Path(__file__).resolve().parent
         src = repo_root / "examples" / "minimal-starter"
         dst = Path.cwd() / project_name
+
+        # Verify resolved path stays within current directory
+        if not dst.resolve().is_relative_to(Path.cwd()):
+            self.ui.error(f"Project name '{project_name}' resolves outside current directory")
+            return
 
         if not src.exists():
             self.ui.error(f"Template not found at {src}")

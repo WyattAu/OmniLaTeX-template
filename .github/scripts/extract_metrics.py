@@ -3,7 +3,12 @@ import json
 import re
 import sys
 
-data = json.load(open("build/metrics.json"))
+try:
+    with open("build/metrics.json") as f:
+        data = json.load(f)
+except (FileNotFoundError, json.JSONDecodeError) as e:
+    print(f"Error reading metrics: {e}")
+    sys.exit(1)
 
 baselines = {}
 try:
@@ -19,11 +24,9 @@ print("|---------|---------------|-------------|-------|----------|--------|")
 regressions = []
 for ex in data.get("examples", []):
     status = ":white_check_mark:" if ex["success"] else ":x:"
-    size_kb = ex.get("pdf_size_bytes", 0) / 1024
     name = ex["name"]
     wall = ex.get("wall_time_s") or 0
-    size_kb = ex.get("pdf_size_bytes", 0) or 0
-    name = ex["name"]
+    size_kb = (ex.get("pdf_size_bytes", 0) or 0) / 1024
 
     if name in baselines:
         baseline = baselines[name]
