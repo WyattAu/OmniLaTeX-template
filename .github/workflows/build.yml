@@ -274,14 +274,15 @@ jobs:
             --user root \
             -e CI=true \
             "${{ steps.digest.outputs.image }}" \
-            bash -c "pip install -q pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout && cd tests && pytest -v --tb=short --timeout=120"
+            bash -c "pip install -q pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout && cd tests && pytest -v --tb=short --timeout=120 --junitxml=test-results.xml"
 
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: tests/.pytest_cache
+          path: tests/test-results.xml
+          if-no-files-found: ignore
           retention-days: 7
 
   deploy-pages:

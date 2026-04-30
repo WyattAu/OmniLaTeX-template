@@ -76,16 +76,16 @@ collection-langenglish 1
 collection-langeuropean 1
 collection-langgerman 1
 
-collection-langarabic 0
-collection-langchinese 0
-collection-langcjk 0
+collection-langarabic 1
+collection-langchinese 1
+collection-langcjk 1
 collection-langcyrillic 0
 collection-langczechslovak 0
 collection-langfrench 0
 collection-langgreek 0
 collection-langitalian 0
-collection-langjapanese 0
-collection-langkorean 0
+collection-langjapanese 1
+collection-langkorean 1
 collection-langother 0
 collection-langpolish 0
 collection-langportuguese 0

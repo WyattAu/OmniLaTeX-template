@@ -1,6 +1,6 @@
 # OmniLaTeX Roadmap
 
-Current version: **v1.6.0** (2026-04-26)
+Current version: **v1.7.1**
 
 ## Design Principles
 
@@ -13,129 +13,96 @@ Current version: **v1.6.0** (2026-04-26)
 
 | Metric | Value |
 |--------|-------|
-| Releases | 8 (v1.0.0–v1.6.0) |
+| Releases | 10 (v1.0.0–v1.7.1) |
 | `.sty` modules | 27 |
-| Examples | 31 (30 compile on TL2025) |
-| Institution configs | 14 |
+| Examples | 31 (31/31 compile on Nix TL2025, 31/31 on Docker TL2026) |
+| Institution configs | 15 |
 | Languages | 14 (EN + 13 via polyglossia) |
-| CI workflows | 6 |
-| Lean 4 proof modules | 8 (13/20 theorems proven) |
+| CI workflows | 6 (all green) |
+| Lean 4 proof modules | 8 (13/20 theorems use `sorry`) |
 | Core code | ~9,350 lines |
-| Docker | Multi-arch, BuildKit |
 
 ---
 
-## v1.6.0 — Hardening (target: now)
+## Completed Versions
 
-> 6 commits since v1.5.0. Ready to tag.
-
-| Project | Priority | Status |
-|---------|----------|--------|
-| **P6.1 TL2025 migration** | Critical | Done |
-| **P6.2 Fix broken examples** | Critical | Done |
-| **P6.3 CI/CD hardening** | High | Done |
-| **P6.4 Code quality fixes** | Medium | Done |
-| **P6.5 Supply chain hardening** | High | Done |
-| **P6.6 Lean 4 stable toolchain** | Medium | Done |
-
-### P6.1 TL2025 Migration
-- Nix flake updated to TeX Live 2025
-- Docker image rebuilt for TL2025
-
-### P6.2 Fix Broken Examples
-- 11 examples fixed to compile on TL2025
-
-### P6.3 CI/CD Hardening
-- Workflow timeouts added
-- Docker digest pinning
-- BuildKit version pinned
-
-### P6.4 Code Quality Fixes
-- Version bump across modules
-- Deduplication pass
-- Dead code cleanup
-
-### P6.5 Supply Chain Hardening
-- Font URLs pinned to specific versions
-- Lean toolchain pinned
-- All mutable refs replaced with immutable digests
-
-### P6.6 Lean 4 Stable Toolchain
-- Upgraded from RC to stable v4.29.0
-
-**Completion criteria:** All examples compile on TL2025, CI passes, no mutable refs.
+| Version | Date | Summary |
+|---------|------|---------|
+| v1.7.1 | 2026-04-30 | Quality — .sty/.cls audit (6 fixes), KOMA TL2025 compat, font consolidation, CI hardening |
+| v1.7.0 | 2026-04-29 | Infrastructure — CI/CD hardening, Docker multi-arch, Nix packages, digest sync |
+| v1.6.0 | 2026-04-26 | Hardening — TL2025 migration, CI/CD hardening, supply chain pinning |
+| v1.5.0 | 2026-04-24 | Institutions — 14 configs, Beamer overhaul, color theme system |
+| v1.4.0 | 2026-04-24 | Accuracy — documentation reconciliation, Lean 4 CI, Docker digests |
+| v1.3.1 | 2026-04-24 | Housekeeping — Docker monorepo merge, cross-platform CI fix |
+| v1.3.0 | 2026-04-23 | Features — poster/presentation/letter, scaffold-language, perf baselines |
+| v1.2.0 | 2026-04-23 | Ecosystem — TUM/ETH institutions, cross-platform CI, Lean 4, CWL |
+| v1.1.0 | 2026-04-22 | Distribution — README v2, CONTRIBUTING, CTAN/Overleaf packaging |
+| v1.0.0 | 2026-04-03 | Foundation — Nix, 20 examples, build.py, CI/CD |
 
 ---
 
-## v1.7.0 — Infrastructure & Distribution (target: 1–3 weeks)
+## v1.8.0 — Polish & Distribution (target: 1–2 weeks)
 
 | Project | Priority | Status |
 |---------|----------|--------|
-| **P7.1 CI green on GitHub Actions** | Critical | Pending |
-| **P7.2 Docker TL2025 image push** | High | Pending |
-| **P7.3 Nix user-facing build** | Medium | Pending |
-| **P7.4 CTAN submission** | Medium | Pending |
-| **P7.5 Overleaf gallery submission** | Medium | Pending |
-| **P7.6 VS Code extension MVP** | Low | Pending |
+| **P8.1 CTAN submission** | High | Planned |
+| **P8.2 Overleaf gallery submission** | High | Planned |
+| **P8.3 Performance optimization** | Medium | Planned |
+| **P8.4 Module-level integration tests** | Medium | Planned |
+| **P8.5 New document types** | Medium | Planned |
 
-### P7.1 CI Green on GitHub Actions
-- Validate all 6 workflows pass on GitHub Actions
-- Workflows exist but have never been tested on the platform (repo was pushed directly)
-- Fix any platform-specific issues (permissions, runner quirks, action versions)
-
-### P7.2 Docker TL2025 Image Push
-- Rebuild and push Docker image with TL2025 to GHCR
-- Verify multi-arch manifests (linux/amd64, linux/arm64)
-- Update README with new image tag
-
-### P7.3 Nix User-Facing Build
-- Add `packages.default` to `flake.nix` producing a standalone PDF
-- `nix develop` already works; this adds `nix build`
-- Allow users to build any example via `nix build .#example-article`
-
-### P7.4 CTAN Submission
+### P8.1 CTAN Submission
 - Run `scripts/make-ctan-zip.sh` and validate output
-- Submit to CTAN
-- Ongoing maintenance for future releases
+- Ensure all documentation is CTAN-compliant
+- Submit and maintain
 
-### P7.5 Overleaf Gallery Submission
+### P8.2 Overleaf Gallery Submission
 - Run `scripts/make-overleaf-zip.sh` and validate output
+- Add Overleaf-specific documentation (no `build.py`, no Nix)
 - Submit to Overleaf template gallery
-- Add Overleaf-specific documentation
 
-### P7.6 VS Code Extension MVP
-- Package existing skeleton in `extensions/vscode-omnilatex/`
-- Basic functionality: doctype picker, institution switcher
-- Submit to VS Code Marketplace
-
-**Completion criteria:** All CI green, Docker image on GHCR, at least one distribution channel live (CTAN or Overleaf).
-
----
-
-## v1.8.0 — Growth (target: 2–4 weeks)
-
-| Project | Priority | Status |
-|---------|----------|--------|
-| **P8.1 New document types** | High | Planned |
-| **P8.2 Performance optimization** | Medium | Planned |
-| **P8.3 Lean 4 proof completion** | Low | Planned |
-
-### P8.1 New Document Types
-- `report` — lab report template (abstract, sections, appendices, code listings)
-- `exam` — exam paper template (questions, marks, answer space)
-- `flyer` — event flyer template (single-page, visual)
-
-### P8.2 Performance Optimization
+### P8.3 Performance Optimization
 - Profile first-pass compilation (currently 30–131s per example)
 - Evaluate precompilation (fmtutil cache warming)
 - Explore font subsetting for faster builds
 
-### P8.3 Lean 4 Proof Completion
+### P8.4 Module-Level Integration Tests
+- Test module contracts (e.g., KOMA shim applies colors to TOC)
+- Test font fallback chains (CJK, Arabic, Hebrew with missing fonts)
+- Test theme switching doesn't leak state between themes
+
+### P8.5 New Document Types
+- `report` — lab report template (abstract, sections, appendices, code listings)
+- `exam` — exam paper template (questions, marks, answer space)
+- `flyer` — event flyer template (single-page, visual)
+
+**Completion criteria:** At least one distribution channel live (CTAN or Overleaf), first-pass compile < 30s for standard examples.
+
+---
+
+## v1.9.0 — Growth (target: 2–4 weeks)
+
+| Project | Priority | Status |
+|---------|----------|--------|
+| **P9.1 VS Code extension MVP** | Medium | Planned |
+| **P9.2 Lean 4 proof completion** | Low | Planned |
+| **P9.3 Additional language collections** | Low | Planned |
+
+### P9.1 VS Code Extension MVP
+- Package existing skeleton in `extensions/vscode-omnilatex/`
+- Basic functionality: doctype picker, institution switcher
+- Submit to VS Code Marketplace
+
+### P9.2 Lean 4 Proof Completion
 - 13 of 20 theorems currently use `sorry`
 - Complete remaining proofs for mathematical rigor
 - Zero user impact; differentiator for academic credibility
 
-**Completion criteria:** 3 new document types, first-pass compile < 30s for standard examples.
+### P9.3 Additional Language Collections
+- Enable more language collections in Docker image (French, Spanish, etc.)
+- Add corresponding institution configs
+
+**Completion criteria:** VS Code extension published, Lean proofs complete.
 
 ---
 
@@ -143,20 +110,17 @@ Current version: **v1.6.0** (2026-04-26)
 
 | Priority | Items |
 |----------|-------|
-| **Critical path** | P7.1 (CI green) → P7.2 (Docker push) → P7.4/P7.5 (distribution) |
-| **High impact** | P7.1, P7.2, P8.1 |
-| **Medium** | P6.3–P6.5, P7.3–P7.5, P8.2 |
-| **Long-term** | P7.6, P8.3 |
+| **Critical path** | P8.1 (CTAN) / P8.2 (Overleaf) → P8.5 (new types) |
+| **High impact** | P8.1, P8.2, P8.4 |
+| **Medium** | P8.3, P8.5, P9.1 |
+| **Long-term** | P9.2, P9.3 |
 
-## Completed Versions
+---
 
-| Version | Date | Summary |
-|---------|------|---------|
-| v1.0.0 | 2026-04-03 | Foundation — Nix, 20 examples, build.py, CI/CD |
-| v1.1.0 | 2026-04-22 | Distribution — README v2, CONTRIBUTING, CTAN/Overleaf packaging |
-| v1.2.0 | 2026-04-23 | Ecosystem — TUM/ETH institutions, cross-platform CI, Lean 4, CWL |
-| v1.3.0 | 2026-04-23 | Features — poster/presentation/letter, scaffold-language, perf baselines, PDF/UA-1 |
-| v1.3.1 | 2026-04-24 | Housekeeping — Docker monorepo merge, cross-platform CI fix, Docker CI/CD |
-| v1.4.0 | 2026-04-24 | Accuracy — documentation reconciliation, Lean 4 CI, Docker digests |
-| v1.5.0 | 2026-04-24 | Institutions — 14 configs, Beamer overhaul, color theme system |
-| v1.6.0 | 2026-04-26 | Hardening — TL2025 migration, CI/CD hardening, supply chain pinning |
+## Technical Debt
+
+| Item | Severity | Notes |
+|------|----------|-------|
+| `build.py` `CommandRunner.run()` only catches `FileNotFoundError` | Low | Should also catch `PermissionError`, `OSError` |
+| Docker image ~6 min rebuild on cache miss | Low | BuildKit cache helps; full rebuild rare |
+| 13/20 Lean theorems use `sorry` | Low | No user impact; academic credibility |

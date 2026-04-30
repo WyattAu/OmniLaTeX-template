@@ -1023,56 +1023,55 @@ class BuildTasks:
 
                     ref_doc = fitz.open(str(ref_path))
                     test_doc = fitz.open(str(source))
-                    if ref_doc.page_count != test_doc.page_count:
-                        self.ui.error(
-                            f"FAIL: {name} \u2014 page count mismatch "
-                            f"(ref={ref_doc.page_count}, test={test_doc.page_count})"
-                        )
-                        all_pass = False
-                        ref_doc.close()
-                        test_doc.close()
-                        continue
-
-                    for i in range(ref_doc.page_count):
-                        dpi = 150
-                        mat = fitz.Matrix(dpi / 72, dpi / 72)
-                        ref_pix = ref_doc[i].get_pixmap(matrix=mat)
-                        test_pix = test_doc[i].get_pixmap(matrix=mat)
-                        ref_img = Image.frombytes(
-                            "RGB", [ref_pix.width, ref_pix.height], ref_pix.samples
-                        )
-                        test_img = Image.frombytes(
-                            "RGB", [test_pix.width, test_pix.height], test_pix.samples
-                        )
-
-                        arr1 = np.array(ref_img.convert("L"), dtype=np.float64)
-                        arr2 = np.array(test_img.convert("L"), dtype=np.float64)
-                        if arr1.shape != arr2.shape:
+                    try:
+                        if ref_doc.page_count != test_doc.page_count:
                             self.ui.error(
-                                f"FAIL: {name} page {i + 1} \u2014 dimension mismatch"
+                                f"FAIL: {name} — page count mismatch "
+                                f"(ref={ref_doc.page_count}, test={test_doc.page_count})"
                             )
                             all_pass = False
                             continue
 
-                        C1, C2 = (0.01 * 255) ** 2, (0.03 * 255) ** 2
-                        mu1 = np.mean(arr1)
-                        mu2 = np.mean(arr2)
-                        sigma1 = np.var(arr1)
-                        sigma2 = np.var(arr2)
-                        sigma12 = np.mean((arr1 - mu1) * (arr2 - mu2))
-                        ssim = ((2 * mu1 * mu2 + C1) * (2 * sigma12 + C2)) / (
-                            (mu1**2 + mu2**2 + C1) * (sigma1 + sigma2 + C2)
-                        )
+                        for i in range(ref_doc.page_count):
+                            dpi = 150
+                            mat = fitz.Matrix(dpi / 72, dpi / 72)
+                            ref_pix = ref_doc[i].get_pixmap(matrix=mat)
+                            test_pix = test_doc[i].get_pixmap(matrix=mat)
+                            ref_img = Image.frombytes(
+                                "RGB", [ref_pix.width, ref_pix.height], ref_pix.samples
+                            )
+                            test_img = Image.frombytes(
+                                "RGB", [test_pix.width, test_pix.height], test_pix.samples
+                            )
 
-                        threshold = 0.95
-                        page_pass = ssim >= threshold
-                        status = "\u2705" if page_pass else "\u274c"
-                        self.ui.info(f"  Page {i + 1}: SSIM={ssim:.4f} {status}")
-                        if not page_pass:
-                            all_pass = False
+                            arr1 = np.array(ref_img.convert("L"), dtype=np.float64)
+                            arr2 = np.array(test_img.convert("L"), dtype=np.float64)
+                            if arr1.shape != arr2.shape:
+                                self.ui.error(
+                                    f"FAIL: {name} page {i + 1} — dimension mismatch"
+                                )
+                                all_pass = False
+                                continue
 
-                    ref_doc.close()
-                    test_doc.close()
+                            C1, C2 = (0.01 * 255) ** 2, (0.03 * 255) ** 2
+                            mu1 = np.mean(arr1)
+                            mu2 = np.mean(arr2)
+                            sigma1 = np.var(arr1)
+                            sigma2 = np.var(arr2)
+                            sigma12 = np.mean((arr1 - mu1) * (arr2 - mu2))
+                            ssim = ((2 * mu1 * mu2 + C1) * (2 * sigma12 + C2)) / (
+                                (mu1**2 + mu2**2 + C1) * (sigma1 + sigma2 + C2)
+                            )
+
+                            threshold = 0.95
+                            page_pass = ssim >= threshold
+                            status = "✅" if page_pass else "❌"
+                            self.ui.info(f"  Page {i + 1}: SSIM={ssim:.4f} {status}")
+                            if not page_pass:
+                                all_pass = False
+                    finally:
+                        ref_doc.close()
+                        test_doc.close()
                     continue  # SSIM comparison done, skip byte-level fallback
 
                 except ImportError:

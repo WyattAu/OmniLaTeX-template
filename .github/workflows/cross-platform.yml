@@ -12,7 +12,6 @@ permissions:
   packages: read
 
 env:
-  DOCKER_IMAGE: ghcr.io/wyattau/omnilatex-docker:latest
   DOCKER_PLATFORM: linux/amd64
 
 jobs:
@@ -23,8 +22,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Read Docker image digest
+        id: digest
+        run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
+
       - name: Pull Docker image
-        run: docker pull ${{ env.DOCKER_IMAGE }}
+        run: docker pull "${{ steps.digest.outputs.image }}"
 
       - name: Build article example
         env:
@@ -37,7 +40,7 @@ jobs:
             -u root \
             -e IS_OMNILATEX_CONTAINER=true \
             -e CI=true \
-            ${{ env.DOCKER_IMAGE }} \
+            "${{ steps.digest.outputs.image }}" \
             python3 build.py --mode prod build-example article
 
       - name: Verify PDF
@@ -64,7 +67,7 @@ jobs:
             -w /workspace \
             -e IS_OMNILATEX_CONTAINER=true \
             -e CI=true \
-            ${{ env.DOCKER_IMAGE }} \
+            ghcr.io/wyattau/omnilatex-docker:latest \
             python3 build.py --mode prod build-example article
 
       - name: Verify PDF

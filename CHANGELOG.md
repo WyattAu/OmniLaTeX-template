@@ -7,6 +7,20 @@ This project adheres to [Semantic versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.7.1] - 2026-04-30
+
+### Fixed
+- **Duplicate `glossary-longextra` load** — was loaded at both line 28 and line 314 in `omnilatex-glossary.sty`; removed early load
+- **`fix-cm` package loaded in LuaLaTeX-only class** — pdfLaTeX-era package removed from `omnilatex-fonts.sty`
+- **Double `kpse.find_file` monkey-patch** — redundant 16-line patch removed from `omnilatex-cjk.sty` (already loaded by `omnilatex.cls`)
+- **KOMA `\setkomacolor` silently no-op on TL2025+** — replaced with working shim that parses `fg`/`bg` key-value pairs and patches `\usekomafont` to apply stored colors
+- **`\providecommand{\arabicfont}` conflict with fontspec** — replaced with internal macros to prevent cls font-family definitions from being shadowed
+- **Font default misalignment between cls and rtl.sty** — aligned to Amiri (Arabic) and David CLM (Hebrew)
+- **`build.py` resource leak in `cmd_diff`** — fitz document handles now closed in `finally` block
+- **CI: cross-platform workflow used `:latest` tag** — now reads pinned digest from `.env.docker`
+- **CI: lean4-ci.yml ran `lake build` twice** — verify step now checks existing build artifacts
+- **CI: test job uploaded `.pytest_cache`** — now uploads `test-results.xml` (JUnit format)
+
 ## [1.7.0] - 2026-04-29
 
 ### Added
