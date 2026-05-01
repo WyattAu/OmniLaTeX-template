@@ -89,6 +89,17 @@
     \gdef\@documentcodestyle{#1}%
 }
 
+% Custom page margins (overrides KOMA typearea DIV-based calculation)
+% Usage: \setCustomMargins{25mm}{20mm}{30mm}{25mm}
+%        (left, right, top, bottom)
+% Uses KOMA's \areaset to set text area dimensions, which recalculates
+% margins without conflicting with typearea.
+% NOTE: Call this AFTER \begin{document} for reliable results, or in
+% a document-type profile that runs after typearea is initialized.
+\newcommand{\setCustomMargins}[4]{%
+    \areaset[0mm]{\dimexpr\paperwidth-#1-#2\relax}{\dimexpr\paperheight-#3-#4\relax}%
+}
+
 \AtBeginDocument{% Ensure defaults (if any) are applied even if set before document starts
     \ifx\@documentfontsize\@empty\else
         \KOMAoptions{fontsize=\@documentfontsize}%

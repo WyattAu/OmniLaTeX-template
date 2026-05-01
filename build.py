@@ -1523,29 +1523,113 @@ class BuildTasks:
                 }
                 checks.append((desc, False, remediation.get(tool, "Install the tool")))
 
-        for font_name in [
+        font_names = [
             "Monaspace Neon",
             "Atkinson Hyperlegible Next",
             "Libertinus Serif",
-        ]:
-            try:
-                result = subprocess.run(
-                    ["fc-list", ":family", font_name],
-                    capture_output=True,
-                    text=True,
-                    timeout=5,
-                )
-                found = font_name.lower() in result.stdout.lower()
-                note = "Found" if found else "Not found (fallback font will be used)"
-                checks.append((f"Font: {font_name}", found or True, note))
-            except Exception:
-                checks.append(
-                    (
-                        f"Font: {font_name}",
-                        True,
-                        "Could not check (fc-list unavailable)",
+        ]
+
+        font_results: dict[str, tuple[bool, str]] = {}
+        lualatex_check_done = False
+
+        for font_name in font_names:
+            found = None
+
+            if not lualatex_check_done:
+                try:
+                    result = subprocess.run(
+                        ["fc-match", font_name],
+                        capture_output=True,
+                        text=True,
+                        timeout=5,
                     )
+                    if result.stdout.strip() and font_name.lower() in result.stdout.lower():
+                        found = True
+                except Exception:
+                    pass
+
+            if found is None:
+                try:
+                    result = subprocess.run(
+                        ["fc-list", ":family", font_name],
+                        capture_output=True,
+                        text=True,
+                        timeout=5,
+                    )
+                    if font_name.lower() in result.stdout.lower():
+                        found = True
+                except Exception:
+                    pass
+
+            if found is None:
+                try:
+                    import tempfile
+                    import os
+
+                    tex_content = (
+                        "\\RequirePackage{fontspec}\n"
+                        "\\newcommand{\\checkfont}[1]{"
+                        "\\IfFontExistsTF{#1}{\\typeout{FONTFOUND:#1}}"
+                        "{\\typeout{FONTMISSING:#1}}}\n"
+                    )
+                    for fn in font_names:
+                        if fn not in font_results:
+                            tex_content += f"\\checkfont{{{fn}}}\n"
+                    tex_content += "\\stop\n"
+
+                    with tempfile.NamedTemporaryFile(
+                        mode="w", suffix=".tex", delete=False
+                    ) as tmp:
+                        tmp.write(tex_content)
+                        tmp_path = tmp.name
+
+                    try:
+                        result = subprocess.run(
+                            ["lualatex", "--interaction=nonstopmode", tmp_path],
+                            capture_output=True,
+                            text=True,
+                            timeout=30,
+                        )
+                        output = result.stdout + result.stderr
+                        for fn in font_names:
+                            if fn not in font_results:
+                                if f"FONTFOUND:{fn}" in output:
+                                    font_results[fn] = (
+                                        True,
+                                        "Found (via LuaLaTeX)",
+                                    )
+                                elif f"FONTMISSING:{fn}" in output:
+                                    font_results[fn] = (
+                                        False,
+                                        "Not found (fallback font will be used)",
+                                    )
+                                else:
+                                    font_results[fn] = (
+                                        False,
+                                        "Not found (fallback font will be used)",
+                                    )
+                    finally:
+                        os.unlink(tmp_path)
+
+                    lualatex_check_done = True
+                except Exception:
+                    lualatex_check_done = True
+
+            if found is not None and font_name not in font_results:
+                note = (
+                    "Found" if found else "Not found (fallback font will be used)"
                 )
+                font_results[font_name] = (found, note)
+
+            if font_name not in font_results:
+                font_results[font_name] = (
+                    False,
+                    "Could not check (font tools unavailable)",
+                )
+
+        for font_name in font_names:
+            ok, note = font_results[font_name]
+            checks.append((f"Font: {font_name}", ok, note))
 
         for name, ok, detail in checks:
             status = "PASS" if ok else "FAIL"

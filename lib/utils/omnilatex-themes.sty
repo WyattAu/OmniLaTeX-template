@@ -71,6 +71,75 @@
       \expandafter\color\expandafter{\csname omnilatex@clr@#1@fg\endcsname}%
     }%
   }
+  %% Patch block environments to apply stored bg colors
+  %% Only on TL2025+ where KOMA's \setkomacolor was removed
+  \RequirePackage{tcolorbox}
+  \tcbuselibrary{skins}
+  \makeatletter
+  \let\omnilatex@orig@block\block
+  \let\omnilatex@orig@endblock\endblock
+  \let\omnilatex@orig@alertblock\alertblock
+  \let\omnilatex@orig@endalertblock\endalertblock
+  \let\omnilatex@orig@exampleblock\exampleblock
+  \let\omnilatex@orig@endexampleblock\endexampleblock
+  \newcommand{\omnilatex@get@block@bg}[2]{%
+    \@ifundefined{omnilatex@clr@#1@bg}{#2}{\csname omnilatex@clr@#1@bg\endcsname}%
+  }
+  \newcommand{\omnilatex@get@block@fg}[2]{%
+    \@ifundefined{omnilatex@clr@#1@fg}{#2}{\csname omnilatex@clr@#1@fg\endcsname}%
+  }
+  \renewenvironment{block}[1]{%
+    \tcolorbox[
+      enhanced,
+      colback=\omnilatex@get@block@bg{block body}{white},
+      colframe=\omnilatex@get@block@bg{block title}{black},
+      coltitle=\omnilatex@get@block@fg{block title}{white},
+      fonttitle=\bfseries,
+      title={#1},
+      boxrule=0.4pt,
+      arc=1pt,
+      left=4pt, right=4pt, top=2pt, bottom=2pt,
+      before skip=6pt,
+      after skip=6pt,
+    ]%
+  }{%
+    \endtcolorbox
+  }
+  \renewenvironment{alertblock}[1]{%
+    \tcolorbox[
+      enhanced,
+      colback=\omnilatex@get@block@bg{block body alerted}{red!5},
+      colframe=\omnilatex@get@block@bg{block title alerted}{red!70!black},
+      coltitle=\omnilatex@get@block@fg{block title alerted}{white},
+      fonttitle=\bfseries,
+      title={#1},
+      boxrule=0.4pt,
+      arc=1pt,
+      left=4pt, right=4pt, top=2pt, bottom=2pt,
+      before skip=6pt,
+      after skip=6pt,
+    ]%
+  }{%
+    \endtcolorbox
+  }
+  \renewenvironment{exampleblock}[1]{%
+    \tcolorbox[
+      enhanced,
+      colback=\omnilatex@get@block@bg{block body example}{green!5},
+      colframe=\omnilatex@get@block@bg{block title example}{green!50!black},
+      coltitle=\omnilatex@get@block@fg{block title example}{white},
+      fonttitle=\bfseries,
+      title={#1},
+      boxrule=0.4pt,
+      arc=1pt,
+      left=4pt, right=4pt, top=2pt, bottom=2pt,
+      before skip=6pt,
+      after skip=6pt,
+    ]%
+  }{%
+    \endtcolorbox
+  }
+  \makeatother
 }{}% end \@ifundefined{setkomacolor}
 
 %% ── Theme Option ──────────────────────────────────

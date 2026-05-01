@@ -13,18 +13,71 @@
 \maketitle
 
 \section*{Abstract}
-This template demonstrates the OmniLaTeX article configuration.
+This template demonstrates the OmniLaTeX article configuration.  We present a
+concise overview of the formatting features available, including mathematics,
+figures, tables, and bibliographic references.
 
 \tableofcontents
 
 \section{Introduction}
-This section outlines the scope of the article.
+This section outlines the scope of the article~\cite{bibid}.  The central
+question motivating this work can be stated as follows: given a dataset
+$\mathcal{D} = \{(\mathbf{x}_i, y_i)\}_{i=1}^{N}$, how should one choose a
+model class $\mathcal{M}$ that balances expressiveness with generalisation?
+We address this question through both theoretical analysis and empirical
+evaluation.
+
+\section{Methodology}
+Our approach builds on the framework of regularised empirical risk
+minimisation.  Given a hypothesis $h \in \mathcal{H}$, the objective function
+is
+\begin{equation}
+    \mathcal{L}(h) = \frac{1}{N} \sum_{i=1}^{N} \ell\bigl(h(\mathbf{x}_i),\; y_i\bigr)
+    + \lambda\, \Omega(h),
+    \label{eq:objective}
+\end{equation}
+where $\ell$ is a convex loss function and $\Omega(h)$ is a complexity penalty
+with regularisation strength $\lambda > 0$.
 
 \section{Results}
-Summaries and discussion go here.
+We evaluate the proposed method on three benchmark datasets.  Table~\ref{tab:benchmarks}
+summarises the performance.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Classification accuracy (\%) on benchmark datasets.}
+    \label{tab:benchmarks}
+    \begin{tabular}{@{}lcccc@{}}
+        \toprule
+        Method & Dataset A & Dataset B & Dataset C & Average \\
+        \midrule
+        Baseline & 82.3 & 76.1 & 88.5 & 82.3 \\
+        Proposed & \textbf{89.7} & \textbf{83.4} & \textbf{92.1} & \textbf{88.4} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Figure~\ref{fig:training} illustrates the training convergence behaviour.
+
+\begin{figure}[htbp]
+    \centering
+    \fbox{\parbox{0.7\textwidth}{\centering\vspace{2cm}Figure placeholder:
+    Training and validation loss curves.\vspace{2cm}}}
+    \caption{Convergence of training and validation loss over 200 epochs.}
+    \label{fig:training}
+\end{figure}
+
+\section{Discussion}
+The results in Table~\ref{tab:benchmarks} demonstrate consistent improvements
+across all three benchmarks~\cite{einstein1905}.  The largest gain is observed
+on Dataset B, which contains the highest label noise, suggesting that the
+regularisation term effectively mitigates overfitting.
 
 \section{Conclusion}
-Key findings are highlighted in this section.
+Key findings are highlighted in this section~\cite{goossensLaTeXCompanion1993}.
+The proposed method achieves state-of-the-art accuracy while maintaining
+computational efficiency, making it suitable for deployment in resource-constrained
+environments.
 
 \printbibliography
 

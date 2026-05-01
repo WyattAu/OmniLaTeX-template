@@ -7,36 +7,98 @@
 
 \RequirePackage{config/document-settings}
 
+\title{Alexandra Chen}
+\cvrole{Senior Software Engineer}
+\cvcontact{alexandra.chen@example.com \textbar{} alexchen.dev}
+\cvphone{+1 (555) 012-3456}
+\cvlocation{San Francisco, CA}
+\cvlinks{%
+    \faGithub\; github.com/achen \quad
+    \faLinkedin\; linkedin.com/in/achen \quad
+    \faGlobe\; alexchen.dev%
+}
+\cvsummary{Results-driven software engineer with 8+ years of experience building
+scalable distributed systems and developer tooling.  Proven track record of
+leading cross-functional teams, shipping high-impact products at scale, and
+contributing to open-source infrastructure.  Passionate about performance
+optimisation, developer experience, and mentoring early-career engineers.}
+\cvbulletspacing{2pt}
+
 \begin{document}
 
 \maketitle
 
-\section{Profile}
-Multidisciplinary engineer with experience across software, hardware, and technical communication.
+\section{Professional Experience}
 
-\section{Experience}
-\subsection{Lead Engineer, Omni Labs}
+\subsection{Senior Software Engineer --- Meridian Systems, San Francisco}
+\textit{Jan 2022 -- Present}
 \begin{itemize}
-    \item Designed end-to-end automation workflows for LaTeX publishing pipelines.
-    \item Led a cross-functional team delivering multi-document template suites.
+    \item Architected a real-time event-processing pipeline handling 2\,M+
+        messages per second using Apache Kafka and Go, reducing P99 latency by
+        43\%.
+    \item Led migration from monolithic Ruby on Rails service to a
+        micro-frontend architecture with React and TypeScript, cutting average
+        page load time from 4.2\,s to 1.1\,s.
+    \item Directed a team of six engineers through quarterly planning, sprint
+        execution, and incident response rotations; mentored two junior
+        developers to mid-level promotion.
+    \item Introduced automated canary deployments with feature flags, achieving
+        zero-downtime releases for 18 consecutive months.
 \end{itemize}
 
-\subsection{Systems Engineer, Aurora Dynamics}
+\subsection{Software Engineer --- Aurora Dynamics, Boston}
+\textit{Jun 2019 -- Dec 2021}
 \begin{itemize}
-    \item Built simulation models for guidance and navigation control.
-    \item Authored technical reports and process documentation.
+    \item Developed simulation and visualisation tools in Python and C++ for
+        guidance, navigation, and control subsystems of autonomous aerial
+        vehicles.
+    \item Built a CI/CD pipeline with GitHub Actions and Docker that reduced
+        average build--test--deploy cycle from 45\,min to 12\,min.
+    \item Co-authored three internal technical standards on flight-software
+        testing adopted across two programme offices.
+\end{itemize}
+
+\subsection{Junior Engineer --- Polaris Labs, Austin}
+\textit{Aug 2017 -- May 2019}
+\begin{itemize}
+    \item Implemented RESTful APIs and database schemas for an IoT fleet
+        management platform serving 500+ connected devices.
+    \item Contributed to an open-source MQTT broker used by 1\,200+ stars on
+        GitHub; authored documentation and example projects.
 \end{itemize}
 
 \section{Education}
+
 \begin{itemize}
-    \item M.S. Engineering, Omni University, 2022
-    \item B.S. Applied Physics, Polaris College, 2019
+    \item \textbf{M.S.\ Computer Science} --- Stanford University, 2017.
+        Thesis: ``Adaptive Scheduling Strategies for Heterogeneous Stream
+        Processing.''
+    \item \textbf{B.S.\ Applied Physics} --- University of Texas at Austin,
+        2015.  Magna Cum Laude.
 \end{itemize}
 
 \section{Skills}
-Programming (Python, LuaLaTeX), data visualization, technical writing, systems integration.
 
-\section{Publications}
-Selected technical articles available upon request.
+\begin{description}
+    \item[Languages] Go, Python, TypeScript, Rust, C++, SQL
+    \item[Infrastructure] Kubernetes, Docker, Terraform, AWS, GCP
+    \item[Data] Kafka, PostgreSQL, Redis, Elasticsearch
+    \item[Practices] CI/CD, SRE, TDD, code review, agile
+\end{description}
+
+\section{Selected Publications}
+
+\begin{enumerate}
+    \item A.~Chen, M.~Rivera, ``Adaptive Windowing for Low-Latency Stream
+        Joins,'' \textit{Proc.\ VLDB Endowment}, vol.~15, no.~4, pp.~891--904,
+        2022.
+    \item A.~Chen, K.~Nguyen, ``Graceful Degradation in Distributed Actor
+        Systems,'' \textit{Proc.\ ACM SIGPLAN Int.\ Conf.\ on Functional
+        Programming}, pp.~112--124, 2021.
+\end{enumerate}
+
+\section{Languages}
+
+English (Native), Mandarin Chinese (Professional Working), Spanish (Conversational)
 
 \end{document}

@@ -205,6 +205,29 @@
   \AtBeginDocument{\rlap{\hebrewfont א}}%
 }
 
+% ── RTL Title Page Font Override ────────────────────────────────────────────
+% KOMA's \usekomafont{title} uses \sffamily which overrides fontspec's
+% automatic script-based font detection. For Arabic/Hebrew, we replace
+% \sffamily with the script-specific font family so the title page
+% renders in the correct script font.
+
+\AtBeginDocument{%
+  \IfStrEq{\omnilatex@rtlscript}{arabic}{%
+    \setkomafont{title}{\arabicfont\bfseries\Huge}%
+    \setkomafont{author}{\arabicfont\bfseries}%
+    \setkomafont{subtitle}{\arabicfont\normalsize}%
+    \setkomafont{date}{\arabicfont\normalsize}%
+    \setkomafont{publishers}{\arabicfont}%
+  }{}%
+  \IfStrEq{\omnilatex@rtlscript}{hebrew}{%
+    \setkomafont{title}{\hebrewfont\bfseries\Huge}%
+    \setkomafont{author}{\hebrewfont\bfseries}%
+    \setkomafont{subtitle}{\hebrewfont\normalsize}%
+    \setkomafont{date}{\hebrewfont\normalsize}%
+    \setkomafont{publishers}{\hebrewfont}%
+  }{}%
+}
+
 % ── Auto-Script Detection ───────────────────────────────────────────────────
 % When this package is loaded, detect the document language from
 % \omnilatex@language (set by omnilatex.cls) and apply the appropriate

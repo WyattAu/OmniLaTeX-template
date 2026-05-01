@@ -15,19 +15,74 @@
 \tableofcontents
 
 \chapter{Executive Summary}
-Highlight the most important findings and recommendations.
+This report presents the findings of a comprehensive performance audit
+conducted on the organisation's core data-processing infrastructure.  Key
+findings include a 38\% over-provisioning of compute resources, significant
+I/O bottlenecks in the primary database tier, and an opportunity to reduce
+annual infrastructure costs by approximately \$240\,000 through targeted
+optimisations.
 
 \chapter{Background}
-Describe the problem statement and context.
+The data-processing platform was originally deployed in 2019 to handle an
+anticipated throughput of 10\,000 transactions per second.  Since then, organic
+growth and three major product launches have increased peak load to
+27\,000 TPS, exceeding the original design envelope by nearly a factor of
+three.  This chapter describes the current architecture, its evolution, and the
+symptoms that prompted the present audit.
 
 \chapter{Analysis}
-Provide detailed analysis, calculations, and assessments.
+Provide detailed analysis, calculations, and assessments.  Table~\ref{tab:metrics}
+summarises the key performance metrics observed during the two-week monitoring
+period.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Infrastructure performance summary.}
+    \label{tab:metrics}
+    \begin{tabular}{@{}lrrr@{}}
+        \toprule
+        Metric & Target & Observed & Status \\
+        \midrule
+        Avg.\ response time (ms) & $< 200$ & 312 & \textcolor{red}{Over} \\
+        P99 latency (ms) & $< 500$ & 1\,240 & \textcolor{red}{Over} \\
+        CPU utilisation (\%) & 60--80 & 43 & \textcolor{orange}{Under} \\
+        Memory utilisation (\%) & 70--85 & 62 & \textcolor{orange}{Under} \\
+        Disk I/O wait (\%) & $< 10$ & 28 & \textcolor{red}{Over} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The elevated disk I/O wait is the primary driver of latency degradation.  The
+storage subsystem saturates at approximately 18\,000 IOPS, whereas peak demand
+reaches 24\,000 IOPS.  Figure~\ref{fig:iops} illustrates the IOPS demand
+profile over a representative 24-hour period.
+
+\begin{figure}[htbp]
+    \centering
+    \fbox{\parbox{0.7\textwidth}{\centering\vspace{2cm}Figure placeholder:
+    24-hour IOPS demand profile.\vspace{2cm}}}
+    \caption{Disk IOPS demand versus capacity over a typical day.}
+    \label{fig:iops}
+\end{figure}
 
 \chapter{Recommendations}
-List actionable recommendations.
+Based on the analysis above, we recommend the following actions, prioritised by
+impact and implementation effort:
+
+\begin{enumerate}
+    \item \textbf{Migrate to NVMe-backed storage} --- Expected to raise the
+        IOPS ceiling to 80\,000, eliminating the current bottleneck.
+    \item \textbf{Right-size compute instances} --- Reducing CPU and memory
+        allocations by 30--35\% on 40\% of workloads without impacting SLAs.
+    \item \textbf{Implement connection pooling} --- Reuse database connections
+        to reduce per-query overhead by an estimated 15\%.
+    \item \textbf{Introduce read replicas} --- Offload reporting queries to
+        dedicated read replicas to isolate analytical workloads.
+\end{enumerate}
 
 \appendix
 \chapter{Supporting Data}
-Include raw data, tables, or figures supporting the report.
+Include raw data, extended monitoring logs, and cost projections supporting the
+recommendations in this report.
 
 \end{document}

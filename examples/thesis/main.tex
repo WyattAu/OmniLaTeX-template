@@ -16,20 +16,78 @@
 
 \mainmatter
 \chapter{Introduction}
-Summarize the research motivation and objectives.
+Summarize the research motivation and objectives~\cite{bibid}.  Provide context
+by reviewing relevant prior work and clearly state the gap this thesis aims to
+address.  Outline the structure of the document and highlight the key
+contributions.
+
+\chapter{Background and Related Work}
+Review the theoretical foundations underpinning the research~\cite{knuthTeXbook1986}.
+Discuss established methods in the field, their strengths, and their
+limitations.  Position the present work within the broader research landscape.
 
 \chapter{Methodology}
-Document experimental design, data acquisition, and analysis steps.
+Document experimental design, data acquisition, and analysis
+steps~\cite{knuthTeXbook1986}.  The governing equation for the system under
+study is given by
+\begin{equation}
+    \frac{\partial u}{\partial t}
+    = \alpha \nabla^{2} u + f(\mathbf{x}, t),
+    \label{eq:diffusion}
+\end{equation}
+where $u$ is the field variable, $\alpha$ is the diffusivity, and
+$f(\mathbf{x}, t)$ represents the source term.
+
+Numerical experiments were carried out on a uniform grid with spacing
+$\Delta x = 0.01$ and a time step satisfying the CFL condition
+$\Delta t \leq \Delta x^{2} / (2\alpha)$.  Convergence was verified by
+refining the mesh until the $L^{2}$-norm of the error fell below $10^{-6}$.
 
 \chapter{Results}
-Present findings supported by figures and tables.
+Present findings supported by figures and tables~\cite{einstein1905}.  Figure~\ref{fig:convergence} shows the
+convergence behaviour of the proposed scheme.
+
+\begin{figure}[htbp]
+    \centering
+    \fbox{\parbox{0.7\textwidth}{\centering\vspace{2cm}Figure placeholder:
+    Convergence plot of the numerical scheme.\vspace{2cm}}}
+    \caption{Convergence of the numerical solution with mesh refinement.}
+    \label{fig:convergence}
+\end{figure}
+
+Table~\ref{tab:results} summarises the error metrics for each refinement
+level.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Error metrics for successive mesh refinements.}
+    \label{tab:results}
+    \begin{tabular}{@{}lccc@{}}
+        \toprule
+        Level & $\Delta x$ & $L^{2}$ error & Order \\
+        \midrule
+        1 & 0.100 & $3.42 \times 10^{-2}$ & --- \\
+        2 & 0.050 & $8.67 \times 10^{-3}$ & 1.98 \\
+        3 & 0.025 & $2.18 \times 10^{-3}$ & 1.99 \\
+        4 & 0.012 & $5.47 \times 10^{-4}$ & 2.00 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\chapter{Discussion}
+Interpret the results in the context of the research questions.  Compare the
+observed convergence rate with theoretical predictions and discuss possible
+sources of discrepancy~\cite{birdNaturalLanguageProcessing2009}.
 
 \chapter{Conclusion}
-Highlight contributions, limitations, and future work.
+Highlight contributions, limitations, and future work.  Suggest directions for
+extending the methodology to more complex geometries and multi-physics
+coupling scenarios.
 
 \appendix
 \chapter{Additional Material}
-Provide supporting derivations or extended data.
+Provide supporting derivations, extended data tables, and supplementary
+figures.
 
 \backmatter
 \printbibliography

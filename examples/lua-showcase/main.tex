@@ -1,0 +1,273 @@
+% Lua Integration Showcase
+% Demonstrates LuaLaTeX's embedded Lua engine with practical examples
+
+%!TEX TS-program = lualatex
+
+\documentclass[
+    language=english,
+    doctype=article,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+% ==================================================================
+\section{Inline Lua Execution}
+% ==================================================================
+
+The \texttt{\textbackslash directlua} command executes Lua code and prints the
+result of \texttt{tex.print()} calls directly into the document.
+
+2 + 2 = \directlua{tex.print(2 + 2)}
+
+Lua can access the current date and time:
+\directlua{
+    local t = os.date("*t")
+    tex.print(string.format(
+        "Year: \%d, Month: \%d, Day: \%d",
+        t.year, t.month, t.day
+    ))
+}
+
+% ==================================================================
+\section{Lua Functions}
+% ==================================================================
+
+Define reusable Lua functions in a \texttt{\textbackslash directlua} block, then
+call them later.
+
+\directlua{
+    function greet(name)
+        tex.print("Hello, " .. name .. "! Welcome to LuaLaTeX.")
+    end
+}
+
+\directlua{greet("World")}
+\directlua{greet("OmniLaTeX User")}
+
+% ==================================================================
+\section{Table Manipulation}
+% ==================================================================
+
+Lua tables are powerful data structures.  Here we create a table of programming
+languages, sort it, and typeset it as an itemized list.
+
+\begin{itemize}
+\directlua{
+    local langs = {"Lua", "Python", "Haskell", "Rust", "Go"}
+    table.sort(langs)
+    for i, lang in ipairs(langs) do
+        tex.print("\\item " .. lang)
+    end
+}
+\end{itemize}
+
+\medskip
+
+A word-count table built from a sentence:
+
+\directlua{
+    local sentence = "the quick brown fox jumps over the lazy dog"
+    local counts = {}
+    for word in sentence:gmatch("\%S+") do
+        counts[word] = (counts[word] or 0) + 1
+    end
+    tex.print("\\begin{tabular}{lc}")
+    tex.print("\\toprule")
+    tex.print("\\textbf{Word} & \\textbf{Count} \\\\")
+    tex.print("\\midrule")
+    for w, c in pairs(counts) do
+        tex.print(w .. " & " .. c .. " \\\\")
+    end
+    tex.print("\\bottomrule")
+    tex.print("\\end{tabular}")
+}
+
+% ==================================================================
+\section{String Processing}
+% ==================================================================
+
+Lua's pattern-matching library is ideal for text transformations.
+
+\directlua{
+    local s = "hello_world_example"
+    local title = s:gsub("_", " "):gsub("(%a)([\%w]*)", function(first, rest)
+        return first:upper() .. rest:lower()
+    end)
+    tex.print("Title case: " .. title)
+}
+
+\medskip
+
+Extracting all numbers from a string:
+
+\directlua{
+    local data = "version 3.14 has 42 improvements and 7 bug fixes"
+    local nums = {}
+    for n in data:gmatch("\%d+\.?\%d*") do
+        nums[#nums + 1] = n
+    end
+    tex.print("Numbers found: " .. table.concat(nums, ", "))
+}
+
+% ==================================================================
+\section{Mathematical Computation}
+% ==================================================================
+
+Compute the first 12 Fibonacci numbers using a Lua function:
+
+\directlua{
+    function fib(n)
+        if n <= 1 then return n end
+        local a, b = 0, 1
+        for i = 2, n do a, b = b, a + b end
+        return b
+    end
+}
+
+\begin{center}
+\begin{tabular}{r*{6}{c}}
+\toprule
+$n$     & 1 & 2 & 3 & 4 & 5 & 6 \\
+\midrule
+$F(n)$  & \directlua{tex.print(fib(1))} & \directlua{tex.print(fib(2))} &
+          \directlua{tex.print(fib(3))} & \directlua{tex.print(fib(4))} &
+          \directlua{tex.print(fib(5))} & \directlua{tex.print(fib(6))} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+
+\begin{center}
+\begin{tabular}{r*{6}{c}}
+\toprule
+$n$     & 7 & 8 & 9 & 10 & 11 & 12 \\
+\midrule
+$F(n)$  & \directlua{tex.print(fib(7))} & \directlua{tex.print(fib(8))} &
+          \directlua{tex.print(fib(9))} & \directlua{tex.print(fib(10))} &
+          \directlua{tex.print(fib(11))} & \directlua{tex.print(fib(12))} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ==================================================================
+\section{Custom Lua-Backed Commands}
+% ==================================================================
+
+Define LaTeX commands whose implementations live entirely in Lua.
+
+\directlua{
+    function smartdate(format_str)
+        local t = os.date("*t")
+        local months = {
+            "January","February","March","April","May","June",
+            "July","August","September","October","November","December"
+        }
+        if format_str == "long" then
+            tex.print(months[t.month] .. " " .. t.day .. ", " .. t.year)
+        elseif format_str == "iso" then
+            tex.print(string.format("\%04d-\%02d-\%02d", t.year, t.month, t.day))
+        else
+            tex.print(os.date("\%d \%B \%Y"))
+        end
+    end
+}
+
+\newcommand{\smartdate}[1]{\directlua{smartdate("#1")}}
+
+Long date: \smartdate{long} \quad ISO date: \smartdate{iso}
+
+\medskip
+
+\newcommand{\luasum}[1]{\directlua{%
+    local sum = 0
+    for v in #1:gmatch("-?\%d+\.?\%d*") do sum = sum + tonumber(v) end
+    tex.print(sum)
+}}
+
+\luasum{10,20,30,40} = \luasum{10 20 30 40} \quad
+\luasum{1.5 2.5 3} = \luasum{1.5 2.5 3}
+
+% ==================================================================
+\section{Practical Example: Auto-Generated CSV Table}
+% ==================================================================
+
+A genuinely useful pattern --- parse CSV data with Lua and render it as a
+\LaTeX{} table with automatic alignment detection.
+
+\directlua{
+    local csv = [[
+Name,Role,Experience
+Alice,Engineer,5
+Bob,Designer,3
+Carol,Manager,8
+Dave,Engineer,6
+Eve,Analyst,2
+]]
+
+    local rows = {}
+    for line in csv:gmatch("[^\r\n]+") do
+        local row = {}
+        for field in line:gmatch("([^,]+)") do
+            row[#row + 1] = field
+        end
+        if #row > 0 then rows[#rows + 1] = row end
+    end
+
+    local ncols = #rows[1]
+    local colspec = "l" .. string.rep("c", ncols - 1)
+
+    tex.print("\\begin{table}[htbp]")
+    tex.print("\\centering")
+    tex.print("\\caption{Team members generated from CSV data}")
+    tex.print("\\label{tab:csv}")
+    tex.print("\\begin{tabular}{" .. colspec .. "}")
+    tex.print("\\toprule")
+
+    for i, row in ipairs(rows) do
+        if i == 1 then
+            tex.print("\\textbf{" .. table.concat(row, "} & \\textbf{") .. "} \\\\")
+            tex.print("\\midrule")
+        else
+            tex.print(table.concat(row, " & ") .. " \\\\")
+        end
+    end
+
+    tex.print("\\bottomrule")
+    tex.print("\\end{tabular}")
+    tex.print("\\end{table}")
+}
+
+% ==================================================================
+\section{TeX--Lua Interaction}
+% ==================================================================
+
+Pass data from \LaTeX{} into Lua and back:
+
+\directlua{
+    local texdata = {}
+    function texdata.add(key, value)
+        texdata[key] = value
+    end
+    function texdata.get(key)
+        return texdata[key]
+    end
+}
+
+\newcommand{\storedata}[2]{\directlua{texdata.add("#1", "#2")}}
+\newcommand{\retrieve}[1]{\directlua{tex.print(texdata.get("#1"))}}
+
+\storedata{project}{OmniLaTeX}
+\storedata{version}{1.0}
+\storedata{engine}{LuaLaTeX}
+
+Project name: \retrieve{project}, version \retrieve{version}, built with \retrieve{engine}.
+
+\end{document}

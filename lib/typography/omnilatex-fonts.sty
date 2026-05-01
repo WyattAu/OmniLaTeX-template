@@ -44,6 +44,58 @@
 % Source: https://tug.org/FontCatalogue/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% ── Font Setter Commands ──────────────────────────────────────────────────────
+% Users call these in the preamble to override the default fonts.
+% Each setter checks that the font exists before applying.
+% These apply the font immediately via fontspec, so call them after
+% \documentclass but before \begin{document}.
+%
+% Usage:
+%   \setMainFont{TeX Gyre Termes}
+%   \setSansFont{Fira Sans}
+%   \setMonoFont[Scale=MatchLowercase]{Fira Code}
+%   \setMathFont{TeX Gyre Termes Math}
+%
+% If no setter is called, the OmniLaTeX defaults (Libertinus family) are used.
+
+\newcommand{\setMainFont}[1]{%
+    \IfFontExistsTF{#1}{%
+        \setmainfont[Numbers=Lowercase,Scale=MatchLowercase]{#1}%
+    }{%
+        \ClassWarning{omnilatex-fonts}{Font '#1' not found. Main font unchanged.}%
+    }%
+}
+
+\newcommand{\setSansFont}[1]{%
+    \IfFontExistsTF{#1}{%
+        \setsansfont[Scale=MatchLowercase]{#1}%
+    }{%
+        \ClassWarning{omnilatex-fonts}{Font '#1' not found. Sans font unchanged.}%
+    }%
+}
+
+\newcommand{\setMonoFont}[2][]{%
+    \IfFontExistsTF{#2}{%
+        \setmonofont[Scale=MatchLowercase,#1]{#2}%
+    }{%
+        \ClassWarning{omnilatex-fonts}{Font '#2' not found. Mono font unchanged.}%
+    }%
+}
+
+\newcommand{\setMathFont}[1]{%
+    \IfFontExistsTF{#1}{%
+        \setmathfont[
+            mathrm=sym,mathit=sym,mathsf=sym,mathbf=sym,mathtt=sym,%
+            NFSSFamily=libertinus,%
+            BoldItalicFont={},ItalicFont={},SmallCapsFont={},%
+        ]{#1}%
+    }{%
+        \ClassWarning{omnilatex-fonts}{Font '#1' not found. Math font unchanged.}%
+    }%
+}
+
+% ── Default Font Loading ─────────────────────────────────────────────────────
+
 % Main font: Libertinus Serif (replacing TeX Gyre Pagella)
 \setmainfont[
     Numbers=Lowercase,% Hanging/OldStyle numbers through Lowercase numbers

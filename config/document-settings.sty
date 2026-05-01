@@ -8,6 +8,36 @@
 % The settings here rarely need to be changed, but also don't fit into the *.cls aka
 % documentclass file.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% ── OmniLaTeX Override Quick Reference ──────────────────────────────────────────
+%
+% Fonts (call in preamble before \begin{document}):
+%   \setMainFont{Font Name}              Override main serif font
+%   \setSansFont{Font Name}              Override sans-serif font
+%   \setMonoFont[Scale=MatchLowercase]{Font Name}  Override monospace font
+%   \setMathFont{Font Name}              Override math font
+%
+% Page geometry:
+%   \setCustomMargins{left}{right}{top}{bottom}  Override margins (e.g. 25mm)
+%   \documentlayout{DIV=12,...}          KOMA typearea options (advanced)
+%   \documentfontsize{12pt}              Font size
+%
+% Spacing and formatting:
+%   \documentlinespacing{onehalf|double|1.2}   Line spacing
+%   \documentparspacing{none|half|full}        Paragraph spacing
+%   \documentitemspacing{none|compact|normal}  List item spacing
+%   \documentfontmode{serif|sans|mono}         Default text font family
+%
+% Colors and themes:
+%   \usetheme{midnight|forest|rose|sepia|monochrome|default}  Apply color theme
+%   \setthemecolor{accent}{blue!60!black}      Override a theme color slot
+%   \darkmode / \lightmode                     Toggle dark/light mode
+%
+% RTL languages (Arabic, Hebrew):
+%   \setArabicFont{Font Name}          Override Arabic font
+%   \setHebrewFont{Font Name}          Override Hebrew font
+%
+% ────────────────────────────────────────────────────────────────────────────────
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Document type
