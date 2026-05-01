@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OmniLaTeX — Document Gallery</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --primary:#1F407A;--primary-light:#2A5599;--primary-dark:#152C56;
+  --accent:#4A90D9;--accent-light:#6BA8F0;
+  --bg:#0D1117;--bg-card:#161B22;--bg-surface:#21262D;--bg-elevated:#30363D;
+  --text:#E6EDF3;--text-secondary:#8B949E;--text-muted:#6E7681;
+  --border:#30363D;--border-light:#3D444D;
+  --success:#3FB950;--radius:12px;--radius-sm:8px;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent-light);text-decoration:none;transition:color .15s}
+a:hover{color:#fff}
+
+header{
+  background:linear-gradient(180deg,var(--primary-dark) 0%,var(--bg) 100%);
+  border-bottom:1px solid var(--border);
+  padding:48px 24px 40px;text-align:center;
+}
+header .logo{
+  font-size:2.25rem;font-weight:700;letter-spacing:-.5px;
+  background:linear-gradient(135deg,var(--accent-light),#fff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;margin-bottom:8px;
+}
+header .tagline{color:var(--text-secondary);font-size:1.05rem;max-width:600px;margin:0 auto}
+
+nav{
+  display:flex;justify-content:center;gap:8px;padding:16px 24px;
+  background:var(--bg-card);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;
+}
+nav a{
+  padding:6px 16px;border-radius:20px;font-size:.875rem;font-weight:500;
+  color:var(--text-secondary);transition:all .15s;
+}
+nav a:hover,nav a.active{background:var(--primary);color:#fff}
+
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+section{padding:48px 0}
+
+.cat-tabs{
+  display:flex;gap:6px;margin-bottom:28px;overflow-x:auto;
+  padding-bottom:4px;scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+}
+.cat-tabs::-webkit-scrollbar{height:4px}
+.cat-tabs::-webkit-scrollbar-track{background:transparent}
+.cat-tabs::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.cat-tab{
+  padding:8px 18px;border-radius:20px;font-size:.82rem;font-weight:500;
+  background:var(--bg-card);color:var(--text-secondary);border:1px solid var(--border);
+  cursor:pointer;white-space:nowrap;transition:all .15s;
+}
+.cat-tab:hover{border-color:var(--border-light);color:var(--text)}
+.cat-tab.active{background:var(--primary);color:#fff;border-color:var(--primary-light)}
+
+.grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px;
+}
+.card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);overflow:hidden;cursor:pointer;
+  transition:all .2s;position:relative;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--accent);opacity:0;transition:opacity .2s;z-index:2;
+}
+.card:hover{border-color:var(--border-light);transform:translateY(-2px);
+  box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.card:hover::before{opacity:1}
+.card.featured{grid-column:1/-1}
+.card.featured .card-preview{height:320px}
+
+.card-preview{
+  height:200px;background:var(--bg-surface);position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.card-preview iframe{
+  width:200%;height:200%;border:none;
+  transform:scale(.5);transform-origin:top left;
+  pointer-events:none;
+}
+.card-placeholder{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  color:var(--text-muted);
+}
+.card-placeholder svg{opacity:.4}
+.card-placeholder span{font-size:.78rem}
+
+@keyframes shimmer{
+  0%{background-position:-400px 0}
+  100%{background-position:400px 0}
+}
+.card-loading .card-preview::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,var(--bg-surface) 25%,var(--bg-elevated) 50%,var(--bg-surface) 75%);
+  background-size:400px 100%;animation:shimmer 1.5s infinite;
+  z-index:1;
+}
+
+.card-info{padding:16px 18px}
+.card-name{font-weight:600;font-size:.92rem;margin-bottom:3px}
+.card-desc{font-size:.78rem;color:var(--text-secondary);line-height:1.5;margin-bottom:8px}
+.card-cat{
+  font-size:.68rem;color:var(--text-muted);
+  background:var(--bg);padding:3px 8px;border-radius:4px;
+  display:inline-block;text-transform:uppercase;letter-spacing:.04em;font-weight:600;
+}
+
+.lightbox{
+  position:fixed;inset:0;z-index:1000;display:none;
+  background:rgba(0,0,0,.85);backdrop-filter:blur(4px);
+  flex-direction:column;
+}
+.lightbox.open{display:flex}
+.lightbox-header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 20px;background:var(--bg-card);
+  border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.lightbox-title{font-weight:600;font-size:1rem}
+.lightbox-close{
+  width:36px;height:36px;border-radius:8px;border:1px solid var(--border);
+  background:var(--bg-surface);color:var(--text-secondary);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;transition:all .15s;
+}
+.lightbox-close:hover{background:var(--bg-elevated);color:var(--text);border-color:var(--border-light)}
+.lightbox-body{flex:1;position:relative}
+.lightbox-body iframe{width:100%;height:100%;border:none}
+
+.empty-state{
+  text-align:center;padding:80px 24px;color:var(--text-muted);
+  grid-column:1/-1;
+}
+.empty-state svg{margin-bottom:16px;opacity:.3}
+.empty-state p{font-size:.9rem}
+
+footer{
+  border-top:1px solid var(--border);padding:32px 24px;
+  text-align:center;color:var(--text-muted);font-size:.82rem;
+}
+footer a{color:var(--text-secondary)}
+
+@media(max-width:768px){
+  header{padding:32px 16px 28px}
+  header .logo{font-size:1.75rem}
+  .container{padding:0 16px}
+  section{padding:32px 0}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+  nav{gap:4px;padding:12px 16px;flex-wrap:wrap}
+  nav a{padding:6px 12px;font-size:.8rem}
+  .cat-tabs{gap:4px}
+  .cat-tab{padding:6px 14px;font-size:.78rem}
+}
+@media(max-width:480px){
+  .grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">OmniLaTeX</div>
+  <p class="tagline">33 professionally crafted LaTeX document templates. Click any card to preview the full PDF.</p>
+</header>
+
+<nav>
+  <a href="gallery.html">Template Picker</a>
+  <a href="index.html" class="active">PDF Gallery</a>
+  <a href="verify.html">Verify Builds</a>
+  <a href="https://github.com/WyattAu/OmniLaTeX-template" target="_blank">GitHub</a>
+</nav>
+
+<section>
+  <div class="container">
+    <div class="cat-tabs" id="cat-tabs"></div>
+    <div class="grid" id="doc-grid"></div>
+  </div>
+</section>
+
+<footer>
+  <p>
+    OmniLaTeX Template &mdash;
+    <a href="https://github.com/WyattAu/OmniLaTeX-template" target="_blank">GitHub</a> &middot;
+    <a href="https://github.com/WyattAu/OmniLaTeX-template/issues" target="_blank">Issues</a>
+  </p>
+</footer>
+
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-header">
+    <span class="lightbox-title" id="lb-title"></span>
+    <button class="lightbox-close" id="lb-close" aria-label="Close">&times;</button>
+  </div>
+  <div class="lightbox-body">
+    <iframe id="lb-iframe" title="PDF preview"></iframe>
+  </div>
+</div>
+
+<script>
+const CATS = [
+  {id:'all',label:'All'},
+  {id:'featured',label:'Root'},
+  {id:'academic',label:'Academic'},
+  {id:'professional',label:'Professional'},
+  {id:'books',label:'Books & Reference'},
+  {id:'features',label:'Themes & Features'},
+  {id:'multilingual',label:'Multilingual'},
+  {id:'templates',label:'Templates'},
+];
+
+const DOCS = [
+  {id:'root',name:'Root Document',desc:'Full Template Showcase',cat:'featured',file:'main.pdf'},
+  {id:'thesis',name:'Thesis',desc:'Academic thesis',cat:'academic',file:'pdfs/thesis/main.pdf'},
+  {id:'thesis-spacing',name:'Thesis (Spacing)',desc:'Line spacing variants',cat:'academic',file:'pdfs/thesis-spacing/main.pdf'},
+  {id:'thesis-tuhh',name:'Thesis (TUHH)',desc:'TUHH institution',cat:'academic',file:'pdfs/thesis-tuhh/main.pdf'},
+  {id:'dissertation',name:'Dissertation',desc:'Dissertation',cat:'academic',file:'pdfs/dissertation/main.pdf'},
+  {id:'article',name:'Article',desc:'Standard article',cat:'academic',file:'pdfs/article/main.pdf'},
+  {id:'journal',name:'Journal',desc:'Journal article',cat:'academic',file:'pdfs/journal/main.pdf'},
+  {id:'inline-paper',name:'Inline Paper',desc:'Inline research paper',cat:'academic',file:'pdfs/inline-paper/main.pdf'},
+  {id:'citation-styles',name:'Citation Styles',desc:'Bibliography styles',cat:'academic',file:'pdfs/citation-styles/main.pdf'},
+  {id:'cv',name:'CV',desc:'Curriculum vitae',cat:'professional',file:'pdfs/cv/main.pdf'},
+  {id:'cv-twopage',name:'CV (Two-Page)',desc:'Two-page CV',cat:'professional',file:'pdfs/cv-twopage/main.pdf'},
+  {id:'cover-letter',name:'Cover Letter',desc:'Cover letter',cat:'professional',file:'pdfs/cover-letter/main.pdf'},
+  {id:'cover-letter-formal',name:'Cover Letter (Formal)',desc:'Formal cover letter',cat:'professional',file:'pdfs/cover-letter-formal/main.pdf'},
+  {id:'letter',name:'Letter',desc:'Formal letter',cat:'professional',file:'pdfs/letter/main.pdf'},
+  {id:'presentation',name:'Presentation',desc:'Slide presentation',cat:'professional',file:'pdfs/presentation/main.pdf'},
+  {id:'poster',name:'Poster',desc:'Conference poster',cat:'professional',file:'pdfs/poster/main.pdf'},
+  {id:'standard',name:'Standard',desc:'Standards document',cat:'professional',file:'pdfs/standard/main.pdf'},
+  {id:'patent',name:'Patent',desc:'Patent application',cat:'professional',file:'pdfs/patent/main.pdf'},
+  {id:'book',name:'Book',desc:'Book',cat:'books',file:'pdfs/book/main.pdf'},
+  {id:'manual',name:'Manual',desc:'Manual / handbook',cat:'books',file:'pdfs/manual/main.pdf'},
+  {id:'dictionary',name:'Dictionary',desc:'Dictionary / lexicon',cat:'books',file:'pdfs/dictionary/main.pdf'},
+  {id:'technical-report',name:'Technical Report',desc:'Technical report',cat:'books',file:'pdfs/technical-report/main.pdf'},
+  {id:'color-themes',name:'Color Themes',desc:'All color palettes',cat:'features',file:'pdfs/color-themes/main.pdf'},
+  {id:'article-color',name:'Article (Color)',desc:'Color mode article',cat:'features',file:'pdfs/article-color/main.pdf'},
+  {id:'multi-language',name:'Multi-Language',desc:'Multiple languages',cat:'multilingual',file:'pdfs/multi-language/main.pdf'},
+  {id:'cjk-chinese',name:'CJK Chinese',desc:'Chinese document',cat:'multilingual',file:'pdfs/cjk-chinese/main.pdf'},
+  {id:'cjk-japanese',name:'CJK Japanese',desc:'Japanese document',cat:'multilingual',file:'pdfs/cjk-japanese/main.pdf'},
+  {id:'cjk-korean',name:'CJK Korean',desc:'Korean document',cat:'multilingual',file:'pdfs/cjk-korean/main.pdf'},
+  {id:'rtl-arabic',name:'RTL Arabic',desc:'Arabic document',cat:'multilingual',file:'pdfs/rtl-arabic/main.pdf'},
+  {id:'rtl-hebrew',name:'RTL Hebrew',desc:'Hebrew document',cat:'multilingual',file:'pdfs/rtl-hebrew/main.pdf'},
+  {id:'minimal-starter',name:'Minimal Starter',desc:'Bare minimum template',cat:'templates',file:'pdfs/minimal-starter/main.pdf'},
+  {id:'minimal-custom',name:'Minimal Custom',desc:'Customized minimal',cat:'templates',file:'pdfs/minimal-custom/main.pdf'},
+  {id:'accessibility-test',name:'Accessibility',desc:'Accessibility features',cat:'templates',file:'pdfs/accessibility-test/main.pdf'},
+  {id:'lua-showcase',name:'Lua Showcase',desc:'LuaLaTeX integration',cat:'templates',file:'pdfs/lua-showcase/main.pdf'},
+];
+
+const catTabs = document.getElementById('cat-tabs');
+const docGrid = document.getElementById('doc-grid');
+const lightbox = document.getElementById('lightbox');
+const lbTitle = document.getElementById('lb-title');
+const lbIframe = document.getElementById('lb-iframe');
+const lbClose = document.getElementById('lb-close');
+const loadedCards = new Set();
+
+let activeCat = 'all';
+
+function renderTabs() {
+  catTabs.innerHTML = CATS.map(c =>
+    `<button class="cat-tab${c.id===activeCat?' active':''}" data-cat="${c.id}">${c.label}</button>`
+  ).join('');
+}
+
+function filteredDocs() {
+  if (activeCat === 'all') return DOCS;
+  return DOCS.filter(d => d.cat === activeCat);
+}
+
+function placeholderSVG() {
+  return `<div class="card-placeholder">
+    <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <line x1="16" y1="13" x2="8" y2="13"/>
+      <line x1="16" y1="17" x2="8" y2="17"/>
+      <polyline points="10 9 9 9 8 9"/>
+    </svg>
+    <span>Scroll to load preview</span>
+  </div>`;
+}
+
+function renderGrid() {
+  const docs = filteredDocs();
+  if (!docs.length) {
+    docGrid.innerHTML = `<div class="empty-state">
+      <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <p>No documents in this category.</p>
+    </div>`;
+    return;
+  }
+  docGrid.innerHTML = docs.map(d => {
+    const isFeatured = d.cat === 'featured';
+    const isLoaded = loadedCards.has(d.id);
+    return `<div class="card card-loading${isFeatured?' featured':''}" data-id="${d.id}" data-file="${d.file}">
+      <div class="card-preview">${isLoaded ? '' : placeholderSVG()}</div>
+      <div class="card-info">
+        <div class="card-name">${d.name}</div>
+        <div class="card-desc">${d.desc}</div>
+        <span class="card-cat">${d.cat}</span>
+      </div>
+    </div>`;
+  }).join('');
+  observeCards();
+}
+
+function loadCardPreview(card) {
+  const id = card.dataset.id;
+  const file = card.dataset.file;
+  if (loadedCards.has(id)) return;
+  loadedCards.add(id);
+  const preview = card.querySelector('.card-preview');
+  preview.innerHTML = '';
+  const iframe = document.createElement('iframe');
+  iframe.src = file;
+  iframe.loading = 'lazy';
+  iframe.setAttribute('aria-hidden', 'true');
+  preview.appendChild(iframe);
+  card.classList.remove('card-loading');
+}
+
+function observeCards() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        loadCardPreview(e.target);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { rootMargin: '200px' });
+  docGrid.querySelectorAll('.card').forEach(c => observer.observe(c));
+}
+
+catTabs.addEventListener('click', e => {
+  const tab = e.target.closest('.cat-tab');
+  if (!tab) return;
+  activeCat = tab.dataset.cat;
+  catTabs.querySelectorAll('.cat-tab').forEach(t => t.classList.toggle('active', t.dataset.cat === activeCat));
+  renderGrid();
+});
+
+docGrid.addEventListener('click', e => {
+  const card = e.target.closest('.card');
+  if (!card) return;
+  const doc = DOCS.find(d => d.id === card.dataset.id);
+  if (!doc) return;
+  lbTitle.textContent = doc.name + ' \u2014 ' + doc.desc;
+  lbIframe.src = doc.file;
+  lightbox.classList.add('open');
+  document.body.style.overflow = 'hidden';
+});
+
+function closeLightbox() {
+  lightbox.classList.remove('open');
+  document.body.style.overflow = '';
+  setTimeout(() => { lbIframe.src = ''; }, 200);
+}
+
+lbClose.addEventListener('click', closeLightbox);
+lightbox.addEventListener('click', e => {
+  if (e.target === lightbox || e.target.classList.contains('lightbox-body')) closeLightbox();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+});
+
+renderTabs();
+renderGrid();
+</script>
+</body>
+</html>
