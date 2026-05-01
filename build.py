@@ -182,6 +182,10 @@ class CommandRunner:
             return return_code, logs
         except FileNotFoundError as e:
             return -1, [f"Command not found: {cmd_args[0]}", str(e)]
+        except PermissionError as e:
+            return -1, [f"Permission denied: {cmd_args[0]}", str(e)]
+        except OSError as e:
+            return -1, [f"OS error running {cmd_args[0]}: {e}"]
 
 
 @contextmanager

@@ -4,8 +4,8 @@
         {
             "label": "Build: Root (dev)",
             "type": "shell",
-            "command": "python3",
-            "args": ["build.py", "--mode", "dev", "build-root"],
+            "command": "nix",
+            "args": ["develop", ".#", "--command", "python3", "build.py", "--mode", "dev", "build-root"],
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -23,8 +23,8 @@
         {
             "label": "Build: Root (prod)",
             "type": "shell",
-            "command": "python3",
-            "args": ["build.py", "--mode", "prod", "build-root"],
+            "command": "nix",
+            "args": ["develop", ".#", "--command", "python3", "build.py", "--mode", "prod", "build-root"],
             "group": "build",
             "problemMatcher": [],
             "presentation": {
@@ -35,8 +35,8 @@
         {
             "label": "Build: All (dev)",
             "type": "shell",
-            "command": "python3",
-            "args": ["build.py", "--mode", "dev", "build-all"],
+            "command": "nix",
+            "args": ["develop", ".#", "--command", "python3", "build.py", "--mode", "dev", "--force", "-j", "4", "build-all"],
             "group": "build",
             "problemMatcher": [],
             "presentation": {
@@ -47,8 +47,8 @@
         {
             "label": "Build: All (prod)",
             "type": "shell",
-            "command": "python3",
-            "args": ["build.py", "--mode", "prod", "build-all"],
+            "command": "nix",
+            "args": ["develop", ".#", "--command", "python3", "build.py", "--mode", "prod", "--force", "-j", "4", "build-all"],
             "group": "build",
             "problemMatcher": [],
             "presentation": {
@@ -59,12 +59,8 @@
         {
             "label": "Build: Examples (dev, checklist)",
             "type": "shell",
-            "command": "python3",
-            "args": [
-                "tools/build_examples_select.py",
-                "--mode",
-                "dev"
-            ],
+            "command": "nix",
+            "args": ["develop", ".#", "--command", "python3", "tools/build_examples_select.py", "--mode", "dev"],
             "group": "build",
             "problemMatcher": [],
             "presentation": {
@@ -75,12 +71,8 @@
         {
             "label": "Build: Examples (prod, checklist)",
             "type": "shell",
-            "command": "python3",
-            "args": [
-                "tools/build_examples_select.py",
-                "--mode",
-                "prod"
-            ],
+            "command": "nix",
+            "args": ["develop", ".#", "--command", "python3", "tools/build_examples_select.py", "--mode", "prod"],
             "group": "build",
             "problemMatcher": [],
             "presentation": {
@@ -91,14 +83,8 @@
         {
             "label": "Build: Example (prompt)",
             "type": "shell",
-            "command": "python3",
-            "args": [
-                "build.py",
-                "--mode",
-                "dev",
-                "build-example",
-                "${input:omnilatexExample}"
-            ],
+            "command": "nix",
+            "args": ["develop", ".#", "--command", "python3", "build.py", "--mode", "dev", "--force", "build-example", "${input:omnilatexExample}"],
             "group": "build",
             "problemMatcher": [],
             "presentation": {
@@ -109,8 +95,8 @@
         {
             "label": "List: Examples",
             "type": "shell",
-            "command": "python3",
-            "args": ["build.py", "list-examples"],
+            "command": "nix",
+            "args": ["develop", ".#", "--command", "python3", "build.py", "list-examples"],
             "problemMatcher": [],
             "presentation": {
                 "reveal": "always",
@@ -120,8 +106,8 @@
         {
             "label": "Clean: Root aux",
             "type": "shell",
-            "command": "python3",
-            "args": ["build.py", "clean-aux"],
+            "command": "nix",
+            "args": ["develop", ".#", "--command", "python3", "build.py", "clean-aux"],
             "problemMatcher": [],
             "presentation": {
                 "reveal": "silent",
@@ -131,8 +117,8 @@
         {
             "label": "Clean: Examples",
             "type": "shell",
-            "command": "python3",
-            "args": ["build.py", "clean-examples"],
+            "command": "nix",
+            "args": ["develop", ".#", "--command", "python3", "build.py", "clean-examples"],
             "problemMatcher": [],
             "presentation": {
                 "reveal": "silent",
@@ -142,8 +128,8 @@
         {
             "label": "Clean: Deep",
             "type": "shell",
-            "command": "python3",
-            "args": ["build.py", "clean"],
+            "command": "nix",
+            "args": ["develop", ".#", "--command", "python3", "build.py", "clean"],
             "problemMatcher": [],
             "presentation": {
                 "reveal": "always",
@@ -153,8 +139,8 @@
         {
             "label": "Preflight: Environment",
             "type": "shell",
-            "command": "python3",
-            "args": ["build.py", "--verbose", "preflight"],
+            "command": "nix",
+            "args": ["develop", ".#", "--command", "python3", "build.py", "--verbose", "preflight"],
             "problemMatcher": [],
             "presentation": {
                 "reveal": "always",
@@ -164,8 +150,20 @@
         {
             "label": "Test: Suite",
             "type": "shell",
-            "command": "python3",
-            "args": ["build.py", "test"],
+            "command": "nix",
+            "args": ["develop", ".#", "--command", "python3", "build.py", "test"],
+            "group": "test",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Test: Lean 4 Proofs",
+            "type": "shell",
+            "command": "nix",
+            "args": ["develop", ".#", "--command", "bash", "-c", "cd specs/proofs && lake build"],
             "group": "test",
             "problemMatcher": [],
             "presentation": {
@@ -176,8 +174,8 @@
         {
             "label": "Format: latexindent",
             "type": "shell",
-            "command": "latexindent",
-            "args": ["-w", "main.tex"],
+            "command": "nix",
+            "args": ["develop", ".#", "--command", "latexindent", "-w", "main.tex"],
             "problemMatcher": [],
             "presentation": {
                 "reveal": "always",
@@ -187,8 +185,8 @@
         {
             "label": "Lint: chktex",
             "type": "shell",
-            "command": "chktex",
-            "args": ["-q", "-v0", "main.tex"],
+            "command": "nix",
+            "args": ["develop", ".#", "--command", "chktex", "-q", "-v0", "main.tex"],
             "problemMatcher": [],
             "presentation": {
                 "reveal": "always",
@@ -198,8 +196,8 @@
         {
             "label": "Git: Pre-commit",
             "type": "shell",
-            "command": "pre-commit",
-            "args": ["run", "--all-files"],
+            "command": "nix",
+            "args": ["develop", ".#", "--command", "pre-commit", "run", "--all-files"],
             "problemMatcher": [],
             "presentation": {
                 "reveal": "always",
@@ -219,8 +217,8 @@
         {
             "label": "Stats: Word count",
             "type": "shell",
-            "command": "texcount",
-            "args": ["-total", "-q", "main.tex"],
+            "command": "nix",
+            "args": ["develop", ".#", "--command", "texcount", "-total", "-q", "main.tex"],
             "problemMatcher": [],
             "presentation": {
                 "reveal": "always",
@@ -230,21 +228,31 @@
         {
             "label": "Open: Build output",
             "type": "shell",
-            "command": "xdg-open",
-            "args": ["build/examples/"],
+            "command": "nix",
+            "args": ["develop", ".#", "--command", "xdg-open", "build/examples/"],
             "problemMatcher": [],
             "presentation": {
                 "reveal": "silent"
+            },
+            "options": {
+                "env": {
+                    "DISPLAY": ":0"
+                }
             }
         },
         {
             "label": "Open: Main PDF",
             "type": "shell",
-            "command": "xdg-open",
-            "args": ["main.pdf"],
+            "command": "nix",
+            "args": ["develop", ".#", "--command", "xdg-open", "main.pdf"],
             "problemMatcher": [],
             "presentation": {
                 "reveal": "silent"
+            },
+            "options": {
+                "env": {
+                    "DISPLAY": ":0"
+                }
             }
         }
     ],

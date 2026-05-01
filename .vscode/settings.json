@@ -50,7 +50,7 @@
                 "--shell-escape",
                 "--synctex=1",
                 "--file-line-error",
-                "--halt-on-error",
+                "--interaction=nonstopmode",
                 "--output-directory=build",
                 "%DOC%"
             ],
