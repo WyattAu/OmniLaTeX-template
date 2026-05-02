@@ -7,6 +7,21 @@ This project adheres to [Semantic versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.9.0] - 2026-05-02
+
+### Added
+- **CTAN CI workflow** — `.github/workflows/ctan.yml` validates CTAN zip contents (19 doctypes, LICENSE, omnilatex.cls), uploads artifact on tag push
+- **Overleaf zip script** — `scripts/make-overleaf-zip.sh` creates self-contained Overleaf-compatible zip with flat directory structure, path rewriting, and embedded README
+- **Overleaf documentation** — `docs/OVERLEAF.md` with setup guide, font fallback table, known limitations, custom font instructions
+- **Module-level integration tests** — 282 tests across 6 categories (document type registration, module file integrity, config validation, example integrity, cross-reference consistency, CTAN package); runs in <5 seconds
+- **CTAN zip tests** — 15 tests validating zip structure, contents, and exclusions
+- **Missing config files** — added `config/document-settings.sty` to 8 examples that were missing them (accessibility-test, citation-styles, color-themes, letter, poster, presentation, rtl-arabic, rtl-hebrew)
+- **Pages gallery** — added exam, homework, research-proposal to DOCS array (38 total cards)
+
+### Changed
+- **CI test job** — runs integration tests (test_modules, test_ctan) as primary gate; edge case compilation tests run as non-blocking secondary check
+- **Test infrastructure** — removed duplicate `tests/tests/` directory; fixed conftest imports; marked slow compilation tests with `pytest.mark.slow`
+
 ## [1.8.0] - 2026-05-02
 
 ### Added

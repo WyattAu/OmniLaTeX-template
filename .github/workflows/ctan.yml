@@ -1,0 +1,78 @@
+name: CTAN Package
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  ctan-zip:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build CTAN zip
+        run: bash scripts/make-ctan-zip.sh
+
+      - name: Validate CTAN zip contents
+        run: |
+          echo "Validating omnilatex.zip..."
+          ERRORS=0
+
+          if ! unzip -l omnilatex.zip | grep -q 'omnilatex\.cls$'; then
+            echo "::error::omnilatex.cls not found in zip"
+            ERRORS=$((ERRORS + 1))
+          else
+            echo "  [OK] omnilatex.cls found"
+          fi
+
+          EXPECTED_STY=(
+            article book cover-letter cv dictionary dissertation
+            exam homework inlinepaper journal letter manual
+            patent poster presentation research-proposal standard
+            technicalreport thesis
+          )
+          for sty in "${EXPECTED_STY[@]}"; do
+            if ! unzip -l omnilatex.zip | grep -q "document-types/${sty}\.sty$"; then
+              echo "::error::document-types/${sty}.sty not found in zip"
+              ERRORS=$((ERRORS + 1))
+            else
+              echo "  [OK] document-types/${sty}.sty found"
+            fi
+          done
+
+          STY_COUNT=$(unzip -l omnilatex.zip | grep -c 'document-types/.*\.sty$' || true)
+          if [ "$STY_COUNT" -ne 19 ]; then
+            echo "::error::Expected 19 .sty files in document-types/, found ${STY_COUNT}"
+            ERRORS=$((ERRORS + 1))
+          else
+            echo "  [OK] All 19 document-type .sty files found"
+          fi
+
+          if ! unzip -l omnilatex.zip | grep -q 'LICENSE$'; then
+            echo "::error::LICENSE not found in zip"
+            ERRORS=$((ERRORS + 1))
+          else
+            echo "  [OK] LICENSE found"
+          fi
+
+          if [ "$ERRORS" -gt 0 ]; then
+            echo "::error::Validation failed with ${ERRORS} error(s)"
+            exit 1
+          fi
+
+          echo ""
+          echo "All CTAN zip validation checks passed."
+
+      - name: Upload CTAN zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: omnilatex-ctan-zip
+          path: omnilatex.zip
+          retention-days: 90

@@ -14,3 +14,85 @@ def pytest_configure(config):
     config.addinivalue_line(
         "markers", "timeout: mark test with a timeout (handled by pytest-timeout)"
     )
+
+
+import pathlib
+
+REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
+
+
+@pytest.fixture
+def repo_root():
+    return REPO_ROOT
+
+
+ALL_DOCTYPE_NAMES = [
+    "thesis",
+    "dissertation",
+    "article",
+    "journal",
+    "inlinepaper",
+    "book",
+    "manual",
+    "technicalreport",
+    "standard",
+    "patent",
+    "cv",
+    "cover-letter",
+    "poster",
+    "presentation",
+    "letter",
+    "dictionary",
+    "homework",
+    "exam",
+    "research-proposal",
+]
+
+
+@pytest.fixture
+def all_doctype_names():
+    return list(ALL_DOCTYPE_NAMES)
+
+
+ALL_EXAMPLE_NAMES = [
+    "accessibility-test",
+    "article-color",
+    "article",
+    "book",
+    "citation-styles",
+    "cjk-chinese",
+    "cjk-japanese",
+    "cjk-korean",
+    "color-themes",
+    "cover-letter-formal",
+    "cover-letter",
+    "cv-twopage",
+    "cv",
+    "dictionary",
+    "dissertation",
+    "exam",
+    "homework",
+    "inline-paper",
+    "journal",
+    "letter",
+    "lua-showcase",
+    "manual",
+    "minimal-custom",
+    "minimal-starter",
+    "multi-language",
+    "poster",
+    "presentation",
+    "research-proposal",
+    "rtl-arabic",
+    "rtl-hebrew",
+    "standard",
+    "technical-report",
+    "thesis-spacing",
+    "thesis-tuhh",
+    "thesis",
+]
+
+
+@pytest.fixture
+def all_example_names():
+    return list(ALL_EXAMPLE_NAMES)

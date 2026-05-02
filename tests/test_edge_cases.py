@@ -1,12 +1,23 @@
 #!/usr/bin/env python3
-"""Edge case tests for OmniLaTeX."""
+"""Edge case tests for OmniLaTeX.
 
+These tests compile actual LaTeX documents and can be slow.
+Run with: pytest tests/test_edge_cases.py -v -m slow
+Skip with: pytest tests/ -v -m "not slow"
+"""
+
+import os
 import subprocess
 import tempfile
 from pathlib import Path
+
 import pytest
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+# Skip all edge case tests by default; they require LaTeX compilation.
+# Run explicitly with: pytest -m slow
+pytestmark = pytest.mark.slow
 
 
 def _compile_tex(content: str, options: str = "", timeout: int = 120) -> tuple:

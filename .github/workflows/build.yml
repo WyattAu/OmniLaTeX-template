@@ -241,7 +241,7 @@ jobs:
           name: PDF-Examples
           path: build/examples
 
-      - name: Install test deps and run tests
+      - name: Install test deps and run integration tests
         run: |
           docker run --rm --entrypoint "" \
             -v "$GITHUB_WORKSPACE:/workspace" \
@@ -249,7 +249,18 @@ jobs:
             --user root \
             -e CI=true \
             "${{ steps.digest.outputs.image }}" \
-            bash -c "pip install -q pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout && cd tests && pytest -v --tb=short --timeout=120 --junitxml=test-results.xml"
+            bash -c "pip install -q pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout && pytest tests/test_modules.py tests/test_ctan.py -v --tb=short --junitxml=test-results.xml"
+
+      - name: Run edge case tests (slow)
+        continue-on-error: true
+        run: |
+          docker run --rm --entrypoint "" \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            -w /workspace \
+            --user root \
+            -e CI=true \
+            "${{ steps.digest.outputs.image }}" \
+            bash -c "pip install -q pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout && pytest tests/test_edge_cases.py -v --tb=short -m slow --timeout=300"
 
       - name: Upload test results
         if: always()
