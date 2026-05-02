@@ -1,0 +1,95 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/syllabus}[2025-10-18 OmniLaTeX course syllabus profile]
+
+\documenttype{Course Syllabus}
+\documentlayout{DIV=12}
+\KOMAoptions{titlepage=true,twoside=false}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{0}
+
+\documentcolormode{color}
+\documentfontmode{serif}
+\documentlinespacing{onehalf}
+\documentparspacing{half}
+
+\makeatletter
+
+\providecommand*{\@coursenumber}{CS~000}
+\newcommand*{\coursenumber}[1]{\gdef\@coursenumber{#1}}
+\providecommand*{\@coursetitle}{Course Title}
+\newcommand*{\coursetitle}[1]{\gdef\@coursetitle{#1}}
+\providecommand*{\@coursename}{\@coursetitle}
+\newcommand*{\coursename}[1]{\gdef\@coursename{#1}}
+\providecommand*{\@semester}{Fall 2025}
+\newcommand*{\semester}[1]{\gdef\@semester{#1}}
+\providecommand*{\@instructor}{Instructor Name}
+\newcommand*{\instructor}[1]{\gdef\@instructor{#1}}
+\providecommand*{\@instructoroffice}{}
+\newcommand*{\instructoroffice}[1]{\gdef\@instructoroffice{#1}}
+\providecommand*{\@instructoremail}{}
+\newcommand*{\instructoremail}[1]{\gdef\@instructoremail{#1}}
+\providecommand*{\@instructorhours}{}
+\newcommand*{\instructorhours}[1]{\gdef\@instructorhours{#1}}
+\providecommand*{\@meetingtime}{}
+\newcommand*{\meetingtime}[1]{\gdef\@meetingtime{#1}}
+\providecommand*{\@meetinglocation}{}
+\newcommand*{\meetinglocation}[1]{\gdef\@meetinglocation{#1}}
+\providecommand*{\@prerequisites}{None}
+\newcommand*{\prerequisites}[1]{\gdef\@prerequisites{#1}}
+\providecommand*{\@coursewebsite}{}
+\newcommand*{\coursewebsite}[1]{\gdef\@coursewebsite{#1}}
+
+\newcommand*{\omnilatex@syllabusfront}{%
+    \begin{titlepage}
+        \thispagestyle{empty}%
+        \begin{center}
+            {\Large\bfseries \@coursenumber}\par\vspace{0.5\baselineskip}
+            {\LARGE\bfseries \@coursetitle}\par\vspace{1\baselineskip}
+            {\large \@semester}\par\vspace{2\baselineskip}
+        \end{center}
+        \noindent\begin{tabular}{@{}p{3.5cm}p{\dimexpr\textwidth-3.5cm\relax}@{}}
+            \textbf{Instructor:}     & \@instructor        \\[0.3em]
+            \textbf{Office:}         & \@instructoroffice  \\[0.3em]
+            \textbf{Email:}          & \@instructoremail   \\[0.3em]
+            \textbf{Office Hours:}   & \@instructorhours   \\[0.6em]
+            \textbf{Meeting Time:}   & \@meetingtime       \\[0.3em]
+            \textbf{Location:}       & \@meetinglocation   \\[0.6em]
+            \textbf{Prerequisites:}  & \@prerequisites     \\[0.3em]
+            \textbf{Course Website:} & \@coursewebsite
+        \end{tabular}
+        \vfill
+        \noindent\rule{\textwidth}{0.4pt}\par
+    \end{titlepage}%
+}
+
+\renewcommand{\maketitle}{\omnilatex@syllabusfront\setcounter{footnote}{0}}
+
+\newenvironment{objectives}{%
+    \par\medskip\noindent\textbf{Learning Objectives}\par\smallskip
+    \begin{enumerate}%
+}{%
+    \end{enumerate}\par\medskip
+}
+
+\newcommand{\gradingpolicy}{%
+    \par\medskip
+    \begin{tabular}{@{}lr@{}}%
+        \toprule
+        \textbf{Component} & \textbf{Weight} \\
+        \midrule
+}
+
+\newcommand{\gradingitem}[2]{#1 & #2\% \\}
+
+\newcommand{\endgradingpolicy}{%
+        \midrule
+        \textbf{Total} & \textbf{100\%} \\
+        \bottomrule
+    \end{tabular}\par\medskip
+}
+
+\newcommand{\scheduleentry}[3]{#1 & #2 & #3 \\}
+
+\makeatother
+
+\endinput

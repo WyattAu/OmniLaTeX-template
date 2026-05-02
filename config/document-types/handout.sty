@@ -1,0 +1,89 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/handout}[2025-10-18 OmniLaTeX handout profile]
+
+\documenttype{Handout}
+\documentlayout{DIV=12}
+\KOMAoptions{twoside=false,twocolumn=true,parskip=half}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{0}
+
+\documentcolormode{color}
+\documentfontmode{serif}
+\documentlinespacing{onehalf}
+\documentparspacing{half}
+
+\makeatletter
+
+\setCustomMargins{15mm}{15mm}{15mm}{20mm}
+
+\providecommand*{\@handouttitle}{\@title}
+\newcommand*{\handouttitle}[1]{\gdef\@handouttitle{#1}}
+\providecommand*{\@handoutcourse}{Course Name}
+\newcommand*{\handoutcourse}[1]{\gdef\@handoutcourse{#1}}
+\providecommand*{\@handoutnumber}{1}
+\newcommand*{\handoutnumber}[1]{\gdef\@handoutnumber{#1}}
+\providecommand*{\@handoutdate}{\@date}
+\newcommand*{\handoutdate}[1]{\gdef\@handoutdate{#1}}
+\providecommand*{\@handoutauthor}{\@author}
+\newcommand*{\handoutauthor}[1]{\gdef\@handoutauthor{#1}}
+
+\newcommand*{\omnilatex@handoutheader}{%
+    \begin{center}
+        {\large\bfseries \@handoutcourse}\par\vspace{2pt}
+        {\normalsize Handout~\@handoutnumber:\enspace\@handouttitle}\par\vspace{2pt}
+        {\small\@handoutauthor\enspace$\cdot$\enspace\@handoutdate}\par
+    \end{center}
+    \vspace{-4pt}\noindent\rule{\columnwidth}{0.4pt}\par\vspace{4pt}
+}
+
+\renewcommand{\maketitle}{%
+    \omnilatex@handoutheader
+    \setcounter{footnote}{0}%
+}
+
+\clearpairofpagestyles
+\ihead{\@handoutcourse\enspace|\enspace Handout~\@handoutnumber}
+\ohead{\@handouttitle}
+\cfoot{\pagemark}
+\pagestyle{scrheadings}
+
+\newtcolorbox{keyconceptbox}[2]{%
+    colback=Air!40,
+    colframe=cBlue!70!black,
+    boxrule=0.5pt,
+    arc=2pt,
+    left=4pt,
+    right=4pt,
+    top=3pt,
+    bottom=3pt,
+    fonttitle=\bfseries\sffamily\small,
+    title={#1},
+    #2
+}
+
+\newcommand{\keyconcept}[2]{%
+    \begin{keyconceptbox}{#1}{}%
+        \small #2%
+    \end{keyconceptbox}%
+}
+
+\newcommand{\remember}[1]{%
+    \par\smallskip\noindent
+    \tcbox[
+        colback=mYellow!20,
+        colframe=mOrange!80!black,
+        boxrule=0.4pt,
+        arc=1pt,
+        left=4pt,
+        right=4pt,
+        top=2pt,
+        bottom=2pt,
+        on line,
+        before upper={\small},
+    ]{\textbf{Remember:}\enspace #1}%
+    \par\smallskip
+}
+
+\makeatother
+
+\endinput

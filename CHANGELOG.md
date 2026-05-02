@@ -7,6 +7,20 @@ This project adheres to [Semantic versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.10.0] - 2026-05-02
+
+### Added
+- **Lecture notes document type** — theorem/lemma/definition/corollary/proof/example/remark environments; 3cm left margin annotation area; custom title page with course/lecture metadata; header showing course name and lecture number
+- **Syllabus document type** — course syllabus with objectives environment, grading policy commands, schedule entries; custom title page with instructor/semester info
+- **Handout document type** — compact two-column layout; keyconcept highlighted boxes; TO/FROM-style header; print-friendly narrow margins
+- **Memo document type** — internal memorandum with TO/FROM/DATE/RE/CC/BCC header block; clean professional layout; action items support
+- **4 new examples** — lecture-notes (graph theory), syllabus (machine learning course), handout (Big-O notation), memo (process update)
+
+### Changed
+- **Pages gallery** — added lecture-notes, syllabus, handout, memo (42 total cards)
+- **Integration tests** — updated to cover 23 document types and 39 examples
+- **CTAN CI** — updated validation to expect 23 document-type .sty files
+
 ## [1.9.0] - 2026-05-02
 
 ### Added

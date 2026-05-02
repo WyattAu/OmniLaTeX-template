@@ -25,6 +25,10 @@ ALL_DOCTYPE_NAMES = [
     "homework",
     "exam",
     "research-proposal",
+    "lecture-notes",
+    "syllabus",
+    "handout",
+    "memo",
 ]
 
 ALL_EXAMPLE_NAMES = [
@@ -44,12 +48,15 @@ ALL_EXAMPLE_NAMES = [
     "dictionary",
     "dissertation",
     "exam",
+    "handout",
     "homework",
     "inline-paper",
     "journal",
+    "lecture-notes",
     "letter",
     "lua-showcase",
     "manual",
+    "memo",
     "minimal-custom",
     "minimal-starter",
     "multi-language",
@@ -59,6 +66,7 @@ ALL_EXAMPLE_NAMES = [
     "rtl-arabic",
     "rtl-hebrew",
     "standard",
+    "syllabus",
     "technical-report",
     "thesis-spacing",
     "thesis-tuhh",
@@ -80,6 +88,10 @@ DOCTYPE_TO_CLASS = {
     "letter": "scrartcl",
     "homework": "scrartcl",
     "exam": "scrartcl",
+    "lecture-notes": "scrartcl",
+    "syllabus": "scrartcl",
+    "handout": "scrartcl",
+    "memo": "scrartcl",
     "manual": "scrreprt",
     "technicalreport": "scrreprt",
     "standard": "scrreprt",
@@ -199,8 +211,8 @@ class TestDocumentTypeRegistration:
             if name != "book":
                 unique_primary.add(name)
         unique_primary.add("book")
-        assert len(unique_primary) >= 19, (
-            f"Expected at least 19 unique doctypes, found {len(unique_primary)}: {sorted(unique_primary)}"
+        assert len(unique_primary) >= 23, (
+            f"Expected at least 23 unique doctypes, found {len(unique_primary)}: {sorted(unique_primary)}"
         )
 
 

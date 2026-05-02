@@ -34,9 +34,9 @@ jobs:
 
           EXPECTED_STY=(
             article book cover-letter cv dictionary dissertation
-            exam homework inlinepaper journal letter manual
-            patent poster presentation research-proposal standard
-            technicalreport thesis
+            exam handout homework inlinepaper journal lecture-notes
+            letter manual memo patent poster presentation
+            research-proposal standard syllabus technicalreport thesis
           )
           for sty in "${EXPECTED_STY[@]}"; do
             if ! unzip -l omnilatex.zip | grep -q "document-types/${sty}\.sty$"; then
@@ -48,8 +48,8 @@ jobs:
           done
 
           STY_COUNT=$(unzip -l omnilatex.zip | grep -c 'document-types/.*\.sty$' || true)
-          if [ "$STY_COUNT" -ne 19 ]; then
-            echo "::error::Expected 19 .sty files in document-types/, found ${STY_COUNT}"
+          if [ "$STY_COUNT" -ne 23 ]; then
+            echo "::error::Expected 23 .sty files in document-types/, found ${STY_COUNT}"
             ERRORS=$((ERRORS + 1))
           else
             echo "  [OK] All 19 document-type .sty files found"

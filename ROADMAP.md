@@ -1,6 +1,6 @@
 # OmniLaTeX Roadmap
 
-Current version: **v1.9.0**
+Current version: **v1.10.0**
 
 ## Design Principles
 
@@ -13,16 +13,16 @@ Current version: **v1.9.0**
 
 | Metric | Value |
 |--------|-------|
-| Releases | 12 (v1.0.0–v1.9.0) |
+| Releases | 13 (v1.0.0–v1.10.0) |
 | `.sty` modules | 27 |
-| Document types | 19 (thesis, dissertation, article, journal, inlinepaper, book, manual, technicalreport, standard, patent, cv, cover-letter, poster, presentation, letter, dictionary, homework, exam, research-proposal) |
-| Examples | 35 (35/35 compile on Docker TL2026) |
+| Document types | 23 (thesis, dissertation, article, journal, inlinepaper, book, manual, technicalreport, standard, patent, cv, cover-letter, poster, presentation, letter, dictionary, homework, exam, research-proposal, lecture-notes, syllabus, handout, memo) |
+| Examples | 39 (39/39 compile on Docker TL2026) |
 | Institution configs | 15 |
 | Languages | 14 (EN + 13 via polyglossia) |
 | CI workflows | 7 (all green) |
-| Integration tests | 282 (across 6 categories) |
+| Integration tests | 300+ (across 6 categories) |
 | Lean 4 proof modules | 11 |
-| Core code | ~14,000 lines |
+| Core code | ~15,000 lines |
 | License | Apache 2.0 |
 
 ---
@@ -31,6 +31,7 @@ Current version: **v1.9.0**
 
 | Version | Date | Summary |
 |---------|------|---------|
+| v1.10.0 | 2026-05-02 | Distribution — 4 new document types (lecture-notes, syllabus, handout, memo), 39 examples, CTAN CI updated |
 | v1.9.0 | 2026-05-02 | Growth — CTAN CI, Overleaf zip, 282 integration tests, 8 missing configs fixed, Pages gallery update |
 | v1.8.0 | 2026-05-02 | Distribution — 3 new document types (exam, homework, research-proposal), CTAN packaging, Pages gallery, font setters, 6 bug fixes, template enrichment |
 | v1.7.1 | 2026-04-30 | Quality — .sty/.cls audit (6 fixes), KOMA TL2025 compat, font consolidation, CI hardening |
@@ -46,42 +47,35 @@ Current version: **v1.9.0**
 
 ---
 
-## v1.10.0 — Distribution Channels (target: 2–4 weeks)
+## v1.11.0 — Distribution Channels (target: 2–4 weeks)
 
 | Project | Priority | Status |
 |---------|----------|--------|
-| **P10.1 CTAN submission** | High | Planned |
-| **P10.2 Overleaf gallery submission** | Medium | Planned |
-| **P10.3 Performance optimization** | Medium | Planned |
-| **P10.4 Additional document types** | Medium | Planned |
-| **P10.5 VS Code extension MVP** | Low | Planned |
-| **P10.6 Lean 4 proof completion** | Low | Planned |
+| **P11.1 CTAN submission** | High | Planned |
+| **P11.2 Overleaf gallery submission** | Medium | Planned |
+| **P11.3 Performance optimization** | Medium | Planned |
+| **P11.4 VS Code extension MVP** | Low | Planned |
+| **P11.5 Lean 4 proof completion** | Low | Planned |
 
-### P10.1 CTAN Submission
+### P11.1 CTAN Submission
 - Submit `omnilatex.zip` to CTAN (script ready, CI validates)
 - Maintain CTAN metadata (version bumps, announcements)
 
-### P10.2 Overleaf Gallery Submission
+### P11.2 Overleaf Gallery Submission
 - Test font fallback chains on Overleaf's TeX Live 2024
 - Submit to Overleaf template gallery
 
-### P10.3 Performance Optimization
+### P11.3 Performance Optimization
 - Profile first-pass compilation (currently 30–131s per example)
 - Evaluate fmtutil cache warming
 - Explore font subsetting for faster builds
 
-### P10.4 Additional Document Types
-- `lecture-notes` — professor note templates with theorem/proof blocks
-- `syllabus` — course info, objectives, grading policies, schedule
-- `handout` — compact sidebar layouts for teaching
-- `memo` — TO/FROM/SUBJECT/DATE header format
-
-### P10.5 VS Code Extension MVP
+### P11.4 VS Code Extension MVP
 - Package existing skeleton in `extensions/vscode-omnilatex/`
 - Basic functionality: doctype picker, institution switcher
 - Submit to VS Code Marketplace
 
-### P10.6 Lean 4 Proof Completion
+### P11.5 Lean 4 Proof Completion
 - 13 of 20 theorems currently use `sorry`
 - Complete remaining proofs for mathematical rigor
 - Zero user impact; differentiator for academic credibility
@@ -94,11 +88,11 @@ Current version: **v1.9.0**
 
 | Project | Priority | Status |
 |---------|----------|--------|
-| **P11.1 Rust TUI build tool** | Low | Exploratory |
-| **P11.2 Additional language collections** | Low | Planned |
-| **P11.3 Additional institution configs** | Low | Planned |
+| **P12.1 Rust TUI build tool** | Low | Exploratory |
+| **P12.2 Additional language collections** | Low | Planned |
+| **P12.3 Additional institution configs** | Low | Planned |
 
-### P11.2 Additional Language Collections
+### P12.2 Additional Language Collections
 - Enable more language collections in Docker image (French, Spanish, etc.)
 - Add corresponding institution configs
 
@@ -108,10 +102,10 @@ Current version: **v1.9.0**
 
 | Priority | Items |
 |----------|-------|
-| **Critical path** | P10.1 (CTAN) → P10.2 (Overleaf) |
-| **High impact** | P10.1, P10.2, P10.4 |
-| **Medium** | P10.3, P10.5 |
-| **Long-term** | P10.6, P11.1, P11.2, P11.3 |
+| **Critical path** | P11.1 (CTAN) → P11.2 (Overleaf) |
+| **High impact** | P11.1, P11.2 |
+| **Medium** | P11.3, P11.4 |
+| **Long-term** | P11.5, P12.1, P12.2, P12.3 |
 
 ---
 

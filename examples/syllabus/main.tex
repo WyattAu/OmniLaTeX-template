@@ -1,0 +1,128 @@
+\documentclass[
+    language=english,
+    doctype=syllabus,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+
+\maketitle
+
+\section{Course Description}
+
+This course provides a broad introduction to machine learning and statistical
+pattern recognition.  Topics include supervised learning (linear regression,
+logistic regression, neural networks, support vector machines, decision trees,
+and ensemble methods), unsupervised learning (clustering, dimensionality
+reduction, and generative models), and the theoretical foundations that underpin
+modern machine learning practice.  Students will gain hands-on experience by
+implementing algorithms in Python and applying them to real-world datasets.
+
+\section{Learning Objectives}
+
+\begin{objectives}
+    \item Formulate supervised and unsupervised learning problems and select
+          appropriate models for a given task.
+    \item Explain the bias--variance trade-off and apply regularization
+          techniques to control model complexity.
+    \item Implement and evaluate core algorithms including linear regression,
+          logistic regression, decision trees, and $k$-means clustering from
+          scratch.
+    \item Apply neural network architectures using modern deep learning
+          frameworks and diagnose common training issues (vanishing gradients,
+          overfitting).
+    \item Perform rigorous model evaluation using cross-validation, ROC curves,
+          and appropriate performance metrics.
+    \item Communicate experimental results clearly in written reports, including
+          reproducible code and well-justified conclusions.
+\end{objectives}
+
+\section{Required Textbooks and Materials}
+
+\begin{itemize}
+    \item Christopher M.~Bishop, \emph{Pattern Recognition and Machine
+          Learning}, Springer, 2006. (Primary reference)
+    \item Aur\'{e}lien G\'{e}ron, \emph{Hands-On Machine Learning with
+          Scikit-Learn, Keras, and TensorFlow}, 3rd~ed., O'Reilly, 2022.
+    \item Additional readings and lecture slides will be posted on the course
+          website.
+\end{itemize}
+
+\noindent\textbf{Software:} Python 3.11+, NumPy, scikit-learn, PyTorch (or
+TensorFlow), Jupyter Notebooks.  All required software is available through
+the university computing labs or via free open-source installations.
+
+\section{Grading}
+
+Your final grade is determined by the weighted components shown below.
+All assignments are graded on a 0--100 scale; letter grades follow the
+standard university curve.
+
+\gradingpolicy
+\gradingitem{Homework (4 assignments)}{20}
+\gradingitem{Programming Projects (2)}{25}
+\gradingitem{Midterm Examination}{20}
+\gradingitem{Final Examination}{25}
+\gradingitem{Participation \& Peer Review}{10}
+\endgradingpolicy
+
+\section{Course Policies}
+
+\subsection{Attendance}
+
+Attendance at lectures is expected but not formally recorded.  You are
+responsible for all material covered in class, including announcements
+and schedule changes.  Attendance at exams is mandatory; makeup exams are
+granted only for documented medical or family emergencies.
+
+\subsection{Late Work}
+
+Each student has a total of five \textbf{late days} that may be applied to
+any homework or project deadline, at most two per assignment.  Once late days
+are exhausted, submissions are penalized 10\% per calendar day late.  No
+work is accepted more than seven days after the deadline.
+
+\subsection{Academic Integrity}
+
+All submitted work must represent your own effort unless explicitly authorized
+as a collaborative assignment.  You may discuss ideas at a high level but must
+write all code and prose independently.  Copying from any source---including
+online resources and other students---without proper attribution constitutes
+academic dishonesty and will be reported to the Office of Student Conduct.
+
+Violations result in a score of zero on the affected assignment for the first
+offense and a failing course grade for subsequent offenses.
+
+\subsection{Accommodations}
+
+Students requiring accommodations should register with the Disability Resource
+Center and contact the instructor within the first two weeks of the semester.
+
+\section{Course Schedule}
+
+\small
+\begin{tabular}{@{}clp{7.5cm}@{}}
+    \toprule
+    \textbf{Week} & \textbf{Dates} & \textbf{Topic} \\
+    \midrule
+    \scheduleentry{1}{Sep 1--3}{Course overview; linear algebra review; probability refresher}
+    \scheduleentry{2}{Sep 8--10}{Linear regression; least squares; gradient descent}
+    \scheduleentry{3}{Sep 15--17}{Logistic regression; maximum likelihood; regularization}
+    \scheduleentry{4}{Sep 22--24}{Bias--variance trade-off; cross-validation; model selection}
+    \scheduleentry{5}{Sep 29--Oct 1}{\textit{Midterm 1 review}; neural networks: perceptron \& back-propagation}
+    \scheduleentry{6}{Oct 6--8}{Deep learning: activation functions, optimization, CNNs}
+    \scheduleentry{7}{Oct 13--15}{Support vector machines; kernel methods}
+    \scheduleentry{8}{Oct 20--22}{Decision trees \& random forests; ensemble methods}
+    \scheduleentry{9}{Oct 27--29}{Unsupervised learning: $k$-means, hierarchical clustering}
+    \scheduleentry{10}{Nov 3--5}{Dimensionality reduction: PCA, t-SNE}
+    \scheduleentry{11}{Nov 10--12}{Generative models: GMMs, autoencoders, introduction to GANs}
+    \scheduleentry{12}{Nov 17--19}{Reinforcement learning basics; course review; \textit{Final exam review} \\
+    \midrule
+    & \multicolumn{2}{l}{\textbf{Midterm Examination:} October 8 (in class)} \\
+    & \multicolumn{2}{l}{\textbf{Final Examination:} December 10, 9:00--11:00\,AM} \\
+    \bottomrule
+\end{tabular}
+
+\end{document}

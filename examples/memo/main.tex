@@ -1,0 +1,88 @@
+\documentclass[
+    language=english,
+    doctype=memo,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\title{Software Development Process Update}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Background}
+
+Over the past quarter, the engineering team has conducted a thorough review of our
+current software development practices. Feedback from the Q1 retrospective
+sessions identified several areas where our existing workflow introduces
+unnecessary friction and delays time-to-market for critical features.
+
+This memo outlines the approved changes to our development process, effective
+June 1, 2026.
+
+\section{Proposed Changes}
+
+The following changes have been approved by the engineering leadership team:
+
+\begin{enumerate}
+    \item \textbf{Sprint Duration:} Reduce sprint length from three weeks to
+          two weeks to increase feedback frequency and reduce batch sizes.
+    \item \textbf{Code Review Policy:} Require at least one approval from a
+          designated code owner for all pull requests merging into the
+          \texttt{main} branch.
+    \item \textbf{Definition of Done:} Expand the Definition of Done to include
+          automated accessibility checks and performance benchmarks for all
+          user-facing changes.
+    \item \textbf{Incident Post-Mortems:} Transition to blameless post-mortem
+          reviews with a mandatory 48-hour turnaround for initial drafts.
+\end{enumerate}
+
+\section{Tooling Updates}
+
+The following tools will be adopted or upgraded to support the new process:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lll}
+        \toprule
+        \textbf{Tool} & \textbf{Purpose} & \textbf{Target Date} \\
+        \midrule
+        GitHub Actions   & CI/CD pipelines      & May 15, 2026 \\
+        Linear           & Issue tracking       & May 20, 2026 \\
+        Datadog APM      & Performance monitoring & June 1, 2026 \\
+        Pa11y            & Accessibility testing  & June 1, 2026 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Timeline}
+
+\begin{description}
+    \item[May 12] Engineering all-hands to present changes and gather final
+        feedback.
+    \item[May 15--20] Tool provisioning and account setup.
+    \item[May 26--30] Training sessions for new tooling (two optional sessions
+        per day).
+    \item[June 1] New process goes live for all active projects.
+    \item[June 30] First retrospective under the new process.
+\end{description}
+
+\section{Action Items}
+
+\begin{itemize}
+    \item \textbf{Team Leads:} Schedule transition planning meetings with
+        respective squads by May 14.
+    \item \textbf{DevOps:} Complete CI/CD pipeline migration by May 20.
+    \item \textbf{QA Lead:} Define automated test coverage thresholds for the
+        new Definition of Done by May 16.
+    \item \textbf{All Engineers:} Complete tooling onboarding by May 30.
+\end{itemize}
+
+Questions or concerns should be directed to Sarah Chen or your respective team
+lead by end of day May 14.
+
+\end{document}

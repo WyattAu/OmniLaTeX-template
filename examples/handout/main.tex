@@ -1,0 +1,102 @@
+\documentclass[
+    language=english,
+    doctype=handout,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+Big-O notation describes the upper bound of an algorithm's time or space
+complexity as a function of input size~$n$.  It answers the question:
+\emph{how does runtime grow as input grows?}
+
+Formally, $f(n) = O(g(n))$ if there exist constants $c > 0$ and
+$n_0 \geq 0$ such that $f(n) \leq c \cdot g(n)$ for all $n \geq n_0$.
+
+\keyconcept{Formal Definition}{%
+    $f(n) = O(g(n))$ iff $\exists\, c > 0,\; n_0 \geq 0$ such that
+    $0 \leq f(n) \leq c \cdot g(n)$ for all $n \geq n_0$.}
+
+\keyconcept{Why Drop Constants and Lower Terms?}{%
+    Big-O captures \emph{growth rate}, not exact counts.  Constants and
+    lower-order terms become negligible as $n \to \infty$, so
+    e.g.\ $3n^2 + 5n + 7 = O(n^2)$.}
+
+\keyconcept{Best, Average, Worst Case}{%
+    Big-O typically describes the \textbf{worst case}.  Omega~($\Omega$)
+    gives the lower bound; Theta~($\Theta$) gives a tight bound
+    (both upper and lower).}
+
+\keyconcept{Amortized Analysis}{%
+    Some operations are expensive occasionally but cheap on average.
+    E.g.\ dynamic array append is $O(n)$ worst case but $O(1)$
+    \emph{amortized} over a sequence of operations.}
+
+\section{Common Complexities}
+
+\begin{center}
+\small
+\begin{tabular}{@{}lcc@{}}
+    \toprule
+    \textbf{Complexity} & \textbf{Name} & \textbf{$n{=}1000$ ops} \\
+    \midrule
+    $O(1)$           & Constant     & 1           \\
+    $O(\log n)$      & Logarithmic  & $\approx 10$\\
+    $O(n)$           & Linear       & 1\,000      \\
+    $O(n \log n)$    & Log-linear   & $\approx 10\,000$ \\
+    $O(n^2)$         & Quadratic    & 1\,000\,000 \\
+    $O(2^n)$         & Exponential  & $\approx 10^{301}$ \\
+    $O(n!)$          & Factorial    & Astronomical \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+\remember{When comparing algorithms, prefer lower Big-O classes.
+An $O(n \log n)$ sort always beats $O(n^2)$ for large inputs.}
+
+\section{Quick Reference Rules}
+
+\begin{itemize}
+    \item \textbf{Loops:} Nested loops multiply --- $k$ nested loops $\Rightarrow O(n^k)$.
+    \item \textbf{Sequential code:} Add complexities, keep the dominant term.
+    \item \textbf{Divide and conquer:} $T(n) = aT(n/b) + O(n^d)$ --- use the Master Theorem.
+    \item \textbf{Logarithmic factors} arise from halving/doubling (binary search, balanced trees).
+\end{itemize}
+
+\section{Practice Problems}
+
+Determine the Big-O complexity of each:
+
+\begin{enumerate}
+    \item \textbf{Sum of elements:}
+          \texttt{for i in range(n): s += a[i]}
+    \item \textbf{Nested loops:}
+          \texttt{for i in range(n):}\\
+          \texttt{\ \ for j in range(n): print(a[i][j])}
+    \item \textbf{Binary search} on a sorted array of size~$n$.
+    \item \textbf{Merge sort:}
+          $T(n) = 2T(n/2) + O(n)$.
+    \item \textbf{Triple nested:}
+          \texttt{for i in range(n):}\\
+          \texttt{\ \ for j in range(i):}\\
+          \texttt{\ \ \ \ for k in range(j): count += 1}
+\end{enumerate}
+
+\section{Further Reading}
+
+\begin{itemize}
+    \item Cormen, Leiserson, Rivest, Stein.
+          \textit{Introduction to Algorithms}, 4th~ed., MIT Press, 2022.
+    \item Sedgewick, Wayne.
+          \textit{Algorithms}, 4th~ed., Addison-Wesley, 2011.
+    \item Sipser, M.
+          \textit{Introduction to the Theory of Computation}, 3rd~ed.,
+          Cengage, 2012.
+\end{itemize}
+
+\end{document}

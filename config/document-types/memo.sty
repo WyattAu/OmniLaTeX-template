@@ -1,0 +1,79 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/memo}[2025-10-18 OmniLaTeX memorandum profile]
+
+\documenttype{Memorandum}
+\documentfontsize{12pt}
+\documentlayout{DIV=12,headinclude=false,footinclude=true}
+\KOMAoptions{titlepage=false,twoside=false}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{0}
+
+\documentcolormode{color}
+\documentlinespacing{singlespace}
+\documentparspacing{half}
+\documentitemspacing{normal}
+\documentfontmode{serif}
+\documentlinkstyle{color}
+\documentcodestyle{color}
+
+\makeatletter
+
+\providecommand*{\@memoto}{}
+\newcommand*{\memoto}[1]{\gdef\@memoto{#1}}
+\providecommand*{\@memofrom}{}
+\newcommand*{\memofrom}[1]{\gdef\@memofrom{#1}}
+\providecommand*{\@memosubject}{}
+\newcommand*{\memosubject}[1]{\gdef\@memosubject{#1}}
+\providecommand*{\@memodate}{\today}
+\newcommand*{\memodate}[1]{\gdef\@memodate{#1}}
+\providecommand*{\@memocc}{}
+\newcommand*{\memocc}[1]{\gdef\@memocc{#1}}
+\providecommand*{\@memobcc}{}
+\newcommand*{\memobcc}[1]{\gdef\@memobcc{#1}}
+\providecommand*{\@memoref}{}
+\newcommand*{\memoref}[1]{\gdef\@memoref{#1}}
+
+\newlength{\memolabelwidth}
+\setlength{\memolabelwidth}{1.5cm}
+
+\newcommand{\omnilatex@memofield}[2]{%
+    \noindent
+    \makebox[\memolabelwidth][l]{\textbf{#1:}}%
+    \hspace{0.5em}#2\par
+}
+
+\newcommand{\omnilatex@memoheader}{%
+    \noindent\rule{\textwidth}{0.4pt}\par
+    \begin{center}
+        {\Large\bfseries MEMORANDUM}\par
+    \end{center}
+    \vspace{4pt}
+    \noindent\rule{\textwidth}{0.4pt}\par
+    \vspace{8pt}
+    \omnilatex@memofield{TO}{\@memoto}%
+    \omnilatex@memofield{FROM}{\@memofrom}%
+    \omnilatex@memofield{DATE}{\@memodate}%
+    \omnilatex@memofield{RE}{\@memosubject}%
+    \ifdefempty{\@memoref}{}{%
+        \omnilatex@memofield{REF}{\@memoref}%
+    }%
+    \ifdefempty{\@memocc}{}{%
+        \omnilatex@memofield{CC}{\@memocc}%
+    }%
+    \vspace{8pt}
+    \noindent\rule{\textwidth}{0.4pt}\par
+    \vspace{6pt}
+}
+
+\renewcommand{\maketitle}{%
+    \omnilatex@memoheader
+    \setcounter{footnote}{0}%
+}
+
+\clearpairofpagestyles
+\cfoot{\pagemark}
+\pagestyle{scrheadings}
+
+\makeatother
+
+\endinput

@@ -1,0 +1,87 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/lecture-notes}[2025-10-18 OmniLaTeX lecture notes profile]
+
+\documenttype{Lecture Notes}
+\documentlayout{DIV=12}
+\KOMAoptions{titlepage=true,twoside=false}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+
+\documentcolormode{color}
+\documentfontmode{serif}
+\documentlinespacing{onehalf}
+\documentparspacing{half}
+
+\makeatletter
+
+% --- Theorem environments (numbered, shared counter) ---
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+
+% --- Unnumbered environments ---
+\newenvironment{example}{%
+    \par\medskip\noindent\textbf{Example.}\enspace\ignorespaces
+}{\par\medskip}
+
+\newenvironment{remark}{%
+    \par\medskip\noindent\textbf{Remark.}\enspace\ignorespaces
+}{\par\medskip}
+
+% --- Proof environment ---
+\providecommand{\proofname}{Proof}
+\newenvironment{proof}[1][\proofname]{%
+    \par\noindent\textit{#1.}\enspace\ignorespaces
+}{%
+    \par\noindent\hfill$\square$\par
+}
+
+% --- Lecture metadata commands ---
+\providecommand*{\@lecturetitle}{\@title}
+\newcommand*{\lecturetitle}[1]{\gdef\@lecturetitle{#1}}
+\providecommand*{\@lecturenumber}{1}
+\newcommand*{\lecturenumber}[1]{\gdef\@lecturenumber{#1}}
+\providecommand*{\@coursename}{Course Name}
+\newcommand*{\coursename}[1]{\gdef\@coursename{#1}}
+\providecommand*{\@lecturedate}{\@date}
+\newcommand*{\lecturedate}[1]{\gdef\@lecturedate{#1}}
+\providecommand*{\@lecturer}{Lecturer Name}
+\newcommand*{\lecturer}[1]{\gdef\@lecturer{#1}}
+\providecommand*{\@semester}{Fall 2025}
+\newcommand*{\semester}[1]{\gdef\@semester{#1}}
+
+% --- Left margin annotation area (textbook-style wide left margin) ---
+\setCustomMargins{3cm}{2cm}{2.5cm}{2.5cm}
+
+% --- Header: course name (inner) and lecture number (outer) ---
+\clearpairofpagestyles
+\ihead{\@coursename}
+\ohead{Lecture~\@lecturenumber}
+\cfoot{\pagemark}
+\pagestyle{scrheadings}
+
+% --- Custom title page ---
+\newcommand*{\omnilatex@lecturefront}{%
+    \begin{titlepage}
+        \thispagestyle{empty}%
+        \begin{center}
+            {\Large\bfseries \@coursename}\par\vspace{1\baselineskip}
+            {\LARGE\bfseries \@lecturetitle}\par\vspace{1\baselineskip}
+            {\large Lecture~\@lecturenumber}\par\vspace{2\baselineskip}
+            \begin{tabular}{@{}rl@{}}
+                \textbf{Lecturer:} & \@lecturer \\[0.4em]
+                \textbf{Date:}     & \@lecturedate \\[0.4em]
+                \textbf{Semester:}  & \@semester
+            \end{tabular}
+            \vspace{2\baselineskip}\par
+        \end{center}
+        \vfill\noindent\rule{\textwidth}{0.4pt}\par
+    \end{titlepage}
+}
+
+\renewcommand{\maketitle}{\omnilatex@lecturefront\setcounter{footnote}{0}}
+
+\makeatother
+
+\endinput

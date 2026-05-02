@@ -128,6 +128,10 @@
 \omnilatex@matchdoctypes{homework,homeworks}{\omnilatex@setdoctype{homework}{scrartcl}{\omnilatex@articleoptions}}%
 \omnilatex@matchdoctypes{exam,exams,examination,examinations}{\omnilatex@setdoctype{exam}{scrartcl}{\omnilatex@articleoptions}}%
 \omnilatex@matchdoctypes{research-proposal,researchproposal,research-proposals}{\omnilatex@setdoctype{research-proposal}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{lecture-notes,lecturenotes,lecture-note}{\omnilatex@setdoctype{lecture-notes}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{syllabus,syllabi}{\omnilatex@setdoctype{syllabus}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{handout,handouts}{\omnilatex@setdoctype{handout}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{memo,memos,memorandum,memorandums}{\omnilatex@setdoctype{memo}{scrartcl}{\omnilatex@articleoptions}}%
 
 % Validate doctype: warn if user passed an unknown doctype that didn't match
 \ifomnilatex@doctypematched\else
@@ -135,7 +139,8 @@
         Falling back to 'book'. Valid options: book, thesis, dissertation,%
         manual, guide, handbook, report, technicalreport, standard, patent,%
         article, inlinepaper, journal, dictionary, cv, cover-letter, poster,%
-        presentation, letter, homework, exam, research-proposal}%
+        presentation, letter, homework, exam, research-proposal,%
+        lecture-notes, syllabus, handout, memo}%
 \fi
 
 % Validate titlestyle

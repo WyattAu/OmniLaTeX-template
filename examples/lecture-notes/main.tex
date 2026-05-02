@@ -1,0 +1,94 @@
+\documentclass[
+    language=english,
+    doctype=lecture-notes,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+% Section 1: Introduction with a definition and theorem
+\section{Introduction to Graph Theory}
+
+\begin{definition}
+A \textbf{graph} $G = (V, E)$ consists of a finite set $V$ of vertices
+and a set $E \subseteq V \times V$ of edges.
+\end{definition}
+
+\begin{example}
+Consider the graph $G = (\{1,2,3,4\}, \{(1,2),(2,3),(3,4),(4,1)\})$.
+This is a simple cycle on four vertices, denoted $C_4$.
+\end{example}
+
+\begin{theorem}[Handshaking Lemma]
+For any undirected graph $G = (V, E)$:
+\[
+    \sum_{v \in V} \deg(v) = 2|E|.
+\]
+\end{theorem}
+
+\begin{proof}
+Each edge contributes exactly 1 to the degree of each of its two
+endpoints, so the total sum of degrees counts every edge twice.
+\end{proof}
+
+% Section 2: More content with lemmas and corollaries
+\section{Trees and Connectivity}
+
+\begin{definition}
+A \textbf{tree} is a connected acyclic graph.  A \textbf{forest} is a
+disjoint union of trees.
+\end{definition}
+
+\begin{lemma}
+Every tree with $n$ vertices has exactly $n - 1$ edges.
+\end{lemma}
+
+\begin{proof}
+By induction on $n$.  The base case $n = 1$ is trivial.
+For the inductive step, remove a leaf vertex (which always exists
+in a tree with $n \geq 2$).  The resulting graph is a tree on
+$n - 1$ vertices with $(n-1) - 1 = n - 2$ edges by the inductive
+hypothesis.  Adding back the leaf restores one edge, giving $n - 1$.
+\end{proof}
+
+\begin{corollary}
+A connected graph with $n$ vertices and $n - 1$ edges is a tree.
+\end{corollary}
+
+\begin{theorem}[Euler's Formula for Planar Graphs]
+For any connected planar graph with $V$ vertices, $E$ edges, and $F$ faces:
+\[
+    V - E + F = 2.
+\]
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+Start with a spanning tree ($E = V - 1$, $F = 1$).  Each additional
+edge adds exactly one face.  By induction, $V - (V-1+k) + (1+k) = 2$.
+\end{proof}
+
+% Section 3: Worked examples
+\section{Worked Examples}
+
+\begin{example}
+Determine whether the graph $K_{3,3}$ (the complete bipartite graph
+with three vertices in each partition) is planar.
+
+\textbf{Solution.}  $K_{3,3}$ has $V = 6$ vertices and $E = 9$ edges.
+If planar, by Euler's formula: $F = 2 - V + E = 2 - 6 + 9 = 5$.
+But every face in a bipartite graph has at least 4 edges, so
+$2E \geq 4F \implies 18 \geq 20$, a contradiction.  Hence $K_{3,3}$
+is \textbf{not} planar.
+\end{example}
+
+\begin{remark}
+The same technique shows that $K_5$ is not planar: $V = 5$, $E = 10$,
+$F = 7$, and $2E = 20 \geq 3F = 21$, contradiction.
+\end{remark}
+
+\end{document}
