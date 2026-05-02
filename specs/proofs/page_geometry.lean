@@ -28,6 +28,9 @@ structure PageGeometry where
   deriving Repr
 
 -- Theorem 1: Horizontal page balance (oneside)
+-- TODO: This theorem is false as stated. The balance equation alone does not imply
+-- each component is positive. Additional hypotheses are needed, e.g.:
+--   g.textwidth ≥ 0 → g.innerMargin ≥ 0 → g.outerMargin ≥ 0 → ...
 theorem horizontal_balance_oneside :
   ∀ (g : PageGeometry) (p : PaperSize),
     g.textwidth + g.innerMargin + g.outerMargin = p.width →
@@ -35,6 +38,10 @@ theorem horizontal_balance_oneside :
   sorry
 
 -- Theorem 2: Horizontal page balance (twoside with binding correction)
+-- TODO: This theorem is false as stated. Counterexample: g.bcor = -10,
+-- g.textwidth = 220, g.innerMargin = 0, g.outerMargin = 0, p.width = 210.
+-- Need hypothesis: g.textwidth ≥ 0 → g.innerMargin ≥ 0 → g.outerMargin ≥ 0 →
+--   g.bcor = p.width - g.textwidth - g.innerMargin - g.outerMargin → g.bcor ≥ 0
 theorem horizontal_balance_twoside :
   ∀ (g : PageGeometry) (p : PaperSize),
     g.textwidth + g.innerMargin + g.outerMargin + g.bcor = p.width →
@@ -42,6 +49,8 @@ theorem horizontal_balance_twoside :
   sorry
 
 -- Theorem 3: Vertical page balance
+-- TODO: This theorem is false as stated. The balance equation alone does not imply
+-- textheight > 0. Need additional hypotheses on margins.
 theorem vertical_balance :
   ∀ (g : PageGeometry) (p : PaperSize),
     g.textheight + g.topMargin + g.bottomMargin = p.height →
@@ -50,6 +59,10 @@ theorem vertical_balance :
 
 -- Theorem 4: DIV textwidth calculation (oneside)
 -- textwidth = paperwidth * (DIV - 1) / DIV
+-- TODO: This theorem is false when paperwidth ≤ 0. Need hypothesis paperwidth > 0.
+-- Proof sketch with paperwidth > 0: 0 < div - 1 < div implies
+--   0 < (div-1)/div < 1, so 0 < paperwidth * (div-1)/div < paperwidth.
+-- Float arithmetic makes this tricky to formalize precisely.
 theorem div_textwidth_formula :
   ∀ (paperwidth : Float) (div : Nat),
     div > 0 →
@@ -58,6 +71,7 @@ theorem div_textwidth_formula :
   sorry
 
 -- Theorem 5: Caption width bound
+-- TODO: This theorem is false when textwidth < 0. Need hypothesis textwidth ≥ 0.
 theorem caption_width_bound :
   ∀ (captionWidth textwidth : Float),
     captionWidth ≤ textwidth →

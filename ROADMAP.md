@@ -1,6 +1,6 @@
 # OmniLaTeX Roadmap
 
-Current version: **v1.10.0**
+Current version: **v1.11.0**
 
 ## Design Principles
 
@@ -13,15 +13,16 @@ Current version: **v1.10.0**
 
 | Metric | Value |
 |--------|-------|
-| Releases | 13 (v1.0.0–v1.10.0) |
+| Releases | 14 (v1.0.0–v1.11.0) |
 | `.sty` modules | 27 |
 | Document types | 23 (thesis, dissertation, article, journal, inlinepaper, book, manual, technicalreport, standard, patent, cv, cover-letter, poster, presentation, letter, dictionary, homework, exam, research-proposal, lecture-notes, syllabus, handout, memo) |
 | Examples | 39 (39/39 compile on Docker TL2026) |
 | Institution configs | 15 |
-| Languages | 14 (EN + 13 via polyglossia) |
+| Languages | 14 primary + 18 secondary via polyglossia (EN, DE, FR, ES, ZH, JA, KO, AR, HE, RU, IT, PT, NL, PL, CS, EL, TR) |
+| Translation keys | 55+ across 7 languages (EN, DE, FR, ES, RU, IT, PT) |
 | CI workflows | 7 (all green) |
-| Integration tests | 300+ (across 6 categories) |
-| Lean 4 proof modules | 11 |
+| Integration tests | 318 (across 6 categories) |
+| Lean 4 proofs | 13 proven, 7 retained (false as stated, need hypotheses) |
 | Core code | ~15,000 lines |
 | License | Apache 2.0 |
 
@@ -31,6 +32,7 @@ Current version: **v1.10.0**
 
 | Version | Date | Summary |
 |---------|------|---------|
+| v1.11.0 | 2026-05-02 | Languages — 18 secondary languages, 55+ translations (FR/ES/RU/IT/PT), TC Chinese auto-detect, 7 Lean proofs, CTAN guide |
 | v1.10.0 | 2026-05-02 | Distribution — 4 new document types (lecture-notes, syllabus, handout, memo), 39 examples, CTAN CI updated |
 | v1.9.0 | 2026-05-02 | Growth — CTAN CI, Overleaf zip, 282 integration tests, 8 missing configs fixed, Pages gallery update |
 | v1.8.0 | 2026-05-02 | Distribution — 3 new document types (exam, homework, research-proposal), CTAN packaging, Pages gallery, font setters, 6 bug fixes, template enrichment |
@@ -47,40 +49,42 @@ Current version: **v1.10.0**
 
 ---
 
-## v1.11.0 — Distribution Channels (target: 2–4 weeks)
+## v1.12.0 — Polish & Distribution (target: 2–4 weeks)
 
 | Project | Priority | Status |
 |---------|----------|--------|
-| **P11.1 CTAN submission** | High | Planned |
-| **P11.2 Overleaf gallery submission** | Medium | Planned |
-| **P11.3 Performance optimization** | Medium | Planned |
-| **P11.4 VS Code extension MVP** | Low | Planned |
-| **P11.5 Lean 4 proof completion** | Low | Planned |
+| **P12.1 CTAN submission** | High | Ready (script + guide + CI) |
+| **P12.2 Overleaf gallery submission** | Medium | Ready (script + docs) |
+| **P12.3 Persian/Farsi RTL support** | Medium | Planned |
+| **P12.4 Dutch, Polish, Czech translations** | Low | Planned |
+| **P12.5 VS Code extension MVP** | Low | Planned |
+| **P12.6 Lean 4: fix false theorems** | Low | Planned |
 
-### P11.1 CTAN Submission
-- Submit `omnilatex.zip` to CTAN (script ready, CI validates)
+### P12.1 CTAN Submission
+- Submit `omnilatex.zip` to CTAN (script ready, CI validates, guide in docs/CTAN_SUBMISSION.md)
 - Maintain CTAN metadata (version bumps, announcements)
 
-### P11.2 Overleaf Gallery Submission
+### P12.2 Overleaf Gallery Submission
 - Test font fallback chains on Overleaf's TeX Live 2024
 - Submit to Overleaf template gallery
 
-### P11.3 Performance Optimization
-- Profile first-pass compilation (currently 30–131s per example)
-- Evaluate fmtutil cache warming
-- Explore font subsetting for faster builds
+### P12.3 Persian/Farsi RTL Support
+- Add persian as RTL language variant
+- Reuse Arabic font setup with persian-specific adjustments
 
-### P11.4 VS Code Extension MVP
+### P12.4 Additional Translations
+- Dutch, Polish, Czech translations for common keys
+- Greek, Turkish translations for common keys
+
+### P12.5 VS Code Extension MVP
 - Package existing skeleton in `extensions/vscode-omnilatex/`
 - Basic functionality: doctype picker, institution switcher
-- Submit to VS Code Marketplace
 
-### P11.5 Lean 4 Proof Completion
-- 13 of 20 theorems currently use `sorry`
-- Complete remaining proofs for mathematical rigor
-- Zero user impact; differentiator for academic credibility
+### P12.6 Lean 4: Fix False Theorems
+- 7 theorems retained with `sorry` are false as stated (missing non-negativity hypotheses)
+- Add proper preconditions and complete proofs
 
-**Completion criteria:** At least one distribution channel live (CTAN or Overleaf), first-pass compile < 30s for standard examples.
+**Completion criteria:** CTAN submission live, Overleaf gallery live.
 
 ---
 
@@ -88,11 +92,11 @@ Current version: **v1.10.0**
 
 | Project | Priority | Status |
 |---------|----------|--------|
-| **P12.1 Rust TUI build tool** | Low | Exploratory |
-| **P12.2 Additional language collections** | Low | Planned |
-| **P12.3 Additional institution configs** | Low | Planned |
+| **P13.1 Rust TUI build tool** | Low | Exploratory |
+| **P13.2 Additional language collections** | Low | Planned |
+| **P13.3 Additional institution configs** | Low | Planned |
 
-### P12.2 Additional Language Collections
+### P13.2 Additional Language Collections
 - Enable more language collections in Docker image (French, Spanish, etc.)
 - Add corresponding institution configs
 
@@ -102,10 +106,10 @@ Current version: **v1.10.0**
 
 | Priority | Items |
 |----------|-------|
-| **Critical path** | P11.1 (CTAN) → P11.2 (Overleaf) |
-| **High impact** | P11.1, P11.2 |
-| **Medium** | P11.3, P11.4 |
-| **Long-term** | P11.5, P12.1, P12.2, P12.3 |
+| **Critical path** | P12.1 (CTAN) → P12.2 (Overleaf) |
+| **High impact** | P12.1, P12.2, P12.3 |
+| **Medium** | P12.4, P12.5 |
+| **Long-term** | P12.6, P13.1, P13.2, P13.3 |
 
 ---
 

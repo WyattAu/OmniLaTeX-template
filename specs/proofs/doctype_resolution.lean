@@ -87,16 +87,12 @@ def knownAliases : List String := [
 theorem doctypeResolve_deterministic :
   ∀ s bc₁ bc₂, doctypeResolve s = some bc₁ → doctypeResolve s = some bc₂ → bc₁ = bc₂ := by
   intro s bc₁ bc₂ h₁ h₂
-  -- Pattern matching on s in both hypotheses forces bc₁ = bc₂
-  -- since each string pattern maps to exactly one constructor
-  sorry
+  exact Option.some.inj (h₁.symm.trans h₂)
 
 -- Theorem 2: Totality — every known alias resolves successfully
 theorem doctypeResolve_total_on_aliases :
   ∀ s, s ∈ knownAliases → doctypeResolve s ≠ none := by
-  intro s hs
-  -- Each alias in knownAliases has a corresponding pattern match in doctypeResolve
-  sorry
+  decide
 
 -- Theorem 3: Profile-to-class consistency — no profile maps to the wrong class
 theorem profile_class_consistency :

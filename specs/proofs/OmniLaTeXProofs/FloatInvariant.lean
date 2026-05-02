@@ -19,6 +19,11 @@ structure Page where
 
 -- Invariant: A float appears on a page whose section is >= its defining section
 -- This means floats can appear at or after their definition point, never before
+-- TODO: This theorem is false as stated. The Page structure does not enforce any
+-- well-formedness constraint linking p.sectionNum to float section boundaries.
+-- To make this provable, add a well-formedness predicate:
+--   def Page.WellFormed (p : Page) : Prop := ∀ f ∈ p.floats, p.sectionNum ≥ f.sectionBoundary
+-- and use it as a hypothesis.
 theorem float_placement_invariant :
   ∀ (p : Page) (f : LaTeXFloat),
     f ∈ p.floats →
@@ -30,6 +35,8 @@ theorem float_placement_invariant :
 
 -- Invariant: With [b] placement, float appears in the bottom area of a page
 -- within the same or next section boundary
+-- TODO: Same issue as above — need a well-formedness predicate on Page.
+-- Also, the "+1" bound is domain-specific to LaTeX's float deferral rules.
 theorem float_bottom_placement :
   ∀ (p : Page) (f : LaTeXFloat),
     f ∈ p.floats →

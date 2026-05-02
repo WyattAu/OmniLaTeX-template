@@ -65,15 +65,18 @@ theorem font_size_irreflexive : ∀ s, ¬fontSizeLt s s := by
 
 -- Theorem 2: Asymmetry
 theorem font_size_asymmetric : ∀ a b, fontSizeLt a b → ¬fontSizeLt b a := by
-  sorry
+  intro a b hab
+  cases a <;> cases b <;> simp_all [fontSizeLt]
 
 -- Theorem 3: Transitivity
 theorem font_size_transitive : ∀ a b c, fontSizeLt a b → fontSizeLt b c → fontSizeLt a c := by
-  sorry
+  intro a b c hab hbc
+  cases a <;> cases b <;> cases c <;> simp_all [fontSizeLt]
 
 -- Theorem 4: Connexity (any two distinct sizes are ordered)
 theorem font_size_connex : ∀ a b, a ≠ b → fontSizeLt a b ∨ fontSizeLt b a := by
-  sorry
+  intro a b hne
+  cases a <;> cases b <;> simp_all [fontSizeLt]
 
 -- Corollary: Font sizes form a strict total order
 -- A strict total order is irreflexive, asymmetric, transitive, and connex

@@ -206,6 +206,8 @@
     }{}%
   }%
   \omnilatex@check@cjk@lang{chinese}%
+  \omnilatex@check@cjk@lang{simplifiedchinese}%
+  \omnilatex@check@cjk@lang{traditionalchinese}%
   \omnilatex@check@cjk@lang{japanese}%
   \omnilatex@check@cjk@lang{korean}%
 }{}%
@@ -222,6 +224,8 @@
     }{}%
   }%
   \omnilatex@check@cjk@sf@lang{chinese}%
+  \omnilatex@check@cjk@sf@lang{simplifiedchinese}%
+  \omnilatex@check@cjk@sf@lang{traditionalchinese}%
   \omnilatex@check@cjk@sf@lang{japanese}%
   \omnilatex@check@cjk@sf@lang{korean}%
 }{}%
@@ -285,6 +289,8 @@
   \IfStrEq{\omnilatex@language}{#1}{\RequirePackage{lib/language/omnilatex-cjk}}{}%
 }
 \omnilatex@cjk@check@lang{chinese}%
+\omnilatex@cjk@check@lang{simplifiedchinese}%
+\omnilatex@cjk@check@lang{traditionalchinese}%
 \omnilatex@cjk@check@lang{japanese}%
 \omnilatex@cjk@check@lang{korean}%
 

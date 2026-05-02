@@ -183,6 +183,8 @@
 \providecommand{\omnilatex@language}{}
 \@ifundefined{omnilatex@language}{}{%
   \IfStrEq{\omnilatex@language}{chinese}{\setCJKScript{sc}}{}%
+  \IfStrEq{\omnilatex@language}{simplifiedchinese}{\setCJKScript{sc}}{}%
+  \IfStrEq{\omnilatex@language}{traditionalchinese}{\setCJKScript{tc}}{}%
   \IfStrEq{\omnilatex@language}{japanese}{\setCJKScript{jp}}{}%
   \IfStrEq{\omnilatex@language}{korean}{\setCJKScript{kr}}{}%
 }

@@ -7,6 +7,28 @@ This project adheres to [Semantic versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.11.0] - 2026-05-02
+
+### Added
+- **18 polyglossia languages** — registered korean, arabic, hebrew, italian, portuguese, russian, dutch, polish, czech, greek, turkish, ngerman, traditionalchinese as secondary languages (previously only 6)
+- **French translations** — AuthorshipDeclTitle, author, AuthorshipDeclText, FurtherReadingText, Reaction, Reactions
+- **Spanish translations** — AuthorshipDeclTitle, author, AuthorshipDeclText, FurtherReadingText, Reaction, Reactions
+- **Russian translations** — 11 keys (Gloss, Example, BlankPage, ListOfListings, Supervisor, Examiner, etc.)
+- **Italian translations** — 11 keys (Glossario, Esempio, Lista di codici, Supervisore, etc.)
+- **Portuguese translations** — 11 keys (Glossário, Exemplo, Lista de códigos, Orientador, etc.)
+- **English/German colophon translations** — LatexClass, Generator
+- **Traditional Chinese auto-detection** — `language=traditionalchinese` now loads CJK module with TC fonts; `language=simplifiedchinese` also works
+- **CTAN submission guide** — `docs/CTAN_SUBMISSION.md` with step-by-step upload instructions
+- **7 Lean 4 proofs completed** — doctype resolution determinism, alias totality, build mode ordering, font size properties (asymmetric, transitive, connex)
+
+### Changed
+- **CTAN_README.txt** — updated to 23 document types, 14 languages, Overleaf zip script
+- **CJK font pre-definitions** — simplifiedchinese and traditionalchinese now included alongside chinese
+
+### Fixed
+- **Missing secondary language registration** — korean, arabic, hebrew had examples but weren't registered in `\setotherlanguages`
+- **CJK language detection gap** — `language=simplifiedchinese` and `language=traditionalchinese` now correctly trigger CJK module loading
+
 ## [1.10.0] - 2026-05-02
 
 ### Added

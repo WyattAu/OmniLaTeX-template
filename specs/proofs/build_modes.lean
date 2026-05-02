@@ -53,4 +53,5 @@ theorem all_modes_shell_escape :
 -- Theorem 5: Mode ordering by strictness
 theorem mode_strictness_order :
   ∀ m, (buildConfigFor m).strictWarnings = true ↔ m = .prod := by
-  sorry
+  intro m
+  cases m <;> simp [buildConfigFor]
