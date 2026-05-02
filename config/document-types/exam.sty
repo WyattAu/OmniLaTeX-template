@@ -1,0 +1,74 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/exam}[2025-10-18 OmniLaTeX examination paper profile]
+
+\documenttype{Examination Paper}
+\documentlayout{DIV=12,headinclude=false,footinclude=false}
+\KOMAoptions{titlepage=true,twoside=false}
+\setcounter{secnumdepth}{0}
+\setcounter{tocdepth}{0}
+
+\documentcolormode{color}
+\documentfontmode{serif}
+\documentlinespacing{onehalf}
+\documentparspacing{half}
+\documentpagestyle{empty}
+
+\makeatletter
+
+\newcounter{questioncounter}
+
+\newenvironment{question}[1][\relax]{%
+    \stepcounter{questioncounter}%
+    \par\medskip\noindent
+    \textbf{Question \thequestioncounter}%
+    \ifx#1\relax\else\quad\textnormal{[\textbf{#1} marks]}\fi
+    \par\smallskip\noindent
+}{\par\bigskip}
+
+\newenvironment{answer}[1][3cm]{%
+    \par\smallskip
+    \begin{addmargin}[1em]{#1}
+}{\end{addmargin}\par}
+
+\newcommand*{\omnilatex@examfront}{%
+    \begin{titlepage}
+        \thispagestyle{empty}%
+        \begin{center}
+            {\LARGE\bfseries \@examtitle}\par\vspace{1.5\baselineskip}
+            \begin{tabular}{@{}rl@{}}
+                \textbf{Exam Code:}  & \@examcode \\[0.4em]
+                \textbf{Date:}       & \@examdate \\[0.4em]
+                \textbf{Duration:}   & \@examduration \\[0.4em]
+                \textbf{Total Marks:} & \@totalmarks
+            \end{tabular}
+            \vspace{1.5\baselineskip}\par
+            {\large \@department}\par\vspace{2\baselineskip}
+        \end{center}
+        \noindent\textbf{Instructions:}\par\@examinstructions
+        \vspace{1\baselineskip}
+        \noindent\textit{Answer all questions.  Show all working where applicable.}
+        \vfill\noindent\rule{\textwidth}{0.4pt}\par
+    \end{titlepage}
+}
+
+\renewcommand{\maketitle}{\omnilatex@examfront\setcounter{footnote}{0}}
+
+\providecommand*{\@examtitle}{\@title}
+\newcommand*{\examtitle}[1]{\gdef\@examtitle{#1}}
+\providecommand*{\@examcode}{EXAM000}
+\newcommand*{\examcode}[1]{\gdef\@examcode{#1}}
+\providecommand*{\@examdate}{\@date}
+\newcommand*{\examdate}[1]{\gdef\@examdate{#1}}
+\providecommand*{\@examduration}{2 hours}
+\newcommand*{\examduration}[1]{\gdef\@examduration{#1}}
+\providecommand*{\@examinstructions}{Answer all questions in the spaces provided.\
+    No electronic devices are permitted.}
+\newcommand*{\examinstructions}[1]{\gdef\@examinstructions{#1}}
+\providecommand*{\@totalmarks}{100}
+\newcommand*{\totalmarks}[1]{\gdef\@totalmarks{#1}}
+\providecommand*{\@department}{Department of Mathematics}
+\newcommand*{\department}[1]{\gdef\@department{#1}}
+
+\makeatother
+
+\endinput

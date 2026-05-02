@@ -1,0 +1,76 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/homework}[2025-10-18 OmniLaTeX homework profile]
+
+\documenttype{Homework Assignment}
+\documentlayout{DIV=12,headinclude=false,footinclude=false}
+\KOMAoptions{titlepage=true,twoside=false}
+\setcounter{secnumdepth}{0}
+\setcounter{tocdepth}{0}
+\documentcolormode{color}
+\documentfontmode{serif}
+\documentlinespacing{onehalf}
+\documentparspacing{half}
+\pagestyle{empty}
+
+\makeatletter
+
+\newcounter{exercise}
+\newif\ifshowsolutions\showsolutionsfalse
+\newcommand{\showsolutions}{\showsolutionstrue}
+\newcommand{\hidesolutions}{\showsolutionsfalse}
+
+\newenvironment{exercise}[1][]{%
+    \stepcounter{exercise}\par\vspace{1\baselineskip}\noindent
+    \textbf{Exercise~\theexercise\ifx\\#1\\\else\space(#1~points)\fi}%
+    \par\vspace{0.5\baselineskip}%
+}{\par\vspace{0.5\baselineskip}}
+
+\newenvironment{solution}{%
+    \ifshowsolutions\par\vspace{0.25\baselineskip}%
+    \noindent\textit{Solution:}\par\vspace{0.25\baselineskip}%
+    \else\setbox\@tempboxa=\vbox\bgroup\fi
+}{\ifshowsolutions\par\vspace{0.5\baselineskip}%
+    \else\egroup\fi}
+
+\providecommand*{\@hwtitle}{\@title}
+\newcommand*{\hwtitle}[1]{\gdef\@hwtitle{#1}}
+\providecommand*{\@hwcourse}{Course Name}
+\newcommand*{\hwcourse}[1]{\gdef\@hwcourse{#1}}
+\providecommand*{\@hwauthor}{\@author}
+\newcommand*{\hwauthor}[1]{\gdef\@hwauthor{#1}}
+\providecommand*{\@hwduedate}{\@date}
+\newcommand*{\hwduedate}[1]{\gdef\@hwduedate{#1}}
+\providecommand*{\@hwinstructor}{Instructor Name}
+\newcommand*{\hwinstructor}[1]{\gdef\@hwinstructor{#1}}
+\providecommand*{\@hwnumber}{Homework 1}
+\newcommand*{\hwnumber}[1]{\gdef\@hwnumber{#1}}
+\providecommand*{\@hwstudentname}{}
+\newcommand*{\hwstudentname}[1]{\gdef\@hwstudentname{#1}}
+\providecommand*{\@hwstudentid}{}
+\newcommand*{\hwstudentid}[1]{\gdef\@hwstudentid{#1}}
+\providecommand*{\@hwtotalpoints}{}
+\newcommand*{\hwtotalpoints}[1]{\gdef\@hwtotalpoints{#1}}
+
+\newcommand*{\omnilatex@hwfrontpage}{%
+    \begin{titlepage}\thispagestyle{empty}%
+        \vspace{1\baselineskip}
+        {\Large\bfseries \@hwcourse}\par
+        {\Large\bfseries \@hwnumber}\par\vspace{2\baselineskip}
+        \noindent\textbf{Name:}\hspace{3cm}\@hwstudentname\par
+        \noindent\textbf{Student ID:}\hspace{2cm}\@hwstudentid\par
+        \vspace{2\baselineskip}
+        \begin{center}{\LARGE\bfseries \@hwtitle}\par\end{center}
+        \vspace{1.5\baselineskip}
+        \begin{description}
+            \item[Due Date] \@hwduedate
+            \item[Instructor] \@hwinstructor
+            \item[Total Points] \@hwtotalpoints
+        \end{description}\vfill
+        \noindent\rule{\textwidth}{0.4pt}\par
+    \end{titlepage}}
+
+\renewcommand{\maketitle}{\omnilatex@hwfrontpage\setcounter{footnote}{0}}
+
+\makeatother
+
+\endinput

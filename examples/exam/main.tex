@@ -1,0 +1,84 @@
+\documentclass[
+    language=english,
+    doctype=exam,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+
+\maketitle
+
+\begin{question}[5]
+    Define the term \textbf{algorithm} and explain the difference between
+    \textit{time complexity} and \textit{space complexity}.  Give a brief
+    example of each.
+\end{question}
+\begin{answer}[2cm]
+\end{answer}
+
+\begin{question}[5]
+    Which of the following data structures is most appropriate for implementing
+    a breadth-first search (BFS)?
+    \begin{enumerate}[(a)]
+        \item Stack
+        \item Queue
+        \item Heap
+        \item Binary search tree
+    \end{enumerate}
+    Justify your answer in one sentence.
+\end{question}
+\begin{answer}[1.5cm]
+\end{answer}
+
+\begin{question}[10]
+    Let $f(n) = 3n^2 + 5n + 7$.  Show that $f(n) = O(n^2)$ using the
+    formal definition of Big-O notation.
+
+    \textit{Hint:} Find constants $c > 0$ and $n_0 \geq 1$ such that
+    $f(n) \leq c \cdot n^2$ for all $n \geq n_0$.
+\end{question}
+\begin{answer}[4cm]
+\end{answer}
+
+\begin{question}[20]
+    Prove by mathematical induction that for all integers $n \geq 1$:
+    \[
+        \sum_{k=1}^{n} k^2 = \frac{n(n+1)(2n+1)}{6}.
+    \]
+
+    \textbf{(a)} State the base case and verify it.\hfill\textit{[5 marks]}
+
+    \textbf{(b)} State the inductive hypothesis.\hfill\textit{[5 marks]}
+
+    \textbf{(c)} Complete the inductive step.\hfill\textit{[10 marks]}
+\end{question}
+\begin{answer}[6cm]
+\end{answer}
+
+\begin{question}[15]
+    Consider the following recurrence relation describing the running time of a
+    divide-and-conquer algorithm:
+    \[
+        T(n) = 2\,T\!\left(\frac{n}{2}\right) + n, \qquad T(1) = 1.
+    \]
+    Using the Master Theorem, determine the asymptotic running time $T(n)$.
+    Show all steps of your reasoning, including identification of the parameters
+    $a$, $b$, and $f(n)$, and the comparison of $f(n)$ with $n^{\log_b a}$.
+\end{question}
+\begin{answer}[5cm]
+\end{answer}
+
+\begin{question}[15]
+    \textbf{(a)} Describe the difference between a \textbf{min-heap} and a
+    \textbf{max-heap}.\hfill\textit{[5 marks]}
+
+    \textbf{(b)} Given the sequence $\langle 25, 17, 36, 2, 8, 19, 45 \rangle$,
+    draw the min-heap that results after inserting these elements one by one
+    (in the order given).\hfill\textit{[10 marks]}
+\end{question}
+\begin{answer}[5cm]
+\end{answer}
+
+\end{document}

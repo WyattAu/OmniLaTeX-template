@@ -7,6 +7,38 @@ This project adheres to [Semantic versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.8.0] - 2026-05-02
+
+### Added
+- **Exam document type** — question/answer environments with auto-numbering, mark allocation, custom title page with exam code/duration/marks; `doctype=exam`
+- **Homework document type** — exercise/solution environments with point values, solution visibility toggle (`\showsolutions`/`\hidesolutions`), student metadata fields; `doctype=homework`
+- **Research proposal document type** — multi-chapter proposal with funding program/call/budget/duration metadata, custom title page; `doctype=research-proposal` (uses `scrreprt` for chapters)
+- **Lua showcase example** — 273-line example demonstrating `\directlua`, Lua functions, table manipulation, string processing, math computation, CSV table generation, custom Lua-backed commands
+- **Font setter commands** — `\setMainFont`, `\setSansFont`, `\setMonoFont`, `\setMathFont` with `\IfFontExistsTF` validation
+- **Custom margin command** — `\setCustomMargins{left}{right}{top}{bottom}` using KOMA-compatible `\areset`
+- **Override documentation** — quick-reference comment block in `config/document-settings.sty`
+- **GitHub Pages document gallery** — lazy-loaded PDF previews for all 35 documents (root + 34 examples) with Intersection Observer, category filter tabs, full-screen lightbox viewer, responsive grid
+- **CTAN packaging** — `scripts/make-ctan-zip.sh` and `CTAN_README.txt` for CTAN submission
+
+### Changed
+- **CV margins** — DIV=10→DIV=12 for tighter page utilization
+- **CI workflow** — copies all example PDFs into Pages bundle; removed inline `index.html` generation
+
+### Fixed
+- **Doctor font check** — multi-strategy approach (fc-match → fc-list → LuaLaTeX `\IfFontExistsTF`); fixes false negatives in Nix environments; corrected `found or True` logic
+- **KOMA shim bg colors** — tcolorbox block/alertblock/exampleblock redefinitions for TL2025+; block backgrounds now render correctly on dark themes
+- **Presentation layout** — added `\recalctypearea` for custom 254mm×190.5mm paper size; typearea now calculates correct margins
+- **RTL title fonts** — `\AtBeginDocument` hook overrides KOMA title fonts with script-specific Arabic/Hebrew fonts for proper title rendering
+- **Citations empty bibliography** — added `\cite{}` commands using real keys from `bibliography.bib` to thesis, article, and journal examples
+- **TikZ/PGFPlots carbon/ash themes** — investigated and confirmed NOT A BUG; these themes don't exist in the codebase ("carbon" and "ash" only appear as chemistry content)
+
+### Enhanced
+- **CV example** — expanded 42→115 lines using all CV commands (role, contact, phone, location, links, summary, bullet spacing)
+- **Thesis example** — expanded with equations, tables, figure placeholders
+- **Article example** — expanded with methodology equation, benchmark table, training curve figure
+- **Journal example** — expanded with Hamiltonian equations, energy eigenvalue table, wave function figure
+- **Technical report example** — expanded with metrics table, IOPS figure, numbered recommendations
+
 ## [1.7.1] - 2026-04-30
 
 ### Fixed

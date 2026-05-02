@@ -1,0 +1,153 @@
+\documentclass[
+    language=english,
+    doctype=research-proposal,
+    institution=none,
+    titlestyle=book,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\frontmatter
+\chapter{Abstract}
+This proposal outlines a three-year programme to develop scalable quantum error
+correction (QEC) codes for near-term NISQ devices.  By leveraging topological
+stabiliser codes and machine-learning--assisted decoding, we aim to reduce the
+logical error rate by two orders of magnitude while keeping overhead within
+feasible limits.
+
+\tableofcontents
+
+\mainmatter
+
+\chapter{Introduction}
+Quantum computing promises exponential speed-ups in chemistry, optimisation,
+and cryptography~\cite{einstein1905}.  However, current NISQ devices are limited
+by decoherence and gate errors.  Quantum error
+correction~\cite{diracPrinciplesQuantumMechanics1981} is the path to fault
+tolerance, but existing schemes impose prohibitive overheads.  This proposal
+targets a practical QEC architecture bridging theory and near-term hardware.
+
+\chapter{Background and Literature Review}
+QEC has its foundations in the work of Shor and Steane, who demonstrated that
+quantum information can be protected via entangled encoding.  The surface
+code~\cite{knuthFundamentalAlgorithms1973} is a leading candidate due to its
+local stabiliser measurements and high error threshold ($\approx 1\%$).
+Bird et al.~\cite{birdNaturalLanguageProcessing2009} highlight the growing role
+of data-driven decoding.  Two challenges remain: reducing physical qubits per
+logical qubit, and achieving real-time decoding at microsecond timescales.
+
+\chapter{Research Objectives}
+The goal is a QEC system with logical error rate below $10^{-6}$ using fewer
+than 1\,000 physical qubits per logical qubit:
+\begin{enumerate}
+    \item Design tailored topological codes for realistic noise models.
+    \item Develop a neural-network decoder meeting real-time latency constraints.
+    \item Validate through large-scale simulation and a 72-qubit demonstration.
+\end{enumerate}
+
+\chapter{Methodology}
+
+\section{Code Design}
+We construct $[[n,k,d]]$ stabiliser codes parameterised by hardware noise bias.
+The code distance must satisfy
+\begin{equation}
+    d \geq \left\lceil \frac{\log(1/\epsilon_{\mathrm{target}})}
+    {\log(1/p_{\mathrm{phys}})} \right\rceil
+    \label{eq:distance}
+\end{equation}
+where $\epsilon_{\mathrm{target}}$ is the target logical error rate.
+Table~\ref{tab:codes} summarises preliminary parameters.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Preliminary code parameters.}
+    \label{tab:codes}
+    \begin{tabular}{@{}rrrr@{}}
+        \toprule
+        $p_{\mathrm{phys}}$ & $n$ & $k$ & $d$ \\
+        \midrule
+        $10^{-3}$ & 489  & 1 & 11 \\
+        $10^{-3}$ & 1089 & 2 & 15 \\
+        $10^{-2}$ & 1449 & 1 & 19 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Neural-Network Decoder}
+We train a CNN to map syndrome measurements to correction
+operations~\cite{birdNaturalLanguageProcessing2009}.  Figure~\ref{fig:decoder}
+illustrates the pipeline.
+
+\begin{figure}[htbp]
+    \centering
+    \fbox{\parbox{0.7\textwidth}{\centering\vspace{2cm}%
+    Figure placeholder: CNN decoder architecture.\vspace{2cm}}}
+    \caption{Decoder pipeline from syndrome input to correction output.}
+    \label{fig:decoder}
+\end{figure}
+
+\chapter{Timeline and Work Plan}
+Table~\ref{tab:gantt} shows the projected 36-month timeline.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Work plan by year (Y1--Y3) and quarter (Q1--Q4).}
+    \label{tab:gantt}
+    \begin{tabular}{@{}llll@{}}
+        \toprule
+        Task & Year 1 & Year 2 & Year 3 \\
+        \midrule
+        Code design   & Q1--Q3 &        &        \\
+        Decoder dev.  & Q2--Q4 & Q1--Q3 &        \\
+        Simulation    & Q3--Q4 & Q1--Q4 & Q1--Q2 \\
+        Hardware demo &        & Q3--Q4 & Q1--Q4 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\chapter{Expected Outcomes}
+\begin{enumerate}
+    \item A published code family with a rigorous threshold
+          proof~\cite{knuthTeXbook1986}.
+    \item An open-source decoder with sub-microsecond inference on commodity
+          GPUs~\cite{mckinneyPythonDataAnalysis2018}.
+    \item A demonstration of logical qubit operation with error rate below
+          $10^{-6}$ on a 72-qubit processor.
+    \item At least three peer-reviewed publications and two conference talks.
+\end{enumerate}
+
+\chapter{Budget Justification}
+The total requested budget is \$750\,000 over 36 months.
+Table~\ref{tab:budget} provides the breakdown.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Budget summary by category.}
+    \label{tab:budget}
+    \begin{tabular}{@{}lr@{}}
+        \toprule
+        Category & Amount (\$) \\
+        \midrule
+        Personnel (2 PhD, 1 postdoc)  & 480\,000 \\
+        Computing and cloud resources & 120\,000 \\
+        Travel and conferences        &  45\,000 \\
+        Equipment and supplies        &  65\,000 \\
+        Indirect costs (15\%)         & 105\,000 \\
+        \midrule
+        \textbf{Total}               & \textbf{815\,000} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\appendix
+\chapter{Supporting Information}
+Additional data, code listings, and supplementary derivations.
+
+\printbibliography
+
+\end{document}

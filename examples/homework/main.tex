@@ -1,0 +1,131 @@
+\documentclass[
+    language=english,
+    doctype=homework,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\showsolutions
+
+\begin{document}
+
+\maketitle
+
+\begin{exercise}[5]
+Define a \emph{singly linked list} and state two advantages it has over a
+dynamic array.
+\end{exercise}
+\begin{solution}
+A singly linked list is a linear data structure in which each element (node)
+contains a data field and a reference (pointer) to the next node in the
+sequence.
+
+Two advantages over a dynamic array:
+\begin{enumerate}
+    \item $O(1)$ insertion and deletion at the head (no shifting of elements).
+    \item No need to pre-allocate or resize a contiguous block of memory.
+\end{enumerate}
+\end{solution}
+
+\begin{exercise}[10]
+Compute the time complexity of the following function using Big-O notation.
+\begin{verbatim}
+  function mystery(n):
+      x = 0
+      for i = 1 to n:
+          for j = 1 to i:
+              x = x + 1
+      return x
+\end{verbatim}
+\end{exercise}
+\begin{solution}
+The inner loop runs $i$ times for each value of $i$ from $1$ to $n$.
+The total number of iterations is:
+\[
+    \sum_{i=1}^{n} i = \frac{n(n+1)}{2}
+\]
+Therefore the time complexity is $O(n^{2})$.
+\end{solution}
+
+\begin{exercise}[15]
+Prove by induction that a binary tree of height $h$ has at most $2^{h+1}-1$
+nodes.
+\end{exercise}
+\begin{solution}
+\textbf{Base case} ($h=0$): A tree of height $0$ is a single node.
+$2^{0+1}-1 = 1$. \checkmark
+
+\textbf{Inductive step}: Assume a binary tree of height $h$ has at most
+$2^{h+1}-1$ nodes. Consider a tree of height $h+1$. Its left and right
+subtrees each have height at most $h$, so by the inductive hypothesis each
+has at most $2^{h+1}-1$ nodes. Adding the root:
+\[
+    1 + 2\bigl(2^{h+1}-1\bigr) = 1 + 2^{h+2}-2 = 2^{h+2}-1
+\]
+This completes the induction. \qed
+\end{solution}
+
+\begin{exercise}[10]
+Write pseudocode for an in-order traversal of a binary search tree that
+collects all values into an array.
+\end{exercise}
+\begin{solution}
+\begin{verbatim}
+  function inorder(root, result):
+      if root == null:
+          return
+      inorder(root.left, result)
+      append(result, root.value)
+      inorder(root.right, result)
+\end{verbatim}
+For a BST with $n$ nodes this runs in $O(n)$ time and uses $O(h)$ stack
+space, where $h$ is the tree height.
+\end{solution}
+
+\begin{exercise}[15]
+Consider a hash table that uses separate chaining with $m$ slots and $n$
+keys. Answer the following:
+
+\begin{enumerate}
+    \item[(a)] What is the expected length of a chain under simple uniform
+          hashing?
+    \item[(b)] If $n = \alpha m$ for load factor $\alpha$, what is the
+          expected time for an unsuccessful search?
+    \item[(c)] How does open addressing (linear probing) differ in its
+          expected search time?
+\end{enumerate}
+\end{exercise}
+\begin{solution}
+\begin{enumerate}
+    \item[(a)] Under simple uniform hashing the expected chain length is
+          $\displaystyle\frac{n}{m} = \alpha$, the load factor.
+    \item[(b)] An unsuccessful search must examine the entire chain on
+          average, giving $O(1 + \alpha)$ expected time.
+    \item[(c)] With linear probing the expected number of probes for an
+          unsuccessful search is approximately
+          $\dfrac{1}{2}\!\left(1 + \dfrac{1}{(1-\alpha)^{2}}\right)$
+          for $\alpha < 1$, which grows faster than separate chaining as
+          $\alpha \to 1$.
+\end{enumerate}
+\end{solution}
+
+\begin{exercise}[5]
+State the Master Theorem. You do not need to prove it.
+\end{exercise}
+\begin{solution}
+For a recurrence of the form
+$T(n) = a\,T(n/b) + f(n)$
+where $a \ge 1$, $b > 1$, and $f$ is asymptotically positive:
+
+\begin{enumerate}
+    \item If $f(n) = O(n^{\log_b a - \epsilon})$ for some $\epsilon > 0$,
+          then $T(n) = \Theta(n^{\log_b a})$.
+    \item If $f(n) = \Theta(n^{\log_b a}\log^{k} n)$, then
+          $T(n) = \Theta(n^{\log_b a}\log^{k+1} n)$.
+    \item If $f(n) = \Omega(n^{\log_b a + \epsilon})$ and the regularity
+          condition holds, then $T(n) = \Theta(f(n))$.
+\end{enumerate}
+\end{solution}
+
+\end{document}

@@ -1,0 +1,62 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/research-proposal}[2025-10-18 OmniLaTeX research proposal profile]
+
+\documenttype{Research Proposal}
+\KOMAoptions{titlepage=true,twoside=false,chapterprefix=false,open=any,numbers=noenddot}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{2}
+
+\makeatletter
+
+\newcommand*{\omnilatex@proposalfont}{%
+    \begin{titlepage}
+        \thispagestyle{empty}%
+        \begin{center}
+            {\large\textsf{\@propprogram}}\\[0.25\baselineskip]
+            {\normalsize Call:~\@propcall}\par\vspace{2\baselineskip}
+            {\Huge\bfseries \@title}\par\vspace{1.25\baselineskip}
+            {\large Principal Investigator:~\@propinvestigator}\\[0.25\baselineskip]
+            {\normalsize Co-Investigators:~\@propcoinvestigators}\par\vspace{0.75\baselineskip}
+            {\normalsize \@proporganization}\par\vspace{2\baselineskip}
+            \noindent\rule{0.8\textwidth}{0.4pt}\par\vspace{1.5\baselineskip}
+            \begin{tabular}{@{}rl@{}}
+                Duration: & \@propduration \\
+                Budget:   & \@propbudget   \\
+                Start:    & \@propstartdate \\
+                End:      & \@propenddate   \\
+            \end{tabular}
+            \vfill
+        \end{center}
+        \noindent\rule{\textwidth}{0.4pt}
+    \end{titlepage}
+}
+
+\renewcommand{\maketitle}{%
+    \omnilatex@proposalfont
+    \setcounter{footnote}{0}%
+}
+
+\providecommand*{\@propabstract}{}
+\newcommand*{\propabstract}[1]{\gdef\@propabstract{#1}}
+\providecommand*{\@propprogram}{Funding Program}
+\newcommand*{\propprogram}[1]{\gdef\@propprogram{#1}}
+\providecommand*{\@propcall}{}
+\newcommand*{\propcall}[1]{\gdef\@propcall{#1}}
+\providecommand*{\@propduration}{24 months}
+\newcommand*{\propduration}[1]{\gdef\@propduration{#1}}
+\providecommand*{\@propbudget}{}
+\newcommand*{\propbudget}[1]{\gdef\@propbudget{#1}}
+\providecommand*{\@propstartdate}{TBD}
+\newcommand*{\propstartdate}[1]{\gdef\@propstartdate{#1}}
+\providecommand*{\@propenddate}{TBD}
+\newcommand*{\propenddate}[1]{\gdef\@propenddate{#1}}
+\providecommand*{\@propinvestigator}{PI Name}
+\newcommand*{\propinvestigator}[1]{\gdef\@propinvestigator{#1}}
+\providecommand*{\@propcoinvestigators}{None}
+\newcommand*{\propcoinvestigators}[1]{\gdef\@propcoinvestigators{#1}}
+\providecommand*{\@proporganization}{Institution}
+\newcommand*{\proporganization}[1]{\gdef\@proporganization{#1}}
+
+\makeatother
+
+\endinput
