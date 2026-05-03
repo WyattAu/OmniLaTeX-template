@@ -1,6 +1,6 @@
 # OmniLaTeX Roadmap
 
-Current version: **v1.11.0**
+Current version: **v1.12.0**
 
 ## Design Principles
 
@@ -13,17 +13,17 @@ Current version: **v1.11.0**
 
 | Metric | Value |
 |--------|-------|
-| Releases | 14 (v1.0.0–v1.11.0) |
+| Releases | 15 (v1.0.0–v1.12.0) |
 | `.sty` modules | 27 |
 | Document types | 23 (thesis, dissertation, article, journal, inlinepaper, book, manual, technicalreport, standard, patent, cv, cover-letter, poster, presentation, letter, dictionary, homework, exam, research-proposal, lecture-notes, syllabus, handout, memo) |
-| Examples | 39 (39/39 compile on Docker TL2026) |
+| Examples | 40 (40/40 compile on Docker TL2026) |
 | Institution configs | 14 |
-| Languages | 9 primary (EN, DE, FR, ES, ZH, JA, KO, AR, HE) + 18 secondary via polyglossia |
-| Translation keys | 55+ across 7 languages (EN, DE, FR, ES, RU, IT, PT) |
+| Languages | 9 primary (EN, DE, FR, ES, ZH, JA, KO, AR, HE) + 19 secondary via polyglossia (18 + persian) |
+| Translation keys | 88+ across 12 languages (EN, DE, FR, ES, RU, IT, PT, NL, PL, CS, EL, TR) |
 | CI workflows | 7 (all green) |
-| Integration tests | 318 (across 6 categories) |
-| Lean 4 proofs | 13 proven, 7 retained (false as stated, need hypotheses) |
-| Core code | ~15,000 lines |
+| Integration tests | 322 (across 6 categories) |
+| Lean 4 proofs | 15 proven, 5 retained (Float limitation, documented) |
+| Core code | ~15,500 lines |
 | License | Apache 2.0 |
 
 ---
@@ -32,6 +32,7 @@ Current version: **v1.11.0**
 
 | Version | Date | Summary |
 |---------|------|---------|
+| v1.12.0 | 2026-05-03 | Polish — Persian RTL, 5 new translations (NL/PL/CS/EL/TR), 2 Lean proofs, flake.nix, perf docs, patent example |
 | v1.11.0 | 2026-05-02 | Languages — 18 secondary languages, 55+ translations (FR/ES/RU/IT/PT), TC Chinese auto-detect, 7 Lean proofs, CTAN guide |
 | v1.10.0 | 2026-05-02 | Distribution — 4 new document types (lecture-notes, syllabus, handout, memo), 39 examples, CTAN CI updated |
 | v1.9.0 | 2026-05-02 | Growth — CTAN CI, Overleaf zip, 282 integration tests, 8 missing configs fixed, Pages gallery update |

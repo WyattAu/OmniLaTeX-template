@@ -266,6 +266,21 @@
     }%
   }{}%
 }{}%
+\@ifundefined{persianfont}{%
+  \IfStrEq{\omnilatex@language}{persian}{%
+    \IfFontExistsTF{Amiri}{%
+      \newfontfamily\persianfont[Script=Arabic,BoldFont=Amiri,BoldFeatures={FakeBold=2}]{Amiri}%
+      \newfontfamily\persianfontfamily[Script=Arabic,BoldFont=Amiri,BoldFeatures={FakeBold=2}]{Amiri}%
+      \newfontfamily\persianfontsf[Script=Arabic,BoldFont=Amiri,BoldFeatures={FakeBold=2}]{Amiri}%
+    }{%
+      \IfFontExistsTF{Noto Naskh Arabic}{%
+        \newfontfamily\persianfont[Script=Arabic,BoldFont=Noto Naskh Arabic,BoldFeatures={FakeBold=2}]{Noto Naskh Arabic}%
+        \newfontfamily\persianfontfamily[Script=Arabic,BoldFont=Noto Naskh Arabic,BoldFeatures={FakeBold=2}]{Noto Naskh Arabic}%
+        \newfontfamily\persianfontsf[Script=Arabic,BoldFont=Noto Naskh Arabic,BoldFeatures={FakeBold=2}]{Noto Naskh Arabic}%
+      }{}%
+    }%
+  }{}%
+}{}%
 \@ifundefined{hebrewfont}{%
   \IfStrEq{\omnilatex@language}{hebrew}{%
     \IfFontExistsTF{David CLM}{%
@@ -294,11 +309,12 @@
 \omnilatex@cjk@check@lang{japanese}%
 \omnilatex@cjk@check@lang{korean}%
 
-% Auto-load RTL support for Arabic, Hebrew
+% Auto-load RTL support for Arabic, Persian, Hebrew
 \def\omnilatex@rtl@check@lang#1{%
   \IfStrEq{\omnilatex@language}{#1}{\RequirePackage{lib/language/omnilatex-rtl}}{}%
 }
 \omnilatex@rtl@check@lang{arabic}%
+\omnilatex@rtl@check@lang{persian}%
 \omnilatex@rtl@check@lang{hebrew}%
 
 %% setspaceenhanced is loaded by omnilatex-base.sty instead

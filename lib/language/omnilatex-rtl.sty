@@ -1,7 +1,7 @@
 %% OmniLaTeX RTL Language Support
-%% Arabic and Hebrew right-to-left typography
+%% Arabic, Persian and Hebrew right-to-left typography
 %%
-%% Usage: Loaded automatically when language=arabic or language=hebrew
+%% Usage: Loaded automatically when language=arabic, language=persian or language=hebrew
 %%        Or: \usepackage{lib/language/omnilatex-rtl}
 %%
 %% Features:
@@ -68,7 +68,7 @@
 
 % ── Script Detection ────────────────────────────────────────────────────────
 % Track which RTL script is active so other parts of the template can query it.
-% Valid values: arabic, hebrew.
+% Valid values: arabic, persian, hebrew.
 
 \newcommand{\omnilatex@rtlscript}{arabic}
 
@@ -205,6 +205,14 @@
   \AtBeginDocument{\rlap{\hebrewfont א}}%
 }
 
+\newcommand{\omnilatex@setup@persian}{%
+  \renewcommand{\omnilatex@rtlscript}{persian}%
+  \omnilatex@setup@rtl@layout%
+  \omnilatex@apply@arabicfonts%
+  \omnilatex@setup@rtl@math%
+  \omnilatex@setup@rtl@lists%
+}
+
 % ── RTL Title Page Font Override ────────────────────────────────────────────
 % KOMA's \usekomafont{title} uses \sffamily which overrides fontspec's
 % automatic script-based font detection. For Arabic/Hebrew, we replace
@@ -226,6 +234,13 @@
     \setkomafont{date}{\hebrewfont\normalsize}%
     \setkomafont{publishers}{\hebrewfont}%
   }{}%
+  \IfStrEq{\omnilatex@rtlscript}{persian}{%
+    \setkomafont{title}{\arabicfont\bfseries\Huge}%
+    \setkomafont{author}{\arabicfont\bfseries}%
+    \setkomafont{subtitle}{\arabicfont\normalsize}%
+    \setkomafont{date}{\arabicfont\normalsize}%
+    \setkomafont{publishers}{\arabicfont}%
+  }{}%
 }
 
 % ── Auto-Script Detection ───────────────────────────────────────────────────
@@ -237,6 +252,7 @@
 \providecommand{\omnilatex@language}{}
 \@ifundefined{omnilatex@language}{}{%
   \IfStrEq{\omnilatex@language}{arabic}{\omnilatex@setup@arabic}{}%
+  \IfStrEq{\omnilatex@language}{persian}{\omnilatex@setup@persian}{}%
   \IfStrEq{\omnilatex@language}{hebrew}{\omnilatex@setup@hebrew}{}%
 }
 

@@ -47,6 +47,7 @@
             hologo
             censor
             cancel
+            menukeys
             # ── lib/typography/omnilatex-fonts ──
             fontspec
             amsmath
@@ -60,6 +61,7 @@
             blindtext
             pdflscape
             url
+            csquotes
             # ── lib/typography/omnilatex-lists ──
             enumitem
             # ── lib/typography/omnilatex-math ──
@@ -78,6 +80,7 @@
             pgfplots
             tikz-3dplot
             circuitikz
+            forest
             # ── lib/code/omnilatex-listings ──
             minted
             accsupp

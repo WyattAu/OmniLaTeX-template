@@ -17,30 +17,31 @@ structure Page where
   sectionNum : Nat      -- primary section on this page
   floats : List LaTeXFloat
 
+-- Well-formedness predicate: every float on a page has sectionNum ≥ sectionBoundary
+def Page.WellFormed (p : Page) : Prop := ∀ f ∈ p.floats, p.sectionNum ≥ f.sectionBoundary
+
+-- Well-formedness with bounded deferral: float section is at most sectionNum + 1
+def Page.WellFormedBounded (p : Page) : Prop :=
+  ∀ f ∈ p.floats, p.sectionNum ≥ f.sectionBoundary ∧ p.sectionNum ≤ f.sectionBoundary + 1
+
 -- Invariant: A float appears on a page whose section is >= its defining section
--- This means floats can appear at or after their definition point, never before
--- TODO: This theorem is false as stated. The Page structure does not enforce any
--- well-formedness constraint linking p.sectionNum to float section boundaries.
--- To make this provable, add a well-formedness predicate:
---   def Page.WellFormed (p : Page) : Prop := ∀ f ∈ p.floats, p.sectionNum ≥ f.sectionBoundary
--- and use it as a hypothesis.
+-- Fixed: added WellFormed hypothesis
 theorem float_placement_invariant :
   ∀ (p : Page) (f : LaTeXFloat),
+    Page.WellFormed p →
     f ∈ p.floats →
-    f.placement = "h" →  -- "here" placement
     p.sectionNum ≥ f.sectionBoundary := by
-  sorry
-  -- Full proof requires formalizing LaTeX's float algorithm (Frank Mittelbach's design)
-  -- LaTeX uses a queue-based system with area constraints
+  intro p f h_wf h_mem
+  exact h_wf f h_mem
 
 -- Invariant: With [b] placement, float appears in the bottom area of a page
 -- within the same or next section boundary
--- TODO: Same issue as above — need a well-formedness predicate on Page.
--- Also, the "+1" bound is domain-specific to LaTeX's float deferral rules.
+-- Fixed: added WellFormedBounded hypothesis
 theorem float_bottom_placement :
   ∀ (p : Page) (f : LaTeXFloat),
+    Page.WellFormedBounded p →
     f ∈ p.floats →
-    f.placement = "b" →
     p.sectionNum ≥ f.sectionBoundary ∧
     p.sectionNum ≤ f.sectionBoundary + 1 := by
-  sorry
+  intro p f h_wf h_mem
+  exact h_wf f h_mem

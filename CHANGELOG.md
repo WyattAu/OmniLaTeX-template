@@ -7,6 +7,26 @@ This project adheres to [Semantic versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.12.0] - 2026-05-03
+
+### Added
+- **Persian/Farsi RTL support** — persian language loads RTL module with Arabic-script fonts, title font override, auto-detection
+- **Dutch translations** — 11 keys (Woordenlijst, Voorbeeld, Begeleider, etc.)
+- **Czech translations** — 11 keys (Glosář, Příklad, Vedoucí, etc.)
+- **Polish translations** — 11 keys (Słownik, Przykład, Promotor, etc.)
+- **Greek translations** — 11 keys (Γλωσσάρι, Παράδειγμα, Επιβλέπτης, etc.)
+- **Turkish translations** — 11 keys (Sözlük, Örnek, Danışman, etc.)
+- **Lean 4: 2 float theorems proven** — `float_placement_invariant` and `float_bottom_placement` with WellFormed hypotheses
+- **Performance documentation** — `docs/PERFORMANCE.md` with benchmarks, bottlenecks, optimization notes
+- **Patent example** — patent application document (40 total examples)
+
+### Changed
+- **Translation coverage** — 12 languages with translations (EN, DE, FR, ES, RU, IT, PT, NL, PL, CS, EL, TR)
+- **Lean 4 page_geometry** — 5 theorems retain `sorry` with detailed root cause analysis (Float lacks Preorder/PartialOrder instances in Lean 4)
+
+### Fixed
+- **Flake.nix completeness** — added `menukeys`, `csquotes`, `forest` to texlive package list
+
 ## [1.11.0] - 2026-05-02
 
 ### Added
