@@ -1,0 +1,55 @@
+\documentclass[
+    language=english,
+    doctype=invoice,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+
+\maketitle
+
+\vspace{1\baselineskip}
+\noindent
+\begin{tabular}{@{}p{0.55\textwidth}rp{2.5cm}r@{}}
+\hline
+\textbf{Description} & \textbf{Qty} & \textbf{Unit Price} & \textbf{Amount} \\
+\hline
+\invoiceitem{Full-Stack Web Application Development}{1}{15000}
+\invoiceitem{UI/UX Design and Prototyping}{1}{3500}
+\invoiceitem{API Integration (Third-Party Services)}}{8}{150}
+\invoiceitem{Database Architecture and Optimization}{1}{2200}
+\invoiceitem{Code Review and Quality Assurance}{40}{100}
+\invoiceitem{Project Management and Documentation}{1}{1800}
+\end{tabular}
+
+\vspace{1.5\baselineskip}
+\hfill
+\begin{tabular}{@{}r@{\hspace{1em}}l@{}}
+Subtotal: & \$26,500.00 \\
+Tax (8.5\%): & \$2,252.50 \\
+\hline
+\textbf{Total Due:} & \textbf{\$28,752.50} \\
+\end{tabular}
+
+\vspace{2\baselineskip}
+\noindent\rule{\textwidth}{0.4pt}\par
+\vspace{0.5\baselineskip}
+
+\section*{Payment Details}
+
+Please remit payment by the due date listed above. Payment may be made via bank
+transfer or check.
+
+\begin{description}
+    \item[Bank] First National Bank, Account No.\ 1234567890, Routing No.\ 021000021
+    \item[Check] Payable to Acme Software Solutions, LLC
+\end{description}
+
+\vspace{1\baselineskip}
+\section*{Notes}
+Please include the invoice number on your payment. A late fee of 1.5\% per month
+applies to overdue balances. Thank you for your business.
+
+\end{document}

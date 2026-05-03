@@ -57,26 +57,43 @@ python build.py build-example minimal-starter
 
 ## Document Types
 
-```latex
-\documentclass[doctype=thesis]{omnilatex}           % Academic thesis
-\documentclass[doctype=dissertation]{omnilatex}      % Dissertation
-\documentclass[doctype=article]{omnilatex}           % Article
-\documentclass[doctype=cv]{omnilatex}                % Curriculum vitae
-\documentclass[doctype=patent]{omnilatex}            % Patent application
-\documentclass[doctype=technicalreport]{omnilatex}   % Technical report
-\documentclass[doctype=manual]{omnilatex}            % Manual / handbook
-\documentclass[doctype=standard]{omnilatex}          % Standards document
-\documentclass[doctype=book]{omnilatex}              % Book
-\documentclass[doctype=journal]{omnilatex}           % Journal article
-\documentclass[doctype=cover-letter]{omnilatex}      % Cover letter
-\documentclass[doctype=dictionary]{omnilatex}        % Dictionary / lexicon
-\documentclass[doctype=inlinepaper]{omnilatex}       % Inline research paper
-\documentclass[doctype=poster]{omnilatex}            % Conference poster
-\documentclass[doctype=presentation]{omnilatex}      % Presentation slides
-\documentclass[doctype=letter]{omnilatex}            % Formal letter
-```
+23 document type profiles across 3 KOMA-Script base classes. Switch with `\documentclass[doctype=<type>]{omnilatex}`.
+
+| Type | Class | Description |
+|------|-------|-------------|
+| `thesis` | scrbook | Academic thesis with chapters, bibliography, declaration |
+| `dissertation` | scrbook | PhD dissertation with front matter and committee |
+| `article` | scrartcl | Research article with abstract, keywords, DOI |
+| `journal` | scrartcl | Journal article with volume, issue, highlights |
+| `inlinepaper` | scrartcl | Compact two-column inline research paper (arXiv style) |
+| `book` | scrbook | Book-length document with publisher metadata |
+| `manual` | scrreprt | Product manual / handbook with version and support info |
+| `technicalreport` | scrreprt | Technical report with report number and confidentiality |
+| `standard` | scrreprt | Standards document with ICS codes and designation |
+| `patent` | scrreprt | Patent specification |
+| `cv` | scrartcl | Curriculum vitae with photo, links, and summary |
+| `cover-letter` | scrartcl | Cover letter with recipient and sender metadata |
+| `poster` | scrartcl | Conference poster (A1 landscape) |
+| `presentation` | scrartcl | Presentation slides (KOMA-based) |
+| `letter` | scrartcl | Formal letter with recipient, subject, and closing |
+| `dictionary` | scrbook | Dictionary / lexicon with series and publisher |
+| `homework` | scrartcl | Homework assignment with exercises and solutions |
+| `exam` | scrartcl | Examination paper with questions and answer spaces |
+| `research-proposal` | scrreprt | Research proposal with budget and timeline |
+| `lecture-notes` | scrartcl | Lecture notes with theorem environments |
+| `syllabus` | scrartcl | Course syllabus with grading policy and schedule |
+| `handout` | scrartcl | Two-column handout with key concept boxes |
+| `memo` | scrartcl | Memorandum with TO/FROM/CC/RE fields |
 
 All options: `language`, `doctype`, `titlestyle`, `institution`, `censoring`, `loadGlossaries`, `todonotes`, `enablefonts`, `enablegraphics`, `enablemath`, `enabletikz`, `enableengineering`, `enablecode`, `enabletables`.
+
+## Languages
+
+OmniLaTeX supports 9 primary languages and 19 secondary languages via Polyglossia:
+
+**Primary (full support with translations):** English, German, French, Spanish, Chinese (Simplified + Traditional), Japanese, Korean, Arabic, Hebrew, Persian
+
+**Secondary (available for inline use):** German (new spelling), Italian, Portuguese, Russian, Dutch, Polish, Czech, Greek, Turkish
 
 ## Examples
 
@@ -139,7 +156,17 @@ Missing optional fonts trigger a `\ClassWarning` and degrade gracefully. Run `bu
 - Python 3.10+ (for `build.py` and test suite)
 - Git
 
-### Nix (recommended)
+### CTAN (recommended)
+
+OmniLaTeX is available on CTAN. Install via your TeX distribution's package manager:
+
+```bash
+tlmgr install omnilatex
+```
+
+After installation, place the document-types and configuration in your project (see [Quick Start](#quick-start)).
+
+### Nix
 
 ```bash
 git clone https://github.com/WyattAu/OmniLaTeX-template.git
@@ -169,7 +196,16 @@ python build.py build-example minimal-starter
 
 ### VS Code
 
-The project includes a Dev Container configuration. Open in VS Code with the Dev Containers extension — TeX Live, Python, and all tools are pre-installed.
+The project includes a Dev Container configuration. Open in VS Code with the Dev Containers extension — TeX Live, Python, and all tools are pre-installed. A dedicated [OmniLaTeX VS Code extension](extensions/vscode-omnilatex/) provides doctype picker, institution switcher, and build commands.
+
+### Overleaf
+
+1. Generate a project zip locally: `bash scripts/make-overleaf-zip.sh thesis`
+2. Upload to Overleaf: **Menu → New Project → Upload Project**
+3. Set compiler to **LuaLaTeX**: **Menu → Compiler → LuaLaTeX**
+4. Recompile
+
+See [Overleaf Guide](docs/OVERLEAF.md) for details.
 
 ## Build Script
 

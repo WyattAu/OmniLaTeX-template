@@ -50,6 +50,8 @@ ALL_DOCTYPE_NAMES = [
     "syllabus",
     "handout",
     "memo",
+    "white-paper",
+    "invoice",
 ]
 
 
@@ -99,6 +101,8 @@ ALL_EXAMPLE_NAMES = [
     "thesis-spacing",
     "thesis-tuhh",
     "thesis",
+    "white-paper",
+    "invoice",
 ]
 
 

@@ -32,9 +32,12 @@ Languages
 ---------
   14 languages via polyglossia: English, German, French, Spanish,
   Portuguese, Italian, Dutch, Danish, Russian, Chinese, Japanese,
-  Korean, Arabic, Hebrew.
+  Korean, Arabic, Hebrew, Persian.
 
   CJK and RTL script support with automatic font fallback chains.
+
+  12 translation languages (EN, DE, FR, ES, PT, IT, NL, RU, PL,
+  CZ, EL, TR) for UI strings.
 
 Features
 --------
@@ -50,6 +53,8 @@ Features
     Harvard, Vancouver, MLA)
   - Deterministic builds via Docker (multi-arch) and Nix flakes
   - Lean 4 formal verification for core algorithms
+  - VS Code extension with doctype picker and build commands
+  - 40 example templates
 
 Overleaf
 --------
@@ -70,10 +75,13 @@ Repository
 
 Documentation
 -------------
-  Full documentation and 31 example templates are available in
-  the GitHub repository:
+  Full documentation, 40 example templates, and performance
+  benchmarks are available in the GitHub repository:
 
     git clone https://github.com/WyattAu/OmniLaTeX-template.git
+
+  Performance documentation:
+    https://github.com/WyattAu/OmniLaTeX-template/blob/main/docs/PERFORMANCE.md
 
 Homepage
 --------

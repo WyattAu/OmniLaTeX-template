@@ -29,6 +29,8 @@ ALL_DOCTYPE_NAMES = [
     "syllabus",
     "handout",
     "memo",
+    "white-paper",
+    "invoice",
 ]
 
 ALL_EXAMPLE_NAMES = [
@@ -72,6 +74,8 @@ ALL_EXAMPLE_NAMES = [
     "thesis-spacing",
     "thesis-tuhh",
     "thesis",
+    "white-paper",
+    "invoice",
 ]
 
 DOCTYPE_TO_CLASS = {
@@ -93,6 +97,8 @@ DOCTYPE_TO_CLASS = {
     "syllabus": "scrartcl",
     "handout": "scrartcl",
     "memo": "scrartcl",
+    "white-paper": "scrartcl",
+    "invoice": "scrartcl",
     "manual": "scrreprt",
     "technicalreport": "scrreprt",
     "standard": "scrreprt",
@@ -212,8 +218,8 @@ class TestDocumentTypeRegistration:
             if name != "book":
                 unique_primary.add(name)
         unique_primary.add("book")
-        assert len(unique_primary) >= 23, (
-            f"Expected at least 23 unique doctypes, found {len(unique_primary)}: {sorted(unique_primary)}"
+        assert len(unique_primary) >= 25, (
+            f"Expected at least 25 unique doctypes, found {len(unique_primary)}: {sorted(unique_primary)}"
         )
 
 
@@ -328,7 +334,7 @@ class TestExampleIntegrity:
     def test_bib_bibliography_exists(self, repo_root):
         assert (repo_root / "bib" / "bibliography.bib").is_file()
 
-    def test_all_40_examples_exist(self, repo_root):
+    def test_all_42_examples_exist(self, repo_root):
         examples_dir = repo_root / "examples"
         actual = sorted(
             d.name for d in examples_dir.iterdir()

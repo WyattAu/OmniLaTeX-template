@@ -1,0 +1,110 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/white-paper}[2026-05-03 OmniLaTeX white paper profile]
+
+\documenttype{White Paper}
+\documentlayout{DIV=12}
+\KOMAoptions{titlepage=true,twoside=false}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{2}
+
+\documentcolormode{color}
+\documentfontmode{serif}
+\documentlinespacing{onehalf}
+\documentparspacing{half}
+\documentpagestyle{headings}
+
+\makeatletter
+
+% Abstract environment
+\newenvironment{whitepaperabstract}{%
+  \begin{center}%
+    {\large\bfseries\@wptitle}%
+  \end{center}%
+  \vspace{0.5\baselineskip}%
+  \begin{addmargin}[1cm]{2cm}%
+}{%
+  \end{addmargin}%
+  \par\vspace{1\baselineskip}%
+  \noindent\rule{\textwidth}{0.4pt}\par\vspace{1\baselineskip}
+}
+
+% Callout box for key findings
+\newcommand{\callout}[2]{%
+  \par\medskip
+  \begin{tcolorbox}[
+    colback=blue!5!white,
+    colframe=blue!60!black,
+    fonttitle=\bfseries,
+    title={#1},
+    sharp corners,
+    boxrule=0.5pt,
+    left=5mm, right=5mm, top=2mm, bottom=2mm
+  ]{#2}
+  \end{tcolorbox}%
+  \par\medskip
+}
+
+% Key takeaways box
+\newenvironment{keytakeaways}{%
+  \begin{center}{\large\bfseries Key Takeaways}\end{center}%
+  \par\smallskip
+  \begin{tcolorbox}[
+    colback=green!5!white,
+    colframe=green!50!black,
+    sharp corners,
+    boxrule=0.5pt,
+    left=5mm, right=5mm, top=2mm, bottom=2mm
+  ]%
+  \begin{itemize}
+  \item
+}{%
+  \end{itemize}
+  \end{tcolorbox}%
+  \par\medskip
+}
+
+% Metadata commands
+\providecommand*{\@wptitle}{\@title}
+\newcommand*{\wptitle}[1]{\gdef\@wptitle{#1}}
+\providecommand*{\@wporganization}{}
+\newcommand*{\wporganization}[1]{\gdef\@wporganization{#1}}
+\providecommand*{\@wpdate}{\@date}
+\newcommand*{\wpdate}[1]{\gdef\@wpdate{#1}}
+\providecommand*{\@wpversion}{Draft}
+\newcommand*{\wpversion}[1]{\gdef\@wpversion{#1}}
+\providecommand*{\@wpconfidential}{}
+\newcommand*{\wpconfidential}[1]{\gdef\@wpconfidential{#1}}
+\providecommand*{\@wpcontact}{}
+\newcommand*{\wpcontact}[1]{\gdef\@wpcontact{#1}}
+
+% Custom title page
+\newcommand*{\omnilatex@wpfrontpage}{%
+    \begin{titlepage}\thispagestyle{empty}%
+        \vspace{2\baselineskip}
+        \begin{center}
+            {\LARGE\bfseries \@wptitle}\par\vspace{1.5\baselineskip}
+            {\large \@wporganization}\par\vspace{0.5\baselineskip}
+        \end{center}
+        \vfill
+        \begin{center}
+            \begin{tabular}{@{}rl@{}}
+                \textbf{Date:} & \@wpdate \\[0.3em]
+                \textbf{Version:} & \@wpversion \\[0.3em]
+                \ifx\@wpconfidential\empty\else
+                \textbf{Classification:} & \@wpconfidential \\[0.3em]
+                \fi
+                \ifx\@wpcontact\empty\else
+                \textbf{Contact:} & \@wpcontact \\[0.3em]
+                \fi
+            \end{tabular}
+        \end{center}
+        \vfill
+        \noindent\rule{\textwidth}{0.4pt}\par
+    \end{titlepage}%
+}
+
+\renewcommand{\maketitle}{\omnilatex@wpfrontpage\setcounter{footnote}{0}}
+
+\makeatother
+
+\endinput

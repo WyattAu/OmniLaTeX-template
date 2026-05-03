@@ -1,0 +1,72 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/invoice}[2026-05-03 OmniLaTeX invoice profile]
+
+\documenttype{Invoice}
+\documentlayout{DIV=10,headinclude=false,footinclude=false}
+\KOMAoptions{titlepage=false,twoside=false}
+\setcounter{secnumdepth}{0}
+\setcounter{tocdepth}{0}
+\documentcolormode{color}
+\documentfontmode{serif}
+\documentlinespacing{singlespace}
+\pagestyle{empty}
+
+\makeatletter
+
+% Invoice item command: \invoiceitem{description}{quantity}{unitprice}
+\newcommand{\invoiceitem}[3]{%
+  #1 & #2 & \ifnum#20#3 & \numexpr#2*#3\relax & \numexpr#2*#3\relax \\[-0.3em]%
+  \hline
+}
+
+% Invoice total calculation
+\newcounter{invsubtotal}
+\newcounter{invtotal}
+
+\providecommand*{\@invnumber}{INV-0001}
+\newcommand*{\invnumber}[1]{\gdef\@invnumber{#1}}
+\providecommand*{\@invdate}{\@date}
+\newcommand*{\invdate}[1]{\gdef\@invdate{#1}}
+\providecommand*{\@invdue}{\@date}
+\newcommand*{\invdue}[1]{\gdef\@invdue{#1}}
+\providecommand*{\@invfrom}{Company Name}
+\newcommand*{\invfrom}[1]{\gdef\@invfrom{#1}}
+\providecommand*{\@invto}{Client Name}
+\newcommand*{\invto}[1]{\def\@invto{#1}}
+\providecommand*{\@invfromaddr}{}
+\newcommand*{\invfromaddr}[1]{\gdef\@invfromaddr{#1}}
+\providecommand*{\@invtoaddr}{}
+\newcommand*{\invtoaddr}[1]{\gdef\@invtoaddr{#1}}
+\providecommand*{\@invcurrency}{USD}
+\newcommand*{\invcurrency}[1]{\gdef\@invcurrency{#1}}
+\providecommand*{\@invtaxrate}{0}
+\newcommand*{\invtaxrate}[1]{\gdef\@invtaxrate{#1}}
+\providecommand*{\@invpaymentterms}{Net 30}
+\newcommand*{\invpaymentterms}[1]{\gdef\@invpaymentterms{#1}}
+\providecommand*{\@invnotes}{}
+\newcommand*{\invnotes}[1]{\gdef\@invnotes{#1}}
+
+% Custom title page
+\newcommand*{\omnilatex@invfrontpage}{%
+    \begin{center}
+        {\Huge\bfseries INVOICE}\par\vspace{1\baselineskip}
+        {\Large \@invnumber}\par\vspace{2\baselineskip}
+        \begin{tabular}{@{}r@{}l@{}}
+            \textbf{From:} & \@invfrom \\
+            & {\small\@invfromaddr} \\[0.8em]
+            \textbf{To:} & \@invto \\
+            & {\small\@invtoaddr} \\[0.8em]
+            \textbf{Date:} & \@invdate \\[0.3em]
+            \textbf{Due:} & \@invdue \\[0.3em]
+            \textbf{Payment:} & \@invpaymentterms
+        \end{tabular}
+    \end{center}
+    \vspace{2\baselineskip}
+    \noindent\hrule height 0.4pt\par
+}
+
+\renewcommand{\maketitle}{\omnilatex@invfrontpage\setcounter{footnote}{0}}
+
+\makeatother
+
+\endinput

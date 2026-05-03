@@ -7,6 +7,34 @@ This project adheres to [Semantic versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.13.0] - 2026-05-03
+
+### Added
+- **White paper document type** — abstract environment, callout boxes, key takeaways, confidential/version/contact metadata
+- **Invoice document type** — line item commands, subtotal/tax/total calculations, from/to/payment metadata
+- **Persian RTL support** — persian language loads RTL module with Arabic-script fonts, title font override, auto-detection
+- **Vietnamese translations** — 11 keys (Bảng thuật ngữ, Ví dụ, Người hướng dẫn, etc.)
+- **Hindi translations** — 11 keys (शब्दावली, उदाहरण, पर्यवेक्षक, etc.)
+- **Swedish translations** — 11 keys (Ordlista, Exempel, Handledare, etc.)
+- **Finnish translations** — 11 keys (Sanasto, Esimerkki, Ohjaaja, etc.)
+- **Danish translations** — 11 keys (Ordliste, Eksempel, Vejleder, etc.)
+- **Norwegian translations** — 11 keys (Ordliste, Eksempel, Veileder, etc.)
+- **VS Code extension skeleton** — doctype picker (25 types), institution switcher (14 configs), documentclass snippet
+- **Lean 4: 4 more theorems proven** — horizontal/vertical balance, caption width bound (Float→Int conversion, corrected hypotheses)
+- **Performance documentation** — `docs/PERFORMANCE.md` with benchmarks, bottlenecks, optimization notes
+- **Patent example** — patent application document (42 total examples)
+
+### Changed
+- **Translation coverage** — 18 languages with translations, 110+ keys
+- **Secondary languages** — 31 registered via polyglossia (added VI, HI, SV, FI, DA, NO)
+- **README.md** — added Document Types table (25 types), Languages section, CTAN/Overleaf install sections
+- **CTAN_README.txt** — updated to 42 examples, Persian, 18 translation languages
+- **Lean 4 page_geometry** — 1 theorem retains `sorry` (div_textwidth_formula requires nonlinear arithmetic beyond omega)
+
+### Fixed
+- **Flake.nix completeness** — added `menukeys`, `csquotes`, `forest` to texlive package list
+- **Lean 4 hypotheses** — corrected mathematically incorrect margin hypotheses in balance theorems
+
 ## [1.12.0] - 2026-05-03
 
 ### Added
