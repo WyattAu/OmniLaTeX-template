@@ -5,7 +5,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{omnilatex}[2026/04/26 v1.6.0 OmniLaTeX universal class]
+\ProvidesClass{omnilatex}[2026/05/02 v1.11.0 OmniLaTeX universal class]
 
 \RequirePackage{iftex}
 \RequirePackage{etoolbox}

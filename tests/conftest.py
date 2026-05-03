@@ -87,6 +87,7 @@ ALL_EXAMPLE_NAMES = [
     "minimal-custom",
     "minimal-starter",
     "multi-language",
+    "patent",
     "poster",
     "presentation",
     "research-proposal",

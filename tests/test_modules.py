@@ -60,6 +60,7 @@ ALL_EXAMPLE_NAMES = [
     "minimal-custom",
     "minimal-starter",
     "multi-language",
+    "patent",
     "poster",
     "presentation",
     "research-proposal",
@@ -327,7 +328,7 @@ class TestExampleIntegrity:
     def test_bib_bibliography_exists(self, repo_root):
         assert (repo_root / "bib" / "bibliography.bib").is_file()
 
-    def test_all_35_examples_exist(self, repo_root):
+    def test_all_40_examples_exist(self, repo_root):
         examples_dir = repo_root / "examples"
         actual = sorted(
             d.name for d in examples_dir.iterdir()

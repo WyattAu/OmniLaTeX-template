@@ -17,8 +17,8 @@ Current version: **v1.11.0**
 | `.sty` modules | 27 |
 | Document types | 23 (thesis, dissertation, article, journal, inlinepaper, book, manual, technicalreport, standard, patent, cv, cover-letter, poster, presentation, letter, dictionary, homework, exam, research-proposal, lecture-notes, syllabus, handout, memo) |
 | Examples | 39 (39/39 compile on Docker TL2026) |
-| Institution configs | 15 |
-| Languages | 14 primary + 18 secondary via polyglossia (EN, DE, FR, ES, ZH, JA, KO, AR, HE, RU, IT, PT, NL, PL, CS, EL, TR) |
+| Institution configs | 14 |
+| Languages | 9 primary (EN, DE, FR, ES, ZH, JA, KO, AR, HE) + 18 secondary via polyglossia |
 | Translation keys | 55+ across 7 languages (EN, DE, FR, ES, RU, IT, PT) |
 | CI workflows | 7 (all green) |
 | Integration tests | 318 (across 6 categories) |
