@@ -1,0 +1,137 @@
+name: CTAN Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq zip unzip
+
+      - name: Build CTAN zip
+        run: bash scripts/make-ctan-zip.sh
+
+      - name: Validate CTAN zip
+        run: |
+          echo "Validating omnilatex.zip..."
+          ERRORS=0
+
+          if [ ! -f omnilatex.zip ]; then
+            echo "::error::omnilatex.zip was not created"
+            exit 1
+          fi
+
+          if [ ! -s omnilatex.zip ]; then
+            echo "::error::omnilatex.zip is empty"
+            exit 1
+          fi
+
+          if ! unzip -l omnilatex.zip | grep -q 'omnilatex\.cls$'; then
+            echo "::error::omnilatex.cls not found in zip"
+            ERRORS=$((ERRORS + 1))
+          else
+            echo "  [OK] omnilatex.cls found"
+          fi
+
+          if ! unzip -l omnilatex.zip | grep -q 'LICENSE$'; then
+            echo "::error::LICENSE not found in zip"
+            ERRORS=$((ERRORS + 1))
+          else
+            echo "  [OK] LICENSE found"
+          fi
+
+          if ! unzip -l omnilatex.zip | grep -q 'CHANGELOG\.md$'; then
+            echo "::error::CHANGELOG.md not found in zip"
+            ERRORS=$((ERRORS + 1))
+          else
+            echo "  [OK] CHANGELOG.md found"
+          fi
+
+          if [ "$ERRORS" -gt 0 ]; then
+            echo "::error::Validation failed with ${ERRORS} error(s)"
+            exit 1
+          fi
+
+          echo "All CTAN zip validation checks passed."
+          echo ""
+          echo "Zip contents summary:"
+          unzip -l omnilatex.zip | tail -5
+
+      - name: Extract version from tag
+        id: version
+        run: echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+
+      - name: Prepare release body
+        id: body
+        run: |
+          if [ -f CHANGELOG.md ]; then
+            # Extract the most recent release section from CHANGELOG.md
+            # Matches the first section after [Unreleased] that has a date
+            CHANGELOG_SECTION=$(sed -n '/^## \[/p' CHANGELOG.md | head -n 1)
+            if [ -n "$CHANGELOG_SECTION" ]; then
+              # Extract from that heading to the next heading or EOF
+              SECTION_CONTENT=$(sed -n "/^${CHANGELOG_SECTION}/,/^## \[/p" CHANGELOG.md | head -n -1)
+              {
+                echo "body<<RELEASE_EOF"
+                echo "$SECTION_CONTENT"
+                echo ""
+                echo "---"
+                echo ""
+                echo "### Installation"
+                echo ""
+                echo '```bash'"
+                echo "tlmgr install omnilatex"
+                echo '```'
+                echo ""
+                echo "Or download the attached \`omnilatex.zip\` and extract to your TeX tree."
+                echo "RELEASE_EOF"
+              } >> "$GITHUB_OUTPUT"
+            else
+              echo "body=See CHANGELOG.md for full release notes." >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "body=" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: omnilatex.zip
+          body: ${{ steps.body.outputs.body }}
+          generate_release_notes: true
+          draft: false
+          prerelease: ${{ contains(github.ref, 'rc') || contains(github.ref, 'beta') || contains(github.ref, 'alpha') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload CTAN zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ctan-package-${{ steps.version.outputs.tag }}
+          path: omnilatex.zip
+          retention-days: 90
+
+      - name: Submit to CTAN
+        if: ${{ secrets.CTAN_API_TOKEN != '' }}
+        run: |
+          echo "CTAN_API_TOKEN is set — submitting to CTAN API..."
+          curl --fail --silent --show-error \
+            -X POST "https://ctan.org/submit" \
+            -H "Authorization: Bearer ${{ secrets.CTAN_API_TOKEN }}" \
+            -F "pkg=omnilatex" \
+            -F "version=${{ steps.version.outputs.tag }}" \
+            -F "upload=@omnilatex.zip" \
+            || echo "::warning::CTAN submission failed — please upload manually at https://ctan.org/upload"

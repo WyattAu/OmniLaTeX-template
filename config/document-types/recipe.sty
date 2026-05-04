@@ -1,0 +1,103 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/recipe}[2026-05-04 OmniLaTeX recipe profile]
+
+\documenttype{Recipe}
+\documentlayout{DIV=12}
+\KOMAoptions{titlepage=false,twoside=false,parskip=half}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{1}
+
+\documentcolormode{color}
+\documentfontmode{serif}
+\documentlinespacing{one}
+\documentparspacing{half}
+
+\makeatletter
+
+\clearpairofpagestyles
+\ihead{\@title}
+\ohead{\@author}
+\cfoot{\pagemark}
+\pagestyle{scrheadings}
+
+\providecommand*{\@recipeprep}{--}
+\newcommand*{\recipeprep}[1]{\gdef\@recipeprep{#1}}
+\providecommand*{\@recipecook}{--}
+\newcommand*{\recipecook}[1]{\gdef\@recipecook{#1}}
+\providecommand*{\@recipeservings}{--}
+\newcommand*{\recipeservings}[1]{\gdef\@recipeservings{#1}}
+\providecommand*{\@recipedifficulty}{--}
+\newcommand*{\recipedifficulty}[1]{\gdef\@recipedifficulty{#1}}
+\providecommand*{\@recipecuisine}{--}
+\newcommand*{\recipecuisine}[1]{\gdef\@recipecuisine{#1}}
+\providecommand*{\@recipecategory}{--}
+\newcommand*{\recipecategory}[1]{\gdef\@recipecategory{#1}}
+\providecommand*{\@recipecalories}{--}
+\newcommand*{\recipecalories}[1]{\gdef\@recipecalories{#1}}
+
+\newcommand{\recipeMeta}[2]{\csname @recipe#1\endcsname{#2}}
+
+\newcommand*{\omnilatex@recipemetadata}{%
+    \noindent
+    \begin{tcolorbox}[
+        colback=Air!30,
+        colframe=cBlue!60!black,
+        boxrule=0.5pt,
+        arc=3pt,
+        left=6pt,
+        right=6pt,
+        top=4pt,
+        bottom=4pt,
+        fontupper=\small,
+    ]
+        \begin{tabular}{@{}l@{\hspace{1em}}l@{\hspace{2em}}l@{\hspace{1em}}l@{\hspace{2em}}l@{\hspace{1em}}l@{}}
+            \textbf{Prep:} \@recipeprep & \textbf{Cook:} \@recipecook & \textbf{Servings:} \@recipeservings \\
+            \textbf{Difficulty:} \@recipedifficulty & \textbf{Cuisine:} \@recipecuisine & \textbf{Calories:} \@recipecalories \\
+        \end{tabular}
+    \end{tcolorbox}
+    \par\vspace{6pt}
+}
+
+\renewcommand{\maketitle}{%
+    {\LARGE\bfseries \@title}\par\vspace{4pt}
+    {\normalsize \@author\enspace$\cdot$\enspace\@date}\par\vspace{6pt}
+    \omnilatex@recipemetadata
+    \setcounter{footnote}{0}%
+}
+
+\newenvironment{ingredients}{%
+    \par\smallskip\noindent\textbf{\large Ingredients}\par\vspace{4pt}%
+    \begin{itemize}[leftmargin=1.5em,itemsep=2pt]%
+}{%
+    \end{itemize}\par\smallskip
+}
+
+\newenvironment{instructions}{%
+    \par\smallskip\noindent\textbf{\large Instructions}\par\vspace{4pt}%
+    \begin{enumerate}[leftmargin=2em,itemsep=4pt]%
+}{%
+    \end{enumerate}\par\smallskip
+}
+
+\newcommand{\recipeNote}[1]{%
+    \par\smallskip
+    \begin{tcolorbox}[
+        colback=mYellow!15,
+        colframe=mOrange!70!black,
+        boxrule=0.4pt,
+        arc=2pt,
+        left=6pt,
+        right=6pt,
+        top=4pt,
+        bottom=4pt,
+        fonttitle=\bfseries\sffamily\small,
+        title={Chef's Note},
+    ]
+        \small #1%
+    \end{tcolorbox}
+    \par\smallskip
+}
+
+\makeatother
+
+\endinput

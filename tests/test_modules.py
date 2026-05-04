@@ -25,6 +25,7 @@ ALL_DOCTYPE_NAMES = [
     "homework",
     "exam",
     "research-proposal",
+    "recipe",
     "lecture-notes",
     "syllabus",
     "handout",
@@ -66,6 +67,7 @@ ALL_EXAMPLE_NAMES = [
     "poster",
     "presentation",
     "research-proposal",
+    "recipe",
     "rtl-arabic",
     "rtl-hebrew",
     "standard",
@@ -99,6 +101,7 @@ DOCTYPE_TO_CLASS = {
     "memo": "scrartcl",
     "white-paper": "scrartcl",
     "invoice": "scrartcl",
+    "recipe": "scrartcl",
     "manual": "scrreprt",
     "technicalreport": "scrreprt",
     "standard": "scrreprt",
@@ -218,7 +221,7 @@ class TestDocumentTypeRegistration:
             if name != "book":
                 unique_primary.add(name)
         unique_primary.add("book")
-        assert len(unique_primary) >= 25, (
+        assert len(unique_primary) >= 26, (
             f"Expected at least 25 unique doctypes, found {len(unique_primary)}: {sorted(unique_primary)}"
         )
 

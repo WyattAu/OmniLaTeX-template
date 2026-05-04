@@ -134,6 +134,7 @@
 \omnilatex@matchdoctypes{memo,memos,memorandum,memorandums}{\omnilatex@setdoctype{memo}{scrartcl}{\omnilatex@articleoptions}}%
 \omnilatex@matchdoctypes{white-paper,whitepapers}{\omnilatex@setdoctype{white-paper}{scrartcl}{\omnilatex@articleoptions}}%
 \omnilatex@matchdoctypes{invoice,invoices}{\omnilatex@setdoctype{invoice}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{recipe,recipes}{\omnilatex@setdoctype{recipe}{scrartcl}{\omnilatex@articleoptions}}%
 
 % Validate doctype: warn if user passed an unknown doctype that didn't match
 \ifomnilatex@doctypematched\else
@@ -141,7 +142,7 @@
         Falling back to 'book'. Valid options: book, thesis, dissertation,%
         manual, guide, handbook, report, technicalreport, standard, patent,%
         article, inlinepaper, journal, dictionary, cv, cover-letter, poster,%
-        presentation, letter, homework, exam, research-proposal,%
+        presentation, letter, homework, exam, research-proposal, recipe,
         lecture-notes, syllabus, handout, memo, white-paper, invoice}%
 \fi
 

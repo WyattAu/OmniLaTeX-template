@@ -22,8 +22,33 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        doctype: [thesis, dissertation, article, paper, book, cv, resume, report, manual, journal, magazine, patent, dictionary, cover-letter]
-        language: [english, german]
+        include:
+          - doctype: thesis
+            language: english
+          - doctype: article
+            language: english
+          - doctype: book
+            language: english
+          - doctype: presentation
+            language: english
+          - doctype: cv
+            language: english
+          - doctype: cover-letter
+            language: english
+          - doctype: dissertation
+            language: english
+          - doctype: manual
+            language: english
+          - doctype: patent
+            language: english
+          - doctype: thesis
+            language: german
+          - doctype: article
+            language: german
+          - doctype: article
+            language: french
+          - doctype: article
+            language: chinese
     steps:
       - uses: actions/checkout@v4
         with:

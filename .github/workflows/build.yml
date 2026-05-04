@@ -41,6 +41,22 @@ jobs:
             "${{ steps.digest.outputs.image }}" \
             python3 build.py --mode prod --verbose build-all
 
+      - name: Verify all examples built
+        run: |
+          EXPECTED=$(ls -d examples/*/main.tex 2>/dev/null | wc -l)
+          ACTUAL=$(ls build/examples/*.pdf 2>/dev/null | wc -l)
+          echo "Expected $EXPECTED PDFs, found $ACTUAL"
+          if [ "$ACTUAL" -lt "$EXPECTED" ]; then
+            echo "::error::$((EXPECTED - ACTUAL)) example(s) failed to build"
+            ls build/examples/*.pdf 2>/dev/null | sed 's|build/examples/||; s|\.pdf||' | sort > /tmp/built.txt
+            ls -d examples/*/ | xargs -I{} basename {} | sort > /tmp/all.txt
+            comm -23 /tmp/all.txt /tmp/built.txt | while read name; do
+              echo "::error::Missing: $name"
+            done
+            exit 1
+          fi
+          echo "All $ACTUAL examples built successfully."
+
       - name: Upload root PDF
         uses: actions/upload-artifact@v4
         with:
