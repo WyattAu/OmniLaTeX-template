@@ -1,6 +1,6 @@
 # OmniLaTeX
 
-A modular, engineering-grade LaTeX document class for academic and professional documents. 55+ doctype aliases, 27 modules, 31 example templates, byte-for-byte reproducible builds, and formal Lean 4 verification.
+A modular, engineering-grade LaTeX document class for academic and professional documents. 55+ doctype aliases, 27 modules, 42 example templates, byte-for-byte reproducible builds, and formal Lean 4 verification.
 
 Built on LuaTeX (LuaHBTeX 1.21.0) + KOMA-Script + TeX Live 2025. Compile with `latexmk -lualatex` or `build.py`.
 
@@ -57,7 +57,7 @@ python build.py build-example minimal-starter
 
 ## Document Types
 
-23 document type profiles across 3 KOMA-Script base classes. Switch with `\documentclass[doctype=<type>]{omnilatex}`.
+25 document type profiles across 3 KOMA-Script base classes. Switch with `\documentclass[doctype=<type>]{omnilatex}`.
 
 | Type | Class | Description |
 |------|-------|-------------|
@@ -84,6 +84,8 @@ python build.py build-example minimal-starter
 | `syllabus` | scrartcl | Course syllabus with grading policy and schedule |
 | `handout` | scrartcl | Two-column handout with key concept boxes |
 | `memo` | scrartcl | Memorandum with TO/FROM/CC/RE fields |
+| `invoice` | scrartcl | Commercial invoice |
+| `white-paper` | scrreprt | White paper / position paper |
 
 All options: `language`, `doctype`, `titlestyle`, `institution`, `censoring`, `loadGlossaries`, `todonotes`, `enablefonts`, `enablegraphics`, `enablemath`, `enabletikz`, `enableengineering`, `enablecode`, `enabletables`.
 
@@ -97,7 +99,7 @@ OmniLaTeX supports 9 primary languages and 19 secondary languages via Polyglossi
 
 ## Examples
 
-31 ready-to-use templates in `examples/` (30 compile on TeX Live 2025; `thesis-tuhh` requires TUHH assets):
+42 ready-to-use templates in `examples/` (41 compile on TeX Live 2025; `thesis-tuhh` requires TUHH assets):
 
 | Example | Doctype | Description |
 |---------|---------|-------------|

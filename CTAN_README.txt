@@ -1,7 +1,7 @@
 OmniLaTeX — Universal LaTeX Template System
 ============================================
 
-A modular LaTeX document class supporting 23 document types with
+A modular LaTeX document class supporting 25 document types with
 consistent branding, multi-language support, and reproducible
 builds via Docker and Nix.
 
@@ -25,7 +25,8 @@ Document Types
                 exam, research-proposal, inlinepaper,
                 lecture-notes, syllabus, handout, memo
   Professional:  cv, cover-letter, letter, presentation, poster,
-                 technicalreport, standard, patent
+                 technicalreport, standard, patent, invoice,
+                 white-paper
   Reference:     book, manual, dictionary
 
 Languages
@@ -36,12 +37,12 @@ Languages
 
   CJK and RTL script support with automatic font fallback chains.
 
-  12 translation languages (EN, DE, FR, ES, PT, IT, NL, RU, PL,
+  18 translation languages (EN, DE, FR, ES, PT, IT, NL, RU, PL,
   CZ, EL, TR) for UI strings.
 
 Features
 --------
-  - 23 document type profiles with one-line switching
+  - 25 document type profiles with one-line switching
   - 55+ doctype aliases
   - 14 institution configurations (TUHH, TUM, ETH, MIT, ...)
   - 14 languages via polyglossia (EN, DE, FR, ES, PT, IT, NL,
@@ -54,7 +55,7 @@ Features
   - Deterministic builds via Docker (multi-arch) and Nix flakes
   - Lean 4 formal verification for core algorithms
   - VS Code extension with doctype picker and build commands
-  - 40 example templates
+  - 42 example templates
 
 Overleaf
 --------
@@ -75,7 +76,7 @@ Repository
 
 Documentation
 -------------
-  Full documentation, 40 example templates, and performance
+  Full documentation, 42 example templates, and performance
   benchmarks are available in the GitHub repository:
 
     git clone https://github.com/WyattAu/OmniLaTeX-template.git

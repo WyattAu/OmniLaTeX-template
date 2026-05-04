@@ -15,7 +15,7 @@
 
 % Invoice item command: \invoiceitem{description}{quantity}{unitprice}
 \newcommand{\invoiceitem}[3]{%
-  #1 & #2 & \ifnum#20#3 & \numexpr#2*#3\relax & \numexpr#2*#3\relax \\[-0.3em]%
+  #1 & #2 & $#3.00 & $\numexpr#2*#3\relax.00 \\[-0.3em]%
   \hline
 }
 
@@ -51,7 +51,7 @@
     \begin{center}
         {\Huge\bfseries INVOICE}\par\vspace{1\baselineskip}
         {\Large \@invnumber}\par\vspace{2\baselineskip}
-        \begin{tabular}{@{}r@{}l@{}}
+        \begin{tabular}{@{}r@{}p{7cm}@{}}
             \textbf{From:} & \@invfrom \\
             & {\small\@invfromaddr} \\[0.8em]
             \textbf{To:} & \@invto \\

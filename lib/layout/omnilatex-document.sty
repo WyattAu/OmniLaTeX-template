@@ -133,7 +133,9 @@
         \ifdefstring{\@documentlinespacing}{single}{\singlespacing}{%
             \ifdefstring{\@documentlinespacing}{onehalf}{\onehalfspacing}{%
                 \ifdefstring{\@documentlinespacing}{double}{\doublespacing}{%
-                    \setstretch{\@documentlinespacing}%
+                    \ifdefstring{\@documentlinespacing}{singlespace}{\singlespacing}{%
+                        \setstretch{\@documentlinespacing}%
+                    }%
                 }%
             }%
         }%

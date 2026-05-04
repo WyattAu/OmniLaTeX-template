@@ -71,24 +71,22 @@
     \end{enumerate}\par\medskip
 }
 
-\newcommand{\gradingpolicy}{%
+\newenvironment{gradingpolicy}{%
     \par\medskip
     \begin{tabular}{@{}lr@{}}%
         \toprule
         \textbf{Component} & \textbf{Weight} \\
         \midrule
-}
-
-\newcommand{\gradingitem}[2]{#1 & #2\% \\}
-
-\newcommand{\endgradingpolicy}{%
+}{%
         \midrule
         \textbf{Total} & \textbf{100\%} \\
         \bottomrule
     \end{tabular}\par\medskip
 }
 
-\newcommand{\scheduleentry}[3]{#1 & #2 & #3 \\}
+\newcommand{\gradingitem}[2]{#1 & #2\% \\}
+
+\providecommand{\scheduleentry}[3]{#1 & #2 & #3 \\}
 
 \makeatother
 
