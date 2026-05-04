@@ -1,0 +1,165 @@
+name: CTAN Upload
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Install dependencies
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq zip
+
+      - name: Build CTAN zip
+        run: bash scripts/make-ctan-zip.sh
+
+      - name: Validate CTAN zip
+        run: |
+          test -f omnilatex.zip || { echo "::error::omnilatex.zip not found"; exit 1; }
+          test -s omnilatex.zip || { echo "::error::omnilatex.zip is empty"; exit 1; }
+          unzip -l omnilatex.zip | grep -q 'omnilatex\.cls$' || { echo "::error::omnilatex.cls missing"; exit 1; }
+          echo "CTAN zip validated OK"
+
+      - name: Extract version from tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Determine changelog for announcement
+        id: changelog
+        run: |
+          CURRENT_TAG="${GITHUB_REF_NAME}"
+          PREV_TAG=$(git tag --sort=-version:refname | grep -v "^${CURRENT_TAG}$" | head -1 || true)
+
+          if [ -n "$PREV_TAG" ]; then
+            echo "Using log from ${PREV_TAG}..${CURRENT_TAG}"
+            CHANGELOG=$(git log --oneline "${PREV_TAG}..${CURRENT_TAG}" 2>/dev/null || true)
+          else
+            echo "No previous tag found, using full log"
+            CHANGELOG=$(git log --oneline 2>/dev/null || true)
+          fi
+
+          if [ -z "$CHANGELOG" ]; then
+            CHANGELOG="Release ${CURRENT_TAG}"
+          fi
+
+          {
+            echo "changelog<<CHANGELOG_EOF"
+            echo "$CHANGELOG"
+            echo "CHANGELOG_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+          echo "Changelog:"
+          echo "$CHANGELOG"
+
+      - name: Check if package exists on CTAN
+        id: ctan-check
+        run: |
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://ctan.org/pkg/omnilatex)
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "Package exists on CTAN (HTTP $HTTP_CODE), will use update=true"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "Package not found on CTAN (HTTP $HTTP_CODE), will use update=false"
+          fi
+
+      - name: Fetch CTAN CSRF token
+        id: csrf
+        run: |
+          UPLOAD_PAGE=$(curl -s https://ctan.org/upload)
+          TICKET=$(echo "$UPLOAD_PAGE" | grep -oP 'name="ticket" type="hidden" value="\K[^"]*' || true)
+
+          if [ -z "$TICKET" ]; then
+            echo "::warning::Could not extract CSRF ticket from CTAN upload page"
+            echo "ticket=" >> "$GITHUB_OUTPUT"
+          else
+            echo "ticket=${TICKET}" >> "$GITHUB_OUTPUT"
+            echo "CSRF ticket extracted successfully"
+          fi
+
+      - name: Upload to CTAN
+        id: upload
+        continue-on-error: true
+        env:
+          CTAN_EMAIL: ${{ secrets.CTAN_EMAIL }}
+          CTAN_AUTHOR: ${{ secrets.CTAN_AUTHOR }}
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          TICKET="${{ steps.csrf.outputs.ticket }}"
+          PKG_EXISTS="${{ steps.ctan-check.outputs.exists }}"
+          CHANGELOG="${{ steps.changelog.outputs.changelog }}"
+          AUTHOR="${CTAN_AUTHOR:-Wyatt Au}"
+
+          if [ -z "$CTAN_EMAIL" ]; then
+            echo "::error::CTAN_EMAIL secret is not set. Please add it to repository secrets."
+            exit 1
+          fi
+
+          if [ -z "$TICKET" ]; then
+            echo "::error::No CSRF ticket available, cannot upload"
+            exit 1
+          fi
+
+          if [ "$PKG_EXISTS" = "true" ]; then
+            UPDATE_VALUE="true"
+            VALIDATE_VALUE="false"
+          else
+            UPDATE_VALUE="false"
+            VALIDATE_VALUE="false"
+          fi
+
+          DESCRIPTION="OmniLaTeX is a comprehensive KOMA-Script-based LaTeX template that provides 26 document types including thesis, dissertation, presentation, and CV, along with support for 16 institutional configurations and 18 languages. The template uses a modular architecture with a single class file that delegates to specialized modules for fonts, colors, floats, tables, and document types, making it easy to customize and extend. It is designed for both novice and advanced LaTeX users, offering sensible defaults with extensive configuration options, and includes CI-tested examples for every document type."
+
+          RESPONSE=$(curl -s -w "\n%{http_code}" -X POST https://ctan.org/upload \
+            -F "ticket=${TICKET}" \
+            -F "update=${UPDATE_VALUE}" \
+            -F "validate=${VALIDATE_VALUE}" \
+            -F "pkg=omnilatex" \
+            -F "vers=${VERSION}" \
+            -F "author=${AUTHOR}" \
+            -F "uploader=${AUTHOR}" \
+            -F "email=${CTAN_EMAIL}" \
+            -F "summary=Comprehensive KOMA-Script LaTeX template with 26 document types, 16 institutions, and 18 languages" \
+            -F "description=${DESCRIPTION}" \
+            -F "ctanPath=macros/latex/contrib/omnilatex" \
+            -F "licenses=apache2" \
+            -F "announcement=${CHANGELOG}" \
+            -F "note=Uploaded automatically via GitHub Actions" \
+            -F "home=https://github.com/WyattAu/OmniLaTeX-template" \
+            -F "bugs=https://github.com/WyattAu/OmniLaTeX-template/issues" \
+            -F "repository=https://github.com/WyattAu/OmniLaTeX-template" \
+            -F "support=https://github.com/WyattAu/OmniLaTeX-template/discussions" \
+            -F "file=@omnilatex.zip")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          echo "HTTP Status: ${HTTP_CODE}"
+          echo "Response Body:"
+          echo "$BODY"
+
+          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+            echo "Upload succeeded (HTTP ${HTTP_CODE})"
+          else
+            echo "::warning::CTAN upload returned HTTP ${HTTP_CODE}"
+            echo "Full response saved for debugging"
+          fi
+
+          {
+            echo "http_code=${HTTP_CODE}"
+            echo "body<<BODY_EOF"
+            echo "$BODY"
+            echo "BODY_EOF"
+          } >> "$GITHUB_OUTPUT"
