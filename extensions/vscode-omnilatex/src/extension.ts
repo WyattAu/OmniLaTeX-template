@@ -1,249 +1,388 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
+import { exec } from 'child_process';
 
-const DOCTYPES = [
-  { label: 'Thesis', value: 'thesis', description: 'Academic thesis (scrbook)' },
-  { label: 'Dissertation', value: 'dissertation', description: 'Dissertation (scrbook)' },
-  { label: 'Article', value: 'article', description: 'Standard article (scrartcl)' },
-  { label: 'Journal', value: 'journal', description: 'Journal article (scrartcl)' },
-  { label: 'CV', value: 'cv', description: 'Curriculum vitae (scrartcl)' },
-  { label: 'Presentation', value: 'presentation', description: 'Presentation slides (scrartcl)' },
-  { label: 'Poster', value: 'poster', description: 'Conference poster (scrartcl)' },
-  { label: 'Letter', value: 'letter', description: 'Formal letter (scrartcl)' },
-  { label: 'Book', value: 'book', description: 'Book (scrbook)' },
-  { label: 'Manual', value: 'manual', description: 'Manual/handbook (scrreprt)' },
-  { label: 'Technical Report', value: 'technicalreport', description: 'Technical report (scrreprt)' },
-  { label: 'Standard', value: 'standard', description: 'Standards document (scrreprt)' },
-  { label: 'Patent', value: 'patent', description: 'Patent application (scrreprt)' },
-  { label: 'Cover Letter', value: 'cover-letter', description: 'Cover letter (scrartcl)' },
-  { label: 'Dictionary', value: 'dictionary', description: 'Dictionary/lexicon (scrbook)' },
-  { label: 'Inline Paper', value: 'inlinepaper', description: 'Inline research paper (scrartcl)' },
+const DOCTYPES: string[] = [
+    'article', 'book', 'cover-letter', 'cv', 'dictionary', 'dissertation',
+    'exam', 'handout', 'homework', 'inlinepaper', 'invoice', 'journal',
+    'lecture-notes', 'letter', 'manual', 'memo', 'patent', 'poster',
+    'presentation', 'recipe', 'research-proposal', 'standard', 'syllabus',
+    'technicalreport', 'thesis', 'white-paper'
 ];
 
-const LANGUAGES = [
-  'english', 'german', 'french', 'spanish', 'portuguese', 'italian',
-  'dutch', 'russian', 'chinese', 'japanese', 'korean', 'arabic',
+const INSTITUTIONS: string[] = [
+    'cambridge', 'cmu', 'epfl', 'eth', 'generic', 'harvard', 'imperial',
+    'mit', 'none', 'oxford', 'princeton', 'stanford', 'tudelft', 'tuhh',
+    'tum', 'yale'
 ];
 
-let statusBarItem: vscode.StatusBarItem;
+const LANGUAGES: string[] = [
+    'english', 'german', 'french', 'spanish', 'russian', 'italian',
+    'portuguese', 'dutch', 'polish', 'czech', 'greek', 'turkish',
+    'simplifiedchinese', 'traditionalchinese', 'japanese', 'korean',
+    'arabic', 'hebrew', 'persian'
+];
 
-export function activate(context: vscode.ExtensionContext) {
-  console.log('OmniLaTeX extension activated');
+const COLOR_MODES: string[] = ['dark', 'light', 'auto'];
+const LINK_STYLES: string[] = ['default', 'plain'];
+const CODE_STYLES: string[] = ['default', 'plain'];
 
-  statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-  statusBarItem.command = 'omnilatex.pickDoctype';
-  context.subscriptions.push(statusBarItem);
-  updateStatusBar();
+const CLASS_OPTIONS = [
+    { name: 'doctype', description: 'Document type' },
+    { name: 'institution', description: 'Institution' },
+    { name: 'language', description: 'Language' },
+    { name: 'color-mode', description: 'Color mode (dark/light/auto)' },
+    { name: 'link-style', description: 'Link style (default/plain)' },
+    { name: 'code-style', description: 'Code style (default/plain)' }
+];
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('omnilatex.pickDoctype', pickDoctype),
-    vscode.commands.registerCommand('omnilatex.pickInstitution', pickInstitution),
-    vscode.commands.registerCommand('omnilatex.pickLanguage', pickLanguage),
-    vscode.commands.registerCommand('omnilatex.buildExample', buildCurrent),
-    vscode.commands.registerCommand('omnilatex.buildAll', buildAll),
-    vscode.commands.registerCommand('omnilatex.doctor', runDoctor),
-    vscode.commands.registerCommand('omnilatex.createProject', createProject),
-  );
+const DOCTYPE_CATEGORIES: Record<string, string[]> = {
+    Academic: [
+        'thesis', 'dissertation', 'article', 'journal', 'research-proposal',
+        'technicalreport', 'lecture-notes', 'syllabus', 'homework', 'exam', 'handout'
+    ],
+    Business: ['invoice', 'memo', 'cover-letter', 'standard', 'patent', 'manual'],
+    Personal: ['cv', 'letter', 'book', 'dictionary', 'poster', 'presentation', 'white-paper', 'recipe']
+};
 
-  context.subscriptions.push(
-    vscode.window.onDidChangeActiveTextEditor(updateStatusBar),
-    vscode.workspace.onDidChangeTextDocument(() => updateStatusBar()),
-  );
+const DOCTYPE_DESCRIPTIONS: Record<string, string> = {
+    'article': 'Standard article (scrartcl)',
+    'book': 'Book (scrbook)',
+    'cover-letter': 'Cover letter (scrartcl)',
+    'cv': 'Curriculum vitae (scrartcl)',
+    'dictionary': 'Dictionary/lexicon (scrbook)',
+    'dissertation': 'Dissertation (scrbook)',
+    'exam': 'Exam document (scrartcl)',
+    'handout': 'Handout (scrartcl)',
+    'homework': 'Homework assignment (scrartcl)',
+    'inlinepaper': 'Inline research paper (scrartcl)',
+    'invoice': 'Invoice (scrartcl)',
+    'journal': 'Journal article (scrartcl)',
+    'lecture-notes': 'Lecture notes (scrartcl)',
+    'letter': 'Formal letter (scrartcl)',
+    'manual': 'Manual/handbook (scrreprt)',
+    'memo': 'Memo (scrartcl)',
+    'patent': 'Patent application (scrreprt)',
+    'poster': 'Conference poster (scrartcl)',
+    'presentation': 'Presentation slides (scrartcl)',
+    'recipe': 'Recipe (scrartcl)',
+    'research-proposal': 'Research proposal (scrartcl)',
+    'standard': 'Standards document (scrreprt)',
+    'syllabus': 'Syllabus (scrartcl)',
+    'technicalreport': 'Technical report (scrreprt)',
+    'thesis': 'Academic thesis (scrbook)',
+    'white-paper': 'White paper (scrartcl)'
+};
 
-  showWelcomeMessage(context);
+class OmniLaTeXCompletionProvider implements vscode.CompletionItemProvider {
+    provideCompletionItems(
+        document: vscode.TextDocument,
+        position: vscode.Position,
+        _token: vscode.CancellationToken,
+        _context: vscode.CompletionContext
+    ): vscode.ProviderResult<vscode.CompletionItem[]> {
+        const textBefore = document.getText(new vscode.Range(new vscode.Position(0, 0), position));
+
+        const docClassRegex = /\\documentclass\s*\[/g;
+        let lastMatch: RegExpExecArray | null = null;
+        let match: RegExpExecArray | null;
+        while ((match = docClassRegex.exec(textBefore)) !== null) {
+            lastMatch = match;
+        }
+
+        if (!lastMatch) {
+            return undefined;
+        }
+
+        const bracketStartIndex = lastMatch.index + lastMatch[0].length - 1;
+        const textAfterBracket = textBefore.substring(bracketStartIndex + 1);
+        if (textAfterBracket.includes(']')) {
+            return undefined;
+        }
+
+        const lastCommaIndex = textAfterBracket.lastIndexOf(',');
+        const currentSegment = textAfterBracket.substring(lastCommaIndex + 1).trim();
+
+        const eqIndex = currentSegment.indexOf('=');
+        if (eqIndex !== -1) {
+            const optionName = currentSegment.substring(0, eqIndex).trim();
+            const partialValue = currentSegment.substring(eqIndex + 1).trim();
+            return this.getOptionValues(optionName, partialValue);
+        }
+
+        return this.getOptionNames(currentSegment);
+    }
+
+    private getOptionNames(partial: string): vscode.CompletionItem[] {
+        return CLASS_OPTIONS
+            .filter(o => o.name.startsWith(partial))
+            .map(o => {
+                const item = new vscode.CompletionItem(o.name + '=', vscode.CompletionItemKind.Property);
+                item.detail = o.description;
+                item.insertText = o.name + '=';
+                item.sortText = o.name;
+                return item;
+            });
+    }
+
+    private getOptionValues(optionName: string, partialValue: string): vscode.CompletionItem[] | undefined {
+        let values: string[] | undefined;
+        switch (optionName) {
+            case 'doctype':
+                values = DOCTYPES;
+                break;
+            case 'institution':
+                values = INSTITUTIONS;
+                break;
+            case 'language':
+                values = LANGUAGES;
+                break;
+            case 'color-mode':
+                values = COLOR_MODES;
+                break;
+            case 'link-style':
+                values = LINK_STYLES;
+                break;
+            case 'code-style':
+                values = CODE_STYLES;
+                break;
+            default:
+                return undefined;
+        }
+
+        return values!
+            .filter(v => v.startsWith(partialValue))
+            .map(v => {
+                const item = new vscode.CompletionItem(v, vscode.CompletionItemKind.EnumMember);
+                if (optionName === 'doctype' && DOCTYPE_DESCRIPTIONS[v]) {
+                    item.detail = DOCTYPE_DESCRIPTIONS[v];
+                }
+                item.sortText = v;
+                return item;
+            });
+    }
 }
 
-function showWelcomeMessage(context: vscode.ExtensionContext) {
-  const key = 'omnilatex.welcomed';
-  const welcomed = context.globalState.get<boolean>(key, false);
-  if (!welcomed) {
-    context.globalState.update(key, true);
-    vscode.window.showInformationMessage(
-      'OmniLaTeX extension activated! Use the OmniLaTeX commands to get started.',
-      'Open Commands'
-    ).then(choice => {
-      if (choice === 'Open Commands') {
-        vscode.commands.executeCommand('workbench.action.showCommands');
-      }
-    });
-  }
+function parseDocumentOptions(text: string): { doctype: string; institution: string } {
+    const match = text.match(/\\documentclass\s*\[([\s\S]*?)\]\s*\{omnilatex\}/);
+    const result = { doctype: '', institution: '' };
+    if (!match) { return result; }
+    const opts = match[1];
+    const dt = opts.match(/doctype=([a-zA-Z-]+)/);
+    const inst = opts.match(/institution=([a-zA-Z-]+)/);
+    if (dt) { result.doctype = dt[1]; }
+    if (inst) { result.institution = inst[1]; }
+    return result;
 }
 
-function parseDocumentOptions(text: string): { doctype: string; language: string; institution: string } {
-  const match = text.match(/\\documentclass\s*\[([\s\S]*?)\]\{omnilatex\}/);
-  const result = { doctype: '—', language: '—', institution: '—' };
-  if (!match) { return result; }
-  const opts = match[1];
-  const dt = opts.match(/doctype=(\w+)/);
-  const lg = opts.match(/language=(\w+)/);
-  const inst = opts.match(/institution=(\w+)/);
-  if (dt) { result.doctype = dt[1]; }
-  if (lg) { result.language = lg[1]; }
-  if (inst) { result.institution = inst[1]; }
-  return result;
+function replaceOption(text: string, optionName: string, newValue: string): string | undefined {
+    const regex = /(\\documentclass\s*\[)([\s\S]*?)(\]\s*\{omnilatex\})/;
+    const match = text.match(regex);
+    if (!match) { return undefined; }
+
+    const cleaned = match[2]
+        .replace(new RegExp(`${optionName}=[\\w-]+`, 'g'), '')
+        .split(',')
+        .map(s => s.trim())
+        .filter(s => s.length > 0)
+        .join(', ');
+
+    const options = cleaned ? `${optionName}=${newValue}, ${cleaned}` : `${optionName}=${newValue}`;
+    return text.replace(regex, `$1${options}$3`);
 }
 
-function updateStatusBar() {
-  const editor = vscode.window.activeTextEditor;
-  if (!editor) {
-    statusBarItem.hide();
-    return;
-  }
-  const text = editor.document.getText();
-  const opts = parseDocumentOptions(text);
-  if (opts.doctype === '—' && !text.includes('omnilatex')) {
-    statusBarItem.hide();
-    return;
-  }
-  statusBarItem.text = `$(book) ${opts.doctype}  |  $(globe) ${opts.language}  |  $(organization) ${opts.institution}`;
-  statusBarItem.tooltip = 'OmniLaTeX: Click to change document type';
-  statusBarItem.show();
+function findWorkspaceRoot(): string | undefined {
+    const folders = vscode.workspace.workspaceFolders;
+    if (!folders) { return undefined; }
+
+    for (const folder of folders) {
+        const p = folder.uri.fsPath;
+        if (fs.existsSync(path.join(p, 'omnilatex.cls')) || fs.existsSync(path.join(p, 'build.py'))) {
+            return p;
+        }
+    }
+
+    return folders[0]?.uri.fsPath;
 }
 
-async function createProject() {
-  const workspaceFolders = vscode.workspace.workspaceFolders;
-  const workspaceRoot = workspaceFolders ? workspaceFolders[0].uri.fsPath : undefined;
-
-  if (!workspaceRoot) {
-    vscode.window.showErrorMessage('Please open a workspace folder first.');
-    return;
-  }
-
-  const buildPy = path.join(workspaceRoot, 'build.py');
-  if (!fs.existsSync(buildPy)) {
-    vscode.window.showErrorMessage(`build.py not found at ${buildPy}. Make sure you are in an OmniLaTeX workspace.`);
-    return;
-  }
-
-  const name = await vscode.window.showInputBox({
-    prompt: 'Enter project name',
-    placeHolder: 'my-thesis',
-    validateInput: (value) => {
-      if (!value || !/^[a-zA-Z0-9_-]+$/.test(value)) {
-        return 'Project name must contain only letters, numbers, hyphens, and underscores.';
-      }
-      return undefined;
-    },
-  });
-  if (!name) { return; }
-
-  const defaultDoctype = vscode.workspace.getConfiguration('omnilatex').get<string>('defaultDoctype', 'thesis');
-  const defaultLanguage = vscode.workspace.getConfiguration('omnilatex').get<string>('defaultLanguage', 'english');
-
-  const terminal = vscode.window.createTerminal('OmniLaTeX Create');
-  terminal.show();
-  terminal.sendText(`python3 build.py init ${name} --doctype ${defaultDoctype} --language ${defaultLanguage}`);
+function getExampleNames(root: string): string[] {
+    const examplesDir = path.join(root, 'examples');
+    if (!fs.existsSync(examplesDir)) { return []; }
+    try {
+        return fs.readdirSync(examplesDir)
+            .filter(f => f.endsWith('.tex'))
+            .map(f => path.basename(f, '.tex'));
+    } catch {
+        return [];
+    }
 }
 
-async function pickDoctype() {
-  const editor = vscode.window.activeTextEditor;
-  if (!editor) { return; }
-  
-  const pick = await vscode.window.showQuickPick(DOCTYPES, {
-    placeHolder: 'Select document type...',
-  });
-  if (!pick) { return; }
-  
-  const doc = editor.document;
-  const text = doc.getText();
-  const regex = /(\\documentclass\s*\[)([\s\S]*?)(\]\{omnilatex\})/;
-  const match = text.match(regex);
-  if (match) {
-    let options = match[2].replace(/doctype=\w+/g, '').trim();
-    options = options ? `doctype=${pick.value}, ${options}` : `doctype=${pick.value}`;
-    const newText = text.replace(regex, `$1${options}$3`);
-    const fullRange = new vscode.Range(
-      doc.positionAt(0), doc.positionAt(text.length)
-    );
-    editor.edit(editBuilder => {
-      editBuilder.replace(fullRange, newText);
-    });
+async function switchDoctype(): Promise<void> {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) { return; }
+
+    const items: vscode.QuickPickItem[] = [];
+    for (const [category, doctypes] of Object.entries(DOCTYPE_CATEGORIES)) {
+        items.push({ label: category, kind: vscode.QuickPickItemKind.Separator });
+        for (const dt of doctypes) {
+            items.push({ label: dt, description: DOCTYPE_DESCRIPTIONS[dt] || '' });
+        }
+    }
+
+    const pick = await vscode.window.showQuickPick(items, { placeHolder: 'Select document type...' });
+    if (!pick || pick.kind === vscode.QuickPickItemKind.Separator) { return; }
+
+    const doc = editor.document;
+    const text = doc.getText();
+    const newText = replaceOption(text, 'doctype', pick.label);
+    if (!newText) {
+        vscode.window.showErrorMessage('Could not find \\documentclass{omnilatex} in current file');
+        return;
+    }
+
+    const fullRange = new vscode.Range(doc.positionAt(0), doc.positionAt(text.length));
+    await editor.edit(editBuilder => editBuilder.replace(fullRange, newText));
     vscode.window.showInformationMessage(`Document type changed to: ${pick.label}`);
-  } else {
-    vscode.window.showErrorMessage('Could not find \\documentclass{omnilatex} in current file');
-  }
 }
 
-async function pickInstitution() {
-  const workspaceFolders = vscode.workspace.workspaceFolders;
-  if (!workspaceFolders) { return; }
-  
-  const instDir = path.join(workspaceFolders[0].uri.fsPath, 'config', 'institutions');
-  let institutions: string[] = ['none'];
-  
-  if (fs.existsSync(instDir)) {
-    institutions = institutions.concat(
-      fs.readdirSync(instDir, { withFileTypes: true })
-        .filter(d => d.isDirectory() && d.name !== 'README.md')
-        .map(d => d.name)
+async function switchInstitution(): Promise<void> {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) { return; }
+
+    const pick = await vscode.window.showQuickPick(
+        INSTITUTIONS.map(i => ({
+            label: i === 'none' ? 'None (generic)' : i.charAt(0).toUpperCase() + i.slice(1),
+            value: i
+        })),
+        { placeHolder: 'Select institution...' }
     );
-  }
-  
-  const pick = await vscode.window.showQuickPick(
-    institutions.map(i => ({ label: i === 'none' ? 'None (generic)' : i.charAt(0).toUpperCase() + i.slice(1), value: i })),
-    { placeHolder: 'Select institution...' }
-  );
-  if (!pick) { return; }
-  
-  const editor = vscode.window.activeTextEditor;
-  if (!editor) { return; }
-  
-  const doc = editor.document;
-  const text = doc.getText();
-  const regex = /(\\documentclass\s*\[)([\s\S]*?)(\]\{omnilatex\})/;
-  const match = text.match(regex);
-  if (match) {
-    let options = match[2].replace(/institution=\w+/g, '').trim();
-    options = options ? `institution=${pick.value}, ${options}` : `institution=${pick.value}`;
-    const newText = text.replace(regex, `$1${options}$3`);
+    if (!pick) { return; }
+
+    const doc = editor.document;
+    const text = doc.getText();
+    const newText = replaceOption(text, 'institution', pick.value);
+    if (!newText) {
+        vscode.window.showErrorMessage('Could not find \\documentclass{omnilatex} in current file');
+        return;
+    }
+
     const fullRange = new vscode.Range(doc.positionAt(0), doc.positionAt(text.length));
-    editor.edit(editBuilder => { editBuilder.replace(fullRange, newText); });
+    await editor.edit(editBuilder => editBuilder.replace(fullRange, newText));
     vscode.window.showInformationMessage(`Institution changed to: ${pick.label}`);
-  }
 }
 
-async function pickLanguage() {
-  const pick = await vscode.window.showQuickPick(
-    LANGUAGES.map(l => ({ label: l.charAt(0).toUpperCase() + l.slice(1), value: l })),
-    { placeHolder: 'Select language...' }
-  );
-  if (!pick) { return; }
-  
-  const editor = vscode.window.activeTextEditor;
-  if (!editor) { return; }
-  
-  const doc = editor.document;
-  const text = doc.getText();
-  const regex = /(\\documentclass\s*\[)([\s\S]*?)(\]\{omnilatex\})/;
-  const match = text.match(regex);
-  if (match) {
-    let options = match[2].replace(/language=\w+/g, '').trim();
-    options = options ? `language=${pick.value}, ${options}` : `language=${pick.value}`;
-    const newText = text.replace(regex, `$1${options}$3`);
-    const fullRange = new vscode.Range(doc.positionAt(0), doc.positionAt(text.length));
-    editor.edit(editBuilder => { editBuilder.replace(fullRange, newText); });
-    vscode.window.showInformationMessage(`Language changed to: ${pick.label}`);
-  }
+async function buildExample(): Promise<void> {
+    const root = findWorkspaceRoot();
+    if (!root) {
+        vscode.window.showErrorMessage('Could not find OmniLaTeX workspace root');
+        return;
+    }
+
+    const examples = getExampleNames(root);
+    let exampleName: string | undefined;
+
+    if (examples.length > 0) {
+        exampleName = await vscode.window.showQuickPick(examples, { placeHolder: 'Select example to build...' });
+    } else {
+        exampleName = await vscode.window.showInputBox({ prompt: 'Enter example name to build', placeHolder: 'thesis' });
+    }
+    if (!exampleName) { return; }
+
+    const buildPy = path.join(root, 'build.py');
+    await vscode.window.withProgress(
+        { location: vscode.ProgressLocation.Notification, title: `Building ${exampleName}...` },
+        () => new Promise<void>((resolve) => {
+            exec(`python3 "${buildPy}" build-example ${exampleName}`, { cwd: root }, (error) => {
+                if (error) {
+                    vscode.window.showErrorMessage(`Build failed: ${error.message}`);
+                } else {
+                    vscode.window.showInformationMessage(`Built ${exampleName} successfully`);
+                }
+                resolve();
+            });
+        })
+    );
 }
 
-function runBuildCommand(command: string) {
-  const terminal = vscode.window.createTerminal('OmniLaTeX Build');
-  terminal.show();
-  terminal.sendText(`python3 build.py ${command}`);
+async function buildAll(): Promise<void> {
+    const root = findWorkspaceRoot();
+    if (!root) {
+        vscode.window.showErrorMessage('Could not find OmniLaTeX workspace root');
+        return;
+    }
+
+    const buildPy = path.join(root, 'build.py');
+    await vscode.window.withProgress(
+        { location: vscode.ProgressLocation.Notification, title: 'Building all examples...' },
+        () => new Promise<void>((resolve) => {
+            exec(`python3 "${buildPy}" build-all`, { cwd: root }, (error) => {
+                if (error) {
+                    vscode.window.showErrorMessage(`Build failed: ${error.message}`);
+                } else {
+                    vscode.window.showInformationMessage('All examples built successfully');
+                }
+                resolve();
+            });
+        })
+    );
 }
 
-function buildCurrent() {
-  const editor = vscode.window.activeTextEditor;
-  if (editor) {
-    const fileName = path.basename(editor.document.uri.fsPath, '.tex');
-    runBuildCommand(`build-example ${fileName}`);
-  } else {
-    runBuildCommand('build-root');
-  }
-}
+export function activate(context: vscode.ExtensionContext): void {
+    const statusItem = vscode.languages.createLanguageStatusItem('omnilatex', ['latex', 'latex-expl3']);
+    statusItem.text = 'OmniLaTeX';
+    statusItem.command = { command: 'omnilatex.switchDoctype', title: 'Switch Document Type' };
+    context.subscriptions.push(statusItem);
 
-function buildAll() { runBuildCommand('build-examples'); }
-function runDoctor() { runBuildCommand('doctor'); }
+    const updateStatusBar = () => {
+        const cfg = vscode.workspace.getConfiguration('omnilatex');
+        if (!cfg.get<boolean>('statusBar.show', true)) {
+            statusItem.text = '';
+            statusItem.detail = undefined;
+            return;
+        }
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            statusItem.text = 'OmniLaTeX';
+            statusItem.detail = undefined;
+            return;
+        }
+        const text = editor.document.getText();
+        const opts = parseDocumentOptions(text);
+        if (!opts.doctype && !text.includes('omnilatex')) {
+            statusItem.text = 'OmniLaTeX';
+            statusItem.detail = undefined;
+            return;
+        }
+        statusItem.text = 'OmniLaTeX';
+        statusItem.detail = opts.doctype
+            ? opts.institution
+                ? `${opts.doctype} | ${opts.institution}`
+                : opts.doctype
+            : undefined;
+    };
+
+    const completionProvider = new OmniLaTeXCompletionProvider();
+    context.subscriptions.push(
+        vscode.languages.registerCompletionItemProvider(
+            ['latex', 'latex-expl3'],
+            completionProvider,
+            '[', ',', '='
+        ),
+        vscode.commands.registerCommand('omnilatex.switchDoctype', switchDoctype),
+        vscode.commands.registerCommand('omnilatex.switchInstitution', switchInstitution),
+        vscode.commands.registerCommand('omnilatex.build', buildExample),
+        vscode.commands.registerCommand('omnilatex.buildAll', buildAll),
+        vscode.window.onDidChangeActiveTextEditor(updateStatusBar),
+        vscode.workspace.onDidChangeTextDocument(updateStatusBar),
+        vscode.workspace.onDidChangeConfiguration(e => {
+            if (e.affectsConfiguration('omnilatex')) {
+                updateStatusBar();
+            }
+        })
+    );
+
+    updateStatusBar();
+}
 
 export function deactivate() {}

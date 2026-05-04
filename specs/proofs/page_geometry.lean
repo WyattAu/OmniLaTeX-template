@@ -88,11 +88,25 @@ theorem div_textwidth_formula :
     pw * (div - 1) / div < pw ∧
     pw * (div - 1) / div ≥ 0 := by
   intro pw div hpw hdiv
-  sorry
-  -- Proof sketch (requires nonlinear arithmetic):
-  -- 1. pw > 0 and div > 1 → pw * (div - 1) > 0 → pw * (div - 1) / div ≥ 0
-  -- 2. pw * (div - 1) < pw * div (since div > 1) → pw * (div - 1) / div < pw
-  -- Blocked: omega cannot reason about multiplication of variables or integer division.
+  constructor
+  · have h_sub : (div - 1) + 1 = div := by omega
+    have h_add : pw * (div - 1) + 0 < pw * (div - 1) + pw :=
+        Nat.add_lt_add_left hpw (pw * (div - 1))
+    have h_lt_add : pw * (div - 1) < pw * (div - 1) + pw := by
+        rw [Nat.add_zero] at h_add; exact h_add
+    have h_mul_add := Nat.mul_add pw (div - 1) 1
+    have h_mul_one := Nat.mul_one pw
+    have h_mul_add' : pw * ((div - 1) + 1) = pw * (div - 1) + pw := by
+        rw [h_mul_one] at h_mul_add; exact h_mul_add
+    have h_eq : pw * (div - 1) + pw = pw * div :=
+        h_mul_add'.symm.trans (congrArg (pw * ·) h_sub)
+    have h_lt : pw * (div - 1) < pw * div := by
+        rw [h_eq] at h_lt_add; exact h_lt_add
+    have h_comm : pw * div = div * pw := Nat.mul_comm pw div
+    have h_lt2 : pw * (div - 1) < div * pw := by
+        rw [h_comm] at h_lt; exact h_lt
+    exact Nat.div_lt_of_lt_mul h_lt2
+  · exact Nat.zero_le _
 
 -- Theorem 5: Caption width bound
 -- If caption width is non-negative and bounded by textwidth,

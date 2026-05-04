@@ -4,15 +4,20 @@
   "description": "OmniLaTeX document class support — doctype picker, institution switcher, and build commands",
   "version": "0.1.0",
   "publisher": "WyattAu",
-  "engines": ["vscode"],
-  "categories": ["Programming Languages", "LaTeX"],
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Programming Languages", "Snippets"],
   "keywords": ["latex", "document class", "omnilatex", "koma-script", "lua"],
   "activationEvents": [
     "onLanguage:latex",
+    "onLanguage:latex-expl3",
     "onCommand:omnilatex.switchDoctype",
-    "onCommand:omnilatex.switchInstitution"
+    "onCommand:omnilatex.switchInstitution",
+    "onCommand:omnilatex.build",
+    "onCommand:omnilatex.buildAll"
   ],
-  "main": "./src/extension.js",
+  "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
@@ -27,7 +32,7 @@
       },
       {
         "command": "omnilatex.build",
-        "title": "OmniLaTeX: Build Current Document",
+        "title": "OmniLaTeX: Build Example",
         "category": "OmniLaTeX"
       },
       {
@@ -36,11 +41,56 @@
         "category": "OmniLaTeX"
       }
     ],
+    "keybindings": [
+      {
+        "command": "omnilatex.switchDoctype",
+        "key": "ctrl+alt+d",
+        "when": "editorTextFocus && (resourceLangId == latex || resourceLangId == latex-expl3)"
+      },
+      {
+        "command": "omnilatex.switchInstitution",
+        "key": "ctrl+alt+i",
+        "when": "editorTextFocus && (resourceLangId == latex || resourceLangId == latex-expl3)"
+      },
+      {
+        "command": "omnilatex.build",
+        "key": "ctrl+alt+b",
+        "when": "editorTextFocus && (resourceLangId == latex || resourceLangId == latex-expl3)"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "omnilatex.switchDoctype",
+          "when": "resourceLangId == latex || resourceLangId == latex-expl3",
+          "group": "1_modification"
+        },
+        {
+          "command": "omnilatex.switchInstitution",
+          "when": "resourceLangId == latex || resourceLangId == latex-expl3",
+          "group": "1_modification"
+        }
+      ]
+    },
     "snippets": [
       {
         "language": "latex",
         "path": "./snippets/latex.json"
+      },
+      {
+        "language": "latex",
+        "path": "./snippets/omnilatex.json"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "OmniLaTeX",
+      "properties": {
+        "omnilatex.statusBar.show": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the OmniLaTeX status bar item"
+        }
+      }
+    }
   }
 }

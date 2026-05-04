@@ -94,5 +94,59 @@
     "prefix": "bibliography",
     "body": ["\\printbibliography[heading=bibintoc]", "$0"],
     "description": "Print bibliography"
+  },
+  "OmniLaTeX Algorithm": {
+    "prefix": "algorithm",
+    "body": [
+      "\\begin{algorithm}[htbp]",
+      "  \\caption{${1:Algorithm Title}}",
+      "  \\label{alg:${2:label}}",
+      "  \\begin{algorithmic}[1]",
+      "    \\Procedure{${3:ProcedureName}}{${4:arguments}}",
+      "      \\State $0",
+      "    \\EndProcedure",
+      "  \\end{algorithmic}",
+      "\\end{algorithm}"
+    ],
+    "description": "Algorithm environment with pseudocode"
+  },
+  "OmniLaTeX Theorem": {
+    "prefix": "theorem",
+    "body": [
+      "\\begin{theorem}[${1:Optional Title}]",
+      "  \\label{thm:${2:label}}",
+      "  $0",
+      "\\end{theorem}"
+    ],
+    "description": "Theorem environment"
+  },
+  "OmniLaTeX Proof": {
+    "prefix": "proof",
+    "body": [
+      "\\begin{proof}[${1:Proof of}]",
+      "  $0",
+      "\\end{proof}"
+    ],
+    "description": "Proof environment"
+  },
+  "OmniLaTeX Definition": {
+    "prefix": "definition",
+    "body": [
+      "\\begin{definition}[${1:Optional Title}]",
+      "  \\label{def:${2:label}}",
+      "  $0",
+      "\\end{definition}"
+    ],
+    "description": "Definition environment"
+  },
+  "OmniLaTeX Glossary Entry": {
+    "prefix": "glossary",
+    "body": [
+      "\\newglossaryentry{${1:label}}{",
+      "  name=${2:Display Name},",
+      "  description=${3:Description of the term}",
+      "}"
+    ],
+    "description": "Glossary entry definition"
   }
 }
