@@ -77,31 +77,25 @@ jobs:
       - name: Prepare release body
         id: body
         run: |
+          BODY="See CHANGELOG.md for full release notes."
           if [ -f CHANGELOG.md ]; then
-            # Extract the most recent release section from CHANGELOG.md
-            # Matches the first section after [Unreleased] that has a date
-            CHANGELOG_SECTION=$(sed -n '/^## \[/p' CHANGELOG.md | head -n 1)
-            if [ -n "$CHANGELOG_SECTION" ]; then
-              # Extract from that heading to the next heading or EOF
-              SECTION_CONTENT=$(sed -n "/^${CHANGELOG_SECTION}/,/^## \[/p" CHANGELOG.md | head -n -1)
-              {
-                echo "body<<RELEASE_EOF"
-                echo "$SECTION_CONTENT"
-                echo ""
-                echo "---"
-                echo ""
-                echo "### Installation"
-                echo ""
-                echo '```bash'"
-                echo "tlmgr install omnilatex"
-                echo '```'
-                echo ""
-                echo "Or download the attached \`omnilatex.zip\` and extract to your TeX tree."
-                echo "RELEASE_EOF"
-              } >> "$GITHUB_OUTPUT"
-            else
-              echo "body=See CHANGELOG.md for full release notes." >> "$GITHUB_OUTPUT"
-            fi
+            BODY=$(awk '/^## \[/{found=1} found{print; if(/^## \[/ && !first){exit}} {if(found)first=1}' CHANGELOG.md | head -n -1)
+          fi
+          {
+            echo "BODY<<EOF"
+            printf '%s\n' "$BODY"
+            echo ""
+            echo "---"
+            echo ""
+            echo "### Installation"
+            echo ""
+            echo "\`\`\`bash"
+            echo "tlmgr install omnilatex"
+            echo "\`\`\`"
+            echo ""
+            echo "Or download the attached \`omnilatex.zip\` and extract to your TeX tree."
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
           else
             echo "body=" >> "$GITHUB_OUTPUT"
           fi
@@ -110,7 +104,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: omnilatex.zip
-          body: ${{ steps.body.outputs.body }}
+          body: ${{ steps.body.outputs.BODY }}
           generate_release_notes: true
           draft: false
           prerelease: ${{ contains(github.ref, 'rc') || contains(github.ref, 'beta') || contains(github.ref, 'alpha') }}
