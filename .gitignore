@@ -483,3 +483,5 @@ specs/proofs/.lake/
 specs/proofs/lake-manifest.json
 specs/proofs/build/
 *.ltjruby
+omnilatex.zip
+omnilatex-overleaf.zip

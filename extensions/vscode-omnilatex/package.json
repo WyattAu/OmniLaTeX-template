@@ -7,8 +7,17 @@
   "engines": {
     "vscode": "^1.85.0"
   },
-  "categories": ["Programming Languages", "Snippets"],
-  "keywords": ["latex", "document class", "omnilatex", "koma-script", "lua"],
+  "categories": [
+    "Programming Languages",
+    "Snippets"
+  ],
+  "keywords": [
+    "latex",
+    "document class",
+    "omnilatex",
+    "koma-script",
+    "lua"
+  ],
   "activationEvents": [
     "onLanguage:latex",
     "onLanguage:latex-expl3",
@@ -92,5 +101,10 @@
         }
       }
     }
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "@types/vscode": "^1.118.0",
+    "typescript": "^6.0.3"
   }
 }

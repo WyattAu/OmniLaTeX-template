@@ -1,7 +1,7 @@
 OmniLaTeX — Universal LaTeX Template System
 ============================================
 
-A modular LaTeX document class supporting 25 document types with
+A modular LaTeX document class supporting 26 document types with
 consistent branding, multi-language support, and reproducible
 builds via Docker and Nix.
 
@@ -31,7 +31,7 @@ Document Types
 
 Languages
 ---------
-  14 languages via polyglossia: English, German, French, Spanish,
+  26 languages via polyglossia: English, German, French, Spanish,
   Portuguese, Italian, Dutch, Danish, Russian, Chinese, Japanese,
   Korean, Arabic, Hebrew, Persian.
 
@@ -42,10 +42,10 @@ Languages
 
 Features
 --------
-  - 25 document type profiles with one-line switching
+  - 26 document type profiles with one-line switching
   - 55+ doctype aliases
-  - 14 institution configurations (TUHH, TUM, ETH, MIT, ...)
-  - 14 languages via polyglossia (EN, DE, FR, ES, PT, IT, NL,
+  - 16 institution configurations (TUHH, TUM, ETH, MIT, ...)
+  - 26 languages via polyglossia (EN, DE, FR, ES, PT, IT, NL,
     DA, RU, ZH, JA, KO, AR, HE)
   - CJK and RTL script support with font fallback chains
   - Color theme system with 6 built-in palettes and dark mode

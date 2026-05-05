@@ -14,8 +14,8 @@ Built on LuaTeX (LuaHBTeX 1.21.0) + KOMA-Script + TeX Live 2025. Compile with `l
 | **Formal verification** | Lean 4 proofs (8 modules, 13/20 theorems) | No |
 | **CI platforms** | 6 GitHub Actions workflows + 4 other platforms | 0–1 |
 | **Font fallbacks** | Graceful degradation with warnings | Crash or silent substitution |
-| **Institution configs** | 14 pluggable (`config/institutions/`) | Hardcoded |
-| **Languages** | 14 via polyglossia (EN, DE, FR, ES, PT, IT, NL, RU, ZH, JA, KO, AR, HE, DA) | 0–2 |
+| **Institution configs** | 16 pluggable (`config/institutions/`) | Hardcoded |
+| **Languages** | 26 via polyglossia (EN, DE, FR, ES, PT, IT, NL, RU, ZH, JA, KO, AR, HE, DA) | 0–2 |
 | **Citation styles** | 9 (IEEE, ACM, APA, Chicago, Nature, Science, Harvard, Vancouver, MLA) | 0–1 |
 | **Color themes** | 6 + dark/light toggle (default, midnight, forest, rose, monochrome, sepia) | 0 |
 
@@ -43,8 +43,8 @@ python build.py build-example minimal-starter
 - **Lazy module loading** — only load what you need (`enablemath`, `enabletikz`, `enablecode`, ...)
 - **Modern font stack** — Libertinus Serif + Math, Monaspace Neon, Atkinson Hyperlegible Next (with graceful fallback)
 - **Reproducible builds** — `SOURCE_DATE_EPOCH` support, byte-for-byte deterministic PDFs
-- **Multi-language** — 14 languages via polyglossia (EN, DE, FR, ES, PT, IT, NL, DA, RU, ZH, JA, KO, AR, HE); CJK and RTL support auto-loaded per language
-- **Institution branding** — 14 pluggable configs in `config/institutions/` (ETH Zürich, TUHH, TUM, MIT, Stanford, Cambridge, TU Delft, Oxford, Princeton, Yale, CMU, EPFL, Imperial, generic)
+- **Multi-language** — 26 languages via polyglossia (EN, DE, FR, ES, PT, IT, NL, DA, RU, ZH, JA, KO, AR, HE); CJK and RTL support auto-loaded per language
+- **Institution branding** — 16 pluggable configs in `config/institutions/` (ETH Zürich, TUHH, TUM, MIT, Stanford, Cambridge, TU Delft, Oxford, Princeton, Yale, CMU, EPFL, Imperial, generic)
 - **Citation styles** — 9 pre-configured styles via `\citationstyle{}` (IEEE, ACM, APA, Chicago, Nature, Science, Harvard, Vancouver, MLA)
 - **Color themes** — 6 themes with dark/light toggle: default, midnight, forest, rose, monochrome, sepia
 - **Accessibility** — PDF/UA-1 tagged PDF output via tagpdf
@@ -57,7 +57,7 @@ python build.py build-example minimal-starter
 
 ## Document Types
 
-25 document type profiles across 3 KOMA-Script base classes. Switch with `\documentclass[doctype=<type>]{omnilatex}`.
+26 document type profiles across 3 KOMA-Script base classes. Switch with `\documentclass[doctype=<type>]{omnilatex}`.
 
 | Type | Class | Description |
 |------|-------|-------------|

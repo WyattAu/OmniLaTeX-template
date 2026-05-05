@@ -45,8 +45,8 @@
 | **Doctype mgmt** | Insert OmniLaTeX documentclass | N/A (unique) | N/A (snippet only) | **P1** |
 | **Doctype mgmt** | Show available doctypes | N/A (unique) | N/A | **P2** |
 | **Doctype mgmt** | Show available institutions | N/A (unique) | N/A | **P2** |
-| **Build** | Build current document | `latex-workshop.build` | `omnilatex.build` (stub) | **P1** |
-| **Build** | Build all examples | N/A | `omnilatex.buildAll` (stub) | **P2** |
+| **Build** | Build current document | `latex-workshop.build` | `omnilatex.build` | **P1** |
+| **Build** | Build all examples | N/A | `omnilatex.buildAll` | **P2** |
 | **Build** | Build with recipe picker | `latex-workshop.recipes` | N/A | N/A |
 | **Build** | Kill compiler | `latex-workshop.kill` | N/A | N/A |
 | **Build** | Clean aux files | `latex-workshop.clean` | N/A | N/A |
@@ -236,7 +236,7 @@
 | Math Symbols | Webview panel with searchable math symbols | N/A |
 | PDF Viewer | Custom editor (`latex-workshop-pdf-hook`) with full PDF rendering | N/A |
 | Math Preview Panel | Webview panel rendering math at cursor | N/A |
-| Status bar | Build status, root file, language ID | Broken placeholder |
+| Status bar | Build status, root file, language ID | Implemented (language status item) |
 
 ---
 
