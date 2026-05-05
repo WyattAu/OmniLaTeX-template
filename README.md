@@ -1,6 +1,6 @@
 # OmniLaTeX
 
-A modular, engineering-grade LaTeX document class for academic and professional documents. 55+ doctype aliases, 27 modules, 42 example templates, byte-for-byte reproducible builds, and formal Lean 4 verification.
+A modular, engineering-grade LaTeX document class for academic and professional documents. 55+ doctype aliases, 27 modules, 43 example templates, byte-for-byte reproducible builds, and formal Lean 4 verification.
 
 Built on LuaTeX (LuaHBTeX 1.21.0) + KOMA-Script + TeX Live 2025. Compile with `latexmk -lualatex` or `build.py`.
 
@@ -11,8 +11,8 @@ Built on LuaTeX (LuaHBTeX 1.21.0) + KOMA-Script + TeX Live 2025. Compile with `l
 | **Document types** | 55+ aliases (thesis, CV, patent, journal, ...) | 1–3 |
 | **Test coverage** | 239 test cases + 27 l3build modules | 0 |
 | **Reproducible builds** | Byte-for-byte deterministic | No |
-| **Formal verification** | Lean 4 proofs (8 modules, 30/30 theorems) | No |
-| **CI platforms** | 6 GitHub Actions workflows + 4 other platforms | 0–1 |
+| **Formal verification** | Lean 4 proofs (7 proof modules, 30/30 theorems proven) | No |
+| **CI platforms** | 9 GitHub Actions workflows + 4 other platforms | 0–1 |
 | **Font fallbacks** | Graceful degradation with warnings | Crash or silent substitution |
 | **Institution configs** | 16 pluggable (`config/institutions/`) | Hardcoded |
 | **Languages** | 26 via polyglossia (EN, DE, FR, ES, PT, IT, NL, RU, ZH, JA, KO, AR, HE, DA) | 0–2 |
@@ -52,7 +52,7 @@ python build.py build-example minimal-starter
 - **RTL support** — automatic bidirectional text for Arabic and Hebrew
 - **Code listings** — syntax highlighting via minted with cached compilation
 - **Engineering diagrams** — 1,000+ lines of TikZ shapes: thermodynamics, P&ID, flowcharts
-- **Formal verification** — Lean 4 proofs (10 modules, 30/30 theorems proven)
+- **Formal verification** — Lean 4 proofs (7 proof modules, 30/30 theorems proven)
 - **Build automation** — `build.py` with watch mode, concurrent builds, timing metrics, and health diagnostics
 
 ## Document Types
@@ -85,6 +85,7 @@ python build.py build-example minimal-starter
 | `handout` | scrartcl | Two-column handout with key concept boxes |
 | `memo` | scrartcl | Memorandum with TO/FROM/CC/RE fields |
 | `invoice` | scrartcl | Commercial invoice |
+| `recipe` | scrartcl | Recipe with ingredients, steps, and metadata |
 | `white-paper` | scrreprt | White paper / position paper |
 
 All options: `language`, `doctype`, `titlestyle`, `institution`, `censoring`, `loadGlossaries`, `todonotes`, `enablefonts`, `enablegraphics`, `enablemath`, `enabletikz`, `enableengineering`, `enablecode`, `enabletables`.
@@ -99,7 +100,7 @@ OmniLaTeX supports 9 primary languages and 19 secondary languages via Polyglossi
 
 ## Examples
 
-42 ready-to-use templates in `examples/` (41 compile on TeX Live 2025; `thesis-tuhh` requires TUHH assets):
+43 ready-to-use templates in `examples/` (42 compile on TeX Live 2025; `thesis-tuhh` requires TUHH assets):
 
 | Example | Doctype | Description |
 |---------|---------|-------------|
@@ -229,7 +230,7 @@ python build.py clean                    # Remove build artifacts
 
 ### GitHub Actions
 
-6 workflows using digest-pinned Docker images for reproducibility:
+9 workflows using digest-pinned Docker images for reproducibility:
 
 | Workflow | Purpose |
 |----------|---------|
@@ -239,6 +240,8 @@ python build.py clean                    # Remove build artifacts
 | `docker-digest-sync.yml` | Sync image digests to CI workflows |
 | `lean4-ci.yml` | Compile and verify Lean 4 proofs |
 | `ctan.yml` | CTAN validation and auto-upload on release |
+| `ctan-release.yml` | Auto-publish GitHub Release + CTAN zip on tag push |
+| `ctan-upload.yml` | Automated CTAN submission with pre-flight validation |
 | `integration-matrix.yml` | Cross-version compatibility matrix |
 
 ### Other Platforms

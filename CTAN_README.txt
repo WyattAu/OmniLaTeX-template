@@ -55,7 +55,7 @@ Features
   - Deterministic builds via Docker (multi-arch) and Nix flakes
   - Lean 4 formal verification for core algorithms
   - VS Code extension with doctype picker and build commands
-  - 42 example templates
+  - 43 example templates
 
 Overleaf
 --------
@@ -76,7 +76,7 @@ Repository
 
 Documentation
 -------------
-  Full documentation, 42 example templates, and performance
+  Full documentation, 43 example templates, and performance
   benchmarks are available in the GitHub repository:
 
     git clone https://github.com/WyattAu/OmniLaTeX-template.git
