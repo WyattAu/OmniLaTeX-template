@@ -49,8 +49,26 @@ convergence behaviour of the proposed scheme.
 
 \begin{figure}[htbp]
     \centering
-    \fbox{\parbox{0.7\textwidth}{\centering\vspace{2cm}Figure placeholder:
-    Convergence plot of the numerical scheme.\vspace{2cm}}}
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=0.7\textwidth,
+        height=5cm,
+        xlabel={Mesh elements $N$},
+        ylabel={$L^{2}$ error},
+        xmode=log,
+        ymode=log,
+        grid=major,
+        thick,
+        legend pos=south west,
+    ]
+        \addplot[blue, mark=square*, thick] coordinates {
+            (10, 0.1) (20, 0.025) (40, 0.0063) (80, 0.0016) (160, 4e-4)
+        };
+        \addlegendentry{Numerical}
+        \addplot[red, dashed, thick, domain=10:160, samples=20] {10/x^2};
+        \addlegendentry{$\mathcal{O}(N^{-2})$}
+    \end{axis}
+\end{tikzpicture}
     \caption{Convergence of the numerical solution with mesh refinement.}
     \label{fig:convergence}
 \end{figure}

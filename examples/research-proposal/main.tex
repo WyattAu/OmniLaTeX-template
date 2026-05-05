@@ -85,8 +85,24 @@ illustrates the pipeline.
 
 \begin{figure}[htbp]
     \centering
-    \fbox{\parbox{0.7\textwidth}{\centering\vspace{2cm}%
-    Figure placeholder: CNN decoder architecture.\vspace{2cm}}}
+    \begin{tikzpicture}[
+        box/.style={draw, thick, rounded corners, minimum height=1cm,
+                     minimum width=2cm, fill=blue!10, font=\small},
+        arr/.style={->, thick, >=stealth},
+        node distance=1.2cm,
+    ]
+    \node[box] (input) {Syndrome\\Input};
+    \node[box, right=of input] (conv1) {Conv2D\\$3{\times}3$};
+    \node[box, right=of conv1] (conv2) {Conv2D\\$3{\times}3$};
+    \node[box, right=of conv2] (pool) {MaxPool};
+    \node[box, right=of pool] (fc) {Dense\\Layer};
+    \node[box, right=of fc] (output) {Correction\\Output};
+    \draw[arr] (input) -- (conv1);
+    \draw[arr] (conv1) -- (conv2);
+    \draw[arr] (conv2) -- (pool);
+    \draw[arr] (pool) -- (fc);
+    \draw[arr] (fc) -- (output);
+\end{tikzpicture}
     \caption{Decoder pipeline from syndrome input to correction output.}
     \label{fig:decoder}
 \end{figure}

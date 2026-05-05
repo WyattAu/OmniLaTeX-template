@@ -58,8 +58,24 @@
 		\vspace{4mm}
 		\begin{posterblocknotitle}
 			\centering
-			\textit{[Figure placeholder --- insert your results figure here]}\\[3mm]
-			\tikz\draw[black!30, thick] (0,0) rectangle (0.85\textwidth, 50mm);
+			\begin{tikzpicture}
+				\begin{axis}[
+					width=0.8\textwidth,
+					height=45mm,
+				 xlabel={Epoch},
+				 ylabel={Accuracy (\%)},
+				 legend style={font=\scriptsize, at={(0.02,0.98)}, anchor=north west},
+				 grid=major,
+				 thick,
+				]
+					\addplot[blue, thick, smooth, domain=1:50, samples=30]
+						{95 - 60*exp(-0.08*x)};
+					\addlegendentry{Model A}
+					\addplot[red, thick, dashed, smooth, domain=1:50, samples=30]
+						{93 - 55*exp(-0.06*x)};
+					\addlegendentry{Model B}
+				\end{axis}
+			\end{tikzpicture}
 		\end{posterblocknotitle}
 	\end{posterblock}
 
@@ -68,8 +84,23 @@
 	\begin{posterblock}[Architecture Overview]
 		\begin{posterblocknotitle}
 			\centering
-			\textit{[Figure placeholder --- system architecture diagram]}\\[3mm]
-			\tikz\draw[black!30, thick] (0,0) rectangle (0.85\textwidth, 60mm);
+			\begin{tikzpicture}[
+				box/.style={draw, thick, rounded corners, minimum height=8mm,
+					     minimum width=18mm, fill=blue!10, font=\scriptsize},
+				arr/.style={->, thick, >=stealth},
+				node distance=8mm,
+			]
+				\node[box] (user) {User};
+				\node[box, below=of user] (api) {API Layer};
+				\node[box, below left=of api] (db) {Database};
+				\node[box, below right=of api] (cache) {Cache};
+				\node[box, below right=of db] (storage) {Storage};
+				\draw[arr] (user) -- (api);
+				\draw[arr] (api) -- (db);
+				\draw[arr] (api) -- (cache);
+				\draw[arr] (db) -- (storage);
+				\draw[arr] (cache) -- (storage);
+			\end{tikzpicture}
 		\end{posterblocknotitle}
 	\end{posterblock}
 

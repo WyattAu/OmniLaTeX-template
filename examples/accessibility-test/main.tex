@@ -41,7 +41,26 @@ to produce a tagged PDF compatible with screen readers.
 \alttext{A bar chart showing increasing sales figures from 2020 to 2024}
 \begin{figure}[htbp]
     \centering
-    \fbox{\parbox{0.6\textwidth}{\centering\vspace{2cm}[Placeholder chart]\vspace{2cm}}}
+    \tikzalttext{A bar chart showing increasing sales figures from 2020 to 2024}
+\begin{tikzpicture}
+    \begin{axis}[
+        ybar,
+        width=0.6\textwidth,
+        height=5cm,
+        xlabel={Year},
+        ylabel={Revenue (\$M)},
+        symbolic x coords={2020, 2021, 2022, 2023, 2024},
+        xtick=data,
+        ymin=0,
+        nodes near coords,
+        nodes near coords align={vertical},
+        grid=major,
+        thick,
+        fill=blue!40,
+    ]
+        \addplot coordinates {(2020,2.1) (2021,3.4) (2022,4.8) (2023,6.2) (2024,8.5)};
+    \end{axis}
+\end{tikzpicture}
     \caption{Sales growth over five years}
 \end{figure}
 

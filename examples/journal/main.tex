@@ -67,8 +67,29 @@ four eigenstates.
 
 \begin{figure}[htbp]
     \centering
-    \fbox{\parbox{0.7\textwidth}{\centering\vspace{2cm}Figure placeholder:
-    Wave functions $\psi_0$ through $\psi_3$.\vspace{2cm}}}
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=0.7\textwidth,
+        height=5cm,
+        xlabel={$x$},
+        ylabel={$\psi_n(x)$},
+        legend pos=north east,
+        grid=major,
+        thick,
+        domain=-3:3,
+        samples=80,
+        no markers,
+    ]
+        \addplot[blue, thick] {0.53*exp(-x^2)};
+        \addlegendentry{$\psi_0$}
+        \addplot[red, thick] {1.06*x*exp(-x^2)};
+        \addlegendentry{$\psi_1$}
+        \addplot[green!60!black, thick] {1.06*(2*x^2-1)*exp(-x^2)};
+        \addlegendentry{$\psi_2$}
+        \addplot[orange, thick] {2.12*x*(2*x^2/3-1)*exp(-x^2)};
+        \addlegendentry{$\psi_3$}
+    \end{axis}
+\end{tikzpicture}
     \caption{Normalised wave functions for the four lowest eigenstates.}
     \label{fig:wavefunctions}
 \end{figure}

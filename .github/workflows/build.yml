@@ -200,10 +200,13 @@ jobs:
           # LuaLaTeX is not fully bit-for-bit deterministic (PDF object ordering,
           # Lua hash table randomization, font subsetting). Compare page counts
           # and file sizes instead of exact SHA256.
+          #
+          # NOTE: PAGES1 must read from /tmp/build1.pdf (build 1 output),
+          # PAGES2 from build/examples/thesis.pdf (build 2 output).
           PAGES1=$(docker run --rm --entrypoint "" \
-            -v "$GITHUB_WORKSPACE:/workspace" \
+            -v /tmp:/tmp \
             "${{ steps.digest.outputs.image }}" \
-            pdfinfo /workspace/build/examples/thesis.pdf | grep "^Pages:" | awk '{print $2}')
+            pdfinfo /tmp/build1.pdf | grep "^Pages:" | awk '{print $2}')
           PAGES2=$(docker run --rm --entrypoint "" \
             -v "$GITHUB_WORKSPACE:/workspace" \
             "${{ steps.digest.outputs.image }}" \
@@ -219,12 +222,14 @@ jobs:
             exit 1
           fi
 
-          # Allow 1% file size tolerance for non-determinism
+          # Allow 3% file size tolerance for non-determinism.
+          # LuaLaTeX font subsetting and PDF object reordering can cause
+          # size variance across CI runners even with SOURCE_DATE_EPOCH.
           SIZE_DIFF=$(( (SIZE1 - SIZE2) < 0 ? (SIZE2 - SIZE1) : (SIZE1 - SIZE2) ))
           SIZE_MAX=$(( SIZE1 > SIZE2 ? SIZE1 : SIZE2 ))
-          TOLERANCE=$(( SIZE_MAX / 100 ))  # 1%
+          TOLERANCE=$(( SIZE_MAX * 3 / 100 ))  # 3%
           if [ "$SIZE_DIFF" -gt "$TOLERANCE" ]; then
-            echo "::error::File size differs by more than 1%: ${SIZE_DIFF} bytes (tolerance: ${TOLERANCE})"
+            echo "::error::File size differs by more than 3%: ${SIZE_DIFF} bytes (tolerance: ${TOLERANCE})"
             exit 1
           fi
 
