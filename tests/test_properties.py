@@ -21,6 +21,36 @@ except ImportError:
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
+
+def _check_docker() -> bool:
+    try:
+        result = subprocess.run(
+            ["docker", "info"], capture_output=True, timeout=10
+        )
+        return result.returncode == 0
+    except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
+        return False
+
+
+DOCKER_AVAILABLE = _check_docker()
+
+
+def _get_docker_image() -> str:
+    env_file = PROJECT_ROOT / ".env.docker"
+    if env_file.is_file():
+        for line in env_file.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if line.startswith("DOCKER_IMAGE=") and not line.startswith("#"):
+                return line.split("=", 1)[1].strip()
+    return "ghcr.io/wyattau/omnilatex-docker:latest"
+
+
+DOCKER_IMAGE = _get_docker_image()
+
+docker_required = pytest.mark.skipif(
+    not DOCKER_AVAILABLE, reason="Docker not available"
+)
+
 DOCTYPE_ALIASES = [
     "book",
     "thesis",
@@ -80,6 +110,11 @@ Test content for {{doctype}}.
 """
 
 
+@pytest.fixture
+def docker_available():
+    return DOCKER_AVAILABLE
+
+
 def compile_tex(tex_content: str, timeout: int = 180) -> tuple:
     """Compile tex content. Returns (success, log_excerpt)."""
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -108,28 +143,58 @@ def compile_tex(tex_content: str, timeout: int = 180) -> tuple:
         )
 
 
+def compile_tex_docker(tex_content: str, timeout: int = 180) -> tuple:
+    """Compile tex content in Docker. Returns (success, log_excerpt)."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tex_file = Path(tmpdir) / "test.tex"
+        tex_file.write_text(tex_content)
+        cmd = [
+            "docker", "run", "--rm", "--entrypoint", "",
+            "-v", f"{PROJECT_ROOT}:/repo",
+            "-v", f"{tmpdir}:/work",
+            "-w", "/work",
+            DOCKER_IMAGE,
+            "latexmk", "-lualatex", "-interaction=nonstopmode",
+            "-output-directory=/work", "test.tex",
+        ]
+        env = os.environ.copy()
+        env["TEXINPUTS"] = "/repo:"
+        result = subprocess.run(
+            cmd, capture_output=True, text=True, timeout=timeout, env=env
+        )
+        pdf_exists = (Path(tmpdir) / "test.pdf").exists()
+        return (
+            result.returncode == 0 and pdf_exists,
+            result.stdout[-500:] if result.stdout else "",
+        )
+
+
 class TestDoctypeCompilation:
     """Test that every valid doctype compiles."""
 
+    @pytest.mark.slow
+    @docker_required
     @pytest.mark.timeout(120)
     @pytest.mark.parametrize("doctype", DOCTYPE_ALIASES)
     @pytest.mark.parametrize("language", LANGUAGES)
     def test_doctype_language_combination(self, doctype, language):
         options = f"doctype={doctype},language={language}"
         tex = TEMPLATE.format(options=options, doctype=doctype)
-        success, log = compile_tex(tex)
+        success, log = compile_tex_docker(tex)
         assert success, f"Failed: {doctype}/{language}\nLog tail: {log}"
 
 
 class TestPropertyBasedFuzzing:
     """Fuzz test with hypothesis."""
 
+    @pytest.mark.slow
+    @docker_required
     @pytest.mark.timeout(300)
     @given(doctype=sampled_from(DOCTYPE_ALIASES))
     @settings(max_examples=20, deadline=None, suppress_health_check=[HealthCheck.too_slow])
     def test_random_doctype_compiles(self, doctype):
         tex = TEMPLATE.format(options=f"doctype={doctype}", doctype=doctype)
-        success, _ = compile_tex(tex)
+        success, _ = compile_tex_docker(tex)
         assert success
 
 

@@ -7,6 +7,16 @@ This project adheres to [Semantic versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Lean 4: 10 new theorems (DoctypeClassMapping + I18nCompleteness), total 30/30 proven
+- CensorNotice translations for 15 additional languages (all 18 now complete)
+- Property-based CI testing with Docker integration
+- VS Code extension marketplace packaging (compile/watch scripts)
+
+### Changed
+- Translation keys: 46 → 47 per language (CensorNotice), total 847
+- All 26 library modules version-bumped to v1.13.0
+
 ## [1.13.0] - 2026-05-03
 
 ### Added

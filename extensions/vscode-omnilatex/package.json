@@ -4,6 +4,7 @@
   "description": "OmniLaTeX document class support — doctype picker, institution switcher, and build commands",
   "version": "0.1.0",
   "publisher": "WyattAu",
+  "icon": "icon.png",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -23,10 +24,16 @@
     "onLanguage:latex-expl3",
     "onCommand:omnilatex.switchDoctype",
     "onCommand:omnilatex.switchInstitution",
+    "onCommand:omnilatex.switchLanguage",
     "onCommand:omnilatex.build",
     "onCommand:omnilatex.buildAll"
   ],
   "main": "./out/extension.js",
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
   "contributes": {
     "commands": [
       {
