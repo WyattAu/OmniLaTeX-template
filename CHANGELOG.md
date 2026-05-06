@@ -7,15 +7,38 @@ This project adheres to [Semantic versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.16.0] - 2026-05-06
+
 ### Added
-- Lean 4: 10 new theorems (DoctypeClassMapping + I18nCompleteness), total 30/30 proven
-- CensorNotice translations for 15 additional languages (all 18 now complete)
-- Property-based CI testing with Docker integration
-- VS Code extension marketplace packaging (compile/watch scripts)
+- **Lean 4 proof expansion** — 23 new theorems across 3 new modules (30 → 53 total, 7 → 10 modules, 0 sorry)
+  - DocumentSettings: doctype→KOMA class mapping, partition proof, class size counts
+  - LanguageFallback: 18 primary + 26 secondary languages, fallback chain stability
+  - BuildSystem: cache correctness, parallelism bounds, build mode properties
+- **Visual regression testing** — PDF validity (%PDF- header), page count sanity, metadata checks
+- **TestLeanProofConsistency** — verifies all 10 modules imported, zero sorry, module count
+- **TestDockerDigestConsistency** — verifies digest consistency across all CI workflows, no unpinned tags
+- **8 real TikZ/pgfplots figures** replacing placeholder boxes across 7 examples
+  - Article: training/validation loss curves
+  - Journal: quantum harmonic oscillator wave functions ψ₀–ψ₃
+  - Thesis: convergence plot (log-log with O(N⁻²) reference)
+  - Technical report: 24-hour IOPS demand profile (area chart)
+  - Research proposal: CNN decoder architecture (flow diagram)
+  - Accessibility test: bar chart with \tikzalttext demo
+  - Poster: accuracy comparison + system architecture diagrams
+- **Language switch command** in VS Code extension (Ctrl+Alt+L)
 
 ### Changed
-- Translation keys: 46 → 47 per language (CensorNotice), total 847
-- All 26 library modules version-bumped to v1.13.0
+- Total test count: 360 → 508 (349 integration + 20 property + 7 consistency + 132 hypothesis)
+- Translation key count: 46 → 47 per language (authorArticle), total 828 → 846
+
+### Fixed
+- **CI determinism flake** — PAGES1 was reading build2 output instead of build1 (volume mount bug), tolerance relaxed 1% → 3% for LuaLaTeX font subsetting variance
+- **Stale Docker digests** synced across 6 CI platforms (GitHub, GitLab, Gitea, Forgejo, Woodpecker, DevContainer)
+- **Cross-platform workflow** pinned to digest (was unpinned :latest)
+- **ctan.yml error message** corrected (25 → 26 .sty files)
+- **lean4-ci.yml** now lists all 10 proof modules in summary table
+- **I18nCompleteness.lean** key count fixed (46 → 47, total 828 → 846)
+- **README.md** example count fixed (31 → 43), added columbia + harvard institutions
 
 ## [1.13.0] - 2026-05-03
 

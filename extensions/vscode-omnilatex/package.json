@@ -2,7 +2,7 @@
   "name": "omnilatex",
   "displayName": "OmniLaTeX",
   "description": "OmniLaTeX document class support — doctype picker, institution switcher, and build commands",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "publisher": "WyattAu",
   "icon": "icon.png",
   "engines": {
