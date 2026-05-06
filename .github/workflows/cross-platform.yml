@@ -67,7 +67,7 @@ jobs:
             -w /workspace \
             -e IS_OMNILATEX_CONTAINER=true \
             -e CI=true \
-            ghcr.io/wyattau/omnilatex-docker:latest \
+            "$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" \
             python3 build.py --mode prod build-example article
 
       - name: Verify PDF

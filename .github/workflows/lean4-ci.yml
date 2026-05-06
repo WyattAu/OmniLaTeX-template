@@ -48,7 +48,7 @@ jobs:
           echo '' >> $GITHUB_STEP_SUMMARY
           echo '| Module | Status |' >> $GITHUB_STEP_SUMMARY
           echo '|--------|--------|' >> $GITHUB_STEP_SUMMARY
-          for f in BuildModes DoctypeResolution FloatInvariant FontHierarchy PageGeometry; do
+          for f in BuildModes DoctypeResolution DoctypeClassMapping FloatInvariant FontHierarchy I18nCompleteness PageGeometry; do
             if [ -f "specs/proofs/OmniLaTeXProofs/$f.lean" ]; then
               echo "| \`$f\` | :white_check_mark: |" >> $GITHUB_STEP_SUMMARY
             else

@@ -295,6 +295,8 @@ config/
     ├── cmu/                     # CMU branding
     ├── epfl/                    # EPFL branding
     ├── imperial/                # Imperial College London branding
+    ├── columbia/                # Columbia University branding
+    ├── harvard/                 # Harvard University branding
     ├── generic/                 # Customizable template
     └── README.md                # How to add your institution
 ```
@@ -319,7 +321,7 @@ config/
 │   ├── tables/                  # Table formatting
 │   └── utils/                   # Colors, themes, TODO notes, censoring
 ├── lua/                         # Lua scripts (git metadata)
-├── examples/                    # 31 example templates
+├── examples/                    # 43 example templates
 ├── specs/                       # Formal specifications and Lean 4 proofs
 ├── tests/                       # Test suite (l3build + pytest + visual regression)
 ├── docs/                        # API reference (auto-generated)

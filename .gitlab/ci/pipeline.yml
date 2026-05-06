@@ -10,7 +10,7 @@
 # ======================================================================================
 
 variables:
-  DOCKER_IMAGE: ghcr.io/wyattau/omnilatex-docker@sha256:3e0c27240f5b0b02c3bc635628540de8f7adfd7b581165534f550432e634d9d5  # See .env.docker
+  DOCKER_IMAGE: ghcr.io/wyattau/omnilatex-docker@sha256:dae352cb84391a30478c0a18778bc0c82e8b620a3e56dd14a894433f7dd90988  # See .env.docker
 
 stages:
   - .pre

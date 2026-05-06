@@ -51,7 +51,7 @@ jobs:
 
           STY_COUNT=$(unzip -l omnilatex.zip | grep -c 'document-types/.*\.sty$' || true)
           if [ "$STY_COUNT" -ne 26 ]; then
-            echo "::error::Expected 25 .sty files in document-types/, found ${STY_COUNT}"
+            echo "::error::Expected 26 .sty files in document-types/, found ${STY_COUNT}"
             ERRORS=$((ERRORS + 1))
           else
             echo "  [OK] All 26 document-type .sty files found"
