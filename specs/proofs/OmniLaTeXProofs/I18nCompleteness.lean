@@ -3,7 +3,7 @@
   Property: All translation languages have the same number of keys.
 
   Reference: i18n/ directory structure
-  Note: 18 languages, 46 keys each, 828 total. No Mathlib dependency.
+  Note: 18 languages, 47 keys each, 846 total. No Mathlib dependency.
 -/
 
 inductive Language where
@@ -35,7 +35,7 @@ def allLanguages : List Language := [
 
 def languageCount : Nat := 18
 
-def keysPerLanguage : Nat := 46
+def keysPerLanguage : Nat := 47
 
 def keyCount : Language → Nat := fun _ => keysPerLanguage
 
@@ -44,9 +44,9 @@ theorem key_count_constant :
   ∀ l₁ l₂, keyCount l₁ = keyCount l₂ := by
   simp [keyCount]
 
--- Theorem 2: Total translation keys (18 languages * 46 keys = 828)
+-- Theorem 2: Total translation keys (18 languages * 47 keys = 846)
 theorem total_translation_keys :
-  languageCount * keyCount .english = 828 := by
+  languageCount * keyCount .english = 846 := by
   simp [keyCount, languageCount, keysPerLanguage]
 
 -- Theorem 3: No missing keys — structural completeness invariant

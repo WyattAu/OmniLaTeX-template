@@ -411,3 +411,89 @@ class TestStructuralProperties:
     def test_doctype_sty_file_exists(self, doctype):
         sty_path = PROJECT_ROOT / "config" / "document-types" / f"{doctype}.sty"
         assert sty_path.is_file(), f"Doctype config not found: {sty_path}"
+
+
+class TestLeanProofConsistency:
+    """Verify Lean 4 proof files match repository structure."""
+
+    def test_all_proof_modules_imported(self):
+        """Root OmniLaTeXProofs.lean imports all proof modules."""
+        root = PROJECT_ROOT / "specs" / "proofs" / "OmniLaTeXProofs.lean"
+        assert root.is_file(), "Root proof file not found"
+        content = root.read_text(encoding="utf-8")
+        proof_dir = PROJECT_ROOT / "specs" / "proofs" / "OmniLaTeXProofs"
+        modules = sorted(p.stem for p in proof_dir.glob("*.lean"))
+        for mod in modules:
+            assert f"import OmniLaTeXProofs.{mod}" in content, (
+                f"Module '{mod}' not imported in root proof file"
+            )
+
+    def test_no_sorry_in_proofs(self):
+        """Zero sorry in all proof files."""
+        proof_dir = PROJECT_ROOT / "specs" / "proofs"
+        for lean_file in proof_dir.rglob("*.lean"):
+            content = lean_file.read_text(encoding="utf-8")
+            for i, line in enumerate(content.splitlines(), 1):
+                stripped = line.strip()
+                if stripped.startswith("--") or stripped.startswith("/-"):
+                    continue
+                if "sorry" in stripped and "No " not in stripped:
+                    assert False, (
+                        f"{lean_file.relative_to(PROJECT_ROOT)}:{i} contains 'sorry'"
+                    )
+
+    def test_proof_module_count(self):
+        """At least 10 proof modules in OmniLaTeXProofs/."""
+        proof_dir = PROJECT_ROOT / "specs" / "proofs" / "OmniLaTeXProofs"
+        modules = list(proof_dir.glob("*.lean"))
+        assert len(modules) >= 10, f"Expected >= 10 proof modules, found {len(modules)}"
+
+    def test_lakefile_exists(self):
+        """lakefile.toml exists in specs/proofs/."""
+        lakefile = PROJECT_ROOT / "specs" / "proofs" / "lakefile.toml"
+        assert lakefile.is_file(), "lakefile.toml not found"
+
+
+class TestDockerDigestConsistency:
+    """Verify Docker image digest is consistent across all CI configs."""
+
+    def _get_digest_from_env(self) -> str:
+        env_file = PROJECT_ROOT / ".env.docker"
+        if not env_file.is_file():
+            return ""
+        for line in env_file.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if line.startswith("DOCKER_IMAGE=") and not line.startswith("#"):
+                return line.split("=", 1)[1].strip()
+        return ""
+
+    def test_env_docker_has_digest(self):
+        digest = self._get_digest_from_env()
+        assert digest != "", ".env.docker has no DOCKER_IMAGE"
+        assert digest.startswith("ghcr.io/wyattau/omnilatex-docker@"), \
+            f"Unexpected image format: {digest}"
+
+    def test_github_workflows_use_consistent_digest(self):
+        """All GitHub workflow files reference the same digest as .env.docker."""
+        canonical = self._get_digest_from_env()
+        if not canonical:
+            pytest.skip(".env.docker not found")
+        wf_dir = PROJECT_ROOT / ".github" / "workflows"
+        for wf in wf_dir.glob("*.yml"):
+            content = wf.read_text(encoding="utf-8")
+            digests = re.findall(r'sha256:[a-f0-9]{64}', content)
+            for d in digests:
+                assert d in canonical or canonical.endswith(d), (
+                    f"{wf.name}: digest {d[:20]}... doesn't match .env.docker"
+                )
+
+    def test_no_latest_tag_in_workflows(self):
+        """No :latest tag in GitHub workflow files (except digest-sync)."""
+        wf_dir = PROJECT_ROOT / ".github" / "workflows"
+        for wf in wf_dir.glob("*.yml"):
+            if "digest-sync" in wf.name:
+                continue
+            content = wf.read_text(encoding="utf-8")
+            assert ":latest" not in content, (
+                f"{wf.name} uses unpinned :latest tag"
+            )
