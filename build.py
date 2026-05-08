@@ -347,8 +347,9 @@ class BuildTasks:
             if not self.force:
                 source_files = self._collect_source_files(example_name)
                 source_hash = self._hash_for_paths(source_files)
-                cache = self._load_build_cache()
-                cached = cache.get(f"examples/{example_name}")
+                with self._cache_lock:
+                    cache = self._load_build_cache()
+                    cached = cache.get(f"examples/{example_name}")
                 dest_pdf = (
                     repo_root / self.config.build_dir / BUILD_EXAMPLES_SUBDIR
                 ) / f"{example_name}.pdf"
@@ -940,7 +941,7 @@ class BuildTasks:
         """Run test suite (l3build + pytest)."""
         results = []
         self.ui.info("Running l3build check...")
-        project_root = Path(__file__).resolve().parent.parent
+        project_root = Path(__file__).resolve().parent
         result = subprocess.run(
             ["l3build", "check"],
             capture_output=True,
@@ -1722,7 +1723,7 @@ def _rich_menu(tasks, commands, menu_sections, flat_commands):
         console.print()
         title = RichText("OmniLaTeX Build System", style="bold cyan")
         subtitle = RichText(
-            f"v1.3.0  •  {len(tasks.discover_examples())} examples  •  "
+            f"v1.16.0  •  {len(tasks.discover_examples())} examples  •  "
             f"{len([f for f in Path('.').rglob('*.sty')])} modules",
             style="dim",
         )
