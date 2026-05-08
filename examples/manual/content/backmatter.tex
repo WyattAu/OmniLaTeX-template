@@ -1,0 +1,20 @@
+% Back matter aggregator
+% This file is imported by the main document after all regular chapters.
+
+\appendix
+
+\import{.}{B0_appendix_commands}
+\import{.}{B1_appendix_options}
+\import{.}{B2_appendix_doctypes}
+\import{.}{B3_appendix_modules}
+\import{.}{B4_appendix_siunits}
+
+\backmatter
+
+\nocite{*}
+\printbibliography[heading=\bibname,category=cited]
+
+\printbibliography[heading=\bibname,notcategory=cited,title={Further Reading},env=bibnonum]
+
+\setglossarysection{chapter}
+\printunsrtindex[style=bookindex]

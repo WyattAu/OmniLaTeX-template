@@ -1,0 +1,54 @@
+\chapter{Document Type Reference}
+
+This appendix provides a consolidated reference of all 26 canonical
+doctypes, their underlying KOMA-Script class, category, and user-facing
+aliases.  See Chapter~\ref{ch:doctype-system} for the full architectural
+description.
+
+\begin{longtblr}[
+  caption = {Complete doctype reference --- all 26 canonical doctypes},
+  label = {tab:doctype-complete-ref},
+]{colspec = {l l l l}, rowhead = 1}
+  \toprule
+  \textbf{Name} & \textbf{KOMA Class} & \textbf{Category} &
+  \textbf{Aliases} \\
+  \midrule
+  article        & scrartcl  & Academic   & paper, papers \\
+  inlinepaper    & scrartcl  & Academic   & inlinepapers, inline-research,
+                                   inline-research-paper \\
+  journal        & scrartcl  & Academic   & journals, magazine, magazines \\
+  cv             & scrartcl  & Business   & resume, resumes, curriculumvitae \\
+  cover-letter   & scrartcl  & Business   & coverletter \\
+  letter         & scrartcl  & Business   & letters \\
+  memo           & scrartcl  & Business   & memos, memorandum, memorandums \\
+  invoice        & scrartcl  & Business   & invoices \\
+  white-paper    & scrartcl  & Business   & whitepapers \\
+  homework       & scrartcl  & Education  & homeworks \\
+  exam           & scrartcl  & Education  & exams, examination, examinations \\
+  lecture-notes  & scrartcl  & Education  & lecturenotes, lecture-note \\
+  syllabus       & scrartcl  & Education  & syllabi \\
+  handout        & scrartcl  & Education  & handouts \\
+  poster         & scrartcl  & Visual     & posters \\
+  presentation   & scrartcl  & Visual     & presentations, slides, talk, talks \\
+  recipe         & scrartcl  & Personal   & recipes \\
+  manual         & scrreprt  & Reference  & manuals, guide, guides,
+                                   handbook, handbooks \\
+  technicalreport & scrreprt & Academic   & report, reports, technical-report,
+                                   technicalreports, technical-reports,
+                                   techreport, tech-report, techreports \\
+  standard       & scrreprt  & Technical  & standards \\
+  patent         & scrreprt  & Technical  & patents \\
+  research-proposal & scrreprt & Academic & researchproposal,
+                                       research-proposals \\
+  book           & scrbook   & Publishing & books \\
+  thesis         & scrbook   & Academic   & theses \\
+  dissertation   & scrbook   & Academic   & dissertations \\
+  dictionary     & scrbook   & Reference  & dictionaries, lexicon, lexicons \\
+  \bottomrule
+\end{longtblr}
+
+The doctype resolution pipeline normalises the input string to lowercase
+before matching against the alias lists.  Unrecognised doctypes fall back
+to \texttt{book}.  Each canonical doctype has a corresponding profile
+file in \texttt{config/document-types/} that defines layout, spacing,
+font mode, and title page behaviour.

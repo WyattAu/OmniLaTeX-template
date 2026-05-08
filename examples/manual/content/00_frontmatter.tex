@@ -1,0 +1,22 @@
+% Front Matter Aggregator
+\pagenumbering{alph}
+
+\pdfbookmark{0}{Title}{\maketitle}
+
+\import{.}{01_preface}
+\import{.}{02_notation}
+
+\cleardoubleoddpage
+\pdfbookmark{0}{\contentsname}{\tableofcontents}
+\tableofcontents
+
+\cleardoubleoddpage
+\pdfbookmark{0}{\listfigurename}{\listoffigures}
+\listoffigures
+
+\cleardoubleoddpage
+\pdfbookmark{0}{\listtablename}{\listoftables}
+\listoftables
+
+\cleardoubleoddpage
+\mainmatter

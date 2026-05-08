@@ -1,0 +1,368 @@
+\chapter{Document Type System}
+\label{ch:doctype-system}
+
+OmniLaTeX provides a document type system that maps user-friendly names to
+KOMA-Script base classes.  Over 80 aliases resolve to 26 canonical
+doctypes, each backed by one of three KOMA classes
+(\texttt{scrartcl}, \texttt{scrreprt}, \texttt{scrbook}).
+
+\section{Architecture}
+
+The doctype system uses a three-tier resolution pipeline:
+
+\begin{enumerate}
+    \item \textbf{User alias} --- The string passed to
+          \texttt{doctype=} (e.g.\ \texttt{paper}, \texttt{talk},
+          \texttt{tech-report}).
+    \item \textbf{Canonical name} --- The internal doctype identifier
+          (e.g.\ \texttt{article}, \texttt{presentation},
+          \texttt{technicalreport}).
+    \item \textbf{KOMA class} --- The underlying KOMA-Script base class
+          (\texttt{scrartcl}, \texttt{scrreprt}, or \texttt{scrbook})
+          with associated default options.
+\end{enumerate}
+
+This design lets users write intuitive names while the class handles the
+complexity of KOMA-Script configuration.  For example,
+\texttt{doctype=thesis} resolves through \texttt{thesis} $\to$
+\texttt{scrbook} with options
+\texttt{listof=totoc,bibliography=totoc,chapterprefix=true,open=right}.
+
+Resolution is implemented via \texttt{\textbackslash omnilatex@matchdoctypes}
+in \texttt{omnilatex.cls}, which iterates comma-separated alias lists and
+calls \texttt{\textbackslash omnilatex@setdoctype} on the first match.
+The doctype string is normalised to lowercase before matching.
+Unrecognised doctypes trigger a warning and fall back to \texttt{book}.
+
+\section{KOMA Class Base}
+
+Each KOMA class carries a distinct set of default options, defined in
+\texttt{omnilatex.cls}:
+
+\begin{table}[htbp]
+    \centering
+    \caption{KOMA class base options}
+    \label{tab:koma-base-options}
+    \begin{tabular}{@{} l l p{5cm} @{}}
+        \toprule
+        \textbf{KOMA Class} & \textbf{Options Macro} & \textbf{Default Options} \\
+        \midrule
+        \texttt{scrbook} &
+            \texttt{\textbackslash omnilatex@bookoptions} &
+            \texttt{listof=totoc, bibliography=totoc, chapterprefix=true,
+            open=right, numbers=noenddot} \\[6pt]
+        \texttt{scrreprt} &
+            \texttt{\textbackslash omnilatex@reportoptions} &
+            \texttt{listof=totoc, bibliography=totoc, chapterprefix=false,
+            open=any, numbers=noenddot} \\[6pt]
+        \texttt{scrartcl} &
+            \texttt{\textbackslash omnilatex@articleoptions} &
+            \texttt{bibliography=totoc, numbers=noenddot, parskip=half} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Two additional option sets exist for specialised doctypes:
+
+\begin{itemize}
+    \item \texttt{\textbackslash omnilatex@inlinepaperoptions} --- Same as
+          article options with \texttt{titlepage=false}.
+    \item \texttt{\textbackslash omnilatex@journaloptions} --- Same as
+          article options with \texttt{titlepage=true}.
+    \item \texttt{\textbackslash omnilatex@cvoptions} ---
+          \texttt{numbers=noenddot, parskip=full, fontsize=11pt}.
+\end{itemize}
+
+\section{Complete Alias Table}
+
+The following tables list all aliases grouped by their canonical doctype
+and KOMA base class.
+
+\subsection{Aliases mapping to \texttt{scrbook}}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Aliases resolving to \texttt{scrbook}}
+    \label{tab:aliases-scrbook}
+    \begin{tabular}{@{} l l @{}}
+        \toprule
+        \textbf{Canonical} & \textbf{Aliases} \\
+        \midrule
+        book &
+            book, books \\[2pt]
+        thesis &
+            thesis, theses \\[2pt]
+        dissertation &
+            dissertation, dissertations \\[2pt]
+        dictionary &
+            dictionary, dictionaries, lexicon, lexicons \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Aliases mapping to \texttt{scrreprt}}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Aliases resolving to \texttt{scrreprt}}
+    \label{tab:aliases-scrreprt}
+    \begin{tabular}{@{} l l @{}}
+        \toprule
+        \textbf{Canonical} & \textbf{Aliases} \\
+        \midrule
+        manual &
+            manual, manuals, guide, guides, handbook, handbooks \\[2pt]
+        technicalreport &
+            report, reports, technicalreport, technical-report,
+            technicalreports, technical-reports, techreport,
+            tech-report, techreports \\[2pt]
+        standard &
+            standard, standards \\[2pt]
+        patent &
+            patent, patents \\[2pt]
+        research-proposal &
+            research-proposal, researchproposal, research-proposals \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Aliases mapping to \texttt{scrartcl}}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Aliases resolving to \texttt{scrartcl}}
+    \label{tab:aliases-scrartcl}
+    \begin{tabular}{@{} l l @{}}
+        \toprule
+        \textbf{Canonical} & \textbf{Aliases} \\
+        \midrule
+        article &
+            article, articles, paper, papers \\[2pt]
+        inlinepaper &
+            inlinepaper, inlinepapers, inline-research,
+            inline-research-paper \\[2pt]
+        journal &
+            journal, journals, magazine, magazines \\[2pt]
+        cv &
+            cv, resume, resumes, curriculumvitae \\[2pt]
+        cover-letter &
+            cover-letter, coverletter \\[2pt]
+        poster &
+            poster, posters \\[2pt]
+        presentation &
+            presentation, presentations, slides, talk, talks \\[2pt]
+        letter &
+            letter, letters \\[2pt]
+        homework &
+            homework, homeworks \\[2pt]
+        exam &
+            exam, exams, examination, examinations \\[2pt]
+        lecture-notes &
+            lecture-notes, lecturenotes, lecture-note \\[2pt]
+        syllabus &
+            syllabus, syllabi \\[2pt]
+        handout &
+            handout, handouts \\[2pt]
+        memo &
+            memo, memos, memorandum, memorandums \\[2pt]
+        white-paper &
+            white-paper, whitepapers \\[2pt]
+        invoice &
+            invoice, invoices \\[2pt]
+        recipe &
+            recipe, recipes \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Canonical Doctypes}
+
+Table~\ref{tab:canonical-doctypes} lists all 26 canonical doctypes with
+their KOMA base class and category.  Each canonical doctype has a
+corresponding \texttt{.sty} profile in \texttt{config/document-types/}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{All 26 canonical doctypes}
+    \label{tab:canonical-doctypes}
+    \begin{tabular}{@{} l l l l @{}}
+        \toprule
+        \textbf{Canonical} & \textbf{KOMA Base} & \textbf{Category} &
+        \textbf{Profile File} \\
+        \midrule
+        article & scrartcl & Academic & article.sty \\
+        inlinepaper & scrartcl & Academic & inlinepaper.sty \\
+        journal & scrartcl & Academic & journal.sty \\
+        cv & scrartcl & Business & cv.sty \\
+        cover-letter & scrartcl & Business & cover-letter.sty \\
+        letter & scrartcl & Business & letter.sty \\
+        memo & scrartcl & Business & memo.sty \\
+        invoice & scrartcl & Business & invoice.sty \\
+        white-paper & scrartcl & Business & white-paper.sty \\
+        homework & scrartcl & Education & homework.sty \\
+        exam & scrartcl & Education & exam.sty \\
+        lecture-notes & scrartcl & Education & lecture-notes.sty \\
+        syllabus & scrartcl & Education & syllabus.sty \\
+        handout & scrartcl & Education & handout.sty \\
+        poster & scrartcl & Visual & poster.sty \\
+        presentation & scrartcl & Visual & presentation.sty \\
+        recipe & scrartcl & Personal & recipe.sty \\
+        \midrule
+        manual & scrreprt & Reference & manual.sty \\
+        technicalreport & scrreprt & Academic & technicalreport.sty \\
+        standard & scrreprt & Technical & standard.sty \\
+        patent & scrreprt & Technical & patent.sty \\
+        research-proposal & scrreprt & Academic & research-proposal.sty \\
+        \midrule
+        book & scrbook & Publishing & book.sty \\
+        thesis & scrbook & Academic & thesis.sty \\
+        dissertation & scrbook & Academic & dissertation.sty \\
+        dictionary & scrbook & Reference & dictionary.sty \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Creating Custom Doctypes}
+
+New doctypes are added by creating a \texttt{.sty} file in
+\texttt{config/document-types/}.  The class automatically loads the
+profile whose filename matches the canonical doctype name.
+
+\subsection{Step-by-step}
+
+\begin{enumerate}
+    \item Create \texttt{config/document-types/myreport.sty}.
+
+    \item Define the document type metadata:
+\begin{minted}{latex}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/myreport}%
+    [2026/01/01 OmniLaTeX myreport profile]
+\documenttype{My Custom Report}
+\end{minted}
+
+    \item Set layout and KOMA options:
+\begin{minted}{latex}
+\documentfontsize{11pt}
+\documentlayout{DIV=12,headinclude=false,footinclude=false}
+\KOMAoptions{titlepage=true}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{2}
+\end{minted}
+
+    \item Configure document appearance:
+\begin{minted}{latex}
+\documentcolormode{color}
+\documentlinespacing{onehalf}
+\documentparspacing{half}
+\documentfontmode{serif}
+\end{minted}
+
+    \item Optionally define a custom \texttt{\textbackslash maketitle}:
+
+\begin{minted}{latex}
+\makeatletter
+\renewcommand{\maketitle}{%
+    \begin{titlepage}
+        \centering
+        {\huge\bfseries\@title}\par\vspace{1cm}
+        {\large\@author}\par\vspace{0.5cm}
+        {\normalsize\@date}
+    \end{titlepage}
+}
+\makeatother
+\end{minted}
+
+    \item Use with \texttt{\textbackslash documentclass[doctype=myreport]\{omnilatex\}}.
+          Optionally add aliases in \texttt{omnilatex.cls} via
+          \texttt{\textbackslash omnilatex@matchdoctypes}.
+\end{enumerate}
+
+\subsection{Minimal Example}
+
+A minimal custom doctype profile:
+
+\begin{minted}{latex}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/brief}
+    [2026/01/01 OmniLaTeX brief profile]
+
+\documenttype{Internal Brief}
+\documentfontsize{11pt}
+\documentlayout{DIV=12}
+\KOMAoptions{titlepage=false}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{1}
+
+\documentcolormode{color}
+\documentlinespacing{single}
+\documentparspacing{half}
+\documentfontmode{sans}
+
+\makeatletter
+\renewcommand{\maketitle}{%
+    \begin{center}
+        {\Large\bfseries\@title}\par\medskip
+        {\normalsize\@author\quad|\quad\@date}
+    \end{center}
+    \bigskip\noindent\rule{\textwidth}{0.4pt}\par\medskip
+}
+\makeatother
+
+\endinput
+\end{minted}
+
+\section{Formal Verification}
+
+The doctype-to-class mapping is formally verified in Lean~4.  Two proof
+files establish key properties of the system.
+
+\subsection{DoctypeClassMapping.lean}
+
+Located at \texttt{specs/proofs/OmniLaTeXProofs/DoctypeClassMapping.lean},
+this file defines three lists of doctype strings grouped by KOMA class
+and proves the following theorems:
+
+\begin{description}
+    \item[\texttt{doctype\_class\_deterministic}] Every doctype maps to
+        at most one KOMA class (determinism via \texttt{Option.some.inj}).
+
+    \item[\texttt{valid\_doctype\_has\_class}] A representative sample of
+        10 doctypes spanning all three classes each resolves to a
+        non-\texttt{none} value (proved by \texttt{decide}).
+
+    \item[\texttt{scrartcl\_count}] \texttt{scrartclDoctypes.length = 34}.
+
+    \item[\texttt{scrbook\_count}] \texttt{scrbookDoctypes.length = 6}.
+
+    \item[\texttt{scrreprt\_count}] \texttt{scrreprtDoctypes.length = 20}.
+
+    \item[\texttt{class\_covering}] The total list length equals the sum
+        of all three class-specific lists
+        ($34 + 6 + 20 = 60$).
+
+    \item[\texttt{scrartcl\_is\_largest}] \texttt{scrartcl} has strictly
+        more doctypes than both \texttt{scrbook} ($34 > 6$) and
+        \texttt{scrreprt} ($34 > 20$), proved via \texttt{omega}.
+\end{description}
+
+\subsection{DocumentSettings.lean}
+
+Located at \texttt{specs/proofs/OmniLaTeXProofs/DocumentSettings.lean},
+this file models the 26 canonical doctypes as an inductive type and
+proves structural properties of the class partition:
+
+\begin{description}
+    \item[\texttt{doctype\_class\_deterministic}] Each canonical doctype
+        resolves to exactly one KOMA class (functional correctness).
+
+    \item[\texttt{class\_partition}] The 26 doctypes partition into
+        article (15), report (6), and book (5), with all three sets
+        non-empty: $15 + 6 + 5 = 26$.
+
+    \item[\texttt{article\_is\_largest}] The article class contains
+        strictly more doctypes than report ($15 > 6$) and book
+        ($15 > 5$).
+
+    \item[\texttt{doctype\_count}] Total canonical doctype count is 26.
+\end{description}

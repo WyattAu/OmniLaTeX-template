@@ -1,0 +1,117 @@
+\chapter{Glossaries}
+
+OmniLaTeX uses the \texttt{glossaries-extra} package to provide glossary,
+acronym, symbol, and index functionality.  All glossary infrastructure is
+loaded by \texttt{omnilatex-glossary.sty}; you do \emph{not} need to load
+\texttt{glossaries} or \texttt{glossaries-extra} yourself.
+
+\section{glossaries-extra Setup}
+
+The package is initialised with the \texttt{nomain} option so that
+\texttt{omnilatex-glossary.sty} retains full control over which glossary
+types are created.  The following glossary types are registered:
+
+\begin{itemize}
+    \item \texttt{acronyms} --- abbreviations and acronyms
+    \item \texttt{symbols} --- mathematical and physical symbols
+    \item \texttt{index} --- back-of-book index entries
+    \item \texttt{numbers} --- physical constants and named numbers
+\end{itemize}
+
+Each type receives an appropriate sorting and labelling strategy via
+\texttt{glossaries-extra}'s \texttt{sort} and \texttt{label} keys.
+
+\section{Custom Glossary Fields}
+
+OmniLaTeX extends the default entry keys with several custom fields that
+are recognised by the symbol and constant glossary styles.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Custom glossary fields added by OmniLaTeX}
+    \label{tab:glossary-fields}
+    \begin{tabular}{@{} l l p{6cm} @{}}
+        \toprule
+        \textbf{Field} & \textbf{Type} & \textbf{Purpose} \\
+        \midrule
+        unit                  & text & SI unit associated with a symbol \\
+        specific              & text & Specific context or domain qualifier \\
+        firstname             & text & Person's first name (for named entries) \\
+        value                 & text & Numerical value of a constant \\
+        international-symbol  & text & International symbol variant \\
+        alternative-symbol    & text & Alternative or legacy symbol \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+These fields are accessed inside glossary styles with
+\texttt{\textbackslash glsuseri}, \texttt{\textbackslash glsuserii}, etc.
+
+\section{Shortcut Commands}
+
+OmniLaTeX provides shorthand macros that create and reference glossary
+entries in a single call.  Each command targets a specific glossary type.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Glossary shortcut commands}
+    \label{tab:glossary-shortcuts}
+    \begin{tabular}{@{} l l l @{}}
+        \toprule
+        \textbf{Command} & \textbf{Glossary Type} & \textbf{Example} \\
+        \midrule
+        \verb|\sym{Key}|   & symbol       & \verb|\sym{rho}|     \\
+        \verb|\sub{Key}|   & subscript    & \verb|\sub{max}|     \\
+        \verb|\name{Key}|  & name         & \verb|\name{Einstein}| \\
+        \verb|\cons{Key}|  & constant     & \verb|\cons{g}|      \\
+        \verb|\idx{Key}|   & index        & \verb|\idx{entropy}| \\
+        \verb|\abb{Key}|   & abbreviation & \verb|\abb{CPU}|     \\
+        \verb|\num{Key}|   & number       & \verb|\num{pi}|      \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The first invocation of each command creates the entry (with sensible
+defaults); subsequent calls expand to the formatted representation.
+
+\section{Symbol Glossary}
+
+The \texttt{symbols} glossary uses the \texttt{symbunitlong} style, which
+displays each symbol together with its unit in a long-table layout.
+Entries that carry a \texttt{specific} field are annotated with a
+footnote-style marker so the reader can distinguish homographic symbols
+(e.g.\ $c$ for speed of light vs.\ $c$ for specific heat capacity).
+
+\section{Constants Glossary}
+
+The \texttt{numbers} glossary employs the \texttt{numberlong} style,
+which prints each constant's name, symbol, and numerical value side by
+side.  The \texttt{value} field is rendered in a fixed-width column so
+that mantissas align vertically.
+
+\section{Printing}
+
+Glossaries are printed with \texttt{\textbackslash printunsrtglossary}.
+Two calls are typically placed in the back matter:
+
+\begin{verbatim}
+\printunsrtglossary[type=symbols, style=symbunitlong,
+                    title={Nomenclature}]
+\printunsrtglossary[type=acronyms,
+                    style=\OmniLaTeXAcronymStyle]
+\end{verbatim}
+
+\texttt{\textbackslash OmniLaTeXAcronymStyle} is a custom style defined
+in \texttt{omnilatex-glossary.sty} that formats acronyms with their long
+form on first use and the short form thereafter.
+
+\section{Index}
+
+The back-of-book index is generated with
+
+\begin{verbatim}
+\printunsrtindex[style=bookindex]
+\end{verbatim}
+
+Index entries are created via \verb|\idx{key}|, which delegates to
+\texttt{\textbackslash gls} with the \texttt{index} glossary type.

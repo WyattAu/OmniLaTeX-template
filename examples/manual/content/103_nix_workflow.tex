@@ -1,0 +1,89 @@
+\chapter{Nix Workflow}
+
+\section{flake.nix}
+
+The repository includes a \texttt{flake.nix} that declares all TeX Live
+packages and development dependencies:
+
+\begin{minted}{nix}
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
+  };
+
+  outputs = { nixpkgs, flake-utils, ... }:
+    flake-utils.lib.eachDefaultSystem (system:
+      let pkgs = nixpkgs.legacyPackages.${system};
+      in {
+        devShells.default = pkgs.mkShell {
+          packages = with pkgs; [
+            (texlive.combine {
+              inherit (texlive) scheme-full ...;
+            })
+            python3
+            lean4
+            lake
+          ];
+        };
+      }
+    );
+}
+\end{minted}
+
+\section{Dev Shell}
+
+Activate the development environment with:
+
+\begin{minted}{bash}
+nix develop .#
+\end{minted}
+
+This provides a shell with:
+\begin{itemize}
+  \item TeX Live (full scheme with all OmniLaTeX dependencies).
+  \item Python~3 (for \texttt{build.py} and \texttt{pygments}).
+  \item Lean~4 and Lake (for proof verification).
+\end{itemize}
+
+\section{Lean 4}
+
+Proof-heavy documents can use Lean~4 for formal verification:
+
+\begin{minted}{bash}
+lake build
+\end{minted}
+
+The dev shell includes \texttt{lean4} and \texttt{lake}, so no separate
+installation is needed.
+
+\section{Reproducibility}
+
+\texttt{flake.lock} pins every dependency to an exact revision, ensuring
+bit-for-bit reproducible builds across machines.  Commit
+\texttt{flake.lock} alongside your source to guarantee that collaborators
+and CI use identical package versions.
+
+\section{Multi-Platform}
+
+The flake supports multiple systems:
+
+\begin{itemize}
+  \item \texttt{x86\_64-linux} --- primary target, fully tested.
+  \item \texttt{aarch64-darwin} --- Apple Silicon (macOS).
+  \item \texttt{x86\_64-darwin} --- Intel macOS.
+\end{itemize}
+
+\section{CI Integration}
+
+GitHub Actions workflows use Nix for reproducible CI:
+
+\begin{minted}{yaml}
+- uses: DeterminateSystems/nix-installer-action@main
+- uses: DeterminateSystems/magic-nix-cache-action@main
+- run: nix develop .# --command bash -c \
+      "BUILD_MODE=prod python build.py"
+\end{minted}
+
+The \texttt{magic-nix-cache-action} enables binary cache sharing between CI
+runs, reducing build times significantly.

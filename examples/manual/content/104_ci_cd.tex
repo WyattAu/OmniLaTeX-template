@@ -1,0 +1,234 @@
+\chapter{CI/CD}
+
+\section{GitHub Actions Overview}
+
+OmniLaTeX uses GitHub Actions with nine workflows covering every stage of the
+development lifecycle.  Each workflow is triggered by different events:
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{@{} l l l @{}}
+    \toprule
+    \textbf{Workflow} & \textbf{Trigger} & \textbf{Purpose} \\
+    \midrule
+    \texttt{build.yml} & push, PR, manual & Full build, test, deploy \\
+    \texttt{lean4-ci.yml} & push, PR, manual & Lean~4 proof verification \\
+    \texttt{ctan-upload.yml} & tag push (\texttt{v*}) & CTAN package upload \\
+    \texttt{ctan-release.yml} & tag push (\texttt{v*}) & GitHub Release creation \\
+    \texttt{ctan.yml} & push, tag, manual & CTAN zip validation \\
+    \texttt{cross-platform.yml} & push, PR, manual & Linux + Windows Docker \\
+    \texttt{docker-ci.yml} & push, tag, PR & Docker image build + push \\
+    \texttt{docker-digest-sync.yml} & workflow\_run & Digest sync PR \\
+    \texttt{integration-matrix.yml} & weekly cron, manual & Doctype $\times$ language matrix \\
+    \bottomrule
+  \end{tabular}
+  \caption{GitHub Actions workflow summary}
+\end{table}
+
+\section{Build Pipeline}
+
+The primary workflow (\texttt{build.yml}) runs on every push to
+\texttt{main}, \texttt{master}, or \texttt{develop}, and on pull requests
+to \texttt{main}/\texttt{master}.  It consists of six jobs:
+
+\begin{enumerate}
+  \item \textbf{build} --- Pulls the pinned Docker image from
+        \texttt{.env.docker}, runs
+        \texttt{python3 build.py --mode prod --verbose build-all} to compile
+        all 43 examples, verifies every expected PDF was produced, uploads
+        root and example PDFs as artifacts, and prepares a GitHub Pages
+        bundle.
+
+  \item \textbf{performance} --- Depends on \texttt{build}.  Rebuilds all
+        examples with \texttt{--timings --force}, generates a performance
+        summary with regression detection via
+        \texttt{.github/scripts/extract_metrics.py}, and uploads
+        \texttt{build/metrics.json} as an artifact.
+
+  \item \textbf{determinism} --- Runs independently.  Builds the thesis
+        example twice with \texttt{--source-date-epoch 1700000000},
+        compares page counts and file sizes with a 3\% tolerance to detect
+        non-deterministic output.
+
+  \item \textbf{test} --- Depends on \texttt{build}.  Downloads PDF
+        artifacts and runs integration tests via \texttt{pytest} against
+        \texttt{tests/test\_modules.py} and \texttt{tests/test\_ctan.py}.
+
+  \item \textbf{deploy-pages} --- Depends on \texttt{build}.  Deploys the
+        site bundle to GitHub Pages (only on \texttt{main} push).
+
+  \item \textbf{changelog} --- Runs only on pull requests.  Checks that
+        \texttt{CHANGELOG.md} was updated whenever \texttt{.sty} or
+        \texttt{.cls} files were modified.
+\end{enumerate}
+
+\section{Lean 4 Verification}
+
+The \texttt{lean4-ci.yml} workflow runs on pushes and pull requests to
+\texttt{main}/\texttt{master}.  It uses Nix for a reproducible environment:
+
+\begin{minted}{bash}
+nix develop --command bash -c "cd specs/proofs && lake build"
+\end{minted}
+
+After building, a verification step generates a summary table for all ten
+proof modules.  If any file contains \texttt{sorry}, a warning is emitted.
+The ten modules verified are:
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{@{} l l @{}}
+    \toprule
+    \textbf{Module} & \textbf{Domain} \\
+    \midrule
+    BuildModes & Build mode properties \\
+    BuildSystem & Cache correctness, parallelism bounds \\
+    DoctypeClassMapping & Doctype-to-class mapping (60 aliases) \\
+    DocumentSettings & KOMA class partition \\
+    DoctypeResolution & Alias resolution \\
+    FloatInvariant & Float placement bounds \\
+    FontHierarchy & Strict total order on 9 font sizes \\
+    I18nCompleteness & Translation key parity (846 keys) \\
+    LanguageFallback & Fallback chain stability \\
+    PageGeometry & Page balance equations \\
+    \bottomrule
+  \end{tabular}
+  \caption{Lean~4 proof modules verified in CI}
+\end{table}
+
+\section{CTAN Auto-Upload}
+
+The \texttt{ctan-upload.yml} workflow triggers on version tags
+(\texttt{v*}).  It implements a two-job pipeline backed by a five-phase
+upload script (\texttt{scripts/ctan-upload.sh}):
+
+\begin{enumerate}
+  \item \textbf{Pre-flight job} --- Builds the CTAN zip, validates its
+        contents (must contain \texttt{omnilatex.cls}), extracts the version
+        from the tag, generates a changelog, and runs a dry-run upload to
+        verify all endpoints are reachable.
+
+  \item \textbf{Pre-flight validation} (within the upload script):
+    \begin{itemize}
+      \item Validate package name via
+            \texttt{/upload/validatePackageName}.
+      \item Validate version via
+            \texttt{/upload/validatePackageVersion}.
+      \item Validate CTAN path via
+            \texttt{/upload/validateCtanPath} (new packages only).
+      \item Check URL reachability for homepage, repository, bugs, and
+            support links.
+    \end{itemize}
+
+  \item \textbf{CSRF token fetch} --- Retrieves a hidden \texttt{ticket}
+        field from the CTAN upload page for form-based authentication.
+
+  \item \textbf{Upload job} --- Rebuilds the zip, regenerates the
+        changelog, and submits the package to CTAN via a multipart
+        \texttt{POST} request with all required metadata fields.
+
+  \item \textbf{Response parsing} --- Checks for success patterns
+        (``has been uploaded''), failure patterns (``already exists'',
+        ``invalid''), and HTTP status codes.
+\end{enumerate}
+
+Secrets required: \texttt{CTAN\_EMAIL} and \texttt{CTAN\_AUTHOR}.
+
+\section{CTAN Release}
+
+The \texttt{ctan-release.yml} workflow also triggers on \texttt{v*} tags.
+It builds and validates the CTAN zip, then creates a GitHub Release with
+auto-generated release notes via \texttt{softprops/action-gh-release@v2}.
+The zip is attached to the release and uploaded as a 90-day artifact.
+
+\section{Cross-Platform}
+
+The \texttt{cross-platform.yml} workflow validates Docker builds on both
+Linux and Windows:
+
+\begin{itemize}
+  \item \textbf{Linux job} --- Runs on \texttt{ubuntu-latest}, pulls the
+        Docker image, and builds the article example in production mode.
+  \item \textbf{Windows job} --- Runs on \texttt{windows-latest} with
+        \texttt{continue-on-error: true} (Docker Desktop may not be
+        available on all Windows runners).  Uses \texttt{linux/amd64}
+        platform emulation.
+  \item \textbf{Report job} --- Generates a cross-platform summary table
+        showing pass/fail status for each platform.
+\end{itemize}
+
+\section{Docker CI/CD}
+
+The \texttt{docker-ci.yml} workflow builds multi-architecture Docker images
+(\texttt{linux/amd64}, \texttt{linux/arm64}) and pushes them to
+\texttt{ghcr.io/wyattau/omnilatex-docker}.  Key features:
+
+\begin{itemize}
+  \item Uses BuildKit with \texttt{moby/buildkit:v0.29.0} and GHA cache
+        sharing.
+  \item Generates SBOM and provenance metadata for non-PR builds.
+  \item Tags include \texttt{latest}, semver, and major.minor patterns.
+  \item 6-hour timeout for multi-arch builds.
+\end{itemize}
+
+The companion \texttt{docker-digest-sync.yml} workflow runs automatically
+after a successful Docker build.  It pulls the new \texttt{latest} image,
+extracts its digest, updates \texttt{.env.docker}, and creates a pull
+request with the \texttt{automation} label.  This keeps all other
+workflows pointing at the latest validated image without editing workflow
+files.
+
+\section{Integration Matrix}
+
+The \texttt{integration-matrix.yml} workflow runs weekly (Sunday 02:00~UTC)
+or on manual dispatch.  It tests 13 targeted doctype $\times$ language
+combinations:
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{@{} l l @{}}
+    \toprule
+    \textbf{Doctype} & \textbf{Language} \\
+    \midrule
+    thesis & english \\
+    article & english \\
+    book & english \\
+    presentation & english \\
+    cv & english \\
+    cover-letter & english \\
+    dissertation & english \\
+    manual & english \\
+    patent & english \\
+    thesis & german \\
+    article & german \\
+    article & french \\
+    article & chinese \\
+    \bottomrule
+  \end{tabular}
+  \caption{Integration matrix combinations}
+\end{table}
+
+Each combination generates a minimal document, compiles it with
+\texttt{latexmk -lualatex}, and verifies the PDF was produced.  The
+\texttt{fail-fast: false} strategy ensures all combinations run even if
+some fail.
+
+\section{Determinism}
+
+The \texttt{determinism} job in \texttt{build.yml} verifies that the build
+system produces reproducible output.  It uses \texttt{SOURCE\_DATE\_EPOCH}
+to freeze timestamps:
+
+\begin{enumerate}
+  \item Build the thesis example with
+        \texttt{--source-date-epoch 1700000000} and save the PDF.
+  \item Run \texttt{python3 build.py clean}.
+  \item Rebuild with the same epoch.
+  \item Compare the two PDFs.
+\end{enumerate}
+
+Because LuaLaTeX is not fully bit-for-bit deterministic (PDF object
+ordering, Lua hash table randomisation, font subsetting), the comparison
+uses page counts and file sizes rather than exact SHA256 hashes.  A 3\%
+file size tolerance accounts for non-determinism in font subsetting and
+PDF object reordering across CI runners.

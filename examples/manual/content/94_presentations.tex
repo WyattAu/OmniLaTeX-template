@@ -1,0 +1,355 @@
+\chapter{Advanced Presentations}
+
+This chapter expands on the \texttt{presentation} doctype overview from
+Chapter~\ref{ch:visual} with advanced customization patterns, internal
+details, and practical techniques.
+
+\section{Design Philosophy}
+
+OmniLaTeX presentations use KOMA-Script (\texttt{scrartcl}) rather than the
+\texttt{beamer} class.  This gives several advantages:
+
+\begin{itemize}
+    \item Consistent font, colour, and bibliography handling with all other
+          doctypes.
+    \item No separate theme system to learn --- institution configs apply
+          directly.
+    \item Full access to the entire OmniLaTeX macro library, including
+          \texttt{minted} code listings, glossaries, and \texttt{tcolorbox}
+          environments.
+    \item 16:10 aspect ratio (254\,mm $\times$ 190.5\,mm) via direct
+          \texttt{\textbackslash paperwidth} assignment, avoiding geometry
+          conflicts.
+\end{itemize}
+
+The core engine lives in
+\texttt{lib/layout/omnilatex-presentation.sty} (v1.13.0).
+
+\section{Colour Customization}
+
+The header, footer, and progress bar use two colours:
+\texttt{universityprimary} and \texttt{universitysecondary}.  When no
+institution config is loaded, the module defines fallback values:
+
+\begin{minted}{latex}
+% Fallback defaults (RGB 0,63,114 and RGB 0,113,188)
+% Override in document-settings.sty:
+\definecolor{universityprimary}{RGB}{102,0,153}
+\definecolor{universitysecondary}{RGB}{153,51,204}
+\end{minted}
+
+Institution configs set these colours automatically.  For example, TUHH
+defines a dark navy primary and a teal secondary.  The presentation module
+checks with \texttt{\textbackslash @ifundefined\{color@universityprimary\}}
+before applying its fallback, so any definition in the preamble or an
+institution config takes precedence.
+
+\section{Title Page Internals}
+
+The \texttt{\textbackslash maketitle} override fills the upper 35\% of the
+page with \texttt{universityprimary}, adds a 2\% accent stripe of
+\texttt{universitysecondary}, and centres the title in 28\,pt bold white.
+The author appears below in large white, and the institute and date are
+placed beneath the coloured region.
+
+\begin{minted}{latex}
+\title{My Research Talk}
+\author{Jane Doe}
+% Institute is not a standard KOMA command; define it manually:
+\makeatletter
+\gdef\@institute{Department of Computer Science, University of Examples}
+\makeatother
+\date{June 2026}
+
+\begin{document}
+\maketitle
+% The title page is followed by a \clearpage
+\end{document}
+\end{minted}
+
+The page style is set to \texttt{empty} for the title page, so no header or
+footer decorations appear.
+
+\section{Frame Environment Details}
+
+Each \texttt{presentationframe} performs these steps in order:
+
+\begin{enumerate}
+    \item \texttt{\textbackslash clearpage} --- flush previous content.
+    \item \texttt{\textbackslash presentationframemark} --- increment
+          \texttt{framecounter}.
+    \item \texttt{\textbackslash presentationHeader} --- draw the TikZ header
+          bar with title and author.
+    \item User content is rendered.
+    \item \texttt{\textbackslash presentationFooter} --- draw the footer rule,
+          short title, and frame counter.
+    \item \texttt{\textbackslash presentationProgressBar} --- draw the 2\,pt
+          progress bar.
+    \item \texttt{\textbackslash clearpage} --- finalize the slide.
+\end{enumerate}
+
+The environment accepts an optional argument (currently unused but reserved
+for future per-frame configuration):
+
+\begin{minted}{latex}
+\begin{presentationframe}
+    \slidetitle{Slide Title}
+    Content goes here.
+\end{presentationframe}
+\end{minted}
+
+\section{Progress Bar Mechanics}
+
+The progress bar requires two-pass compilation to know the total frame count.
+Place \texttt{\textbackslash presentationcountframes} at the end of the
+document body:
+
+\begin{minted}{latex}
+\begin{document}
+\maketitle
+\begin{presentationframe}
+    \slidetitle{First}
+    Content.
+\end{presentationframe}
+\begin{presentationframe}
+    \slidetitle{Second}
+    Content.
+\end{presentationframe}
+\presentationcountframes  % <-- snapshots total, resets counter
+\end{document}
+\end{minted}
+
+Internally, this command copies \texttt{framecounter} into
+\texttt{totalframes} and resets \texttt{framecounter} to zero.  On the next
+compilation pass, each frame increments \texttt{framecounter} again, and the
+progress bar fill width is computed as:
+
+\begin{minted}{latex}
+\paperwidth * \ratio{framecounter}{totalframes}
+\end{minted}
+
+If \texttt{\textbackslash presentationcountframes} is omitted, the progress
+bar shows 0\% fill on every slide (since \texttt{totalframes} remains zero).
+
+\section{Disabling UI Elements}
+
+Two toggle pairs control optional slide decorations:
+
+\begin{minted}{latex}
+% Hide navigation symbols (default: off)
+\presentationnavsymbolsoff
+
+% Show navigation symbols
+\presentationnavsymbolson
+
+% Hide progress bar (default: on)
+\presentationprogressoff
+
+% Show progress bar
+\presentationprogresson
+\end{minted}
+
+Place these commands in the preamble after
+\texttt{\textbackslash begin\{document\}} or in
+\texttt{config/document-settings.sty}.
+
+\section{Block Customization via tcolorbox}
+
+All five block environments are standard \texttt{tcolorbox} definitions with
+the \texttt{enhanced} skin.  The optional first argument passes through to
+tcolorbox, allowing per-block overrides:
+
+\begin{minted}{latex}
+% Custom width and shadow for one block
+\begin{presentationblock}[width=0.6\textwidth, drop shadow]{Tip}
+    This block is narrower and has a drop shadow.
+\end{presentationblock}
+
+% Override the border colour of a definition block
+\begin{definitionblock}[borderline west={3pt}{0pt}{purple}]{Lemma}
+    A partial order is reflexive, antisymmetric, and transitive.
+\end{definitionblock}
+\end{minted}
+
+The five environments and their default styles:
+
+\begin{table}[htbp]
+    \centering
+    \caption{Block environment defaults}
+    \label{tab:block-defaults}
+    \begin{tabular}{@{} l l l l @{}}
+        \toprule
+        \textbf{Environment} & \textbf{Background} & \textbf{Border} & \textbf{Padding} \\
+        \midrule
+        \texttt{presentationblock} & White        & Primary (2.5\,pt)   & 6\,pt/4\,pt \\
+        \texttt{alertblock}        & Red!5        & Red!70!black        & 6\,pt/4\,pt \\
+        \texttt{exampleblock}      & Green!5      & Green!50!black      & 6\,pt/4\,pt \\
+        \texttt{noteblock}         & Blue!5       & Blue!50!black       & 6\,pt/4\,pt \\
+        \texttt{definitionblock}   & Orange!5     & Orange!70!black     & 6\,pt/4\,pt \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Multi-Column Layouts}
+
+The \texttt{presentationcolumns} environment wraps a \texttt{columns[T]}
+environment (top-aligned).  Use \texttt{\textbackslash presentationcolumn\{w\}}
+to open each column, where \texttt{w} is a fraction of \texttt{textwidth}:
+
+\begin{minted}{latex}
+\begin{presentationframe}
+    \slidetitle{Two-Column Comparison}
+    \begin{presentationcolumns}
+        \presentationcolumn{0.45}
+            \textbf{Advantages:}
+            \begin{itemize}
+                \item Reproducible
+                \item Version controlled
+            \end{itemize}
+        \end{column}
+        \presentationcolumn{0.45}
+            \textbf{Disadvantages:}
+            \begin{itemize}
+                \item Learning curve
+                \item Compile time
+            \end{itemize}
+        \end{column}
+    \end{presentationcolumns}
+\end{presentationframe}
+\end{minted}
+
+The default column width is 0.48\texttt{textwidth}.  Each column must be
+closed explicitly with \texttt{\textbackslash end\{column\}}.
+
+For three-column layouts, adjust widths accordingly:
+
+\begin{minted}{latex}
+\begin{presentationcolumns}
+    \presentationcolumn{0.30}
+        Column 1.
+    \end{column}
+    \presentationcolumn{0.30}
+        Column 2.
+    \end{column}
+    \presentationcolumn{0.30}
+        Column 3.
+    \end{column}
+\end{presentationcolumns}
+\end{minted}
+
+\section{Section Dividers}
+
+The \texttt{\textbackslash presentationSection\{title\}} command creates a
+full-width section divider page.  It fills the upper 50\% with
+\texttt{universityprimary}, centres the title in 32\,pt bold white, and
+includes the footer and progress bar.  The frame counter is incremented
+automatically.
+
+\begin{minted}{latex}
+\presentationSection{Experimental Setup}
+\begin{presentationframe}
+    \slidetitle{Equipment}
+    We used a calibrated spectrometer\ldots
+\end{presentationframe}
+\end{minted}
+
+Section dividers count toward the total frame count, so the progress bar
+accounts for them correctly.
+
+\section{TikZ Guard Behaviour}
+
+The presentation module auto-loads TikZ if it is not already present:
+
+\begin{itemize}
+    \item If \texttt{enabletikz=true} (default), TikZ is loaded before the
+          presentation module, so all overlays render.
+    \item If \texttt{enabletikz=false}, the module attempts to load TikZ
+          itself.  If \texttt{tikz.sty} is unavailable, the
+          \texttt{\textbackslash ifpresentation@tikz} flag is set to
+          \texttt{false} and all TikZ overlays (header, footer, progress bar,
+          title page) are silently skipped.
+\end{itemize}
+
+This means presentations always compile even without TikZ, but without any
+decorative elements.
+
+\section{Building Presentations}
+
+Use the standard build commands:
+
+\begin{minted}{bash}
+# Via Docker
+docker run --rm --entrypoint "" \
+    -v "$PWD:/workspace" \
+    ghcr.io/wyattau/omnilatex:latest \
+    python3 build.py --mode prod --force build-example presentation
+
+# Via Nix
+nix develop .# --command python3 build.py --mode prod build-example presentation
+\end{minted}
+
+The output PDF uses the 16:10 aspect ratio.  For 4:3 projectors, override the
+paper dimensions in \texttt{config/document-settings.sty}:
+
+\begin{minted}{latex}
+\AtBeginDocument{%
+    \setlength{\paperwidth}{254mm}%
+    \setlength{\paperheight}{190.5mm}%   % 16:10 (default)
+    % \setlength{\paperheight}{190.5mm}%  % uncomment for 4:3: use 254mm x 190.5mm
+}
+\end{minted}
+
+\section{Common Patterns}
+
+\subsection{Thank-You Slide}
+
+A simple closing slide:
+
+\begin{minted}{latex}
+\begin{presentationframe}
+    \vfill
+    \begin{center}
+        {\Huge\bfseries\color{universityprimary}Thank You!}\par
+        \vspace{8mm}
+        {\Large Questions?}\par
+        \vspace{6mm}
+        {\normalsize\texttt{jane@example.com}}
+    \end{center}
+    \vfill
+\end{presentationframe}
+\end{minted}
+
+\subsection{Listing Slides}
+
+Combine \texttt{minted} with \texttt{presentationblock}:
+
+\begin{minted}{latex}
+\begin{presentationframe}
+    \slidetitle{Example Implementation}
+    \begin{presentationblock}[Python]{Fibonacci}
+        \begin{minted}[fontsize=\small]{python}
+def fib(n: int) -> int:
+    a, b = 0, 1
+    for _ in range(n):
+        a, b = b, a + b
+    return a
+        \end{minted}
+    \end{presentationblock}
+\end{presentationframe}
+\end{minted}
+
+\subsection{Figure Slides}
+
+Place figures inside frames without float wrappers:
+
+\begin{minted}{latex}
+\begin{presentationframe}
+    \slidetitle{System Architecture}
+    \begin{center}
+        \includegraphics[width=0.75\textwidth]{figures/architecture}
+    \end{center}
+\end{presentationframe}
+\end{minted}
+
+Do not use \texttt{\textbackslash begin\{figure\}} inside frames --- floats
+are suppressed by the empty page style.

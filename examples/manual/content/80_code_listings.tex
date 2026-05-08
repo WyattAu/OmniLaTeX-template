@@ -1,0 +1,141 @@
+\chapter{Code Listings}
+
+OmniLaTeX provides syntax-highlighted code listings via the
+\texttt{minted} package, configured in \texttt{omnilatex-listings.sty}.
+
+\section{minted Setup}
+
+The default style is \texttt{manni} with a left-line frame, line numbers
+on every line, and caching enabled for fast recompilation:
+
+\begin{verbatim}
+\usemintedstyle{manni}
+\setminted{
+    frame      = lines,
+    framesep   = 2mm,
+    linenos,
+    numbersep  = 8pt,
+    cache      = true,
+}
+\end{verbatim}
+
+The cache directory is derived from the job name so that parallel builds
+do not collide.
+
+\section{Inline Code}
+
+Inline code fragments use \texttt{\textbackslash mintinline}:
+
+\begin{verbatim}
+The function \mintinline{python}{print("hello")} writes to stdout.
+\end{verbatim}
+
+The language is specified as the first mandatory argument.
+
+\section{Block Listings}
+
+Full listings are placed inside the \texttt{minted} environment:
+
+\begin{verbatim}
+\begin{minted}{python}
+def greet(name):
+    print(f"Hello, {name}!")
+\end{minted}
+\end{verbatim}
+
+Line numbers and the frame are applied automatically through the global
+\texttt{\textbackslash setminted} defaults.
+
+\section{Long Listings}
+
+For listings that span multiple pages, wrap the environment in a
+\texttt{longlisting} float:
+
+\begin{verbatim}
+\begin{longlisting}[H]
+    \inputminted{lua}{scripts/init.lua}
+    \caption{Initialisation script}
+    \label{lst:init}
+\end{longlisting}
+\end{verbatim}
+
+\texttt{longlisting} is a float that may break across pages while
+preserving the listing counter and caption numbering.
+
+\section{Line Highlighting}
+
+Specific lines can be highlighted with the \texttt{highlightlines} option:
+
+\begin{verbatim}
+\begin{minted}[highlightlines={3,7-9}]{python}
+x = 42          # highlighted
+y = x + 1
+z = y * 2       # highlighted
+\end{minted}
+\end{verbatim}
+
+OmniLaTeX also defines placeholder commands for annotating template code:
+
+\begin{table}[htbp]
+    \centering
+    \caption{Placeholder highlight commands}
+    \begin{tabular}{@{} l l @{}}
+        \toprule
+        \textbf{Command} & \textbf{Colour} \\
+        \midrule
+        \verb|\phstring{text}| & red    \\
+        \verb|\phnum{text}|    & blue   \\
+        \verb|\phother{text}|  & green  \\
+        \verb|\phnote{text}|   & orange \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+These are intended for documentation that shows replaceable portions of
+code.
+
+\section{Language Support}
+
+\texttt{minted} leverages Pygments, so any Pygments lexer is available.
+Languages commonly used with OmniLaTeX include:
+
+\begin{multicols}{2}
+\begin{itemize}
+    \item Python
+    \item MATLAB
+    \item Lua
+    \item Modelica
+    \item C / C++
+    \item bash
+    \item Dockerfile
+    \item JSON
+    \item SQL
+    \item YAML
+\end{itemize}
+\end{multicols}
+
+Add the \texttt{-{}-shell-escape} flag when invoking the compiler so that
+Pygments can be called.
+
+\section{Simulink Icons}
+
+\texttt{omnilatex-graphics.sty} provides \verb|\mtlbsmlkicon{name}| for
+embedding Simulink block icons inline:
+
+\begin{verbatim}
+\mtlbsmlkicon{Gain}
+\end{verbatim}
+
+The icon is rendered at a fixed size suitable for inline use.
+
+\section{Accessible Line Numbers}
+
+For PDF/UA-1 compliance, line-number digits are hidden from screen readers
+via
+
+\begin{verbatim}
+\emptyaccsupp
+\end{verbatim}
+
+This macro is applied automatically inside every \texttt{minted}
+environment when the accessibility mode is active.

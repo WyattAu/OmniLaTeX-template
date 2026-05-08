@@ -1,0 +1,211 @@
+\chapter{Quick Start}
+\label{ch:quickstart}
+
+This chapter walks through creating, configuring, and building an OmniLaTeX
+document from scratch.  By the end, you will have a complete article with a
+figure, a table, and a bibliography entry.
+
+\section{Minimal Document}
+
+The smallest possible OmniLaTeX document requires only five lines:
+
+\begin{minted}{latex}
+\documentclass{omnilatex}
+\begin{document}
+\section{Hello World}
+This is a minimal OmniLaTeX document.
+\end{document}
+\end{minted}
+
+Each line serves a purpose:
+
+\begin{enumerate}
+    \item \texttt{\textbackslash documentclass\{omnilatex\}} --- Loads the
+          OmniLaTeX class.  With no options specified, all defaults are applied:
+          \textsf{doctype=article}, \textsf{language=english}, and the default
+          KOMA-Script base class (\texttt{scrartcl}).
+    \item \texttt{\textbackslash begin\{document\}} --- Marks the start of the
+          document body.  The preamble (everything before this line) is where
+          you place configuration, package loading, and metadata.
+    \item \texttt{\textbackslash section\{Hello World\}} --- A top-level
+          section heading.  OmniLaTeX inherits KOMA-Script's sectioning
+          commands, which support optional short titles for the table of
+          contents.
+    \item The paragraph text --- Rendered in the default Libertinus Serif font
+          with \ctanpackage{microtype} optimisations applied automatically.
+    \item \texttt{\textbackslash end\{document\}} --- Ends the document body
+          and triggers finalisation (writing the table of contents, glossary,
+          bibliography, etc.).
+\end{enumerate}
+
+Compile with:
+
+\begin{minted}{bash}
+latexmk -lualatex main.tex
+\end{minted}
+
+\section{Adding Options}
+
+OmniLaTeX accepts key-value options via the \texttt{\textbackslash documentclass}
+command.  Options are comma-separated in square brackets.
+
+\subsection{Language}
+
+\begin{minted}{latex}
+\documentclass[language=german]{omnilatex}
+\end{minted}
+
+This loads \ctanpackage{polyglossia} and sets German as the document language,
+activating hyphenation patterns and localised strings (e.g.\ ``Inhaltsverzeichnis''
+instead of ``Table of Contents'').  Supported languages include English, German,
+French, Japanese, Chinese, Korean, Arabic, and Hebrew.
+
+\subsection{Document Type}
+
+\begin{minted}{latex}
+\documentclass[doctype=report]{omnilatex}
+\end{minted}
+
+The \textsf{doctype} option selects the document profile.  Each doctype
+configures the KOMA-Script base class, page layout, and feature set.
+Available doctypes include \textsf{article}, \textsf{report},
+\textsf{thesis}, \textsf{book}, \textsf{presentation},
+\textsf{poster}, and \textsf{cv}.  The full doctype system is documented in
+Chapter~\ref{ch:doctype-system}.
+
+\subsection{Combining Options}
+
+Options can be combined freely:
+
+\begin{minted}{latex}
+\documentclass[
+  doctype=thesis,
+  language=english,
+  loadGlossaries,
+]{omnilatex}
+\end{minted}
+
+The \textsf{loadGlossaries} option activates the
+\ctanpackage{glossaries-extra} integration, loading the symbol and
+abbreviation management subsystem.
+
+\section{Your First Real Document}
+
+The following example demonstrates a complete OmniLaTeX article with a title,
+author, abstract, sections, a figure, a table, and a bibliography entry.
+
+\begin{minted}{latex}
+\documentclass[
+  doctype=article,
+  language=english,
+]{omnilatex}
+
+\title{An Analysis of Thermal Conductivity in Nanofluids}
+\author{Jane Doe}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  This article presents experimental measurements of thermal
+  conductivity in water-based alumina nanofluids at volume fractions
+  ranging from 0.5\% to 4.0\%.  Results show a non-linear enhancement
+  that deviates from the Maxwell model at higher concentrations.
+\end{abstract}
+
+\section{Introduction}
+Nanofluids --- suspensions of nanometre-sized particles in base fluids
+--- have attracted significant interest for heat transfer enhancement
+\cite{choi1995nanofluids}.
+
+\section{Methodology}
+Experiments were conducted using a transient hot-wire apparatus.  The
+test section and measurement procedure are shown in
+\Cref{fig:apparatus}.
+
+\begin{figure}[htbp]
+  \centering
+  \fbox{\parbox{0.6\textwidth}{\centering\vspace{2cm}%
+    Schematic of the transient hot-wire apparatus\vspace{2cm}}}
+  \caption{Experimental apparatus for thermal conductivity measurement.}
+  \label{fig:apparatus}
+\end{figure}
+
+\section{Results}
+\Cref{tab:results} summarises the measured thermal conductivity ratios.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Thermal conductivity enhancement at $T = 25\,\si{\degreeCelsius}$}
+  \label{tab:results}
+  \begin{tabular}{@{} S[table-format=1.1] S[table-format=1.3] @{}}
+      \toprule
+      {$\phi$ [\%]} & {$k_{\mathrm{nf}} / k_{\mathrm{bf}}$} \\
+      \midrule
+      0.5 & 1.023 \\
+      1.0 & 1.051 \\
+      2.0 & 1.098 \\
+      4.0 & 1.142 \\
+      \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{thebibliography}{1}
+  \bibitem{choi1995nanofluids}
+    S.~U.~S.~Choi, ``Enhancing thermal conductivity of fluids with
+    nanoparticles,'' \emph{ASME Publications FED}, vol.~231, pp.~99--105,
+    1995.
+\end{thebibliography}
+\end{document}
+\end{minted}
+
+Key observations about this example:
+
+\begin{itemize}
+    \item The \texttt{S} column type from \ctanpackage{siunitx} is used for
+          aligned numeric columns with automatic unit formatting.
+    \item \texttt{\textbackslash si\{\textbackslash degreeCelsius\}} provides
+          proper typesetting of the degree Celsius symbol.
+    \item \texttt{\textbackslash Cref\{\}} from \ctanpackage{cleveref}
+          automatically prepends ``Figure'' or ``Table'' to cross-references.
+    \item The abstract environment is provided by KOMA-Script and styled
+          automatically by the OmniLaTeX class.
+\end{itemize}
+
+\section{Building}
+
+OmniLaTeX provides a Python-based build orchestrator (\texttt{build.py}) that
+replaces traditional Makefiles.  To build the example article:
+
+\begin{minted}{bash}
+python3 build.py build-example article --mode dev
+\end{minted}
+
+This compiles the article through \texttt{latexmk} with three passes (sufficient
+for cross-references in development mode) and places the output PDF in
+\texttt{build/examples/article/main.pdf}.
+
+To build from within Docker:
+
+\begin{minted}{bash}
+docker run --rm -v "$(pwd):/workspace" \
+    ghcr.io/wyattau/omnilatex-docker:latest \
+    python3 build.py build-example article --mode dev
+\end{minted}
+
+\section{Next Steps}
+
+With the basics covered, the following chapters provide deeper dives into
+specific topics:
+
+\begin{itemize}
+    \item \Cref{ch:build-system} --- Build commands, modes, caching, and
+          performance optimisation.
+    \item \Cref{ch:class-options} --- All class options and their effects.
+    \item \Cref{ch:doctype-system} --- The full doctype profile system.
+    \item \Cref{ch:document-types} --- Detailed guides for each document type
+          (articles, theses, presentations, posters, etc.).
+    \item \Cref{ch:typography-content} --- Fonts, text formatting, mathematics,
+          and CJK typesetting.
+\end{itemize}

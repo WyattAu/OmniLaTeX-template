@@ -1,0 +1,240 @@
+\chapter{Installation}
+\label{ch:installation}
+
+OmniLaTeX can be set up using several methods, each suited to a different
+workflow.  This chapter covers the recommended Docker approach, the Nix
+alternative, a manual TeX~Live installation, and a one-click DevContainer setup.
+
+\section{Prerequisites}
+
+Before choosing an installation method, review the requirements for each
+approach:
+
+\begin{description}
+    \item[Docker (recommended)] Docker Engine 20.10 or later.  The OmniLaTeX
+        image bundles a complete TeX~Live installation, Python tooling,
+        fonts, and all external dependencies.  No separate \TeX{} installation
+        is required on the host.
+    \item[Nix (alternative)] Nix with Flakes enabled.  The \texttt{flake.nix}
+        declares all \TeX{} packages explicitly, producing a fully
+        reproducible development shell.
+    \item[TeX~Live 2026 (manual)] A full TeX~Live installation including
+        \hologo{LuaLaTeX}, Biber, \texttt{bib2gls}, Inkscape, Gnuplot, and
+        Python~3 with Pygments.  Most users should prefer Docker or Nix.
+\end{description}
+
+All methods require Git to clone the repository:
+
+\begin{minted}{bash}
+git clone https://github.com/WyattAu/OmniLaTeX-template.git
+cd OmniLaTeX-template
+\end{minted}
+
+\section{Docker Method}
+
+The Docker image is the recommended way to use OmniLaTeX.  It provides a
+self-contained build environment with TeX~Live, system fonts (Libertinus,
+Monaspace, Atkinson Hyperlegible Next), and all auxiliary tools pre-installed.
+
+\subsection{Pulling the Image}
+
+\begin{minted}{bash}
+docker pull ghcr.io/wyattau/omnilatex-docker:latest
+\end{minted}
+
+The image is published to the GitHub Container Registry (ghcr.io).  The
+\texttt{latest} tag tracks the most recent TeX~Live release.
+
+\subsection{Verifying the Installation}
+
+Confirm the image works by invoking \texttt{latexmk} through the container
+entrypoint:
+
+\begin{minted}{bash}
+docker run --rm -v "$(pwd):/workspace" \
+    ghcr.io/wyattau/omnilatex-docker:latest --version
+\end{minted}
+
+The entrypoint script at \texttt{/usr/local/bin/entrypoint.sh} forwards
+arguments to \texttt{latexmk} by default.  This means you can compile any
+document by passing its filename directly.
+
+\subsection{Running Your First Build}
+
+Mount the repository into the container and run the full build:
+
+\begin{minted}{bash}
+docker run --rm -v "$(pwd):/workspace" \
+    ghcr.io/wyattau/omnilatex-docker:latest \
+    python3 build.py build-all --mode dev
+\end{minted}
+
+This compiles the root document and all example projects.  The resulting PDFs
+are written to the \texttt{build/} directory on the host.
+
+\subsection{Bypassing the Entrypoint}
+
+To execute arbitrary commands inside the container (e.g.\ running tests or
+opening a shell), override the entrypoint:
+
+\begin{minted}{bash}
+docker run --rm -it --entrypoint bash \
+    -v "$(pwd):/workspace" \
+    ghcr.io/wyattau/omnilatex-docker:latest
+\end{minted}
+
+Inside the shell, all TeX~Live binaries, Python packages, and fonts are on
+\texttt{PATH}.
+
+\section{Nix Method}
+
+The \texttt{flake.nix} at the repository root declares the complete OmniLaTeX
+development environment as a Nix flake.  This method guarantees reproducibility:
+every collaborator gets identical package versions.
+
+\subsection{Entering the Dev Shell}
+
+\begin{minted}{bash}
+nix develop .#
+\end{minted}
+
+This drops you into a shell with TeX~Live (via \texttt{texlive.combine}),
+Python~3 with Pygments and Rich, Inkscape, Gnuplot, and Lean~4 available.
+
+The TeX~Live scheme is \texttt{scheme-medium} plus explicit package
+declarations extracted from every \texttt{\textbackslash usepackage} and
+\texttt{\textbackslash RequirePackage} call in \texttt{lib/*.sty} and
+\texttt{omnilatex.cls}.  This avoids the $\sim$4\,GB \texttt{scheme-full}
+while covering all OmniLaTeX dependencies.
+
+\subsection{Building from the Nix Shell}
+
+\begin{minted}{bash}
+python3 build.py build-all
+\end{minted}
+
+For Lean~4 formal verification targets:
+
+\begin{minted}{bash}
+lake build
+\end{minted}
+
+\subsection{Building Individual Examples with Nix}
+
+The flake exposes per-example packages.  To build a single example as a Nix
+derivation:
+
+\begin{minted}{bash}
+nix build .#examples-article
+\end{minted}
+
+The resulting PDF is placed at \texttt{result/omnilatex-article.pdf}.
+
+\section{TeX Live Method}
+
+After OmniLaTeX is published on CTAN, the class file and all bundled style
+files can be installed via the TeX~Live package manager:
+
+\begin{minted}{bash}
+tlmgr install omnilatex
+\end{minted}
+
+This installs \texttt{omnilatex.cls} and the \texttt{lib/} style library into
+the local TeX~Live tree.  You will still need to install the external tools
+listed in Section~\ref{sec:prerequisites} separately.
+
+For development (using the class from the repository without a CTAN release),
+set the \texttt{TEXINPUTS} environment variable:
+
+\begin{minted}{bash}
+export TEXINPUTS="/path/to/OmniLaTeX-template:"
+\end{minted}
+
+\section{DevContainer}
+
+VS Code users can open the repository directly as a DevContainer.  The
+configuration in \texttt{.devcontainer/devcontainer.json} launches the
+OmniLaTeX Docker image with recommended extensions pre-installed:
+
+\begin{itemize}
+    \item \texttt{ms-python.python} --- Python language support.
+    \item \texttt{james-yu.latex-workshop} --- \LaTeX{} compilation recipes
+          configured for dev and prod modes.
+    \item \texttt{streetsidesoftware.code-spell-checker} --- Spell checking.
+\end{itemize}
+
+To start:
+
+\begin{enumerate}
+    \item Open the repository in VS Code.
+    \item When prompted, select \fbox{\small Reopen in Container}.
+    \item VS Code builds the container and installs extensions automatically.
+\end{enumerate}
+
+The \texttt{postCreateCommand} runs \texttt{python3 build.py preflight} to
+verify the environment on first launch.
+
+\section{Verification}
+
+After installation, verify that everything works by running the full test
+suite:
+
+\begin{minted}{bash}
+python3 build.py test
+\end{minted}
+
+To check all example documents compile successfully:
+
+\begin{minted}{bash}
+python3 build.py build-examples --mode dev
+\end{minted}
+
+A successful run produces PDFs for all 43 examples in the \texttt{build/}
+directory.  The build orchestrator checks for PDF existence (not exit codes) to
+determine success, since some \LaTeX{} warnings do not constitute failures.
+
+For per-example timing information:
+
+\begin{minted}{bash}
+python3 build.py build-all --timings
+\end{minted}
+
+\section{Troubleshooting}
+\label{sec:installation-troubleshooting}
+
+Table~\ref{tab:installation-issues} lists the most common installation
+problems and their solutions.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Common installation issues and resolutions}
+    \label{tab:installation-issues}
+    \begin{tabular}{lp{7.5cm}}
+        \toprule
+        \textbf{Symptom} & \textbf{Resolution} \\
+        \midrule
+        Font not found (Libertinus, Monaspace) &
+            Use the Docker image, which bundles all custom fonts.  For Nix,
+            install fonts system-wide and regenerate the fontconfig cache with
+            \texttt{fc-cache -f -v}. \\[6pt]
+        Permission denied on \texttt{build/} &
+            Docker creates files as UID/GID 1000 by default.  If your host
+            UID differs, pass \texttt{-e USER\_ID=$(id -u)} or adjust volume
+            permissions. \\[6pt]
+        Out of memory during compilation &
+            TeX~Live with \ctanpackage{tikz} and \ctanpackage{pgfplots} can
+            require $>$2\,GB of RAM.  Increase Docker's memory limit in
+            Desktop settings, or close other applications. \\[6pt]
+        \texttt{pygmentize} not found &
+            The \ctanpackage{minted} package requires Python's Pygments
+            library.  Install it with \texttt{pip install pygments} or use
+            the Docker image where it is pre-installed. \\[6pt]
+        \texttt{bib2gls} not found &
+            Required by \ctanpackage{glossaries-extra}.  Install via
+            \texttt{tlmgr install bib2gls} or use Docker/Nix. \\[6pt]
+        \texttt{luaotfload} font cache error &
+            Run \texttt{luaotfload-tool --update} to regenerate the font name
+            database.  This is done automatically in the Docker image. \\
+        \bottomrule
+    \end{tabular}
+\end{table}

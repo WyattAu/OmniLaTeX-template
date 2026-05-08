@@ -1,0 +1,257 @@
+\chapter{Mathematics}
+
+OmniLaTeX combines \texttt{amsmath} and \texttt{unicode-math} to provide
+a modern math typesetting system with OpenType math fonts, auto-scaling
+delimiters, and convenience macros for statistics, physics, and
+engineering notation.
+
+% =========================================================================
+\section{Equation Environments}
+% =========================================================================
+
+All standard \texttt{amsmath} environments are available.  The most
+commonly used are summarised below with examples.
+
+\textbf{Single equation:}
+
+\begin{verbatim}
+\begin{equation}
+  E = mc^2
+  \label{eq:einstein}
+\end{equation}
+\end{verbatim}
+
+\textbf{Aligned multi-line:}
+
+\begin{verbatim}
+\begin{align}
+  \nabla \cdot  \mathbf{E} &= \frac{\rho}{\varepsilon_0}  \label{eq:gauss} \\
+  \nabla \times \mathbf{B} &= \mu_0 \mathbf{J}
+    + \mu_0 \varepsilon_0 \frac{\partial \mathbf{E}}{\partial t} \label{eq:ampere}
+\end{align}
+\end{verbatim}
+
+\textbf{Gathered (no alignment):}
+
+\begin{verbatim}
+\begin{gather}
+  a^2 + b^2 = c^2 \\
+  e^{i\pi} + 1 = 0
+\end{gather}
+\end{verbatim}
+
+\textbf{Multi-line with single number:}
+
+\begin{verbatim}
+\begin{multline}
+  \int_{-\infty}^{\infty} e^{-x^2} \, dx
+    = \sqrt{\pi} \\
+  = \sum_{n=0}^{\infty} \frac{(-1)^n}{n!}
+    \int_{-\infty}^{\infty} x^{2n} e^{-x^2} \, dx
+\end{multline}
+\end{verbatim}
+
+\textbf{Split inside equation:}
+
+\begin{verbatim}
+\begin{equation}
+  \begin{split}
+    f(x) &= a_0 + a_1 x + a_2 x^2 \\
+         &= \sum_{k=0}^{2} a_k x^k
+  \end{split}
+\end{equation}
+\end{verbatim}
+
+% =========================================================================
+\section{Auto-Scaling Delimiters}
+% =========================================================================
+
+Manually writing \cs{left(} and \cs{right)} for every expression is
+tedious.  The \texttt{omnilatex-math} module provides three convenience
+macros that automatically size delimiters based on their content:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Auto-scaling delimiter commands.}
+  \label{tab:delimiters}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Command                              & Delimiters & Example input         \\
+    \midrule
+    \texttt{\textbackslash parens\{x+y\}}  & $(\;)$ & \texttt{\textbackslash parens\{\textbackslash frac\{a\}\{b\}\}} \\
+    \texttt{\textbackslash brackets\{x\}}  & $[\;]$ & \texttt{\textbackslash brackets\{\textbackslash Sigma\}\} \\
+    \texttt{\textbackslash braces\{x\}}    & $\{\;\}$ & \texttt{\textbackslash braces\{\textbackslash Omega\}\} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+These commands expand to \cs{left} / \cs{right} pairs internally, so they
+handle nested fractions, summations, and matrices without manual height
+specification:
+
+\begin{verbatim}
+\parens{\frac{1}{1 + \frac{1}{n}}}
+% → ( 1 / (1 + 1/n) )  with correctly sized parentheses
+\end{verbatim}
+
+% =========================================================================
+\section{Equation Punctuation}
+% =========================================================================
+
+Placing punctuation after display equations is a common source of spacing
+errors.  OmniLaTeX defines three macros that handle proper spacing
+between the equation and the following punctuation:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Equation punctuation commands.}
+  \label{tab:eq-punct}
+  \begin{tabular}{@{}llp{0.55\textwidth}@{}}
+    \toprule
+    Command          & Produces & Usage \\
+    \midrule
+    \texttt{\textbackslash eqend}   & \eqend   & Period after a concluding equation \\
+    \texttt{\textbackslash eqcomma} & \eqcomma & Comma before a clause continues \\
+    \texttt{\textbackslash coloneq} & \coloneq & Colon for a definition equation \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Example:
+
+\begin{verbatim}
+\begin{equation}
+  \mathcal{L}\{f(t)\} = \int_0^\infty e^{-st} f(t) \, dt \eqend
+\end{equation}
+The Laplace transform converts a time-domain signal\ldots
+\end{verbatim}
+
+% =========================================================================
+\section{Statistical Macros}
+% =========================================================================
+
+The \texttt{omnilatex-math} module provides shorthand macros for common
+statistical notation:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Statistical convenience macros.}
+  \label{tab:stat-macros}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Command                                 & Renders as & Meaning \\
+    \midrule
+    \texttt{\textbackslash mean\{x\}}      & $\mean{x}$      & Arithmetic mean (bar) \\
+    \texttt{\textbackslash logmean\{x\}}   & $\logmean{x}$   & Logarithmic mean \\
+    \texttt{\textbackslash abs\{x\}}       & $\abs{x}$       & Absolute value \\
+    \texttt{\textbackslash norm\{x\}}      & $\norm{x}$      & Norm (double bars) \\
+    \texttt{\textbackslash inner\{a,b\}}   & $\inner{a}{b}$  & Inner product (angle brackets) \\
+    \texttt{\textbackslash variance\{x\}}  & $\variance{x}$  & Variance ($\sigma^2$) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+These macros use \cs{DeclarePairedDelimiter} internally, so they accept
+optional size arguments: \texttt{\textbackslash mean*[\textbackslash Big]\{x\}} produces
+a larger bar.
+
+% =========================================================================
+\section{Number Formatting}
+% =========================================================================
+
+\textbf{Circled numbers} are useful for step-by-step procedures and
+enumerated equations:
+
+\begin{verbatim}
+\circlednum{1}  \circlednum{2}  \circlednum{3}
+% → ①  ②  ③
+\end{verbatim}
+
+\textbf{Symbol placeholders} for figures and tables under development:
+
+\begin{verbatim}
+\symbolplaceholder{figure}
+% → [FIGURE]
+\end{verbatim}
+
+\textbf{Custom operators} can be declared with \cs{DeclareMathOperator}:
+
+\begin{verbatim}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+$\Tr(A) = \sum_i \lambda_i$
+$\argmin_{x} f(x)$
+\end{verbatim}
+
+% =========================================================================
+\section{Physical Constants}
+% =========================================================================
+
+OmniLaTeX defines shortcuts for frequently used constants and symbols in
+engineering and physics:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Physical constant macros.}
+  \label{tab:constants}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Command          & Renders as & Description \\
+    \midrule
+    \texttt{\textbackslash grad}  & $\grad$  & Gradient operator ($\nabla$) \\
+    \texttt{\textbackslash const} & $\const$ & Denotes a constant quantity \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{Quoted text inside math mode} is provided by \cs{qq}\texttt{\{text\}}:
+
+\begin{verbatim}
+$T_{\qq{eff}} = 5778\,\mathrm{K}$
+% → T_eff with "eff" in upright text
+\end{verbatim}
+
+This avoids the common pattern of switching to \cs{mathrm} or
+\cs{textnormal} inline and keeps the source readable.
+
+% =========================================================================
+\section{Display Equations}
+% =========================================================================
+
+The \texttt{empheq} package allows annotated display equations with
+side-by-side text or boxed emphasis.  OmniLaTeX preconfigures
+\texttt{empheq} to work with the Libertinus Math font metrics:
+
+\textbf{Boxed equation:}
+
+\begin{verbatim}
+\begin{empheq}[box=\fbox]{equation}
+  i\hbar \frac{\partial}{\partial t} \Psi
+    = \hat{H} \Psi
+\end{empheq}
+\end{verbatim}
+
+\textbf{Equation with right-side annotation:}
+
+\begin{verbatim}
+\begin{empheq}[right=\eqref{eq:schrodinger}\;\text{(Schr\"odinger)}]{align}
+  i\hbar \frac{\partial}{\partial t} \Psi
+    &= \hat{H} \Psi \label{eq:schrodinger}
+\end{empheq}
+\end{verbatim}
+
+\textbf{Aligned equations with shared numbering:}
+
+\begin{verbatim}
+\begin{align}
+  \frac{\partial u}{\partial t}
+    &= \alpha \nabla^2 u \label{eq:heat} \\
+  \frac{\partial^2 u}{\partial t^2}
+    &= c^2 \nabla^2 u   \label{eq:wave}
+\end{align}
+\end{verbatim}
+
+Cross-referencing equations works exactly like \LaTeX\ figures and
+tables: \texttt{Equation~\textbackslash ref\{eq:heat\}} produces
+\emph{Equation~1}.

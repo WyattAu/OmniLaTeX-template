@@ -1,0 +1,167 @@
+\chapter{RTL Scripts}
+
+OmniLaTeX supports right-to-left (RTL) scripts---Arabic, Hebrew, and
+Persian---through the \texttt{omnilatex-rtl.sty} module.  This chapter
+covers RTL font configuration, bidi layout, and the module architecture.
+
+% =========================================================================
+\section{Arabic}
+% =========================================================================
+
+Arabic documents are activated by setting \texttt{language=arabic} in the
+class options.  OmniLaTeX auto-detects the Arabic language and loads the
+RTL module, which configures bidi layout, script fonts, and RTL-aware
+math mode.
+
+The default Arabic font is \textbf{Amiri} with \textbf{Amiri Bold} for
+bold weight.  To override the font, use \cs{setArabicFont} in the preamble:
+
+\begin{verbatim}
+\setArabicFont{Noto Naskh Arabic}
+\setArabicBoldFont{Noto Naskh Arabic Bold}
+\end{verbatim}
+
+If the requested font is not found, OmniLaTeX falls back to
+\textbf{Noto Naskh Arabic} (bundled with \TeX\ Live) and emits a
+\texttt{ClassWarning}.
+
+Arabic-Indic digits (٠١٢٣٤٥٦٧٨٩) can be enabled in place of Western
+Arabic digits:
+
+\begin{verbatim}
+\arabicindictrue    % Use ٠١٢٣٤٥٦٧٨٩
+\arabicindicfalse   % Use 0123456789 (default)
+\end{verbatim}
+
+The bidi layout mirrors margins so the binding edge is on the right side
+for RTL documents.  Lists, TOC dot leaders, and float placement are all
+automatically adjusted by the \texttt{bidi} package.
+
+A complete Arabic example is available in \texttt{examples/rtl-arabic/}.
+
+% =========================================================================
+\section{Hebrew}
+% =========================================================================
+
+Hebrew support is activated with \texttt{language=hebrew}.  The default
+font is \textbf{David CLM} with \textbf{David CLM Bold} for bold weight:
+
+\begin{verbatim}
+\setHebrewFont{David CLM}
+\setHebrewBoldFont{David CLM Bold}
+\end{verbatim}
+
+If David CLM is not installed, OmniLaTeX falls back to
+\textbf{Frank Ruehl CLM}.  Hebrew setup follows the same RTL layout
+rules as Arabic: mirrored margins, bidi paragraph direction, and
+RTL-aware list markers.
+
+A complete Hebrew example is available in \texttt{examples/rtl-hebrew/}.
+
+% =========================================================================
+\section{Persian}
+% =========================================================================
+
+Persian (Farsi) support is activated with \texttt{language=persian}.
+Persian uses the same Arabic script fonts but is tracked as a separate
+script by the RTL module via \texttt{\textbackslash omnilatex@rtlscript}.
+
+Persian reuses the Arabic font configuration (\cs{setArabicFont}) since
+the Arabic script covers Persian glyphs.  The RTL layout, math mode
+direction, and list alignment are applied identically to Arabic.
+
+% =========================================================================
+\section{RTL Title Page}
+% =========================================================================
+
+KOMA-Script's \cs{usekomafont}\texttt{\{title\}} defaults to
+\cs{sffamily}, which overrides fontspec's automatic script-based font
+detection.  OmniLaTeX works around this by overriding the title page
+fonts at \cs{AtBeginDocument}:
+
+\begin{verbatim}
+\setkomafont{title}{\arabicfont\bfseries\Huge}    % Arabic/Persian
+\setkomafont{title}{\hebrewfont\bfseries\Huge}      % Hebrew
+\end{verbatim}
+
+The override applies to all title page elements: \texttt{title},
+\texttt{author}, \texttt{subtitle}, \texttt{date}, and
+\texttt{publishers}.  This ensures the title page renders in the correct
+script font regardless of KOMA-Script's font family selection.
+
+% =========================================================================
+\section{Inline Direction Control}
+% =========================================================================
+
+For mixed-direction documents, OmniLaTeX provides two convenience commands
+that wrap the \texttt{bidi} package's direction primitives:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Inline direction control commands.}
+  \label{tab:rtl-inline}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Command & Underlying & Use case \\
+    \midrule
+    \texttt{\textbackslash LTRinline\{text\}} & \texttt{\textbackslash textLR} & LTR text in RTL document \\
+    \texttt{\textbackslash RTLinline\{text\}} & \texttt{\textbackslash textRL} & RTL text in LTR document \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+These are thin wrappers and can be used in any text context:
+
+\begin{verbatim}
+\RTLinline{مرحبا}  % Inline Arabic in an English document
+\LTRinline{Hello}  % Inline English in an Arabic document
+\end{verbatim}
+
+% =========================================================================
+\section{RTL Module Architecture}
+% =========================================================================
+
+\texttt{omnilatex-rtl.sty} is structured as a pipeline of setup stages
+that execute when the module is loaded:
+
+\begin{enumerate}
+  \item \textbf{Core bidi engine.}  The \texttt{bidi} package provides
+    fundamental RTL typesetting.  It redefines LaTeX internals for
+    direction-aware paragraph layout, lists, TOC leaders, and float
+    placement.
+
+  \item \textbf{Font configuration.}  Default fonts are stored in
+    internal macros (\texttt{\textbackslash omnilatex@arabicfont@default},
+    \texttt{\textbackslash omnilatex@hebrewfont@default}).  User-facing
+    setter commands (\cs{setArabicFont}, \cs{setHebrewFont}) update these
+    macros and, if the font family has already been initialized, recreate
+    the \cs{newfontfamily} binding.
+
+  \item \textbf{Font application.}  \cs{omnilatex@apply@arabicfonts} and
+    \cs{omnilatex@apply@hebrewfonts} use \cs{IfFontExistsTF} to test
+    whether the requested font is available.  If not, they fall back to
+    a TeX~Live-bundled font and emit a warning.
+
+  \item \textbf{Script detection.}  At load time, the module reads
+    \texttt{\textbackslash omnilatex@language} (set by
+    \texttt{omnilatex.cls}) and dispatches to the appropriate setup:
+    \cs{omnilatex@setup@arabic}, \cs{omnilatex@setup@hebrew}, or
+    \cs{omnilatex@setup@persian}.  Each setup applies layout mirroring,
+    font bindings, math direction enforcement, and list alignment.
+
+  \item \textbf{Math mode direction.}  Inline math is forced to
+    left-to-right via
+    \texttt{\textbackslash everymath\{\textbackslash displaystyle%
+    \textbackslash textdirection=0\}}, ensuring equations remain
+    readable in RTL text.
+
+  \item \textbf{Title page override.}  At \cs{AtBeginDocument}, KOMA
+    title fonts are replaced with script-specific font families for
+    Arabic, Hebrew, and Persian.
+\end{enumerate}
+
+The class file (\texttt{omnilatex.cls}) guards RTL module loading: it
+only loads \texttt{omnilatex-rtl.sty} when the document language is
+\texttt{arabic}, \texttt{hebrew}, or \texttt{persian}.  For all other
+languages, the RTL module is not loaded, avoiding unnecessary bidi
+overhead.

@@ -1,0 +1,77 @@
+\chapter{Cross References}
+
+OmniLaTeX configures \texttt{cleveref} and \texttt{hyperref} to provide
+automatic, contextual cross-references throughout the document.
+
+\section{cleveref}
+
+The \texttt{cleveref} package is loaded automatically.  Use
+\verb|\cref{label}| for lower-case and \verb|\Cref{label}| for
+capitalised references:
+
+\begin{verbatim}
+\cref{fig:x}   → "figure 1"
+\Cref{fig:x}   → "Figure 1"
+\end{verbatim}
+
+The reference string is determined by the counter associated with the
+label, so no manual type name is needed.
+
+\section{Custom crefnames}
+
+Beyond the standard counters, OmniLaTeX registers custom
+\verb|\crefname| definitions for environment types that ship with the
+template, such as \texttt{example} and \texttt{code}/\texttt{listing}:
+
+\begin{verbatim}
+\crefname{code}{listing}{listings}
+\crefname{example}{example}{examples}
+\end{verbatim}
+
+This means \verb|\cref{lst:hello}| resolves to ``listing~1'' without any
+additional configuration.
+
+\section{PDF Bookmarks}
+
+\texttt{hyperref} is configured with PDF metadata (title, author, subject)
+taken from the preamble keys.  Chapter-level bookmarks in the PDF outline
+can be typeset in bold when the \texttt{boldPDFchapters} template option is
+enabled:
+
+\begin{verbatim}
+\ifboldPDFchapters
+    \pdfstringdefaliasprefix{<b>}{</b>}
+\fi
+\end{verbatim}
+
+\section{Equation References}
+
+By default \texttt{cleveref} formats equation references as ``eq.~(1.1)''.
+OmniLaTeX overrides this with
+
+\begin{verbatim}
+\creflabelformat{equation}{#2#1#3}
+\end{verbatim}
+
+which removes the redundant ``eq.'' prefix so that
+\verb|\cref{eq:mass}| produces ``(1.1)'' --- consistent with the convention
+of most physics and engineering journals.
+
+To restore the default behaviour, redefine
+\texttt{\textbackslash crefformat\{equation\}} after loading the template.
+
+\section{Float References}
+
+Figures and tables are numbered per chapter automatically.  When a float
+spans across pages, \texttt{\textbackslash ContinuedFloat} ensures the
+second caption continues the numbering:
+
+\begin{verbatim}
+\begin{figure}
+    \ContinuedFloat
+    \caption{Description (cont.)}
+\end{figure}
+\end{verbatim}
+
+References to both parts of the continued float resolve to the same
+number via \verb|\cref|.

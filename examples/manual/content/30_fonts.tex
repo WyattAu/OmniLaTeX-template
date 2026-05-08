@@ -1,0 +1,250 @@
+\chapter{Fonts}
+
+OmniLaTeX provides a comprehensive font system built on LuaLaTeX's native OpenType
+support. All fonts are configured through a layered architecture that separates
+font selection, feature configuration, and fallback logic.
+
+% =========================================================================
+\section{Font System Architecture}
+% =========================================================================
+
+OmniLaTeX targets LuaHBTeX 1.21.0+, which provides native OpenType and
+Unicode support without the shims required by XeLaTeX. The font stack is
+composed of three core packages:
+
+\begin{description}
+  \item[\texttt{fontspec}] Provides \cs{setmainfont}, \cs{setsansfont},
+    \cs{setmonofont}, and raw OpenType feature control.
+  \item[\texttt{unicode-math}] Replaces the legacy \texttt{amsmath} math font
+    interface with OpenType math fonts.  Loads \cs{symup}, \cs{symbf},
+    \cs{symit}, and the full \textsc{symb} alphabet.
+  \item[\texttt{lualatex-math}] Fixes a handful of LuaTeX math-mode bugs
+    (e.g.\ \cs{sqrt} spacing, \cs{overline} thickness) that affect
+    LibreOffice and other engines.
+\end{description}
+
+Font definitions live in the \texttt{omnilatex-fonts} module and are loaded
+before the user preamble, so every document inherits the defaults
+automatically.
+
+% =========================================================================
+\section{Default Font Stack}
+% =========================================================================
+
+\begin{table}[htbp]
+  \centering
+  \caption{Default font families shipped with OmniLaTeX.}
+  \label{tab:default-fonts}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Family        & Default Font               & Module            \\
+    \midrule
+    Roman (serif) & Libertinus Serif           & \texttt{omnilatex-fonts} \\
+    Sans-serif    & Libertinus Sans            & \texttt{omnilatex-fonts} \\
+    Math          & Libertinus Math            & \texttt{omnilatex-fonts} \\
+    Monospaced    & Monaspace Neon             & \texttt{omnilatex-fonts} \\
+    Accessibility & Atkinson Hyperlegible Next & \texttt{omnilatex-fonts} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Libertinus is the spiritual successor to Linux Libertine and provides a
+complete serif, sans, and math family with consistent metrics.
+Monaspace Neon offers five weight-variant glyphs in a single monospaced
+face, making it ideal for code listings.  Atkinson Hyperlegible Next is
+loaded as an accessibility fallback for readers with low vision.
+
+% =========================================================================
+\section{Setting Fonts}
+% =========================================================================
+
+OmniLaTeX exposes four high-level commands that wrap the underlying
+\texttt{fontspec} API:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Font-setting commands.}
+  \label{tab:font-commands}
+  \begin{tabular}{@{}ll@{}}
+    \toprule
+    Command                          & Underlying call            \\
+    \midrule
+    \texttt{\textbackslash setMainFont\{...\}}     & \texttt{\textbackslash setmainfont}  \\
+    \texttt{\textbackslash setSansFont\{...\}}     & \texttt{\textbackslash setsansfont}  \\
+    \texttt{\textbackslash setMonoFont[...]\{...\}} & \texttt{\textbackslash setmonofont}  \\
+    \texttt{\textbackslash setMathFont\{...\}}     & \texttt{\textbackslash setmathfont}  \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Minimal example that switches to Source Serif~4 and Source Code~Pro:
+
+\begin{verbatim}
+\usepackage{omnilatex-fonts}
+\setMainFont{Source Serif 4}
+\setSansFont{Source Sans 3}
+\setMonoFont[Scale=0.88]{Source Code Pro}
+\setMathFont{STIX Two Math}
+\end{verbatim}
+
+% =========================================================================
+\section{Font Feature Tables}
+% =========================================================================
+
+OpenType fonts expose named features (e.g.\ \texttt{liga}, \texttt{kern},
+\texttt{onum}, \texttt{ss01}) that control ligatures, kerning, glyph
+substitution, and stylistic alternates.  OmniLaTeX enables sensible
+defaults for every family:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Default OpenType features by font family.}
+  \label{tab:ot-features}
+  \begin{tabular}{@{}lcccc@{}}
+    \toprule
+    Feature & Roman & Sans & Mono & Math \\
+    \midrule
+    \texttt{kern}   & on & on & on & --- \\
+    \texttt{liga}   & on & on & on & --- \\
+    \texttt{onum}   & on & on & on & --- \\
+    \texttt{pnum}   & on & on & on & on  \\
+    \texttt{ss01}   & on & off & off & --- \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+To query available features for any installed font, run:
+
+\begin{verbatim}
+lualatex --luaonly -e "
+  local f = require'fontloader.font'
+  -- inspect font's 'features' table
+"
+\end{verbatim}
+
+Or use the \texttt{otfinfo} command-line tool bundled with \TeX\ Live:
+
+\begin{verbatim}
+otfinfo --features LibertinusSerif-Regular.otf
+\end{verbatim}
+
+To override features per family, pass the \texttt{Features} key:
+
+\begin{verbatim}
+\setMainFont{Libertinus Serif}[
+  RawFeature={+ss01,+salt=3},
+  Ligatures=TeX,
+]
+\end{verbatim}
+
+% =========================================================================
+\section{Icon Fonts}
+% =========================================================================
+
+OmniLaTeX loads \texttt{fontawesome5}, which provides over 1\,500 scalable
+icons as font glyphs.  The primary interface is \cs{faIcon}\texttt{\{name\}}:
+
+\begin{verbatim}
+\faIcon{graduation-cap}  \faIcon{github}  \faIcon{python}
+\end{verbatim}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Commonly used Font Awesome icons.}
+  \label{tab:fa-icons}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Command                          & Icon & Use case          \\
+    \midrule
+    \texttt{\textbackslash faIcon\{graduation-cap\}} & \faIcon{graduation-cap} & Education \\
+    \texttt{\textbackslash faIcon\{github\}}          & \faIcon{github}          & Version control \\
+    \texttt{\textbackslash faIcon\{python\}}          & \faIcon{python}          & Programming \\
+    \texttt{\textbackslash faIcon\{envelope\}}        & \faIcon{envelope}        & Contact \\
+    \texttt{\textbackslash faIcon\{home\}}            & \faIcon{home}            & Navigation \\
+    \texttt{\textbackslash faIcon\{book\}}            & \faIcon{book}            & References \\
+    \texttt{\textbackslash faIcon\{warning\}}         & \faIcon{warning}         & Alerts \\
+    \texttt{\textbackslash faIcon\{lightbulb\}}       & \faIcon{lightbulb}       & Tips \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Icons inherit the surrounding text colour and scale, so they integrate
+seamlessly into headings, footers, and inline text.
+
+% =========================================================================
+\section{CJK Fonts}
+% =========================================================================
+
+Chinese, Japanese, and Korean (CJK) typesetting is handled by
+\texttt{luatexja-fontspec}, a bridge between \texttt{luatexja} and
+\texttt{fontspec}.  OmniLaTeX provides three convenience commands:
+
+\begin{verbatim}
+\setCJKMainFont{Noto Serif CJK SC}
+\setCJKSansFont{Noto Sans CJK SC}
+\setCJKMonoFont{Noto Sans Mono CJK SC}
+\end{verbatim}
+
+The \texttt{Noto CJK} superfamily covers four regional variants:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Noto CJK regional variants.}
+  \label{tab:cjk-variants}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Tag & Script / Region     & Example font              \\
+    \midrule
+    SC  & Simplified Chinese  & Noto Serif CJK SC         \\
+    TC  & Traditional Chinese & Noto Serif CJK TC         \\
+    JP  & Japanese            & Noto Serif CJK JP         \\
+    KR  & Korean              & Noto Serif CJK KR         \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+See Chapter~\ref{ch:cjk} for full CJK typesetting details including
+punctuation handling, ruby annotations, and inter-paragraph spacing.
+
+% =========================================================================
+\section{RTL Fonts}
+% =========================================================================
+
+Right-to-left (RTL) scripts such as Arabic, Hebrew, and Persian require
+bidirectional text shaping.  OmniLaTeX uses \texttt{bidi} (LuaLaTeX) with
+font fallback chains:
+
+\begin{verbatim}
+\setArabicFont{Noto Naskh Arabic}[Script=Arabic]
+\setHebrewFont{Noto Serif Hebrew}[Script=Hebrew]
+\end{verbatim}
+
+The \texttt{bidi} package automatically mirrors punctuation and adjusts
+mixed LTR/RTL paragraph direction.  Fallback chains ensure that glyphs
+missing from the primary font are drawn from a secondary source.
+
+See Chapter~\ref{ch:rtl} for advanced RTL configuration including
+mixed-script documents and table direction.
+
+% =========================================================================
+\section{Unit Number Font}
+% =========================================================================
+
+Scientific documents that use \texttt{siunitx} benefit from a dedicated
+number font that guarantees consistent digit width and alignment.
+OmniLaTeX defines \cs{unitnumberfont} for this purpose:
+
+\begin{verbatim}
+\sisetup{
+  number-font = \unitnumberfont,
+}
+\end{verbatim}
+
+This selects the monospaced face (Monaspace Neon by default) so that
+tabular number columns align on the decimal point without requiring
+\texttt{S} column type tricks.  The command can be redefined to use any
+font with tabular figures:
+
+\begin{verbatim}
+\renewcommand{\unitnumberfont}{\fontspec{Fira Code}}
+\end{verbatim}

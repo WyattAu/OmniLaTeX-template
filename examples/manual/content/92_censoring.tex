@@ -1,0 +1,79 @@
+\chapter{Censoring}
+\label{ch:censoring}
+
+\section{Censoring Mode}
+
+Activate censoring with the \texttt{censoring=true} class option:
+
+\begin{minted}{latex}
+\documentclass[censoring=true]{omnilatex}
+\end{minted}
+
+This loads the \texttt{censor} package and enables all censoring commands
+described below.  When \texttt{censoring=false} (the default), all censoring
+commands are no-ops and produce no output.
+
+\section{\textbackslash censor\{text\}}
+
+The \cs{censor} command applies inline black-bar redaction:
+
+\begin{minted}{latex}
+The secret project codename is \censor{Operation Sunflower}.
+\end{minted}
+
+The redacted text is replaced with a black rectangle matching the text width.
+Use \cs{StopCensoring} to disable censoring from a point onward:
+
+\begin{minted}{latex}
+\censor{Classified information}
+\StopCensoring
+This text is no longer censored.
+\end{minted}
+
+\section{\textbackslash todo\{text\}}
+
+The \cs{todo} command inserts a marginal note for internal review:
+
+\begin{minted}{latex}
+\todo{Verify these figures with the experimental team.}
+\end{minted}
+
+TODO notes are rendered only when the \texttt{todonotes} class option is
+enabled.  In production builds they are automatically suppressed, ensuring no
+draft annotations leak into the final PDF.
+
+\section{\textbackslash censorbox\{\ldots\}}
+
+For larger redactions that span multiple lines, use \cs{censorbox}:
+
+\begin{minted}{latex}
+\censorbox{%
+  The following dataset contains personally identifiable
+  information (PII) and must not be published:
+  \begin{itemize}
+    \item Names, addresses, phone numbers
+    \item Medical records
+    \item Financial account details
+  \end{itemize}
+}
+\end{minted}
+
+The box renders as a solid black rectangle covering the entire content area.
+
+\section{Practical Use}
+
+Censoring is designed for two primary workflows:
+
+\begin{description}
+  \item[Thesis Submission] Advisors and reviewers often insert comments,
+        suggestions, and revisions during the drafting process.  Before final
+        submission, enable \texttt{censoring=true} to redact all reviewer
+        annotations while preserving the document structure.
+
+  \item[Sensitive Data Redaction] Research papers handling PII, proprietary
+        data, or classified material can use censoring commands to prepare
+        public-facing versions without maintaining separate source files.
+\end{description}
+
+Both workflows benefit from the fact that censoring is a compile-time
+feature---no manual editing of source content is required.

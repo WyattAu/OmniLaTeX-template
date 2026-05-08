@@ -1,0 +1,157 @@
+% !TeX root = ../../../manual.tex
+\chapter{Institutions}
+
+\section{Overview}
+
+OmniLaTeX ships with 16 institution configurations located in
+\texttt{config/institutions/}. Each institution package provides:
+\begin{itemize}
+    \item Logo definitions via \verb|\includesvg| or \verb|\includegraphics|
+    \item Primary and secondary color definitions through \verb|\setkomacolor|
+    \item Optional custom title pages built with TikZ overlays
+    \item Translation-aware branding strings via \verb|\DeclareTranslation|
+\end{itemize}
+
+To activate an institution, load its package in your preamble or pass the
+institution name through the OmniLaTeX configuration mechanism. The default
+institution is \texttt{tuhh}, which serves as the reference implementation.
+
+\section{Institution Reference Table}
+
+\begin{longtblr}[
+    caption = {Institution configurations shipped with OmniLaTeX},
+    label = {tab:institutions},
+]{colspec = {l S[table-format=3.0(3.0)] l l}, rowhead = 1}
+    \toprule
+    Institution & {Primary Color (RGB)} & {Has Logo} & {Custom Title} \\
+    \midrule
+    tuhh        & {---}                 & YES        & YES           \\
+    cambridge   & (163,193,173)         & commented  & commented     \\
+    cmu         & (196,18,48)           & commented  & commented     \\
+    columbia    & (185,217,235)         & commented  & commented     \\
+    epfl        & (255,0,0)             & commented  & commented     \\
+    eth         & (31,64,122)           & commented  & commented     \\
+    harvard     & (165,28,48)           & commented  & commented     \\
+    imperial    & (0,62,116)            & commented  & commented     \\
+    mit         & (163,31,52)           & commented  & commented     \\
+    oxford      & (0,33,71)             & commented  & commented     \\
+    princeton   & (231,117,0)           & commented  & commented     \\
+    stanford    & (140,21,21)           & commented  & commented     \\
+    tudelft     & (0,166,214)           & commented  & commented     \\
+    tum         & (0,101,189)           & commented  & commented     \\
+    yale        & (0,53,107)            & commented  & commented     \\
+    generic     & {---}                 & commented  & commented     \\
+    \bottomrule
+\end{longtblr}
+
+Institutions marked \emph{commented} ship with placeholder definitions that
+can be activated by uncommenting the relevant sections and supplying the
+appropriate logo files.
+
+\section{TUHH in Detail}
+
+The \texttt{tuhh} institution is the most complete configuration and serves as
+the template for all others. Key features include:
+
+\subsection{Logo Definitions}
+
+The TUHH logo is defined as an SVG and embedded via \verb|\includesvg|:
+
+\begin{verbatim}
+\DeclareTranslation{english}{LogoInstitution}{%
+    \includesvg[height=1.2cm]{tuhh-logo}%
+}
+\end{verbatim}
+
+Bilingual support is achieved through separate translations for German and
+English:
+
+\begin{verbatim}
+\DeclareTranslation{ngerman}{LogoInstitution}{%
+    \includesvg[height=1.2cm]{tuhh-logo-de}%
+}
+\end{verbatim}
+
+\subsection{Custom Title Style}
+
+The \verb|\DefineTUHHTitleStyle| command creates a TikZ overlay title page
+with the institution logo, a colored banner, and the document metadata:
+
+\begin{verbatim}
+\DefineTUHHTitleStyle{%
+    \begin{tikzpicture}[remember picture, overlay]
+        % Background fill
+        \fill[tuhhblue] ...
+        % Logo placement
+        \node[anchor=north east] ...
+        % Title text
+        \node[anchor=west] ...
+    \end{tikzpicture}%
+}
+\end{verbatim}
+
+\subsection{TUHHuman TikZ Pic}
+
+The TUHH configuration also defines a \verb|TUHHuman| TikZ \verb|pic| for
+decorative use on title pages and section dividers. It is invoked with:
+
+\begin{verbatim}
+\pic at (0,0) {TUHHuman};
+\end{verbatim}
+
+\section{Creating Your Own Institution}
+
+Follow these steps to add a new institution configuration:
+
+\begin{enumerate}
+    \item \textbf{Create the directory:}
+\begin{verbatim}
+mkdir config/institutions/myuni/
+\end{verbatim}
+
+    \item \textbf{Create the package file} \texttt{myuni.sty} with a proper
+          package declaration:
+\begin{verbatim}
+\ProvidesPackage{myuni}[2026/01/01 My University Config]
+\end{verbatim}
+
+    \item \textbf{Define the logo} using \verb|\DeclareTranslation| so that
+          it is language-aware:
+\begin{verbatim}
+\DeclareTranslation{english}{LogoMyuni}{%
+    \includesvg[height=1.2cm]{myuni-logo}%
+}
+\end{verbatim}
+
+    \item \textbf{Set institution colors} via KOMA-Script color commands:
+\begin{verbatim}
+\setkomacolor{title}{RGB}{0,50,100}
+\setkomacolor{sectioning}{RGB}{0,50,100}
+\end{verbatim}
+
+    \item \textbf{Optionally define a custom title page} using TikZ overlays,
+          following the TUHH pattern shown above.
+\end{enumerate}
+
+\section{Logo Management}
+
+OmniLaTeX uses \verb|\includesvg| from the \texttt{svg} package to embed
+vector graphics. The workflow requires:
+
+\begin{itemize}
+    \item \textbf{Inkscape} must be installed and available on \verb|PATH|.
+          The \texttt{svg} package invokes Inkscape to convert SVG files to
+          PDF on the fly.
+    \item \textbf{\texttt{-{}-shell-escape}} must be passed to the LaTeX
+          engine to allow external command execution.
+    \item \textbf{\texttt{\textbackslash svgpath}} configures search paths for
+          SVG files, analogous to \verb|\graphicspath|:
+\begin{verbatim}
+\svgpath{{images/logos/}{assets/}}
+\end{verbatim}
+    \item Converted PDFs are cached alongside the source SVG so subsequent
+          compilations are faster.
+\end{itemize}
+
+For debugging SVG inclusion, consult the generated \texttt{.svg-inkscape}
+log files in the output directory.

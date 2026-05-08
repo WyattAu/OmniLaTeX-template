@@ -1,0 +1,94 @@
+\chapter*{Preface}
+\addcontentsline{toc}{chapter}{Preface}
+
+\section{Purpose of This Manual}
+
+This manual serves as the comprehensive reference for the OmniLaTeX document
+class---a modular, extensible \LaTeX{} template designed to unify the production
+of academic and technical documents under a single framework.  Rather than
+maintaining separate templates for theses, articles, reports, presentations, and
+posters, OmniLaTeX provides a single class with a rich doctype system that
+adapts its behaviour to the task at hand.
+
+The manual documents every public interface offered by the class: class
+options, document-type profiles, custom commands, supported packages, and
+recommended workflows.  It is intended to be both a tutorial for newcomers and
+a definitive reference for experienced users.
+
+\section{Target Audience}
+
+This manual is written for anyone who produces technical or scientific documents
+with \LaTeX{}:
+
+\begin{itemize}
+    \item \textbf{Graduate students} writing theses or dissertations that must
+          conform to institutional formatting requirements.
+    \item \textbf{Researchers and academics} preparing journal articles,
+          conference papers, and technical reports.
+    \item \textbf{Engineers} generating design documents, specifications, and
+          project documentation.
+    \item \textbf{Technical writers} who need a consistent, maintainable
+          template for multi-chapter publications.
+\end{itemize}
+
+Readers are assumed to have basic familiarity with \LaTeX{} (e.g.\ they know
+what a preamble is and how to compile a document).  No prior experience with
+KOMA-Script or OmniLaTeX is required.
+
+\section{How to Use This Book}
+
+The manual is divided into eleven parts, each covering a major topic area.
+Chapters are designed to be as self-contained as possible so that readers can
+jump directly to the section relevant to their current task.  Where chapters
+depend on material presented elsewhere, explicit cross-references are provided.
+
+A recommended reading order for first-time users:
+
+\begin{enumerate}
+    \item Part~I (\emph{Foundations}) --- installation, quick start, build
+          system, and class options.
+    \item The chapter corresponding to your document type in Part~II
+          (\emph{Document Types}).
+    \item Remaining parts as needed for typography, layout, figures, references,
+          and advanced features.
+\end{enumerate}
+
+\section{Scope and Relation to the TUHH Thesis Template}
+
+OmniLaTeX originated from the Hamburg University of Technology (TUHH) thesis
+template but has since evolved into a general-purpose framework.  This manual
+covers the full OmniLaTeX class in its current form.  Features that are
+specific to the TUHH institutional profile are noted where relevant but are not
+the primary focus.
+
+If you are writing a TUHH thesis, consult the \texttt{doctype=thesis} profile
+documentation in Chapter~\ref{ch:theses} for institution-specific configuration
+options.
+
+\section{Acknowledgments}
+
+OmniLaTeX builds upon the work of countless contributors to the \TeX{} and
+\LaTeX{} ecosystems.  Special thanks go to the KOMA-Script team for the
+\texttt{scrbook}, \texttt{scrreprt}, and \texttt{scrartcl} base classes that
+form the foundation of every OmniLaTeX document.  The \texttt{minted},
+\texttt{biblatex}, \texttt{glossaries-extra}, and \texttt{tikz} communities
+have also been instrumental in making this template possible.
+
+\section{Conventions Used in This Manual}
+
+The following typographic conventions are used throughout:
+
+\begin{itemize}
+    \item \texttt{Monospace text} denotes \LaTeX{} commands, environments,
+          file names, and code snippets.
+    \item \textsf{Sans-serif text} denotes option names and key-value pairs.
+    \item \textbf{Bold text} highlights key terms on their first appearance.
+    \item \fbox{\small UI paths} indicates clickable menu or interface elements.
+\end{itemize}
+
+All code examples are shown in monospaced listings and are designed to be
+directly compilable.  Where an example is abbreviated for clarity, the
+omissions are explicitly noted.
+
+Full details on these conventions are given in the next chapter,
+\emph{Notation \& Conventions}.

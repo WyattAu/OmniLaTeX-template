@@ -1,0 +1,171 @@
+\chapter{Module Architecture}
+
+\section{Module Dependency Graph}
+
+OmniLaTeX loads its 27 library modules in a strict order to satisfy
+dependencies.  The load order forms a directed acyclic graph with no
+circular dependencies:
+
+\begin{enumerate}
+  \item \textbf{Core} --- \texttt{omnilatex-base.sty} is always loaded
+        first by \texttt{omnilatex.cls}.  It provides fundamental macros
+        and sets up the package infrastructure.
+
+  \item \textbf{Utils} --- Utility modules loaded early because they are
+        depended on by nearly everything else:
+        \texttt{omnilatex-utils}, \texttt{omnilatex-colors},
+        \texttt{omnilatex-themes}.
+
+  \item \textbf{Typography} --- Font, list, typesetting, and math modules:
+        \texttt{omnilatex-fonts}, \texttt{omnilatex-lists},
+        \texttt{omnilatex-typesetting}, \texttt{omnilatex-math}.
+
+  \item \textbf{Layout} --- Page geometry, KOMA integration, floats,
+        boxes, document structure, presentation, and accessibility:
+        \texttt{omnilatex-page}, \texttt{omnilatex-koma},
+        \texttt{omnilatex-floats}, \texttt{omnilatex-boxes},
+        \texttt{omnilatex-document}, \texttt{omnilatex-presentation},
+        \texttt{omnilatex-accessibility}.
+
+  \item \textbf{Graphics} --- Image support and TikZ integration:
+        \texttt{omnilatex-graphics}, \texttt{omnilatex-tikz-core},
+        \texttt{omnilatex-tikz-engineering}.
+
+  \item \textbf{References} --- Hyperlinks, bibliography, citations, and
+        glossary: \texttt{omnilatex-hyperref}, \texttt{omnilatex-biblio},
+        \texttt{omnilatex-citations}, \texttt{omnilatex-glossary}.
+
+  \item \textbf{Code} --- Code listing support:
+        \texttt{omnilatex-listings}.
+
+  \item \textbf{Tables} --- Table formatting:
+        \texttt{omnilatex-tables}.
+
+  \item \textbf{Language} --- Internationalisation, CJK, and RTL:
+        \texttt{omnilatex-i18n}, \texttt{omnilatex-cjk},
+        \texttt{omnilatex-rtl}.
+\end{enumerate}
+
+Optional modules are gated by \texttt{enable*} class options (see
+Chapter~\ref{ch:class-options}).  When disabled, the corresponding
+\texttt{\textbackslash RequirePackage} call is skipped entirely, reducing
+load time and avoiding unnecessary package conflicts.
+
+\section{Module Categories}
+
+All 27 modules are organised into nine categories by functional domain:
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{@{} l l p{5cm} @{}}
+    \toprule
+    \textbf{Category} & \textbf{Modules} & \textbf{Count} \\
+    \midrule
+    Core &
+      omnilatex-base &
+      1 \\[3pt]
+    Utils &
+      omnilatex-utils, omnilatex-colors, omnilatex-themes &
+      3 \\[3pt]
+    Typography &
+      omnilatex-fonts, omnilatex-lists, omnilatex-typesetting,
+      omnilatex-math &
+      4 \\[3pt]
+    Layout &
+      omnilatex-page, omnilatex-koma, omnilatex-floats,
+      omnilatex-boxes, omnilatex-document, omnilatex-presentation,
+      omnilatex-accessibility &
+      7 \\[3pt]
+    Graphics &
+      omnilatex-graphics, omnilatex-tikz-core,
+      omnilatex-tikz-engineering &
+      3 \\[3pt]
+    References &
+      omnilatex-hyperref, omnilatex-biblio, omnilatex-citations,
+      omnilatex-glossary &
+      4 \\[3pt]
+    Code &
+      omnilatex-listings &
+      1 \\[3pt]
+    Tables &
+      omnilatex-tables &
+      1 \\[3pt]
+    Language &
+      omnilatex-i18n, omnilatex-cjk, omnilatex-rtl &
+      3 \\
+    \midrule
+    \textbf{Total} & & \textbf{27} \\
+    \bottomrule
+  \end{tabular}
+  \caption{Module categories and their constituent packages}
+\end{table}
+
+\section{Design Principles}
+
+\subsection{Single Responsibility}
+
+Each module has a clearly defined scope.  \texttt{omnilatex-fonts}
+handles only font selection; \texttt{omnilatex-floats} handles only
+float placement; \texttt{omnilatex-i18n} handles only language and
+translation setup.  Cross-cutting concerns (e.g.\ a float that uses a
+custom font) are handled by the composing document, not by merging module
+boundaries.
+
+\subsection{Optional Loading}
+
+Modules that pull in heavy dependencies are gated behind boolean class
+options.  The six optional feature flags are:
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{@{} l l l @{}}
+    \toprule
+    \textbf{Option} & \textbf{Default} & \textbf{Modules Enabled} \\
+    \midrule
+    \texttt{enablefonts} & false & omnilatex-fonts (extended) \\
+    \texttt{enablegraphics} & false & omnilatex-graphics \\
+    \texttt{enablemath} & true & omnilatex-math \\
+    \texttt{enabletikz} & true & omnilatex-graphics, omnilatex-tikz-core \\
+    \texttt{enableengineering} & true & omnilatex-tikz-engineering \\
+    \texttt{enablecode} & true & omnilatex-listings \\
+    \texttt{enabletables} & true & omnilatex-tables \\
+    \bottomrule
+  \end{tabular}
+  \caption{Feature flags controlling optional module loading}
+\end{table}
+
+\subsection{KOMA Integration}
+
+Layout modules integrate tightly with KOMA-Script rather than fighting
+against it.  \texttt{omnilatex-koma.sty} provides the bridge layer that
+translates OmniLaTeX's doctype system into KOMA class options
+(\texttt{\textbackslash LoadClass}), while \texttt{omnilatex-page.sty}
+uses KOMA's \ctanpackage{typearea} for margin calculations rather than
+manual \texttt{\textbackslash geometry} calls.
+
+\subsection{No Circular Dependencies}
+
+The load order is strictly hierarchical: Core $\to$ Utils $\to$
+Typography $\to$ Layout $\to$ Graphics $\to$ References $\to$ Code $\to$
+Tables $\to$ Language.  A module in one tier may depend on modules in
+earlier tiers but never on modules in the same or later tiers.  This is
+enforced by the sequential \texttt{\textbackslash RequirePackage} calls
+in \texttt{omnilatex.cls}.
+
+\subsection{File Location}
+
+All library modules reside under \texttt{lib/} with one subdirectory per
+category:
+
+\begin{minted}{text}
+lib/
+  core/          omnilatex-base.sty
+  utils/         omnilatex-utils.sty, omnilatex-colors.sty, omnilatex-themes.sty
+  typography/    omnilatex-fonts.sty, omnilatex-lists.sty, ...
+  layout/        omnilatex-page.sty, omnilatex-koma.sty, ...
+  graphics/      omnilatex-graphics.sty, omnilatex-tikz-core.sty, ...
+  references/    omnilatex-hyperref.sty, omnilatex-biblio.sty, ...
+  code/          omnilatex-listings.sty
+  tables/        omnilatex-tables.sty
+  language/      omnilatex-i18n.sty, omnilatex-cjk.sty, omnilatex-rtl.sty
+\end{minted}

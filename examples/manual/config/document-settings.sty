@@ -1,13 +1,26 @@
-\NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{config/document-settings}[2025-10-18 Manual example settings]
+% Manual-specific document settings
+\manualbrand{OmniLaTeX}
+\manualversion{1.0.0}
+\manualreleasedate{\DTMtoday}
+\manualsupport{\url{https://github.com/WyattAu/OmniLaTeX-template}}
+\manualsummary{%
+  A comprehensive reference manual for the OmniLaTeX document class.
+  Covers every functionality of modern \LaTeX{} through 58 chapters:
+  installation, 26 document types, typography, mathematics,
+  internationalization (18 languages + CJK/RTL), figures, tables,
+  TikZ diagrams, bibliographies, glossaries, code listings,
+  presentations, posters, accessibility, and formal verification
+  via Lean~4.
+}
 
-\title{Widget 2000 User Manual}
-\author{Technical Publications Team}
-\date{\today}
-\manualbrand{WidgetWorks Incorporated}
-\manualversion{2.4}
-\manualreleasedate{August 12, 2025}
-\manualsupport{support@widgetworks.example}
-\manualsummary{This manual covers safety, installation, configuration, and maintenance procedures for the Widget 2000 platform.}
+% Metadata
+\title{The OmniLaTeX Manual}
+\subtitle{A Comprehensive Guide to Modern \LaTeX{}}
+\author{Wyatt Au}
 
-\endinput
+\hypersetup{
+  pdftitle={The OmniLaTeX Manual},
+  pdfauthor={Wyatt Au},
+  pdfsubject={LaTeX, KOMA-Script, OmniLaTeX},
+  pdfkeywords={LaTeX, OmniLaTeX, KOMA-Script, LuaLaTeX, document class},
+}

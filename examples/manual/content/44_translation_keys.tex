@@ -1,0 +1,135 @@
+\chapter{Translation Key Reference}
+
+OmniLaTeX uses \pkg{translator} to manage localised strings for all 18
+supported languages.  Every caption, heading, and label is controlled by a
+\emph{translation key}.  This chapter lists all 47 keys and explains how to
+add new ones.
+
+\section{Complete Key Table}
+
+The table below shows every translation key, its English value, and its
+purpose.  Keys are grouped by category.
+
+\subsection{Document Metadata}
+
+\begin{tabularx}{\linewidth}{l l X}
+  \toprule
+  \textbf{Key} & \textbf{English Value} & \textbf{Purpose} \\
+  \midrule
+  Title          & Title          & Main document title label \\
+  Author         & Author         & Author name label \\
+  Date           & Date           & Date label \\
+  Abstract       & Abstract       & Abstract heading \\
+  Keywords       & Keywords       & Keywords heading \\
+  \bottomrule
+\end{tabularx}
+
+\subsection{Academic}
+
+\begin{tabularx}{\linewidth}{l l X}
+  \toprule
+  \textbf{Key} & \textbf{English Value} & \textbf{Purpose} \\
+  \midrule
+  BachelorThesis & Bachelor's Thesis & Degree label for bachelor \\
+  MasterThesis   & Master's Thesis   & Degree label for master \\
+  DoctoralThesis & Doctoral Thesis   & Degree label for doctoral \\
+  Dissertation   & Dissertation      & Generic dissertation label \\
+  Supervisor     & Supervisor        & Thesis supervisor label \\
+  Examiner       & Examiner          & Thesis examiner label \\
+  Advisor        & Advisor           & Alternate advisor label \\
+  Chair          & Chair             & Committee chair label \\
+  Reviewer       & Reviewer          & Reviewer label \\
+  Department     & Department        & Department label \\
+  Institution    & Institution       & Institution label \\
+  Faculty        & Faculty           & Faculty label \\
+  \bottomrule
+\end{tabularx}
+
+\subsection{Glossary}
+
+\begin{tabularx}{\linewidth}{l l X}
+  \toprule
+  \textbf{Key} & \textbf{English Value} & \textbf{Purpose} \\
+  \midrule
+  Glossary        & Glossary        & Glossary heading \\
+  Acronyms        & Acronyms        & List of acronyms heading \\
+  Nomenclature    & Nomenclature    & Nomenclature heading \\
+  Notation        & Notation        & Notation heading \\
+  Symbol          & Symbol          & Symbol column header \\
+  Description     & Description     & Description column header \\
+  Unit            & Unit            & Unit column header \\
+  \bottomrule
+\end{tabularx}
+
+\subsection{Lists}
+
+\begin{tabularx}{\linewidth}{l l X}
+  \toprule
+  \textbf{Key} & \textbf{English Value} & \textbf{Purpose} \\
+  \midrule
+  TableOfContents & Table of Contents & TOC heading \\
+  ListofFigures   & List of Figures   & LoF heading \\
+  ListofTables    & List of Tables    & LoT heading \\
+  ListofExamples  & List of Examples  & LoE heading \\
+  Bibliography    & Bibliography      & Bibliography heading \\
+  References      & References        & References heading (alt) \\
+  Index           & Index             & Index heading \\
+  Appendix        & Appendix          & Appendix heading \\
+  \bottomrule
+\end{tabularx}
+
+\subsection{Content}
+
+\begin{tabularx}{\linewidth}{l l X}
+  \toprule
+  \textbf{Key} & \textbf{English Value} & \textbf{Purpose} \\
+  \midrule
+  Chapter       & Chapter       & Chapter heading prefix \\
+  Part          & Part          & Part heading prefix \\
+  Section       & Section       & Section heading prefix \\
+  Figure        & Figure        & Figure caption prefix \\
+  Table         & Table         & Table caption prefix \\
+  Example       & Example       & Example caption prefix \\
+  Equation      & Equation      & Equation label \\
+  Theorem       & Theorem       & Theorem heading \\
+  Proof         & Proof         & Proof heading \\
+  Definition    & Definition    & Definition heading \\
+  \bottomrule
+\end{tabularx}
+
+\subsection{Reaction}
+
+\begin{tabularx}{\linewidth}{l l X}
+  \toprule
+  \textbf{Key} & \textbf{English Value} & \textbf{Purpose} \\
+  \midrule
+  Reaction      & Reaction      & Reaction caption prefix \\
+  Mechanism     & Mechanism     & Mechanism caption prefix \\
+  Scheme        & Scheme        & Scheme caption prefix \\
+  \bottomrule
+\end{tabularx}
+
+\section{Adding New Keys}
+
+To introduce a new translation key:
+
+\begin{enumerate}
+  \item Declare the key with an English default:
+        \begin{verbatim}
+\DeclareTranslation{english}{MyNewKey}{My Value}
+        \end{verbatim}
+  \item Add the same key to all 18 supported languages.  Each language file
+        in \texttt{tex/latex/omnilatex-lang/} needs an entry:
+        \begin{verbatim}
+\DeclareTranslation{german}{MyNewKey}{Mein Wert}
+\DeclareTranslation{french}{MyNewKey}{Ma Valeur}
+\DeclareTranslation{japanese}{MyNewKey}{私の値}
+% ... and so on for all languages
+        \end{verbatim}
+  \item Use the key in your templates or documents with
+        \verb|\translate{MyNewKey}|.
+\end{enumerate}
+
+All translation declarations must appear in the preamble.  If a key is
+missing for a given language, \pkg{translator} falls back to English
+automatically.

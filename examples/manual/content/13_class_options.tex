@@ -1,0 +1,329 @@
+\chapter{Class Options}
+\label{ch:class-options}
+
+OmniLaTeX accepts key-value options through the standard
+\texttt{\textbackslash documentclass} interface.  This chapter documents all
+15 class options, their defaults, valid values, and interactions.
+
+\section{Loading Options}
+
+Options are passed as comma-separated entries in square brackets before the
+class name:
+
+\begin{minted}{latex}
+\documentclass[doctype=article, language=german, loadGlossaries]{omnilatex}
+\end{minted}
+
+Two syntactic forms are supported:
+
+\begin{itemize}
+    \item \textbf{Boolean flags} --- standalone keywords that enable a
+          feature.  Example: \textsf{loadGlossaries},
+          \textsf{todonotes}, \textsf{a5}.
+    \item \textbf{Key-value pairs} --- written as
+          \texttt{key=value}.  Example: \textsf{language=english},
+          \textsf{doctype=thesis}, \textsf{institution=tuhh}.
+\end{itemize}
+
+Options are processed by the \ctanpackage{kvoptions} package
+(\texttt{family=omnilatex}, \texttt{prefix=omnilatex@}).  Unrecognised
+options are forwarded to the underlying KOMA-Script base class via
+\texttt{\textbackslash DeclareDefaultOption}.
+
+The option processing order is:
+
+\begin{enumerate}
+    \item \texttt{kvoptions} parses all declared options.
+    \item The \textsf{doctype} value is normalised to lowercase and matched
+          against the alias table in \texttt{omnilatex.cls}.
+    \item The \textsf{titlestyle} value is normalised and validated.
+    \item Matched KOMA class options are combined with any user-supplied
+          options and passed to \texttt{\textbackslash LoadClass}.
+\end{enumerate}
+
+\section{Option Reference}
+
+Table~\ref{tab:class-options} lists all 15 class options.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Complete class option reference}
+    \label{tab:class-options}
+    \begin{tabular}{@{} l l c p{5.5cm} l @{}}
+        \toprule
+        \textbf{Option} & \textbf{Type} & \textbf{Default} &
+        \textbf{Description} & \textbf{Chapter} \\
+        \midrule
+        \textsf{language} &
+            string & \texttt{english} &
+            Document language for hyphenation and localisation &
+            \ref{ch:i18n-system} \\[3pt]
+        \textsf{doctype} &
+            string & \texttt{thesis} &
+            Document profile selecting KOMA base class and layout &
+            \ref{ch:doctype-system} \\[3pt]
+        \textsf{institution} &
+            string & \texttt{none} &
+            Institutional template (e.g.\ \texttt{tuhh}) &
+            \ref{ch:institutions} \\[3pt]
+        \textsf{titlestyle} &
+            string & \texttt{book} &
+            Title page layout variant &
+            \ref{ch:title-pages} \\[3pt]
+        \textsf{censoring} &
+            bool & false &
+            Enable \texttt{\textbackslash censored} command &
+            \ref{ch:censoring} \\[3pt]
+        \textsf{loadGlossaries} &
+            bool & false &
+            Load \ctanpackage{glossaries-extra} integration &
+            \ref{ch:glossaries} \\[3pt]
+        \textsf{todonotes} &
+            bool & false &
+            Load \ctanpackage{todonotes} markup commands &
+            --- \\[3pt]
+        \textsf{enablefonts} &
+            bool & false &
+            Enable extended font selection module &
+            \ref{ch:fonts} \\[3pt]
+        \textsf{enablegraphics} &
+            bool & false &
+            Enable standalone graphics module &
+            \ref{ch:figures} \\[3pt]
+        \textsf{enablemath} &
+            bool & true &
+            Load \ctanpackage{unicode-math} and math support &
+            \ref{ch:mathematics} \\[3pt]
+        \textsf{enabletikz} &
+            bool & true &
+            Load \ctanpackage{tikz} core and graphics module &
+            \ref{ch:tikz-engineering} \\[3pt]
+        \textsf{enableengineering} &
+            bool & true &
+            Load engineering drawing libraries (circuits, gantts) &
+            \ref{ch:tikz-engineering} \\[3pt]
+        \textsf{enablecode} &
+            bool & true &
+            Load \ctanpackage{minted} code listing support &
+            \ref{ch:code-listings} \\[3pt]
+        \textsf{enabletables} &
+            bool & true &
+            Load \ctanpackage{booktabs} and table module &
+            \ref{ch:tables} \\[3pt]
+        \textsf{a5} &
+            void & --- &
+            Switch to A5 paper with 10\,pt font &
+            \ref{ch:page-layout} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Option Details}
+
+\subsection{Document Metadata}
+
+\subsubsection{\textsf{language}}
+
+Sets the document language for \ctanpackage{polyglossia} (via
+\ctanpackage{tracklang}).  Activates language-specific hyphenation
+patterns, localised strings (e.g.\ ``Inhaltsverzeichnis'' for German), and
+automatic CJK or RTL support when applicable.
+
+Valid values: \texttt{english}, \texttt{german}, \texttt{french},
+\texttt{japanese}, \texttt{chinese}, \texttt{simplifiedchinese},
+\texttt{traditionalchinese}, \texttt{korean}, \texttt{arabic},
+\texttt{hebrew}, \texttt{persian}.
+
+Handled by: \texttt{lib/language/omnilatex-i18n.sty}, with automatic
+conditional loading of \texttt{omnilatex-cjk.sty} or
+\texttt{omnilatex-rtl.sty}.
+
+\begin{minted}{latex}
+\documentclass[language=german]{omnilatex}
+\end{minted}
+
+\subsubsection{\textsf{doctype}}
+
+Selects the document profile that determines the KOMA-Script base class,
+page layout, sectioning depth, and feature set.  Over 80 user-friendly
+aliases map to 26 canonical doctypes backed by 3 KOMA classes.
+The full system is documented in Chapter~\ref{ch:doctype-system}.
+
+Default: \texttt{thesis}.  Handled by: \texttt{omnilatex.cls} lines
+111--147.
+
+\begin{minted}{latex}
+\documentclass[doctype=article]{omnilatex}
+\documentclass[doctype=technicalreport]{omnilatex}
+\end{minted}
+
+\subsubsection{\textsf{institution}}
+
+Loads an institutional configuration package that provides branding,
+logo placement, and institution-specific title page commands.  The class
+first checks for a local \texttt{config/institution.sty}, then falls back
+to shared configurations under \texttt{config/institutions/}.
+
+Valid values: \texttt{none} (default), \texttt{tuhh}, or any directory
+name under \texttt{config/institutions/}.
+
+\begin{minted}{latex}
+\documentclass[institution=tuhh]{omnilatex}
+\end{minted}
+
+\subsubsection{\textsf{titlestyle}}
+
+Selects the title page layout variant.  Valid values: \texttt{book},
+\texttt{thesis}, \texttt{article}, \texttt{simple}, \texttt{tuhh}.
+Unknown values produce an informational message and fall back to the
+default layout.
+
+\begin{minted}{latex}
+\documentclass[titlestyle=tuhh]{omnilatex}
+\end{minted}
+
+\subsection{Feature Flags}
+
+\subsubsection{\textsf{censoring}}
+
+Enables the \texttt{\textbackslash censored\{text\}} command, which
+replaces text with black rectangles while preserving layout.  Useful for
+redacted drafts.
+
+\begin{minted}{latex}
+\documentclass[censoring]{omnilatex}
+\end{minted}
+
+\subsubsection{\textsf{loadGlossaries}}
+
+Loads the \ctanpackage{glossaries-extra} integration module
+(\texttt{lib/references/omnilatex-glossary.sty}), enabling
+\texttt{\textbackslash newacronym}, \texttt{\textbackslash newglossaryentry},
+and \texttt{\textbackslash printglossaries}.
+
+\begin{minted}{latex}
+\documentclass[loadGlossaries]{omnilatex}
+\end{minted}
+
+\subsubsection{\textsf{todonotes}}
+
+Loads \ctanpackage{todonotes}, providing
+\texttt{\textbackslash todo\{\}}, \texttt{\textbackslash missingfigure\{\}},
+and inline annotation commands.
+
+\begin{minted}{latex}
+\documentclass[todonotes]{omnilatex}
+\end{minted}
+
+\subsubsection{\textsf{enablefonts}}
+
+Enables extended font selection beyond the default Libertinus family.
+Without this option, only the core font module is loaded.
+
+\begin{minted}{latex}
+\documentclass[enablefonts]{omnilatex}
+\end{minted}
+
+\subsubsection{\textsf{enablegraphics}}
+
+Enables the standalone graphics module (separate from the TikZ bundle).
+Most documents do not need this as graphics support is included with
+\textsf{enabletikz}.
+
+\begin{minted}{latex}
+\documentclass[enablegraphics]{omnilatex}
+\end{minted}
+
+\subsubsection{\textsf{enablemath}}
+
+Loads \ctanpackage{unicode-math} and the math support module
+(\texttt{lib/typography/omnilatex-math.sty}).  Enabled by default.
+Disable for documents that contain no mathematics to reduce load time.
+
+\begin{minted}{latex}
+\documentclass[enablemath=false]{omnilatex}
+\end{minted}
+
+\subsubsection{\textsf{enabletikz}}
+
+Loads \ctanpackage{tikz} core libraries and the graphics module
+(\texttt{lib/graphics/omnilatex-graphics.sty},
+\texttt{lib/graphics/omnilatex-tikz-core.sty}).  Enabled by default.
+
+\begin{minted}{latex}
+\documentclass[enabletikz=false]{omnilatex}
+\end{minted}
+
+\subsubsection{\textsf{enableengineering}}
+
+Loads engineering-specific TikZ libraries
+(\texttt{lib/graphics/omnilatex-tikz-engineering.sty}) including
+circuit diagrams, Gantt charts, and technical drawings.  Enabled by
+default.  Requires \textsf{enabletikz}.
+
+\begin{minted}{latex}
+\documentclass[enableengineering=false]{omnilatex}
+\end{minted}
+
+\subsubsection{\textsf{enablecode}}
+
+Loads the code listing module
+(\texttt{lib/code/omnilatex-listings.sty}) built on
+\ctanpackage{minted}.  Enabled by default.
+
+\begin{minted}{latex}
+\documentclass[enablecode=false]{omnilatex}
+\end{minted}
+
+\subsubsection{\textsf{enabletables}}
+
+Loads the table module
+(\texttt{lib/tables/omnilatex-tables.sty}) providing
+\ctanpackage{booktabs}, \ctanpackage{siunitx} column types, and
+\ctanpackage{multirow}/\ctanpackage{multicol} support.  Enabled by
+default.
+
+\begin{minted}{latex}
+\documentclass[enabletables=false]{omnilatex}
+\end{minted}
+
+\subsection{Layout}
+
+\subsubsection{\textsf{a5}}
+
+A void option (no value) that switches the page size to A5 and sets the
+font size to 10\,pt via \texttt{\textbackslash PassOptionsToPackage}.
+Internally passes \texttt{paper=a5} to \ctanpackage{typearea} and adds
+\texttt{fontsize=10pt} to the user class options.
+
+\begin{minted}{latex}
+\documentclass[a5]{omnilatex}
+\end{minted}
+
+\section{Common Combinations}
+
+\begin{description}
+    \item[Academic thesis] \mintinline{latex}{doctype=thesis, loadGlossaries,
+        todonotes} --- Full thesis profile with glossary and annotation
+        support for draft review.
+
+    \item[Journal article] \mintinline{latex}{doctype=journal,
+        language=english} --- Compact article layout with
+        \textsf{titlepage=true} and \textsf{parskip=half}.
+
+    \item[German report] \mintinline{latex}{doctype=report,
+        language=german, loadGlossaries} --- Report layout with German
+        localisation and glossary integration.
+
+    \item[Minimal draft] \mintinline{latex}{doctype=article,
+        enablemath=false, enabletikz=false, enablecode=false} --- Strips
+        all optional modules for fastest compilation.
+
+    \item[Conference poster] \mintinline{latex}{doctype=poster,
+        enabletikz=true, enableengineering=true} --- A1 poster layout
+        with full TikZ and engineering drawing support.
+
+    \item[TUHH thesis] \mintinline{latex}{doctype=thesis,
+        institution=tuhh, titlestyle=tuhh, loadGlossaries} ---
+        Institution-branded thesis with TUHH title page and glossary.
+\end{description}

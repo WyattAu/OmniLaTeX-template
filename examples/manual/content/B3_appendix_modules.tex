@@ -1,0 +1,104 @@
+\chapter{Module Reference}
+
+OmniLaTeX's functionality is distributed across 27 library modules
+organised under \texttt{lib/}.  Each module is a self-contained
+\texttt{.sty} file loaded conditionally by the main class or by other
+modules.  The table below lists every module with its category and
+purpose.
+
+\begin{longtblr}[
+  caption = {All 27 library modules},
+  label = {tab:module-ref},
+]{colspec = {l l p{7cm}}, rowhead = 1}
+  \toprule
+  \textbf{Module Path} & \textbf{Category} & \textbf{Description} \\
+  \midrule
+  lib/core/omnilatex-base
+    & Core
+    & Build-mode detection, date/time, spacing, and utility packages \\
+  lib/typography/omnilatex-fonts
+    & Typography
+    & Font selection via fontspec and unicode-math \\
+  lib/typography/omnilatex-math
+    & Typography
+    & amsmath, mathtools, siunitx, chemmacros, and custom math commands \\
+  lib/typography/omnilatex-typesetting
+    & Typography
+    & Text formatting, quotation marks, and microtypography \\
+  lib/typography/omnilatex-lists
+    & Typography
+    & Enumerate, itemize, and description list configuration \\
+  lib/layout/omnilatex-koma
+    & Layout
+    & KOMA-Script global options and class setup \\
+  lib/layout/omnilatex-page
+    & Layout
+    & Page geometry, margins, and typearea configuration \\
+  lib/layout/omnilatex-document
+    & Layout
+    & Document-level settings (draft, version, watermark) \\
+  lib/layout/omnilatex-floats
+    & Layout
+    & Float placement rules and caption formatting \\
+  lib/layout/omnilatex-boxes
+    & Layout
+    & tcolorbox styles and custom box environments \\
+  lib/layout/omnilatex-presentation
+    & Layout
+    & Beamer-style presentation support via scrreprt \\
+  lib/layout/omnilatex-accessibility
+    & Layout
+    & PDF/UA accessibility tags and structure \\
+  lib/graphics/omnilatex-graphics
+    & Graphics
+    & graphicx, SVG inclusion, and image helpers \\
+  lib/graphics/omnilatex-tikz-core
+    & Graphics
+    & TikZ core and common library loading \\
+  lib/graphics/omnilatex-tikz-engineering
+    & Graphics
+    & Engineering TikZ libraries (circuits, patterns, decorations) \\
+  lib/tables/omnilatex-tables
+    & Tables
+    & booktabs, tabularx, and longtable configuration \\
+  lib/references/omnilatex-hyperref
+    & References
+    & Hyperref setup and PDF metadata \\
+  lib/references/omnilatex-citations
+    & References
+    & biblatex configuration and citation command setup \\
+  lib/references/omnilatex-biblio
+    & References
+    & Bibliography back-end and bibliography environment tuning \\
+  lib/references/omnilatex-glossary
+    & References
+    & glossaries-extra setup and acronym/abbreviation support \\
+  lib/code/omnilatex-listings
+    & Code
+    & Minted code listings and syntax highlighting \\
+  lib/language/omnilatex-i18n
+    & Language
+    & Translation key system and locale switching \\
+  lib/language/omnilatex-cjk
+    & Language
+    & CJK script support via luatexja \\
+  lib/language/omnilatex-rtl
+    & Language
+    & Right-to-left script support (Arabic, Hebrew) \\
+  lib/utils/omnilatex-utils
+    & Utilities
+    & General-purpose helper macros and convenience commands \\
+  lib/utils/omnilatex-colors
+    & Utilities
+    & Colour theme definitions and palette management \\
+  lib/utils/omnilatex-themes
+    & Utilities
+    & High-level theme selection via \texttt{\textbackslash usetheme} \\
+  \bottomrule
+\end{longtblr}
+
+Module loading follows a dependency graph enforced in the main class
+file.  The \texttt{enable*} boolean class options gate modules at the
+top level: \texttt{enablemath}, \texttt{enabletikz},
+\texttt{enableengineering}, \texttt{enablecode}, and
+\texttt{enabletables}.

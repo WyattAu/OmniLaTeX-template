@@ -1,0 +1,94 @@
+\chapter{Build Modes}
+
+\section{dev Mode}
+
+Development mode (\texttt{BUILD\_MODE=dev}) is the default.  It runs
+\texttt{latexmk} with three passes, full bibliography processing, and
+\texttt{shell-escape} enabled:
+
+\begin{minted}{bash}
+BUILD_MODE=dev python build.py
+\end{minted}
+
+This mode is optimized for iteration speed while still producing a correct
+PDF with resolved cross-references and citations.
+
+\section{prod Mode}
+
+Production mode (\texttt{BUILD\_MODE=prod}) performs full validation:
+
+\begin{minted}{bash}
+BUILD_MODE=prod python build.py
+\end{minted}
+
+All packages are active, including accessibility checks (\cs{validatstructure}),
+glossary compilation, and minted code highlighting.  This is the mode to use
+for final output and archival builds.
+
+\section{ultra Mode}
+
+Ultra mode (\texttt{BUILD\_MODE=ultra}) prioritizes speed over completeness:
+
+\begin{minted}{bash}
+BUILD_MODE=ultra python build.py
+\end{minted}
+
+Only two \texttt{latexmk} passes are executed and bibliography processing is
+skipped.  Cross-references may show ``??'' placeholders.  Use this mode for
+rapid content drafting where exact output is not yet needed.
+
+\section{Mode Detection}
+
+Document source can detect the current build mode via three macros:
+
+\begin{minted}{latex}
+\ifdefined\OmniDev
+  % Development build
+\fi
+\ifdefined\OmniProd
+  % Production build
+\fi
+\ifdefined\OmniUltra
+  % Ultra-fast build
+\fi
+\end{minted}
+
+The \texttt{BUILD\_MODE} environment variable is also available in shell
+commands invoked via \texttt{shell-escape}.
+
+\section{Mode Comparison}
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{lccc}
+    \toprule
+    \textbf{Feature}      & \textbf{dev} & \textbf{prod} & \textbf{ultra} \\
+    \midrule
+    LaTeX passes          & 3            & 3              & 2              \\
+    Bibliography          & Yes          & Yes            & No             \\
+    Shell escape          & Yes          & Yes            & Yes            \\
+    Glossary              & No           & Yes            & No             \\
+    Minted highlighting   & Yes          & Yes            & No             \\
+    Accessibility checks  & No           & Yes            & No             \\
+    \bottomrule
+  \end{tabular}
+  \caption{Build mode feature comparison}
+\end{table}
+
+\section{Setting Build Mode}
+
+Two methods are available:
+
+\begin{enumerate}
+  \item \textbf{Environment variable:}
+    \begin{minted}{bash}
+    BUILD_MODE=prod python build.py
+    \end{minted}
+
+  \item \textbf{Command-line flag:}
+    \begin{minted}{bash}
+    python build.py --mode prod
+    \end{minted}
+\end{enumerate}
+
+The command-line flag takes precedence over the environment variable.

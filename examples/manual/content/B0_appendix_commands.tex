@@ -1,0 +1,68 @@
+\chapter{Command Reference}
+
+This appendix provides an alphabetical quick-reference table of every
+OmniLaTeX custom command.  Detailed usage and examples for each command
+are found in the corresponding chapter.
+
+\begin{longtblr}[
+  caption = {OmniLaTeX command reference},
+  label = {tab:command-ref},
+]{colspec = {l p{8.5cm}}, rowhead = 1}
+  \toprule
+  \textbf{Command} & \textbf{Description} \\
+  \midrule
+  \verb|\abs{x}| & Absolute value: $|x|$ \\
+  \verb|\adaptedfrom{source}| & Attribution for adapted figures/tables \\
+  \verb|\boldPDFchaptersfalse| & Disable bold chapter entries in PDF bookmarks \\
+  \verb|\boldPDFchapterstrue| & Enable bold chapter entries in PDF bookmarks \\
+  \verb|\braces{x}| & Brace delimiters: $\{x\}$ \\
+  \verb|\brackets{x}| & Bracket delimiters: $[x]$ \\
+  \verb|\circlednum{n}| & Circled number: ①, ②, \ldots \\
+  \verb|\censor{text}| & Black-bar redaction preserving layout \\
+  \verb|\coloneq| & Colon-equals operator: $:=$ \\
+  \verb|\cons{x}| & Format a constant/physical constant name \\
+  \verb|\const{x}| & Mathematical constant (upright) \\
+  \verb|\ctrb| & Close a tcolorbox \\
+  \verb|\ctrw| & Open a tcolorbox \\
+  \verb|\ctanpackage{name}| & Hyperlinked CTAN package reference \\
+  \verb|\debugtikzsvg| & Debug helper for TikZ SVG inclusion \\
+  \verb|\deriv{f}{x}| & Ordinary derivative: $\mathrm{d}f/\mathrm{d}x$ \\
+  \verb|\difference{x}{y}| & Set difference or subtraction notation \\
+  \verb|\documenttype{name}| & Declare document type in profile .sty \\
+  \verb|\enquote{text}| & Context-aware quotation marks \\
+  \verb|\eqcomma| & Equation ending with comma (aligned environments) \\
+  \verb|\eqend| & Equation ending with period (aligned environments) \\
+  \verb|\flow{x}| & Volumetric flow rate: $\dot{V}$ \\
+  \verb|\fracderiv{n}{f}{x}| & Fractional derivative of order $n$ \\
+  \verb|\grad{x}| & Gradient operator: $\nabla x$ \\
+  \verb|\heatexentry| & Mark heat exchanger entry in a stream table \\
+  \verb|\heatexexit| & Mark heat exchanger exit in a stream table \\
+  \verb|\hologo{name}| & Typeset a software logo (e.g.\ \LaTeX, \TeX) \\
+  \verb|\idx{x}| & Format an index entry reference \\
+  \verb|\includesvg[file]{name}| & Include an SVG graphic via Inkscape \\
+  \verb|\logmean{x}{y}| & Logarithmic mean: $(x - y)/\ln(x/y)$ \\
+  \verb|\manualbrand{label}| & Insert manual-specific branding element \\
+  \verb|\mean{x}| & Mean value: $\bar{x}$ \\
+  \verb|\mtlbsmlkicon| & Material balance icon for process diagrams \\
+  \verb|\nablaoperator{x}| & Nabla operator applied: $\nabla x$ \\
+  \verb|\name{x}| & Format a proper noun or name \\
+  \verb|\num{x}| & Format a number with locale-aware formatting \\
+  \verb|\omnlFigure[options]{caption}{file}| & OmniLaTeX figure environment \\
+  \verb|\omnlFloatFootmark{n}| & Float footnote mark in caption \\
+  \verb|\omnlFloatFoottext{n}{text}| & Float footnote text below float \\
+  \verb|\omnlFloatRow[cols]{content}| & Float row for subfigure layout \\
+  \verb|\omnlTable[options]{caption}{file}| & OmniLaTeX table environment \\
+  \verb|\parens{x}| & Parenthesis delimiters: $(x)$ \\
+  \verb|\posderiv{n}{f}{x}| & Partial derivative: $\partial^{n} f / \partial x^{n}$ \\
+  \verb|\qq{text}| & Quick quotation shorthand \\
+  \verb|\setCustomMargins{inner}{outer}{top}{bottom}| & Override typearea margins \\
+  \verb|\signaturefield{width}| & Underlined signature field \\
+  \verb|\sub{x}| & Format a subscript reference \\
+  \verb|\sym{x}| & Format a symbol or variable name \\
+  \verb|\symbolplaceholder| & Placeholder for a symbol yet to be defined \\
+  \verb|\temperaturepair{T1}{T2}| & Temperature pair for stream tables \\
+  \verb|\timederiv{f}{t}| & Time derivative: $\dot{f}$ \\
+  \verb|\todo{text}| & Inline TODO annotation (requires \texttt{todonotes}) \\
+  \verb|\vect{x}| & Vector notation: $\vec{x}$ \\
+  \bottomrule
+\end{longtblr}

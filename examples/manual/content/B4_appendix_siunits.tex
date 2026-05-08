@@ -1,0 +1,98 @@
+\chapter{Custom SI Units \& Qualifiers Reference}
+
+This appendix documents the additional SI units and unit qualifiers
+defined by OmniLaTeX in \texttt{omnilatex-math.sty}.  These extend the
+standard \texttt{siunitx} v3 unit set for domain-specific use in
+engineering and the physical sciences.
+
+\section{Custom SI Units}
+
+All custom units are declared with
+\texttt{\textbackslash DeclareSIUnit} and are available immediately
+after module load.  They integrate with the standard
+\texttt{\textbackslash unit}, \texttt{\textbackslash qty}, and
+\texttt{\textbackslash qtyrange} commands.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Custom SI units defined by OmniLaTeX.}
+  \label{tab:ref-custom-units}
+  \begin{tabular}{@{} l l l p{5cm} @{}}
+    \toprule
+    \textbf{Command} & \textbf{Symbol} & \textbf{Base} &
+    \textbf{Description} \\
+    \midrule
+    \texttt{\textbackslash volpercent}
+      & vol\,\% & percent
+      & Volume percent; declared as text to preserve hyphen \\[4pt]
+    \texttt{\textbackslash watthour}
+      & Wh & J/s $\times$ h
+      & Watt-hour energy unit \\[4pt]
+    \texttt{\textbackslash annum}
+      & a & year
+      & Annum (Julian year, $365.25$ days) \\[4pt]
+    \texttt{\textbackslash atmosphere}
+      & atm & pressure
+      & Standard atmosphere ($101\,325$\,Pa) \\[4pt]
+    \texttt{\textbackslash partspermillion}
+      & ppm & ratio
+      & Parts per million ($10^{-6}$) \\[4pt]
+    \texttt{\textbackslash bar}
+      & bar & pressure
+      & Bar ($10^{5}$\,Pa) \\[4pt]
+    \texttt{\textbackslash relhumidity}
+      & \%rh / \%\,r.F. & ratio
+      & Relative humidity; language-dependent label \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The \texttt{\textbackslash relhumidity} unit adapts to the document
+language.  In German documents it renders as \texttt{\%\,r.F.}\
+(\emph{relative Feuchte}); in English documents as \texttt{\%\,RH}.
+
+\section{Custom SI Qualifiers}
+
+Unit qualifiers appear as subscripts and disambiguate quantities that
+share the same SI unit.  OmniLaTeX declares three qualifiers via
+\texttt{\textbackslash DeclareSIQualifier}, sourcing their display text
+from the glossary system for consistency.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Custom SI qualifiers defined by OmniLaTeX.}
+  \label{tab:ref-si-qualifiers}
+  \begin{tabular}{@{} l l p{6cm} @{}}
+    \toprule
+    \textbf{Command} & \textbf{Qualifier} & \textbf{Description} \\
+    \midrule
+    \texttt{\textbackslash dryair}
+      & dry air
+      & Dry air component in moist-air calculations;
+        reads from glossary entries \texttt{sub.dry} and
+        \texttt{sub.air} \\[4pt]
+    \texttt{\textbackslash water}
+      & water
+      & Water component; reads from glossary entry
+        \texttt{sub.water} \\[4pt]
+    \texttt{\textbackslash thermal}
+      & thermal
+      & Thermal property qualifier; reads from glossary entry
+        \texttt{sub.thermal} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Usage follows the standard \texttt{siunitx} qualifier syntax:
+
+\begin{verbatim}
+\unit{\kilogram\per\cubic\metre\dryair}
+% → kg/m³_dry air
+
+\qty{1.2}{\kilo\watt\per\metre\thermal}
+% → 1.2 kW/m_thermal
+\end{verbatim}
+
+The Euro sign is also available as a unit via the \texttt{eurosym}
+package---use \texttt{\textbackslash euro} directly inside
+\texttt{\textbackslash unit\{\}} or \texttt{\textbackslash qty\{\}\{}}.

@@ -1,0 +1,299 @@
+\chapter{Business \& Personal Documents}
+\label{ch:business}
+
+This chapter covers five doctypes for professional and personal use:
+\texttt{cv}, \texttt{cover-letter}, \texttt{invoice}, \texttt{memo}, and
+\texttt{recipe}.  These profiles demonstrate OmniLaTeX's versatility beyond
+academic writing.
+
+\section{CV / Resume}
+\label{sec:cv}
+
+The \texttt{cv} doctype produces a single-page curriculum vitae with a
+compact layout: 10\,pt sans-serif font, empty page style, and minimal
+item spacing (\texttt{documentitemspacing=compact}).  It loads
+\texttt{fontawesome5}, \texttt{tikz}, and \texttt{adjustbox} for icons
+and optional circular profile photos.
+
+\begin{minted}{latex}
+\documentclass[doctype=cv]{../../omnilatex}
+\title{Jane Doe}
+\cvrole{Senior Software Engineer}
+\cvcontact{jane@example.com}
+\cvlocation{San Francisco, CA}
+\cvphone{+1\,555\,012\,3456}
+\cvlinks{\href{https://github.com/janedoe}{github.com/janedoe}
+    \textbullet{}
+    \href{https://janedoe.dev}{janedoe.dev}}
+\cvsummary{Experienced engineer with 10+ years in distributed systems.}
+\begin{document}
+\maketitle
+\section{Experience}
+\begin{itemize}
+    \item \textbf{Staff Engineer} --- Acme Corp, 2020--present
+    \item \textbf{Senior Engineer} --- Startup Inc, 2016--2020
+\end{itemize}
+\section{Education}
+\begin{itemize}
+    \item \textbf{M.Sc.\ Computer Science} --- University, 2016
+\end{itemize}
+\end{document}
+\end{minted}
+
+\subsection{Custom Commands}
+
+\begin{table}[htbp]
+    \centering
+    \caption{CV metadata commands}
+    \label{tab:cv-commands}
+    \begin{tabular}{@{} l p{7.5cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash cvrole\{...\}}        & Job title or role \\
+        \texttt{\textbackslash cvcontact\{...\}}     & Contact line (email or phone) \\
+        \texttt{\textbackslash cvlocation\{...\}}    & City and region \\
+        \texttt{\textbackslash cvphone\{...\}}       & Phone number \\
+        \texttt{\textbackslash cvlinks\{...\}}       & Free-form links and social URLs \\
+        \texttt{\textbackslash cvsummary\{...\}}     & Professional summary (rendered below header rule) \\
+        \texttt{\textbackslash cvimage\{...\}}       & Path to a profile photo (rendered as circular crop) \\
+        \texttt{\textbackslash cvbulletspacing\{...\}} & Set \texttt{\textbackslash itemsep} for list items \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The \texttt{\textbackslash maketitle} command renders the header with name,
+role, location, phone, contact, and links.  When \texttt{\textbackslash cvimage}
+is set, a circular photo (2\,cm diameter via TikZ clipping) appears to the
+left of the header block.  Each \texttt{\textbackslash section} is followed
+by a horizontal rule for visual separation.
+
+\subsection{cv-twopage Variant}
+
+The \texttt{examples/cv-twopage/} example demonstrates a two-page CV using
+\texttt{scrbook} instead of \texttt{scrartcl}.  It uses the same
+\texttt{cv} doctype commands but allows a longer document with chapter
+structure.  See \texttt{examples/cv-twopage/config/document-settings.sty}
+for the full configuration.
+
+\section{Cover Letter}
+\label{sec:cover-letter}
+
+The \texttt{cover-letter} doctype formats a formal cover letter with 11\,pt
+serif font, one-and-a-half line spacing, and a plain page style.  The
+\texttt{\textbackslash maketitle} command is disabled; metadata commands are
+used to populate the letter's address block manually.
+
+\begin{minted}{latex}
+\documentclass[doctype=cover-letter]{../../omnilatex}
+\coverletterrecipient{Dr.\ A.\ Smith}
+\coverletterposition{Senior Engineer}
+\coverlettercompany{Acme Corp}
+\coverletteraddress{123 Main St}
+\coverlettercity{San Francisco, CA 94102}
+\coverletterdate{2025-11-01}
+\coverlettersendername{Jane Doe}
+\coverlettersenderaddress{456 Oak Ave}
+\coverlettersendercity{Berkeley, CA 94701}
+\coverlettersenderphone{+1\,555\,012\,3456}
+\coverlettersenderemail{jane@example.com}
+\begin{document}
+% Use the stored metadata to build the letter body
+\end{document}
+\end{minted}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Cover letter commands}
+    \label{tab:cover-letter-commands}
+    \begin{tabular}{@{} l p{7.5cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash coverletterrecipient\{...\}}  & Recipient name \\
+        \texttt{\textbackslash coverletterposition\{...\}}   & Job position title \\
+        \texttt{\textbackslash coverlettercompany\{...\}}    & Company name \\
+        \texttt{\textbackslash coverletteraddress\{...\}}    & Recipient street address \\
+        \texttt{\textbackslash coverlettercity\{...\}}       & Recipient city and postcode \\
+        \texttt{\textbackslash coverletterdate\{...\}}       & Letter date (default: \texttt{\textbackslash today}) \\
+        \texttt{\textbackslash coverlettersendername\{...\}} & Sender name \\
+        \texttt{\textbackslash coverlettersenderaddress\{...\}} & Sender street address \\
+        \texttt{\textbackslash coverlettersendercity\{...\}} & Sender city and postcode \\
+        \texttt{\textbackslash coverlettersenderphone\{...\}} & Sender phone \\
+        \texttt{\textbackslash coverlettersenderemail\{...\}} & Sender email \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Invoice}
+\label{sec:invoice}
+
+The \texttt{invoice} doctype produces a professional invoice with a centered
+title, from/to address blocks, and a line-item table.  It uses
+\texttt{DIV=10} for generous margins and \texttt{pagestyle=empty}.
+
+\begin{minted}{latex}
+\documentclass[doctype=invoice]{../../omnilatex}
+\invnumber{INV-2025-0042}
+\invdate{2025-10-01}
+\invdue{2025-10-31}
+\invfrom{Jane Doe Consulting}
+\invto{Acme Corporation}
+\invfromaddr{456 Oak Ave, Berkeley, CA 94701}
+\invtoaddr{123 Main St, San Francisco, CA 94102}
+\invcurrency{USD}
+\invtaxrate{10}
+\invpaymentterms{Net 30}
+\begin{document}
+\maketitle
+\begin{tabular}{@{} p{6cm} r r r @{}}
+    \toprule
+    \textbf{Description} & \textbf{Qty} & \textbf{Price} & \textbf{Total} \\
+    \midrule
+    \invoiceitem{Backend Development}{40}{150}
+    \invoiceitem{Code Review}{10}{200}
+    \bottomrule
+\end{tabular}
+\end{document}
+\end{minted}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Invoice commands}
+    \label{tab:invoice-commands}
+    \begin{tabular}{@{} l p{7.5cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash invnumber\{...\}}       & Invoice number (default: INV-0001) \\
+        \texttt{\textbackslash invdate\{...\}}         & Issue date \\
+        \texttt{\textbackslash invdue\{...\}}          & Due date \\
+        \texttt{\textbackslash invfrom\{...\}}         & Sender company name \\
+        \texttt{\textbackslash invto\{...\}}           & Client name \\
+        \texttt{\textbackslash invfromaddr\{...\}}     & Sender address \\
+        \texttt{\textbackslash invtoaddr\{...\}}       & Client address \\
+        \texttt{\textbackslash invcurrency\{...\}}     & Currency code (default: USD) \\
+        \texttt{\textbackslash invtaxrate\{...\}}      & Tax rate percentage (default: 0) \\
+        \texttt{\textbackslash invpaymentterms\{...\}} & Payment terms (default: Net 30) \\
+        \texttt{\textbackslash invnotes\{...\}}        & Additional notes \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The \texttt{\textbackslash invoiceitem\{desc\}\{qty\}\{price\}} command
+emits a table row with description, quantity, unit price, and computed
+total, followed by a horizontal rule.
+
+\section{Memo}
+\label{sec:memo}
+
+The \texttt{memo} doctype formats a business memorandum with 12\,pt serif
+font and single line spacing.  The \texttt{\textbackslash maketitle}
+command renders a MEMORANDUM header with ruled lines and labelled fields.
+
+\begin{minted}{latex}
+\documentclass[doctype=memo]{../../omnilatex}
+\memoto{Engineering Team}
+\memofrom{Jane Doe, CTO}
+\memosubject{Q4 Development Roadmap}
+\memodate{2025-10-15}
+\memocc{CFO Office}
+\memoref{MEMO-2025-042}
+\begin{document}
+\maketitle
+This memo outlines the development priorities for Q4\ldots
+\end{document}
+\end{minted}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Memo commands}
+    \label{tab:memo-commands}
+    \begin{tabular}{@{} l p{7.5cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash memoto\{...\}}      & Recipient \\
+        \texttt{\textbackslash memofrom\{...\}}    & Sender \\
+        \texttt{\textbackslash memosubject\{...\}} & Subject line \\
+        \texttt{\textbackslash memodate\{...\}}    & Date (default: \texttt{\textbackslash today}) \\
+        \texttt{\textbackslash memocc\{...\}}      & CC list (omitted when empty) \\
+        \texttt{\textbackslash memobcc\{...\}}     & BCC list (omitted when empty) \\
+        \texttt{\textbackslash memoref\{...\}}     & Reference number (omitted when empty) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The header renders as \textbf{TO}, \textbf{FROM}, \textbf{DATE}, and
+\textbf{RE} fields with a 1.5\,cm label width.  \texttt{REF} and
+\texttt{CC} fields are only displayed when non-empty.
+
+\section{Recipe}
+\label{sec:recipe}
+
+The \texttt{recipe} doctype formats cooking recipes with metadata, an
+ingredients list, step-by-step instructions, and optional chef's notes.
+It uses \texttt{parskip=half} and single line spacing.
+
+\begin{minted}{latex}
+\documentclass[doctype=recipe]{../../omnilatex}
+\title{Classic Margherita Pizza}
+\author{Jane Doe}
+\recipeMeta{prep}{30 minutes}
+\recipeMeta{cook}{12 minutes}
+\recipeMeta{servings}{4}
+\recipeMeta{difficulty}{Easy}
+\recipeMeta{cuisine}{Italian}
+\recipeMeta{category}{Main Course}
+\recipeMeta{calories}{280}
+\begin{document}
+\maketitle
+\begin{ingredients}
+    \item 500g bread flour
+    \item 7g active dry yeast
+    \item 200ml warm water
+\end{ingredients}
+\begin{instructions}
+    \item Combine flour, yeast, and salt in a large bowl.
+    \item Add warm water and mix until a dough forms.
+\end{instructions}
+\recipeNote{For a crispier crust, preheat the oven to 250\textdegree C.}
+\end{document}
+\end{minted}
+
+\subsection{Metadata Commands}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Recipe metadata commands}
+    \label{tab:recipe-commands}
+    \begin{tabular}{@{} l p{7.5cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash recipeprep\{...\}}       & Preparation time (default: --) \\
+        \texttt{\textbackslash recipecook\{...\}}       & Cooking time (default: --) \\
+        \texttt{\textbackslash recipeservings\{...\}}   & Number of servings (default: --) \\
+        \texttt{\textbackslash recipedifficulty\{...\}} & Difficulty level (default: --) \\
+        \texttt{\textbackslash recipecuisine\{...\}}    & Cuisine type (default: --) \\
+        \texttt{\textbackslash recipecategory\{...\}}   & Meal category (default: --) \\
+        \texttt{\textbackslash recipecalories\{...\}}   & Calories per serving (default: --) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+All metadata fields can also be set via the helper
+\texttt{\textbackslash recipeMeta\{key\}\{value\}}, which expands to
+\texttt{\textbackslash recipe\textit{key}\{value\}}.  The metadata is
+rendered in a tcolorbox with a blue frame below the title.
+
+\subsection{Environments and Helpers}
+
+\begin{itemize}
+    \item \texttt{ingredients} --- A bulleted list with compact spacing
+          (\texttt{leftmargin=1.5em}, \texttt{itemsep=2pt}).
+    \item \texttt{instructions} --- A numbered list with slightly wider
+          spacing (\texttt{leftmargin=2em}, \texttt{itemsep=4pt}).
+    \item \texttt{\textbackslash recipeNote\{...\}} --- A tcolorbox with an
+          orange frame, titled ``Chef's Note'', for tips and variations.
+\end{itemize}

@@ -1,0 +1,110 @@
+\chapter{PDF Accessibility}
+
+\section{PDF/UA-1 Compliance}
+
+The template activates PDF/UA-1 tagging through
+\texttt{omnilatex-accessibility.sty}, which loads and configures the
+\texttt{tagpdf} package.  Validation is performed with:
+
+\begin{minted}{latex}
+\validatstructure
+\end{minted}
+
+This command checks the tag tree at the end of compilation and reports
+structural issues such as missing headings or incorrectly nested elements.
+
+\section{Alt Text for Figures}
+
+Every figure must have alternative text for screen readers.  Place
+\cs{alttext} immediately before the \texttt{figure} environment:
+
+\begin{minted}{latex}
+\alttext{Scatter plot showing correlation between temperature
+and ice cream sales from 2019 to 2023}
+\begin{figure}
+  \centering
+  \includegraphics{figures/scatter-plot}
+  \caption{Temperature vs.\ Ice Cream Sales}
+\end{figure}
+\end{minted}
+
+For TikZ diagrams, use \cs{tikzalttext} inside the \texttt{tikzpicture}
+environment:
+
+\begin{minted}{latex}
+\begin{tikzpicture}
+  \tikzalttext{Block diagram of the compiler pipeline}
+  \node {Lexer} -- node {tokens} {Parser} -- node {AST} {CodeGen};
+\end{tikzpicture}
+\end{minted}
+
+\section{Accessible Links}
+
+The \cs{accessiblelink} macro attaches a screen-reader description to
+hyperlinks:
+
+\begin{minted}{latex}
+\accessiblelink{LaTeX Project}{https://www.latex-project.org/}%
+  {Visit the official LaTeX Project website}
+\end{minted}
+
+The first argument is the visible link text, the second is the URL, and the
+third provides context for assistive technology.
+
+\section{Heading Validation}
+
+\cs{validatstructure} verifies that the document heading hierarchy is
+correct:
+
+\begin{itemize}
+  \item No skipped levels (e.g.\ \cs{section} directly followed by
+        \cs{subsubsection}).
+  \item Every \cs{chapter}/\cs{section} has a corresponding PDF bookmark
+        and tag.
+  \item The logical reading order matches the visual order.
+\end{itemize}
+
+\section{Contrast Checking}
+
+\cs{checkcontrast} verifies that foreground and background colors meet WCAG
+2.1 contrast requirements:
+
+\begin{minted}{latex}
+\checkcontrast{NavyBlue}{white}
+\end{minted}
+
+A warning is issued at compile time if the contrast ratio falls below 4.5:1
+for normal text or 3:1 for large text.
+
+\section{Reading Order}
+
+For complex layouts, explicitly set the PDF reading order:
+
+\begin{minted}{latex}
+\readingorder{n}   % Linear reading order
+\end{minted}
+
+This ensures that multi-column layouts and sidebars are read in the correct
+sequence by assistive technology.
+
+\section{Language Tags}
+
+Multi-language documents should annotate text with language tags:
+
+\begin{minted}{latex}
+\langtag{french}{Ceci est un exemple en fran\c{c}ais.}
+\end{minted}
+
+Screen readers use these tags to switch pronunciation rules appropriately.
+
+\section{Example Walkthrough}
+
+A complete accessibility example is provided in
+\texttt{examples/accessibility-test/}.  Build it with:
+
+\begin{minted}{bash}
+BUILD_MODE=prod python build.py
+\end{minted}
+
+The resulting PDF includes full PDF/UA-1 tags, alt text on all figures, and
+accessible hyperlink annotations.
