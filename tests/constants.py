@@ -101,3 +101,27 @@ DOCTYPE_TO_CLASS = {
     "patent": "scrreprt",
     "research-proposal": "scrreprt",
 }
+
+# Aliases that map example names to canonical doctypes
+# (examples whose directory name differs from their doctype option)
+DOCTYPE_ALIASES = {
+    "technical-report": "technicalreport",
+    "inline-paper": "inlinepaper",
+    "cover-letter-formal": "cover-letter",
+    "cv-twopage": "cv",
+    "thesis-spacing": "thesis",
+    "thesis-tuhh": "thesis",
+    "article-color": "article",
+    "citation-styles": "article",
+    "multi-language": "article",
+    "cjk-chinese": "article",
+    "cjk-japanese": "article",
+    "cjk-korean": "article",
+    "rtl-arabic": "article",
+    "rtl-hebrew": "article",
+    "color-themes": "article",
+    "lua-showcase": "article",
+    "accessibility-test": "article",
+    "minimal-custom": None,  # no doctype
+    "minimal-starter": None,  # no doctype
+}

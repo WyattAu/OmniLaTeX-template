@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pytest
 
-from tests.constants import DOCTYPE_TO_CLASS
+from tests.constants import DOCTYPE_TO_CLASS, DOCTYPE_ALIASES as _DOCTYPE_ALIAS_MAP
 
 try:
     from hypothesis import given, settings, HealthCheck
@@ -240,7 +240,11 @@ class TestStructuralProperties:
                 content = main_tex.read_text(encoding="utf-8", errors="replace")
                 m = re.search(r"doctype=([a-zA-Z-]+)", content)
                 if m:
-                    result[ex_dir.name] = m.group(1)
+                    doctype = m.group(1)
+                    # Normalize aliases to canonical doctype names
+                    doctype = _DOCTYPE_ALIAS_MAP.get(doctype, doctype)
+                    if doctype is not None:
+                        result[ex_dir.name] = doctype
         return result
 
     def _get_require_packages(self) -> list[str]:
