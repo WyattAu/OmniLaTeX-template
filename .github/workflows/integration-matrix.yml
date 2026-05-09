@@ -8,17 +8,13 @@ on:
 permissions:
   contents: read
 
-# NOTE: GitHub Actions does NOT support env context in container.image.
-# Docker image digest managed in .env.docker — update both files together.
-# Image: ghcr.io/wyattau/omnilatex-docker@sha256:dae352cb84391a30478c0a18778bc0c82e8b620a3e56dd14a894433f7dd90988
+# Docker image digest is sourced from .env.docker at runtime.
+# The digest-sync workflow updates only .env.docker (no workflow file edits needed).
 
 jobs:
   matrix:
     runs-on: ubuntu-latest
     timeout-minutes: 180
-    container:
-      image: ghcr.io/wyattau/omnilatex-docker@sha256:dae352cb84391a30478c0a18778bc0c82e8b620a3e56dd14a894433f7dd90988
-      options: --user root
     strategy:
       fail-fast: false
       matrix:
@@ -53,22 +49,34 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Read Docker image digest
+        id: digest
+        run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
       - name: Build ${{ matrix.doctype }} (${{ matrix.language }})
         env:
           IS_OMNILATEX_CONTAINER: "true"
           CI: "true"
           TEXINPUTS: ".:${{ github.workspace }}:"
         run: |
-          # Copy .latexmkrc so latexmk picks up project-specific config
-          cp .latexmkrc /tmp/.latexmkrc
-          cat > /tmp/test.tex << 'TEXEOF'
-          \documentclass[doctype=${{ matrix.doctype }},language=${{ matrix.language }}]{omnilatex}
-          \begin{document}
-          Integration test: ${{ matrix.doctype }} in ${{ matrix.language }}.
-          \end{document}
-          TEXEOF
-          latexmk -lualatex -r /tmp/.latexmkrc -interaction=nonstopmode -outdir=/tmp/build /tmp/test.tex
-          test -f /tmp/build/test.pdf && echo "SUCCESS" || echo "FAIL"
+          docker run --rm --entrypoint "" \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            -w /workspace \
+            --user root \
+            -e IS_OMNILATEX_CONTAINER=true \
+            -e CI=true \
+            -e "TEXINPUTS=.:/workspace:" \
+            "${{ steps.digest.outputs.image }}" \
+            bash -c '
+              cp .latexmkrc /tmp/.latexmkrc
+              cat > /tmp/test.tex << "TEXEOF"
+              \documentclass[doctype=${{ matrix.doctype }},language=${{ matrix.language }}]{omnilatex}
+              \begin{document}
+              Integration test: ${{ matrix.doctype }} in ${{ matrix.language }}.
+              \end{document}
+              TEXEOF
+              latexmk -lualatex -r /tmp/.latexmkrc -interaction=nonstopmode -outdir=/tmp/build /tmp/test.tex
+              test -f /tmp/build/test.pdf && echo "SUCCESS" || echo "FAIL"
+            '
 
   report:
     runs-on: ubuntu-latest
