@@ -157,10 +157,10 @@ configuration in \texttt{.devcontainer/devcontainer.json} launches the
 OmniLaTeX Docker image with recommended extensions pre-installed:
 
 \begin{itemize}
-    \item \texttt{ms-python.python} --- Python language support.
-    \item \texttt{james-yu.latex-workshop} --- \LaTeX{} compilation recipes
+    \item \texttt{ms-python.python} -- Python language support.
+    \item \texttt{james-yu.latex-workshop} -- \LaTeX{} compilation recipes
           configured for dev and prod modes.
-    \item \texttt{streetsidesoftware.code-spell-checker} --- Spell checking.
+    \item \texttt{streetsidesoftware.code-spell-checker} -- Spell checking.
 \end{itemize}
 
 To start:
@@ -219,7 +219,7 @@ problems and their solutions.
             \texttt{fc-cache -f -v}. \\[6pt]
         Permission denied on \texttt{build/} &
             Docker creates files as UID/GID 1000 by default.  If your host
-            UID differs, pass \texttt{-e USER\_ID=$(id -u)} or adjust volume
+            UID differs, pass \texttt{-e USER\_ID=\$(id -u)} or adjust volume
             permissions. \\[6pt]
         Out of memory during compilation &
             TeX~Live with \ctanpackage{tikz} and \ctanpackage{pgfplots} can

@@ -9,7 +9,7 @@
 \import{.}{B3_appendix_modules}
 \import{.}{B4_appendix_siunits}
 
-\backmatter
+\pagenumbering{roman}
 
 \nocite{*}
 \printbibliography[heading=\bibname,category=cited]
@@ -18,3 +18,193 @@
 
 \setglossarysection{chapter}
 \printunsrtindex[style=bookindex]
+
+\cleardoubleoddpage
+
+\chapter*{Colophon}
+\addcontentsline{toc}{chapter}{Colophon}
+
+\section*{Build Information}
+
+This manual was typeset using OmniLaTeX with the following toolchain:
+
+\begin{table}[htbp]
+    \centering
+    \caption{Build toolchain}
+    \label{tab:colophon-toolchain}
+    \begin{tabular}{@{} l l @{}}
+        \toprule
+        \textbf{Component} & \textbf{Version / Identifier} \\
+        \midrule
+        Document class     & OmniLaTeX v1.16.0 \\
+        \TeX{} engine      & LuaLaTeX \\
+        KOMA-Script        & Part of TeX~Live~2025+ \\
+        Primary font       & Libertinus Serif, Sans, Mono \\
+        Math font          & Libertinus Math \\
+        Code highlighting  & Pygments (via \ctanpackage{minted}) \\
+        Bibliography       & Biber backend (\ctanpackage{biblatex}) \\
+        Glossary           & \ctanpackage{glossaries-extra} \\
+        Index              & \ctanpackage{imakeidx} \\
+        Tables             & \ctanpackage{booktabs}, \ctanpackage{tabularray} \\
+        Graphics           & \ctanpackage{tikz}, \ctanpackage{pgfplots} \\
+        Boxes              & \ctanpackage{tcolorbox} \\
+        Hyperlinks         & \ctanpackage{hyperref}, \ctanpackage{cleveref} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section*{Compilation Sequence}
+
+The manual is compiled using the standard OmniLaTeX build sequence.
+The recommended build command is:
+
+\begin{minted}{latex}
+% Full build (four passes for cross-references)
+lualatex manual.tex
+biber manual
+lualatex manual.tex
+lualatex manual.tex
+\end{minted}
+
+The build sequence resolves cross-references, bibliography entries,
+glossary entries, and index entries across multiple passes:
+
+\begin{enumerate}
+    \item \textbf{First pass} -- collects citation keys, glossary references,
+          and index entries into auxiliary files.
+    \item \textbf{Biber} -- processes \texttt{.bcf} to generate the
+          bibliography database (\texttt{.bbl}).
+    \item \textbf{Second pass} -- incorporates bibliography and resolves
+          forward references.
+    \item \textbf{Third pass} -- ensures all cross-references (equations,
+          figures, tables, glossary, index) are fully resolved.
+\end{enumerate}
+
+For iterative editing, two passes (lualatex + lualatex) are usually
+sufficient.  A full four-pass build is recommended before final submission
+or publication.
+
+\subsection*{Auxiliary Files Generated During Build}
+
+The compilation process generates several auxiliary files.  These should not
+be manually edited and can be safely deleted to force a clean rebuild:
+
+\begin{table}[htbp]
+    \centering
+    \caption{Auxiliary files produced by the build process}
+    \label{tab:aux-files}
+    \begin{tabular}{@{} l p{7cm} @{}}
+        \toprule
+        \textbf{File} & \textbf{Purpose} \\
+        \midrule
+        \texttt{.aux}   & Cross-reference data for \LaTeX{} \\
+        \texttt{.bcf}   & Bibliography control file for Biber \\
+        \texttt{.bbl}   & Processed bibliography output \\
+        \texttt{.run.xml} & Biber run metadata \\
+        \texttt{.glo}   & Glossary entry data \\
+        \texttt{.gls}   & Processed glossary output \\
+        \texttt{.idx}   & Raw index entries \\
+        \texttt{.ind}   & Processed index output \\
+        \texttt{.ilg}   & Index log \\
+        \texttt{.lof}   & List of figures data \\
+        \texttt{.lot}   & List of tables data \\
+        \texttt{.toc}   & Table of contents data \\
+        \texttt{.log}   & Build log with warnings and errors \\
+        \texttt{.fls}   & File listing from the \TeX{} engine \\
+        \texttt{.fdb\_latexmk} & Latexmk dependency cache \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section*{Reproducible Builds with Nix}
+
+OmniLaTeX supports fully reproducible builds via Nix.  When using the Nix
+flake, all system dependencies (TeX~Live, Python, Pygments) are pinned to
+exact versions, ensuring that the output is bit-for-bit identical across
+machines.  See Chapter~\ref{ch:nix} for detailed Nix workflow instructions.
+
+\begin{minted}{latex}
+% Reproducible build via Nix
+nix build
+# Output: result/bin/manual.pdf
+\end{minted}
+
+The Nix flake pins all dependencies using \texttt{flake.lock}.  To update
+dependencies while maintaining reproducibility:
+
+\begin{minted}{latex}
+nix flake update        # Update all inputs
+nix flake lock --update-input nixpkgs  # Update specific input
+\end{minted}
+
+\section*{Repository and License}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Repository information}
+    \label{tab:colophon-repo}
+    \begin{tabular}{@{} l l @{}}
+        \toprule
+        \textbf{Field} & \textbf{Value} \\
+        \midrule
+        Repository      & \url{https://github.com/WyattAu/OmniLaTeX-template} \\
+        License         & MIT \\
+        Issue tracker   & GitHub Issues \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section*{Bibliography Details}
+
+The bibliography in this manual is managed by \ctanpackage{biblatex} with the
+Biber backend.  Two bibliography sections are printed:
+
+\begin{enumerate}
+    \item \textbf{Cited Works} -- entries referenced via
+          \verb|\cite{}| in the text.  These appear with numbered labels.
+    \item \textbf{Further Reading} -- all other entries in the
+          \texttt{.bib} file that were not explicitly cited.  These appear
+          without numbering (\texttt{env=bibnonum}) and are intended as
+          supplementary references.
+\end{enumerate}
+
+The \verb|\nocite{*}| command ensures that all entries from the
+bibliography database are included, regardless of whether they were cited
+in the text.  Remove this command to list only cited works.
+
+\section*{Glossary and Index}
+
+The glossary is generated by \ctanpackage{glossaries-extra} and collects
+three categories of entries:
+
+\begin{description}
+    \item[Symbols] Mathematical symbols with their notation, description,
+        and units (e.g.\ velocity, pressure, temperature).
+    \item[Abbreviations] Acronyms and initialisms that are expanded on
+        first use (e.g.\ CJK, RTL, DOI).
+    \item[General terms] Technical terms that benefit from a concise
+        definition.
+\end{description}
+
+The index is generated by \ctanpackage{imakeidx} and uses the
+\texttt{bookindex} style for two-level entries.  Index entries are
+embedded in the source using \verb|\index{term}| and
+\verb|\index{term!subterm}| commands.  The \texttt{printunsrtindex}
+command renders the index in unsorted order (as written in the source).
+
+\section*{Final Notes}
+
+OmniLaTeX is a living project.  New doctypes, institutional profiles, and
+module features are added on a rolling basis.  Consult the git log for
+detailed changelog entries between releases.
+
+To check the version of OmniLaTeX you are using, inspect the \LaTeX{} log
+file for the line:
+
+\begin{verbatim}
+Document Class: omnilatex 2026/05/06 v1.16.0
+\end{verbatim}
+
+If you encounter any issues with this manual or with OmniLaTeX itself,
+please file a report on the GitHub issue tracker with a minimal working
+example and the version information from the log.

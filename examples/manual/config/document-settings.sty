@@ -1,4 +1,16 @@
 % Manual-specific document settings
+\RequirePackage{datetime2}
+\usepackage{imakeidx}
+\makeindex
+
+% \cs{name} renders as \name (for documenting commands)
+\providecommand{\cs}[1]{\texttt{\textbackslash#1}}
+
+% Additional packages needed by manual content
+\usepackage{tabularx}
+
+% Increase list nesting depth (default 4 is too shallow for manual content)
+\setlistdepth{6}
 \manualbrand{OmniLaTeX}
 \manualversion{1.0.0}
 \manualreleasedate{\DTMtoday}

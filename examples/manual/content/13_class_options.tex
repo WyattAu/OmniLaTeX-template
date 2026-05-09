@@ -17,10 +17,10 @@ class name:
 Two syntactic forms are supported:
 
 \begin{itemize}
-    \item \textbf{Boolean flags} --- standalone keywords that enable a
+    \item \textbf{Boolean flags} -- standalone keywords that enable a
           feature.  Example: \textsf{loadGlossaries},
           \textsf{todonotes}, \textsf{a5}.
-    \item \textbf{Key-value pairs} --- written as
+    \item \textbf{Key-value pairs} -- written as
           \texttt{key=value}.  Example: \textsf{language=english},
           \textsf{doctype=thesis}, \textsf{institution=tuhh}.
 \end{itemize}
@@ -81,7 +81,7 @@ Table~\ref{tab:class-options} lists all 15 class options.
         \textsf{todonotes} &
             bool & false &
             Load \ctanpackage{todonotes} markup commands &
-            --- \\[3pt]
+            -- \\[3pt]
         \textsf{enablefonts} &
             bool & false &
             Enable extended font selection module &
@@ -111,7 +111,7 @@ Table~\ref{tab:class-options} lists all 15 class options.
             Load \ctanpackage{booktabs} and table module &
             \ref{ch:tables} \\[3pt]
         \textsf{a5} &
-            void & --- &
+            void & -- &
             Switch to A5 paper with 10\,pt font &
             \ref{ch:page-layout} \\
         \bottomrule
@@ -304,26 +304,26 @@ Internally passes \texttt{paper=a5} to \ctanpackage{typearea} and adds
 
 \begin{description}
     \item[Academic thesis] \mintinline{latex}{doctype=thesis, loadGlossaries,
-        todonotes} --- Full thesis profile with glossary and annotation
+        todonotes} -- Full thesis profile with glossary and annotation
         support for draft review.
 
     \item[Journal article] \mintinline{latex}{doctype=journal,
-        language=english} --- Compact article layout with
+        language=english} -- Compact article layout with
         \textsf{titlepage=true} and \textsf{parskip=half}.
 
     \item[German report] \mintinline{latex}{doctype=report,
-        language=german, loadGlossaries} --- Report layout with German
+        language=german, loadGlossaries} -- Report layout with German
         localisation and glossary integration.
 
     \item[Minimal draft] \mintinline{latex}{doctype=article,
-        enablemath=false, enabletikz=false, enablecode=false} --- Strips
+        enablemath=false, enabletikz=false, enablecode=false} -- Strips
         all optional modules for fastest compilation.
 
     \item[Conference poster] \mintinline{latex}{doctype=poster,
-        enabletikz=true, enableengineering=true} --- A1 poster layout
+        enabletikz=true, enableengineering=true} -- A1 poster layout
         with full TikZ and engineering drawing support.
 
     \item[TUHH thesis] \mintinline{latex}{doctype=thesis,
-        institution=tuhh, titlestyle=tuhh, loadGlossaries} ---
+        institution=tuhh, titlestyle=tuhh, loadGlossaries} --
         Institution-branded thesis with TUHH title page and glossary.
 \end{description}

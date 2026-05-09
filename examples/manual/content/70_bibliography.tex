@@ -30,13 +30,13 @@ customisations:
 Key OmniLaTeX customisations:
 
 \begin{itemize}
-    \item \textbf{introcite=label} --- prints a numeric label at the first
+    \item \textbf{introcite=label} -- prints a numeric label at the first
           citation in each chapter.
-    \item \textbf{Family-given name format} --- author names are rendered as
+    \item \textbf{Family-given name format} -- author names are rendered as
           \textsc{Family} Given.
-    \item \textbf{Semicolon delimiter} --- multiple authors in a single
+    \item \textbf{Semicolon delimiter} -- multiple authors in a single
           citation are separated by semicolons.
-    \item \textbf{Small caps family names} --- family names appear in small
+    \item \textbf{Small caps family names} -- family names appear in small
           capitals for visual distinction.
 \end{itemize}
 
@@ -70,18 +70,18 @@ OmniLaTeX supports the full set of \texttt{biblatex} citation commands:
     \toprule
     Command              & Output \\
     \midrule
-    \verb|\cite{key}|        & Numeric label: [1] \\
-    \verb|\textcite{key}|    & Author (year) inline \\
-    \verb|\parencite{key}|   & Parenthesised: (Author, year) \\
-    \verb|\footcite{key}|    & Footnote citation \\
-    \verb|\fullcite{key}|    & Full bibliographic entry inline \\
-    \verb|\autocite{key}|    & Context-sensitive (parencite or footcite) \\
-    \verb|\citeauthor{key}|  & Author name only \\
-    \verb|\citeyear{key}|    & Year only \\
-    \verb|\parencites{key1}{text1}| & Multiple parenthesised citations \\
-    \verb|\textcites{key1}{text1}|  & Multiple textual citations \\
-    \verb|\cites{key1}{text1}|      & Multiple citations with notes \\
-    \verb|\footcites{key1}{text1}|  & Multiple footnote citations \\
+    \texttt{\textbackslash\{\}cite\{key\}}        & Numeric label: [1] \\
+    \texttt{\textbackslash\{\}textcite\{key\}}    & Author (year) inline \\
+    \texttt{\textbackslash\{\}parencite\{key\}}   & Parenthesised: (Author, year) \\
+    \texttt{\textbackslash\{\}footcite\{key\}}    & Footnote citation \\
+    \texttt{\textbackslash\{\}fullcite\{key\}}    & Full bibliographic entry inline \\
+    \texttt{\textbackslash\{\}autocite\{key\}}    & Context-sensitive (parencite or footcite) \\
+    \texttt{\textbackslash\{\}citeauthor\{key\}}  & Author name only \\
+    \texttt{\textbackslash\{\}citeyear\{key\}}    & Year only \\
+    \texttt{\textbackslash\{\}parencites\{key1\}\{text1\}} & Multiple parenthesised citations \\
+    \texttt{\textbackslash\{\}textcites\{key1\}\{text1\}}  & Multiple textual citations \\
+    \texttt{\textbackslash\{\}cites\{key1\}\{text1\}}      & Multiple citations with notes \\
+    \texttt{\textbackslash\{\}footcites\{key1\}\{text1\}}  & Multiple footnote citations \\
     \bottomrule
 \end{longtblr}
 
@@ -105,7 +105,7 @@ brackets: \verb|\parencites[pre1][post1]{key1}[pre2][post2]{key2}|.
 Two mechanisms exist for splitting the bibliography by chapter:
 
 \begin{description}
-    \item[\texttt{refsection}] --- Creates independent bibliography
+    \item[{\texttt{refsection}}] -- Creates independent bibliography
         sections. Each \texttt{refsection} environment resets the citation
         counter and produces its own bibliography. Use
         \verb|\printbibliography[heading=subbibliography]| inside each
@@ -119,7 +119,7 @@ Two mechanisms exist for splitting the bibliography by chapter:
 \end{refsection}
 \end{verbatim}
 
-    \item[\texttt{refsegment}] --- Segments share a single bibliography but
+    \item[{\texttt{refsegment}}] -- Segments share a single bibliography but
         group entries by segment. Use \verb|\printbibliography[
         segment=\therefsegment]| to list only the current segment's entries.
 \end{description}

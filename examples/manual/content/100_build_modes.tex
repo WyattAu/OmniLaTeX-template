@@ -1,17 +1,25 @@
 \chapter{Build Modes}
+\label{ch:buildmodes}
+
+OmniLaTeX supports three build modes that trade completeness for speed.
+The active mode is determined by the \texttt{BUILD\_MODE} environment
+variable and is communicated to the \LaTeX{} source via macros defined
+in \texttt{.latexmkrc}.
 
 \section{dev Mode}
 
 Development mode (\texttt{BUILD\_MODE=dev}) is the default.  It runs
-\texttt{latexmk} with three passes, full bibliography processing, and
+\texttt{latexmk} with up to six passes, bibliography processing, and
 \texttt{shell-escape} enabled:
 
 \begin{minted}{bash}
 BUILD_MODE=dev python build.py
 \end{minted}
 
-This mode is optimized for iteration speed while still producing a correct
-PDF with resolved cross-references and citations.
+This mode is optimised for iteration speed while still producing a correct
+PDF with resolved cross-references and citations.  Biber runs without
+\texttt{-{}-validate-datamodel} to avoid slow validation on every
+iteration.  Glossary compilation via \texttt{bib2gls} is active.
 
 \section{prod Mode}
 
@@ -22,20 +30,23 @@ BUILD_MODE=prod python build.py
 \end{minted}
 
 All packages are active, including accessibility checks (\cs{validatstructure}),
-glossary compilation, and minted code highlighting.  This is the mode to use
-for final output and archival builds.
+glossary compilation, and minted code highlighting.  Biber runs with
+\texttt{-{}-validate-datamodel} to catch malformed bibliography entries.
+This is the mode to use for final output and archival builds.
 
 \section{ultra Mode}
 
-Ultra mode (\texttt{BUILD\_MODE=ultra}) prioritizes speed over completeness:
+Ultra mode (\texttt{BUILD\_MODE=ultra}) prioritises speed over completeness:
 
 \begin{minted}{bash}
 BUILD_MODE=ultra python build.py
 \end{minted}
 
-Only two \texttt{latexmk} passes are executed and bibliography processing is
-skipped.  Cross-references may show ``??'' placeholders.  Use this mode for
-rapid content drafting where exact output is not yet needed.
+Only a single \texttt{latexmk} pass is executed.  Bibliography processing
+is disabled entirely (\texttt{\$bibtex\_use = 0}) and Biber is replaced
+with \texttt{true}.  Glossary compilation is skipped.  Cross-references
+will show ``??'' placeholders.  Use this mode for rapid content drafting
+where exact output is not yet needed.
 
 \section{Mode Detection}
 
@@ -43,13 +54,17 @@ Document source can detect the current build mode via three macros:
 
 \begin{minted}{latex}
 \ifdefined\OmniDev
-  % Development build
+  % Development build -- include draft notes
+  \todo{Check this section before submission.}
 \fi
+
 \ifdefined\OmniProd
-  % Production build
+  % Production build -- run all validation
+  \validatstructure
 \fi
+
 \ifdefined\OmniUltra
-  % Ultra-fast build
+  % Ultra-fast build -- skip heavy packages
 \fi
 \end{minted}
 
@@ -60,19 +75,21 @@ commands invoked via \texttt{shell-escape}.
 
 \begin{table}[htbp]
   \centering
+  \caption{Build mode feature comparison}
+  \label{tab:build-modes}
   \begin{tabular}{lccc}
     \toprule
     \textbf{Feature}      & \textbf{dev} & \textbf{prod} & \textbf{ultra} \\
     \midrule
-    LaTeX passes          & 3            & 3              & 2              \\
-    Bibliography          & Yes          & Yes            & No             \\
-    Shell escape          & Yes          & Yes            & Yes            \\
-    Glossary              & No           & Yes            & No             \\
-    Minted highlighting   & Yes          & Yes            & No             \\
-    Accessibility checks  & No           & Yes            & No             \\
+    \texttt{max\_repeat}  & 6            & 7              & 1              \\
+    Biber runs             & Yes (no validation) & Yes (\texttt{-{}-validate-datamodel}) & No (\texttt{true}) \\
+    \texttt{bib2gls}       & Yes          & Yes            & No             \\
+    Shell escape           & Yes          & Yes            & Yes            \\
+    Minted highlighting    & Yes          & Yes            & Yes            \\
+    Accessibility checks   & No           & Yes            & No             \\
+    Forward refs resolved  & Yes          & Yes            & No             \\
     \bottomrule
   \end{tabular}
-  \caption{Build mode feature comparison}
 \end{table}
 
 \section{Setting Build Mode}
@@ -92,3 +109,92 @@ Two methods are available:
 \end{enumerate}
 
 The command-line flag takes precedence over the environment variable.
+If neither is set, \texttt{dev} is used.
+
+\section{.latexmkrc Detection}
+
+The mode is detected in \texttt{.latexmkrc} by reading the
+\texttt{BUILD\_MODE} environment variable:
+
+\begin{minted}{perl}
+my $build_mode = $ENV{'BUILD_MODE'} || 'dev';
+
+if ($build_mode eq 'prod') {
+    $max_repeat = 7;
+} elsif ($build_mode eq 'ultra') {
+    $max_repeat = 1;
+    $bibtex_use = 0;
+    $do_gls = 0;
+} else {
+    $max_repeat = 6;
+}
+\end{minted}
+
+The \texttt{\$max\_repeat} variable controls how many times
+\texttt{latexmk} reruns \texttt{lualatex} before declaring the build
+complete.  Complex documents with many cross-references may need all
+seven passes in production mode.
+
+\section{When to Use Each Mode}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Recommended mode by workflow}
+  \label{tab:mode-usage}
+  \begin{tabular}{@{}lp{0.6\textwidth}@{}}
+    \toprule
+    \textbf{Mode} & \textbf{When to use} \\
+    \midrule
+    \texttt{ultra} & Rapid drafting, typing content, checking layout \\
+                    & roughly.  Accepts broken refs and missing bib. \\
+    \texttt{dev}   & Normal editing.  Resolves all refs and bib. \\
+                    & Default for day-to-day work. \\
+    \texttt{prod}  & Final builds, submission, archival.  Full \\
+                    & validation with accessibility checks. \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Performance Comparison}
+
+Typical build times for a 100-page document with bibliography and
+glossary:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Approximate build times (100-page document)}
+  \label{tab:build-perf}
+  \begin{tabular}{@{}lcc@{}}
+    \toprule
+    \textbf{Mode} & \textbf{Cold build} & \textbf{Incremental} \\
+    \midrule
+    \texttt{ultra} & $\sim$5\,s   & $\sim$3\,s \\
+    \texttt{dev}   & $\sim$30\,s  & $\sim$8\,s \\
+    \texttt{prod}  & $\sim$45\,s  & $\sim$12\,s \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Incremental times assume a single paragraph change.  Actual times vary
+with hardware, TeX~Live installation size, and document complexity.
+
+\section{Custom Configuration}
+
+To add a custom build mode, extend \texttt{.latexmkrc}:
+
+\begin{minted}{perl}
+if ($build_mode eq 'thesis') {
+    $max_repeat = 8;
+    $biber = "biber --validate-datamodel --debug %O %S";
+    $do_gls = 1;
+}
+\end{minted}
+
+Define a corresponding macro in the document preamble:
+
+\begin{minted}{latex}
+\ifdefined\OmniThesis
+  \usepackage{todonotes}
+  \setlength{\marginparwidth}{2cm}
+\fi
+\end{minted}

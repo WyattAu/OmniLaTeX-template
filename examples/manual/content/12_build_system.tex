@@ -180,9 +180,9 @@ example directory and its dependencies.  This hash is stored in
 On subsequent builds, the current hash is compared against the cached value:
 
 \begin{itemize}
-    \item \textbf{Cache hit} --- The hash matches.  The example is skipped
+    \item \textbf{Cache hit} -- The hash matches.  The example is skipped
           entirely, and the existing PDF is reused.
-    \item \textbf{Cache miss} --- The hash differs (or no entry exists).  The
+    \item \textbf{Cache miss} -- The hash differs (or no entry exists).  The
           example is rebuilt, and the cache is updated with the new hash.
 \end{itemize}
 
@@ -274,7 +274,7 @@ in-document rather than delegating to an external tool.
 \subsection{Performance Tips}
 
 \begin{itemize}
-    \item Use \textsf{dev} mode during editing --- three passes are sufficient
+    \item Use \textsf{dev} mode during editing -- three passes are sufficient
           for most cross-reference resolution.
     \item Use \textsf{ultra} mode for rapid iteration when bibliography and
           glossary accuracy is not needed.

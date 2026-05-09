@@ -8,16 +8,16 @@ framework for institutions to define their own branded title pages.
 Select a style via the \texttt{titlestyle} class option:
 
 \begin{description}
-  \item[\texttt{titlestyle=book}] --- A vertical rule separates the left
+  \item[{\texttt{titlestyle=book}}] -- A vertical rule separates the left
         author block from the right title block.  The author name is set in
         small caps.  Suitable for monographs and textbooks.
-  \item[\texttt{titlestyle=thesis}] --- Similar vertical-rule layout but
+  \item[{\texttt{titlestyle=thesis}}] -- Similar vertical-rule layout but
         includes an examiners table below the author block, listing
         supervisor(s), examiner(s), degree, department, and date.
         Suitable for academic theses.
-  \item[\texttt{titlestyle=simple}] --- The default KOMA-Script title page:
+  \item[{\texttt{titlestyle=simple}}] -- The default KOMA-Script title page:
         centred title, author, and date with no decorative elements.
-  \item[\texttt{titlestyle=TUHH}] --- A TUHH-branded title page with the
+  \item[{\texttt{titlestyle=TUHH}}] -- A TUHH-branded title page with the
         university logo, vertical rule, document-type badge, and examiners
         table.  Requires \texttt{institution=tuhh}.
 \end{description}
@@ -59,16 +59,16 @@ Institutions can register their own title page styles using the
 demonstrates the full mechanism:
 
 \begin{enumerate}
-  \item \textbf{Logo placement} --- The institution logo is positioned at
+  \item \textbf{Logo placement} -- The institution logo is positioned at
         the top of the page using \verb|\includegraphics| inside a
         \texttt{tikzpicture} overlay.
-  \item \textbf{Vertical rule} --- A coloured vertical rule (\texttt{3pt},
+  \item \textbf{Vertical rule} -- A coloured vertical rule (\texttt{3pt},
         institutional colour) divides the left metadata block from the
         right title block.
-  \item \textbf{Document-type badge} --- A small coloured box (e.g.\
-        \textcolor{TUHHgreen}{\textsf{Master's Thesis}}) identifies the
+  \item \textbf{Document-type badge} -- A small coloured box (e.g.\
+        \textcolor{green!60!black}{\textsf{Master's Thesis}}) identifies the
         document type.
-  \item \textbf{Examiners table} --- A tabular lists supervisor, examiner,
+  \item \textbf{Examiners table} -- A tabular lists supervisor, examiner,
         chair, and date in a compact two-column layout.
 \end{enumerate}
 
@@ -82,10 +82,10 @@ The \texttt{thesis} style provides a complete academic title page.  From
 top to bottom:
 
 \begin{enumerate}
-  \item \textbf{Title and subtitle} --- Centred or left-aligned depending
+  \item \textbf{Title and subtitle} -- Centred or left-aligned depending
         on the institution override.
-  \item \textbf{Author line} --- Full name of the candidate.
-  \item \textbf{Examiners table} --- Two-column layout:
+  \item \textbf{Author line} -- Full name of the candidate.
+  \item \textbf{Examiners table} -- Two-column layout:
         \begin{tabularx}{0.9\linewidth}{l l}
           Supervisor:  & Prof.\ Alice Smith \\
           Examiner:    & Prof.\ Bob Jones \\
@@ -93,7 +93,7 @@ top to bottom:
           Department:  & Computer Science \\
           Date:        & May 2026 \\
         \end{tabularx}
-  \item \textbf{Institution} --- University name and optional logo.
+  \item \textbf{Institution} -- University name and optional logo.
 \end{enumerate}
 
 To use:
@@ -140,6 +140,6 @@ To create a new institution-specific title page:
 \end{enumerate}
 
 The style command should be idempotent (safe to call multiple times) and
-should not hard-code font sizes---use \verb|\large|, \verb|\Large|, and
+should not hard-code font sizes--use \verb|\large|, \verb|\Large|, and
 \verb|\LARGE| relative size commands so that the layout scales correctly
 with different base font sizes.

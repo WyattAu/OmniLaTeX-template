@@ -1,4 +1,5 @@
 % Front Matter Aggregator
+
 \pagenumbering{alph}
 
 \pdfbookmark{0}{Title}{\maketitle}
@@ -11,12 +12,150 @@
 \tableofcontents
 
 \cleardoubleoddpage
-\pdfbookmark{0}{\listfigurename}{\listoffigures}
+\pdfbookmark[0]{\listfigurename}{lof}
 \listoffigures
 
 \cleardoubleoddpage
-\pdfbookmark{0}{\listtablename}{\listoftables}
+\pdfbookmark[0]{\listtablename}{lot}
 \listoftables
 
 \cleardoubleoddpage
-\mainmatter
+
+\section*{About This Manual}
+\addcontentsline{toc}{section}{About This Manual}
+
+This manual documents OmniLaTeX v1.16.0, a modular \LaTeX{} document class
+built on KOMA-Script and LuaLaTeX.  It was typeset using OmniLaTeX itself
+with the \texttt{doctype=manual} profile.
+
+\subsection*{How This Manual Is Organised}
+
+The manual is structured into numbered parts that group related chapters:
+
+\begin{description}
+    \item[Part~I -- Foundations]
+        Installation, quick start, build system, and class options.
+        Start here if you are new to OmniLaTeX.
+    \item[Part~II -- Document Types]
+        Dedicated chapters for academic, business, education, visual, and
+        reference doctypes.  Each chapter covers the profile's metadata
+        commands, title page design, and recommended usage.
+    \item[Part~III -- Typography]
+        Fonts, text formatting, mathematics, CJK mathematics, derivatives,
+        and physical math notation.
+    \item[Part~IV -- Internationalisation]
+        The multilingual system, CJK scripts, RTL scripts, and translation
+        keys.
+    \item[Part~V -- Layout]
+        Page layout, sectioning, title pages, and institutional profiles.
+    \item[Part~VI -- Figures and Tables]
+        Figures, tables, TikZ engineering diagrams, and pgfplots.
+    \item[Part~VII -- References]
+        Bibliography, citation styles, glossaries, and cross-references.
+    \item[Part~VIII -- Code and Presentations]
+        Code listings, colour themes, boxes, censoring, accessibility,
+        posters, and presentations.
+    \item[Part~IX -- Build and CI/CD]
+        Build modes, Git integration, Docker, Nix, and CI/CD pipelines.
+    \item[Part~X -- Advanced]
+        Lua scripting and Lean~4 formal verification.
+    \item[Part~XI -- Architecture]
+        The module system, class internals, and extension points.
+\end{description}
+
+\subsection*{Navigating This Manual}
+
+\begin{itemize}
+    \item The \textbf{Table of Contents} (preceding this section) provides
+          a complete overview of all chapters and sections.
+    \item The \textbf{List of Figures}, \textbf{List of Tables},
+          \textbf{List of Examples}, and \textbf{List of Listings} provide
+          page references to all numbered floats and code blocks.
+    \item \textbf{Cross-references} within the text link to the relevant
+          chapter, section, equation, figure, or table.  Clicking any
+          coloured reference navigates directly to the target.
+    \item The \textbf{Index} at the end of the manual provides an
+          alphabetical lookup of all key terms, commands, and concepts.
+    \item The \textbf{Glossary} collects all symbols, abbreviations, and
+          technical terms used throughout the manual.
+\end{itemize}
+
+\subsection*{Document Metadata}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Manual publication metadata}
+    \label{tab:manual-metadata}
+    \begin{tabular}{@{} l l @{}}
+        \toprule
+        \textbf{Field} & \textbf{Value} \\
+        \midrule
+        Document class   & OmniLaTeX v1.16.0 \\
+        Doctype          & manual (\texttt{scrreprt}) \\
+        Base classes     & KOMA-Script \texttt{scrbook}, \texttt{scrreprt},
+                           \texttt{scrartcl} \\
+        Engine           & LuaLaTeX (TeX~Live~2025+) \\
+        Primary font     & Libertinus (serif, sans, mono) \\
+        Math font        & Libertinus Math (\texttt{unicode-math}) \\
+        Code listings    & \ctanpackage{minted} \\
+        Tables           & \ctanpackage{booktabs} + \ctanpackage{tabularray} \\
+        Bibliography     & \ctanpackage{biblatex} + Biber \\
+        Glossary         & \ctanpackage{glossaries-extra} \\
+        Graphics         & \ctanpackage{tikz} + \ctanpackage{pgfplots} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection*{Typographic Conventions}
+
+This manual uses consistent typographic formatting to distinguish between
+different kinds of information.  Full details are given in
+Chapter~\emph{Notation \& Conventions}; a brief summary follows:
+
+\begin{table}[htbp]
+    \centering
+    \caption{Typographic conventions summary}
+    \label{tab:typo-summary}
+    \begin{tabular}{@{} l l @{}}
+        \toprule
+        \textbf{Appearance} & \textbf{Usage} \\
+        \midrule
+        \texttt{Monospace}  & \LaTeX{} commands, code, filenames \\
+        \textsf{Sans-serif} & Key-value options, package options \\
+        \textbf{Bold}       & Key terms on first occurrence \\
+        \emph{Italics}      & Emphasis, introduced terminology \\
+        \textsc{Small Caps} & Proper names of standards \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection*{Code Examples}
+
+All code examples in this manual use the \ctanpackage{minted} package for
+syntax highlighting and are designed to be directly compilable.  Each
+example is enclosed in a \texttt{minted} environment with the language
+specified.  Where an example is shortened for brevity, the ellipsis marker
+\texttt{\ldots} is used and the omission is described in the surrounding
+text.
+
+The \texttt{minted} package requires Python and the Pygments library to be
+installed.  Ensure that \texttt{pip install Pygments} has been run before
+compiling documents that contain code listings.
+
+\subsection*{Contribution and Feedback}
+
+OmniLaTeX is an open-source project and contributions are welcome.
+The canonical source is maintained on GitHub:
+
+\begin{description}
+    \item[Source] \url{https://github.com/WyattAu/OmniLaTeX-template}
+    \item[Issues] Use GitHub Issues for bug reports and feature requests
+    \item[Patches] Fork, create a feature branch, and submit a pull request
+\end{description}
+
+When reporting issues with this manual specifically, please include the
+chapter and section number where the problem occurs, along with the OmniLaTeX
+version printed in the build log.
+
+\cleardoubleoddpage
+\pagenumbering{arabic}

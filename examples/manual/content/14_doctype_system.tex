@@ -11,13 +11,13 @@ doctypes, each backed by one of three KOMA classes
 The doctype system uses a three-tier resolution pipeline:
 
 \begin{enumerate}
-    \item \textbf{User alias} --- The string passed to
+    \item \textbf{User alias} -- The string passed to
           \texttt{doctype=} (e.g.\ \texttt{paper}, \texttt{talk},
           \texttt{tech-report}).
-    \item \textbf{Canonical name} --- The internal doctype identifier
+    \item \textbf{Canonical name} -- The internal doctype identifier
           (e.g.\ \texttt{article}, \texttt{presentation},
           \texttt{technicalreport}).
-    \item \textbf{KOMA class} --- The underlying KOMA-Script base class
+    \item \textbf{KOMA class} -- The underlying KOMA-Script base class
           (\texttt{scrartcl}, \texttt{scrreprt}, or \texttt{scrbook})
           with associated default options.
 \end{enumerate}
@@ -65,11 +65,11 @@ Each KOMA class carries a distinct set of default options, defined in
 Two additional option sets exist for specialised doctypes:
 
 \begin{itemize}
-    \item \texttt{\textbackslash omnilatex@inlinepaperoptions} --- Same as
+    \item \texttt{\textbackslash omnilatex@inlinepaperoptions} -- Same as
           article options with \texttt{titlepage=false}.
-    \item \texttt{\textbackslash omnilatex@journaloptions} --- Same as
+    \item \texttt{\textbackslash omnilatex@journaloptions} -- Same as
           article options with \texttt{titlepage=true}.
-    \item \texttt{\textbackslash omnilatex@cvoptions} ---
+    \item \texttt{\textbackslash omnilatex@cvoptions} --
           \texttt{numbers=noenddot, parskip=full, fontsize=11pt}.
 \end{itemize}
 
@@ -324,24 +324,24 @@ this file defines three lists of doctype strings grouped by KOMA class
 and proves the following theorems:
 
 \begin{description}
-    \item[\texttt{doctype\_class\_deterministic}] Every doctype maps to
+    \item[{\texttt{doctype\_class\_deterministic}}] Every doctype maps to
         at most one KOMA class (determinism via \texttt{Option.some.inj}).
 
-    \item[\texttt{valid\_doctype\_has\_class}] A representative sample of
+    \item[{\texttt{valid\_doctype\_has\_class}}] A representative sample of
         10 doctypes spanning all three classes each resolves to a
         non-\texttt{none} value (proved by \texttt{decide}).
 
-    \item[\texttt{scrartcl\_count}] \texttt{scrartclDoctypes.length = 34}.
+    \item[{\texttt{scrartcl\_count}}] \texttt{scrartclDoctypes.length = 34}.
 
-    \item[\texttt{scrbook\_count}] \texttt{scrbookDoctypes.length = 6}.
+    \item[{\texttt{scrbook\_count}}] \texttt{scrbookDoctypes.length = 6}.
 
-    \item[\texttt{scrreprt\_count}] \texttt{scrreprtDoctypes.length = 20}.
+    \item[{\texttt{scrreprt\_count}}] \texttt{scrreprtDoctypes.length = 20}.
 
-    \item[\texttt{class\_covering}] The total list length equals the sum
+    \item[{\texttt{class\_covering}}] The total list length equals the sum
         of all three class-specific lists
         ($34 + 6 + 20 = 60$).
 
-    \item[\texttt{scrartcl\_is\_largest}] \texttt{scrartcl} has strictly
+    \item[{\texttt{scrartcl\_is\_largest}}] \texttt{scrartcl} has strictly
         more doctypes than both \texttt{scrbook} ($34 > 6$) and
         \texttt{scrreprt} ($34 > 20$), proved via \texttt{omega}.
 \end{description}
@@ -353,16 +353,16 @@ this file models the 26 canonical doctypes as an inductive type and
 proves structural properties of the class partition:
 
 \begin{description}
-    \item[\texttt{doctype\_class\_deterministic}] Each canonical doctype
+    \item[{\texttt{doctype\_class\_deterministic}}] Each canonical doctype
         resolves to exactly one KOMA class (functional correctness).
 
-    \item[\texttt{class\_partition}] The 26 doctypes partition into
+    \item[{\texttt{class\_partition}}] The 26 doctypes partition into
         article (15), report (6), and book (5), with all three sets
         non-empty: $15 + 6 + 5 = 26$.
 
-    \item[\texttt{article\_is\_largest}] The article class contains
+    \item[{\texttt{article\_is\_largest}}] The article class contains
         strictly more doctypes than report ($15 > 6$) and book
         ($15 > 5$).
 
-    \item[\texttt{doctype\_count}] Total canonical doctype count is 26.
+    \item[{\texttt{doctype\_count}}] Total canonical doctype count is 26.
 \end{description}

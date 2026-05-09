@@ -12,7 +12,7 @@ OmniLaTeX presentations use KOMA-Script (\texttt{scrartcl}) rather than the
 \begin{itemize}
     \item Consistent font, colour, and bibliography handling with all other
           doctypes.
-    \item No separate theme system to learn --- institution configs apply
+    \item No separate theme system to learn -- institution configs apply
           directly.
     \item Full access to the entire OmniLaTeX macro library, including
           \texttt{minted} code listings, glossaries, and \texttt{tcolorbox}
@@ -75,17 +75,17 @@ footer decorations appear.
 Each \texttt{presentationframe} performs these steps in order:
 
 \begin{enumerate}
-    \item \texttt{\textbackslash clearpage} --- flush previous content.
-    \item \texttt{\textbackslash presentationframemark} --- increment
+    \item \texttt{\textbackslash clearpage} -- flush previous content.
+    \item \texttt{\textbackslash presentationframemark} -- increment
           \texttt{framecounter}.
-    \item \texttt{\textbackslash presentationHeader} --- draw the TikZ header
+    \item \texttt{\textbackslash presentationHeader} -- draw the TikZ header
           bar with title and author.
     \item User content is rendered.
-    \item \texttt{\textbackslash presentationFooter} --- draw the footer rule,
+    \item \texttt{\textbackslash presentationFooter} -- draw the footer rule,
           short title, and frame counter.
-    \item \texttt{\textbackslash presentationProgressBar} --- draw the 2\,pt
+    \item \texttt{\textbackslash presentationProgressBar} -- draw the 2\,pt
           progress bar.
-    \item \texttt{\textbackslash clearpage} --- finalize the slide.
+    \item \texttt{\textbackslash clearpage} -- finalize the slide.
 \end{enumerate}
 
 The environment accepts an optional argument (currently unused but reserved
@@ -323,17 +323,11 @@ A simple closing slide:
 
 Combine \texttt{minted} with \texttt{presentationblock}:
 
-\begin{minted}{latex}
+\begin{minted}[fontsize=\small]{latex}
 \begin{presentationframe}
     \slidetitle{Example Implementation}
     \begin{presentationblock}[Python]{Fibonacci}
-        \begin{minted}[fontsize=\small]{python}
-def fib(n: int) -> int:
-    a, b = 0, 1
-    for _ in range(n):
-        a, b = b, a + b
-    return a
-        \end{minted}
+        \mintinline[fontsize=\small]{python}|def fib(n): ...|
     \end{presentationblock}
 \end{presentationframe}
 \end{minted}
@@ -351,5 +345,5 @@ Place figures inside frames without float wrappers:
 \end{presentationframe}
 \end{minted}
 
-Do not use \texttt{\textbackslash begin\{figure\}} inside frames --- floats
+Do not use \texttt{\textbackslash begin\{figure\}} inside frames -- floats
 are suppressed by the empty page style.

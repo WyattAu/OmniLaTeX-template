@@ -347,13 +347,7 @@ The \texttt{minted} package works inside poster blocks:
 \begin{minted}{latex}
 \begin{posterblock}[Algorithm]
     \begin{posterblocknotitle}
-        \begin{minted}[fontsize=\footnotesize]{python}
-def train(model, data, epochs=50):
-    for epoch in range(epochs):
-        loss = model.step(data)
-        print(f"Epoch {epoch}: loss={loss:.4f}")
-    return model
-        \end{minted}
+        \mintinline[fontsize=\footnotesize]{python}|def train(model, data, epochs=50): ...|
     \end{posterblocknotitle}
 \end{posterblock}
 \end{minted}

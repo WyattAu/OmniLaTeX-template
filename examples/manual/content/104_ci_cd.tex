@@ -32,32 +32,32 @@ The primary workflow (\texttt{build.yml}) runs on every push to
 to \texttt{main}/\texttt{master}.  It consists of six jobs:
 
 \begin{enumerate}
-  \item \textbf{build} --- Pulls the pinned Docker image from
+  \item \textbf{build} -- Pulls the pinned Docker image from
         \texttt{.env.docker}, runs
         \texttt{python3 build.py --mode prod --verbose build-all} to compile
         all 43 examples, verifies every expected PDF was produced, uploads
         root and example PDFs as artifacts, and prepares a GitHub Pages
         bundle.
 
-  \item \textbf{performance} --- Depends on \texttt{build}.  Rebuilds all
+  \item \textbf{performance} -- Depends on \texttt{build}.  Rebuilds all
         examples with \texttt{--timings --force}, generates a performance
         summary with regression detection via
         \texttt{.github/scripts/extract_metrics.py}, and uploads
         \texttt{build/metrics.json} as an artifact.
 
-  \item \textbf{determinism} --- Runs independently.  Builds the thesis
+  \item \textbf{determinism} -- Runs independently.  Builds the thesis
         example twice with \texttt{--source-date-epoch 1700000000},
         compares page counts and file sizes with a 3\% tolerance to detect
         non-deterministic output.
 
-  \item \textbf{test} --- Depends on \texttt{build}.  Downloads PDF
+  \item \textbf{test} -- Depends on \texttt{build}.  Downloads PDF
         artifacts and runs integration tests via \texttt{pytest} against
         \texttt{tests/test\_modules.py} and \texttt{tests/test\_ctan.py}.
 
-  \item \textbf{deploy-pages} --- Depends on \texttt{build}.  Deploys the
+  \item \textbf{deploy-pages} -- Depends on \texttt{build}.  Deploys the
         site bundle to GitHub Pages (only on \texttt{main} push).
 
-  \item \textbf{changelog} --- Runs only on pull requests.  Checks that
+  \item \textbf{changelog} -- Runs only on pull requests.  Checks that
         \texttt{CHANGELOG.md} was updated whenever \texttt{.sty} or
         \texttt{.cls} files were modified.
 \end{enumerate}
@@ -103,7 +103,7 @@ The \texttt{ctan-upload.yml} workflow triggers on version tags
 upload script (\texttt{scripts/ctan-upload.sh}):
 
 \begin{enumerate}
-  \item \textbf{Pre-flight job} --- Builds the CTAN zip, validates its
+  \item \textbf{Pre-flight job} -- Builds the CTAN zip, validates its
         contents (must contain \texttt{omnilatex.cls}), extracts the version
         from the tag, generates a changelog, and runs a dry-run upload to
         verify all endpoints are reachable.
@@ -120,14 +120,14 @@ upload script (\texttt{scripts/ctan-upload.sh}):
             support links.
     \end{itemize}
 
-  \item \textbf{CSRF token fetch} --- Retrieves a hidden \texttt{ticket}
+  \item \textbf{CSRF token fetch} -- Retrieves a hidden \texttt{ticket}
         field from the CTAN upload page for form-based authentication.
 
-  \item \textbf{Upload job} --- Rebuilds the zip, regenerates the
+  \item \textbf{Upload job} -- Rebuilds the zip, regenerates the
         changelog, and submits the package to CTAN via a multipart
         \texttt{POST} request with all required metadata fields.
 
-  \item \textbf{Response parsing} --- Checks for success patterns
+  \item \textbf{Response parsing} -- Checks for success patterns
         (``has been uploaded''), failure patterns (``already exists'',
         ``invalid''), and HTTP status codes.
 \end{enumerate}
@@ -147,13 +147,13 @@ The \texttt{cross-platform.yml} workflow validates Docker builds on both
 Linux and Windows:
 
 \begin{itemize}
-  \item \textbf{Linux job} --- Runs on \texttt{ubuntu-latest}, pulls the
+  \item \textbf{Linux job} -- Runs on \texttt{ubuntu-latest}, pulls the
         Docker image, and builds the article example in production mode.
-  \item \textbf{Windows job} --- Runs on \texttt{windows-latest} with
+  \item \textbf{Windows job} -- Runs on \texttt{windows-latest} with
         \texttt{continue-on-error: true} (Docker Desktop may not be
         available on all Windows runners).  Uses \texttt{linux/amd64}
         platform emulation.
-  \item \textbf{Report job} --- Generates a cross-platform summary table
+  \item \textbf{Report job} -- Generates a cross-platform summary table
         showing pass/fail status for each platform.
 \end{itemize}
 

@@ -120,20 +120,20 @@ The hierarchy within each module follows the convention
 Key patterns you will encounter in the proof files:
 
 \begin{description}
-  \item[\texttt{def}] Function or constant definitions.
-  \item[\texttt{theorem} / \texttt{lemma}] Statements to be proven.
-  \item[\texttt{by}] Opens a tactic-mode proof block.
-  \item[\texttt{simp [name]}] Rewrites using the definition of
+  \item[{\texttt{def}}] Function or constant definitions.
+  \item[{\texttt{theorem} / \texttt{lemma}}] Statements to be proven.
+  \item[{\texttt{by}}] Opens a tactic-mode proof block.
+  \item[{\texttt{simp [name]}}] Rewrites using the definition of
         \texttt{name}.
-  \item[\texttt{decide}] Automatically proves decidable propositions
+  \item[{\texttt{decide}}] Automatically proves decidable propositions
         (finite enumeration, equality checks).
-  \item[\texttt{omega}] Solves linear arithmetic over integers or
+  \item[{\texttt{omega}}] Solves linear arithmetic over integers or
         naturals.
-  \item[\texttt{cases}] Pattern-matches on an inductive type.
-  \item[\texttt{intro} / \texttt{exact}] Introduces hypotheses and
+  \item[{\texttt{cases}}] Pattern-matches on an inductive type.
+  \item[{\texttt{intro} / \texttt{exact}}] Introduces hypotheses and
         provides exact proof terms.
-  \item[\texttt{have}] Introduces a local lemma.
-  \item[\texttt{rw} / \texttt{simp\_all}] Rewrites equations in the
+  \item[{\texttt{have}}] Introduces a local lemma.
+  \item[{\texttt{rw} / \texttt{simp\_all}}] Rewrites equations in the
         goal or all hypotheses.
 \end{description}
 
@@ -142,7 +142,7 @@ Key patterns you will encounter in the proof files:
 All theorems across all ten modules are fully proven.  No \texttt{sorry}
 or \texttt{admit} appears anywhere in the proof source.  A \texttt{sorry}
 in Lean~4 is a placeholder that makes the type checker accept an
-unproven theorem --- essentially an assertion without evidence.
+unproven theorem -- essentially an assertion without evidence.
 
 The CI workflow (\texttt{lean4-ci.yml}) enforces this by running
 \texttt{grep -rq 'sorry' specs/proofs/} after every build.  If any

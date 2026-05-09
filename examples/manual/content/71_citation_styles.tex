@@ -50,7 +50,7 @@ Each style maps to a \texttt{biblatex} style package:
     label = {tab:style-mapping},
 ]{colspec = {l l}, rowhead = 1}
     \toprule
-    \verb|\citationstyle|  & biblatex style \\
+    \texttt{\textbackslash\{\}citationstyle}  & biblatex style \\
     \midrule
     ieee       & style=ieee \\
     acm        & style=acm \\
@@ -130,12 +130,12 @@ When no \verb|\citationstyle| command is issued, OmniLaTeX defaults to
 with additional features:
 
 \begin{itemize}
-    \item \textbf{Extended name handling} --- \texttt{giveninits=true} for
+    \item \textbf{Extended name handling} -- \texttt{giveninits=true} for
           consistent initial-based name formatting.
-    \item \textbf{Dashed entries} --- replaced by title in repeated-author
+    \item \textbf{Dashed entries} -- replaced by title in repeated-author
           runs (\texttt{dashed=false} in OmniLaTeX).
-    \item \textbf{introcite} --- numeric label at first citation per chapter.
-    \item \textbf{backref} --- page references in the bibliography.
+    \item \textbf{introcite} -- numeric label at first citation per chapter.
+    \item \textbf{backref} -- page references in the bibliography.
 \end{itemize}
 
 To override OmniLaTeX's default while keeping the extended features, set the

@@ -1,7 +1,38 @@
 \chapter{Cross References}
+\label{ch:crossrefs}
 
 OmniLaTeX configures \texttt{cleveref} and \texttt{hyperref} to provide
-automatic, contextual cross-references throughout the document.
+automatic, contextual cross-references throughout the document.  Every
+reference command produces a clickable hyperlink in the output PDF, and
+\texttt{cleveref} automatically determines the correct label prefix
+(``Figure'', ``Table'', ``Chapter'', \ldots) from the counter associated
+with each label.
+
+\section{Basic Reference Commands}
+
+\LaTeX{} provides three core reference commands.  Each resolves to the
+number assigned to the labelled object:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Core reference commands}
+  \label{tab:ref-commands}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    \textbf{Command} & \textbf{Output} & \textbf{Use case} \\
+    \midrule
+    \verb|\ref{label}|   & Number only (e.g.\ 3)       & Generic fallback \\
+    \verb|\eqref{label}| & Parenthesised (e.g.\ (3.7)) & Equations \\
+    \verb|\pageref{label}| & Page number              & Locating floats \\
+    \verb|\autopageref{label}| & ``on page 42''       & Inline prose \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The \verb|\autopageref| command (provided by \texttt{varioref}, which
+OmniLaTeX loads automatically) formats page references as ``on page~42''
+or ``on the preceding page'' depending on proximity, producing natural
+prose.
 
 \section{cleveref}
 
@@ -9,13 +40,24 @@ The \texttt{cleveref} package is loaded automatically.  Use
 \verb|\cref{label}| for lower-case and \verb|\Cref{label}| for
 capitalised references:
 
-\begin{verbatim}
-\cref{fig:x}   → "figure 1"
-\Cref{fig:x}   → "Figure 1"
-\end{verbatim}
+\begin{minted}{latex}
+As shown in \cref{fig:x}, the results align with
+\Cref{tab:results} and the derivation in \cref{eq:mass}.
+\end{minted}
+
+\begin{minted}{latex}
+\documentclass[doctype=article]{../../omnilatex}
+\begin{document}
+\section{Introduction}
+\label{sec:intro}
+
+See \cref{sec:intro} for the background.
+\end{document}
+\end{minted}
 
 The reference string is determined by the counter associated with the
-label, so no manual type name is needed.
+label, so no manual type name is needed.  Pluralisation is also
+automatic: \verb|\cref{fig:x,fig:y}| produces ``figures~1 and~2''.
 
 \section{Custom crefnames}
 
@@ -23,55 +65,186 @@ Beyond the standard counters, OmniLaTeX registers custom
 \verb|\crefname| definitions for environment types that ship with the
 template, such as \texttt{example} and \texttt{code}/\texttt{listing}:
 
-\begin{verbatim}
+\begin{minted}{latex}
 \crefname{code}{listing}{listings}
 \crefname{example}{example}{examples}
-\end{verbatim}
+\end{minted}
 
 This means \verb|\cref{lst:hello}| resolves to ``listing~1'' without any
-additional configuration.
+additional configuration.  To add custom names for your own environments,
+use \verb|\crefname| in the preamble:
 
-\section{PDF Bookmarks}
+\begin{minted}{latex}
+\crefname{algorithm}{algorithm}{algorithms}
+\Crefname{algorithm}{Algorithm}{Algorithms}
+\end{minted}
 
-\texttt{hyperref} is configured with PDF metadata (title, author, subject)
-taken from the preamble keys.  Chapter-level bookmarks in the PDF outline
-can be typeset in bold when the \texttt{boldPDFchapters} template option is
-enabled:
+\section{Label Placement Rules}
 
-\begin{verbatim}
-\ifboldPDFchapters
-    \pdfstringdefaliasprefix{<b>}{</b>}
-\fi
-\end{verbatim}
+Labels must be placed \emph{after} the counter incrementing command.
+The following table shows the correct placement for each object type:
 
-\section{Equation References}
+\begin{table}[htbp]
+  \centering
+  \caption{Label placement for common objects}
+  \label{tab:label-placement}
+  \begin{tabular}{@{}lp{0.55\textwidth}@{}}
+    \toprule
+    \textbf{Object} & \textbf{Label position} \\
+    \midrule
+    Chapter / Section & Immediately after \verb|\chapter| or \verb|\section| \\
+    Figure / Table    & Inside the float, after \verb|\caption| \\
+    Equation          & Inside \verb|equation| / \verb|align|, any position \\
+    Theorem           & After \verb|\begin{theorem}| \\
+    Enumerated item   & After \verb|\item| \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Incorrect placement produces wrong numbers.  For example, placing a
+label before \verb|\caption| inside a figure environment causes the
+label to resolve to the previous figure's number:
+
+\begin{minted}{latex}
+% WRONG -- label resolves to previous figure number
+\begin{figure}
+  \label{fig:wrong}
+  \caption{Description}
+\end{figure}
+
+% CORRECT -- label follows caption
+\begin{figure}
+  \caption{Description}
+  \label{fig:right}
+\end{figure}
+\end{minted}
+
+\section{Cross-Referencing Floats}
+
+Figures and tables are numbered per chapter automatically.  When a float
+spans across pages, \cs{ContinuedFloat} ensures the second caption
+continues the numbering:
+
+\begin{minted}{latex}
+\begin{figure}
+  \caption{First part of a wide diagram}
+  \label{fig:wide}
+  \includegraphics[width=\textwidth]{diagram-part1}
+\end{figure}
+
+\begin{figure}
+  \ContinuedFloat
+  \caption{Continued from previous page}
+  \includegraphics[width=\textwidth]{diagram-part2}
+\end{figure}
+\end{minted}
+
+References to both parts of the continued float resolve to the same
+number via \verb|\cref{fig:wide}|.
+
+\section{Cross-Referencing Equations}
 
 By default \texttt{cleveref} formats equation references as ``eq.~(1.1)''.
 OmniLaTeX overrides this with
 
-\begin{verbatim}
+\begin{minted}{latex}
 \creflabelformat{equation}{#2#1#3}
-\end{verbatim}
+\end{minted}
 
 which removes the redundant ``eq.'' prefix so that
-\verb|\cref{eq:mass}| produces ``(1.1)'' --- consistent with the convention
-of most physics and engineering journals.
+\verb|\cref{eq:mass}| produces ``(1.1)'' -- consistent with the convention
+of most physics and engineering journals.  Use \verb|\eqref| when you
+need an explicit ``Equation~(1.1)'' prefix:
 
-To restore the default behaviour, redefine
-\texttt{\textbackslash crefformat\{equation\}} after loading the template.
+\begin{minted}{latex}
+\begin{equation}
+  E = mc^2
+  \label{eq:mass}
+\end{equation}
 
-\section{Float References}
+Referencing with \cref{eq:mass} yields just the number in parentheses.
+Using \eqref{eq:mass} yields ``Equation (1)'' with the full prefix.
+\end{minted}
 
-Figures and tables are numbered per chapter automatically.  When a float
-spans across pages, \texttt{\textbackslash ContinuedFloat} ensures the
-second caption continues the numbering:
+To restore the default \texttt{cleveref} behaviour, redefine
+\verb|\crefformat{equation}| after loading the template:
 
-\begin{verbatim}
-\begin{figure}
-    \ContinuedFloat
-    \caption{Description (cont.)}
-\end{figure}
-\end{verbatim}
+\begin{minted}{latex}
+\crefformat{equation}{eq.~(#2#1#3)}
+\Crefformat{equation}{Equation~(#2#1#3)}
+\end{minted}
 
-References to both parts of the continued float resolve to the same
-number via \verb|\cref|.
+\section{Cross-Referencing Sections and Theorems}
+
+Section and theorem references use the chapter.number scheme:
+
+\begin{minted}{latex}
+\chapter{Methods}
+\label{ch:methods}
+
+\section{Experimental Setup}
+\label{sec:setup}
+
+\begin{theorem}[Cauchy--Schwarz]
+  \label{thm:cs}
+  |\langle u, v \rangle|^2
+    \leq \langle u, u \rangle \cdot \langle v, v \rangle
+\end{theorem}
+
+In \cref{sec:setup} we describe the apparatus.
+\Cref{thm:cs} establishes the inequality bound.
+\end{minted}
+
+\section{hyperref and nameref}
+
+\texttt{hyperref} is configured with PDF metadata (title, author, subject)
+taken from the preamble keys.  All reference commands produce clickable
+links that navigate to the target in the PDF viewer.
+
+The \texttt{nameref} package (loaded by \texttt{hyperref}) provides
+\verb|\nameref{label}|, which resolves to the \emph{title} of the
+labelled section rather than its number:
+
+\begin{minted}{latex}
+\nameref{sec:setup}
+% → "Experimental Setup" (the section title, not "2.1")
+\end{minted}
+
+Chapter-level bookmarks in the PDF outline can be typeset in bold when
+the \texttt{boldPDFchapters} template option is enabled:
+
+\begin{minted}{latex}
+\documentclass[doctype=book, boldPDFchapters]{../../omnilatex}
+\end{minted}
+
+Internally this uses:
+
+\begin{minted}{latex}
+\ifboldPDFchapters
+    \pdfstringdefaliasprefix{<b>}{</b>}
+\fi
+\end{minted}
+
+\section{Common Pitfalls}
+
+\begin{description}
+  \item[Duplicate labels] Using the same label name twice causes
+    \texttt{cleveref} and \texttt{hyperref} to emit warnings and
+    produce incorrect references.  Use a consistent naming scheme:
+    \verb|fig:|, \verb|tab:|, \verb|eq:|, \verb|sec:|, \verb|ch:|.
+
+  \item[Forward references] On the first compilation pass, forward
+    references appear as ``??''.  Run \texttt{latexmk} again (the
+    default \texttt{dev} mode performs enough passes to resolve all
+    references).  In \texttt{ultra} mode, forward references may
+    remain unresolved.
+
+  \item[Labels outside floats] A \verb|\label| placed outside a
+    \texttt{figure} or \texttt{table} environment but intended for that
+    float will pick up the enclosing section counter instead.  Always
+    place labels inside the float, after \verb|\caption|.
+
+  \item[Hyperlinks in captions] Avoid using \verb|\label| in captions
+    that contain hyperlinks.  The link target may shift after additional
+    passes.  Place the label on a separate line after the caption.
+\end{description}

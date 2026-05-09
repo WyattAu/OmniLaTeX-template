@@ -9,11 +9,11 @@ OmniLaTeX uses KOMA-Script's native page geometry system rather than the
 KOMA-Script controls page layout through two class options:
 
 \begin{description}
-  \item[\texttt{DIV}] --- Divisor that determines the text area proportions.
+  \item[{\texttt{DIV}}] -- Divisor that determines the text area proportions.
         Higher values yield larger margins.  Common choices: \texttt{DIV=9}
         (narrow margins), \texttt{DIV=12} (default), \texttt{DIV=15}
         (generous margins).
-  \item[\texttt{BCOR}] --- Binding correction (Bindekorrektur).  Compensates
+  \item[{\texttt{BCOR}}] -- Binding correction (Bindekorrektur).  Compensates
         for the inner margin lost to binding.  E.g.\ \texttt{BCOR=5mm} shifts
         the text block 5\,mm toward the outer edge on the spine side.
 \end{description}
@@ -26,7 +26,7 @@ OmniLaTeX defaults to \texttt{DIV=12, BCOR=0mm}.  The \verb|\areaset|
 command (KOMA-native) is used internally because it correctly handles the
 interaction between text width, text height, and the type area within
 KOMA's header/footer system.  Do \emph{not} load the \pkg{geometry}
-package alongside OmniLaTeX---it will conflict with KOMA's layout
+package alongside OmniLaTeX--it will conflict with KOMA's layout
 calculations.
 
 \section{Custom Margins}
@@ -122,11 +122,11 @@ is useful for pocket-sized handouts or supplementary booklets.
 LaTeX and KOMA-Script provide three standard numbering schemes:
 
 \begin{description}
-  \item[\texttt{\textbackslash frontmatter}] --- Roman numerals (i, ii, iii, \ldots).
+  \item[{\texttt{\textbackslash frontmatter}}] -- Roman numerals (i, ii, iii, \ldots).
         Used for the title page, abstract, table of contents, and preface.
-  \item[\texttt{\textbackslash mainmatter}] --- Arabic numerals (1, 2, 3, \ldots).
+  \item[{\texttt{\textbackslash mainmatter}}] -- Arabic numerals (1, 2, 3, \ldots).
         Used for the body of the document.  Resets to 1.
-  \item[\texttt{\textbackslash backmatter}] --- Roman numerals again.
+  \item[{\texttt{\textbackslash backmatter}}] -- Roman numerals again.
         Used for the bibliography, appendices, and index.
 \end{description}
 

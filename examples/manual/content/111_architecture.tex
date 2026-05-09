@@ -7,41 +7,41 @@ dependencies.  The load order forms a directed acyclic graph with no
 circular dependencies:
 
 \begin{enumerate}
-  \item \textbf{Core} --- \texttt{omnilatex-base.sty} is always loaded
+  \item \textbf{Core} -- \texttt{omnilatex-base.sty} is always loaded
         first by \texttt{omnilatex.cls}.  It provides fundamental macros
         and sets up the package infrastructure.
 
-  \item \textbf{Utils} --- Utility modules loaded early because they are
+  \item \textbf{Utils} -- Utility modules loaded early because they are
         depended on by nearly everything else:
         \texttt{omnilatex-utils}, \texttt{omnilatex-colors},
         \texttt{omnilatex-themes}.
 
-  \item \textbf{Typography} --- Font, list, typesetting, and math modules:
+  \item \textbf{Typography} -- Font, list, typesetting, and math modules:
         \texttt{omnilatex-fonts}, \texttt{omnilatex-lists},
         \texttt{omnilatex-typesetting}, \texttt{omnilatex-math}.
 
-  \item \textbf{Layout} --- Page geometry, KOMA integration, floats,
+  \item \textbf{Layout} -- Page geometry, KOMA integration, floats,
         boxes, document structure, presentation, and accessibility:
         \texttt{omnilatex-page}, \texttt{omnilatex-koma},
         \texttt{omnilatex-floats}, \texttt{omnilatex-boxes},
         \texttt{omnilatex-document}, \texttt{omnilatex-presentation},
         \texttt{omnilatex-accessibility}.
 
-  \item \textbf{Graphics} --- Image support and TikZ integration:
+  \item \textbf{Graphics} -- Image support and TikZ integration:
         \texttt{omnilatex-graphics}, \texttt{omnilatex-tikz-core},
         \texttt{omnilatex-tikz-engineering}.
 
-  \item \textbf{References} --- Hyperlinks, bibliography, citations, and
+  \item \textbf{References} -- Hyperlinks, bibliography, citations, and
         glossary: \texttt{omnilatex-hyperref}, \texttt{omnilatex-biblio},
         \texttt{omnilatex-citations}, \texttt{omnilatex-glossary}.
 
-  \item \textbf{Code} --- Code listing support:
+  \item \textbf{Code} -- Code listing support:
         \texttt{omnilatex-listings}.
 
-  \item \textbf{Tables} --- Table formatting:
+  \item \textbf{Tables} -- Table formatting:
         \texttt{omnilatex-tables}.
 
-  \item \textbf{Language} --- Internationalisation, CJK, and RTL:
+  \item \textbf{Language} -- Internationalisation, CJK, and RTL:
         \texttt{omnilatex-i18n}, \texttt{omnilatex-cjk},
         \texttt{omnilatex-rtl}.
 \end{enumerate}
