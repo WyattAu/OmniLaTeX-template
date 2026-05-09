@@ -152,8 +152,10 @@
     \ifx\@documentitemspacing\@empty\else
         \ifdefstring{\@documentitemspacing}{none}{\setlist{noitemsep}}{%
             \ifdefstring{\@documentitemspacing}{compact}{\setlist{itemsep=0pt}}{%
-                \ifdefstring{\@documentitemspacing}{normal}{\setlist{itemsep=2pt}}{%
-                    \setlist{itemsep=\@documentitemspacing}%
+                \ifdefstring{\@documentitemspacing}{tight}{\setlist{itemsep=0pt plus 0.2pt}}{%
+                    \ifdefstring{\@documentitemspacing}{normal}{\setlist{itemsep=2pt}}{%
+                        \setlist{itemsep=\@documentitemspacing}%
+                    }%
                 }%
             }%
         }%

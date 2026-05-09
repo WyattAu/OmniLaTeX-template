@@ -25,14 +25,14 @@
 \RequirePackage{longtable}
 
 % Ensure extended longtable-based styles are available and configure fallbacks
-% Note: glossary-longextra is loaded later (after glossary-mcols) in the
-% styles section to keep package loading order consistent.
+% glossary-longextra is loaded early in the configuration block.
 \providecommand*{\OmniLaTeXAcronymStyle}{long3colheader}
 \newif\ifomnilatex@longtblr
 \IfFileExists{tblrliblongtblr.sty}{%
     \omnilatex@longtblrtrue
 }{%
     \omnilatex@longtblrfalse
+    \RequirePackage{glossary-longextra}
     \GlsLongExtraUseTabulartrue
     \renewcommand*{\OmniLaTeXAcronymStyle}{long3col}%
 }
@@ -312,7 +312,7 @@
 \RequirePackage{glossary-mcols} % Multi-column styles used for Subscripts
 
 % Long, elaborate base style, providing e.g. 'long3col' for the abbreviations etc.:
-\RequirePackage{glossary-longextra}
+% (loaded earlier in the glossary configuration block)
 
 \newcommand*{\glshdrfont}[1]{\textbf{#1}} % Font for gls table heads
 

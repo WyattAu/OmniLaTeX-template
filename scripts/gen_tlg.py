@@ -8,10 +8,10 @@ import re
 import subprocess
 import os
 import shutil
+import tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TESTFILES = os.path.join(ROOT, "testfiles")
-WORKDIR = "/tmp/l3test_gen"
 
 MAXPRINTLINE = 79  # LuaTeX default
 
@@ -126,10 +126,8 @@ def normalize_log(content):
 
 
 def main():
-    os.makedirs(WORKDIR, exist_ok=True)
-    os.chdir(WORKDIR)
+    workdir = tempfile.mkdtemp(prefix="l3test_gen_")
 
-    # Discover all .lvt files in testfiles/
     tests = sorted(
         os.path.splitext(f)[0] for f in os.listdir(TESTFILES) if f.endswith(".lvt")
     )
@@ -139,7 +137,8 @@ def main():
 
     for name in tests:
         src = os.path.join(TESTFILES, f"{name}.lvt")
-        shutil.copy2(src, f"./{name}.lvt")
+        dst = os.path.join(workdir, f"{name}.lvt")
+        shutil.copy2(src, dst)
 
         try:
             subprocess.run(
@@ -154,12 +153,13 @@ def main():
                 text=True,
                 timeout=120,
                 env=env,
+                cwd=workdir,
             )
         except subprocess.TimeoutExpired:
             print(f"TIMEOUT: {name}")
             continue
 
-        logpath = f"{name}.log"
+        logpath = os.path.join(workdir, f"{name}.log")
         if os.path.exists(logpath):
             with open(logpath) as f:
                 content = f.read()

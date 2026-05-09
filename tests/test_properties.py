@@ -13,6 +13,8 @@ from pathlib import Path
 
 import pytest
 
+from tests.constants import DOCTYPE_TO_CLASS
+
 try:
     from hypothesis import given, settings, HealthCheck
     from hypothesis.strategies import sampled_from
@@ -203,36 +205,6 @@ class TestStructuralProperties:
 
     VALID_KOMA_CLASSES = {"scrartcl", "scrbook", "scrreprt"}
 
-    DOCTYPE_TO_CLASS = {
-        "book": "scrbook",
-        "thesis": "scrbook",
-        "dissertation": "scrbook",
-        "dictionary": "scrbook",
-        "manual": "scrreprt",
-        "technicalreport": "scrreprt",
-        "technical-report": "scrreprt",
-        "standard": "scrreprt",
-        "patent": "scrreprt",
-        "research-proposal": "scrreprt",
-        "white-paper": "scrreprt",
-        "article": "scrartcl",
-        "journal": "scrartcl",
-        "inlinepaper": "scrartcl",
-        "cv": "scrartcl",
-        "cover-letter": "scrartcl",
-        "poster": "scrartcl",
-        "presentation": "scrartcl",
-        "letter": "scrartcl",
-        "homework": "scrartcl",
-        "exam": "scrartcl",
-        "lecture-notes": "scrartcl",
-        "syllabus": "scrartcl",
-        "handout": "scrartcl",
-        "memo": "scrartcl",
-        "invoice": "scrartcl",
-        "recipe": "scrartcl",
-    }
-
     CANONICAL_DOCTYPES = [
         "article", "book", "cover-letter", "cv", "dictionary", "dissertation",
         "exam", "handout", "homework", "inlinepaper", "invoice", "journal",
@@ -310,7 +282,7 @@ class TestStructuralProperties:
     @given(doctype=sampled_from(list(DOCTYPE_TO_CLASS.keys())))
     @settings(max_examples=50, deadline=None)
     def test_doctype_maps_to_valid_koma_class(self, doctype):
-        koma_class = self.DOCTYPE_TO_CLASS[doctype]
+        koma_class = DOCTYPE_TO_CLASS[doctype]
         assert koma_class in self.VALID_KOMA_CLASSES, (
             f"doctype '{doctype}' maps to '{koma_class}', not a valid KOMA class"
         )
@@ -319,10 +291,10 @@ class TestStructuralProperties:
         doctype_names = self._get_doctype_names()
         assert len(doctype_names) > 0, "No doctype .sty files found"
         for name in doctype_names:
-            assert name in self.DOCTYPE_TO_CLASS, (
+            assert name in DOCTYPE_TO_CLASS, (
                 f"Doctype file '{name}.sty' has no mapping in DOCTYPE_TO_CLASS"
             )
-            koma_class = self.DOCTYPE_TO_CLASS[name]
+            koma_class = DOCTYPE_TO_CLASS[name]
             assert koma_class in self.VALID_KOMA_CLASSES, (
                 f"Doctype '{name}' maps to invalid KOMA class '{koma_class}'"
             )
@@ -367,7 +339,7 @@ class TestStructuralProperties:
         if not example_doctypes:
             pytest.skip("No examples found")
         doctype = example_doctypes[example]
-        assert doctype in self.DOCTYPE_TO_CLASS, (
+        assert doctype in DOCTYPE_TO_CLASS, (
             f"Example '{example}' uses doctype '{doctype}' which is not registered"
         )
 
@@ -375,7 +347,7 @@ class TestStructuralProperties:
         example_doctypes = self._get_example_doctypes()
         assert len(example_doctypes) > 0, "No examples with doctypes found"
         for ex_name, doctype in example_doctypes.items():
-            assert doctype in self.DOCTYPE_TO_CLASS, (
+            assert doctype in DOCTYPE_TO_CLASS, (
                 f"Example '{ex_name}' uses unregistered doctype '{doctype}'"
             )
 

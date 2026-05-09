@@ -781,9 +781,6 @@ class BuildTasks:
     def preflight(self, _=None):
         self.cmd_preflight()
 
-    def build_tex(self, _=None):
-        self.ui.header("Building TeX... (Not implemented)")
-
     def run_tests(self, _=None):
         return self.cmd_test()
 
@@ -1943,7 +1940,6 @@ def main() -> None:
     # interactive menu (in terminals) or prints help (in CI).
     commands = {
         "build": (BuildTasks.build_all, "Build root and all examples.", False),
-        "build-tex": (BuildTasks.build_tex, "Build specific .tex files.", True),
         "build-root": (BuildTasks.build_root, "Build root document.", False),
         "build-all": (BuildTasks.build_all, "Alias for 'build'.", False),
         "clean": (BuildTasks.clean_all, "Full cleanup.", False),
