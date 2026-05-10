@@ -11,7 +11,7 @@ Built on LuaTeX (LuaHBTeX 1.21.0) + KOMA-Script + TeX Live 2025. Compile with `l
 | **Document types** | 55+ aliases (thesis, CV, patent, journal, ...) | 1–3 |
 | **Test coverage** | 529+ test cases (structural, property-based, unicode, hypothesis) | 0 |
 | **Reproducible builds** | Byte-for-byte deterministic | No |
-| **Formal verification** | Lean 4 proofs (10 proof modules, 53/53 theorems proven) | No |
+| **Formal verification** | Lean 4 proofs (10 proof modules, 64/64 theorems proven) | No |
 | **CI platforms** | 9 GitHub Actions workflows + 4 other platforms | 0–1 |
 | **Font fallbacks** | Graceful degradation with warnings | Crash or silent substitution |
 | **Institution configs** | 16 pluggable (`config/institutions/`) | Hardcoded |
@@ -52,7 +52,7 @@ python build.py build-example minimal-starter
 - **RTL support** — automatic bidirectional text for Arabic and Hebrew
 - **Code listings** — syntax highlighting via minted with cached compilation
 - **Engineering diagrams** — 1,000+ lines of TikZ shapes: thermodynamics, P&ID, flowcharts
-- **Formal verification** — Lean 4 proofs (10 proof modules, 53/53 theorems proven)
+- **Formal verification** — Lean 4 proofs (10 proof modules, 64/64 theorems proven)
 - **Build automation** — `build.py` with watch mode, concurrent builds, timing metrics, and health diagnostics
 
 ## Document Types

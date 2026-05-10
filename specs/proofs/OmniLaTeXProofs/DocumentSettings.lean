@@ -1,10 +1,11 @@
 /-
   Formal Verification: OmniLaTeX DocumentSettings Resolution
-  Property: Each doctype resolves to exactly one KOMA-Script class,
+
+  Property: Each canonical doctype resolves to exactly one KOMA-Script class,
   and the three classes partition the set of 26 doctypes.
 
-  Reference: config/document-settings.sty, omnilatex.cls
-  Article (15), Report (6), Book (5) → 26 total.
+  Source of truth: tests/constants.py DOCTYPE_TO_CLASS (verified against omnilatex.cls).
+  Article (17), Report (5), Book (4) = 26 total.
   No Mathlib dependency.
 -/
 
@@ -17,77 +18,82 @@ inductive KomaClass where
   deriving DecidableEq, Repr
 
 inductive Doctype where
+  -- scrartcl (17)
   | article : Doctype
-  | assignment : Doctype
-  | accessibility_test : Doctype
-  | citation_styles : Doctype
-  | color_themes : Doctype
-  | cover_letter : Doctype
-  | cover_letter_formal : Doctype
-  | cv : Doctype
-  | exam : Doctype
-  | handout : Doctype
-  | homework : Doctype
-  | inline_paper : Doctype
-  | invoice : Doctype
   | journal : Doctype
+  | inlinepaper : Doctype
+  | cv : Doctype
+  | cover_letter : Doctype
+  | poster : Doctype
+  | presentation : Doctype
+  | letter : Doctype
+  | homework : Doctype
+  | exam : Doctype
   | lecture_notes : Doctype
-  | dictionary : Doctype
-  | dissertation : Doctype
+  | syllabus : Doctype
+  | handout : Doctype
+  | memo : Doctype
+  | white_paper : Doctype
+  | invoice : Doctype
+  | recipe : Doctype
+  -- scrreprt (5)
+  | manual : Doctype
+  | technicalreport : Doctype
+  | standard : Doctype
   | patent : Doctype
   | research_proposal : Doctype
-  | technical_report : Doctype
+  -- scrbook (4)
   | thesis : Doctype
+  | dissertation : Doctype
   | book : Doctype
-  | cv_twopage : Doctype
-  | minimal_custom : Doctype
-  | multi_language : Doctype
-  | thesis_tuhh : Doctype
+  | dictionary : Doctype
   deriving DecidableEq, Repr
 
+-- Canonical doctype-to-class mapping from omnilatex.cls / constants.py
 def doctypeClass : Doctype → KomaClass
+  -- scrartcl
   | .article => .article
-  | .assignment => .article
-  | .accessibility_test => .article
-  | .citation_styles => .article
-  | .color_themes => .article
-  | .cover_letter => .article
-  | .cover_letter_formal => .article
-  | .cv => .article
-  | .exam => .article
-  | .handout => .article
-  | .homework => .article
-  | .inline_paper => .article
-  | .invoice => .article
   | .journal => .article
+  | .inlinepaper => .article
+  | .cv => .article
+  | .cover_letter => .article
+  | .poster => .article
+  | .presentation => .article
+  | .letter => .article
+  | .homework => .article
+  | .exam => .article
   | .lecture_notes => .article
-  | .dictionary => .report
-  | .dissertation => .report
+  | .syllabus => .article
+  | .handout => .article
+  | .memo => .article
+  | .white_paper => .article
+  | .invoice => .article
+  | .recipe => .article
+  -- scrreprt
+  | .manual => .report
+  | .technicalreport => .report
+  | .standard => .report
   | .patent => .report
   | .research_proposal => .report
-  | .technical_report => .report
-  | .thesis => .report
+  -- scrbook
+  | .thesis => .book
+  | .dissertation => .book
   | .book => .book
-  | .cv_twopage => .book
-  | .minimal_custom => .book
-  | .multi_language => .book
-  | .thesis_tuhh => .book
+  | .dictionary => .book
 
 def articleDoctypes : List Doctype := [
-  .article, .assignment, .accessibility_test, .citation_styles,
-  .color_themes, .cover_letter, .cover_letter_formal, .cv,
-  .exam, .handout, .homework, .inline_paper, .invoice,
-  .journal, .lecture_notes
+  .article, .journal, .inlinepaper, .cv, .cover_letter,
+  .poster, .presentation, .letter, .homework, .exam,
+  .lecture_notes, .syllabus, .handout, .memo, .white_paper,
+  .invoice, .recipe
 ]
 
 def reportDoctypes : List Doctype := [
-  .dictionary, .dissertation, .patent,
-  .research_proposal, .technical_report, .thesis
+  .manual, .technicalreport, .standard, .patent, .research_proposal
 ]
 
 def bookDoctypes : List Doctype := [
-  .book, .cv_twopage, .minimal_custom,
-  .multi_language, .thesis_tuhh
+  .thesis, .dissertation, .book, .dictionary
 ]
 
 def allDoctypes : List Doctype :=
@@ -107,13 +113,13 @@ theorem report_class_nonempty : reportDoctypes.length > 0 := by
 theorem book_class_nonempty : bookDoctypes.length > 0 := by
   decide
 
-theorem article_count : articleDoctypes.length = 15 := by
+theorem article_count : articleDoctypes.length = 17 := by
   decide
 
-theorem report_count : reportDoctypes.length = 6 := by
+theorem report_count : reportDoctypes.length = 5 := by
   decide
 
-theorem book_count : bookDoctypes.length = 5 := by
+theorem book_count : bookDoctypes.length = 4 := by
   decide
 
 theorem doctype_count : allDoctypes.length = 26 := by
@@ -138,5 +144,24 @@ theorem article_is_largest :
     articleDoctypes.length > reportDoctypes.length ∧
     articleDoctypes.length > bookDoctypes.length := by
   exact And.intro (by decide) (by decide)
+
+-- Verify that every doctype in each list maps to the expected class
+theorem article_doctypes_consistent :
+    ∀ d ∈ articleDoctypes, doctypeClass d = .article := by
+  intro d hd
+  simp [doctypeClass] at *
+  cases d <;> simp [articleDoctypes] at hd <;> try decide
+
+theorem report_doctypes_consistent :
+    ∀ d ∈ reportDoctypes, doctypeClass d = .report := by
+  intro d hd
+  simp [doctypeClass] at *
+  cases d <;> simp [reportDoctypes] at hd <;> try decide
+
+theorem book_doctypes_consistent :
+    ∀ d ∈ bookDoctypes, doctypeClass d = .book := by
+  intro d hd
+  simp [doctypeClass] at *
+  cases d <;> simp [bookDoctypes] at hd <;> try decide
 
 end DocSettings

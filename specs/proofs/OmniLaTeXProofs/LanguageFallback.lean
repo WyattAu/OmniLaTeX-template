@@ -18,47 +18,28 @@ inductive PrimaryLanguage where
   | swedish : PrimaryLanguage
   | finnish : PrimaryLanguage
   | danish : PrimaryLanguage
-  | norwegian : PrimaryLanguage
+  | norsk : PrimaryLanguage
   deriving DecidableEq, BEq, Repr
 
 inductive SecondaryLanguage where
   | arabic : SecondaryLanguage
   | hebrew : SecondaryLanguage
-  | persian : SecondaryLanguage
-  | chineseSimplified : SecondaryLanguage
-  | chineseTraditional : SecondaryLanguage
   | japanese : SecondaryLanguage
   | korean : SecondaryLanguage
-  | ukrainian : SecondaryLanguage
-  | serbian : SecondaryLanguage
-  | croatian : SecondaryLanguage
-  | bulgarian : SecondaryLanguage
-  | romanian : SecondaryLanguage
-  | hungarian : SecondaryLanguage
-  | slovak : SecondaryLanguage
-  | slovenian : SecondaryLanguage
-  | latvian : SecondaryLanguage
-  | lithuanian : SecondaryLanguage
-  | estonian : SecondaryLanguage
-  | thai : SecondaryLanguage
-  | indonesian : SecondaryLanguage
-  | malay : SecondaryLanguage
-  | catalan : SecondaryLanguage
-  | basque : SecondaryLanguage
-  | galician : SecondaryLanguage
-  | welsh : SecondaryLanguage
-  | irish : SecondaryLanguage
+  | ngerman : SecondaryLanguage
+  | simplifiedchinese : SecondaryLanguage
+  | traditionalchinese : SecondaryLanguage
   deriving DecidableEq, BEq, Repr
 
 def allPrimary : List PrimaryLanguage := [
   .english, .german, .french, .spanish, .russian, .italian,
   .portuguese, .dutch, .polish, .czech, .greek, .turkish,
-  .vietnamese, .hindi, .swedish, .finnish, .danish, .norwegian
+  .vietnamese, .hindi, .swedish, .finnish, .danish, .norsk
 ]
 
 def primary_count : Nat := 18
 
-def secondary_count : Nat := 26
+def secondary_count : Nat := 7
 
 def fallback : PrimaryLanguage → PrimaryLanguage
   | .english => .english
@@ -79,5 +60,5 @@ theorem fallback_terminates : ∀ l, fallback l = .english := by
 theorem fallback_stable : ∀ l, fallback (fallback l) = fallback l := by
   intro l; cases l <;> rfl
 
-theorem total_language_coverage : primary_count + secondary_count = 44 := by
+theorem total_language_coverage : primary_count + secondary_count = 25 := by
   simp [primary_count, secondary_count]

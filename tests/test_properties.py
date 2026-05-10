@@ -13,8 +13,13 @@ from pathlib import Path
 
 import pytest
 
+from tests.constants import (
+    ALL_DOCTYPE_NAMES,
+)
 from tests.constants import DOCTYPE_ALIASES as _DOCTYPE_ALIAS_MAP
-from tests.constants import DOCTYPE_TO_CLASS
+from tests.constants import (
+    DOCTYPE_TO_CLASS,
+)
 
 try:
     from hypothesis import HealthCheck, given, settings
@@ -80,54 +85,8 @@ docker_required = pytest.mark.skipif(
     reason=f"Docker image not available locally: {DOCKER_IMAGE}",
 )
 
-DOCTYPE_ALIASES = [
-    "book",
-    "thesis",
-    "theses",
-    "dissertation",
-    "dissertations",
-    "manual",
-    "manuals",
-    "guide",
-    "guides",
-    "handbook",
-    "handbooks",
-    "report",
-    "reports",
-    "technicalreport",
-    "technical-report",
-    "technicalreports",
-    "technical-reports",
-    "techreport",
-    "tech-report",
-    "techreports",
-    "standard",
-    "standards",
-    "patent",
-    "patents",
-    "article",
-    "articles",
-    "paper",
-    "papers",
-    "inlinepaper",
-    "inlinepapers",
-    "inline-research",
-    "inline-research-paper",
-    "journal",
-    "journals",
-    "magazine",
-    "magazines",
-    "dictionary",
-    "dictionaries",
-    "lexicon",
-    "lexicons",
-    "cv",
-    "resume",
-    "resumes",
-    "curriculumvitae",
-    "cover-letter",
-    "coverletter",
-]
+# Use canonical alias list from constants (minus None entries for examples without doctype)
+DOCTYPE_ALIASES = [d for d in ALL_DOCTYPE_NAMES]
 
 LANGUAGES = ["english", "german"]
 
@@ -433,6 +392,22 @@ class TestStructuralProperties:
         assert (
             pkg_path.is_file()
         ), f"\\RequirePackage{{{pkg}}}: {pkg_path.relative_to(PROJECT_ROOT)} not found"
+
+    def test_i18n_language_coverage_matrix(self):
+        """Verify all languages with translations have consistent key counts."""
+        i18n_file = PROJECT_ROOT / "lib" / "language" / "omnilatex-i18n.sty"
+        content = i18n_file.read_text(encoding="utf-8", errors="replace")
+        import re
+        from collections import Counter
+
+        counts = Counter()
+        for m in re.finditer(r"\\DeclareTranslation\{(\w+)\}\{", content):
+            counts[m.group(1)] += 1
+        values = list(counts.values())
+        assert len(values) > 0, "No translations found"
+        assert all(
+            v == values[0] for v in values
+        ), f"Translation key counts not equal: {dict(counts)}"
 
     def test_no_duplicate_translation_keys(self):
         dupes = self._get_translation_key_dupes()

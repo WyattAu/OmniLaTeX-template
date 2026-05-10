@@ -24,13 +24,13 @@ inductive Language where
   | swedish : Language
   | finnish : Language
   | danish : Language
-  | norwegian : Language
+  | norsk : Language
   deriving DecidableEq, Repr
 
 def allLanguages : List Language := [
   .english, .german, .french, .spanish, .russian, .italian,
   .portuguese, .dutch, .polish, .czech, .greek, .turkish,
-  .vietnamese, .hindi, .swedish, .finnish, .danish, .norwegian
+  .vietnamese, .hindi, .swedish, .finnish, .danish, .norsk
 ]
 
 def languageCount : Nat := 18

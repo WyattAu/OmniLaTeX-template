@@ -45,21 +45,8 @@ This project adheres to [Semantic versioning](https://semver.org/).
 
 ### Added
 
-- **Lean 4 proof expansion** — 23 new theorems across 3 new modules (30 → 53 total, 7 → 10 modules, 0 sorry)
-  - DocumentSettings: doctype→KOMA class mapping, partition proof, class size counts
-  - LanguageFallback: 18 primary + 26 secondary languages, fallback chain stability
-  - BuildSystem: cache correctness, parallelism bounds, build mode properties
-- **Visual regression testing** — PDF validity (%PDF- header), page count sanity, metadata checks
+- Builds on v1.15.0 foundation (Lean 4 expansion, visual regression testing, Docker digest consistency, TikZ figures).
 - **TestLeanProofConsistency** — verifies all 10 modules imported, zero sorry, module count
-- **TestDockerDigestConsistency** — verifies digest consistency across all CI workflows, no unpinned tags
-- **8 real TikZ/pgfplots figures** replacing placeholder boxes across 7 examples
-  - Article: training/validation loss curves
-  - Journal: quantum harmonic oscillator wave functions ψ₀–ψ₃
-  - Thesis: convergence plot (log-log with O(N⁻²) reference)
-  - Technical report: 24-hour IOPS demand profile (area chart)
-  - Research proposal: CNN decoder architecture (flow diagram)
-  - Accessibility test: bar chart with \tikzalttext demo
-  - Poster: accuracy comparison + system architecture diagrams
 - **Language switch command** in VS Code extension (Ctrl+Alt+L)
 
 ### Changed
@@ -125,7 +112,6 @@ This project adheres to [Semantic versioning](https://semver.org/).
 
 - **White paper document type** — abstract environment, callout boxes, key takeaways, confidential/version/contact metadata
 - **Invoice document type** — line item commands, subtotal/tax/total calculations, from/to/payment metadata
-- **Persian RTL support** — persian language loads RTL module with Arabic-script fonts, title font override, auto-detection
 - **Vietnamese translations** — 11 keys (Bảng thuật ngữ, Ví dụ, Người hướng dẫn, etc.)
 - **Hindi translations** — 11 keys (शब्दावली, उदाहरण, पर्यवेक्षक, etc.)
 - **Swedish translations** — 11 keys (Ordlista, Exempel, Handledare, etc.)
@@ -134,8 +120,7 @@ This project adheres to [Semantic versioning](https://semver.org/).
 - **Norwegian translations** — 11 keys (Ordliste, Eksempel, Veileder, etc.)
 - **VS Code extension skeleton** — doctype picker (25 types), institution switcher (14 configs), documentclass snippet
 - **Lean 4: 4 more theorems proven** — horizontal/vertical balance, caption width bound (Float→Int conversion, corrected hypotheses)
-- **Performance documentation** — `docs/PERFORMANCE.md` with benchmarks, bottlenecks, optimization notes
-- **Patent example** — patent application document (42 total examples)
+- See v1.12.0 for Persian RTL support, Performance documentation, and Patent example additions.
 
 ### Changed
 

@@ -270,7 +270,7 @@ jobs:
             --user root \
             -e CI=true \
             "${{ steps.digest.outputs.image }}" \
-            bash -c "pip install -q pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout && pytest tests/test_modules.py tests/test_ctan.py -v --tb=short --junitxml=test-results.xml"
+            bash -c "pip install -q pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout hypothesis && pytest tests/test_modules.py tests/test_ctan.py tests/test_properties.py tests/test_visual_regression.py -v --tb=short --timeout=60 -m 'not slow' --junitxml=test-results.xml"
 
       - name: Run edge case tests (slow)
         continue-on-error: true
