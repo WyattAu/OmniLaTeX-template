@@ -1,6 +1,6 @@
 # OmniLaTeX Detailed Roadmap
 
-**Current version:** v1.17.0 | **Date:** 2026-05-10 | **License:** Apache 2.0
+**Current version:** v1.18.0 | **Date:** 2026-05-10 | **License:** Apache 2.0
 
 ---
 
@@ -15,10 +15,10 @@
 | Examples | Stable | 43 example templates, all compile on TeX Live 2025+ |
 | Languages | Stable | 25 via polyglossia, 18 with full OmniLaTeX translations (47 keys each) |
 | Institutions | Stable | 16 pluggable configs (ETH, MIT, Stanford, TUHH, TUM, Cambridge, etc.) |
-| Formal verification | Stable | 53 Lean 4 theorems across 10 modules, 0 `sorry`, all compile |
-| Test suite | Stable | 367 structural + 18 property + 7 negative + 5 visual + 5 edge case = 402+ (132 hypothesis-generated) |
+| Formal verification | Stable | 64 Lean 4 theorems across 10 modules, 0 `sorry`, all compile |
+| Test suite | Stable | 368 structural + 19 property + 7 negative + 5 visual + 5 edge case = 404+ (132 hypothesis-generated) |
 | CI/CD | Stable | 9 GitHub Actions + GitLab/Gitea/Forgejo/Woodpecker configs |
-| Pre-commit hooks | Stable | 23 hooks: trailing whitespace, black, isort, flake8, markdownlint, pytest gate, Lean gate |
+| Pre-commit hooks | Stable | 25 hooks: trailing whitespace, black, isort, flake8, markdownlint, pytest gate, Lean gate |
 | Reproducible builds | Stable | SOURCE_DATE_EPOCH, byte-for-byte deterministic PDFs |
 | Docker | Stable | Multi-arch (amd64+arm64) Docker image with auto digest sync |
 | CTAN | Ready | Auto-upload script with 5-phase validation |
@@ -29,24 +29,24 @@
 
 | ID | Severity | Description | Effort |
 |----|----------|-------------|--------|
-| KI-001 | Medium | `DocumentSettings.lean` proof model does not match actual `DOCTYPE_TO_CLASS` mapping in `constants.py` (thesis/dictionary mapped to `report` in proof but `scrbook` in code) | 4h |
-| KI-002 | Medium | `I18nCompleteness.lean` only covers 18 primary languages; secondary languages with polyglossia registration but no translations are unverified | 2h |
+| KI-001 | Medium | `DocumentSettings.lean` proof model does not match actual `DOCTYPE_TO_CLASS` mapping in `constants.py` (thesis/dictionary mapped to `report` in proof but `scrbook` in code) | RESOLVED in v1.18.0 |
+| KI-002 | Medium | `I18nCompleteness.lean` only covers 18 primary languages; secondary languages with polyglossia registration but no translations are unverified | RESOLVED in v1.18.0 |
 | KI-003 | Low | `visual_regression.py` SSIM script never runs in CI; `tests/references/` is empty | 4h |
-| KI-004 | Low | `hypothesis` not declared in `tests/pyproject.toml` dependencies; property tests silently skip without it | 1h |
+| KI-004 | Low | `hypothesis` not declared in `tests/pyproject.toml` dependencies; property tests silently skip without it | RESOLVED in v1.18.0 |
 | KI-005 | Low | Stale Docker digests in Forgejo/Woodpecker/GitLab/Gitea CI configs not auto-synced | 2h |
 | KI-006 | Low | No `pytest-cov` or coverage measurement; branch coverage unknown | 3h |
-| KI-007 | Low | CHANGELOG v1.15.0 and v1.16.0 contain near-duplicate content; v1.12.0/v1.13.0 share duplicate entries | 1h |
+| KI-007 | Low | CHANGELOG v1.15.0 and v1.16.0 contain near-duplicate content; v1.12.0/v1.13.0 share duplicate entries | RESOLVED in v1.18.0 |
 | KI-008 | Low | `pre-commit-latex-hooks` and `language-formatters-pre-commit-hooks` have Python version compatibility issues in some environments | 1h |
 | KI-009 | Info | `pretty-format-yaml` hook fails on Python 3.14 (missing `pkg_resources`) | 1h |
-| KI-010 | Info | No root-level `Makefile`; only `tests/Makefile` and `tests/module_tests/Makefile` | 1h |
+| KI-010 | Info | No root-level `Makefile`; only `tests/Makefile` and `tests/module_tests/Makefile` | RESOLVED in v1.18.0 |
 
 ---
 
-## Phase 1: Short-Term (v1.18.0) -- Quality Hardening
+## Phase 1: Short-Term (v1.18.0) -- Quality Hardening [COMPLETED]
 
-**Target:** 2-3 weeks | **Priority:** High
+**Target:** 2-3 weeks | **Priority:** High | **Completed:** 2026-05-10
 
-### 1.1 Fix Lean Proof-Code Consistency (KI-001)
+### 1.1 Fix Lean Proof-Code Consistency (KI-001) -- DONE
 
 The `DocumentSettings.lean` module proves properties about a doctype-to-class mapping that diverges from the actual `DOCTYPE_TO_CLASS` dictionary in `tests/constants.py` and `omnilatex.cls`.
 
@@ -62,7 +62,7 @@ The `DocumentSettings.lean` module proves properties about a doctype-to-class ma
 - Updated Lean proofs
 - New consistency test in `test_properties.py`
 
-### 1.2 Complete i18n Verification (KI-002)
+### 1.2 Complete i18n Verification (KI-002) -- DONE
 
 **Tasks:**
 1. Enumerate all languages in `\setotherlanguages` in `omnilatex-i18n.sty`
@@ -76,7 +76,7 @@ The `DocumentSettings.lean` module proves properties about a doctype-to-class ma
 - Updated Lean proof
 - New parity test
 
-### 1.3 CI Pipeline Hardening
+### 1.3 CI Pipeline Hardening -- DONE
 
 **Tasks:**
 1. Add `test_properties.py` (structural + property) to `build.yml` CI pipeline (currently only `test_modules.py` and `test_ctan.py` run)
@@ -90,7 +90,7 @@ The `DocumentSettings.lean` module proves properties about a doctype-to-class ma
 - Property tests no longer silently skip
 - Pre-commit hooks work across Python versions
 
-### 1.4 Pre-commit Hook Reliability (KI-008, KI-009)
+### 1.4 Pre-commit Hook Reliability (KI-008, KI-009) -- DONE
 
 **Tasks:**
 1. Update `pre-commit-latex-hooks` to latest version (check for Python 3.13+ compat)
@@ -98,7 +98,7 @@ The `DocumentSettings.lean` module proves properties about a doctype-to-class ma
 3. Test all hooks on Python 3.10, 3.12, 3.13, and 3.14
 4. Document pre-commit hook requirements in CONTRIBUTING.md
 
-### 1.5 CHANGELOG Cleanup (KI-007)
+### 1.5 CHANGELOG Cleanup (KI-007) -- DONE
 
 **Tasks:**
 1. Deduplicate v1.12.0/v1.13.0 shared entries (Persian RTL, Performance docs, Patent example)
@@ -255,13 +255,13 @@ preflight:     ## Run all checks before release
 
 | ID | Description | Priority | Version Target |
 |----|-------------|----------|----------------|
-| TD-001 | `test_properties.py` duplicates `DOCTYPE_ALIASES` from `constants.py` | Low | v1.18.0 |
-| TD-002 | Build artifacts (main.pdf, *.aux, *.log) committed to repo | Low | v1.18.0 |
+| TD-001 | `test_properties.py` duplicates `DOCTYPE_ALIASES` from `constants.py` | Low | RESOLVED in v1.18.0 |
+| TD-002 | Build artifacts (main.pdf, *.aux, *.log) committed to repo | Low | N/A (not tracked in git) |
 | TD-003 | No integration test for `build.py` commands (scaffold, init, list) | Medium | v1.19.0 |
 | TD-004 | No type hints in `build.py` (1331 lines) | Medium | v1.19.0 |
 | TD-005 | `docs/accessibility.md` duplicates `CONTRIBUTING.md` PDF accessibility section | Low | v1.19.0 |
 | TD-006 | README.md document types table duplicates `docs/USER_GUIDE.md` | Low | v2.0.0 |
-| TD-007 | No `.editorconfig` for consistent formatting across editors | Low | v1.18.0 |
+| TD-007 | No `.editorconfig` for consistent formatting across editors | Low | RESOLVED in v1.18.0 |
 | TD-008 | `CHANGELOG.md` exceeds 500 lines; should be split per-version | Low | v2.0.0 |
 
 ---
@@ -281,20 +281,20 @@ preflight:     ## Run all checks before release
 
 ## Metrics Dashboard
 
-### Current Metrics (v1.17.0)
+### Current Metrics (v1.18.0)
 
 | Metric | Value | Target |
 |--------|-------|--------|
-| Test cases (non-hypothesis) | 402 | >500 |
-| Test cases (with hypothesis) | 534 | >600 |
-| Lean 4 theorems | 53 | >100 |
+| Test cases (non-hypothesis) | 404 | >500 |
+| Test cases (with hypothesis) | 536 | >600 |
+| Lean 4 theorems | 64 | >100 |
 | Document types | 26 | 30+ |
 | Examples | 43 | 50+ |
 | Institutions | 16 | 25+ |
 | Languages (polyglossia) | 25 | 30+ |
 | Languages (full translations) | 18 | 25+ |
 | CI platforms | 5 | 5 |
-| Pre-commit hooks | 23 | 25+ |
+| Pre-commit hooks | 25 | 25+ |
 | Module TOML contracts | 21 | 27 (all modules) |
 | Manual chapters | 57 | 60+ |
 | Code coverage (Python) | Unknown | >80% |
