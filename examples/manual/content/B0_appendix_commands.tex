@@ -1,0 +1,207 @@
+\chapter{Command Reference}
+
+This appendix provides a comprehensive quick-reference table of every
+OmniLaTeX custom command, organised by functional category.  Detailed usage
+and examples for each command are found in the corresponding chapter.
+
+\section{Document Setup}
+
+\begin{longtblr}[
+  caption = {Document setup commands},
+  label = {tab:cmd-docsetup},
+]{colspec = {l p{8.5cm}}, rowhead = 1}
+  \toprule
+  \textbf{Command} & \textbf{Description} \\
+  \midrule
+  \texttt{\textbackslash{}documenttype\{name\}} & Declare document type label in a profile
+    \texttt{.sty} file \\
+  \texttt{\textbackslash{}manualbrand\{label\}} & Insert manual-specific branding element \\
+  \texttt{\textbackslash{}signaturefield\{width\}} & Underlined signature field for forms \\
+  \bottomrule
+\end{longtblr}
+
+\section{Typography}
+
+\begin{longtblr}[
+  caption = {Typography and text formatting commands},
+  label = {tab:cmd-typo},
+]{colspec = {l p{8.5cm}}, rowhead = 1}
+  \toprule
+  \textbf{Command} & \textbf{Description} \\
+  \midrule
+  \texttt{\textbackslash{}enquote\{text\}} & Context-aware quotation marks via
+    \ctanpackage{csquotes} \\
+  \texttt{\textbackslash{}qq\{text\}} & Quick quotation shorthand: \texttt{\textbackslash quad}
+    of text between equation parts \\
+  \texttt{\textbackslash{}name\{x\}} & Format a proper noun or name (glossary-linked) \\
+  \texttt{\textbackslash{}sym\{x\}} & Format a mathematical symbol name (glossary-linked) \\
+  \texttt{\textbackslash{}sub\{x\}} & Format a subscript reference (glossary-linked) \\
+  \texttt{\textbackslash{}cons\{x\}} & Format a constant or physical constant name \\
+  \texttt{\textbackslash{}censor\{text\}} & Black-bar redaction preserving layout (requires
+    \textsf{censoring} option) \\
+  \texttt{\textbackslash{}hologo\{name\}} & Typeset a software logo (e.g.\ \LaTeX, \TeX) \\
+  \texttt{\textbackslash{}boldPDFchapterstrue} & Enable bold chapter entries in PDF bookmarks \\
+  \texttt{\textbackslash{}boldPDFchaptersfalse} & Disable bold chapter entries in PDF
+    bookmarks \\
+  \bottomrule
+\end{longtblr}
+
+\section{Mathematics}
+
+\begin{longtblr}[
+  caption = {Mathematics commands},
+  label = {tab:cmd-math},
+]{colspec = {l p{8.5cm}}, rowhead = 1}
+  \toprule
+  \textbf{Command} & \textbf{Description} \\
+  \midrule
+  \texttt{\textbackslash{}abs\{x\}} & Absolute value: $|x|$ (glossary-linked) \\
+  \texttt{\textbackslash{}parens\{x\}} & Parenthesis delimiters: $(x)$; starred variant
+    auto-scales \\
+  \texttt{\textbackslash{}brackets\{x\}} & Bracket delimiters: $[x]$; starred variant
+    auto-scales \\
+  \texttt{\textbackslash{}braces\{x\}} & Brace delimiters: $\{x\}$; starred variant
+    auto-scales \\
+  \texttt{\textbackslash{}mean\{x\}} & Mean value: $\bar{x}$ (glossary-linked) \\
+  \texttt{\textbackslash{}logmean\{x\}\{y\}} & Logarithmic mean: $(x - y)/\ln(x/y)$
+    (glossary-linked) \\
+  \texttt{\textbackslash{}vect\{x\}} & Vector notation: $\vec{x}$ (glossary-linked) \\
+  \texttt{\textbackslash{}flow\{x\}} & Volumetric flow rate: $\dot{V}$ (glossary-linked) \\
+  \texttt{\textbackslash{}difference\{x\}} & Delta/difference: $\Delta x$ (glossary-linked) \\
+  \texttt{\textbackslash{}nablaoperator\{x\}} & Nabla operator applied: $\nabla x$
+    (glossary-linked) \\
+  \texttt{\textbackslash{}grad\{x\}} & Gradient operator: $\operatorname{grad} x$ \\
+  \texttt{\textbackslash{}const\{x\}} & Mathematical constant (upright) \\
+  \texttt{\textbackslash{}coloneq} & Colon-equals operator: $:=$ \\
+  \texttt{\textbackslash{}deriv[n]\{f\}\{x\}} & Ordinary derivative:
+    $\mathrm{d}^{n}f$ (glossary-linked) \\
+  \texttt{\textbackslash{}deriv*[n]\{f\}\{x\}} & Partial derivative:
+    $\partial^{n}f$ (glossary-linked) \\
+  \texttt{\textbackslash{}fracderiv[n]\{f\}\{x\}} & Fractional ordinary derivative \\
+  \texttt{\textbackslash{}fracderiv*[n]\{f\}\{x\}} & Fractional partial derivative \\
+  \texttt{\textbackslash{}timederiv[n]\{f\}} & Time derivative:
+    $\partial^{n}f / \partial t^{n}$ \\
+  \texttt{\textbackslash{}timederiv*[n]\{f\}} & Partial time derivative (synonym) \\
+  \texttt{\textbackslash{}posderiv[n]\{f\}} & Positional derivative:
+    $\partial^{n}f / \partial x^{n}$ \\
+  \texttt{\textbackslash{}posderiv*[n]\{f\}} & Partial positional derivative (synonym) \\
+  \texttt{\textbackslash{}eqend} & Equation ending with period (aligned environments) \\
+  \texttt{\textbackslash{}eqcomma} & Equation ending with comma (aligned environments) \\
+  \texttt{\textbackslash{}circlednum\{n\}} & Circled number: \raisebox{0.3ex}{\tikz[baseline=(char.base)]{\node[circle,draw,inner sep=1pt,font=\small] (char) {1};}} \\
+  \texttt{\textbackslash{}symbolplaceholder} & Placeholder for a symbol yet to be defined \\
+  \bottomrule
+\end{longtblr}
+
+\section{Units and Physical Quantities}
+
+\begin{longtblr}[
+  caption = {Unit and physical quantity commands},
+  label = {tab:cmd-units},
+]{colspec = {l p{8.5cm}}, rowhead = 1}
+  \toprule
+  \textbf{Command} & \textbf{Description} \\
+  \midrule
+  \texttt{\textbackslash{}num\{x\}} & Format a number with locale-aware grouping (siunitx) \\
+  \texttt{\textbackslash{}temperaturepair\{T1\}\{T2\}} & Temperature pair: 45/55\,°C format \\
+  \texttt{\textbackslash{}heatexentry} & Mark heat exchanger entry in a stream table (prime) \\
+  \texttt{\textbackslash{}heatexexit} & Mark heat exchanger exit in a stream table
+    (double-prime) \\
+  \texttt{\textbackslash{}mtlbsmlkicon} & Material balance icon for process diagrams \\
+  \bottomrule
+\end{longtblr}
+
+\section{Layout and Spacing}
+
+\begin{longtblr}[
+  caption = {Layout and spacing commands},
+  label = {tab:cmd-layout},
+]{colspec = {l p{8.5cm}}, rowhead = 1}
+  \toprule
+  \textbf{Command} & \textbf{Description} \\
+  \midrule
+  \texttt{\textbackslash{}setCustomMargins\{inner\}\{outer\}\{top\}\{bottom\}} &
+    Override typearea margins with explicit dimensions \\
+  \texttt{\textbackslash{}ctrw} & Open a tcolorbox (wrapper command) \\
+  \texttt{\textbackslash{}ctrb} & Close a tcolorbox (wrapper command) \\
+  \bottomrule
+\end{longtblr}
+
+\section{Floats and Figures}
+
+\begin{longtblr}[
+  caption = {Float and figure commands},
+  label = {tab:cmd-floats},
+]{colspec = {l p{8.5cm}}, rowhead = 1}
+  \toprule
+  \textbf{Command} & \textbf{Description} \\
+  \midrule
+  \texttt{\textbackslash{}omnlFigure[options]\{caption\}\{file\}} & OmniLaTeX figure environment \\
+  \texttt{\textbackslash{}omnlTable[options]\{caption\}\{file\}} & OmniLaTeX table environment \\
+  \texttt{\textbackslash{}omnlFloatRow[cols]\{content\}} & Float row for subfigure layout \\
+  \texttt{\textbackslash{}omnlFloatFootmark\{n\}} & Float footnote mark in caption \\
+  \texttt{\textbackslash{}omnlFloatFoottext\{n\}\{text\}} & Float footnote text below float \\
+  \texttt{\textbackslash{}adaptedfrom\{source\}} & Attribution for adapted figures/tables \\
+  \texttt{\textbackslash{}includesvg[file]\{name\}} & Include an SVG graphic via Inkscape \\
+  \texttt{\textbackslash{}debugtikzsvg} & Debug helper for TikZ SVG inclusion \\
+  \bottomrule
+\end{longtblr}
+
+\section{References and Citations}
+
+\begin{longtblr}[
+  caption = {Reference and citation commands},
+  label = {tab:cmd-refs},
+]{colspec = {l p{8.5cm}}, rowhead = 1}
+  \toprule
+  \textbf{Command} & \textbf{Description} \\
+  \midrule
+  \texttt{\textbackslash{}ctanpackage\{name\}} & Hyperlinked CTAN package reference \\
+  \texttt{\textbackslash{}idx\{x\}} & Format an index entry reference (glossary-linked) \\
+  \texttt{\textbackslash{}todo\{text\}} & Inline TODO annotation (requires \textsf{todonotes}
+    option) \\
+  \bottomrule
+\end{longtblr}
+
+\section{Presentation Build Helpers}
+
+\begin{longtblr}[
+  caption = {Presentation-specific commands},
+  label = {tab:cmd-presentation},
+]{colspec = {l p{8.5cm}}, rowhead = 1}
+  \toprule
+  \textbf{Command} & \textbf{Description} \\
+  \midrule
+  \texttt{\textbackslash{}presentationframe[options]} & Begin a presentation slide frame \\
+  \texttt{\textbackslash{}endpresentationframe} & End a presentation slide frame \\
+  \texttt{\textbackslash{}slidetitle\{text\}} & Slide title with rule decoration \\
+  \texttt{\textbackslash{}presentationSection\{text\}} & Full-page section divider slide \\
+  \texttt{\textbackslash{}presentationHeader} & Insert frame header bar (title + author) \\
+  \texttt{\textbackslash{}presentationFooter} & Insert frame footer (title + page count) \\
+  \texttt{\textbackslash{}presentationProgressBar} & Insert progress bar at page bottom \\
+  \texttt{\textbackslash{}presentationframemark} & Increment frame counter \\
+  \texttt{\textbackslash{}presentationcountframes} & Count total frames (call after last
+    frame) \\
+  \texttt{\textbackslash{}presentationprogresson} & Enable progress bar \\
+  \texttt{\textbackslash{}presentationprogressoff} & Disable progress bar \\
+  \texttt{\textbackslash{}presentationnavsymbolson} & Enable navigation symbols \\
+  \texttt{\textbackslash{}presentationnavsymbolsoff} & Disable navigation symbols \\
+  \bottomrule
+\end{longtblr}
+
+\section{Chemistry}
+
+\begin{longtblr}[
+  caption = {Chemistry commands (via \ctanpackage{chemmacros})},
+  label = {tab:cmd-chem},
+]{colspec = {l p{8.5cm}}, rowhead = 1}
+  \toprule
+  \textbf{Command} & \textbf{Description} \\
+  \midrule
+  \texttt{\textbackslash{}ch\{formula\}} & Typeset a chemical formula (e.g.\
+    \texttt{\textbackslash ch\{H2O\}}) \\
+  \texttt{\textbackslash{}chcpd[name]\{formula\}} & Typeset a chemical compound with optional
+    name \\
+  \texttt{\textbackslash{}chemamount\{qty\}\{unit\}\{compound\}} & Formatted amount: quantity, unit,
+    and compound name \\
+  \bottomrule
+\end{longtblr}

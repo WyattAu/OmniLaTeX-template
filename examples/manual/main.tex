@@ -1,30 +1,121 @@
+% OmniLaTeX Comprehensive Manual — Entry Point
 \documentclass[
     language=english,
     doctype=manual,
     institution=none,
     titlestyle=book,
     oneside,
+    enabletikz=false,
+    enableengineering=false,
+    loadGlossaries,
 ]{../../omnilatex}
 
+% ============================================================
+% Local configuration
+% ============================================================
 \RequirePackage{config/document-settings}
 
+% ============================================================
+% Bibliography
+% ============================================================
+\addbibresource{bibliography.bib}
+
+% ============================================================
+% Document content
+% ============================================================
 \begin{document}
 
 \maketitle
 
-\tableofcontents
+% --- Front Matter ---
+\pagenumbering{roman}
+\import{content}{00_frontmatter}
 
-\chapter{Getting Started}
-Provide introductory guidance on using the product.
+% --- Part I: Foundations ---
+\part{Foundations}
+\import{content}{10_installation}
+\import{content}{11_quickstart}
+\import{content}{12_build_system}
+\import{content}{13_class_options}
+\import{content}{14_doctype_system}
 
-\section{Safety Information}
-List mandatory safety rules.
+% --- Part II: Document Types ---
+\part{Document Types}
+\import{content}{20_articles}
+\import{content}{21_reports}
+\import{content}{22_theses}
+\import{content}{23_academic}
+\import{content}{24_business}
+\import{content}{25_visual}
 
-\chapter{Operation}
-Explain how to operate the system.
+% --- Part III: Typography & Content ---
+\part{Typography \& Content}
+\import{content}{30_fonts}
+\import{content}{31_text_formatting}
+\import{content}{32_mathematics}
+\import{content}{33_physical_math}
+\import{content}{34_derivatives}
+\import{content}{35_cjk_mathematics}
 
-\appendix
-\chapter{Specifications}
-Summaries of technical data.
+% --- Part IV: Language & Internationalization ---
+\part{Language \& Internationalization}
+\import{content}{40_i18n_system}
+\import{content}{41_multilingual}
+\import{content}{42_rtl_scripts}
+\import{content}{43_cjk_scripts}
+\import{content}{44_translation_keys}
+
+% --- Part V: Layout & Structure ---
+\part{Layout \& Structure}
+\import{content}{50_page_layout}
+\import{content}{51_sectioning}
+\import{content}{52_title_pages}
+\import{content}{53_institutions}
+
+% --- Part VI: Figures, Tables & Floats ---
+\part{Figures, Tables \& Floats}
+\import{content}{60_floats}
+\import{content}{61_figures}
+\import{content}{62_tables}
+\import{content}{63_pgftplots}
+\import{content}{64_tikz_engineering}
+
+% --- Part VII: References & Glossaries ---
+\part{References \& Glossaries}
+\import{content}{70_bibliography}
+\import{content}{71_citation_styles}
+\import{content}{72_glossaries}
+\import{content}{73_cross_references}
+
+% --- Part VIII: Code & Listings ---
+\part{Code \& Listings}
+\import{content}{80_code_listings}
+\import{content}{81_lua_scripting}
+
+% --- Part IX: Advanced Features ---
+\part{Advanced Features}
+\import{content}{90_color_themes}
+\import{content}{91_boxes_environments}
+\import{content}{92_censoring}
+\import{content}{93_accessibility}
+\import{content}{94_presentations}
+\import{content}{95_posters}
+
+% --- Part X: Build & Automation ---
+\part{Build \& Automation}
+\import{content}{100_build_modes}
+\import{content}{101_git_integration}
+\import{content}{102_docker_workflow}
+\import{content}{103_nix_workflow}
+\import{content}{104_ci_cd}
+
+% --- Part XI: Formal Verification ---
+\part{Formal Verification}
+\import{content}{110_lean4_proofs}
+\import{content}{111_architecture}
+
+% --- Back Matter ---
+\pagenumbering{roman}
+\import{content}{backmatter}
 
 \end{document}

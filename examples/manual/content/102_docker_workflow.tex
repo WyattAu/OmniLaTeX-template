@@ -1,0 +1,106 @@
+\chapter{Docker Workflow}
+
+\section{Docker Image}
+
+The official OmniLaTeX Docker image is published to GitHub Container
+Registry:
+
+\begin{minted}{text}
+ghcr.io/wyattau/omnilatex-docker
+\end{minted}
+
+The image bundles TeX Live 2026 with all template dependencies pre-installed.
+Font caches are pre-warmed, eliminating the cold-start penalty on first
+compilation.  The compressed image is approximately 2\,GB.
+
+\section{Pulling the Image}
+
+\begin{minted}{bash}
+docker pull ghcr.io/wyattau/omnilatex-docker:latest
+\end{minted}
+
+Pin to a specific version for reproducibility:
+
+\begin{minted}{bash}
+docker pull ghcr.io/wyattau/omnilatex-docker:v2026.1.0
+\end{minted}
+
+\section{Build Commands}
+
+A full production build inside Docker:
+
+\begin{minted}{bash}
+docker run --rm \
+  --entrypoint "" \
+  -v "$PWD:/workspace" \
+  -w /workspace \
+  ghcr.io/wyattau/omnilatex-docker:latest \
+  bash -c "BUILD_MODE=prod python build.py"
+\end{minted}
+
+Development build:
+
+\begin{minted}{bash}
+docker run --rm \
+  --entrypoint "" \
+  -v "$PWD:/workspace" \
+  -w /workspace \
+  ghcr.io/wyattau/omnilatex-docker:latest \
+  bash -c "BUILD_MODE=dev python build.py"
+\end{minted}
+
+Ultra-fast iteration:
+
+\begin{minted}{bash}
+docker run --rm \
+  --entrypoint "" \
+  -v "$PWD:/workspace" \
+  -w /workspace \
+  ghcr.io/wyattau/omnilatex-docker:latest \
+  bash -c "BUILD_MODE=ultra python build.py"
+\end{minted}
+
+\section{ENTRYPOINT Bypass}
+
+The Docker image sets \texttt{ENTRYPOINT} to \texttt{latexmk "\$@"}, which
+means any arguments passed to \texttt{docker run} are forwarded directly to
+\texttt{latexmk}.  To run arbitrary shell commands (such as \texttt{build.py}
+or \texttt{make}), you \emph{must} use:
+
+\begin{minted}{text}
+--entrypoint ""
+\end{minted}
+
+Without this flag, the container attempts to pass your command as arguments
+to \texttt{latexmk}, which will fail.
+
+\section{Volume Mounting}
+
+The standard volume-mount pattern maps the current directory into the
+container's workspace:
+
+\begin{minted}{bash}
+-v "$PWD:/workspace" -w /workspace
+\end{minted}
+
+This ensures that output PDFs are written directly to your local filesystem.
+No copy step is needed.
+
+\section{Font Cache}
+
+The Docker image ships with pre-warmed font caches for all bundled fonts.
+On a cold host, this saves 30--60 seconds on the first \texttt{latexmk}
+pass compared to a bare TeX Live installation.
+
+\section{Cross-Platform}
+
+The Docker image runs on all major platforms:
+
+\begin{itemize}
+  \item \textbf{Linux} -- native Docker Engine.
+  \item \textbf{macOS} -- Docker Desktop (Intel or Apple Silicon).
+  \item \textbf{Windows} -- WSL2 with Docker Desktop.
+\end{itemize}
+
+No platform-specific configuration is required.  The same
+\texttt{docker run} command works identically everywhere.

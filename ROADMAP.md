@@ -1,6 +1,6 @@
 # OmniLaTeX Roadmap
 
-Current version: **v1.12.0**
+Current version: **v1.16.0**
 
 ## Design Principles
 
@@ -8,22 +8,27 @@ Current version: **v1.12.0**
 2. **Modular architecture** — every feature is a `.sty` module with formal contracts
 3. **Multi-language native** — polyglossia-based, not English-first with patches
 4. **CI/CD as documentation** — pipelines that double as usage examples
+5. **Distribution before features** — CTAN + Overleaf + VS Code unlock global reach
 
 ## Project Snapshot
 
 | Metric | Value |
 |--------|-------|
-| Releases | 15 (v1.0.0–v1.12.0) |
+| Releases | 16 (v1.0.0–v1.16.0) |
 | `.sty` modules | 27 |
-| Document types | 23 (thesis, dissertation, article, journal, inlinepaper, book, manual, technicalreport, standard, patent, cv, cover-letter, poster, presentation, letter, dictionary, homework, exam, research-proposal, lecture-notes, syllabus, handout, memo) |
-| Examples | 40 (40/40 compile on Docker TL2026) |
-| Institution configs | 14 |
-| Languages | 9 primary (EN, DE, FR, ES, ZH, JA, KO, AR, HE) + 19 secondary via polyglossia (18 + persian) |
-| Translation keys | 88+ across 12 languages (EN, DE, FR, ES, RU, IT, PT, NL, PL, CS, EL, TR) |
-| CI workflows | 7 (all green) |
-| Integration tests | 322 (across 6 categories) |
-| Lean 4 proofs | 15 proven, 5 retained (Float limitation, documented) |
-| Core code | ~15,500 lines |
+| Document types | 26 (55+ aliases) across 3 KOMA-Script base classes |
+| Examples | 43 (43/43 compile on Docker TL2026) |
+| Institution configs | 16 |
+| Languages | 18 primary (EN, DE, FR, ES, RU, IT, PT, NL, PL, CS, EL, TR, DA, ZH, JA, KO, AR, HE) + 8 secondary via polyglossia |
+| Translation keys | 846 total (47 keys × 18 languages) |
+| CI workflows | 9 GitHub Actions + 4 other platforms |
+| Tests | 508 (349 integration + 20 property + 7 consistency + 132 hypothesis) |
+| Lean 4 proofs | 53/53 proven, 10 modules, 0 sorry |
+| Color themes | 7 presets + dark/light toggle |
+| Citation styles | 9 (IEEE, ACM, APA, Chicago, Nature, Science, Harvard, Vancouver, MLA) |
+| CJK support | Chinese (SC+TC), Japanese, Korean |
+| RTL support | Arabic, Hebrew, Persian |
+| Core code | ~16,500 lines |
 | License | Apache 2.0 |
 
 ---
@@ -32,74 +37,134 @@ Current version: **v1.12.0**
 
 | Version | Date | Summary |
 |---------|------|---------|
-| v1.12.0 | 2026-05-03 | Polish — Persian RTL, 5 new translations (NL/PL/CS/EL/TR), 2 Lean proofs, flake.nix, perf docs, patent example |
-| v1.11.0 | 2026-05-02 | Languages — 18 secondary languages, 55+ translations (FR/ES/RU/IT/PT), TC Chinese auto-detect, 7 Lean proofs, CTAN guide |
-| v1.10.0 | 2026-05-02 | Distribution — 4 new document types (lecture-notes, syllabus, handout, memo), 39 examples, CTAN CI updated |
-| v1.9.0 | 2026-05-02 | Growth — CTAN CI, Overleaf zip, 282 integration tests, 8 missing configs fixed, Pages gallery update |
-| v1.8.0 | 2026-05-02 | Distribution — 3 new document types (exam, homework, research-proposal), CTAN packaging, Pages gallery, font setters, 6 bug fixes, template enrichment |
-| v1.7.1 | 2026-04-30 | Quality — .sty/.cls audit (6 fixes), KOMA TL2025 compat, font consolidation, CI hardening |
-| v1.7.0 | 2026-04-29 | Infrastructure — CI/CD hardening, Docker multi-arch, Nix packages, digest sync |
-| v1.6.0 | 2026-04-26 | Hardening — TL2025 migration, CI/CD hardening, supply chain pinning |
-| v1.5.0 | 2026-04-24 | Institutions — 14 configs, Beamer overhaul, color theme system |
-| v1.4.0 | 2026-04-24 | Accuracy — documentation reconciliation, Lean 4 CI, Docker digests |
-| v1.3.1 | 2026-04-24 | Housekeeping — Docker monorepo merge, cross-platform CI fix |
-| v1.3.0 | 2026-04-23 | Features — poster/presentation/letter, scaffold-language, perf baselines |
-| v1.2.0 | 2026-04-23 | Ecosystem — TUM/ETH institutions, cross-platform CI, Lean 4, CWL |
-| v1.1.0 | 2026-04-22 | Distribution — README v2, CONTRIBUTING, CTAN/Overleaf packaging |
+| v1.16.0 | 2026-05-06 | 53 Lean theorems (10 modules), 508 tests, TikZ figures, audit fixes |
+| v1.15.0 | 2026-05-05 | Visual regression, digest consistency, 10 Lean proof modules |
+| v1.14.0 | 2026-05-04 | Columbia/Harvard institutions, invoice/recipe doctypes, 5 TikZ figures |
+| v1.13.0 | 2026-05-03 | Module version bump, Persian RTL, 5 new translations |
+| v1.12.0 | 2026-05-03 | Polish — Persian RTL, NL/PL/CS/EL/TR translations, flake.nix |
+| v1.11.0 | 2026-05-02 | 18 secondary languages, FR/ES/RU/IT/PT translations |
+| v1.10.0 | 2026-05-02 | 4 new doctypes (lecture-notes, syllabus, handout, memo) |
+| v1.9.0 | 2026-05-02 | CTAN CI, Overleaf zip, 282 integration tests |
+| v1.8.0 | 2026-05-02 | 3 new doctypes (exam, homework, research-proposal) |
+| v1.7.1 | 2026-04-30 | .sty/.cls audit, KOMA TL2025 compat, font consolidation |
+| v1.7.0 | 2026-04-29 | CI/CD hardening, Docker multi-arch, Nix packages |
+| v1.6.0 | 2026-04-26 | TL2025 migration, CI/CD hardening, supply chain pinning |
+| v1.5.0 | 2026-04-24 | 14 institutions, color theme system |
+| v1.4.0 | 2026-04-24 | Documentation reconciliation, Lean 4 CI |
+| v1.3.1 | 2026-04-24 | Docker monorepo merge, cross-platform CI fix |
+| v1.3.0 | 2026-04-23 | poster/presentation/letter, scaffold-language |
+| v1.2.0 | 2026-04-23 | TUM/ETH institutions, cross-platform CI, Lean 4 |
+| v1.1.0 | 2026-04-22 | README v2, CONTRIBUTING, CTAN/Overleaf packaging |
 | v1.0.0 | 2026-04-03 | Foundation — Nix, 20 examples, build.py, CI/CD |
 
 ---
 
-## v1.12.0 — Polish & Distribution (target: 2–4 weeks)
+## v1.17.0 — Distribution & Quality (target: Week 1)
 
 | Project | Priority | Status |
 |---------|----------|--------|
-| **P12.1 CTAN submission** | High | Ready (script + guide + CI) |
-| **P12.2 Overleaf gallery submission** | Medium | Ready (script + docs) |
-| **P12.3 Persian/Farsi RTL support** | Medium | Planned |
-| **P12.4 Dutch, Polish, Czech translations** | Low | Planned |
-| **P12.5 VS Code extension MVP** | Low | Planned |
-| **P12.6 Lean 4: fix false theorems** | Low | Planned |
+| **P17.1 CTAN submission** | Critical | Script ready, auto-upload tested |
+| **P17.2 Overleaf gallery submission** | High | Script + docs ready (manual web form) |
+| **P17.3 VS Code marketplace publish** | High | Extension v1.0.0 ready |
+| **P17.4 Code quality sweep** | High | 9 critical/high fixed, 18 medium/low remaining |
+| **P17.5 Manual expansion** | Medium | 57 chapters written, 12 thin chapters need expansion |
 
-### P12.1 CTAN Submission
-- Submit `omnilatex.zip` to CTAN (script ready, CI validates, guide in docs/CTAN_SUBMISSION.md)
-- Maintain CTAN metadata (version bumps, announcements)
+### P17.1 CTAN Submission
+- Run `scripts/ctan-upload.sh` (5-phase automated upload)
+- Monitor CTAN review queue
+- Maintain CTAN metadata on future releases
 
-### P12.2 Overleaf Gallery Submission
-- Test font fallback chains on Overleaf's TeX Live 2024
-- Submit to Overleaf template gallery
+### P17.2 Overleaf Gallery Submission
+- Navigate to Overleaf gallery submission form (no API)
+- Upload `omnilatex-overleaf.zip` for a representative example
+- Manual review by Overleaf team (async, ~1 week)
 
-### P12.3 Persian/Farsi RTL Support
-- Add persian as RTL language variant
-- Reuse Arabic font setup with persian-specific adjustments
+### P17.3 VS Code Marketplace
+- `vsce publish` with publisher token
+- Monitor extension analytics
 
-### P12.4 Additional Translations
-- Dutch, Polish, Czech translations for common keys
-- Greek, Turkish translations for common keys
+### P17.4 Code Quality
+- Fix 18 remaining medium/low audit findings
+- Deduplicate test constants, add pyproject.toml
+- Fix Gitea workflow, remove dead code
 
-### P12.5 VS Code Extension MVP
-- Package existing skeleton in `extensions/vscode-omnilatex/`
-- Basic functionality: doctype picker, institution switcher
+### P17.5 Manual Expansion
+- Expand 12 thin chapters (<100 lines → >150 lines)
+- Add index, list of examples, list of listings
+- Target: ~600 compiled pages
 
-### P12.6 Lean 4: Fix False Theorems
-- 7 theorems retained with `sorry` are false as stated (missing non-negativity hypotheses)
-- Add proper preconditions and complete proofs
-
-**Completion criteria:** CTAN submission live, Overleaf gallery live.
+**Completion criteria:** CTAN live, Overleaf submitted, VS Code published, manual v1.0.
 
 ---
 
-## v2.0.0 — Ecosystem (target: 4–8 weeks)
+## v1.18.0 — Manual Completion (target: Week 4)
 
 | Project | Priority | Status |
 |---------|----------|--------|
-| **P13.1 Rust TUI build tool** | Low | Exploratory |
-| **P13.2 Additional language collections** | Low | Planned |
-| **P13.3 Additional institution configs** | Low | Planned |
+| **P18.1 Complete all manual chapters** | High | Planned |
+| **P18.2 Manual screenshots and figures** | Medium | Planned |
+| **P18.3 Publish manual PDF** | Medium | Planned |
 
-### P13.2 Additional Language Collections
-- Enable more language collections in Docker image (French, Spanish, etc.)
-- Add corresponding institution configs
+### P18.1 Complete Manual Chapters
+- Expand all chapters to >150 lines
+- Add advanced usage patterns, troubleshooting, FAQs
+- Cross-reference between chapters
+
+### P18.2 Visual Assets
+- Screenshots of VS Code extension
+- PDF screenshots of key doctypes
+- TikZ diagrams for architecture concepts
+
+**Completion criteria:** Manual compiles to 600+ pages, all cross-refs resolved.
+
+---
+
+## v2.0.0 — Ecosystem (target: Month 2)
+
+| Project | Priority | Status |
+|---------|----------|--------|
+| **P20.1 Beamer theme** | High | Planned |
+| **P20.2 Community institution configs** | High | Planned |
+| **P20.3 Per-doctype citation defaults** | Medium | Planned |
+| **P20.4 Accessibility testing** | Medium | Planned |
+| **P20.5 Additional Docker fonts** | Medium | Planned |
+| **P20.6 Performance regression CI** | Medium | Planned |
+
+### P20.1 Beamer Theme
+- `omnilatex-beamer` package using OmniLaTeX colour/font system
+- Compatible with existing institution configs
+- Example slides matching all 7 colour themes
+
+### P20.2 Community Institutions
+- Aalto, Chalmers, KIT, NTNU, University of Toronto, etc.
+- Contribution guide for new institutions
+- CI validation for each config
+
+### P20.3 Citation Defaults
+- IEEE default for article/journal/inlinepaper
+- APA default for thesis/dissertation
+- Vancouver default for medical/standard
+
+### P20.4 Accessibility Testing
+- NVDA screen reader validation
+- PDF/UA-1 compliance verification
+- EN 301 549 documentation
+
+**Completion criteria:** Beamer theme published, 5+ new institutions, accessibility validated.
+
+---
+
+## v3.0.0 — Scale (target: Month 6)
+
+| Project | Priority | Status |
+|---------|----------|--------|
+| **P30.1 Complete manual to 945 pages** | High | Planned |
+| **P30.2 Overleaf premium template** | High | Planned |
+| **P30.3 Web preview (LaTeX via WASM)** | High | Planned |
+| **P30.4 Rust TUI build tool** | Medium | Exploratory |
+| **P30.5 Template marketplace** | Medium | Planned |
+
+**Completion criteria:** Published book-quality manual, Overleaf premium listing, web preview.
 
 ---
 
@@ -107,10 +172,10 @@ Current version: **v1.12.0**
 
 | Priority | Items |
 |----------|-------|
-| **Critical path** | P12.1 (CTAN) → P12.2 (Overleaf) |
-| **High impact** | P12.1, P12.2, P12.3 |
-| **Medium** | P12.4, P12.5 |
-| **Long-term** | P12.6, P13.1, P13.2, P13.3 |
+| **Critical** | CTAN submission |
+| **High** | Overleaf, VS Code, manual expansion, Beamer theme |
+| **Medium** | Community institutions, accessibility, Docker fonts, perf regression |
+| **Long-term** | WASM preview, Rust TUI, template marketplace |
 
 ---
 
@@ -118,6 +183,11 @@ Current version: **v1.12.0**
 
 | Item | Severity | Notes |
 |------|----------|-------|
-| Docker image ~6 min rebuild on cache miss | Low | BuildKit cache helps; full rebuild rare |
-| 13/20 Lean theorems use `sorry` | Low | No user impact; academic credibility |
-| Rust TUI build tool exploratory discussion | Low | No action needed unless user drives it |
+| 12 thin manual chapters (<100 lines) | Medium | Expand to >150 lines each |
+| Test constants triplicated across 3 files | Medium | Deduplicate into conftest.py |
+| Missing pyproject.toml | Medium | Add pytest config, project metadata |
+| Dead `build_tex` method in build.py | Low | Remove or implement |
+| 1 HACK in omnilatex-math.sty:230 | Low | Proper vertical spacing |
+| 5 stale snake_case .lean files | Low | Remove superseded files |
+| Gitea workflow test job outside container | Low | Align with Forgejo pattern |
+| integration-matrix.yml hardcoded digest | Low | Dynamic from .env.docker |

@@ -1,0 +1,175 @@
+% !TeX root = ../../../manual.tex
+\chapter{Floats}
+
+\section{Float Placement}
+
+KOMA-Script extends the standard \LaTeX{} float placement with additional
+specifiers. OmniLaTeX loads the \texttt{floatrow} package to provide
+automatic caption positioning and improved float layouts.
+
+\begin{longtblr}[
+    caption = {Float placement specifiers},
+    label = {tab:float-placement},
+]{colspec = {c l}, rowhead = 1}
+    \toprule
+    Specifier & Meaning \\
+    \midrule
+    h & Place here if possible \\
+    t & Place at the top of a page \\
+    b & Place at the bottom of a page \\
+    p & Place on a dedicated float page \\
+    H & Place exactly here (requires \texttt{float} package) \\
+    ! & Override internal \LaTeX{} placement constraints \\
+    + & Allow floats to appear in the current region (KOMA extension) \\
+    \bottomrule
+\end{longtblr}
+
+The default placement in OmniLaTeX is \texttt{htbp}. Override it globally or
+per-float:
+
+\begin{verbatim}
+\begin{figure}[!htb]
+    ...
+\end{figure}
+\end{verbatim}
+
+\section{Continued Floats}
+
+For figures that span multiple pages, use \verb|\ContinuedFloat| from the
+\texttt{caption} package. The caption counter is not incremented and a
+\emph{(continued)} marker is appended:
+
+\begin{verbatim}
+\begin{figure}[htbp]
+    \caption{First part of a multi-page figure}
+    \label{fig:long-first}
+    \includegraphics[width=\textwidth]{part1}
+\end{figure}
+
+\begin{figure}[htbp]
+    \ContinuedFloat
+    \caption{Second part of a multi-page figure}
+    \label{fig:long-second}
+    \includegraphics[width=\textwidth]{part2}
+\end{figure}
+\end{verbatim}
+
+\section{Float Footnotes}
+
+Standard \LaTeX{} footnotes inside floats are fragile and may not survive
+page breaks. OmniLaTeX provides a robust mechanism:
+
+\begin{verbatim}
+\omnlFloatFootmark{fn1}
+...
+\omnlFloatFoottext{fn1}{This footnote survives page breaks.}
+\end{verbatim}
+
+The footnote mark is rendered inline at the point of invocation, while the
+footnote text is placed below the caption. Multiple keys can be used within
+a single float.
+
+\section{Side Captions}
+
+Place captions beside figures using a \texttt{minipage} layout:
+
+\begin{verbatim}
+\begin{figure}[htbp]
+    \begin{minipage}[c]{0.65\textwidth}
+        \includegraphics[width=\textwidth]{photo}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[c]{0.30\textwidth}
+        \captionof{figure}{Description alongside the image.}
+        \label{fig:side-caption}
+    \end{minipage}
+\end{figure}
+\end{verbatim}
+
+\section{Key-Value Float Interface}
+
+OmniLaTeX provides high-level commands for figures and tables using key-value
+syntax:
+
+\begin{verbatim}
+\omnlFigure[
+    caption        = {An example figure},
+    label          = {fig:kv-example},
+    placement      = htbp,
+    caption-width  = 0.8\textwidth,
+    caption-position = bottom,
+]{%
+    \includegraphics[width=\textwidth]{example-image}
+}
+\end{verbatim}
+
+\begin{longtblr}[
+    caption = {\texttt{\textbackslash omnlFigure} options},
+    label = {tab:omnlfigure-options},
+]{colspec = {l l}, rowhead = 1}
+    \toprule
+    Key              & Description \\
+    \midrule
+    caption          & Caption text \\
+    label            & Label for cross-references \\
+    placement        & Float placement specifiers (default: \texttt{htbp}) \\
+    caption-width    & Width of the caption box \\
+    caption-position & \texttt{top} or \texttt{bottom} (default: \texttt{bottom}) \\
+    source           & Source attribution text \\
+    \bottomrule
+\end{longtblr}
+
+The \verb|\omnlTable| command accepts the same keys and wraps content in a
+\texttt{table} environment.
+
+\section{Float Grid}
+
+For multi-column float layouts, use \verb|omnlFloatRow|:
+
+\begin{verbatim}
+\omnlFloatRow[n-cols=3]{%
+    \includegraphics[width=\linewidth]{img1}%
+    \includegraphics[width=\linewidth]{img2}%
+    \includegraphics[width=\linewidth]{img3}%
+}
+\end{verbatim}
+
+This creates an evenly spaced row of images. The optional \texttt{n-cols}
+parameter defaults to 2.
+
+\section{Figure Environment}
+
+The standard \texttt{figure} environment is fully supported with OmniLaTeX
+enhancements:
+
+\begin{verbatim}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{diagram}
+    \caption{A standard figure with OmniLaTeX styling.}
+    \label{fig:standard}
+\end{figure}
+\end{verbatim}
+
+OmniLaTeX automatically applies the configured caption font and separator
+style to all float captions.
+
+\section{Table Environment}
+
+Similarly, the \texttt{table} environment benefits from OmniLaTeX defaults:
+
+\begin{verbatim}
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{lcc}
+        \toprule
+        Parameter & Value & Unit \\
+        \midrule
+        Mass      & 1.23  & kg  \\
+        Length    & 4.56  & m   \\
+        \bottomrule
+    \end{tabular}
+    \caption{A standard table with booktabs styling.}
+    \label{tab:standard}
+\end{table}
+\end{verbatim}

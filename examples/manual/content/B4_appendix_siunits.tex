@@ -1,0 +1,384 @@
+\chapter{SI Units \& Physical Quantities Reference}
+
+This appendix documents the \texttt{siunitx} v3 integration provided by
+OmniLaTeX, including the global configuration in
+\texttt{omnilatex-math.sty}, custom unit declarations, custom qualifiers,
+and practical usage patterns for scientific and engineering documents.
+
+\section{OmniLaTeX siunitx Configuration}
+
+OmniLaTeX loads \ctanpackage{siunitx} v3 with the following global
+settings applied via \verb|\sisetup|:
+
+\begin{minted}{latex}
+\sisetup{
+    mode=match,
+    propagate-math-font=true,
+    reset-math-version=false,
+    reset-text-family=false,
+    reset-text-series=false,
+    reset-text-shape=false,
+    text-family-to-math=true,
+    text-series-to-math=true,
+    text-font-command=\unitnumberfont,
+    range-units=single,
+    per-mode=symbol,
+    uncertainty-mode=separate,
+}
+\end{minted}
+
+Additionally, locale-specific settings are applied automatically based on
+the document language:
+
+\begin{minted}{latex}
+% German documents
+\sisetup{locale=DE}
+
+% English documents
+\sisetup{locale=US}
+\end{minted}
+
+The \textsf{mode=match} setting ensures that siunitx output inherits the
+surrounding text and math font properties (family, series, shape), so units
+render correctly in both serif and sans-serif contexts.
+
+\section{Core siunitx Commands}
+
+The three primary commands for typesetting physical quantities are
+\verb|\unit|, \verb|\qty|, and \verb|\qtyrange|:
+
+\begin{minted}{latex}
+% Unit only
+\unit{\kilogram\per\cubic\metre}
+% → kg/m³
+
+% Quantity with value
+\qty{9.81}{\metre\per\second\squared}
+% → 9.81 m/s²
+
+% Range of quantities
+\qtyrange{20}{25}{\degreeCelsius}
+% → 20 °C to 25 °C
+
+% Number only (locale-aware formatting)
+\num{1234567.89}
+% → 1,234,567.89 (US) or 1.234.567,89 (DE)
+\end{minted}
+
+\section{Number Formatting}
+
+The \verb|\num| command provides extensive number formatting options.
+Commonly used keys are shown below.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Number formatting options}
+    \label{tab:num-options}
+    \begin{tabular}{@{} l l p{5.5cm} @{}}
+        \toprule
+        \textbf{Option} & \textbf{Example Input} &
+        \textbf{Result} \\
+        \midrule
+        Default & \texttt{\textbackslash{}num\{1234.5678\}} & 1,234.5678 \\[3pt]
+        \textsf{round-mode=places} &
+            \texttt{\textbackslash{}num[round-mode=places, round-precision=2]\{3.14159\}} &
+            3.14 \\[3pt]
+        \textsf{round-mode=figures} &
+            \texttt{\textbackslash{}num[round-mode=figures, round-precision=3]\{3.14159\}} &
+            3.14 \\[3pt]
+        \textsf{group-separator} &
+            \texttt{\textbackslash{}num[group-separator=\{.\}]\{1000\}} & 1.000 \\[3pt]
+        \textsf{group-minimum-digits} &
+            \texttt{\textbackslash{}num[group-minimum-digits=4]\{1000\}} & 1000 \\[3pt]
+        \textsf{exponent-mode=scientific} &
+            \texttt{\textbackslash{}num[exponent-mode=scientific]\{0.000345\}} &
+            3.45 × 10⁻⁴ \\[3pt]
+        \textsf{exponent-mode=engineering} &
+            \texttt{\textbackslash{}num[exponent-mode=engineering]\{0.000345\}} &
+            345 × 10⁻⁶ \\[3pt]
+        \textsf{exponent-mode=engineering,
+            engineering-orientation=positive} &
+            \texttt{\textbackslash{}num[exponent-mode=engineering,
+                engineering-orientation=positive]\{56000\}} &
+            56 × 10³ \\[3pt]
+        \textsf{scientific-notation=engineering} &
+            \texttt{\textbackslash{}num[scientific-notation=engineering]\{56000\}} &
+            56 × 10³ \\[3pt]
+        \textsf{sign-mantissa} &
+            \texttt{\textbackslash{}num[sign-mantissa=+]\{42\}} & +42 \\[3pt]
+        \textsf{complex-mode=magnitude} &
+            \texttt{\textbackslash{}num[complex-mode=magnitude]\{3+4i\}} & 5 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Standard SI Units}
+
+OmniLaTeX provides access to the full siunitx v3 unit library.  The most
+commonly used units are listed below with their correct siunitx command
+syntax.
+
+\begin{longtblr}[
+  caption = {Common SI base and derived units},
+  label = {tab:si-common-units},
+]{colspec = {l l l p{4cm}}, rowhead = 1}
+  \toprule
+  \textbf{Quantity} & \textbf{Unit} & \textbf{siunitx Command} &
+  \textbf{Example} \\
+  \midrule
+  Length & metre & \texttt{\textbackslash{}metre} &
+    \texttt{\textbackslash{}qty\{1.5\}\{\textbackslash{}metre\}} → 1.5 m \\[2pt]
+  Mass & kilogram & \texttt{\textbackslash{}kilogram} &
+    \texttt{\textbackslash{}qty\{2.0\}\{\textbackslash{}kilogram\}} → 2.0 kg \\[2pt]
+  Time & second & \texttt{\textbackslash{}second} &
+    \texttt{\textbackslash{}qty\{60\}\{\textbackslash{}second\}} → 60 s \\[2pt]
+  Electric current & ampere & \texttt{\textbackslash{}ampere} &
+    \texttt{\textbackslash{}qty\{0.5\}\{\textbackslash{}ampere\}} → 0.5 A \\[2pt]
+  Temperature & kelvin & \texttt{\textbackslash{}kelvin} &
+    \texttt{\textbackslash{}qty\{293\}\{\textbackslash{}kelvin\}} → 293 K \\[2pt]
+  Amount & mole & \texttt{\textbackslash{}mole} &
+    \texttt{\textbackslash{}qty\{1\}\{\textbackslash{}mole\}} → 1 mol \\[2pt]
+  Luminous intensity & candela & \texttt{\textbackslash{}candela} &
+    \texttt{\textbackslash{}qty\{1\}\{\textbackslash{}candela\}} → 1 cd \\[2pt]
+  Force & newton & \texttt{\textbackslash{}newton} &
+    \texttt{\textbackslash{}qty\{9.81\}\{\textbackslash{}newton\}} → 9.81 N \\[2pt]
+  Energy & joule & \texttt{\textbackslash{}joule} &
+    \texttt{\textbackslash{}qty\{100\}\{\textbackslash{}joule\}} → 100 J \\[2pt]
+  Power & watt & \texttt{\textbackslash{}watt} &
+    \texttt{\textbackslash{}qty\{2.5\}\{\textbackslash{}kilo\textbackslash{}watt\}} → 2.5 kW \\[2pt]
+  Pressure & pascal & \texttt{\textbackslash{}pascal} &
+    \texttt{\textbackslash{}qty\{101325\}\{\textbackslash{}pascal\}} → 101 325 Pa \\[2pt]
+  Voltage & volt & \texttt{\textbackslash{}volt} &
+    \texttt{\textbackslash{}qty\{230\}\{\textbackslash{}volt\}} → 230 V \\[2pt]
+  Frequency & hertz & \texttt{\textbackslash{}hertz} &
+    \texttt{\textbackslash{}qty\{50\}\{\textbackslash{}hertz\}} → 50 Hz \\[2pt]
+  Angle & degree & \texttt{\textbackslash{}degree} &
+    \texttt{\textbackslash{}qty\{45\}\{\textbackslash{}degree\}} → 45° \\[2pt]
+  Area & square metre & \texttt{\textbackslash{}square\textbackslash{}metre} &
+    \texttt{\textbackslash{}qty\{25\}\{\textbackslash{}square\textbackslash{}metre\}} → 25 m² \\[2pt]
+  Volume & cubic metre & \texttt{\textbackslash{}cubic\textbackslash{}metre} &
+    \texttt{\textbackslash{}qty\{1\}\{\textbackslash{}cubic\textbackslash{}metre\}} → 1 m³ \\
+  \bottomrule
+\end{longtblr}
+
+\section{Angles, Temperature, and Frequency}
+
+Special attention is required for units that use non-standard notation:
+
+\begin{minted}{latex}
+% Angles: use \degree for the degree symbol
+\qty{90}{\degree}             % → 90°
+\qty{1.57}{\radian}           % → 1.57 rad
+\qty{3600}{\degree\per\hour}  % → 3600°/h (angular velocity)
+
+% Temperature: \degreeCelsius and \kelvin
+\qty{25}{\degreeCelsius}      % → 25 °C
+\qty{298}{\kelvin}            % → 298 K
+\qtyrange{20}{30}{\degreeCelsius}  % → 20 °C to 30 °C
+
+% OmniLaTeX temperature pair shorthand
+\temperaturepair{45}{55}      % → 45/55 °C
+
+% Frequency
+\qty{50}{\hertz}              % → 50 Hz
+\qty{2.4}{\giga\hertz}        % → 2.4 GHz
+\end{minted}
+
+\section{Custom SI Units}
+
+OmniLaTeX declares additional units beyond the standard siunitx library.
+All custom units are declared with \verb|\DeclareSIUnit| and are available
+immediately after module load.  They integrate with the standard
+\verb|\unit|, \verb|\qty|, and \verb|\qtyrange| commands.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Custom SI units defined by OmniLaTeX.}
+  \label{tab:ref-custom-units}
+  \begin{tabular}{@{} l l l p{5cm} @{}}
+    \toprule
+    \textbf{Command} & \textbf{Symbol} & \textbf{Base} &
+    \textbf{Description} \\
+    \midrule
+    \texttt{\textbackslash volpercent}
+      & vol\,\% & percent
+      & Volume percent; declared as text to preserve hyphen \\[4pt]
+    \texttt{\textbackslash watthour}
+      & Wh & J/s $\times$ h
+      & Watt-hour energy unit \\[4pt]
+    \texttt{\textbackslash annum}
+      & a & year
+      & Annum (Julian year, $365.25$ days) \\[4pt]
+    \texttt{\textbackslash atmosphere}
+      & atm & pressure
+      & Standard atmosphere ($101\,325$\,Pa) \\[4pt]
+    \texttt{\textbackslash partspermillion}
+      & ppm & ratio
+      & Parts per million ($10^{-6}$) \\[4pt]
+    \texttt{\textbackslash bar}
+      & bar & pressure
+      & Bar ($10^{5}$\,Pa) \\[4pt]
+    \texttt{\textbackslash relhumidity}
+      & \%rh / \%\,r.F. & ratio
+      & Relative humidity; language-dependent label \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The \texttt{\textbackslash relhumidity} unit adapts to the document
+language.  In German documents it renders as \texttt{\%\,r.F.}\
+(\emph{relative Feuchte}); in English documents as \texttt{\%\,RH}.
+
+The Euro sign is also available as a unit via the \texttt{eurosym}
+package--use \texttt{\textbackslash euro} directly inside
+\texttt{\textbackslash unit\{\}} or \texttt{\textbackslash qty\{\}\{}}.
+
+\begin{minted}{latex}
+\qty{350}{\watthour}              % → 350 Wh
+\qty{15}{\percent}                % → 15 %
+\qty{400}{\volpercent}            % → 400 vol %
+\qty{1.013}{\bar}                 % → 1.013 bar
+\qty{1}{\atmosphere}              % → 1 atm
+\qty{350}{\partspermillion}       % → 350 ppm
+\qty{65}{\relhumidity}            % → 65 %RH
+\qty{2.50}{\euro\per\kilogram}    % → €2.50/kg
+\end{minted}
+
+\section{Custom SI Qualifiers}
+
+Unit qualifiers appear as subscripts and disambiguate quantities that
+share the same SI unit.  OmniLaTeX declares three qualifiers via
+\texttt{\textbackslash DeclareSIQualifier}, sourcing their display text
+from the glossary system for consistency.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Custom SI qualifiers defined by OmniLaTeX.}
+  \label{tab:ref-si-qualifiers}
+  \begin{tabular}{@{} l l p{6cm} @{}}
+    \toprule
+    \textbf{Command} & \textbf{Qualifier} & \textbf{Description} \\
+    \midrule
+    \texttt{\textbackslash dryair}
+      & dry air
+      & Dry air component in moist-air calculations;
+        reads from glossary entries \texttt{sub.dry} and
+        \texttt{sub.air} \\[4pt]
+    \texttt{\textbackslash water}
+      & water
+      & Water component; reads from glossary entry
+        \texttt{sub.water} \\[4pt]
+    \texttt{\textbackslash thermal}
+      & thermal
+      & Thermal property qualifier; reads from glossary entry
+        \texttt{sub.thermal} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Usage follows the standard siunitx qualifier syntax:
+
+\begin{minted}{latex}
+\unit{\kilogram\per\cubic\metre\dryair}
+% → kg/m³_dry air
+
+\qty{1.2}{\kilo\watt\per\metre\thermal}
+% → 1.2 kW/m_thermal
+\end{minted}
+
+\section{Declaring Custom Units}
+
+Users can declare additional units in their document preamble using the
+standard siunitx v3 interface:
+
+\begin{minted}{latex}
+\DeclareSIUnit\foot{ft}
+\DeclareSIUnit\horsepower{hp}
+\DeclareSIUnit\BTU{BTU}
+
+\qty{6}{\foot}                    % → 6 ft
+\qty{150}{\horsepower}            % → 150 hp
+\qty{5000}{\BTU\per\hour}         % → 5 000 BTU/h
+\end{minted}
+
+To declare a compound unit with a qualifier:
+
+\begin{minted}{latex}
+\DeclareSIQualifier\fuel{fuel}
+\unit{\kilogram\per\second\fuel}
+% → kg/s_fuel
+\end{minted}
+
+\section{Physics Examples}
+
+The following examples demonstrate typical physics and engineering
+calculations using OmniLaTeX's siunitx integration.
+
+\subsection{Mechanics}
+
+\begin{minted}{latex}
+% Force: F = ma
+The gravitational force is $F = \qty{80}{\kilogram} \times
+\qty{9.81}{\metre\per\second\squared} = \qty{784.8}{\newton}$.
+
+% Energy: kinetic energy
+$E_k = \frac{1}{2} m v^2
+     = \frac{1}{2} \times \qty{2.0}{\kilogram}
+       \times \left(\qty{3.0}{\metre\per\second}\right)^2
+     = \qty{9.0}{\joule}$
+
+% Work: W = F * d
+$W = \qty{50}{\newton} \times \qty{10}{\metre}
+   = \qty{500}{\joule}$
+\end{minted}
+
+\subsection{Thermodynamics}
+
+\begin{minted}{latex}
+% Heat transfer
+The heat flux is $\dot{Q} = \qty{5.2}{\kilo\watt}$ at
+$\Delta T = \temperaturepair{80}{60}$.
+
+% Specific heat capacity
+$c_p = \qty{4.18}{\kilo\joule\per\kilogram\per\kelvin}$
+
+% Thermal conductivity
+$\lambda = \qty{0.025}{\watt\per\metre\per\kelvin}$
+
+% Using qualifiers for moist air
+$\rho = \qty{1.20}{\kilogram\per\cubic\metre\dryair}$
+\end{minted}
+
+\subsection{Electrical Engineering}
+
+\begin{minted}{latex}
+% Ohm's law
+$V = I \cdot R = \qty{2}{\ampere} \times \qty{470}{\ohm}
+   = \qty{940}{\volt}$
+
+% Power
+$P = V \cdot I = \qty{230}{\volt} \times \qty{10}{\ampere}
+   = \qty{2.3}{\kilo\watt}$
+
+% Energy consumption
+$E = \qty{2.3}{\kilo\watt} \times \qty{8}{\hour}
+   = \qty{18.4}{\kilo\watt\hour}$
+\end{minted}
+
+\subsection{Fluid Dynamics}
+
+\begin{minted}{latex}
+% Volumetric flow rate
+$\dot{V} = \qty{0.05}{\cubic\metre\per\second}$
+
+% Pressure drop
+$\Delta p = \qty{15}{\kilo\pascal} = \qty{0.15}{\bar}$
+
+% Reynolds number (dimensionless)
+$\mathrm{Re} = \frac{\rho v D}{\mu}
+  = \frac{\qty{998}{\kilogram\per\cubic\metre}
+         \times \qty{1.5}{\metre\per\second}
+         \times \qty{0.05}{\metre}}
+        {\qty{1.002e-3}{\pascal\second}}
+  = 74\,625$
+\end{minted}

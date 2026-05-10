@@ -1,0 +1,180 @@
+\chapter{Internationalization System}
+
+OmniLaTeX provides a layered internationalization (i18n) system that handles
+language rules, string localization, and bidirectional text.  This chapter
+covers the translation infrastructure; see Chapters~41 and~42 for multilingual
+documents and RTL scripts respectively.
+
+% =========================================================================
+\section{polyglossia Setup}
+% =========================================================================
+
+OmniLaTeX loads \texttt{polyglossia} through \texttt{omnilatex-i18n.sty},
+which serves as the LuaLaTeX replacement for \texttt{babel}.  The primary
+document language is set via the class option \texttt{language=<lang>} and
+propagated to \texttt{polyglossia} using a double-\cs{expandafter} pattern
+that ensures the macro is fully expanded before \cs{setdefaultlanguage}
+receives it.
+
+In addition to the primary language, 27 secondary languages are registered
+via \cs{setotherlanguages}, making them available for inline use with
+\cs{begin}\texttt{\{<lang>\}}\ldots\cs{end}\texttt{\{<lang>\}} or
+\cs{foreignlanguage}\texttt{\{<lang>\}\{...\}}:
+
+\begin{verbatim}
+\setotherlanguages{
+  german, ngerman, english, french, spanish, italian, portuguese,
+  russian, dutch, polish, czech, greek, turkish, simplifiedchinese,
+  traditionalchinese, japanese, korean, arabic, hebrew, vietnamese,
+  hindi, swedish, finnish, danish, norsk
+}
+\end{verbatim}
+
+This design allows a German thesis to include English passages with a simple
+\cs{begin}\texttt{\{english\}}\ldots\cs{end}\texttt{\{english\}} switch,
+or an English document to embed Arabic text inline.
+
+% =========================================================================
+\section{Translation System}
+% =========================================================================
+
+Beyond hyphenation and caption rules, OmniLaTeX uses the \texttt{translations}
+package for localized strings that \texttt{polyglossia} does not cover
+(e.g.\ custom headings, institutional labels).  Translations are declared
+with \cs{DeclareTranslation} and retrieved with \cs{GetTranslation}:
+
+\begin{verbatim}
+\DeclareTranslation{german}{Gloss}{Glossar}
+\GetTranslation{Gloss}   % → "Glossary" or "Glossar" depending on locale
+\end{verbatim}
+
+Users can override any translation without modifying the package:
+
+\begin{verbatim}
+\RenewTranslation{german}{author}{Autorin}
+\end{verbatim}
+
+This is particularly useful for gender-neutral or gender-specific academic
+roles.  The document preamble in \texttt{config/document-settings.sty}
+demonstrates overriding \texttt{author}, \texttt{FirstExaminer},
+\texttt{SecondExaminer}, and \texttt{Supervisor} for German documents.
+OmniLaTeX also uses \cs{GetTranslationFor}\texttt{\{<lang>\}\{<key>\}} to
+inspect translations for a specific language, enabling conditional logic such
+as selecting the correct German definite article (\texttt{der}/\texttt{die})
+based on the gendered form of \texttt{author}.
+
+% =========================================================================
+\section{Language Fallback Chain}
+% =========================================================================
+
+When a translation key is not defined for the current document language,
+the \texttt{translations} package falls back to English.  This behaviour is
+formally verified in \texttt{LanguageFallback.lean}, which defines the
+fallback function as:
+
+\begin{verbatim}
+def fallback : PrimaryLanguage → PrimaryLanguage
+  | .english => .english
+  | _        => .english
+\end{verbatim}
+
+Two properties are machine-checked:
+\begin{itemize}
+  \item \texttt{fallback\_terminates}: for every language~$l$,
+    $\text{fallback}(l) = \text{english}$.
+  \item \texttt{fallback\_stable}:
+    $\text{fallback}(\text{fallback}(l)) = \text{fallback}(l)$,
+    guaranteeing that repeated fallbacks do not oscillate.
+\end{itemize}
+
+English also serves as the fixed point: $\text{fallback}(\text{english})
+= \text{english}$.  This ensures that all 18 primary languages resolve
+to a defined string even if a particular key is missing.
+
+% =========================================================================
+\section{Dynamic Language Switching}
+% =========================================================================
+
+Any registered secondary language can be activated inline using
+polyglossia's environment form:
+
+\begin{verbatim}
+\begin{english}
+  This paragraph uses English hyphenation and caption rules.
+\end{english}
+\end{verbatim}
+
+This is essential for bilingual documents where, for example, a German thesis
+must include an English abstract for international readers, or where legal
+disclaimers must appear in a specific language.  The language switch affects
+hyphenation patterns, caption strings, and \cs{GetTranslation} resolution
+for the duration of the environment.
+
+% =========================================================================
+\section{Translation Key Categories}
+% =========================================================================
+
+The 47 translation keys are organized into functional categories.
+Completeness is verified in \texttt{I18nCompleteness.lean}:
+
+\begin{description}
+  \item[Document metadata (7)] \texttt{Title}, \texttt{Author},
+    \texttt{CompiledOn}, \texttt{CensorNotice}, \texttt{PlaceDate},
+    \texttt{Topic}, \texttt{Task}, \texttt{For}.
+  \item[Academic roles (5)] \texttt{FirstExaminer},
+    \texttt{SecondExaminer}, \texttt{Supervisor}, \texttt{Examiner},
+    \texttt{AuthorshipDeclTitle}, \texttt{AuthorshipDeclText},
+    \texttt{authorArticle}.
+  \item[Glossary groups (9)] \texttt{Gloss}, \texttt{Greek},
+    \texttt{Roman}, \texttt{Other}, \texttt{Terms}, \texttt{Names},
+    \texttt{Acronyms}, \texttt{Subscripts}, \texttt{Superscripts},
+    \texttt{SubSuperTitle}.
+  \item[Content lists (8)] \texttt{ListOfExamples},
+    \texttt{ListOfListings}, \texttt{ListOfIllustrations},
+    \texttt{IllustrativeElements}, \texttt{Listing}, \texttt{Listings},
+    \texttt{Example}, \texttt{Examples}, \texttt{FurtherReadingTitle},
+    \texttt{FurtherReadingText}.
+  \item[Scientific notation (4)] \texttt{Constant}, \texttt{Unit},
+    \texttt{PhysicalQuantity}, \texttt{AdaptedFrom}.
+  \item[Reactions (2)] \texttt{Reaction}, \texttt{Reactions}.
+  \item[Table formatting (2)] \texttt{Contfoot}, \texttt{Conthead}.
+  \item[Layout (4)] \texttt{BlankPage}, \texttt{First}, \texttt{Second},
+    \texttt{LatexClass}, \texttt{Generator}.
+\end{description}
+
+% =========================================================================
+\section{Complete Key Table}
+% =========================================================================
+
+The following table lists representative keys from each category.
+The full list of all 47 keys with translations in all 18 languages is
+documented in Chapter~44.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Selected translation keys and their English values.}
+  \label{tab:translation-keys}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Category & Key & English value \\
+    \midrule
+    Metadata & \texttt{CompiledOn}     & Compiled on \\
+    Metadata & \texttt{PlaceDate}       & Place \& Date \\
+    Academic & \texttt{FirstExaminer}   & Examiner \\
+    Academic & \texttt{Supervisor}      & Supervisor \\
+    Academic & \texttt{AuthorshipDeclTitle} & Declaration of Authorship \\
+    Glossary & \texttt{Gloss}           & Glossary \\
+    Glossary & \texttt{Acronyms}        & Acronyms \\
+    Glossary & \texttt{Subscripts}      & Subscripts \\
+    Lists    & \texttt{ListOfExamples}  & List of Examples \\
+    Lists    & \texttt{FurtherReadingTitle} & Further Reading \\
+    Science  & \texttt{Constant}        & const \\
+    Science  & \texttt{PhysicalQuantity} & Physical Quantity \\
+    Science  & \texttt{AdaptedFrom}     & Adapted from \\
+    Reaction & \texttt{Reaction}        & Reaction \\
+    Table    & \texttt{Contfoot}        & Continued on next page \\
+    Table    & \texttt{Conthead}        & \ (Continued) \\
+    Layout   & \texttt{BlankPage}       & Rest of this page intentionally left blank. \\
+    \bottomrule
+  \end{tabular}
+\end{table}

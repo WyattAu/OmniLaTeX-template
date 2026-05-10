@@ -1,0 +1,231 @@
+% !TeX root = ../../../manual.tex
+\chapter{TikZ Engineering Diagrams}
+
+\section{Flowcharts}
+
+OmniLaTeX provides node styles for standard flowchart shapes via
+\texttt{omnilatex-tikz-core.sty}:
+
+\begin{longtblr}[
+    caption = {Flowchart node styles},
+    label = {tab:flowchart-styles},
+]{colspec = {l l}, rowhead = 1}
+    \toprule
+    Style      & Shape \\
+    \midrule
+    startstop  & Rounded rectangle (terminal) \\
+    io         & Parallelogram (input/output) \\
+    process    & Rectangle (process step) \\
+    decision   & Diamond (conditional branch) \\
+    \bottomrule
+\end{longtblr}
+
+\begin{verbatim}
+\begin{tikzpicture}[
+    node distance=1.5cm,
+    startstop/.style={...},
+    process/.style={...},
+    decision/.style={...},
+]
+    \node (start) [startstop] {Start};
+    \node (proc1) [process, below=of start] {Read input};
+    \node (dec1)  [decision, below=of proc1] {Valid?};
+    \node (proc2) [process, below=of dec1]   {Process data};
+    \node (stop)  [startstop, below=of proc2]{Stop};
+
+    \draw[-{Stealth}] (start) -- (proc1);
+    \draw[-{Stealth}] (proc1) -- (dec1);
+    \draw[-{Stealth}] (dec1)  -- node[right] {Yes} (proc2);
+    \draw[-{Stealth}] (dec1.west) -- ++(-2,0)
+                      node[above] {No} |- (proc1);
+    \draw[-{Stealth}] (proc2) -- (stop);
+\end{tikzpicture}
+\end{verbatim}
+
+Arrow styles use the \texttt{arrows.meta} library. Common tips include
+\texttt{Stealth}, \texttt{Latex}, \texttt{>}, and \texttt{|}.
+
+\section{Circuit Diagrams}
+
+The \texttt{circuits.ee.IEC} TikZ library provides standard electrical
+symbols:
+
+\begin{verbatim}
+\usetikzlibrary{circuits.ee.IEC}
+
+\begin{tikzpicture}[circuit ee IEC]
+    \draw (0,0) to[resistor] (3,0)
+               to[battery]   (3,-2)
+               to[contact]   (0,-2) -- cycle;
+\end{tikzpicture}
+\end{verbatim}
+
+\begin{longtblr}[
+    caption = {IEC circuit symbols},
+    label = {tab:iec-symbols},
+]{colspec = {l l}, rowhead = 1}
+    \toprule
+    Symbol    & Component \\
+    \midrule
+    resistor  & Resistor \\
+    capacitor & Capacitor \\
+    inductor  & Inductor \\
+    battery   & Voltage source / battery \\
+    contact   & Switch / contact \\
+    diode     & Diode \\
+    \bottomrule
+\end{longtblr}
+
+Component values are specified with the \texttt{info} key:
+\texttt{to[resistor, info=\$R\_1\{=\}100\,\textbackslash Omega\$]}.
+
+\section{3D Drawings}
+
+The \texttt{tdplot} library provides three-dimensional coordinate frames:
+
+\begin{verbatim}
+\usepackage{tikz-3dplot}
+\tdplotsetmaincoords{70}{110}
+
+\begin{tikzpicture}[tdplot_main_coords]
+    \draw[->] (0,0,0) -- (4,0,0) node[right] {$x$};
+    \draw[->] (0,0,0) -- (0,4,0) node[above] {$y$};
+    \draw[->] (0,0,0) -- (0,0,4) node[below left] {$z$};
+
+    \draw[fill=blue!20] (0,0,0) -- (3,0,0) -- (3,2,0)
+                        -- (0,2,0) -- cycle;
+\end{tikzpicture}
+\end{verbatim}
+
+Canvas planes (\texttt{xy}, \texttt{yz}, \texttt{xz}) help project 2D
+annotations onto 3D drawings. Flow arrows use the \texttt{-{Stealth}}
+arrow tip with the \texttt{line width} key for visibility in perspective
+views.
+
+\section{Custom Thermodynamic Shapes}
+
+OmniLaTeX defines custom TikZ shapes for thermodynamic and process
+engineering diagrams:
+
+\begin{longtblr}[
+    caption = {Custom thermodynamic shapes},
+    label = {tab:thermo-shapes},
+]{colspec = {l l l}, rowhead = 1}
+    \toprule
+    Shape                 & Anchors & Description \\
+    \midrule
+    valve                 & in, out & Control valve \\
+    pump                  & in, out & Circulation pump \\
+    compressor            & in, out & Compressor \\
+    heat exchanger        & in, out & Heat exchanger \\
+    simple heat exchanger & in, out & Simple HX \\
+    radiator              & top, right, exit, lower entry, upper entry, ventilation & Radiator with multiple connections \\
+    sensor                &         & Sensor \\
+    levelindicator        &         & Level indicator \\
+    boiler                &         & Boiler \\
+    equalizing tank       &         & Equalizing tank \\
+    \bottomrule
+\end{longtblr}
+
+Use these shapes in node definitions:
+
+\begin{verbatim}
+\node[valve] (v1) at (0,0) {};
+\node[pump, right=2cm of v1] (p1) {};
+\draw[-{Stealth}] (v1.out) -- (p1.in);
+\end{verbatim}
+
+Shapes with \texttt{in}/\texttt{out} anchors connect naturally to pipe
+segments. The \texttt{radiator} shape provides multiple connection points
+(\texttt{top}, \texttt{right}, \texttt{exit}, \texttt{lower entry},
+\texttt{upper entry}, \texttt{ventilation}) for complex piping layouts.
+
+\section{Pipe Networks}
+
+Pipe networks use dedicated node styles for fittings and junctions:
+
+\begin{verbatim}
+\begin{tikzpicture}
+    \node[pipe] (p1) at (0,0) {};
+    \node[threeway valve] (tv1) at (3,0) {};
+    \node[control valve]  (cv1) at (6,0) {};
+    \node[fourway valve]  (fv1) at (3,-3) {};
+
+    \draw[-{Stealth}] (p1) -- (tv1);
+    \draw[-{Stealth}] (tv1) -- (cv1);
+    \draw[-{Stealth}] (tv1) -- (fv1);
+\end{tikzpicture}
+\end{verbatim}
+
+\begin{longtblr}[
+    caption = {Pipe network node styles},
+    label = {tab:pipe-styles},
+]{colspec = {l l}, rowhead = 1}
+    \toprule
+    Style             & Description \\
+    \midrule
+    pipe              & Straight pipe segment \\
+    threeway valve    & Three-way branching valve \\
+    control valve     & Two-way control valve \\
+    fourway valve     & Four-way cross valve \\
+    \bottomrule
+\end{longtblr}
+
+Pipes connect via the \texttt{in}/\texttt{out} anchors on valve nodes.
+The \texttt{pipe} node acts as a directional segment for flow
+visualisation.
+
+\section{Control System Diagrams}
+
+Simulink-style block diagrams use rectangular nodes with named ports:
+
+\begin{verbatim}
+\begin{tikzpicture}[
+    block/.style={draw, rectangle, minimum height=2.5em,
+                  minimum width=4em, anchor=west},
+    sum/.style={draw, circle, node distance=1.5cm},
+]
+    \node[sum]   (sum)  {$\Sigma$};
+    \node[block, right=of sum]  (plant)  {Plant};
+    \node[block, right=of plant](ctrl)   {Controller};
+    \node[block, below=of ctrl] (sat)    {Saturation};
+
+    \draw[-{Stealth}] (sum)  -- (plant);
+    \draw[-{Stealth}] (plant) -- (ctrl);
+    \draw[-{Stealth}] (ctrl)  -- (sat);
+    \draw[-{Stealth}] (ctrl.east) -- ++(1,0) |- (sum.south)
+        node[pos=0.95, left] {$-$};
+\end{tikzpicture}
+\end{verbatim}
+
+Feedback loops are drawn by routing the output signal back to the summing
+junction with \texttt{-{}- ++(dx,0) |-} paths. The saturation block models
+actuator limits with \texttt{min}/\texttt{max} parameters.
+
+\section{Annotation Arrows}
+
+OmniLaTeX provides utility commands for engineering annotations:
+
+\begin{longtblr}[
+    caption = {Annotation arrow commands},
+    label = {tab:annotation-arrows},
+]{colspec = {l l}, rowhead = 1}
+    \toprule
+    Command                  & Description \\
+    \midrule
+    \texttt{\textbackslash annotationarrow}  & Arrow with a text label at the tip \\
+    \texttt{\textbackslash wall}             & Hatched wall for boundary conditions \\
+    \texttt{\textbackslash flowarrow}        & Directional flow arrow on a pipe or duct \\
+    \texttt{\textbackslash arrowlabel}       & Text label positioned along an arrow \\
+    \bottomrule
+\end{longtblr}
+
+\begin{verbatim}
+\flowarrow{(0,0)}{(4,0)}{Flow direction}
+\wall{(6,-1)}{(6,1)}
+\annotationarrow{(2,2)}{(5,3)}{Note: pressure drop}
+\end{verbatim}
+
+These commands simplify common annotation patterns in process and
+mechanical engineering diagrams, keeping the TikZ source concise and
+readable.

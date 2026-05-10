@@ -40,6 +40,43 @@ This project adheres to [Semantic versioning](https://semver.org/).
 - **I18nCompleteness.lean** key count fixed (46 → 47, total 828 → 846)
 - **README.md** example count fixed (31 → 43), added columbia + harvard institutions
 
+## [1.15.0] - 2026-05-05
+
+### Added
+- **Lean 4 proof expansion** — 23 new theorems across 3 new modules (30 → 53, 7 → 10)
+- **Visual regression testing** — PDF validity, page count sanity, metadata checks
+- **TestDockerDigestConsistency** — cross-workflow digest verification
+- **8 real TikZ/pgfplots figures** replacing placeholder boxes
+- **Automated CTAN upload** via GitHub Actions with pre-flight validation
+- **VS Code extension rewrite** — doctype picker, institution switcher, language switch (Ctrl+Alt+L)
+- **18-language CensorNotice** — full i18n coverage for content warning system
+- **Property-based CI** — hypothesis fuzzing of doctype/language combinations
+
+### Changed
+- Total test count increased significantly with visual regression + property tests
+- Docker digests synced across all 6 CI platforms
+- Documentation counts and CI workflow references updated
+
+### Fixed
+- **CI determinism flake** — PAGES1 volume mount bug, tolerance relaxed to 3%
+- **Stale Docker digests** synced across GitHub, GitLab, Gitea, Forgejo, Woodpecker, DevContainer
+- **Code quality audit** — version bumps, stale counts, hardcoded emails
+- **Documentation consistency** — counts, doctype table, CI workflows, Lean module references
+
+## [1.14.0] - 2026-05-04
+
+### Added
+- **Recipe document type** — ingredients list, step-by-step instructions, timing metadata, difficulty rating
+- **Harvard institution** — Crimson color scheme, Harvard title page layout, faculty metadata
+- **Columbia institution** — Columbia blue palette, shield reference, school/department metadata
+- **Full i18n parity** — all 14 secondary languages expanded to 46 translation keys (490 new keys total)
+- **CI hardening** — Docker digest pinning, cross-platform workflow validation
+
+### Fixed
+- **4 broken examples** fixed (compilation errors after doctype additions)
+- **i18n key error** in secondary language definitions
+- **Audit findings** resolved (42/42 examples building successfully)
+
 ## [1.13.0] - 2026-05-03
 
 ### Added

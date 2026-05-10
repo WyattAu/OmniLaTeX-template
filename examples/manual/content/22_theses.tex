@@ -1,0 +1,271 @@
+\chapter{Theses \& Dissertations}
+\label{ch:theses}
+
+This chapter covers four \texttt{scrbook}-based doctypes for long-form
+academic works: \texttt{thesis}, \texttt{dissertation},
+\texttt{thesis-tuhh}, and \texttt{dictionary}.  The \texttt{manual} doctype
+is also \texttt{scrbook}-backed and is documented in
+Chapter~\ref{ch:reports}.
+
+All book-type doctypes inherit \texttt{listof=totoc},
+\texttt{bibliography=totoc}, \texttt{chapterprefix=true},
+\texttt{open=right}, and \texttt{numbers=noenddot}.  They support
+\texttt{\textbackslash frontmatter}, \texttt{\textbackslash mainmatter},
+and \texttt{\textbackslash backmatter} for distinct typographic treatment
+of preliminary pages, body chapters, and appendices.
+
+\section{Thesis vs.\ Dissertation}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Comparison of thesis and dissertation doctypes}
+    \label{tab:thesis-vs-dissertation}
+    \begin{tabular}{@{} l p{5.5cm} p{5.5cm} @{}}
+        \toprule
+        & \textbf{thesis} & \textbf{dissertation} \\
+        \midrule
+        \textbf{KOMA base}   & \texttt{scrbook} & \texttt{scrbook} \\[3pt]
+        \textbf{Font size}   & 12\,pt & Default (11\,pt) \\[3pt]
+        \textbf{Sides}       & Two-sided & Two-sided \\[3pt]
+        \textbf{secnumdepth} & 2 & 3 \\[3pt]
+        \textbf{Line spacing} & One-and-a-half & Default \\[3pt]
+        \textbf{Paragraph spacing} & None & Default \\[3pt]
+        \textbf{Supervisor model}  & Single advisor & Primary + secondary \\[3pt]
+        \textbf{Committee}   & \texttt{\textbackslash thesiscommittee} &
+                               \texttt{\textbackslash dissertationcommittee} \\[3pt]
+        \textbf{Degree cmd}  & \texttt{\textbackslash thesisdegree} &
+                               \texttt{\textbackslash dissertationdegree} \\[3pt]
+        \textbf{Keywords}    & No & Yes (\texttt{\textbackslash keywords}) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The \texttt{thesis} doctype is designed for master's theses with a single
+advisor, shallower sectioning depth, and larger 12\,pt font.  The
+\texttt{dissertation} doctype targets doctoral works with deeper sectioning,
+dual supervisor support, and keyword fields for library cataloguing.
+
+\section{Doctype Profiles}
+
+\subsection{thesis}
+
+The \texttt{thesis} doctype produces a formal thesis title page with
+institution, department, degree, advisor, committee, and defense date.  It
+uses 12\,pt serif font, one-and-a-half line spacing, and no paragraph
+indentation.  The document is two-sided with binding correction support via
+the \texttt{BCOR} option.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Custom commands for \texttt{thesis}}
+    \label{tab:thesis-commands}
+    \begin{tabular}{@{} l p{8cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash thesisinstitution\{...\}}  & University or institution name \\
+        \texttt{\textbackslash thesisdepartment\{...\}}   & Department or school name \\
+        \texttt{\textbackslash thesisdegree\{...\}}       & Degree (default: Master of Science) \\
+        \texttt{\textbackslash thesisadvisor\{...\}}      & Thesis advisor name \\
+        \texttt{\textbackslash thesiscommittee\{...\}}    & Committee members (comma-separated) \\
+        \texttt{\textbackslash defensedate\{...\}}        & Defense date (default: \texttt{\textbackslash today}) \\
+        \texttt{\textbackslash thesislocation\{...\}}     & City and country \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Use \texttt{thesis} for master's theses or similar graduate-level documents
+that require a formal academic title page.
+
+\begin{minted}{latex}
+\documentclass[doctype=thesis, language=english]{../../omnilatex}
+\title{Numerical Methods for Turbulent Flow Simulation}
+\author{Jane Doe}
+\thesisinstitution{Technical University}
+\thesisdepartment{Mechanical Engineering}
+\thesisdegree{Master of Science}
+\thesisadvisor{Prof.\ Dr.\ A.~Mueller}
+\thesiscommittee{Prof.\ B.~Smith, Prof.\ C.~Lee}
+\defensedate{2025-07-15}
+\thesislocation{Hamburg, Germany}
+\begin{document}
+\maketitle
+\frontmatter
+\tableofcontents
+\mainmatter
+\chapter{Introduction}
+\end{document}
+\end{minted}
+
+\subsection{dissertation}
+
+The \texttt{dissertation} doctype extends the thesis format with a dual
+supervisor model (primary and secondary), deeper sectioning
+(\texttt{secnumdepth=3}), and keyword support for repository metadata.  The
+title page includes institution, department, degree, both supervisors,
+committee, submission date, and keywords.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Custom commands for \texttt{dissertation}}
+    \label{tab:dissertation-commands}
+    \begin{tabular}{@{} l p{8cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash dissertationdegree\{...\}}        & Degree (default: Doctoral Dissertation) \\
+        \texttt{\textbackslash dissertationdepartment\{...\}}     & Department or faculty \\
+        \texttt{\textbackslash dissertationinstitution\{...\}}   & University name \\
+        \texttt{\textbackslash firstsupervisor\{...\}}           & Primary supervisor \\
+        \texttt{\textbackslash secondsupervisor\{...\}}          & Secondary or co-supervisor \\
+        \texttt{\textbackslash dissertationcommittee\{...\}}     & Advisory committee members \\
+        \texttt{\textbackslash submissiondate\{...\}}            & Submission date (default: \texttt{\textbackslash today}) \\
+        \texttt{\textbackslash keywords\{...\}}                  & Comma-separated keywords \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Use \texttt{dissertation} for PhD or doctoral works that require dual
+supervisor tracking and keyword metadata.
+
+\begin{minted}{latex}
+\documentclass[doctype=dissertation]{../../omnilatex}
+\title{Data-Driven Modelling of Urban Microclimates}
+\author{Jane Doe}
+\dissertationinstitution{Technical University}
+\dissertationdepartment{Environmental Engineering}
+\dissertationdegree{Doctor of Engineering}
+\firstsupervisor{Prof.\ Dr.\ A.~Mueller}
+\secondsupervisor{Prof.\ Dr.\ B.~Smith}
+\dissertationcommittee{Dr.\ C.~Lee, Dr.\ D.~Park}
+\submissiondate{2025-06-01}
+\keywords{urban microclimate, data-driven modelling, CFD}
+\begin{document}
+\maketitle
+\frontmatter
+\chapter{Abstract}
+\tableofcontents
+\mainmatter
+\chapter{Introduction}
+\end{document}
+\end{minted}
+
+\subsection{thesis-tuhh}
+
+The \texttt{thesis-tuhh} doctype combines the generic \texttt{thesis} profile
+with the \texttt{institution=tuhh} option for institution-specific branding
+at Hamburg University of Technology (TUHH).  It is not a separate profile
+file; rather, it is activated by combining options:
+
+\begin{minted}{latex}
+\documentclass[
+    doctype=thesis,
+    institution=tuhh,
+    titlestyle=TUHH,
+    loadGlossaries,
+    todonotes,
+]{../../omnilatex}
+\end{minted}
+
+Key features of the TUHH configuration include:
+
+\begin{itemize}
+    \item \textbf{Title page branding} -- The \texttt{titlestyle=TUHH}
+          option selects a custom title page layout with the TUHH logo,
+          bilingual headers, and the institutional colour scheme.
+    \item \textbf{Bilingual logos} -- Both German and English TUHH logos
+          are available, selected automatically based on the
+          \texttt{language} option.
+    \item \textbf{TUHHuman TikZ picture} -- A TikZ-drawn mascot
+          (\texttt{ TUHHuman}) is defined in the TUHH institution package
+          and can be placed on the title page or in colophon sections.
+    \item \textbf{Custom title page} -- The TUHH institution package
+          (\texttt{config/institutions/tuhh.sty}) overrides the default
+          \texttt{\textbackslash maketitle} with a layout that includes the
+          TUHH wordmark, faculty name, and thesis metadata in the
+          institutional style.
+\end{itemize}
+
+The complete TUHH thesis example is located at
+\texttt{examples/thesis-tuhh/} and demonstrates front matter (abstract,
+task description, authorship declaration), main matter chapters with code
+listings and figures, and back matter with appendices.
+
+Use \texttt{thesis-tuhh} for any thesis produced at TUHH that requires
+official institutional branding on the title page.
+
+\begin{minted}{latex}
+\documentclass[
+    language=english,
+    institution=tuhh,
+    titlestyle=TUHH,
+    censoring=true,
+    loadGlossaries,
+    todonotes,
+]{../../omnilatex}
+\RequirePackage{config/document-settings}
+\addbibresource{bib/bibliography.bib}
+\begin{document}
+\import{content/}{frontmatter}
+\import{content/}{mainmatter}
+\import{content/}{backmatter}
+\end{document}
+\end{minted}
+
+\subsection{dictionary}
+
+The \texttt{dictionary} doctype produces a reference dictionary or glossary
+book.  It uses a compact 10\,pt font with \texttt{DIV=13} for a dense,
+reference-style layout.  The title page includes series name, subtitle,
+edition, publisher, ISBN, and subject fields.  The document is two-sided
+with shallow sectioning (\texttt{secnumdepth=1}, \texttt{tocdepth=1}).
+
+\begin{table}[htbp]
+    \centering
+    \caption{Custom commands for \texttt{dictionary}}
+    \label{tab:dictionary-commands}
+    \begin{tabular}{@{} l p{8cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash dictionaryseries\{...\}}     & Series collection name \\
+        \texttt{\textbackslash dictionarysubtitle\{...\}}   & Subtitle or tagline \\
+        \texttt{\textbackslash dictionaryedition\{...\}}    & Edition (default: First Edition) \\
+        \texttt{\textbackslash dictionarypublisher\{...\}}  & Publisher name \\
+        \texttt{\textbackslash dictionaryisbn\{...\}}       & ISBN \\
+        \texttt{\textbackslash dictionarysubjects\{...\}}  & Subject categories \\
+        \texttt{\textbackslash dictionarynote\{...\}}       & Editorial note or disclaimer \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Use \texttt{dictionary} for compiling terminology collections, technical
+lexicons, or domain-specific reference books.
+
+\begin{minted}{latex}
+\documentclass[doctype=dictionary]{../../omnilatex}
+\title{Dictionary of Control Engineering}
+\author{Jane Doe}
+\dictionaryseries{OmniLexicon Collection}
+\dictionarysubtitle{A quick reference for control systems terminology}
+\dictionaryedition{Second Edition}
+\dictionarypublisher{Acme Academic Press}
+\dictionaryisbn{978-0-00-000002-4}
+\dictionarysubjects{Control Theory, Automation}
+\begin{document}
+\maketitle
+\chapter{A}
+\section{Actuator}
+A device that converts a control signal into mechanical motion.
+\section{Adaptive Control}
+A control strategy that adjusts parameters in real time.
+\end{document}
+\end{minted}
+
+\subsection{manual (book-class)}
+
+The \texttt{manual} doctype uses \texttt{scrreprt} and is documented in
+Chapter~\ref{ch:reports}.  When used as part of a book-style workflow with
+\texttt{\textbackslash frontmatter} and \texttt{\textbackslash backmatter},
+it integrates naturally with the book-class ecosystem.  See
+\Cref{tab:manual-commands} for its custom commands.

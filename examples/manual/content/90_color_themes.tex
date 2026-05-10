@@ -1,0 +1,102 @@
+\chapter{Color Themes}
+
+\section{Overview}
+
+The \texttt{omnilatex-themes.sty} package provides a flexible theming system
+built on top of \texttt{xcolor} and \texttt{tcolorbox}.  Seven curated color
+palettes are included, each defining a complete set of semantic color slots
+used throughout the template--from headings and links to block environments
+and footers.
+
+All palettes define the same set of named color slots, so switching themes
+never breaks document markup.
+
+\section{Available Palettes}
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{ll}
+    \toprule
+    \textbf{Palette} & \textbf{Description} \\
+    \midrule
+    \texttt{default}        & Standard blue and gray tones \\
+    \texttt{midnight}       & Dark blue and charcoal \\
+    \texttt{forest}         & Green tones inspired by nature \\
+    \texttt{rose}           & Pink and magenta hues \\
+    \texttt{monochrome}     & Grayscale for a clean, neutral look \\
+    \texttt{monochrome-dark}& Dark grayscale for dark-background documents \\
+    \texttt{sepia}          & Warm brown tones for a vintage feel \\
+    \bottomrule
+  \end{tabular}
+  \caption{Available color palettes}
+\end{table}
+
+\section{Loading a Theme}
+
+Load a theme with the \cs{usetheme} command in the preamble:
+
+\begin{minted}{latex}
+\documentclass{omnilatex}
+\usetheme{midnight}
+\begin{document}
+...
+\end{document}
+\end{minted}
+
+Themes may also be switched mid-document:
+
+\begin{minted}{latex}
+\usetheme{rose}   % Switch to rose palette from here onward
+\end{minted}
+
+This is useful for appendices or supplementary material that should use a
+different visual identity.
+
+\section{Dark / Light Mode}
+
+Two convenience commands toggle between dark and light variants of the active
+palette:
+
+\begin{minted}{latex}
+\darkmode          % Switch to dark variant
+\lightmode         % Switch to light variant
+\end{minted}
+
+Conditional theming is available through \cs{ifthememode}:
+
+\begin{minted}{latex}
+\ifthememode{dark}{Dark background}{Light background}
+\end{minted}
+
+The macro expands to the first argument when the current mode is dark and to
+the second argument when it is light.
+
+\section{Per-Slot Overrides}
+
+Override individual color slots without changing the entire palette:
+
+\begin{minted}{latex}
+\setthemecolor{primary}{NavyBlue}
+\setthemecolor{accent}{Orange}
+\end{minted}
+
+Common slots include \texttt{primary}, \texttt{secondary}, \texttt{accent},
+\texttt{heading}, \texttt{link}, \texttt{footer}, and \texttt{blockbg}.
+Consult \texttt{omnilatex-themes.sty} for the complete list.
+
+\section{tcolorbox Integration}
+
+All themed block environments (see Chapter~\ref{ch:boxes}) automatically
+inherit the active palette colors.  The following boxes are styled by the
+theme system:
+
+\begin{itemize}
+  \item \texttt{presentationblock} -- uses the primary slot
+  \item \texttt{alertblock}        -- uses the alert/error slot
+  \item \texttt{exampleblock}      -- uses the success slot
+  \item \texttt{noteblock}         -- uses the secondary slot
+  \item \texttt{definitionblock}   -- uses the heading slot
+\end{itemize}
+
+Switching palettes or overriding slots propagates immediately to all
+tcolorbox-based environments.

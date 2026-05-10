@@ -1,0 +1,117 @@
+\chapter{Boxes \& Environments}
+\label{ch:boxes}
+
+\section{Example Box}
+
+The \texttt{example} environment provides a numbered, captioned box for
+worked examples:
+
+\begin{minted}{latex}
+\begin{example}[A Simple Derivation]
+  \caption{Differentiating $x^2$}
+  \begin{align*}
+    \frac{d}{dx}\,x^2 &= 2x
+  \end{align*}
+\end{example}
+\end{minted}
+
+Key properties:
+
+\begin{itemize}
+  \item Auto-incrementing counter (Example~1, Example~2, \ldots).
+  \item Entries appear in the List of Examples (LoE) when applicable.
+  \item Breakable across pages via \texttt{tcolorbox}'s \texttt{breakable}
+        library.
+  \item Supports \cs{caption} for a descriptive label.
+\end{itemize}
+
+\section{Key Concept Box}
+
+Handout-focused documents can use \texttt{keyconceptbox} to highlight
+essential ideas:
+
+\begin{minted}{latex}
+\begin{keyconceptbox}
+  \keyconcept{The Central Limit Theorem}
+  The mean of a sufficiently large sample of independent random variables
+  is approximately normally distributed.
+\end{keyconceptbox}
+\end{minted}
+
+\section{Callout Box}
+
+White papers and reports benefit from the \cs{callout} macro:
+
+\begin{minted}{latex}
+\callout{Important}{This section assumes familiarity with basic
+probability theory.}
+\end{minted}
+
+The callout renders as a \texttt{tcolorbox} with the active theme's accent
+color.
+
+\section{Presentation Blocks}
+
+Five themed block environments are available for presentations and slides:
+
+\begin{minted}{latex}
+\begin{presentationblock}{Main Idea}
+  Content goes here.
+\end{presentationblock}
+
+\begin{alertblock}{Warning}
+  Proceed with caution.
+\end{alertblock}
+
+\begin{exampleblock}{Illustration}
+  An example goes here.
+\end{exampleblock}
+
+\begin{noteblock}{Remark}
+  Additional context.
+\end{noteblock}
+
+\begin{definitionblock}{Definition}
+  A \emph{widget} is defined as \ldots
+\end{definitionblock}
+\end{minted}
+
+Each block is styled by the active color theme (see
+Chapter~\ref{ch:color-themes}).
+
+\section{Git Verification Box}
+
+The \cs{GitVerificationBox} command renders a colophon-style box showing the
+current Git commit SHA and verification instructions:
+
+\begin{minted}{latex}
+\GitVerificationBox
+\end{minted}
+
+Output includes the full SHA, short SHA, and a shell command for the reader
+to verify the build.  See Chapter~\ref{ch:git} for full details.
+
+\section{Todo Notes}
+
+Conditional TODO notes are available via the \texttt{todonotes} option:
+
+\begin{minted}{latex}
+\todo{Revise this section before final submission.}
+\end{minted}
+
+Notes are only rendered when the \texttt{todonotes} class option is enabled.
+They are stripped automatically in production builds.
+
+\section{Censor Box}
+
+The \cs{censorbox} command creates a censored region for larger redactions:
+
+\begin{minted}{latex}
+\censorbox{%
+  This entire paragraph contains sensitive information
+  that should not appear in the published version.
+}
+\end{minted}
+
+Like \cs{todo}, censor boxes are conditional on the \texttt{censoring}
+class option.  See Chapter~\ref{ch:censoring} for details.

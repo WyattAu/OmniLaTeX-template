@@ -1,0 +1,100 @@
+\chapter{Lua Scripting}
+
+OmniLaTeX embeds Lua\TeX{} scripting to provide dynamic metadata,
+conditional compilation, and build-time automation.
+
+\section{Lua in \LaTeX}
+
+Lua code can be executed inline with \texttt{\textbackslash directlua} or
+in a dedicated environment:
+
+\begin{verbatim}
+\directlua{tex.sprint("2 + 2 = ", 2 + 2)}
+
+\begin{lua}
+    local function greeting(name)
+        return "Hello, " .. name .. "!"
+    end
+    tex.sprint(greeting("World"))
+\end{lua}
+\end{verbatim}
+
+\texttt{\textbackslash luasetup} is provided for one-time initialisation
+blocks that run before the document body.
+
+\section{Git Metadata}
+
+\texttt{omnilatex-utils.sty} queries the working tree at compile time and
+exposes the following macros:
+
+\begin{table}[htbp]
+    \centering
+    \caption{Git metadata macros}
+    \label{tab:git-macros}
+    \begin{tabular}{@{} l p{7cm} @{}}
+        \toprule
+        \textbf{Macro} & \textbf{Expansion} \\
+        \midrule
+        \verb|\GitRefName|   & Current branch or tag name \\
+        \verb|\GitShortSHA|  & Abbreviated commit hash (8 hex digits) \\
+        \verb|\GitLongSHA|   & Full 40-character SHA \\
+        \verb|\BuildDate|    & ISO-8601 build timestamp \\
+        \verb|\BuildMode|    & String: \texttt{dev}, \texttt{prod}, or
+                               \texttt{ultra} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+These macros expand to empty strings when Git metadata cannot be resolved
+(e.g.\ in CI environments without a \texttt{.git} directory).
+
+\section{Conditional Compilation}
+
+The build mode is determined by the \texttt{BUILD\_MODE} environment
+variable.  OmniLaTeX defines three boolean flags:
+
+\begin{verbatim}
+\newif\ifomnilatex@dev
+\newif\ifomnilatex@prod
+\newif\ifomnilatex@ultra
+\end{verbatim}
+
+Detection is performed at load time and exposed through user-facing
+switches:
+
+\begin{verbatim}
+\OmniDev   % active when BUILD_MODE=dev
+\OmniProd  % active when BUILD_MODE=prod
+\OmniUltra % active when BUILD_MODE=ultra
+\end{verbatim}
+
+Use these in the document body to include or exclude content:
+
+\begin{verbatim}
+\ifomnilatex@dev
+    \typeout{[dev] Draft watermark enabled.}
+\fi
+\end{verbatim}
+
+\section{Custom Lua Commands}
+
+Arbitrary Lua functions can be wrapped as \LaTeX{} commands with the
+\texttt{\textbackslash directlua\textbackslash stringdef} pattern:
+
+\begin{verbatim}
+\directlua\stringdef\mycmd#1{%
+    tex.sprint(string.upper(#1))%
+}
+\end{verbatim}
+
+\texttt{\textbackslash mycmd\{hello\}} then expands to \texttt{HELLO}.
+
+\section{Example Walkthrough}
+
+A complete demonstration of Lua scripting, including metadata queries,
+conditional blocks, and custom commands, is available in the
+\texttt{examples/lua-showcase/} directory.  Compile that sub-project with
+
+\begin{verbatim}
+latexmk -lualatex examples/lua-showcase/main.tex
+\end{verbatim}

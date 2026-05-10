@@ -1,0 +1,129 @@
+\chapter{CJK Mathematics}
+
+OmniLaTeX supports CJK (Chinese, Japanese, Korean) characters in
+mathematical contexts through \texttt{luatexja}.  This chapter covers
+math-specific CJK features; for full language support including
+document-level configuration, see Chapter~43.
+
+% =========================================================================
+\section{CJK Math Fonts}
+% =========================================================================
+
+When using LuaLaTeX, \texttt{luatexja} provides native support for CJK
+characters inside math mode.  CJK glyphs are automatically rendered
+alongside Latin math symbols without additional configuration.
+
+\begin{verbatim}
+\[
+  E = mc^2 \quad \text{能量} = mc^2
+\]
+\end{verbatim}
+
+\texttt{luatexja} maps CJK characters to appropriate math fonts based on
+the document's font configuration.  The main text CJK font is used by
+default for CJK characters in math mode, ensuring visual consistency
+between inline text and displayed equations.
+
+For upright CJK text within math mode, use the standard \cs{text\{\}}
+command:
+
+\begin{verbatim}
+$T_{\text{効率}} = 0.85$
+% → T_効率 = 0.85
+\end{verbatim}
+
+% =========================================================================
+\section{Ruby Annotations}
+% =========================================================================
+
+Ruby annotations (furigana in Japanese, pinyin in Chinese) place small
+reading aids above CJK characters.  OmniLaTeX provides these via the
+\texttt{luatexja-ruby} package.
+
+\begin{verbatim}
+\ruby{漢字}{かんじ}        % Japanese furigana
+\ruby{汉字}{hànzì}          % Chinese pinyin
+\end{verbatim}
+
+Shorthand aliases are available for convenience:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Ruby annotation commands.}
+  \label{tab:ruby-commands}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Command & Alias & Description \\
+    \midrule
+    \texttt{\textbackslash ruby\{漢字\}\{かんじ\}} & -- & Full ruby annotation \\
+    \texttt{\textbackslash furigana\{漢字\}\{かんじ\}} & \texttt{\textbackslash ruby} & Japanese furigana alias \\
+    \texttt{\textbackslash pinyin\{汉字\}\{hànzì\}} & \texttt{\textbackslash ruby} & Chinese pinyin alias \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The annotation size can be adjusted globally:
+
+\begin{verbatim}
+\setRubyScale{0.5}   % Scale ruby text to 50% of base size
+\end{verbatim}
+
+Ruby annotations work in both text and math mode, making them useful for
+annotating technical terms that contain CJK characters in equations.
+
+% =========================================================================
+\section{Vertical Writing}
+% =========================================================================
+
+\texttt{luatexja} supports vertical (top-to-bottom, right-to-left) text
+layout through the \texttt{vertical} environment:
+
+\begin{verbatim}
+\begin{vertical}
+  この文章は縦書きです。
+  \[ E = mc^2 \]
+\end{vertical}
+\end{verbatim}
+
+For inline vertical text spans, use:
+
+\begin{verbatim}
+\verticaltext{縦書きテキスト}
+\end{verbatim}
+
+Math environments within vertical mode are rotated so that equations
+remain readable.  Displayed equations appear rotated 90 degrees
+counter-clockwise relative to the vertical text flow, following Japanese
+typesetting conventions (JIS~X~4051).
+
+Note that vertical writing mode interacts with page layout settings.
+Margins, floats, and captions are automatically adjusted by
+\texttt{luatexja} when the vertical environment is active.
+
+% =========================================================================
+\section{CJK-Latin Spacing}
+% =========================================================================
+
+Proper inter-character spacing between CJK and Latin scripts is handled
+by \texttt{luatexja}'s spacing engine.  A small amount of space is
+automatically inserted at CJK--Latin boundaries to prevent characters
+from appearing cramped.
+
+\begin{verbatim}
+\cjklatinspacing  % Enable CJK-Latin inter-character spacing
+\end{verbatim}
+
+Fine-grained control is available through:
+
+\begin{verbatim}
+\setCJKLatinSpacing{0.25em}  % Set explicit CJK-Latin gap
+\end{verbatim}
+
+The default spacing is determined by the font metrics and generally does
+not require manual adjustment.  However, in math-heavy documents with
+mixed CJK and Latin symbols, explicit spacing control can improve
+readability when the default gap is too small or too large for the
+chosen font combination.
+
+For complete CJK language setup including font selection, input
+methods, and document-level options, refer to Chapter~43.

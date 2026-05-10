@@ -1,0 +1,241 @@
+\chapter{Nix Workflow}
+
+\section{Overview}
+
+The OmniLaTeX repository includes a \texttt{flake.nix} that declares all
+TeX~Live packages and development dependencies as pinned, reproducible
+derivations.  Nix ensures that every collaborator and CI pipeline uses
+identical tool versions regardless of host operating system or installed
+packages.
+
+\section{flake.nix Structure}
+
+The flake declares inputs and outputs using \texttt{flake-utils} for
+cross-platform support:
+
+\begin{minted}{nix}
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
+  };
+
+  outputs = { nixpkgs, flake-utils, ... }:
+    flake-utils.lib.eachDefaultSystem (system:
+      let pkgs = nixpkgs.legacyPackages.${system};
+      in {
+        devShells.default = pkgs.mkShell {
+          packages = with pkgs; [
+            (texlive.combine {
+              inherit (texlive) scheme-full ...;
+            })
+            python3
+            lean4
+            lake
+          ];
+        };
+      }
+    );
+}
+\end{minted}
+
+The \texttt{nixos-unstable} channel provides the latest package versions.
+Inputs are locked by \texttt{flake.lock}, which pins every dependency to
+an exact Git revision.
+
+\section{Packages Included}
+
+The development shell provides the following packages:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Packages in the Nix dev shell}
+  \label{tab:nix-packages}
+  \begin{tabular}{@{}llp{0.5\textwidth}@{}}
+    \toprule
+    \textbf{Package} & \textbf{Version} & \textbf{Purpose} \\
+    \midrule
+    \texttt{texlive} & Full scheme & Complete \TeX{} distribution \\
+    \texttt{python3} & System Python & \texttt{build.py}, Pygments \\
+    \texttt{lean4}  & Latest stable & Formal verification \\
+    \texttt{lake}   & Bundled with Lean~4 & Lean build tool \\
+    \texttt{latexmk} & Bundled with TeX~Live & Build orchestrator \\
+    \texttt{biber}  & Bundled with TeX~Live & Bibliography processor \\
+    \texttt{bib2gls} & Bundled with TeX~Live & Glossary processor \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Activating the Dev Shell}
+
+Enter the development environment with:
+
+\begin{minted}{bash}
+nix develop .#
+\end{minted}
+
+This provides a shell with TeX~Live (full scheme), Python~3, and
+Lean~4.  All tools are available on \texttt{PATH} without polluting the
+host system.  On first invocation, Nix downloads and builds all
+derivations; subsequent activations use the Nix store cache and start
+instantly.
+
+For a one-off command without entering the shell:
+
+\begin{minted}{bash}
+nix develop .# --command python build.py --mode prod
+\end{minted}
+
+\section{Reproducible Builds}
+
+\texttt{flake.lock} pins every dependency to an exact revision, ensuring
+bit-for-bit reproducible builds across machines.  Commit
+\texttt{flake.lock} alongside your source to guarantee that collaborators
+and CI use identical package versions:
+
+\begin{minted}{bash}
+git add flake.lock
+git commit -m "Pin Nix dependencies"
+\end{minted}
+
+\section{Pinning nixpkgs}
+
+To pin to a specific nixpkgs release rather than \texttt{nixos-unstable}:
+
+\begin{minted}{nix}
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+  };
+}
+\end{minted}
+
+Or pin to an exact commit hash for maximum reproducibility:
+
+\begin{minted}{nix}
+nixpkgs.url = "github:NixOS/nixpkgs/a1e5e2e3f4d5c6b7a8";
+\end{minted}
+
+After changing the input URL, update the lock file:
+
+\begin{minted}{bash}
+nix flake lock --update-input nixpkgs
+\end{minted}
+
+\section{Lean 4 Integration}
+
+Proof-heavy documents can use Lean~4 for formal verification.  The dev
+shell includes \texttt{lean4} and \texttt{lake}, so no separate
+installation is needed:
+
+\begin{minted}{bash}
+lake build
+\end{minted}
+
+Lean~4 source files (\texttt{.lean}) are kept alongside the
+\texttt{.tex} files.  The \texttt{minted} package provides syntax
+highlighting for Lean~4 code blocks:
+
+\begin{minted}{latex}
+\mintinline{lean4}|theorem add_comm (m n : Nat) : m + n = n + m := by
+  induction m with
+  | zero => simp
+  | succ m ih => simp [Nat.succ_add, ih]|
+\end{minted}
+
+\section{Multi-Platform Support}
+
+The flake supports multiple systems via \texttt{flake-utils}:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Supported platforms}
+  \label{tab:nix-platforms}
+  \begin{tabular}{@{}ll@{}}
+    \toprule
+    \textbf{System} & \textbf{Status} \\
+    \midrule
+    \texttt{x86\_64-linux}   & Primary target, fully tested \\
+    \texttt{aarch64-darwin}  & Apple Silicon (macOS) \\
+    \texttt{x86\_64-darwin}  & Intel macOS \\
+    \texttt{aarch64-linux}   & ARM Linux (experimental) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{nix flake check}
+
+Validate the flake without building the full TeX distribution:
+
+\begin{minted}{bash}
+nix flake check
+\end{minted}
+
+This verifies that the flake evaluates correctly and all outputs are
+consistent.  It does not compile any \LaTeX{} documents.
+
+\section{nix build}
+
+To build a specific derivation (e.g.\ the dev shell closure) without
+entering it:
+
+\begin{minted}{bash}
+nix build .#devShells.x86_64-linux.default
+\end{minted}
+
+The resulting store path is a symlink at \texttt{./result}.
+
+\section{CI Integration}
+
+GitHub Actions workflows use Nix for reproducible CI:
+
+\begin{minted}{yaml}
+- uses: DeterminateSystems/nix-installer-action@main
+- uses: DeterminateSystems/magic-nix-cache-action@main
+- run: nix develop .# --command bash -c \
+      "BUILD_MODE=prod python build.py"
+\end{minted}
+
+The \texttt{magic-nix-cache-action} enables binary cache sharing between CI
+runs, reducing build times significantly.  First-time CI runs download
+the full TeX~Live closure; subsequent runs restore from cache in seconds.
+
+\section{Multi-User Collaboration}
+
+When multiple users share a Nix-based workflow:
+
+\begin{enumerate}
+  \item Commit \texttt{flake.lock} to version control.
+  \item Use \texttt{nix develop .#} instead of installing packages
+        globally.
+  \item Document the Nix version requirement in the project README.
+  \item For CI, use the \texttt{DeterminateSystems/nix-installer-action}
+        to guarantee a consistent Nix version.
+\end{enumerate}
+
+\section{Troubleshooting}
+
+\begin{description}
+  \item[TeX Live not found] Ensure \texttt{shell-escape} is enabled in
+    \texttt{.latexmkrc}.  Nix installs TeX~Live in the Nix store, which
+    is on \texttt{PATH} inside the dev shell but not outside it.
+
+  \item[Pygments missing] The \texttt{python3} package in the dev shell
+    includes \texttt{pip}.  Install Pygments with
+    \texttt{pip install Pygments} inside the dev shell, or add it to the
+    flake packages list:
+
+    \begin{minted}{nix}
+    packages = with pkgs; [
+      python3Packages.pygments
+      # ... other packages
+    ];
+    \end{minted}
+
+  \item[Flake evaluation errors] Run \texttt{nix flake check} to
+    identify syntax or type errors in the flake definition.
+
+  \item[Stale lock file] If builds fail after a Nix channels update, run
+    \texttt{nix flake lock --update-input nixpkgs} to refresh the lock
+    file.
+\end{description}

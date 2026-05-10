@@ -1,0 +1,114 @@
+\chapter{Multilingual Documents}
+
+OmniLaTeX's translation infrastructure enables documents that mix multiple
+languages within a single compilation.  This chapter provides practical
+guidance for authoring multilingual content.
+
+% =========================================================================
+\section{Multi-Language Example}
+% =========================================================================
+
+The \texttt{examples/multi-language/} directory demonstrates a document
+that combines English and German content.  The document is compiled with
+English as the primary language and uses inline language switching for
+German passages:
+
+\begin{verbatim}
+\documentclass[language=english]{omnilatex}
+\begin{document}
+
+\begin{english}
+  This is the English abstract.
+\end{english}
+
+\begin{german}
+  Dies ist die deutsche Zusammenfassung.
+\end{german}
+
+\end{document}
+\end{verbatim}
+
+Within each language environment, \cs{GetTranslation} resolves to the
+appropriate localized string, and polyglossia applies the correct
+hyphenation patterns.  Captions for figures and tables also switch
+automatically when inside a language environment.
+
+The example includes a full bibliography and glossary setup that
+demonstrates how these subsystems interact with language switching.
+See \texttt{examples/multi-language/README.md} for build instructions.
+
+% =========================================================================
+\section{Bibliography in Multiple Languages}
+% =========================================================================
+
+OmniLaTeX uses \texttt{biblatex} with the \texttt{ext-authoryear} style,
+which supports multilingual citations out of the box.  Bibliography
+headings are localized through the translation system:
+
+\begin{verbatim}
+\GetTranslation{FurtherReadingTitle}  % → "Further Reading" / "Weitere Literatur"
+\end{verbatim}
+
+When a bibliography entry contains titles in multiple languages,
+\texttt{biblatex}'s \texttt{langid} field can be used to tag individual
+entries:
+
+\begin{verbatim}
+@book{mueller2020,
+  author    = {Müller, Hans},
+  title     = {Deutsche Fachsprache},
+  langid    = {german},
+}
+\end{verbatim}
+
+The citation style automatically formats the entry according to its
+language tag, including correct quotation marks and date formatting.
+
+% =========================================================================
+\section{Glossary in Multiple Languages}
+% =========================================================================
+
+The \texttt{glossaries-extra} package used by OmniLaTeX supports
+multi-language labels through the translation system.  Glossary group
+titles are resolved via \cs{GetTranslation}:
+
+\begin{verbatim}
+\glsxtrsetgrouptitle{greek}{\GetTranslation{Greek}}
+\glsxtrsetgrouptitle{roman}{\GetTranslation{Roman}}
+\end{verbatim}
+
+This means glossary headings automatically appear as
+``Griech.'' in German, ``Grec'' in French, or ``Greek'' in English,
+depending on the active language context.
+
+\cs{printunsrtglossary} can be called inside a language environment to
+produce a glossary section with headings in the corresponding language.
+For documents that maintain separate glossaries per language, call
+\cs{printunsrtglossary} multiple times within different language
+environments.
+
+% =========================================================================
+\section{Practical Tips}
+% =========================================================================
+
+\begin{itemize}
+  \item \textbf{Consistent language use.}  Define a clear boundary between
+    languages in your document.  Using language environments around entire
+    sections or chapters is cleaner than switching mid-paragraph.
+
+  \item \textbf{Translation completeness.}  OmniLaTeX ships translations
+    for 47 keys across 18 languages (verified in
+    \texttt{I18nCompleteness.lean}).  If you add custom keys, declare
+    translations for all required languages to avoid silent English
+    fallbacks.
+
+  \item \textbf{Test all variants.}  Compile the document with each
+    target language as the primary language (\texttt{language=german},
+    \texttt{language=french}, etc.) to verify that captions, glossary
+    headings, and translated strings render correctly.
+
+  \item \textbf{Institution-specific keys.}  Institution modules may
+    add their own translation keys (e.g.\ \texttt{TUHH},
+    \texttt{LinkTUHH}).  Ensure these are also translated if you
+    need multilingual output.
+\end{itemize}

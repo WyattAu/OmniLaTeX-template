@@ -1,0 +1,366 @@
+\chapter{Document Type Reference}
+
+This appendix provides a consolidated reference of all 26 canonical
+doctypes, their underlying KOMA-Script class, category, user-facing
+aliases, and key configuration parameters.  See Chapter~\ref{ch:doctype-system}
+for the full architectural description.
+
+\section{Complete Doctype Table}
+
+\begin{longtblr}[
+  caption = {Complete doctype reference -- all 26 canonical doctypes},
+  label = {tab:doctype-complete-ref},
+]{colspec = {l l l l l l l}, rowhead = 1}
+  \toprule
+  \textbf{Name} & \textbf{KOMA Class} & \textbf{Category} &
+  \textbf{Font Size} & \textbf{Font Mode} & \textbf{Colour Mode} &
+  \textbf{Aliases} \\
+  \midrule
+  article
+    & scrartcl  & Academic   & 11pt & serif & color
+    & paper, papers \\
+  inlinepaper
+    & scrartcl  & Academic   & 10pt & serif & color
+    & inlinepapers, inline-research, inline-research-paper \\
+  journal
+    & scrartcl  & Academic   & 11pt & serif & color
+    & journals, magazine, magazines \\
+  cv
+    & scrartcl  & Business   & 10pt & sans  & bw
+    & resume, resumes, curriculumvitae \\
+  cover-letter
+    & scrartcl  & Business   & 11pt & serif & color
+    & coverletter \\
+  letter
+    & scrartcl  & Business   & 12pt & serif & color
+    & letters \\
+  memo
+    & scrartcl  & Business   & 12pt & serif & color
+    & memos, memorandum, memorandums \\
+  invoice
+    & scrartcl  & Business   & --  & serif & color
+    & invoices \\
+  white-paper
+    & scrartcl  & Business   & --  & serif & color
+    & whitepapers \\
+  homework
+    & scrartcl  & Education  & --  & serif & color
+    & homeworks \\
+  exam
+    & scrartcl  & Education  & --  & serif & color
+    & exams, examination, examinations \\
+  lecture-notes
+    & scrartcl  & Education  & --  & serif & color
+    & lecturenotes, lecture-note \\
+  syllabus
+    & scrartcl  & Education  & --  & serif & color
+    & syllabi \\
+  handout
+    & scrartcl  & Education  & --  & serif & color
+    & handouts \\
+  poster
+    & scrartcl  & Visual     & 20pt & sans  & color
+    & posters \\
+  presentation
+    & scrartcl  & Visual     & 14pt & sans  & color
+    & presentations, slides, talk, talks \\
+  recipe
+    & scrartcl  & Personal   & --  & serif & color
+    & recipes \\
+  manual
+    & scrreprt  & Reference  & 11pt & sans  & bw
+    & manuals, guide, guides, handbook, handbooks \\
+  technicalreport
+    & scrreprt  & Academic   & --  & --   & --
+    & report, reports, technical-report, technicalreports,
+      techreport, tech-report, techreports \\
+  standard
+    & scrreprt  & Technical  & --  & --   & --
+    & standards \\
+  patent
+    & scrreprt  & Technical  & --  & --   & --
+    & patents \\
+  research-proposal
+    & scrreprt  & Academic   & --  & --   & --
+    & researchproposal, research-proposals \\
+  book
+    & scrbook   & Publishing & 11pt & serif & color
+    & books \\
+  thesis
+    & scrbook   & Academic   & 12pt & serif & color
+    & theses \\
+  dissertation
+    & scrbook   & Academic   & --  & --   & --
+    & dissertations \\
+  dictionary
+    & scrbook   & Reference  & 10pt & --   & --
+    & dictionaries, lexicon, lexicons \\
+  \bottomrule
+\end{longtblr}
+
+Doctypes marked \texttt{--} inherit the default from their KOMA class
+options or do not explicitly set a value.
+
+\section{KOMA Class Options Per Doctype}
+
+Each canonical doctype passes a specific set of options to its underlying
+KOMA-Script base class.  The following table lists the key KOMA options
+that each doctype configures.
+
+\begin{longtblr}[
+  caption = {KOMA class options per doctype},
+  label = {tab:doctype-koma-options},
+]{colspec = {l l p{7cm}}, rowhead = 1}
+  \toprule
+  \textbf{Doctype} & \textbf{Base Class} & \textbf{Key KOMA Options} \\
+  \midrule
+  book
+    & scrbook
+    & \textsf{listof=totoc, bibliography=totoc, chapterprefix=true,
+      open=right, numbers=noenddot, titlepage=true, twoside=true} \\
+  thesis
+    & scrbook
+    & Same as book; adds \textsf{DIV=12} layout \\
+  dissertation
+    & scrbook
+    & Same as book defaults \\
+  dictionary
+    & scrbook
+    & Same as book; adds \textsf{DIV=13, headinclude=false,
+      footinclude=false} \\
+  article
+    & scrartcl
+    & \textsf{bibliography=totoc, numbers=noenddot, parskip=half,
+      titlepage=true} \\
+  inlinepaper
+    & scrartcl
+    & \textsf{bibliography=totoc, numbers=noenddot, parskip=half,
+      titlepage=false} \\
+  journal
+    & scrartcl
+    & \textsf{bibliography=totoc, numbers=noenddot, parskip=half,
+      titlepage=true} \\
+  cv
+    & scrartcl
+    & \textsf{numbers=noenddot, parskip=full, titlepage=false,
+      twoside=false} \\
+  cover-letter
+    & scrartcl
+    & \textsf{bibliography=totoc, numbers=noenddot, parskip=half,
+      titlepage=false} \\
+  letter
+    & scrartcl
+    & \textsf{bibliography=totoc, numbers=noenddot, parskip=half,
+      titlepage=false} \\
+  memo
+    & scrartcl
+    & \textsf{bibliography=totoc, numbers=noenddot, parskip=half,
+      titlepage=false} \\
+  white-paper
+    & scrartcl
+    & \textsf{bibliography=totoc, numbers=noenddot, parskip=half,
+      titlepage=true} \\
+  invoice
+    & scrartcl
+    & \textsf{bibliography=totoc, numbers=noenddot, parskip=half,
+      titlepage=false} \\
+  homework
+    & scrartcl
+    & \textsf{bibliography=totoc, numbers=noenddot, parskip=half,
+      titlepage=true} \\
+  exam
+    & scrartcl
+    & \textsf{bibliography=totoc, numbers=noenddot, parskip=half,
+      titlepage=true} \\
+  lecture-notes
+    & scrartcl
+    & \textsf{bibliography=totoc, numbers=noenddot, parskip=half,
+      titlepage=true} \\
+  syllabus
+    & scrartcl
+    & \textsf{bibliography=totoc, numbers=noenddot, parskip=half,
+      titlepage=true} \\
+  handout
+    & scrartcl
+    & \textsf{bibliography=totoc, numbers=noenddot, parskip=half,
+      twoside=false, twocolumn=true} \\
+  poster
+    & scrartcl
+    & \textsf{bibliography=totoc, numbers=noenddot, parskip=half,
+      titlepage=false, twoside=false} \\
+  presentation
+    & scrartcl
+    & \textsf{bibliography=totoc, numbers=noenddot, parskip=half,
+      titlepage=false, twoside=false} \\
+  recipe
+    & scrartcl
+    & \textsf{bibliography=totoc, numbers=noenddot, parskip=half,
+      titlepage=false, twoside=false} \\
+  manual
+    & scrreprt
+    & \textsf{listof=totoc, bibliography=totoc, chapterprefix=false,
+      open=any, numbers=noenddot} \\
+  technicalreport
+    & scrreprt
+    & \textsf{listof=totoc, bibliography=totoc, chapterprefix=false,
+      open=any, numbers=noenddot} \\
+  standard
+    & scrreprt
+    & \textsf{listof=totoc, bibliography=totoc, chapterprefix=false,
+      open=any, numbers=noenddot, parskip=half} \\
+  patent
+    & scrreprt
+    & \textsf{listof=totoc, bibliography=totoc, chapterprefix=false,
+      open=any, numbers=noenddot} \\
+  research-proposal
+    & scrreprt
+    & \textsf{listof=totoc, bibliography=totoc, chapterprefix=false,
+      open=any, numbers=noenddot} \\
+  \bottomrule
+\end{longtblr}
+
+\section{Doctype-Specific Metadata Commands}
+
+Many doctypes define custom metadata commands for their title pages.
+The following table summarises the most commonly used commands per
+doctype category.
+
+\begin{longtblr}[
+  caption = {Doctype-specific metadata commands},
+  label = {tab:doctype-metadata},
+]{colspec = {l l p{5.5cm}}, rowhead = 1}
+  \toprule
+  \textbf{Doctype} & \textbf{Command} & \textbf{Purpose} \\
+  \midrule
+  thesis
+    & \texttt{\textbackslash{}thesisinstitution\{name\}}
+    & University name on title page \\
+  thesis
+    & \texttt{\textbackslash{}thesisdegree\{name\}}
+    & Degree designation (e.g.\ MSc, PhD) \\
+  thesis
+    & \texttt{\textbackslash{}thesisadvisor\{name\}}
+    & Advisor name \\
+  thesis
+    & \texttt{\textbackslash{}defensedate\{date\}}
+    & Date of thesis defence \\
+  dissertation
+    & \texttt{\textbackslash{}dissertationinstitution\{name\}}
+    & University name \\
+  dissertation
+    & \texttt{\textbackslash{}firstsupervisor\{name\}}
+    & Primary supervisor \\
+  article
+    & \texttt{\textbackslash{}subtitle\{text\}}
+    & Abstract text (reuses subtitle field) \\
+  article
+    & \texttt{\textbackslash{}keywords\{text\}}
+    & Keyword list \\
+  article
+    & \texttt{\textbackslash{}affiliation\{text\}}
+    & Author affiliation \\
+  journal
+    & \texttt{\textbackslash{}journalname\{name\}}
+    & Journal publication name \\
+  journal
+    & \texttt{\textbackslash{}journalvolume\{n\}}
+    & Volume number \\
+  journal
+    & \texttt{\textbackslash{}highlights\{list\}}
+    & Comma-separated highlight bullets \\
+  technicalreport
+    & \texttt{\textbackslash{}reportnumber\{id\}}
+    & Report identifier (e.g.\ TR-001) \\
+  technicalreport
+    & \texttt{\textbackslash{}confidentiality\{text\}}
+    & Confidentiality classification \\
+  book
+    & \texttt{\textbackslash{}publisher\{name\}}
+    & Publisher name \\
+  book
+    & \texttt{\textbackslash{}isbn\{id\}}
+    & ISBN number \\
+  cv
+    & \texttt{\textbackslash{}cvrole\{text\}}
+    & Professional role/subtitle \\
+  cv
+    & \texttt{\textbackslash{}cvimage\{path\}}
+    & Path to circular profile photo \\
+  presentation
+    & \texttt{\textbackslash{}presentationframe}
+    & Begin a new slide frame \\
+  presentation
+    & \texttt{\textbackslash{}slidetitle\{text\}}
+    & Slide title with rule decoration \\
+  memo
+    & \texttt{\textbackslash{}memoto\{name\}}
+    & Memo recipient \\
+  memo
+    & \texttt{\textbackslash{}memofrom\{name\}}
+    & Memo sender \\
+  homework
+    & \texttt{\textbackslash{}hwcourse\{name\}}
+    & Course name \\
+  homework
+    & \texttt{\textbackslash{}hwnumber\{text\}}
+    & Assignment number (e.g.\ Homework 3) \\
+  exam
+    & \texttt{\textbackslash{}examduration\{text\}}
+    & Exam duration (e.g.\ 2 hours) \\
+  lecture-notes
+    & \texttt{\textbackslash{}coursename\{text\}}
+    & Course name for header \\
+  lecture-notes
+    & \texttt{\textbackslash{}lecturenumber\{n\}}
+    & Lecture number \\
+  syllabus
+    & \texttt{\textbackslash{}coursenumber\{id\}}
+    & Course code (e.g.\ CS 101) \\
+  \bottomrule
+\end{longtblr}
+
+\section{Example \texttt{\textbackslash documentclass} Lines}
+
+The following examples show the minimal class invocation for common
+doctype selections:
+
+\begin{minted}{latex}
+% Academic documents
+\documentclass[doctype=article]{../../omnilatex}
+\documentclass[doctype=journal]{../../omnilatex}
+\documentclass[doctype=technicalreport]{../../omnilatex}
+\documentclass[doctype=thesis, institution=tuhh]{../../omnilatex}
+\documentclass[doctype=dissertation]{../../omnilatex}
+\documentclass[doctype=research-proposal]{../../omnilatex}
+
+% Business documents
+\documentclass[doctype=cv]{../../omnilatex}
+\documentclass[doctype=cover-letter]{../../omnilatex}
+\documentclass[doctype=memo]{../../omnilatex}
+\documentclass[doctype=invoice]{../../omnilatex}
+\documentclass[doctype=white-paper]{../../omnilatex}
+
+% Education documents
+\documentclass[doctype=homework]{../../omnilatex}
+\documentclass[doctype=exam]{../../omnilatex}
+\documentclass[doctype=lecture-notes]{../../omnilatex}
+\documentclass[doctype=syllabus]{../../omnilatex}
+\documentclass[doctype=handout]{../../omnilatex}
+
+% Visual documents
+\documentclass[doctype=poster]{../../omnilatex}
+\documentclass[doctype=presentation]{../../omnilatex}
+
+% Reference documents
+\documentclass[doctype=manual]{../../omnilatex}
+\documentclass[doctype=book]{../../omnilatex}
+\documentclass[doctype=standard]{../../omnilatex}
+\documentclass[doctype=patent]{../../omnilatex}
+\documentclass[doctype=dictionary]{../../omnilatex}
+\end{minted}
+
+The doctype resolution pipeline normalises the input string to lowercase
+before matching against the alias lists.  Unrecognised doctypes fall back
+to \texttt{book} with a warning in the log.  Each canonical doctype has a
+corresponding profile file in \texttt{config/document-types/} that defines
+layout, spacing, font mode, and title page behaviour.

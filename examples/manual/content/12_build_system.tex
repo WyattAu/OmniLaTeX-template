@@ -1,0 +1,287 @@
+\chapter{Build System}
+\label{ch:build-system}
+
+OmniLaTeX uses a Python-based build orchestrator, \texttt{build.py}, to manage
+compilation of all documents in the repository.  At 2060 lines, it replaces
+traditional Makefiles with explicit support for multiple build modes,
+incremental builds via source-hash caching, parallel compilation, and rich
+terminal output.
+
+\section{Overview}
+
+The build system is designed around several principles:
+
+\begin{itemize}
+    \item \textbf{Explicit modes.}  Every build selects a mode
+          (\textsf{dev}, \textsf{prod}, or \textsf{ultra}) that determines the
+          number of \LaTeX{} passes, bibliography processing, and glossary
+          generation.
+    \item \textbf{Incremental by default.}  A source-hash cache in
+          \texttt{build/build\_cache.json} skips unchanged documents, reducing
+          rebuild times from minutes to seconds.
+    \item \textbf{Parallel execution.}  Examples are built concurrently using a
+          thread pool, with progress displayed via the \ctanpackage{rich}
+          library or a TQDM fallback.
+    \item \textbf{Success via PDF existence.}  The orchestrator considers a
+          build successful when a PDF file is produced, not when
+          \texttt{latexmk} returns exit code zero.  This accommodates
+          \LaTeX{} warnings that do not indicate actual failures.
+\end{itemize}
+
+\section{Build Commands}
+
+Table~\ref{tab:build-commands} lists all top-level commands accepted by
+\texttt{build.py}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Build orchestrator commands}
+    \label{tab:build-commands}
+    \begin{tabular}{@{} l p{8.5cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{build-all} &
+            Alias for the default build.  Compiles the root document and all
+            examples. \\[4pt]
+        \texttt{build-examples} &
+            Build all example projects in \texttt{examples/} concurrently. \\[4pt]
+        \texttt{build-example} &
+            Build one or more named examples.  Accepts positional arguments:
+            \texttt{build.py build-example article thesis}. \\[4pt]
+        \texttt{build-root} &
+            Build only the root document (\texttt{main.tex} at the repository
+            root). \\[4pt]
+        \texttt{clean} &
+            Full cleanup.  Removes the entire \texttt{build/} directory,
+            \texttt{\_minted/} caches, and \texttt{svg-inkscape/} caches. \\[4pt]
+        \texttt{clean-aux} &
+            Remove auxiliary files (\texttt{.aux}, \texttt{.log}, \texttt{.toc},
+            \texttt{.bbl}, etc.) while preserving output PDFs. \\[4pt]
+        \texttt{list} &
+            List all available examples with their status (built/not built). \\[4pt]
+        \texttt{preflight} &
+            Run preflight checks: verify \texttt{latexmk}, \texttt{biber},
+            \texttt{bib2gls}, \texttt{pygmentize}, Inkscape, and Gnuplot are
+            available on \texttt{PATH}. \\[4pt]
+        \texttt{test} &
+            Run the Python test suite (pytest-based).  Does not require a full
+            \LaTeX{} installation for unit tests; integration tests require
+            Docker. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Usage examples:
+
+\begin{minted}{bash}
+python3 build.py build-all
+python3 build.py build-example article presentation
+python3 build.py clean
+python3 build.py list
+\end{minted}
+
+\section{Global Flags}
+
+The following flags apply to all build commands:
+
+\begin{table}[htbp]
+    \centering
+    \caption{Global build flags}
+    \label{tab:build-flags}
+    \begin{tabular}{@{} l p{8.5cm} @{}}
+        \toprule
+        \textbf{Flag} & \textbf{Description} \\
+        \midrule
+        \texttt{--mode \{dev,prod,ultra\}} &
+            Select the build mode.  Defaults to \textsf{dev}.
+            See \Cref{sec:build-modes} for details. \\[4pt]
+        \texttt{--force} &
+            Ignore the source-hash cache and rebuild everything from scratch.
+            Equivalent to passing \texttt{-g} to \texttt{latexmk}. \\[4pt]
+        \texttt{--timings} &
+            Print per-example wall-clock times after the build completes.
+            Useful for identifying slow examples. \\[4pt]
+        \texttt{--verbose} &
+            Enable verbose output from \texttt{latexmk} and subprocesses.
+            Can also be set via the \texttt{OMNILATEX\_VERBOSE=1} environment
+            variable. \\[4pt]
+        \texttt{--source-date-epoch} &
+            Set the \texttt{SOURCE\_DATE\_EPOCH} environment variable for
+            reproducible builds.  Accepts a Unix timestamp. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Build Modes}
+\label{sec:build-modes}
+
+Each build mode controls how many \LaTeX{} passes are executed and whether
+auxiliary processors (Biber, \texttt{bib2gls}) are invoked.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Build mode comparison}
+    \label{tab:build-modes}
+    \begin{tabular}{@{} l c c c @{}}
+        \toprule
+        \textbf{Feature} & \textbf{dev} & \textbf{prod} & \textbf{ultra} \\
+        \midrule
+        \LaTeX{} passes        & 3        & Full     & 2        \\
+        Biber (bibliography)   & Yes      & Yes      & No       \\
+        bib2gls (glossary)     & Yes      & Yes      & No       \\
+        Target use case        & Editing  & Release  & Draft    \\
+        Typical wall time      & $\sim$5\,min  & $\sim$14\,min & $\sim$2\,min \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Dev Mode}
+
+The default mode.  Runs three \LaTeX{} passes with Biber and \texttt{bib2gls}
+processing.  Three passes are sufficient to resolve most cross-references and
+citations during active editing.  Use this mode for day-to-day development.
+
+\begin{minted}{bash}
+python3 build.py build-example article --mode dev
+\end{minted}
+
+\subsection{Prod Mode}
+
+Runs \texttt{latexmk} in its default mode, which performs as many passes as
+needed until all references, citations, and glossary entries are fully resolved.
+This is the mode used for final publication builds.
+
+\begin{minted}{bash}
+python3 build.py build-all --mode prod
+\end{minted}
+
+\subsection{Ultra Mode}
+
+A minimal two-pass build with no bibliography or glossary processing.  Designed
+for quick draft previews where reference accuracy is not critical.
+
+\begin{minted}{bash}
+python3 build.py build-example thesis --mode ultra
+\end{minted}
+
+\section{Incremental Builds}
+\label{sec:incremental-builds}
+
+The build system avoids redundant compilation through source-hash caching.
+
+\subsection{How It Works}
+
+Before building an example, \texttt{build.py} computes a SHA-256 hash of all
+\texttt{.tex}, \texttt{.bib}, \texttt{.sty}, and \texttt{.cls} files in the
+example directory and its dependencies.  This hash is stored in
+\texttt{build/build\_cache.json} alongside the example name.
+
+On subsequent builds, the current hash is compared against the cached value:
+
+\begin{itemize}
+    \item \textbf{Cache hit} -- The hash matches.  The example is skipped
+          entirely, and the existing PDF is reused.
+    \item \textbf{Cache miss} -- The hash differs (or no entry exists).  The
+          example is rebuilt, and the cache is updated with the new hash.
+\end{itemize}
+
+\subsection{Bypassing the Cache}
+
+Pass \texttt{--force} to ignore the cache and rebuild all targets:
+
+\begin{minted}{bash}
+python3 build.py build-all --force
+\end{minted}
+
+This is equivalent to removing \texttt{build/build\_cache.json} manually.  The
+\texttt{--force} flag also passes \texttt{-g} to \texttt{latexmk}, which forces
+a full recompilation even if \texttt{latexmk}'s own dependency tracking
+considers the target up to date.
+
+\section{latexmk Configuration}
+
+The \texttt{.latexmkrc} file at the repository root configures \texttt{latexmk}
+behaviour for all OmniLaTeX documents:
+
+\begin{itemize}
+    \item \textbf{Engine.}  \hologo{LuaLaTeX} is the default and only
+          supported engine.  OmniLaTeX relies on Lua\TeX{} features including
+          \ctanpackage{fontspec}, \ctanpackage{unicode-math}, and
+          \ctanpackage{luatexja} for CJK support.
+    \item \textbf{Interaction mode.}  \texttt{-interaction=nonstopmode} is used
+          for all builds.  Errors are reported in the log but do not pause
+          compilation.
+    \item \textbf{Output directory.}  PDFs and auxiliary files are written to
+          \texttt{build/}, keeping the source tree clean.
+    \item \textbf{Minted cache.}  The \texttt{\_minted/} directory is
+          configured as a cache for \ctanpackage{minted} output to avoid
+          redundant Pygments invocations.
+\end{itemize}
+
+The entrypoint script in the Docker image also reads \texttt{.latexmkrc} from
+the workspace, so the same configuration applies in containerised builds.
+
+\section{Parallel Builds}
+\label{sec:parallel-builds}
+
+Example builds execute concurrently using Python's
+\texttt{ThreadPoolExecutor}.  The default concurrency depends on the
+environment:
+
+\begin{itemize}
+    \item \textbf{CI environments} (GitHub Actions, GitLab CI): 4 concurrent
+          workers.
+    \item \textbf{Local builds}: \texttt{os.cpu\_count()} or 4, whichever is
+          lower.
+\end{itemize}
+
+The job count can be overridden with the \texttt{--jobs} flag:
+
+\begin{minted}{bash}
+python3 build.py build-examples --jobs 8
+\end{minted}
+
+Progress is displayed using the \texttt{rich} library when available, showing a
+live table with per-example status (building/done/failed).  If \texttt{rich}
+is not installed, a simple TQDM progress bar is used as a fallback.
+
+Thread safety is ensured by creating the \texttt{build/examples/} directory
+early and isolating per-example output into separate subdirectories.
+
+\section{Performance}
+\label{sec:build-performance}
+
+\subsection{Full Build Timing}
+
+A complete \texttt{build-all} in \textsf{prod} mode compiles the root document
+and all 43 examples in approximately 14 minutes on a modern machine.  The same
+build in \textsf{ultra} mode completes in roughly 2 minutes.
+
+\subsection{Per-Example Timings}
+
+Use the \texttt{--timings} flag to see wall-clock time for each example:
+
+\begin{minted}{bash}
+python3 build.py build-all --mode prod --timings
+\end{minted}
+
+This prints a summary table after all builds complete, sorted by duration.
+Examples using \ctanpackage{tikz} or \ctanpackage{pgfplots} computations are
+typically the slowest, as the \LaTeX{} engine performs numerical calculations
+in-document rather than delegating to an external tool.
+
+\subsection{Performance Tips}
+
+\begin{itemize}
+    \item Use \textsf{dev} mode during editing -- three passes are sufficient
+          for most cross-reference resolution.
+    \item Use \textsf{ultra} mode for rapid iteration when bibliography and
+          glossary accuracy is not needed.
+    \item Leverage incremental builds: only modified examples are recompiled.
+    \item For \ctanpackage{pgfplots} heavy documents, pre-compute data
+          externally and use \texttt{\textbackslash pgfplotstableread} instead
+          of in-document calculations.
+    \item Increase \texttt{--jobs} on machines with many cores, but note that
+          each \hologo{LuaLaTeX} instance can consume significant memory.
+\end{itemize}

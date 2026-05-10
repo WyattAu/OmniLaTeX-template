@@ -1,0 +1,138 @@
+\chapter{Sectioning}
+
+KOMA-Script extends the standard LaTeX sectioning commands with additional
+features such as flexible numbering, paragraph hooks, and style customisation.
+OmniLaTeX further tailours the sectioning defaults for a clean, modern look.
+
+\section{KOMA Section Hierarchy}
+
+The full hierarchy, from coarsest to finest:
+
+\begin{verbatim}
+\part          % I, II, III, ...
+\chapter       % 1, 2, 3, ...      (book/report only)
+\section       % 1.1, 1.2, ...
+\subsection    % 1.1.1, 1.1.2, ...
+\subsubsection % 1.1.1.1, ...
+\paragraph     % 1.1.1.1.1, ...
+\subparagraph  % 1.1.1.1.1.1, ...
+\end{verbatim}
+
+Each level is numbered by default.  The depth at which numbering and TOC
+entries appear is controlled by two counters:
+
+\begin{verbatim}
+\setcounter{secnumdepth}{3}  % number up to \subsubsection
+\setcounter{tocdepth}{2}     % show up to \subsection in TOC
+\end{verbatim}
+
+OmniLaTeX defaults to \texttt{secnumdepth=3} and \texttt{tocdepth=2}.
+
+\section{Chapter Prefix}
+
+OmniLaTeX scales the chapter number to 4.5$\times$ its normal size using
+KOMA's font interface:
+
+\begin{verbatim}
+\setkomafont{chapter}{\fontsize{45}{54}\selectfont\bfseries}
+\end{verbatim}
+
+This creates a prominent visual anchor for each chapter opening.  The
+chapter title itself is set in the default sans-serif font at normal size,
+creating a strong typographic contrast between the large number and the
+readable heading text.
+
+To customise the chapter number size:
+
+\begin{verbatim}
+\setkomafont{chapter}{\fontsize{60}{72}\selectfont\bfseries}
+\end{verbatim}
+
+\section{Table of Contents}
+
+Generate a TOC with \verb|\tableofcontents|.  OmniLaTeX styles the TOC
+with a clean sans-serif layout and dotted leaders:
+
+\begin{verbatim}
+\frontmatter
+\tableofcontents
+\mainmatter
+\end{verbatim}
+
+Control which sectioning levels appear:
+
+\begin{verbatim}
+\setcounter{tocdepth}{1}  % chapters only
+\setcounter{tocdepth}{3}  % down to \subsubsection
+\end{verbatim}
+
+Individual entries can be hidden with \verb|\addtocontents{toc}{\vspace{1em}}|
+or by using the \texttt{tocdepth} counter locally within a chapter.
+
+\section{Lists of Floats}
+
+KOMA-Script provides built-in lists for the standard float types:
+
+\begin{verbatim}
+\listoffigures   % List of Figures
+\listoftables    % List of Tables
+\end{verbatim}
+
+OmniLaTeX also registers \texttt{example} as a float type, enabling:
+
+\begin{verbatim}
+\listofexamples  % List of Examples
+\end{verbatim}
+
+For custom float types, declare a new list with \verb|\DeclareNewTOC|:
+
+\begin{verbatim}
+\DeclareNewTOC[
+  type=algorithm,
+  name=List of Algorithms,
+  listname={Algorithm}
+]{loa}
+\end{verbatim}
+
+This creates a \verb|\listofalgorithms| command and a \texttt{loa} file
+for the auxiliary data.
+
+\section{PDF Bookmarks}
+
+PDF bookmarks (the navigable outline in PDF viewers) are generated
+automatically from sectioning commands.  Add manual bookmarks with:
+
+\begin{verbatim}
+\pdfbookmark[0]{Title Page}{titlepage}
+\pdfbookmark[1]{Appendix A}{appa}
+\end{verbatim}
+
+The optional argument sets the bookmark level (0 = top-level, matching
+\verb|\part|; 1 = chapter level).
+
+OmniLaTeX enables bold chapter bookmarks by default via
+\verb|\boldPDFchapterstrue|.  To disable:
+
+\begin{verbatim}
+\boldPDFchaptersfalse
+\end{verbatim}
+
+\section{Unnumbered Chapters}
+
+For chapters that should not appear in the numbering sequence:
+
+\begin{verbatim}
+\addchap{Acknowledgements}   % KOMA: unnumbered, appears in TOC
+\chapter*{Colophon}          % LaTeX: unnumbered, absent from TOC
+\end{verbatim}
+
+\begin{description}
+  \item[{\texttt{\textbackslash addchap}}] -- KOMA-Script command.  The chapter
+        is unnumbered but still listed in the TOC and generates a PDF bookmark.
+  \item[{\texttt{\textbackslash chapter*}}] -- Standard LaTeX starred command.
+        The chapter is unnumbered and does \emph{not} appear in the TOC or PDF
+        bookmarks.
+\end{description}
+
+OmniLaTeX recommends \verb|\addchap| for front-matter chapters (abstract,
+acknowledgements, nomenclature) that should be listed but not numbered.

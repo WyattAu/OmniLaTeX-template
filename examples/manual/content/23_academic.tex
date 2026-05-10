@@ -1,0 +1,272 @@
+\chapter{Academic Documents}
+\label{ch:academic}
+
+This chapter covers five doctypes designed for teaching and learning
+contexts: \texttt{homework}, \texttt{exam}, \texttt{lecture-notes},
+\texttt{syllabus}, and \texttt{handout}.  All use \texttt{scrartcl} with
+serif fonts, one-and-a-half line spacing, and half paragraph spacing.
+
+\section{Homework}
+\label{sec:homework}
+
+The \texttt{homework} doctype produces a title page with course name,
+assignment number, student details, due date, and total points.
+It suppresses the TOC and sets \texttt{secnumdepth=0} for a clean,
+assignment-style layout.
+
+\begin{minted}{latex}
+\documentclass[doctype=homework]{../../omnilatex}
+\title{Linear Algebra Problem Set}
+\hwcourse{MATH 201}
+\hwnumber{Homework 3}
+\hwauthor{Prof.\ A.\ Smith}
+\hwduedate{2025-11-15}
+\hwinstructor{Prof.\ A.\ Smith}
+\hwstudentname{Jane Doe}
+\hwstudentid{12345678}
+\hwtotalpoints{50}
+\begin{document}
+\maketitle
+\begin{exercise}[10]
+    Prove that every vector space has a basis.
+\end{exercise}
+\begin{solution}
+    By Zorn's Lemma, \ldots
+\end{solution}
+\end{document}
+\end{minted}
+
+\subsection{Custom Commands}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Homework metadata commands}
+    \label{tab:homework-commands}
+    \begin{tabular}{@{} l p{7.5cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash hwtitle\{...\}}       & Assignment title (defaults to \texttt{\textbackslash title}) \\
+        \texttt{\textbackslash hwcourse\{...\}}      & Course name (default: Course Name) \\
+        \texttt{\textbackslash hwauthor\{...\}}      & Author name (defaults to \texttt{\textbackslash author}) \\
+        \texttt{\textbackslash hwduedate\{...\}}     & Due date (defaults to \texttt{\textbackslash date}) \\
+        \texttt{\textbackslash hwinstructor\{...\}}  & Instructor name (default: Instructor Name) \\
+        \texttt{\textbackslash hwnumber\{...\}}      & Assignment label (default: Homework 1) \\
+        \texttt{\textbackslash hwstudentname\{...\}} & Student name (default: empty) \\
+        \texttt{\textbackslash hwstudentid\{...\}}   & Student ID (default: empty) \\
+        \texttt{\textbackslash hwtotalpoints\{...\}} & Total points (default: empty) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Environments}
+
+Two environments are provided for structuring problem sets:
+
+\begin{itemize}
+    \item \texttt{exercise[points]} -- Numbers exercises automatically and
+          optionally displays a point value in parentheses.
+    \item \texttt{solution} -- Wraps the solution text.  Content is only
+          visible when solutions are enabled (see below).
+\end{itemize}
+
+\subsection{Solution Control}
+
+A boolean flag controls whether solutions are rendered:
+
+\begin{minted}{latex}
+\showsolutions   % render all solution environments
+\hidesolutions   % hide all solution environments (default)
+\end{minted}
+
+When \texttt{\textbackslash hidesolutions} is active (the default), content
+inside \texttt{solution} environments is silently discarded via
+\texttt{\textbackslash setbox}, producing a clean student-facing handout.
+
+\section{Examinations}
+\label{sec:exam}
+
+The \texttt{exam} doctype formats formal examination papers with a title
+page showing exam code, date, duration, total marks, department, and
+custom instructions.  It uses \texttt{pagestyle=empty} and suppresses
+section numbering.
+
+\begin{minted}{latex}
+\documentclass[doctype=exam]{../../omnilatex}
+\title{Final Examination}
+\examcode{MATH301-F2025}
+\examdate{2025-12-18}
+\examduration{3 hours}
+\totalmarks{100}
+\department{Department of Mathematics}
+\begin{document}
+\maketitle
+\begin{question}[25]
+    State and prove the Fundamental Theorem of Calculus.
+\end{question}
+\begin{answer}[4cm]
+    % blank space for student response
+\end{answer}
+\end{document}
+\end{minted}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Examination commands}
+    \label{tab:exam-commands}
+    \begin{tabular}{@{} l p{7.5cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash examtitle\{...\}}        & Exam title (defaults to \texttt{\textbackslash title}) \\
+        \texttt{\textbackslash examcode\{...\}}         & Exam code (default: EXAM000) \\
+        \texttt{\textbackslash examdate\{...\}}         & Exam date (defaults to \texttt{\textbackslash date}) \\
+        \texttt{\textbackslash examduration\{...\}}     & Duration (default: 2 hours) \\
+        \texttt{\textbackslash totalmarks\{...\}}       & Total marks (default: 100) \\
+        \texttt{\textbackslash department\{...\}}       & Department name (default: Department of Mathematics) \\
+        \texttt{\textbackslash examinstructions\{...\}} & Custom instructions \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Two environments structure exam content:
+\texttt{question[marks]} auto-numbers questions and displays an optional
+mark allocation, while \texttt{answer[height]} creates an
+\texttt{addmargin} of configurable height for student responses.
+
+\section{Lecture Notes}
+\label{sec:lecture-notes}
+
+The \texttt{lecture-notes} doctype is designed for textbook-style handouts
+with a wide left margin for student annotations.  It sets
+\texttt{secnumdepth=2}, includes a header with course name and lecture
+number, and provides theorem-like environments.
+
+\subsection{Metadata Commands}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Lecture notes commands}
+    \label{tab:lecture-commands}
+    \begin{tabular}{@{} l p{7.5cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash lecturetitle\{...\}} & Lecture title (defaults to \texttt{\textbackslash title}) \\
+        \texttt{\textbackslash lecturenumber\{...\}} & Lecture number (default: 1) \\
+        \texttt{\textbackslash coursename\{...\}} & Course name (default: Course Name) \\
+        \texttt{\textbackslash lecturedate\{...\}} & Date (defaults to \texttt{\textbackslash date}) \\
+        \texttt{\textbackslash lecturer\{...\}} & Lecturer name (default: Lecturer Name) \\
+        \texttt{\textbackslash semester\{...\}} & Semester (default: Fall 2025) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Theorem-Like Environments}
+
+Numbered environments share a common counter:
+\texttt{theorem}, \texttt{lemma}, \texttt{corollary}, and
+\texttt{definition}.  Unnumbered environments include \texttt{example},
+\texttt{remark}, and \texttt{proof} (which appends a $\square$).
+
+\subsection{Wide Left Margin}
+
+The doctype calls \texttt{\textbackslash setCustomMargins\{3cm\}\{2cm\}\{2.5cm\}\{2.5cm\}},
+creating a 3\,cm left margin ideal for handwritten annotations during
+lectures.
+
+\section{Syllabus}
+\label{sec:syllabus}
+
+The \texttt{syllabus} doctype generates a course syllabus with a detailed
+title page listing instructor contact information, meeting details,
+prerequisites, and course website.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Syllabus commands}
+    \label{tab:syllabus-commands}
+    \begin{tabular}{@{} l p{7.5cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash coursenumber\{...\}}    & Course code (default: CS\,000) \\
+        \texttt{\textbackslash coursetitle\{...\}}     & Course title (default: Course Title) \\
+        \texttt{\textbackslash semester\{...\}}        & Semester (default: Fall 2025) \\
+        \texttt{\textbackslash instructor\{...\}}      & Instructor name \\
+        \texttt{\textbackslash instructoroffice\{...\}} & Office location \\
+        \texttt{\textbackslash instructoremail\{...\}}  & Email address \\
+        \texttt{\textbackslash instructorhours\{...\}}  & Office hours \\
+        \texttt{\textbackslash meetingtime\{...\}}      & Class meeting time \\
+        \texttt{\textbackslash meetinglocation\{...\}}  & Classroom location \\
+        \texttt{\textbackslash prerequisites\{...\}}    & Prerequisites (default: None) \\
+        \texttt{\textbackslash coursewebsite\{...\}}    & Course URL \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Environments and Helpers}
+
+\begin{itemize}
+    \item \texttt{objectives} -- Wraps a numbered list of learning objectives.
+    \item \texttt{gradingpolicy} -- Produces a \texttt{booktabs} table with
+          Component/Weight columns and an automatic Total row.
+    \item \texttt{\textbackslash gradingitem\{component\}\{weight\}} --
+          Adds a row inside the \texttt{gradingpolicy} environment.
+    \item \texttt{\textbackslash scheduleentry\{week\}\{topic\}\{notes\}} --
+          Adds a row for weekly schedule tables.
+\end{itemize}
+
+\begin{minted}{latex}
+\begin{gradingpolicy}
+    \gradingitem{Homework}{30}
+    \gradingitem{Midterm Exam}{25}
+    \gradingitem{Final Exam}{35}
+    \gradingitem{Participation}{10}
+\end{gradingpolicy}
+\end{minted}
+
+\section{Handout}
+\label{sec:handout}
+
+The \texttt{handout} doctype produces compact, two-column course handouts
+with a running header showing course name, handout number, title, author,
+and date.  It uses 15\,mm margins and \texttt{parskip=half}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Handout commands}
+    \label{tab:handout-commands}
+    \begin{tabular}{@{} l p{7.5cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash handouttitle\{...\}}  & Handout title (defaults to \texttt{\textbackslash title}) \\
+        \texttt{\textbackslash handoutcourse\{...\}} & Course name (default: Course Name) \\
+        \texttt{\textbackslash handoutnumber\{...\}} & Handout number (default: 1) \\
+        \texttt{\textbackslash handoutdate\{...\}}   & Date (defaults to \texttt{\textbackslash date}) \\
+        \texttt{\textbackslash handoutauthor\{...\}} & Author (defaults to \texttt{\textbackslash author}) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Highlight Boxes}
+
+Two tcolorbox-based commands draw attention to key material:
+
+\begin{itemize}
+    \item \texttt{\textbackslash keyconcept\{title\}\{text\}} -- A titled
+          box with a blue frame (\texttt{cBlue!70!black}) and light
+          background (\texttt{Air!40}), rendered via the \texttt{keyconceptbox}
+          tcolorbox.
+    \item \texttt{\textbackslash remember\{text\}} -- An inline box with an
+          orange frame (\texttt{mOrange!80!black}) and yellow background
+          (\texttt{mYellow!20}), prefixed with ``Remember:''.
+\end{itemize}
+
+\subsection{Two-Column Mode}
+
+The doctype enables \texttt{twocolumn=true} via KOMA-Script, so all body
+content flows in two columns automatically.  Use
+\texttt{\textbackslash keyconcept} and \texttt{\textbackslash remember}
+for single-column callouts that span the full column width.

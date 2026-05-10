@@ -1,0 +1,182 @@
+\chapter{Derivatives \& Vector Calculus}
+
+OmniLaTeX defines a complete set of derivative, vector, and physical-flow
+macros in \texttt{omnilatex-math.sty}.  These replace the functionality
+of the \texttt{physics} package (which has known maintenance issues) with
+well-tested, self-contained implementations.
+
+% =========================================================================
+\section{Ordinary Derivatives}
+% =========================================================================
+
+All derivative macros use an upright~$\mathup{d}$ for total derivatives
+and~$\partial$ for partial derivatives.  The upright \texttt{d} follows
+ISO~80000-2 conventions.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Derivative macros -- operator form.}
+  \label{tab:deriv-operators}
+  \begin{tabular}{@{}llp{0.42\textwidth}@{}}
+    \toprule
+    LaTeX Source & Renders as & Syntax \\
+    \midrule
+    \texttt{\textbackslash deriv\{f\}}              & $\deriv{f}$      & First derivative of \texttt{f} \\
+    \texttt{\textbackslash deriv[2]\{f\}}           & $\deriv[2]{f}$   & $n$-th derivative (optional degree) \\
+    \texttt{\textbackslash deriv*\{f\}}             & $\deriv*{f}$     & Partial derivative of \texttt{f} \\
+    \texttt{\textbackslash deriv*[2]\{f\}}          & $\deriv*[2]{f}$  & $n$-th partial derivative \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Derivative macros -- fraction form.}
+  \label{tab:deriv-fractions}
+  \begin{tabular}{@{}llp{0.42\textwidth}@{}}
+    \toprule
+    LaTeX Source & Renders as & Syntax \\
+    \midrule
+    \texttt{\textbackslash fracderiv\{f\}\{x\}}       & $\fracderiv{f}{x}$       & $\dfrac{\mathup{d}f}{\mathup{d}x}$ \\
+    \texttt{\textbackslash fracderiv[2]\{f\}\{x\}}    & $\fracderiv[2]{f}{x}$    & $n$-th total derivative \\
+    \texttt{\textbackslash fracderiv*\{f\}\{x\}}      & $\fracderiv*{f}{x}$      & $\dfrac{\partial f}{\partial x}$ \\
+    \texttt{\textbackslash fracderiv*[2]\{f\}\{x\}}   & $\fracderiv*[2]{f}{x}$   & $n$-th partial derivative \\
+    \texttt{\textbackslash timederiv\{f\}}            & $\timederiv{f}$          & Derivative w.r.t.\ time \\
+    \texttt{\textbackslash timederiv[2]\{f\}}         & $\timederiv[2]{f}$       & $n$-th time derivative \\
+    \texttt{\textbackslash timederiv*\{f\}}           & $\timederiv*{f}$         & Partial time derivative \\
+    \texttt{\textbackslash posderiv\{f\}}             & $\posderiv{f}$           & Derivative w.r.t.\ position \\
+    \texttt{\textbackslash posderiv[2]\{f\}}          & $\posderiv[2]{f}$        & $n$-th positional derivative \\
+    \texttt{\textbackslash posderiv*\{f\}}            & $\posderiv*{f}$          & Partial positional derivative \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The time and position symbols in \texttt{\textbackslash timederiv} and
+\texttt{\textbackslash posderiv} are sourced from the glossary entries
+\texttt{sym.time} and \texttt{sym.first\_cart\_coord}, ensuring
+consistent notation across the document.
+
+% =========================================================================
+\section{Vector Macros}
+% =========================================================================
+
+\begin{table}[htbp]
+  \centering
+  \caption{Vector macros.}
+  \label{tab:vectors}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Command & Renders as & Description \\
+    \midrule
+    \texttt{\textbackslash vect\{v\}} & $\vect{v}$ & Bold italic vector ($\symbf{v}$) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The \texttt{\textbackslash vect} command uses \cs{symbf} from
+\texttt{unicode-math} to produce a bold italic symbol, which is the
+convention in physics and engineering for vectors.
+
+% =========================================================================
+\section{Physical Flow Macros}
+% =========================================================================
+
+The following macros are defined for common engineering notations:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Physical flow macros.}
+  \label{tab:flow-macros}
+  \begin{tabular}{@{}lll@{}}
+    \toprule
+    Command & Renders as & Description \\
+    \midrule
+    \texttt{\textbackslash flow\{\textbackslash dot\{m\}\}}   & $\flow{\dot{m}}$   & Mass flow rate (dotted symbol) \\
+    \texttt{\textbackslash difference\{\textbackslash Delta T\}} & $\difference{\Delta T}$ & Temperature / general difference \\
+    \texttt{\textbackslash heatexentry\{T\}}                    & $\heatexentry{T}$  & Heat exchanger entry ($T'$) \\
+    \texttt{\textbackslash heatexexit\{T\}}                     & $\heatexexit{T}$   & Heat exchanger exit ($T''$) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\texttt{\textbackslash flow} places a dot above its argument for mass
+flow rate notation.  \texttt{\textbackslash heatexentry} and
+\texttt{\textbackslash heatexexit} append one or two prime marks,
+respectively, following the common thermodynamic convention for heat
+exchanger inlet/outlet states.
+
+% =========================================================================
+\section{Thermodynamic Notation}
+% =========================================================================
+\label{sec:temp-pair}
+
+The \texttt{\textbackslash temperaturepair} macro formats temperature
+ranges with a forward-slash separator:
+
+\begin{verbatim}
+\temperaturepair{T_min}{T_max}
+% → T_min/T_max °C  (e.g., 45/55 °C)
+\end{verbatim}
+
+Internally this wraps \texttt{\textbackslash qtyrange} with
+\texttt{range-phrase=\{/)\}} and \texttt{range-units=single}, so the
+degree-Celsius symbol appears only once at the end.
+
+% =========================================================================
+\section{Convention Reference}
+% =========================================================================
+
+The following table lists all math macros provided by
+\texttt{omnilatex-math.sty}, organised by category:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Complete math macro reference.}
+  \label{tab:math-macro-ref}
+  \begin{tabular}{@{}llp{0.50\textwidth}@{}}
+    \toprule
+    Category & Command & Description \\
+    \midrule
+    \multirow{4}{*}{Operators}
+      & \texttt{\textbackslash grad}         & Gradient ($\grad$, upright) \\
+      & \texttt{\textbackslash const}        & Constant notation \\
+      & \texttt{\textbackslash qq\{text\}}   & Quad-spaced text in math \\
+      & \texttt{\textbackslash nablaoperator[n]\{expr\}} & Nabla with optional degree \\
+    \midrule
+    \multirow{2}{*}{Vectors}
+      & \texttt{\textbackslash vect\{v\}}    & Bold italic vector \\
+    \midrule
+    \multirow{10}{*}{Derivatives}
+      & \texttt{\textbackslash deriv[n]\{f\}}         & Operator form (total) \\
+      & \texttt{\textbackslash deriv*[n]\{f\}}        & Operator form (partial) \\
+      & \texttt{\textbackslash fracderiv[n]\{f\}\{x\}}   & Fraction form (total) \\
+      & \texttt{\textbackslash fracderiv*[n]\{f\}\{x\}}  & Fraction form (partial) \\
+      & \texttt{\textbackslash timederiv[n]\{f\}}      & Fraction form w.r.t.\ time \\
+      & \texttt{\textbackslash timederiv*[n]\{f\}}     & Partial time derivative \\
+      & \texttt{\textbackslash posderiv[n]\{f\}}       & Fraction form w.r.t.\ position \\
+      & \texttt{\textbackslash posderiv*[n]\{f\}}      & Partial positional derivative \\
+    \midrule
+    \multirow{5}{*}{Physical}
+      & \texttt{\textbackslash flow\{x\}}             & Dotted flow symbol \\
+      & \texttt{\textbackslash difference\{x\}}        & Delta difference \\
+      & \texttt{\textbackslash heatexentry\{x\}}       & Heat exchanger entry (prime) \\
+      & \texttt{\textbackslash heatexexit\{x\}}        & Heat exchanger exit (double prime) \\
+      & \texttt{\textbackslash temperaturepair\{a\}\{b\}} & Temperature range \\
+    \midrule
+    \multirow{3}{*}{Statistics}
+      & \texttt{\textbackslash mean\{x\}}       & Arithmetic mean (overbar) \\
+      & \texttt{\textbackslash logmean\{x\}}    & Logarithmic mean (tilde) \\
+      & \texttt{\textbackslash variance\{x\}}   & Variance ($\sigma^2$) \\
+    \midrule
+    \multirow{4}{*}{Formatting}
+      & \texttt{\textbackslash abs\{x\}}       & Absolute value \\
+      & \texttt{\textbackslash norm\{x\}}      & Norm (double bars) \\
+      & \texttt{\textbackslash inner\{a\}\{b\}} & Inner product (angle brackets) \\
+      & \texttt{\textbackslash circlednum\{n\}} & Circled number ① \\
+    \midrule
+    \multirow{2}{*}{Punctuation}
+      & \texttt{\textbackslash eqend}           & Thin space + period \\
+      & \texttt{\textbackslash eqcomma}         & Thin space + comma \\
+    \bottomrule
+  \end{tabular}
+\end{table}

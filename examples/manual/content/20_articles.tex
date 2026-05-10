@@ -1,0 +1,325 @@
+\chapter{Articles \& Short Documents}
+\label{ch:articles}
+
+This chapter covers the six \texttt{scrartcl}-based doctypes in OmniLaTeX.
+These document types are optimised for single-column or two-column works that
+do not require chapters: journal submissions, internal papers, business
+correspondence, and white papers.  All share a common KOMA-Script base class
+with \texttt{parskip=half}, \texttt{numbers=noenddot}, and automatic
+bibliography inclusion in the table of contents.
+
+\section{Common Features}
+
+Every article-type doctype inherits the following from the
+\texttt{scrartcl} base class:
+
+\begin{itemize}
+    \item \textbf{Sectioning up to \texttt{\textbackslash subsubsection}} --
+          No chapter or part commands; numbered sections, subsections, and
+          subsubsections.
+    \item \textbf{Title page control} -- Each doctype sets
+          \texttt{titlepage} to \texttt{true} or \texttt{false} depending on
+          its conventions.
+    \item \textbf{Single-sided by default} -- Article-type documents print
+          single-sided unless the user explicitly passes \texttt{twoside}.
+    \item \textbf{Bibliography in TOC} -- \texttt{bibliography=totoc} is
+          included in the default \texttt{scrartcl} options.
+    \item \textbf{Paragraph spacing} -- \texttt{parskip=half} provides
+          visual paragraph separation without indentation.
+\end{itemize}
+
+\section{Choosing the Right Article Type}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Article-type doctype decision guide}
+    \label{tab:article-decision}
+    \begin{tabular}{@{} l l p{6.5cm} @{}}
+        \toprule
+        \textbf{Doctype} & \textbf{Title Page} & \textbf{Best For} \\
+        \midrule
+        article        & Yes & Academic or research papers with journal-style layout \\
+        journal        & Yes & Formal journal submissions with volume/issue metadata \\
+        inline-paper   & No  & Compact preprints resembling arXiv two-column format \\
+        white-paper    & Yes & Business or technical white papers with callout boxes \\
+        letter         & No  & Formal correspondence with sender/recipient blocks \\
+        cover-letter   & No  & Job application cover letters \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Doctype Profiles}
+
+\subsection{article}
+
+The \texttt{article} doctype provides a full title page with journal header,
+abstract, keywords, DOI, and affiliation footer.  It uses 11\,pt serif font
+with one-and-a-half line spacing.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Custom commands for \texttt{article}}
+    \label{tab:article-commands}
+    \begin{tabular}{@{} l p{8cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash subtitle\{...\}}     & Sets the abstract text shown on the title page \\
+        \texttt{\textbackslash keywords\{...\}}     & Comma-separated keyword list \\
+        \texttt{\textbackslash doi\{...\}}          & Digital object identifier \\
+        \texttt{\textbackslash contact\{...\}}      & Correspondence contact information \\
+        \texttt{\textbackslash affiliation\{...\}}  & Author affiliation(s) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Use \texttt{article} for academic papers, conference submissions, or any
+research document that benefits from a formal title page with metadata fields.
+
+\begin{minted}{latex}
+\documentclass[doctype=article, language=english]{../../omnilatex}
+\title{An Analysis of Thermal Conductivity in Nanofluids}
+\author{Jane Doe}
+\keywords{nanofluids, thermal conductivity, alumina}
+\doi{10.1234/example.2025}
+\affiliation{Department of Physics, Example University}
+\begin{document}
+\maketitle
+\section{Introduction}
+Nanofluids have attracted significant interest for heat transfer.
+\end{document}
+\end{minted}
+
+\subsection{journal}
+
+The \texttt{journal} doctype extends the article layout with full journal
+metadata: volume, issue, page range, article type, highlights, and
+received/accepted/published dates.  The title page includes a right-aligned
+journal header and a highlights list.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Custom commands for \texttt{journal}}
+    \label{tab:journal-commands}
+    \begin{tabular}{@{} l p{8cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash journalname\{...\}}        & Journal name \\
+        \texttt{\textbackslash journalvolume\{...\}}      & Volume number \\
+        \texttt{\textbackslash journalissue\{...\}}       & Issue number \\
+        \texttt{\textbackslash journalpages\{...\}}       & Page range (e.g.\ \texttt{1--12}) \\
+        \texttt{\textbackslash journalyear\{...\}}        & Publication year \\
+        \texttt{\textbackslash articletype\{...\}}        & Type (Original Research, Review, etc.) \\
+        \texttt{\textbackslash highlights\{...\}}         & Comma-separated highlight list \\
+        \texttt{\textbackslash receiveddate\{...\}}       & Date manuscript was received \\
+        \texttt{\textbackslash accepteddate\{...\}}       & Date manuscript was accepted \\
+        \texttt{\textbackslash publisheddate\{...\}}      & Date manuscript was published \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Use \texttt{journal} when submitting to a specific journal or when you need
+volume/issue tracking and peer-review date stamps.
+
+\begin{minted}{latex}
+\documentclass[doctype=journal]{../../omnilatex}
+\title{Non-linear Enhancement in Alumina Nanofluids}
+\author{Jane Doe}
+\journalname{Journal of Thermal Sciences}
+\journalvolume{42}\journalissue{3}\journalyear{2025}
+\journalpages{115--128}
+\articletype{Original Research}
+\receiveddate{2025-01-15}\accepteddate{2025-04-20}
+\publisheddate{2025-05-01}
+\begin{document}
+\maketitle
+\section{Introduction}
+\end{document}
+\end{minted}
+
+\subsection{inline-paper}
+
+The \texttt{inline-paper} doctype produces a compact, arXiv-style layout with
+no separate title page.  The title, authors, and abstract are rendered inline
+at the top of the first page in a single column, then the body switches to
+two-column format via \texttt{\textbackslash twocolumn}.  It uses 10\,pt font
+with \texttt{DIV=16} for tighter margins.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Custom commands for \texttt{inline-paper}}
+    \label{tab:inlinepaper-commands}
+    \begin{tabular}{@{} l p{8cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash subtitle\{...\}}      & Abstract text displayed inline \\
+        \texttt{\textbackslash keywords\{...\}}      & Comma-separated keywords \\
+        \texttt{\textbackslash affiliation\{...\}}   & Author affiliation(s) \\
+        \texttt{\textbackslash contact\{...\}}       & Correspondence e-mail or address \\
+        \texttt{\textbackslash supplementary\{...\}} & Supplementary material link \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Use \texttt{inline-paper} for preprints, arXiv submissions, or any document
+where a compact two-column layout is preferred over a full title page.
+
+\begin{minted}{latex}
+\documentclass[doctype=inline-paper]{../../omnilatex}
+\title{Compact Preprint Title}
+\author{Author One \and Author Two}
+\affiliation{Department of Physics, Example University}
+\subtitle{This is the abstract text for the inline paper.}
+\keywords{preprint, arXiv, compact layout}
+\begin{document}
+\maketitle
+\section{Introduction}
+The body text flows in two columns after the inline header.
+\end{document}
+\end{minted}
+
+\subsection{white-paper}
+
+The \texttt{white-paper} doctype is designed for business or technical white
+papers.  It provides a branded title page with organisation, version, and
+classification metadata, plus two custom environments:
+\texttt{whitepaperabstract} for an executive summary and
+\texttt{keytakeaways} for a highlighted conclusions box.
+The \texttt{\textbackslash callout\{title\}\{text\}} command creates
+inline callout boxes using \ctanpackage{tcolorbox}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Custom commands and environments for \texttt{white-paper}}
+    \label{tab:whitepaper-commands}
+    \begin{tabular}{@{} l l p{5.5cm} @{}}
+        \toprule
+        \textbf{Name} & \textbf{Type} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash wptitle\{...\}}         & Command  & Override the displayed title \\
+        \texttt{\textbackslash wporganization\{...\}}   & Command  & Publishing organisation \\
+        \texttt{\textbackslash wpversion\{...\}}        & Command  & Document version (default: Draft) \\
+        \texttt{\textbackslash wpconfidential\{...\}}   & Command  & Classification level \\
+        \texttt{\textbackslash wpcontact\{...\}}        & Command  & Contact information \\
+        \texttt{\textbackslash wpdate\{...\}}           & Command  & Custom publication date \\
+        \texttt{whitepaperabstract}                     & Env.     & Executive summary block \\
+        \texttt{keytakeaways}                           & Env.     & Green-framed key findings box \\
+        \texttt{\textbackslash callout}                 & Command  & Inline blue callout box \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Use \texttt{white-paper} for technology assessments, policy briefs, or
+industry reports that benefit from structured abstracts and highlighted
+findings.
+
+\begin{minted}{latex}
+\documentclass[doctype=white-paper]{../../omnilatex}
+\title{AI in Software Development}
+\wporganization{Acme Research}
+\wpversion{1.0}\wpdate{May 2025}
+\begin{document}
+\maketitle
+\begin{whitepaperabstract}
+This white paper examines the impact of AI on software engineering.
+\end{whitepaperabstract}
+\section{Introduction}
+\callout{Key Finding}{Teams using AI tools ship 60\% faster.}
+\begin{keytakeaways}
+AI accelerates development when paired with automated testing.
+\end{keytakeaways}
+\end{document}
+\end{minted}
+
+\subsection{letter}
+
+The \texttt{letter} doctype produces a formal letter with no section
+numbering, no table of contents, and no page numbers.  The
+\texttt{\textbackslash maketitle} command renders a sender/recipient block,
+date, subject line, and salutation.  The
+\texttt{\textbackslash letterclosingblock} command prints the closing and
+signature.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Custom commands for \texttt{letter}}
+    \label{tab:letter-commands}
+    \begin{tabular}{@{} l p{8cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash lettersender\{...\}}    & Sender name and address block \\
+        \texttt{\textbackslash letterrecipient\{...\}}  & Recipient name and address \\
+        \texttt{\textbackslash lettersubject\{...\}}    & Subject line \\
+        \texttt{\textbackslash letterdate\{...\}}       & Date (default: \texttt{\textbackslash today}) \\
+        \texttt{\textbackslash letteropening\{...\}}    & Salutation (default: Dear Sir or Madam) \\
+        \texttt{\textbackslash letterclosing\{...\}}    & Closing (default: Sincerely) \\
+        \texttt{\textbackslash letterclosingblock}      & Prints closing and sender signature \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Use \texttt{letter} for formal business correspondence, complaint letters,
+or any structured letter format.
+
+\begin{minted}{latex}
+\documentclass[doctype=letter]{../../omnilatex}
+\lettersender{Jane Doe\\123 Main St\\Springfield, IL 62701}
+\letterrecipient{Mr.\ John Smith\\Acme Corp\\456 Oak Ave}
+\lettersubject{Proposal for Phase~II Collaboration}
+\letterdate{May 7, 2025}
+\begin{document}
+\maketitle
+Thank you for your continued partnership.  We propose the following
+scope for Phase~II of our collaboration.
+\letterclosingblock
+\end{document}
+\end{minted}
+
+\subsection{cover-letter}
+
+The \texttt{cover-letter} doctype is a minimal template for job application
+cover letters.  It disables \texttt{\textbackslash maketitle} entirely and
+provides metadata commands for sender and recipient information.  Section
+numbering and TOC depth are set to zero.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Custom commands for \texttt{cover-letter}}
+    \label{tab:coverletter-commands}
+    \begin{tabular}{@{} l p{8cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash coverletterrecipient\{...\}}   & Recipient name \\
+        \texttt{\textbackslash coverletterposition\{...\}}    & Position applied for \\
+        \texttt{\textbackslash coverlettercompany\{...\}}     & Company name \\
+        \texttt{\textbackslash coverletteraddress\{...\}}     & Company street address \\
+        \texttt{\textbackslash coverlettercity\{...\}}        & City, state, ZIP \\
+        \texttt{\textbackslash coverletterdate\{...\}}        & Date (default: \texttt{\textbackslash today}) \\
+        \texttt{\textbackslash coverlettersendername\{...\}}  & Sender full name \\
+        \texttt{\textbackslash coverlettersenderaddress\{...\}} & Sender street address \\
+        \texttt{\textbackslash coverlettersendercity\{...\}}  & Sender city, state, ZIP \\
+        \texttt{\textbackslash coverlettersenderphone\{...\}} & Sender phone number \\
+        \texttt{\textbackslash coverlettersenderemail\{...\}} & Sender e-mail address \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Use \texttt{cover-letter} for job applications.  The template is deliberately
+minimal--you compose the letter body directly in the document environment
+using the metadata commands in a \texttt{config/document-settings.sty} file.
+
+\begin{minted}{latex}
+\documentclass[doctype=cover-letter]{../../omnilatex}
+\coverletterposition{Senior Engineer}
+\coverlettercompany{Acme Corp}
+\coverlettersendername{Jane Doe}
+\coverlettersenderemail{jane@example.com}
+\begin{document}
+Dear Hiring Manager,
+I am writing to express my interest in the Senior Engineer role.
+\end{document}
+\end{minted}

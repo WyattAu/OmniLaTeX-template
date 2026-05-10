@@ -1,0 +1,174 @@
+\chapter{Lean 4 Formal Verification}
+
+\section{Why Formal Verification?}
+
+LaTeX templates can harbour subtle bugs that escape manual review: wrong
+margin calculations, inconsistent doctype-to-class mappings, missing
+translation keys, or broken fallback chains.  These errors surface only
+when a user hits the specific combination of options that triggers them.
+
+OmniLaTeX addresses this with Lean~4 formal verification.  Properties of
+the template system are expressed as mathematical theorems and proven
+correct at compile time.  If a pull request breaks a mapping or
+introduces a contradiction, \texttt{lake build} fails before the LaTeX
+code is ever compiled.
+
+The proofs live in \texttt{specs/proofs/} and are verified by CI on every
+push to \texttt{main}/\texttt{master} (see Chapter~\ref{ch:ci-cd}).
+
+\section{Proof Modules}
+
+All ten proof modules are imported through the root file
+\texttt{specs/proofs/OmniLaTeXProofs.lean}.  Each module covers a
+distinct aspect of the template system:
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{@{} l r p{6.5cm} @{}}
+    \toprule
+    \textbf{Module} & \textbf{Theorems} & \textbf{What It Proves} \\
+    \midrule
+    BuildModes & 5 &
+      Build mode properties: ultra skips bibliography,
+      prod validates datamodel, dev has enough passes,
+      all modes enable shell-escape, strictness ordering. \\[3pt]
+    BuildSystem & 9 &
+      Cache correctness, 43-example count, parallelism bounds
+      ($0 < \text{workers} \leq \text{examples}$), production is
+      default. \\[3pt]
+    DoctypeClassMapping & 7 &
+      Deterministic doctype$\to$class mapping, 60 aliases across
+      3 KOMA classes (34 scrartcl, 6 scrbook, 20 scrreprt),
+      covering theorem, scrartcl is largest. \\[3pt]
+    DocumentSettings & 8 &
+      KOMA class partition: 15 article-class, 6 report-class,
+      5 book-class doctypes sum to 26, each non-empty. \\[3pt]
+    DoctypeResolution & 4 &
+      Alias resolution is deterministic and total over 55 known
+      aliases; profile-to-class consistency. \\[3pt]
+    FloatInvariant & 2 &
+      Float placement never exceeds its section boundary;
+      bounded deferral invariant. \\[3pt]
+    FontHierarchy & 4 &
+      Font sizes form a strict total order: irreflexive, asymmetric,
+      transitive, and connex over 9 sizes. \\[3pt]
+    I18nCompleteness & 3 &
+      Translation key count is constant across all 18 languages;
+      $18 \times 47 = 846$ total keys. \\[3pt]
+    LanguageFallback & 7 &
+      18 primary + 26 secondary = 44 languages; all fallbacks
+      terminate at English; fallback is idempotent. \\[3pt]
+    PageGeometry & 5 &
+      Horizontal and vertical page balance equations hold for
+      oneside and twoside layouts; DIV textwidth formula;
+      caption width bounds. \\
+    \bottomrule
+  \end{tabular}
+  \caption{Lean~4 proof modules and their properties}
+\end{table}
+
+\section{Proof Structure}
+
+Lean~4 proofs use a small set of foundational constructs:
+
+\textbf{Inductive types} define the domain.  For example, the three build
+modes are declared as:
+
+\begin{minted}{lean}
+inductive BuildMode where
+  | dev : BuildMode
+  | prod : BuildMode
+  | ultra : BuildMode
+  deriving DecidableEq, Repr
+\end{minted}
+
+\textbf{Structures} bundle related fields:
+
+\begin{minted}{lean}
+structure BuildConfig where
+  mode : BuildMode
+  maxPasses : Nat
+  runBiber : Bool
+  deriving Repr
+\end{minted}
+
+\textbf{Function definitions} provide the mapping logic:
+
+\begin{minted}{lean}
+def buildConfigFor : BuildMode → BuildConfig
+  | .dev => ⟨.dev, 10, true, true, false, true, false⟩
+  | .prod => ⟨.prod, 5, true, true, true, true, true⟩
+  | .ultra => ⟨.ultra, 1, false, false, false, true, false⟩
+\end{minted}
+
+\textbf{Theorems} state the properties to prove.  The proof follows after
+\texttt{:= by}:
+
+\begin{minted}{lean}
+theorem ultra_no_bib :
+    (buildConfigFor .ultra).runBiber = false ∧
+    (buildConfigFor .ultra).runBib2gls = false := by
+  simp [buildConfigFor]
+\end{minted}
+
+The hierarchy within each module follows the convention
+\texttt{theorem} for main results, with \texttt{lemma} and
+\texttt{corollary} used for derived statements.
+
+\section{Reading Lean Proofs}
+
+Key patterns you will encounter in the proof files:
+
+\begin{description}
+  \item[{\texttt{def}}] Function or constant definitions.
+  \item[{\texttt{theorem} / \texttt{lemma}}] Statements to be proven.
+  \item[{\texttt{by}}] Opens a tactic-mode proof block.
+  \item[{\texttt{simp [name]}}] Rewrites using the definition of
+        \texttt{name}.
+  \item[{\texttt{decide}}] Automatically proves decidable propositions
+        (finite enumeration, equality checks).
+  \item[{\texttt{omega}}] Solves linear arithmetic over integers or
+        naturals.
+  \item[{\texttt{cases}}] Pattern-matches on an inductive type.
+  \item[{\texttt{intro} / \texttt{exact}}] Introduces hypotheses and
+        provides exact proof terms.
+  \item[{\texttt{have}}] Introduces a local lemma.
+  \item[{\texttt{rw} / \texttt{simp\_all}}] Rewrites equations in the
+        goal or all hypotheses.
+\end{description}
+
+\section{Zero sorry Policy}
+
+All theorems across all ten modules are fully proven.  No \texttt{sorry}
+or \texttt{admit} appears anywhere in the proof source.  A \texttt{sorry}
+in Lean~4 is a placeholder that makes the type checker accept an
+unproven theorem -- essentially an assertion without evidence.
+
+The CI workflow (\texttt{lean4-ci.yml}) enforces this by running
+\texttt{grep -rq 'sorry' specs/proofs/} after every build.  If any
+\texttt{sorry} is found, the step summary emits a warning, making
+incomplete proofs visible in the Actions UI.
+
+\section{Extending Proofs}
+
+To add a new proof module:
+
+\begin{enumerate}
+  \item Create a new \texttt{.lean} file in
+        \texttt{specs/proofs/OmniLaTeXProofs/}.
+  \item Define the relevant inductive types, structures, and functions.
+  \item State and prove theorems using tactics (\texttt{simp},
+        \texttt{decide}, \texttt{omega}, \texttt{cases}).
+  \item Add an \texttt{import} line to
+        \texttt{specs/proofs/OmniLaTeXProofs.lean}.
+  \item Run \texttt{lake build} to verify compilation and correctness.
+  \item Add the module name to the verification loop in
+        \texttt{lean4-ci.yml} if needed.
+\end{enumerate}
+
+Proofs should avoid \texttt{sorry} and should prefer \texttt{decide} for
+finite domains and \texttt{omega} for arithmetic.  For properties that
+require non-linear reasoning, consider whether the statement can be
+reformulated to stay within Lean~4's \texttt{Init} library (as done in
+\texttt{PageGeometry.lean}, where Float was replaced with Int for
+\texttt{omega} compatibility).

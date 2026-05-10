@@ -1,0 +1,221 @@
+\chapter{Censoring}
+\label{ch:censoring}
+
+\section{Censoring Mode}
+
+Activate censoring with the \texttt{censoring=true} class option:
+
+\begin{minted}{latex}
+\documentclass[doctype=report, censoring=true]{../../omnilatex}
+\end{minted}
+
+This loads the \texttt{censor} package and enables all censoring commands
+described below.  When \texttt{censoring=false} (the default), all censoring
+commands are no-ops and produce no output.  This design allows a single
+source file to produce both redacted and unredacted PDFs simply by toggling
+the class option.
+
+\section{\textbackslash censor\{text\}}
+
+The \cs{censor} command applies inline black-bar redaction:
+
+\begin{minted}{latex}
+The secret project codename is \censor{Operation Sunflower}.
+\end{minted}
+
+The redacted text is replaced with a black rectangle matching the text width.
+Multiple words can be censored in a single call:
+
+\begin{minted}{latex}
+The meeting took place at \censor{Building 7, Room 302}
+on \censor{15 March 2025}.
+\end{minted}
+
+Use \cs{StopCensoring} to disable censoring from a point onward:
+
+\begin{minted}{latex}
+\censor{Classified information}
+\StopCensoring
+This text is no longer censored.
+\end{minted}
+
+Conversely, \cs{StartCensoring} re-enables censoring after it has been
+stopped:
+
+\begin{minted}{latex}
+\StopCensoring
+Visible text here.
+\StartCensoring
+\censor{This will be redacted again.}
+\end{minted}
+
+\section{\textbackslash blackout\{text\}}
+
+The \cs{blackout} command renders a black rectangle without revealing the
+length of the original text.  Unlike \cs{censor}, which matches the text
+width, \cs{blackout} produces a fixed-height bar:
+
+\begin{minted}{latex}
+Subject: \blackout{entire sentence removed for legal reasons}
+\end{minted}
+
+This is useful when the redacted text length itself could reveal
+sensitive information (e.g.\ the number of characters in a password).
+
+\section{\textbackslash xblackout\{text\}}
+
+The \cs{xblackout} command renders each character as a separate black
+rectangle, similar to fully redacted government documents:
+
+\begin{minted}{latex}
+Agent \xblackout{Jane Doe} reported to \xblackout{Langley}.
+\end{minted}
+
+Each letter is replaced by an individual black box, making it clear that
+text has been removed while preserving word spacing.
+
+\section{Censoring in Math Mode}
+
+Censoring can be applied inside mathematical expressions.  The
+\cs{censor} command works in both inline and display math:
+
+\begin{minted}{latex}
+The encryption key is $k = \censor{4829A7F3}$.
+
+\begin{equation}
+  P(x) = \prod_{i=1}^{n} \censor{x_i + \alpha}
+\end{equation}
+\end{minted}
+
+For full-line math redaction, wrap the entire equation in \cs{censorbox}
+(see \cref{sec:censorbox}).
+
+\section{Censoring in Code Listings}
+
+Code listings that contain sensitive values can be redacted.  Because
+\texttt{minted} environments are processed by Pygments externally,
+censoring commands must be applied to the rendered output.  The
+recommended approach is to censor the text within the listing source:
+
+\begin{minted}{python}
+api_key = "\censor{sk-abc123def456}"
+endpoint = "https://api.example.com"
+token = get_token(user="\censor{admin}", pass="\censor{s3cret}")
+\end{minted}
+
+When \texttt{censoring=true}, the sensitive strings are replaced with
+black bars.  When \texttt{censoring=false}, the full values are shown.
+This approach keeps the code structurally valid for syntax highlighting
+while redacting the sensitive portions.
+
+\section{\textbackslash censorbox\{\ldots\}}
+\label{sec:censorbox}
+
+For larger redactions that span multiple lines, use \cs{censorbox}:
+
+\begin{minted}{latex}
+\censorbox{%
+  The following dataset contains personally identifiable
+  information (PII) and must not be published:
+  \begin{itemize}
+    \item Names, addresses, phone numbers
+    \item Medical records
+    \item Financial account details
+  \end{itemize}
+}
+\end{minted}
+
+The box renders as a solid black rectangle covering the entire content
+area.  Use \cs{censorbox} for paragraphs, tables, or any block-level
+content that must be completely obscured.
+
+\section{\textbackslash todo\{text\}}
+
+The \cs{todo} command inserts a marginal note for internal review:
+
+\begin{minted}{latex}
+\todo{Verify these figures with the experimental team.}
+\todo[inline]{This paragraph needs revision for clarity.}
+\end{minted}
+
+TODO notes are rendered only when the \texttt{todonotes} class option is
+enabled.  In production builds they are automatically suppressed, ensuring no
+draft annotations leak into the final PDF.
+
+\section{Custom Censor Marks}
+
+The \texttt{censor} package supports custom mark characters through the
+\verb|\censorrule| command.  To change the censoring colour or symbol:
+
+\begin{minted}{latex}
+% Use a dark grey instead of pure black
+\renewcommand{\censorrule}{\textcolor{darkgray}{\rule{...}{...}}}
+
+% Use X marks instead of bars
+\setcounter{censorcounter}{0}
+\censorrule{X}
+\end{minted}
+
+Custom marks must be defined before the first censoring command is
+encountered in the document.
+
+\section{Package Options}
+
+The \texttt{censor} package accepts several options that can be passed
+through OmniLaTeX's class option interface:
+
+\begin{table}[htbp]
+  \centering
+  \caption{censor package options}
+  \label{tab:censor-options}
+  \begin{tabular}{@{}lp{0.55\textwidth}@{}}
+    \toprule
+    \textbf{Option} & \textbf{Effect} \\
+    \midrule
+    \texttt{counttotal}   & Count total number of censored items \\
+    \texttt{split}        & Allow \cs{censor} to break across lines \\
+    \texttt{explode}      & Explode censored text into individual characters \\
+    \texttt{block}        & Block censor: solid rectangle \\
+    \texttt{nuke}         & Remove censored text entirely (no mark) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Compliance Use Cases}
+
+Censoring is designed for two primary workflows:
+
+\begin{description}
+  \item[Thesis Submission] Advisors and reviewers often insert comments,
+        suggestions, and revisions during the drafting process.  Before final
+        submission, enable \texttt{censoring=true} to redact all reviewer
+        annotations while preserving the document structure.
+
+  \item[Sensitive Data Redaction] Research papers handling PII, proprietary
+        data, or classified material can use censoring commands to prepare
+        public-facing versions without maintaining separate source files.
+\end{description}
+
+For regulatory compliance, the following table maps censoring commands to
+common requirements:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Censoring commands for compliance frameworks}
+  \label{tab:censor-compliance}
+  \begin{tabular}{@{}llp{0.45\textwidth}@{}}
+    \toprule
+    \textbf{Framework} & \textbf{Command} & \textbf{Requirement} \\
+    \midrule
+    GDPR    & \cs{censor}     & Mask personal identifiers \\
+    HIPAA   & \cs{censorbox}  & Redact entire medical records \\
+    ITAR    & \cs{xblackout}  & Character-level redaction \\
+    FOUO    & \cs{blackout}   & Mask sensitive paragraphs \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Both workflows benefit from the fact that censoring is a compile-time
+feature--no manual editing of source content is required.  The same
+source tree produces both the internal review copy and the public
+release copy.

@@ -1,0 +1,157 @@
+\chapter{Page Layout}
+
+OmniLaTeX uses KOMA-Script's native page geometry system rather than the
+\pkg{geometry} package.  This ensures full compatibility with KOMA's
+\verb|\areaset|, running headers, and margin-par layout.
+
+\section{KOMA Page Geometry}
+
+KOMA-Script controls page layout through two class options:
+
+\begin{description}
+  \item[{\texttt{DIV}}] -- Divisor that determines the text area proportions.
+        Higher values yield larger margins.  Common choices: \texttt{DIV=9}
+        (narrow margins), \texttt{DIV=12} (default), \texttt{DIV=15}
+        (generous margins).
+  \item[{\texttt{BCOR}}] -- Binding correction (Bindekorrektur).  Compensates
+        for the inner margin lost to binding.  E.g.\ \texttt{BCOR=5mm} shifts
+        the text block 5\,mm toward the outer edge on the spine side.
+\end{description}
+
+\begin{verbatim}
+\documentclass[DIV=12, BCOR=5mm]{omnilatex}
+\end{verbatim}
+
+OmniLaTeX defaults to \texttt{DIV=12, BCOR=0mm}.  The \verb|\areaset|
+command (KOMA-native) is used internally because it correctly handles the
+interaction between text width, text height, and the type area within
+KOMA's header/footer system.  Do \emph{not} load the \pkg{geometry}
+package alongside OmniLaTeX--it will conflict with KOMA's layout
+calculations.
+
+\section{Custom Margins}
+
+For situations that require precise control over all four margins,
+OmniLaTeX provides:
+
+\begin{verbatim}
+\setCustomMargins{25mm}{20mm}{30mm}{25mm}
+%                  left  right  top   bottom
+\end{verbatim}
+
+This command converts explicit margin values into equivalent KOMA
+\texttt{DIV}/\texttt{BCOR} parameters so that the layout remains
+consistent with the rest of the KOMA machinery.  Call it in the preamble
+after \verb|\begin{document}| or in a file loaded via
+\verb|\BeforeBeginDocument|.
+
+\section{Two-Side Layout}
+
+The \texttt{twoside} class option enables double-sided typesetting:
+
+\begin{verbatim}
+\documentclass[twoside]{omnilatex}
+\end{verbatim}
+
+In two-side mode:
+\begin{itemize}
+  \item Odd (recto) pages have a wider right margin; even (verso) pages
+        have a wider left margin (mirrored).
+  \item Running headers and footers differ between odd and even pages.
+  \item \texttt{BCOR} adds extra space on the spine side of every page.
+\end{itemize}
+
+One-sided layout (the default) gives uniform margins on all pages.
+
+\section{Headers \& Footers}
+
+OmniLaTeX uses \pkg{scrlayer-scrpage} for running headers and footers:
+
+\begin{verbatim}
+\usepackage[automark]{scrlayer-scrpage}
+\end{verbatim}
+
+The \texttt{automark} option automatically places the current chapter and
+section in the header.  By default:
+\begin{itemize}
+  \item \textbf{Odd pages:} chapter title (right) and section title
+        (left).
+  \item \textbf{Even pages:} section title (left) and chapter title
+        (right).
+  \item \textbf{Page number:} centred in the footer.
+\end{itemize}
+
+A thin rule below the header is enabled with \verb|\headerrule|.  Customise
+the rule thickness:
+
+\begin{verbatim}
+\setheadrule{0.4pt}
+\end{verbatim}
+
+\section{Landscape Pages}
+
+For wide tables or figures that do not fit in portrait orientation,
+OmniLaTeX provides a \texttt{landscape} environment:
+
+\begin{verbatim}
+\begin{landscape}
+  \begin{table}
+    \caption{Wide data table}
+    % ... wide tabular ...
+  \end{table}
+\end{landscape}
+\end{verbatim}
+
+The environment switches to landscape orientation, re-centres the header
+and footer, and increments page numbers normally.  For a single-page
+landscape section, \verb|\pdflandscape| can be used as a command.
+
+\section{A5 Format}
+
+OmniLaTeX supports A5 output via the \texttt{a5} class option:
+
+\begin{verbatim}
+\documentclass[a5paper]{omnilatex}
+\end{verbatim}
+
+All margins, font sizes, and float placements scale appropriately.  A5
+is useful for pocket-sized handouts or supplementary booklets.
+
+\section{Page Numbering}
+
+LaTeX and KOMA-Script provide three standard numbering schemes:
+
+\begin{description}
+  \item[{\texttt{\textbackslash frontmatter}}] -- Roman numerals (i, ii, iii, \ldots).
+        Used for the title page, abstract, table of contents, and preface.
+  \item[{\texttt{\textbackslash mainmatter}}] -- Arabic numerals (1, 2, 3, \ldots).
+        Used for the body of the document.  Resets to 1.
+  \item[{\texttt{\textbackslash backmatter}}] -- Roman numerals again.
+        Used for the bibliography, appendices, and index.
+\end{description}
+
+\begin{verbatim}
+\frontmatter
+\tableofcontents
+\mainmatter
+\chapter{Introduction}
+\backmatter
+\bibliography{refs}
+\end{verbatim}
+
+\section{Intentionally Blank Pages}
+
+In two-side mode, chapters open on recto (odd) pages.  KOMA-Script
+inserts a blank verso page when needed.  OmniLaTeX marks these pages with
+the \texttt{blankpage} page style, which suppresses headers and footers
+but prints a small note at the bottom:
+
+\begin{verbatim}
+\renewcommand*{\blankpage}{%
+  \thispagestyle{empty}%
+  \null\vfill
+  \centering\itshape This page is intentionally left blank.
+  \vfill}
+\end{verbatim}
+
+To disable the note, set \verb|\blankpagestyle{empty}| in the preamble.

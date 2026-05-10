@@ -1,0 +1,214 @@
+\chapter*{Preface}
+\addcontentsline{toc}{chapter}{Preface}
+
+\section{Purpose of This Manual}
+
+This manual serves as the comprehensive reference for the OmniLaTeX document
+class--a modular, extensible \LaTeX{} template designed to unify the production
+of academic and technical documents under a single framework.  Rather than
+maintaining separate templates for theses, articles, reports, presentations, and
+posters, OmniLaTeX provides a single class with a rich doctype system that
+adapts its behaviour to the task at hand.
+
+The manual documents every public interface offered by the class: class
+options, document-type profiles, custom commands, supported packages, and
+recommended workflows.  It is intended to be both a tutorial for newcomers and
+a definitive reference for experienced users.
+
+\section{Who OmniLaTeX Is For}
+
+OmniLaTeX is designed for anyone who produces technical or scientific documents
+with \LaTeX{}.  The class addresses a common pain point: maintaining separate
+templates for every document type leads to duplicated effort, inconsistent
+formatting, and divergent maintenance paths.  OmniLaTeX solves this by
+providing a single, unified framework.
+
+\begin{itemize}
+    \item \textbf{Researchers and academics} preparing journal articles,
+          conference papers, and technical reports.  OmniLaTeX supports
+          dedicated profiles for articles, inline papers, journals, research
+          proposals, and technical reports--each with appropriate metadata
+          fields, layout defaults, and title page designs.
+    \item \textbf{Graduate students} writing theses or dissertations that must
+          conform to institutional formatting requirements.  The
+          \texttt{doctype=thesis} and \texttt{doctype=dissertation} profiles
+          provide structured title pages with advisor, committee, and degree
+          fields.  Institutional profiles (e.g.\ \texttt{institution=tuhh})
+          layer on branding and compliance requirements.
+    \item \textbf{Engineers} generating design documents, specifications,
+          manuals, standards, and patents.  OmniLaTeX offers dedicated profiles
+          for each, including \texttt{doctype=manual},
+          \texttt{doctype=standard}, and \texttt{doctype=patent}.
+    \item \textbf{Educators} producing homework assignments, examinations,
+          lecture notes, syllabi, and handouts.  Each education doctype
+          provides domain-specific environments such as \texttt{exercise},
+          \texttt{solution}, \texttt{question}, and \texttt{answer}.
+    \item \textbf{Business professionals} creating CVs, cover letters,
+          memos, invoices, and white papers.  OmniLaTeX profiles for business
+          doctypes include appropriate metadata commands and layout defaults.
+    \item \textbf{Technical writers} who need a consistent, maintainable
+          template for multi-chapter publications.
+\end{itemize}
+
+Readers are assumed to have basic familiarity with \LaTeX{} (e.g.\ they know
+what a preamble is and how to compile a document).  No prior experience with
+KOMA-Script or OmniLaTeX is required.
+
+\section{What Makes OmniLaTeX Different}
+
+OmniLaTeX distinguishes itself from other \LaTeX{} templates through several
+key design decisions:
+
+\textbf{26 doctypes, 3 KOMA base classes.}
+Every document type--from a one-page memo to a multi-volume dictionary--maps
+to one of 26 canonical doctypes.  These doctypes are backed by only three
+KOMA-Script base classes (\texttt{scrbook}, \texttt{scrreprt}, and
+\texttt{scrartcl}), keeping the underlying complexity minimal while presenting
+a rich, domain-specific surface to the user.  Over 80 user-friendly aliases
+ensure that common names (e.g.\ ``paper'', ``resume'', ``talk'') resolve
+correctly.
+
+\textbf{16 institutional profiles.}
+Institution-specific branding, title pages, and compliance requirements are
+handled by pluggable institution modules.  The class loads institutional
+configuration from \texttt{config/institutions/} based on the
+\textsf{institution} class option, without modifying any core files.
+
+\textbf{Modular architecture.}
+Functionality is organised into independent modules under \texttt{lib/}:
+typography, graphics, layout, code, tables, references, and language.
+Each module can be enabled or disabled via class options
+(\textsf{enablemath}, \textsf{enabletikz}, etc.), reducing load time for
+documents that do not need every feature.
+
+\textbf{LuaLaTeX-native.}
+OmniLaTeX requires LuaLaTeX and targets TeX~Live~2025+.  This enables
+\texttt{unicode-math} for modern font handling, \texttt{polyglossia} for
+multilingual support, and Lua-based workarounds for known TeX~Live
+incompatibilities.
+
+\textbf{Formal verification via Lean~4.}
+OmniLaTeX supports \texttt{lean4} code listings and proof rendering,
+allowing formal verification artifacts to be embedded directly in technical
+documents alongside \LaTeX{} proofs.
+
+\section{How to Use This Book}
+
+The manual is divided into eleven parts, each covering a major topic area.
+Chapters are designed to be as self-contained as possible so that readers can
+jump directly to the section relevant to their current task.  Where chapters
+depend on material presented elsewhere, explicit cross-references are provided.
+
+A recommended reading order for first-time users:
+
+\begin{enumerate}
+    \item Part~I (\emph{Foundations}) -- installation, quick start, build
+          system, and class options.
+    \item The chapter corresponding to your document type in Part~II
+          (\emph{Document Types}).
+    \item Remaining parts as needed for typography, layout, figures, references,
+          and advanced features.
+\end{enumerate}
+
+The chapter numbering follows a two-digit prefix scheme:
+\texttt{01\_\ldots} for front matter, \texttt{10\_\ldots}--\texttt{19\_\ldots}
+for foundations, \texttt{20\_\ldots}--\texttt{29\_\ldots} for document types,
+\texttt{30\_\ldots}--\texttt{39\_\ldots} for typography, and so on.
+Appendix chapters use the prefix \texttt{B0\_\ldots}--\texttt{B4\_\ldots}.
+
+\section{Prerequisites}
+
+\begin{table}[htbp]
+    \centering
+    \caption{System requirements for OmniLaTeX}
+    \label{tab:prerequisites}
+    \begin{tabular}{@{} l l p{6cm} @{}}
+        \toprule
+        \textbf{Component} & \textbf{Minimum Version} &
+        \textbf{Notes} \\
+        \midrule
+        LuaLaTeX engine & TeX~Live~2025 &
+            Required; pdf\LaTeX{} and Xe\LaTeX{} are not supported \\[3pt]
+        TeX distribution & TeX~Live~2025+ &
+            Full installation recommended; \texttt{scheme-full}
+            or at minimum \texttt{scheme-medium} \\[3pt]
+        Python & 3.8+ &
+            Required by \ctanpackage{minted} for syntax highlighting \\[3pt]
+        Pygments & latest &
+            Python package; install via \texttt{pip install Pygments} \\[3pt]
+        Git & any &
+            Required for the Nix-based build system \\[3pt]
+        Nix & 2.18+ (optional) &
+            Required for reproducible builds; see Chapter~\ref{ch:nix} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The following \LaTeX{} packages are loaded automatically by OmniLaTeX core
+modules and do not require manual installation:
+
+\begin{minted}{latex}
+% Core (always loaded)
+mathtools, unicode-math, polyglossia, tracklang,
+booktabs, hyperref, cleveref, tcolorbox, minted,
+siunitx, chemmacros, glossaries-extra, biblatex
+
+% Conditional (enabled by class options)
+tikz, pgfplots, fontawesome5, setspaceenhanced
+\end{minted}
+
+\section{Scope and Relation to the TUHH Thesis Template}
+
+OmniLaTeX originated from the Hamburg University of Technology (TUHH) thesis
+template but has since evolved into a general-purpose framework.  This manual
+covers the full OmniLaTeX class in its current form.  Features that are
+specific to the TUHH institutional profile are noted where relevant but are not
+the primary focus.
+
+If you are writing a TUHH thesis, consult the \texttt{doctype=thesis} profile
+documentation in Chapter~\ref{ch:theses} for institution-specific configuration
+options.
+
+\section{Acknowledgments}
+
+OmniLaTeX builds upon the work of countless contributors to the \TeX{} and
+\LaTeX{} ecosystems.  Special thanks go to the KOMA-Script team for the
+\texttt{scrbook}, \texttt{scrreprt}, and \texttt{scrartcl} base classes that
+form the foundation of every OmniLaTeX document.  The \texttt{minted},
+\texttt{biblatex}, \texttt{glossaries-extra}, and \texttt{tikz} communities
+have also been instrumental in making this template possible.
+
+\section{Conventions Used in This Manual}
+
+The following typographic conventions are used throughout:
+
+\begin{itemize}
+    \item \texttt{Monospace text} denotes \LaTeX{} commands, environments,
+          file names, and code snippets.
+    \item \textsf{Sans-serif text} denotes option names and key-value pairs.
+    \item \textbf{Bold text} highlights key terms on their first appearance.
+    \item \fbox{\small UI paths} indicates clickable menu or interface elements.
+\end{itemize}
+
+All code examples are shown in monospaced listings and are designed to be
+directly compilable.  Where an example is abbreviated for clarity, the
+omissions are explicitly noted.
+
+Full details on these conventions are given in the next chapter,
+\emph{Notation \& Conventions}.
+
+\section{Feedback and Contributions}
+
+OmniLaTeX is an open-source project.  Bug reports, feature requests, and
+contributions are welcome:
+
+\begin{description}
+    \item[Repository] \url{https://github.com/WyattAu/OmniLaTeX-template}
+    \item[Issues] File bugs and feature requests via GitHub Issues
+    \item[Pull Requests] Contributions follow the standard fork--branch--PR
+        workflow
+\end{description}
+
+When reporting issues, please include the OmniLaTeX version (printed in the
+\LaTeX{} log as \texttt{OmniLaTeX v1.x.x}), your TeX~Live version, and a
+minimal working example that reproduces the problem.

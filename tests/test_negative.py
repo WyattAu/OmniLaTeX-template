@@ -83,8 +83,7 @@ class TestInvalidOptions:
 \begin{document}Test\end{document}"""
         # This should be handled by DeclareDefaultOption -> adduseroption -> passed to base class
         success, log = compile_tex(tex)
-        # Base class may reject unknown options, but shouldn't crash badly
-        # At minimum, the error should be informative
+        assert not success or "unknown" in log.lower() or "warning" in log.lower()
 
     def test_a5_option(self):
         """The a5 void option should compile."""

@@ -1,0 +1,184 @@
+\chapter{Option Reference}
+
+\section{Class Options}
+
+Table~\ref{tab:option-ref} lists all 15 class options accepted by
+\texttt{\textbackslash documentclass[...]\{omnilatex\}}.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Complete class option reference}
+  \label{tab:option-ref}
+  \begin{tabular}{@{} l l c p{4.8cm} @{}}
+    \toprule
+    \textbf{Option} & \textbf{Type} & \textbf{Default} &
+    \textbf{Description} \\
+    \midrule
+    language & string & english & Document language \\
+    doctype & string & thesis & Document profile \\
+    institution & string & none & Institutional template \\
+    titlestyle & string & book & Title page variant \\
+    censoring & bool & false & Enable \texttt{\textbackslash censored} \\
+    loadGlossaries & bool & false & Load glossaries-extra \\
+    todonotes & bool & false & Load todonotes markup \\
+    enablefonts & bool & false & Extended font selection \\
+    enablegraphics & bool & false & Standalone graphics module \\
+    enablemath & bool & true & unicode-math support \\
+    enabletikz & bool & true & TikZ core and graphics \\
+    enableengineering & bool & true & Engineering TikZ libraries \\
+    enablecode & bool & true & Minted code listings \\
+    enabletables & bool & true & Booktabs and table module \\
+    a5 & void & -- & Switch to A5 / 10\,pt \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Document Types}
+
+All 26 canonical doctypes with their KOMA-Script base class:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Doctypes and KOMA base class}
+  \label{tab:doctype-ref}
+  \begin{tabular}{@{} l l @{}}
+    \toprule
+    \textbf{Doctype} & \textbf{KOMA Base} \\
+    \midrule
+    article & scrartcl \\
+    inlinepaper & scrartcl \\
+    journal & scrartcl \\
+    cv & scrartcl \\
+    cover-letter & scrartcl \\
+    letter & scrartcl \\
+    memo & scrartcl \\
+    invoice & scrartcl \\
+    white-paper & scrartcl \\
+    homework & scrartcl \\
+    exam & scrartcl \\
+    lecture-notes & scrartcl \\
+    syllabus & scrartcl \\
+    handout & scrartcl \\
+    poster & scrreprt \\
+    presentation & scrreprt \\
+    recipe & scrartcl \\
+    manual & scrreprt \\
+    technicalreport & scrreprt \\
+    standard & scrreprt \\
+    patent & scrreprt \\
+    research-proposal & scrreprt \\
+    book & scrbook \\
+    thesis & scrbook \\
+    dissertation & scrbook \\
+    dictionary & scrbook \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Citation Styles}
+
+Nine predefined styles passed to
+\texttt{\textbackslash citationstyle\{...\}}:
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{@{} l l @{}}
+    \toprule
+    \textbf{Style} & \textbf{Domain} \\
+    \midrule
+    ieee & Engineering \\
+    acm & Computer science \\
+    apa & Social sciences \\
+    chicago & Humanities \\
+    nature & Science journals \\
+    science & General science \\
+    harvard & UK academia \\
+    vancouver & Medical \\
+    mla & Liberal arts \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Color Themes}
+
+Seven palettes loaded via \texttt{\textbackslash usetheme\{...\}}:
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{@{} l l @{}}
+    \toprule
+    \textbf{Palette} & \textbf{Description} \\
+    \midrule
+    default & Standard blue and gray \\
+    midnight & Dark blue and charcoal \\
+    forest & Green tones \\
+    rose & Pink and magenta \\
+    monochrome & Grayscale \\
+    monochrome-dark & Dark grayscale \\
+    sepia & Warm brown tones \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Build Modes}
+
+Three modes set via \texttt{BUILD\_MODE} or
+\texttt{python3 build.py --mode <mode>}:
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{@{} l l @{}}
+    \toprule
+    \textbf{Mode} & \textbf{Description} \\
+    \midrule
+    dev & 3 passes, bibliography, shell-escape (default) \\
+    prod & 3 passes, full validation, glossary, accessibility \\
+    ultra & 2 passes, no bibliography (fastest) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Institutions}
+
+16 institutional configurations in \texttt{config/institutions/}:
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{@{} l l @{}}
+    \toprule
+    \textbf{Institution} & \textbf{Institution} \\
+    \midrule
+    tuhh & mit \\
+    cambridge & oxford \\
+    cmu & princeton \\
+    columbia & stanford \\
+    epfl & tudelft \\
+    eth & tum \\
+    harvard & yale \\
+    imperial & generic \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Languages}
+
+18 primary languages supported by the i18n system:
+
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{@{} l l @{}}
+    \toprule
+    \textbf{Language} & \textbf{Language} \\
+    \midrule
+    english & italian \\
+    german & portuguese \\
+    french & dutch \\
+    spanish & polish \\
+    russian & czech \\
+    greek & turkish \\
+    vietnamese & hindi \\
+    swedish & finnish \\
+    danish & norwegian \\
+    \bottomrule
+  \end{tabular}
+\end{table}

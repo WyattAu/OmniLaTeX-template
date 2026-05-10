@@ -1,0 +1,145 @@
+\chapter{Title Pages}
+
+OmniLaTeX ships with four built-in title page styles and provides a
+framework for institutions to define their own branded title pages.
+
+\section{Built-in Title Styles}
+
+Select a style via the \texttt{titlestyle} class option:
+
+\begin{description}
+  \item[{\texttt{titlestyle=book}}] -- A vertical rule separates the left
+        author block from the right title block.  The author name is set in
+        small caps.  Suitable for monographs and textbooks.
+  \item[{\texttt{titlestyle=thesis}}] -- Similar vertical-rule layout but
+        includes an examiners table below the author block, listing
+        supervisor(s), examiner(s), degree, department, and date.
+        Suitable for academic theses.
+  \item[{\texttt{titlestyle=simple}}] -- The default KOMA-Script title page:
+        centred title, author, and date with no decorative elements.
+  \item[{\texttt{titlestyle=TUHH}}] -- A TUHH-branded title page with the
+        university logo, vertical rule, document-type badge, and examiners
+        table.  Requires \texttt{institution=tuhh}.
+\end{description}
+
+\begin{verbatim}
+\documentclass[titlestyle=thesis]{omnilatex}
+\end{verbatim}
+
+The default is \texttt{titlestyle=simple}.
+
+\section{Title Page Metadata}
+
+All styles consume the same set of metadata commands:
+
+\begin{verbatim}
+\title{An OmniLaTeX Document}
+\subtitle{A Subtitle Goes Here}
+\author{Jane Doe}
+\date{May 2026}
+\publishers{OmniLaTeX Press}
+\end{verbatim}
+
+For thesis-specific metadata, the following commands are recognised by the
+\texttt{thesis} and institution-specific styles:
+
+\begin{verbatim}
+\degree{Master of Science}
+\department{Computer Science}
+\institution{University of Example}
+\supervisor{Prof.\ Alice Smith}
+\examiner{Prof.\ Bob Jones}
+\submissiondate{May 2026}
+\end{verbatim}
+
+\section{Custom Title Pages}
+
+Institutions can register their own title page styles using the
+\texttt{\textbackslash DefineXxxTitleStyle} pattern.  The TUHH style
+demonstrates the full mechanism:
+
+\begin{enumerate}
+  \item \textbf{Logo placement} -- The institution logo is positioned at
+        the top of the page using \verb|\includegraphics| inside a
+        \texttt{tikzpicture} overlay.
+  \item \textbf{Vertical rule} -- A coloured vertical rule (\texttt{3pt},
+        institutional colour) divides the left metadata block from the
+        right title block.
+  \item \textbf{Document-type badge} -- A small coloured box (e.g.\
+        \textcolor{green!60!black}{\textsf{Master's Thesis}}) identifies the
+        document type.
+  \item \textbf{Examiners table} -- A tabular lists supervisor, examiner,
+        chair, and date in a compact two-column layout.
+\end{enumerate}
+
+All of these elements are defined within
+\texttt{\textbackslash DefineTUHHTitleStyle}, which is loaded
+automatically when \texttt{institution=tuhh} is set.
+
+\section{Thesis Title Page}
+
+The \texttt{thesis} style provides a complete academic title page.  From
+top to bottom:
+
+\begin{enumerate}
+  \item \textbf{Title and subtitle} -- Centred or left-aligned depending
+        on the institution override.
+  \item \textbf{Author line} -- Full name of the candidate.
+  \item \textbf{Examiners table} -- Two-column layout:
+        \begin{tabularx}{0.9\linewidth}{l l}
+          Supervisor:  & Prof.\ Alice Smith \\
+          Examiner:    & Prof.\ Bob Jones \\
+          Degree:      & Master of Science \\
+          Department:  & Computer Science \\
+          Date:        & May 2026 \\
+        \end{tabularx}
+  \item \textbf{Institution} -- University name and optional logo.
+\end{enumerate}
+
+To use:
+
+\begin{verbatim}
+\documentclass[titlestyle=thesis]{omnilatex}
+\title{My Thesis Title}
+\author{Jane Doe}
+\degree{Master of Science}
+\department{Computer Science}
+\institution{University of Example}
+\supervisor{Prof.\ Alice Smith}
+\examiner{Prof.\ Bob Jones}
+\date{May 2026}
+\begin{document}
+  \maketitle
+\end{document}
+\end{verbatim}
+
+\section{Creating Custom Styles}
+
+To create a new institution-specific title page:
+
+\begin{enumerate}
+  \item Create a file \texttt{omnilatex-title-\textit{slug}.sty} in the
+        \texttt{tex/latex/omnilatex/} directory.
+  \item Define the style command:
+        \begin{verbatim}
+\newcommand{\DefineMyUniTitleStyle}{%
+  \renewcommand{\maketitle}{%
+    \begin{titlepage}
+      % your custom layout here
+    \end{titlepage}%
+  }%
+}
+        \end{verbatim}
+  \item Register the style with OmniLaTeX's option parser so that
+        \texttt{institution=myuni} triggers loading of the file and calls
+        \verb|\DefineMyUniTitleStyle|.
+  \item Place any required logos or assets in
+        \texttt{assets/institutions/myuni/}.
+  \item Add translations for any new metadata keys (see
+        Chapter~\ref{cha:translation-keys}).
+\end{enumerate}
+
+The style command should be idempotent (safe to call multiple times) and
+should not hard-code font sizes--use \verb|\large|, \verb|\Large|, and
+\verb|\LARGE| relative size commands so that the layout scales correctly
+with different base font sizes.

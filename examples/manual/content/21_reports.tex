@@ -1,0 +1,269 @@
+\chapter{Reports \& Long Documents}
+\label{ch:reports}
+
+This chapter covers five \texttt{scrreprt}-based doctypes.  These document
+types support chapters via the KOMA-Script report class, making them suitable
+for multi-section technical works, proposals, and reference documents.  All
+share \texttt{listof=totoc}, \texttt{bibliography=totoc},
+\texttt{chapterprefix=false}, \texttt{open=any}, and
+\texttt{numbers=noenddot} from the default \texttt{scrreprt} options.
+
+\section{Common Features}
+
+Every report-type doctype provides:
+
+\begin{itemize}
+    \item \textbf{Chapter-level sectioning} -- Full
+          \texttt{\textbackslash chapter} command for top-level divisions,
+          with sections and subsections below.
+    \item \textbf{Open on any page} -- \texttt{open=any} allows chapters
+          to start on even or odd pages, saving space.
+    \item \textbf{Lists in TOC} -- \texttt{listof=totoc} automatically
+          includes the list of figures, list of tables, and list of
+          algorithms in the table of contents.
+    \item \textbf{No chapter prefix} -- \texttt{chapterprefix=false}
+          omits the ``Chapter\,N'' prefix from chapter headings.
+\end{itemize}
+
+\section{Choosing the Right Report Type}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Report-type doctype decision guide}
+    \label{tab:report-decision}
+    \begin{tabular}{@{} l p{6.5cm} @{}}
+        \toprule
+        \textbf{Doctype} & \textbf{Best For} \\
+        \midrule
+        report / technical-report & Internal or client-facing technical documents with report numbers \\
+        research-proposal         & Grant applications with PI, budget, and programme metadata \\
+        standard                  & Formal standards documents with designation and ICS codes \\
+        patent                    & Patent specifications with legal-style sectioning \\
+        manual                    & Product manuals, guides, or handbooks \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Doctype Profiles}
+
+\subsection{report / technical-report}
+
+The \texttt{technicalreport} doctype (aliased as \texttt{report},
+\texttt{tech-report}, etc.) produces a formal technical report with a title
+page containing report number, revision, author, client, project name,
+confidentiality level, and a personnel table.  It is single-sided with
+chapter-level sectioning.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Custom commands for \texttt{technicalreport}}
+    \label{tab:techreport-commands}
+    \begin{tabular}{@{} l p{8cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash reportnumber\{...\}}    & Report identifier (default: TR-000) \\
+        \texttt{\textbackslash revision\{...\}}        & Revision letter (default: A) \\
+        \texttt{\textbackslash preparedby\{...\}}      & Preparing group or author \\
+        \texttt{\textbackslash client\{...\}}          & Client organisation \\
+        \texttt{\textbackslash projectname\{...\}}     & Associated project name \\
+        \texttt{\textbackslash confidentiality\{...\}}  & Classification (default: Internal Use Only) \\
+        \texttt{\textbackslash sponsor\{...\}}         & Executive sponsor name \\
+        \texttt{\textbackslash leadengineer\{...\}}    & Lead engineer name \\
+        \texttt{\textbackslash doccontrol\{...\}}      & Document control contact \\
+        \texttt{\textbackslash distribution\{...\}}    & Distribution statement \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Use \texttt{technicalreport} for engineering reports, consultant
+deliverables, or any document that tracks report numbers and revisions.
+
+\begin{minted}{latex}
+\documentclass[doctype=technical-report]{../../omnilatex}
+\title{Structural Analysis of Bridge Deck Section B-7}
+\reportnumber{TR-2025-042}\revision{C}
+\preparedby{Structural Analysis Group}
+\client{Department of Transportation}
+\projectname{Highway 101 Overpass Rehabilitation}
+\confidentiality{Public Release}
+\begin{document}
+\maketitle
+\tableofcontents
+\chapter{Executive Summary}
+This report presents the findings of the structural analysis.
+\end{document}
+\end{minted}
+
+\subsection{research-proposal}
+
+The \texttt{research-proposal} doctype is tailored for grant and fellowship
+applications.  The title page displays the funding programme, call reference,
+principal and co-investigators, organisation, duration, budget, and start/end
+dates.  It uses \texttt{chapterprefix=false} and \texttt{open=any} for a
+compact layout.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Custom commands for \texttt{research-proposal}}
+    \label{tab:proposal-commands}
+    \begin{tabular}{@{} l p{8cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash propabstract\{...\}}         & Proposal abstract or summary \\
+        \texttt{\textbackslash propprogram\{...\}}          & Funding programme name \\
+        \texttt{\textbackslash propcall\{...\}}             & Call for proposals identifier \\
+        \texttt{\textbackslash propinvestigator\{...\}}     & Principal Investigator name \\
+        \texttt{\textbackslash propcoinvestigators\{...\}}  & Co-Investigator names \\
+        \texttt{\textbackslash proporganization\{...\}}     & Host institution or organisation \\
+        \texttt{\textbackslash propduration\{...\}}         & Project duration (default: 24 months) \\
+        \texttt{\textbackslash propbudget\{...\}}           & Total requested budget \\
+        \texttt{\textbackslash propstartdate\{...\}}        & Project start date \\
+        \texttt{\textbackslash propenddate\{...\}}          & Project end date \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Use \texttt{research-proposal} for ERC, NSF, DFG, or similar funding
+applications that require structured metadata on the title page.
+
+\begin{minted}{latex}
+\documentclass[doctype=research-proposal]{../../omnilatex}
+\title{Machine Learning for Predictive Maintenance}
+\propprogram{Horizon Europe}
+\propcall{HORIZON-CL4-2025-01}
+\propinvestigator{Dr.\ Jane Doe}
+\propcoinvestigators{Dr.\ A.~Smith, Dr.\ B.~Mueller}
+\proporganization{Technical University}
+\propduration{36 months}
+\propbudget{EUR 1,500,000}
+\propstartdate{2026-01-01}\propenddate{2028-12-31}
+\begin{document}
+\maketitle
+\chapter{Project Description}
+This proposal aims to develop ML-based predictive maintenance.
+\end{document}
+\end{minted}
+
+\subsection{standard}
+
+The \texttt{standard} doctype is designed for formal standards documents
+resembling ISO or IEC publications.  The title page shows the standards
+series, designation number, status, scope, committee, publication date,
+superseded document, and ICS codes.  Section numbering uses plain Arabic
+numerals without chapter prefixes (e.g.\ 1, 1.1, 1.1.1).
+
+\begin{table}[htbp]
+    \centering
+    \caption{Custom commands for \texttt{standard}}
+    \label{tab:standard-commands}
+    \begin{tabular}{@{} l p{8cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash standardseries\{...\}}         & Standards series name \\
+        \texttt{\textbackslash standarddesignation\{...\}}    & Designation number (default: F-000) \\
+        \texttt{\textbackslash standardstatus\{...\}}         & Status (Draft, Published, Withdrawn) \\
+        \texttt{\textbackslash standardscope\{...\}}          & Scope statement displayed on title page \\
+        \texttt{\textbackslash standardcommittee\{...\}}      & Preparing committee name \\
+        \texttt{\textbackslash standardsupersedes\{...\}}     & Superseded standard designation \\
+        \texttt{\textbackslash standardics\{...\}}            & ICS classification codes \\
+        \texttt{\textbackslash standardkeywords\{...\}}       & Subject keywords \\
+        \texttt{\textbackslash standarddisclaimer\{...\}}     & Legal disclaimer text \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Use \texttt{standard} for internal standards, specifications, or normative
+documents that require designation tracking and formal status indicators.
+
+\begin{minted}{latex}
+\documentclass[doctype=standard]{../../omnilatex}
+\title{Thermal Performance of Building Envelopes}
+\standardseries{Omni Standards Series}
+\standarddesignation{B-204}
+\standardstatus{Published}
+\standardscope{This standard specifies methods for measuring
+  the thermal transmittance of building envelope components.}
+\standardcommittee{TC 163 -- Building Environment}
+\standardics{91.120.10}
+\begin{document}
+\maketitle
+\section{Scope}
+This standard applies to opaque and transparent building elements.
+\end{document}
+\end{minted}
+
+\subsection{patent}
+
+The \texttt{patent} doctype provides a minimal report-class layout for patent
+specifications.  It sets \texttt{titlepage=true}, single-sided, with
+sectioning depth limited to two levels (\texttt{secnumdepth=2},
+\texttt{tocdepth=1}).  No custom commands are defined--the doctype relies
+on standard KOMA-Script commands and the user's own preamble.
+
+Use \texttt{patent} for drafting patent applications or publishing patent
+descriptions where the formal structure (title page, sections, claims) is
+composed directly by the author.
+
+\begin{minted}{latex}
+\documentclass[doctype=patent]{../../omnilatex}
+\title{Method and Apparatus for Efficient Heat Recovery}
+\author{Jane Doe}\date{May 2025}
+\begin{document}
+\maketitle
+\chapter{Field of the Invention}
+This invention relates to heat recovery systems for industrial processes.
+\chapter{Background}
+Existing heat recovery methods suffer from thermal losses exceeding 30\%.
+\chapter{Summary}
+The present invention provides a heat recovery apparatus with improved
+thermal efficiency through a counter-flow heat exchanger design.
+\end{document}
+\end{minted}
+
+\subsection{manual}
+
+The \texttt{manual} doctype is optimised for product manuals, user guides,
+and handbooks.  It uses a sans-serif font at 11\,pt with single line spacing
+and \texttt{DIV=14} for comfortable reading.  The front page displays a brand
+name, document title, firmware or software version, release date, support
+contact, and a summary paragraph.  No separate title page is generated; the
+front matter appears on the first page with \texttt{titlepage=false}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Custom commands for \texttt{manual}}
+    \label{tab:manual-commands}
+    \begin{tabular}{@{} l p{8cm} @{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} \\
+        \midrule
+        \texttt{\textbackslash manualbrand\{...\}}         & Product or brand name (default: OmniLaTeX Devices) \\
+        \texttt{\textbackslash manualversion\{...\}}       & Firmware/software version (default: 1.0) \\
+        \texttt{\textbackslash manualreleasedate\{...\}}   & Release date (default: \texttt{\textbackslash today}) \\
+        \texttt{\textbackslash manualsupport\{...\}}       & Support contact information \\
+        \texttt{\textbackslash manualsummary\{...\}}       & One-paragraph manual summary \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Use \texttt{manual} for hardware manuals, software documentation, or any
+reference guide that needs version tracking and support contact information.
+
+\begin{minted}{latex}
+\documentclass[doctype=manual]{../../omnilatex}
+\title{Model X-2000 User Guide}
+\manualbrand{Acme Devices}
+\manualversion{3.2.1}
+\manualsupport{support@acme.com}
+\manualsummary{This guide covers installation, configuration,
+  and operation of the Model X-2000.}
+\begin{document}
+\maketitle
+\tableofcontents
+\chapter{Getting Started}
+Unpack the device and verify all components against the parts list.
+\end{document}
+\end{minted}

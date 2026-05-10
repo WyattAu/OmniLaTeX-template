@@ -1,0 +1,170 @@
+% !TeX root = ../../../manual.tex
+\chapter{Bibliography}
+
+\section{biblatex + biber Setup}
+
+OmniLaTeX configures \texttt{biblatex} with \texttt{biber} as the backend.
+The default style is \texttt{ext-authoryear} with several OmniLaTeX-specific
+customisations:
+
+\begin{verbatim}
+\usepackage[
+    backend      = biber,
+    style        = ext-authoryear,
+    sorting      = nyt,
+    maxbibnames  = 99,
+    maxcitenames = 2,
+    giveninits   = true,
+    uniquename   = init,
+    uniquelist   = false,
+    dashed       = false,
+    isbn         = false,
+    url          = false,
+    doi          = false,
+    eprint       = false,
+    backref      = true,
+    backrefstyle = none,
+]{biblatex}
+\end{verbatim}
+
+Key OmniLaTeX customisations:
+
+\begin{itemize}
+    \item \textbf{introcite=label} -- prints a numeric label at the first
+          citation in each chapter.
+    \item \textbf{Family-given name format} -- author names are rendered as
+          \textsc{Family} Given.
+    \item \textbf{Semicolon delimiter} -- multiple authors in a single
+          citation are separated by semicolons.
+    \item \textbf{Small caps family names} -- family names appear in small
+          capitals for visual distinction.
+\end{itemize}
+
+\section{Adding Bibliography}
+
+Declare bibliography resource files with \verb|\addbibresource|:
+
+\begin{verbatim}
+\addbibresource{references.bib}
+\addbibresource{supplementary.bib}
+\end{verbatim}
+
+Multiple \texttt{.bib} files can be loaded. All entries from all files are
+available for citation. The \texttt{.bib} files are parsed by \texttt{biber}
+at compile time.
+
+Print the bibliography at the end of the document:
+
+\begin{verbatim}
+\printbibliography
+\end{verbatim}
+
+\section{Citation Commands}
+
+OmniLaTeX supports the full set of \texttt{biblatex} citation commands:
+
+\begin{longtblr}[
+    caption = {Citation commands},
+    label = {tab:citation-commands},
+]{colspec = {l l}, rowhead = 1}
+    \toprule
+    Command              & Output \\
+    \midrule
+    \texttt{\textbackslash\{\}cite\{key\}}        & Numeric label: [1] \\
+    \texttt{\textbackslash\{\}textcite\{key\}}    & Author (year) inline \\
+    \texttt{\textbackslash\{\}parencite\{key\}}   & Parenthesised: (Author, year) \\
+    \texttt{\textbackslash\{\}footcite\{key\}}    & Footnote citation \\
+    \texttt{\textbackslash\{\}fullcite\{key\}}    & Full bibliographic entry inline \\
+    \texttt{\textbackslash\{\}autocite\{key\}}    & Context-sensitive (parencite or footcite) \\
+    \texttt{\textbackslash\{\}citeauthor\{key\}}  & Author name only \\
+    \texttt{\textbackslash\{\}citeyear\{key\}}    & Year only \\
+    \texttt{\textbackslash\{\}parencites\{key1\}\{text1\}} & Multiple parenthesised citations \\
+    \texttt{\textbackslash\{\}textcites\{key1\}\{text1\}}  & Multiple textual citations \\
+    \texttt{\textbackslash\{\}cites\{key1\}\{text1\}}      & Multiple citations with notes \\
+    \texttt{\textbackslash\{\}footcites\{key1\}\{text1\}}  & Multiple footnote citations \\
+    \bottomrule
+\end{longtblr}
+
+\section{Citation Groups}
+
+Group multiple citations with per-citation notes using the starred variants:
+
+\begin{verbatim}
+\parencites{key1}[see][p.~42]{key2}[cf.]{key3}
+
+\cites{key1}{see also \textit{key2}}{key3}
+
+\textcites{key1}{as discussed in key2}{key3}
+\end{verbatim}
+
+Each key may be followed by optional pre- and post-note arguments in square
+brackets: \verb|\parencites[pre1][post1]{key1}[pre2][post2]{key2}|.
+
+\section{Per-Chapter Bibliography}
+
+Two mechanisms exist for splitting the bibliography by chapter:
+
+\begin{description}
+    \item[{\texttt{refsection}}] -- Creates independent bibliography
+        sections. Each \texttt{refsection} environment resets the citation
+        counter and produces its own bibliography. Use
+        \verb|\printbibliography[heading=subbibliography]| inside each
+        section.
+
+\begin{verbatim}
+\begin{refsection}
+    \chapter{Thermodynamics}
+    % ... citations ...
+    \printbibliography[heading=subbibliography]
+\end{refsection}
+\end{verbatim}
+
+    \item[{\texttt{refsegment}}] -- Segments share a single bibliography but
+        group entries by segment. Use \verb|\printbibliography[
+        segment=\therefsegment]| to list only the current segment's entries.
+\end{description}
+
+\texttt{refsegment} is simpler to set up; \texttt{refsection} provides
+stronger isolation between chapters.
+
+\section{Back References}
+
+The \texttt{backref} option adds page references to each bibliography entry
+showing where it was cited:
+
+\begin{verbatim}
+\usepackage[backref=true, backrefstyle=none]{biblatex}
+\end{verbatim}
+
+\begin{longtblr}[
+    caption = {Back reference styles},
+    label = {tab:backref-styles},
+]{colspec = {l l}, rowhead = 1}
+    \toprule
+    Style     & Description \\
+    \midrule
+    none      & Cited on pages 1, 3, 7 \\
+    chapter   & Cited on chapters 1, 2 \\
+    section   & Cited on sections 1.1, 2.3 \\
+    \bottomrule
+\end{longtblr}
+
+\section{Further Reading Section}
+
+A ``Further Reading'' section lists uncited references using
+\texttt{category} filtering:
+
+\begin{verbatim}
+\addbibresource{cited.bib}
+\addbibresource{uncited.bib}
+
+% In cited.bib:  @book{key1, ...}
+% In uncited.bib: @book{key2, category={notcited}, ...}
+
+\printbibliography[title={References}, notcategory=notcited]
+\printbibliography[title={Further Reading}, category=notcited]
+\end{verbatim}
+
+Alternatively, use \verb|\nocite{*}| to include all entries, then split by
+category. Entries without a \texttt{category} field default to
+\texttt{cited}.

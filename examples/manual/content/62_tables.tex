@@ -1,0 +1,166 @@
+% !TeX root = ../../../manual.tex
+\chapter{Tables}
+
+\section{booktabs}
+
+The \texttt{booktabs} package provides professional-quality horizontal rules.
+OmniLaTeX loads it by default. The booktabs philosophy discourages vertical
+lines and encourages generous spacing.
+
+\begin{verbatim}
+\begin{tabular}{lcc}
+    \toprule
+    Parameter   & Value  & Unit \\
+    \midrule
+    Temperature & 298.15 & K    \\
+    Pressure    & 101.3  & kPa  \\
+    \addlinespace
+    Density     & 1.225  & kg/m$^{3}$ \\
+    \bottomrule
+\end{tabular}
+\end{verbatim}
+
+\begin{longtblr}[
+    caption = {booktabs rule commands},
+    label = {tab:booktabs-rules},
+]{colspec = {l l}, rowhead = 1}
+    \toprule
+    Command          & Purpose \\
+    \midrule
+    \texttt{\textbackslash toprule}    & Heavy rule at the top of the table \\
+    \texttt{\textbackslash midrule}    & Medium rule below the header \\
+    \texttt{\textbackslash bottomrule} & Heavy rule at the bottom of the table \\
+    \texttt{\textbackslash addlinespace} & Insert extra vertical space between rows \\
+    \bottomrule
+\end{longtblr}
+
+Avoid \verb|\hline| and vertical lines (\verb|{|}) in booktabs tables.
+
+\section{siunitx S-Columns}
+
+The \texttt{siunitx} package provides the \texttt{S} column type for
+automatic alignment of numbers by their decimal point:
+
+\begin{verbatim}
+\begin{tabular}{l S[table-format=3.2] S[table-format=3.2]}
+    \toprule
+    {Material} & {Length (mm)} & {Mass (g)} \\
+    \midrule
+    Steel      & 125.40        & 492.10     \\
+    Aluminum   &  98.70        &  33.55     \\
+    Copper     & 100.00        & 893.30     \\
+    \bottomrule
+\end{tabular}
+\end{verbatim}
+
+Enclose column headers in braces (\texttt{\{...\}}) to prevent siunitx from
+parsing them as numeric values. The \texttt{table-format} key specifies the
+expected number of digits before and after the decimal separator.
+
+\section{tabularray}
+
+OmniLaTeX recommends the \texttt{tabularray} package for complex tables. It
+provides a modern key-value interface, long table support, and built-in
+row coloring.
+
+\begin{verbatim}
+\begin{longtblr}[
+    caption = {Experimental results},
+    label   = {tab:results},
+    remark  = {Note},
+]{colspec = {l S[table-format=2.2] S[table-format=2.2]},
+    rowhead = 1,
+    row{odd} = {gray9},
+}
+    \toprule
+    Sample & {Voltage (V)} & {Current (A)} \\
+    \midrule
+    A      & 3.14          & 0.42          \\
+    B      & 5.00          & 1.07          \\
+    C      & 2.71          & 0.88          \\
+    \bottomrule
+\end{longtblr}
+\end{verbatim}
+
+Variable-width columns use \texttt{l}, \texttt{c}, \texttt{r}, or explicit
+widths: \texttt{X[2,c]} for a centered column twice the default width.
+
+\section{Multi-Column Cells}
+
+Span cells across multiple columns with \verb|\multicolumn|:
+
+\begin{verbatim}
+\begin{tabular}{lccc}
+    \toprule
+    Experiment & \multicolumn{2}{c}{Results} & Status \\
+    \cmidrule(lr){2-3}
+    Run 1      & 0.95 & 0.97 & Pass \\
+    Run 2      & 0.82 & 0.79 & Fail \\
+    \bottomrule
+\end{tabular}
+\end{verbatim}
+
+Use \verb|\cmidrule(lr){2-3}| for partial horizontal rules that span only the
+merged columns. The \texttt{(lr)} trims shorten the rule at both ends for a
+cleaner appearance.
+
+\section{Rotated Cells}
+
+Rotate text within table cells using \verb|\multirotatecell|:
+
+\begin{verbatim}
+\multirotatecell{3}{Rotated text spanning three rows}
+\end{verbatim}
+
+This is particularly useful for column headers with long labels in wide
+tables. The first argument specifies the number of rows the cell should span.
+
+\section{Table Footnotes}
+
+Add footnotes to tabularray tables with \verb|\TblrNote| and
+\verb|\TblrRemark|:
+
+\begin{verbatim}
+\begin{longtblr}[remark = {Notes}]{colspec = {l S}, remark = {Note}}
+    \toprule
+    Entry & {Value} \\
+    \midrule
+    Alpha & 1.23\TblrNote{a} \\
+    Beta  & 4.56\TblrNote{b} \\
+    Gamma & 7.89 \\
+    \bottomrule
+\end{longtblr}
+\TblrNote{a}{Measured at 25\,°C.}
+\TblrNote{b}{Average of three trials.}
+\TblrRemark{c}{Data collected in 2025.}
+\end{verbatim}
+
+Notes are collected below the table and referenced by key.
+
+\section{Table Styles}
+
+OmniLaTeX defines several tabularray templates for consistent table styling:
+
+\begin{longtblr}[
+    caption = {OmniLaTeX tabularray templates},
+    label = {tab:tblr-templates},
+]{colspec = {l l}, rowhead = 1}
+    \toprule
+    Template      & Purpose \\
+    \midrule
+    contfoot-text & Table with continued footer text across pages \\
+    conthead-text & Table with continued header text across pages \\
+    caption-sep   & Enforced vertical separation between caption and table body \\
+    \bottomrule
+\end{longtblr}
+
+Apply a template with the \texttt{theme} key:
+
+\begin{verbatim}
+\begin{longtblr}[theme = caption-sep, caption = {...}]
+    ...
+\end{longtblr}
+\end{verbatim}
+
+These templates are defined in the OmniLaTeX core style files and can be
+extended or overridden in your own preamble.

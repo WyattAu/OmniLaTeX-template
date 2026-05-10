@@ -1,0 +1,232 @@
+\chapter{Physical Mathematics}
+
+OmniLaTeX provides a comprehensive physical typesetting system built on
+\texttt{siunitx}~v3 for units, \texttt{chemmacros} for chemistry, and
+\texttt{xfrac}/\texttt{nicefrac} for fractions.  All configuration is
+handled by \texttt{omnilatex-math.sty}, so you can use these commands
+directly without additional setup.
+
+% =========================================================================
+\section{siunitx Setup}
+% =========================================================================
+
+\texttt{siunitx} is preconfigured in \texttt{omnilatex-math.sty} with
+locale-aware settings.  The base configuration applies to all languages,
+and per-language overrides are activated automatically based on the
+document language:
+
+\begin{verbatim}
+\sisetup{%
+    mode = match,
+    per-mode = symbol,
+    range-units = single,
+    uncertainty-mode = separate,
+    propagate-math-font = true,
+    ...
+}
+\end{verbatim}
+
+When the document language is German, the locale is set to \texttt{DE}
+(uses a comma as decimal separator).  For English documents the locale
+defaults to \texttt{US} (period as decimal separator).  This switching
+happens via \cs{gappto} and requires no manual intervention.
+
+% =========================================================================
+\section{Core Commands}
+% =========================================================================
+
+The three primary \texttt{siunitx} commands cover most use cases:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Core \texttt{siunitx} commands.}
+  \label{tab:siunitx-core}
+  \begin{tabular}{@{}lp{0.55\textwidth}@{}}
+    \toprule
+    Command & Description \\
+    \midrule
+    \texttt{\textbackslash num\{value\}} & Formats a plain number
+      respecting locale (e.g.\ \texttt{1,000.5} in US,
+      \texttt{1.000,5} in DE). \\[4pt]
+    \texttt{\textbackslash unit\{...\}} & Typesets a unit with correct
+      spacing and symbols, e.g.\
+      \texttt{\textbackslash unit\{\textbackslash metre\textbackslash per\textbackslash second\}}
+      $\to$ \unit{\metre\per\second}. \\[4pt]
+    \texttt{\textbackslash qty\{value\}\{unit\}} & Combines number and unit
+      in one call, e.g.\
+      \texttt{\textbackslash qty\{5.2\}\{\textbackslash kilo\textbackslash gram\}}
+      $\to$ \qty{5.2}{\kilo\gram}. \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Additional useful commands include \texttt{\textbackslash qtylist} for
+comma-separated quantities (e.g.\
+\texttt{\textbackslash qtylist\{1;2;3\}\{\textbackslash metre\}}) and
+\texttt{\textbackslash numlist} for plain number lists.
+
+% =========================================================================
+\section{Quantity Ranges}
+% =========================================================================
+
+Ranges are typeset with \texttt{\textbackslash qtyrange}, which by default
+places the unit at the end once (\texttt{range-units=single}):
+
+\begin{verbatim}
+\qtyrange{20}{30}{\celsius}
+% → 20 °C to 30 °C  (en-dash separator)
+\end{verbatim}
+
+The range phrase can be customised:
+
+\begin{verbatim}
+\qtyrange[range-phrase={/}]{20}{30}{\celsius}
+% → 20/30 °C
+\end{verbatim}
+
+OmniLaTeX's \texttt{\textbackslash temperaturepair} macro (see
+Section~\ref{sec:temp-pair}) is a specialised wrapper that uses the
+\texttt{/} separator for temperature ranges.
+
+% =========================================================================
+\section{Custom SI Units}
+% =========================================================================
+
+OmniLaTeX declares several additional units beyond the \texttt{siunitx}
+defaults.  These are defined in \texttt{omnilatex-math.sty} and are
+available immediately:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Custom SI units defined by OmniLaTeX.}
+  \label{tab:custom-units}
+  \begin{tabular}{@{}llp{0.45\textwidth}@{}}
+    \toprule
+    Command & Unit & Description \\
+    \midrule
+    \texttt{\textbackslash volpercent}       & vol\%  & Volume percent \\
+    \texttt{\textbackslash watthour}         & Wh     & Watt-hour \\
+    \texttt{\textbackslash annum}            & a      & Annum (year) \\
+    \texttt{\textbackslash atmosphere}       & atm    & Standard atmosphere \\
+    \texttt{\textbackslash partspermillion}  & ppm    & Parts per million \\
+    \texttt{\textbackslash bar}              & bar    & Bar (pressure) \\
+    \texttt{\textbackslash relhumidity}      & \%rh   & Relative humidity (language-dependent) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The relative humidity unit adapts to the document language: it renders as
+\texttt{\%\,r.F.} in German and \texttt{\%\,RH} in English.
+
+The Euro sign is also available as a unit via the \texttt{eurosym}
+package--use \texttt{\textbackslash euro} directly inside
+\texttt{\textbackslash unit\{\}} or \texttt{\textbackslash qty\{\}\{\}}.
+
+% =========================================================================
+\section{Custom SI Qualifiers}
+% =========================================================================
+
+Unit qualifiers appear as subscripts and are used to disambiguate
+quantities that share the same unit.  OmniLaTeX integrates qualifiers
+with the glossary system so that subscript labels remain consistent
+throughout the document:
+
+\begin{table}[htbp]
+  \centering
+  \caption{Custom SI qualifiers defined by OmniLaTeX.}
+  \label{tab:si-qualifiers}
+  \begin{tabular}{@{}llp{0.45\textwidth}@{}}
+    \toprule
+    Command & Qualifier & Description \\
+    \midrule
+    \texttt{\textbackslash dryair}  & dry air  & Dry air component \\
+    \texttt{\textbackslash water}   & water    & Water component \\
+    \texttt{\textbackslash thermal} & thermal  & Thermal property \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Usage example:
+
+\begin{verbatim}
+\unit{\kilogram\per\cubic\metre\dryair}
+% → kg/m³_dry air
+\end{verbatim}
+
+The qualifier text is sourced from the glossary entries
+\texttt{sub.dry\textasciitilde air}, \texttt{sub.water}, and
+\texttt{sub.thermal}, ensuring consistent subscript formatting.
+
+% =========================================================================
+\section{Chemistry}
+% =========================================================================
+
+Chemical typesetting is provided by the \texttt{chemmacros} package,
+configured to use the Libertinus font family for formulae.
+
+\textbf{Compounds} are typeset with \texttt{\textbackslash chcpd}:
+
+\begin{verbatim}
+\chcpd{H2O}    % → H₂O (compound style)
+\ch{H2O}       % → H₂O (formula style)
+\ch{CO2 + H2O -> H2CO3}
+\end{verbatim}
+
+\textbf{Numbered reactions} use the \texttt{reaction} environment:
+
+\begin{verbatim}
+\begin{reaction}
+  2 H2 + O2 -> 2 H2O
+\end{reaction}
+% → R [1]:  2 H₂ + O₂ → 2 H₂O
+\end{verbatim}
+
+Reactions are tagged with a bold \textbf{R} prefix and square brackets,
+sharing the equation counter.  In chaptered documents the counter is
+prefixed with the chapter number.
+
+\textbf{Chemical amounts} combine quantity, unit, and compound:
+
+\begin{verbatim}
+\chemamount{1.2}{\partspermillion}{CO2}
+% → 1.2 ppm CO₂
+\end{verbatim}
+
+This is a convenience macro defined in \texttt{omnilatex-math.sty} that
+ensures correct spacing between the numerical value, unit, and compound
+name.
+
+\textbf{Multiple reactions} can be grouped:
+
+\begin{verbatim}
+\begin{reactions}
+  A -> B & C -> D \\
+  B + D -> E
+\end{reactions}
+\end{verbatim}
+
+A gathered variant without alignment is also available:
+\texttt{reactionsgather}.
+
+% =========================================================================
+\section{Fractions}
+% =========================================================================
+
+Two packages provide alternative fraction styles:
+
+\textbf{xfrac} -- stacked (slanted) fractions for inline use:
+
+\begin{verbatim}
+\sfrac{1}{2}  % → ¹⁄₂  (diagonal fraction)
+\end{verbatim}
+
+\textbf{nicefrac} -- inline fractions with a slash:
+
+\begin{verbatim}
+\nicefrac{1}{3}  % → 1/3  (compact inline fraction)
+\end{verbatim}
+
+Both packages are loaded by \texttt{omnilatex-math.sty}.  Use
+\texttt{\textbackslash sfrac} when you want a true diagonal fraction
+ glyph, and \texttt{\textbackslash nicefrac} when a simple slash is
+ preferable for very compact inline settings.

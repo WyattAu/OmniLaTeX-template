@@ -1,0 +1,195 @@
+\chapter{CJK Scripts}
+
+OmniLaTeX provides first-class support for Chinese, Japanese, and Korean (CJK)
+scripts through \pkg{luatexja} and the Noto CJK font family.  When you select
+a CJK language (e.g.\ \texttt{language=chinese-simplified}), OmniLaTeX
+automatically configures the appropriate fonts and script settings so you can
+mix CJK and Latin text seamlessly.
+
+\section{Chinese (Simplified)}
+
+Simplified Chinese uses the Noto Sans CJK SC and Noto Serif CJK SC font
+families, loaded through \pkg{luatexja}'s font mechanism.
+
+\begin{verbatim}
+\setCJKMainFont{Noto Serif CJK SC}
+\setCJKSansFont{Noto Sans CJK SC}
+\setCJKMonoFont{Noto Sans Mono CJK SC}
+\end{verbatim}
+
+OmniLaTeX calls \verb|\setCJKScript{sc}| internally whenever
+\texttt{language=chinese-simplified} is detected, which tells \pkg{luatexja}
+to activate the Simplified Chinese OpenType script features (GB-standard
+glyphs, punctuation rules, and proportional spacing).
+
+A complete example lives in \texttt{examples/cjk-chinese/}, which
+demonstrates:
+
+\begin{itemize}
+  \item Mixed Latin--Chinese paragraphs with automatic inter-script spacing.
+  \item Serif and sans-serif Chinese body text.
+  \item Chinese-style punctuation (full-width commas, periods, enumeration
+        commas ``\punct{、}'').
+  \item Headings, lists, and captions rendered in Chinese.
+\end{itemize}
+
+To compile a Simplified Chinese document:
+
+\begin{verbatim}
+\documentclass{omnilatex}
+\usepackage[language=chinese-simplified]{omnilatex-lang}
+\begin{document}
+  \chapter{中文标题}
+  这是一段简体中文示例。
+\end{document}
+\end{verbatim}
+
+\section{Chinese (Traditional)}
+
+Traditional Chinese switches to the TC (Traditional Chinese) variant of the
+Noto CJK family:
+
+\begin{verbatim}
+\setCJKMainFont{Noto Serif CJK TC}
+\setCJKSansFont{Noto Sans CJK TC}
+\end{verbatim}
+
+The script tag is \verb|\setCJKScript{tc}|, activated by
+\texttt{language=chinese-traditional}.  This selects the correct glyph set
+(e.g.\ 體 vs.\ 体, 裡 vs.\ 里) and adjusts punctuation rules for the
+Traditional Chinese typographic convention used in Taiwan, Hong Kong, and
+Macau.
+
+\begin{verbatim}
+\documentclass{omnilatex}
+\usepackage[language=chinese-traditional]{omnilatex-lang}
+\begin{document}
+  \chapter{繁體中文標題}
+  這是一段繁體中文範例。
+\end{document}
+\end{verbatim}
+
+\section{Japanese}
+
+Japanese documents use the Noto CJK JP fonts together with \pkg{luatexja}:
+
+\begin{verbatim}
+\setCJKMainFont{Noto Serif CJK JP}
+\setCJKSansFont{Noto Sans CJK JP}
+\setCJKMonoFont{Noto Sans Mono CJK JP}
+\end{verbatim}
+
+The script tag is \verb|\setCJKScript{jp}|, activated by
+\texttt{language=japanese}.  In addition to standard CJK support,
+OmniLaTeX enables \emph{furigana} (reading aids) for Japanese text via
+\pkg{luatexja-ruby}.
+
+A complete example lives in \texttt{examples/cjk-japanese/}, demonstrating
+furigana placement, mixed-script paragraphs, and Japanese-style punctuation
+and line-breaking.
+
+\begin{verbatim}
+\documentclass{omnilatex}
+\usepackage[language=japanese]{omnilatex-lang}
+\begin{document}
+  \chapter{日本語の見出し}
+  これは日本語の例です。
+\end{document}
+\end{verbatim}
+
+\section{Korean}
+
+Korean documents use the Noto CJK KR font family:
+
+\begin{verbatim}
+\setCJKMainFont{Noto Serif CJK KR}
+\setCJKSansFont{Noto Sans CJK KR}
+\end{verbatim}
+
+The script tag is \verb|\setCJKScript{kr}|, activated by
+\texttt{language=korean}.  Hangul syllables are rendered with proper
+morphological spacing, and Korean-style punctuation (middle dots ``·'')
+is supported.
+
+A complete example lives in \texttt{examples/cjk-korean/}.
+
+\begin{verbatim}
+\documentclass{omnilatex}
+\usepackage[language=korean]{omnilatex-lang}
+\begin{document}
+  \chapter{한국어 제목}
+  이것은 한국어 예시입니다.
+\end{document}
+\end{verbatim}
+
+\section{Auto-Detection}
+
+When you pass a CJK language option to \pkg{omnilatex-lang}, OmniLaTeX
+performs the following steps automatically:
+
+\begin{enumerate}
+  \item Detects the language family (SC, TC, JP, KR) from the option name.
+  \item Calls \verb|\setCJKScript{<tag>}| to activate the correct OpenType
+        script.
+  \item Loads the matching Noto CJK font family for main, sans, and mono.
+  \item Sets \pkg{luatexja} parameters for inter-character spacing and
+        line-breaking rules appropriate to the script.
+  \item Configures translation keys (chapter, figure, table, etc.) in the
+        target language.
+\end{enumerate}
+
+You can override any of these defaults by setting CJK fonts or scripts
+manually in your preamble \emph{after} loading \pkg{omnilatex-lang}.
+
+\section{Ruby Annotations}
+
+Ruby annotations (small phonetic glosses above or beside characters) are
+supported via \pkg{luatexja-ruby}:
+
+\begin{itemize}
+  \item \verb|\ruby{漢字}{かんじ}| -- Japanese furigana (above).
+  \item \verb|\furigana{漢字}{かんじ}| -- Alias with identical behaviour.
+  \item \verb|\pinyin{汉字}{hànzì}| -- Chinese pinyin (above).
+\end{itemize}
+
+Control the ruby annotation size with \verb|\setRubyScale{0.5}| (default
+\texttt{0.5}), which scales the annotation font relative to the base font
+size.
+
+\begin{verbatim}
+\ruby{漢字}{かんじ}   % furigana
+\pinyin{汉字}{hànzì}  % pinyin
+\setRubyScale{0.45}    % smaller annotations
+\end{verbatim}
+
+\section{Vertical Writing Mode}
+
+OmniLaTeX supports vertical (top-to-bottom, right-to-left) writing via the
+\texttt{vertical} environment provided by \pkg{luatexja}:
+
+\begin{verbatim}
+\begin{vertical}
+  この文章は縦書きです。右から左へ読んでください。
+\end{vertical}
+\end{verbatim}
+
+For inline vertical text, use \verb|\verticaltext{縦書き}|.  Page layout in
+vertical mode is adjusted automatically--page numbers and running headers
+rotate to match the text direction.
+
+\section{CJK--Latin Spacing}
+
+When mixing CJK and Latin scripts, proper inter-character spacing prevents
+the text from looking cramped.  OmniLaTeX configures \pkg{luatexja} to
+insert a thin space (typically $\tfrac{1}{4}$~em) between CJK and Latin
+characters by default.
+
+You can fine-tune this behaviour:
+
+\begin{verbatim}
+\cjklatinspacing          % enable (default for CJK languages)
+\nocjklatinspacing        % disable
+\setCJKLatinSpacing{0.25} % set gap to 0.25 em
+\end{verbatim}
+
+The spacing value is a fraction of one em in the current font size.

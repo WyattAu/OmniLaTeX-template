@@ -347,8 +347,9 @@ class BuildTasks:
             if not self.force:
                 source_files = self._collect_source_files(example_name)
                 source_hash = self._hash_for_paths(source_files)
-                cache = self._load_build_cache()
-                cached = cache.get(f"examples/{example_name}")
+                with self._cache_lock:
+                    cache = self._load_build_cache()
+                    cached = cache.get(f"examples/{example_name}")
                 dest_pdf = (
                     repo_root / self.config.build_dir / BUILD_EXAMPLES_SUBDIR
                 ) / f"{example_name}.pdf"
@@ -780,9 +781,6 @@ class BuildTasks:
     def preflight(self, _=None):
         self.cmd_preflight()
 
-    def build_tex(self, _=None):
-        self.ui.header("Building TeX... (Not implemented)")
-
     def run_tests(self, _=None):
         return self.cmd_test()
 
@@ -940,7 +938,7 @@ class BuildTasks:
         """Run test suite (l3build + pytest)."""
         results = []
         self.ui.info("Running l3build check...")
-        project_root = Path(__file__).resolve().parent.parent
+        project_root = Path(__file__).resolve().parent
         result = subprocess.run(
             ["l3build", "check"],
             capture_output=True,
@@ -1722,7 +1720,7 @@ def _rich_menu(tasks, commands, menu_sections, flat_commands):
         console.print()
         title = RichText("OmniLaTeX Build System", style="bold cyan")
         subtitle = RichText(
-            f"v1.3.0  •  {len(tasks.discover_examples())} examples  •  "
+            f"v1.16.0  •  {len(tasks.discover_examples())} examples  •  "
             f"{len([f for f in Path('.').rglob('*.sty')])} modules",
             style="dim",
         )
@@ -1942,7 +1940,6 @@ def main() -> None:
     # interactive menu (in terminals) or prints help (in CI).
     commands = {
         "build": (BuildTasks.build_all, "Build root and all examples.", False),
-        "build-tex": (BuildTasks.build_tex, "Build specific .tex files.", True),
         "build-root": (BuildTasks.build_root, "Build root document.", False),
         "build-all": (BuildTasks.build_all, "Alias for 'build'.", False),
         "clean": (BuildTasks.clean_all, "Full cleanup.", False),

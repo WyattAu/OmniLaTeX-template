@@ -1,0 +1,198 @@
+\chapter*{Notation \& Conventions}
+\addcontentsline{toc}{chapter}{Notation \& Conventions}
+
+\section{Typographic Conventions}
+
+This manual uses consistent typographic formatting to distinguish between
+different kinds of information.  Table~\ref{tab:typographic-conventions}
+provides a summary.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Typographic conventions used in this manual}
+    \label{tab:typographic-conventions}
+    \begin{tabular}{lll}
+        \toprule
+        \textbf{Appearance}      & \textbf{Meaning}                    & \textbf{Example} \\
+        \midrule
+        \texttt{Monospace}       & \LaTeX{} commands, code, filenames & \texttt{\textbackslash documentclass} \\
+        \textsf{Sans-serif}      & Key-value options, package options  & \textsf{language=english} \\
+        \textbf{Bold}            & Key terms (first occurrence)        & \textbf{doctype profile} \\
+        \fbox{\small UI element} & Menu paths, interface elements      & \fbox{\small File\;\textgreater\;Compile} \\
+        \midrule
+        \emph{Italics}           & Emphasis, introduced terminology    & \emph{preamble} \\
+        \textsc{Small Caps}      & Proper names of standards           & \textsc{Unicode} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+When a command is shown with its mandatory argument, curly braces are included
+(e.g.\ \texttt{\textbackslash chapter\{Title\}}).  Optional arguments appear
+in square brackets (e.g.\ \texttt{\textbackslash section[short]\{Long Title\}}).
+A trailing \texttt{*} denotes the starred (unnumbered) variant:
+\texttt{\textbackslash chapter*\{Title\}}.
+
+\section{Package References}
+
+Throughout this manual, \LaTeX{} packages are referenced using the
+\texttt{\textbackslash ctanpackage\{\}} command, which produces a hyperlink to
+the package's page on the Comprehensive \TeX{} Archive Network (CTAN).  For
+example, the \ctanpackage{minted} package is referenced as shown.  Hovering
+over or clicking the link navigates to \url{https://ctan.org/pkg/minted}.
+
+This convention allows readers to quickly locate the authoritative
+documentation for any package mentioned in the text.
+
+\section{Cross-References}
+
+The manual uses the standard \LaTeX{} cross-referencing system.  Chapters are
+numbered consecutively within each part.  Equations, figures, tables, and
+listings are numbered per chapter using the scheme
+\texttt{<chapter>.<counter>}.  For example, Equation~(3.7) refers to the
+seventh equation in Chapter~3.
+
+Cross-references within the manual use the commands
+\texttt{\textbackslash ref\{\}}, \texttt{\textbackslash eqref\{\}},
+\texttt{\textbackslash cref\{\}}, and \texttt{\textbackslash Cref\{\}} from
+the \ctanpackage{cleveref} package.  Readers should note that
+\texttt{\textbackslash cref} and \texttt{\textbackslash Cref} automatically
+insert the appropriate label prefix (``Figure'', ``Table'', ``Chapter'', etc.).
+
+\section{Code Examples}
+
+All code examples presented in this manual are intended to be directly
+compilable when placed in a suitable document preamble.  Code listings are
+rendered using the \ctanpackage{minted} package, which provides syntax
+highlighting for a wide range of programming and markup languages.
+
+Where an example is shortened for brevity, the ellipsis marker
+\texttt{\ldots} is used within the listing and the omission is explicitly
+described in the surrounding text.  Complete source files for the examples are
+available in the \texttt{examples/} directory of the OmniLaTeX repository.
+
+The \texttt{minted} package requires Python and the Pygments library to be
+installed.  Ensure that \texttt{pip install Pygments} has been run before
+compiling documents that contain code listings.
+
+\section{File Path Notation}
+
+File paths in this manual use forward slashes regardless of operating system:
+
+\begin{table}[htbp]
+    \centering
+    \caption{File path conventions}
+    \label{tab:path-notation}
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        \textbf{Notation} & \textbf{Meaning} \\
+        \midrule
+        \texttt{config/fonts.sty}          & Relative to repository root \\
+        \texttt{\textasciitilde/.texlive}  & User home directory \\
+        \texttt{examples/manual/content/}  & Directory path (trailing slash) \\
+        \texttt{main.tex}                  & File in current directory \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Command-line examples use \texttt{\$} for shell prompts and assume a
+Bash-compatible shell unless otherwise stated.
+
+\section{Math Notation}
+
+Mathematical content in this manual follows the conventions of the
+\ctanpackage{amsmath} and \ctanpackage{unicode-math} packages.  Inline
+mathematics uses \verb|$...$| delimiters; display mathematics uses
+\texttt{equation}, \texttt{align}, or \texttt{gather} environments.
+
+Variables are set in italic (\(x\), \(n\)), vectors in bold italic
+(\(\mathbf{v}\)), and operators in upright type
+(\(\sin\), \(\log\)).  Physical constants and named quantities use
+small capitals where appropriate.
+
+\section{Warning, Note, and Tip Boxes}
+
+The manual uses three types of callout boxes to highlight information:
+
+\begin{table}[htbp]
+    \centering
+    \caption{Callout box types}
+    \label{tab:callout-types}
+    \begin{tabular}{@{}lp{0.6\textwidth}@{}}
+        \toprule
+        \textbf{Box type} & \textbf{Usage} \\
+        \midrule
+        Warning & Common mistakes that cause errors or unexpected output \\
+        Note    & Important details that may not be obvious \\
+        Tip     & Suggestions for improved workflow or efficiency \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Keyboard Shortcuts}
+
+Keyboard shortcuts are shown using a monospace font with key names joined
+by \texttt{+}:
+
+\begin{table}[htbp]
+    \centering
+    \caption{Keyboard shortcut notation}
+    \label{tab:keyboard-notation}
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        \textbf{Notation} & \textbf{Meaning} \\
+        \midrule
+        \texttt{Ctrl+C}   & Hold Ctrl, then press C \\
+        \texttt{Ctrl+Shift+S} & Hold Ctrl and Shift, then press S \\
+        \texttt{Enter}    & The Enter (Return) key \\
+        \texttt{Esc}      & The Escape key \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Modifier keys are written in the order Ctrl, Shift, Alt, Meta, followed
+by the primary key.
+
+\section{Version-Specific Callouts}
+
+When a feature requires a minimum version of OmniLaTeX, the manual
+includes a version callout:
+
+\begin{minted}{latex}
+% Requires OmniLaTeX v1.10.0 or later
+\documentclass[doctype=book, censoring=true]{../../omnilatex}
+\end{minted}
+
+Version requirements are also noted in the text when they affect
+behaviour:
+
+\begin{description}
+    \item[New in v1.16.0] Features introduced in the current release.
+    \item[Changed in v1.14.0] Features whose behaviour was modified.
+    \item[Deprecated since v1.12.0] Features scheduled for removal.
+\end{description}
+
+\section{Glossary Symbols}
+
+OmniLaTeX integrates the \ctanpackage{glossaries-extra} package to provide
+consistent symbol and abbreviation management.  The following shorthand
+commands are used throughout this manual:
+
+\begin{description}
+    \item[{\texttt{\textbackslash sym\{\}}}] References a mathematical symbol
+        entry from the glossary.  For instance,
+        \texttt{\textbackslash sym\{velocity\}} produces the symbol and its
+        associated description as defined in the glossary file.
+    \item[{\texttt{\textbackslash abb\{\}}}] References an abbreviation entry.
+        First use expands the abbreviation; subsequent uses display the short
+        form.  For example, \texttt{\textbackslash abb\{LaTeX\}} expands to
+        ``\LaTeX{}'' on first use and ``\LaTeX{}'' thereafter.
+    \item[{\texttt{\textbackslash num\{\}}}] Formats a number according to the
+        locale settings of the document.  This is particularly useful in
+        multilingual documents where number formatting conventions differ.
+\end{description}
+
+The glossary definitions themselves are maintained in dedicated
+\texttt{.tex} files under the \texttt{glossaries/} directory and are loaded
+via \texttt{\textbackslash input\{\}} in the document preamble.  Detailed
+instructions for creating and managing glossary entries can be found in
+Chapter~\ref{ch:glossaries}.

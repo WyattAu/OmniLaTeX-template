@@ -1,0 +1,143 @@
+% !TeX root = ../../../manual.tex
+\chapter{Citation Styles}
+
+\section{Style Switching}
+
+OmniLaTeX provides the \verb|\citationstyle| command to switch bibliography
+styles from the document preamble:
+
+\begin{verbatim}
+\documentclass{omnilatex}
+\citationstyle{ieee}
+
+\begin{document}
+...
+\end{document}
+\end{verbatim}
+
+The command accepts one of the predefined style names (see
+\cref{tab:available-styles}). It must be called in the preamble, before
+\verb|\begin{document}|. Internally, \verb|\citationstyle| reconfigures
+\texttt{biblatex} options and reloads the appropriate style file.
+
+\section{Available Styles}
+
+OmniLaTeX ships nine predefined citation styles:
+
+\begin{longtblr}[
+    caption = {Available citation styles},
+    label = {tab:available-styles},
+]{colspec = {l l l}, rowhead = 1}
+    \toprule
+    Style    & Use Case          & Full Name \\
+    \midrule
+    ieee     & Engineering       & IEEE \\
+    acm      & Computer Science  & ACM \\
+    apa      & Social Sciences   & APA 7th \\
+    chicago  & Humanities        & Chicago \\
+    nature   & Science journals  & Nature \\
+    science  & General science   & Science \\
+    harvard  & UK academia       & Harvard \\
+    vancouver & Medical          & Vancouver \\
+    mla      & Liberal arts      & MLA \\
+    \bottomrule
+\end{longtblr}
+
+Each style maps to a \texttt{biblatex} style package:
+
+\begin{longtblr}[
+    caption = {Style to biblatex mapping},
+    label = {tab:style-mapping},
+]{colspec = {l l}, rowhead = 1}
+    \toprule
+    \texttt{\textbackslash\{\}citationstyle}  & biblatex style \\
+    \midrule
+    ieee       & style=ieee \\
+    acm        & style=acm \\
+    apa        & style=apa \\
+    chicago    & style=chicago-authordate \\
+    nature     & style=nature \\
+    science    & style=science \\
+    harvard    & style=ext-authoryear \\
+    vancouver  & style=vancouver \\
+    mla        & style=mla \\
+    \bottomrule
+\end{longtblr}
+
+\section{Style Comparison}
+
+The same three-entry bibliography renders differently depending on the chosen
+style. Below is a description of how each major style formats citations and
+the bibliography list.
+
+Consider these entries:
+
+\begin{verbatim}
+@article{smith2023,
+    author  = {Smith, John and Doe, Jane},
+    title   = {A Study of Thermal Systems},
+    journal = {Journal of Thermodynamics},
+    year    = {2023},
+    volume  = {15},
+    pages   = {1--10},
+}
+@book{lee2021,
+    author    = {Lee, Alice},
+    title     = {Fundamentals of Heat Transfer},
+    publisher = {Academic Press},
+    year      = {2021},
+}
+@inproceedings{wang2022,
+    author    = {Wang, Bob and Chen, Carol},
+    title     = {Efficiency in Cogeneration Plants},
+    booktitle = {Proceedings of ECOS 2022},
+    year      = {2022},
+    pages     = {112--120},
+}
+\end{verbatim}
+
+\textbf{IEEE:} Numeric citations [1], [2]. Bibliography lists entries in order
+of first citation. Author names in initials-first format.
+
+\textbf{APA:} Parenthetical (Smith \& Doe, 2023) or narrative Smith and Doe
+(2023). Bibliography uses hanging indent with full first names.
+
+\textbf{Chicago (author-date):} Similar to APA but with different punctuation
+and ordering rules. Uses em-dash for multiple authors.
+
+\textbf{Harvard:} (Smith and Doe, 2023). Similar to author-date but with
+specific capitalisation and abbreviation rules common in UK academia.
+
+\textbf{Vancouver:} Numeric superscript$^{1}$ or bracketed [1]. Bibliography
+lists all authors up to six, then \emph{et al.}
+
+\textbf{Nature:} Numeric superscript citations. Bibliography lists authors in
+smaller font with abbreviated journal names.
+
+\textbf{MLA:} (Smith and Doe 223). Page numbers preferred. Bibliography uses
+\emph{Works Cited} heading with author-page format.
+
+\textbf{ACM:} Numeric [1] with optional author-name citation. Bibliography
+follows ACM reference format with DOI links.
+
+\textbf{Science:} Numeric superscript$^{1}$. Bibliography is numbered and
+uses abbreviated journal titles with year in parentheses.
+
+\section{Default Style}
+
+When no \verb|\citationstyle| command is issued, OmniLaTeX defaults to
+\texttt{ext-authoryear}. This style extends the standard \texttt{authoryear}
+with additional features:
+
+\begin{itemize}
+    \item \textbf{Extended name handling} -- \texttt{giveninits=true} for
+          consistent initial-based name formatting.
+    \item \textbf{Dashed entries} -- replaced by title in repeated-author
+          runs (\texttt{dashed=false} in OmniLaTeX).
+    \item \textbf{introcite} -- numeric label at first citation per chapter.
+    \item \textbf{backref} -- page references in the bibliography.
+\end{itemize}
+
+To override OmniLaTeX's default while keeping the extended features, set the
+style to \texttt{harvard}, which maps to \texttt{ext-authoryear} with UK
+academic conventions.
