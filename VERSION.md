@@ -1,5 +1,5 @@
 # OmniLaTeX Version
 
-Current version: **v1.16.0**
+Current version: **v1.17.0**
 
-Release date: 2026-05-06
+Release date: 2026-05-10

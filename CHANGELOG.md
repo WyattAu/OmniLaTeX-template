@@ -7,6 +7,37 @@ This project adheres to [Semantic versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.17.0] - 2026-05-10
+
+### Added
+- **238-page comprehensive manual** — 60 chapters across 11 parts, 10,700+ lines of content
+  - Parts: Getting Started, Document Types, Typography, Languages, Page Layout, Floats, References, Code, Themes, Workflow, Appendices
+  - 31-entry bibliography (bibliography.bib)
+  - Covers all 26 doctypes, 18 languages, 16 institutions, 9 citation styles, 7 color themes
+  - Lean 4 proofs chapter, architecture overview, build system deep-dive
+  - CI/CD pipeline documentation (GitHub, GitLab, Gitea, Forgejo, Woodpecker)
+  - Docker and Nix workflow guides
+  - Appendices: commands reference, class options, doctype table, module map, siunitx units
+- **`tests/constants.py`** — centralized test constants with `DOCTYPE_ALIASES` map (18 example→doctype mappings)
+- **CHANGELOG entries for v1.14.0 and v1.15.0** — filled release history gap
+
+### Changed
+- Total examples: 43 → 44 (manual added)
+- Test count: 508 → 530+ (structural, property, unicode, hypothesis)
+- Manual doctype now available via `doctype=manual` (maps to scrreprt)
+
+### Fixed
+- **`\documentitemspacing{tight}` calc error** — root cause: literal string "tight" passed to `\setlength` via `\setlist{itemsep=tight}`, corrupting calc parser. Fix: recognized value → `\setlist{itemsep=0pt plus 0.2pt}` in `omnilatex-document.sty`
+- **14 swapped i18n `\DeclareTranslation` arguments** in `omnilatex-i18n.sty` (German/Italian/Spanish/Portuguese/Dutch/Polish/Czech/Greek/Turkish/Danish/Swedish/Norwegian/Finnish/Chinese)
+- **Glossary load order** — `glossary-longextra` must load before `glossaries-extra` in `omnilatex-glossary.sty`
+- **`\verb` in table cells** — replaced with `\texttt{\textbackslash...}` in 72_glossaries.tex, 80_code_listings.tex, B0/B2/B4 appendices
+- **Nested `\begin{minted}`** — restructured in 4 files (censoring, presentations, posters, nix-workflow)
+- **`---` em dashes in manual content** — 180 replacements to `--` across 36 files (calc interprets `---` as range operator)
+- **Unbalanced `\texttt{}` braces** in 32_mathematics.tex
+- **`\item[{\texttt{...}}]` braces** — 44 additions in 9 files to prevent calc parsing
+- **`test_properties.py` example doctype normalization** — now resolves aliases via `DOCTYPE_ALIASES`
+- **Stale Lean proof files deleted** — 5 superseded snake_case files removed
+
 ## [1.16.0] - 2026-05-06
 
 ### Added

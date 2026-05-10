@@ -1,6 +1,6 @@
 # OmniLaTeX Roadmap
 
-Current version: **v1.16.0**
+Current version: **v1.17.0**
 
 ## Design Principles
 
@@ -14,20 +14,21 @@ Current version: **v1.16.0**
 
 | Metric | Value |
 |--------|-------|
-| Releases | 16 (v1.0.0–v1.16.0) |
+| Releases | 17 (v1.0.0–v1.17.0) |
 | `.sty` modules | 27 |
 | Document types | 26 (55+ aliases) across 3 KOMA-Script base classes |
-| Examples | 43 (43/43 compile on Docker TL2026) |
+| Examples | 44 (44/44 compile on Docker TL2026) |
 | Institution configs | 16 |
 | Languages | 18 primary (EN, DE, FR, ES, RU, IT, PT, NL, PL, CS, EL, TR, DA, ZH, JA, KO, AR, HE) + 8 secondary via polyglossia |
 | Translation keys | 846 total (47 keys × 18 languages) |
 | CI workflows | 9 GitHub Actions + 4 other platforms |
-| Tests | 508 (349 integration + 20 property + 7 consistency + 132 hypothesis) |
+| Tests | 530+ (367 structural + 20 property + 10 unicode + 132 hypothesis) |
 | Lean 4 proofs | 53/53 proven, 10 modules, 0 sorry |
 | Color themes | 7 presets + dark/light toggle |
 | Citation styles | 9 (IEEE, ACM, APA, Chicago, Nature, Science, Harvard, Vancouver, MLA) |
 | CJK support | Chinese (SC+TC), Japanese, Korean |
 | RTL support | Arabic, Hebrew, Persian |
+| Manual | 238 pages, 60 chapters, 10.7k lines |
 | Core code | ~16,500 lines |
 | License | Apache 2.0 |
 
@@ -37,6 +38,7 @@ Current version: **v1.16.0**
 
 | Version | Date | Summary |
 |---------|------|---------|
+| v1.17.0 | 2026-05-10 | 238-page manual (60 chapters), documentitemspacing fix, audit sweep |
 | v1.16.0 | 2026-05-06 | 53 Lean theorems (10 modules), 508 tests, TikZ figures, audit fixes |
 | v1.15.0 | 2026-05-05 | Visual regression, digest consistency, 10 Lean proof modules |
 | v1.14.0 | 2026-05-04 | Columbia/Harvard institutions, invoice/recipe doctypes, 5 TikZ figures |
@@ -184,10 +186,8 @@ Current version: **v1.16.0**
 | Item | Severity | Notes |
 |------|----------|-------|
 | 12 thin manual chapters (<100 lines) | Medium | Expand to >150 lines each |
-| Test constants triplicated across 3 files | Medium | Deduplicate into conftest.py |
+| Test constants duplicated across constants.py and test_properties.py | Low | Deduplicate DOCTYPE_ALIASES |
 | Missing pyproject.toml | Medium | Add pytest config, project metadata |
-| Dead `build_tex` method in build.py | Low | Remove or implement |
 | 1 HACK in omnilatex-math.sty:230 | Low | Proper vertical spacing |
-| 5 stale snake_case .lean files | Low | Remove superseded files |
 | Gitea workflow test job outside container | Low | Align with Forgejo pattern |
 | integration-matrix.yml hardcoded digest | Low | Dynamic from .env.docker |

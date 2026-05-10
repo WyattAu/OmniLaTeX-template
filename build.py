@@ -1720,7 +1720,7 @@ def _rich_menu(tasks, commands, menu_sections, flat_commands):
         console.print()
         title = RichText("OmniLaTeX Build System", style="bold cyan")
         subtitle = RichText(
-            f"v1.16.0  •  {len(tasks.discover_examples())} examples  •  "
+            f"v1.17.0  •  {len(tasks.discover_examples())} examples  •  "
             f"{len([f for f in Path('.').rglob('*.sty')])} modules",
             style="dim",
         )

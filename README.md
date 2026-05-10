@@ -1,6 +1,6 @@
 # OmniLaTeX
 
-A modular, engineering-grade LaTeX document class for academic and professional documents. 55+ doctype aliases, 27 modules, 43 example templates, byte-for-byte reproducible builds, and formal Lean 4 verification.
+A modular, engineering-grade LaTeX document class for academic and professional documents. 55+ doctype aliases, 27 modules, 44 example templates, a 238-page reference manual, byte-for-byte reproducible builds, and formal Lean 4 verification.
 
 Built on LuaTeX (LuaHBTeX 1.21.0) + KOMA-Script + TeX Live 2025. Compile with `latexmk -lualatex` or `build.py`.
 
@@ -9,7 +9,7 @@ Built on LuaTeX (LuaHBTeX 1.21.0) + KOMA-Script + TeX Live 2025. Compile with `l
 | | OmniLaTeX | Typical template |
 |---|---|---|
 | **Document types** | 55+ aliases (thesis, CV, patent, journal, ...) | 1–3 |
-| **Test coverage** | 508 test cases (349 integration + 20 property + 7 consistency + 132 hypothesis) | 0 |
+| **Test coverage** | 530+ test cases (structural, property-based, unicode, hypothesis) | 0 |
 | **Reproducible builds** | Byte-for-byte deterministic | No |
 | **Formal verification** | Lean 4 proofs (10 proof modules, 53/53 theorems proven) | No |
 | **CI platforms** | 9 GitHub Actions workflows + 4 other platforms | 0–1 |
@@ -100,7 +100,7 @@ OmniLaTeX supports 9 primary languages and 19 secondary languages via Polyglossi
 
 ## Examples
 
-43 ready-to-use templates in `examples/` (42 compile on TeX Live 2025; `thesis-tuhh` requires TUHH assets):
+44 ready-to-use templates in `examples/` (43 compile on TeX Live 2026; `thesis-tuhh` requires TUHH assets):
 
 | Example | Doctype | Description |
 |---------|---------|-------------|
