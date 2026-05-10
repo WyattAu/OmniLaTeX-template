@@ -1,40 +1,22 @@
 # OmniLaTeX Accessibility Guide
 
-OmniLaTeX supports generating tagged PDFs compliant with PDF/UA-1,
-the ISO standard for accessible PDF documents. Tagged PDFs are readable
-by assistive technologies such as screen readers.
+For development setup and testing, see [CONTRIBUTING.md](../CONTRIBUTING.md).
 
-## Quick Start
+OmniLaTeX supports generating tagged PDFs compliant with PDF/UA-1, the ISO
+standard for accessible PDF documents. Tagged PDFs are readable by assistive
+technologies such as screen readers.
 
-Add these lines **before** your `\documentclass`:
+## Command Reference
 
-```latex
-\RequirePackage{pdfmanagement-testphase}
-\DocumentMetadata{lang=english, pdfversion=2.0}
-
-\documentclass[doctype=article]{omnilatex}
-
-\RequirePackage{config/document-settings}
-\RequirePackage{lib/layout/omnilatex-accessibility}
-```
-
-Compile with LuaLaTeX:
-
-```bash
-lualatex main.tex
-```
-
-## How It Works
-
-1. `pdfmanagement-testphase` activates LuaTeX's PDF resource management layer.
-2. `\DocumentMetadata` sets PDF metadata (language, version) required for PDF/UA-1.
-3. `omnilatex-accessibility.sty` loads `tagpdf` and configures PDF tagging.
-
-### Requirements
-
-- LuaLaTeX engine (already required by OmniLaTeX)
-- `tagpdf` package (TeX Live 2024+)
-- `pdfmanagement-testphase` package (TeX Live 2020+)
+| Command | Description |
+| -------- | ----------- |
+| `\alttext{desc}` | Set alt text for the next figure environment |
+| `\tikzalttext{desc}` | Set alt text for the next TikZ picture |
+| `\accessiblelink{text}{url}{desc}` | Link with screen reader tooltip |
+| `\checkcontrast{bg}{fg}` | Log an informational contrast check reminder |
+| `\readingorder{n}` | Hint at logical reading order for complex layouts |
+| `\langtag{code}{text}` | Wrap text with a different language attribute |
+| `\validatstructure` | Log a heading hierarchy check |
 
 ## Alt Text for Figures
 
@@ -64,12 +46,13 @@ Use `\tikzalttext{description}` before a `tikzpicture` environment:
 ## Accessible Links
 
 WCAG 2.1 AA criterion 2.4.4 requires that the purpose of each link can be
-determined from the link text alone (or from the link text together with its
-programmatically determined link context). Use `\accessiblelink` to provide
-a screen reader description:
+determined from the link text alone (or from the link text together with
+its programmatically determined link context). Use `\accessiblelink` to
+provide a screen reader description:
 
 ```latex
-\accessiblelink{Visit OmniLaTeX}{https://github.com/WyattAu/OmniLaTeX-template}{Opens the OmniLaTeX GitHub repository}
+\accessiblelink{Visit OmniLaTeX}{https://github.com/WyattAu/OmniLaTeX-template}\
+  {Opens the OmniLaTeX GitHub repository}
 ```
 
 The third argument is shown as a tooltip and read by screen readers.
@@ -94,7 +77,7 @@ The accessibility module automatically tags `tabular` environments with
 ## Heading Hierarchy
 
 WCAG 2.1 AA criterion 1.3.1 requires heading levels to be nested correctly
-without skipping levels (e.g., H1 → H2 → H3, not H1 → H3).
+without skipping levels (e.g., H1 -> H2 -> H3, not H1 -> H3).
 
 Use `\validatstructure` at the end of your document to log a structural
 check. In OmniLaTeX, `\section` maps to H1, `\subsection` to H2, and so on.
@@ -175,15 +158,10 @@ commercial screen reader for Windows.
 VoiceOver is built into macOS and iOS. Open the PDF in Preview or Adobe
 Reader and navigate with VoiceOver (Cmd+F5).
 
-## Known Limitations
+## Additional Limitations
 
-- `tagpdf` is under active development; some complex layouts may produce
-  tagging warnings.
-- TikZ diagrams and complex floats may need manual tagging adjustments.
-- For full PDF/UA-1 compliance, additional metadata (title, author, subject)
-  should be set via `\DocumentMetadata`.
-- Color contrast checking is informational only; no runtime pixel analysis
-  is performed.
-- Reading order hints may not be respected by all PDF viewers.
 - `\pdftooltip` (used by `\accessiblelink`) requires the `pdfmanagement`
   layer and may not work in all PDF viewers.
+
+See [CONTRIBUTING.md](../CONTRIBUTING.md) for the full list of known
+limitations.

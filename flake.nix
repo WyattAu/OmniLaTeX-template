@@ -109,18 +109,22 @@
           ;
         };
 
-         pythonEnv = pkgs.python3.withPackages (ps: with ps; [
-           pygments
-           pytest
-           pytest-timeout
-           hypothesis
-           pyyaml
-           python-dateutil
-           tqdm
-           rich
-          # NOTE: papersize is not in nixpkgs. test_pdfs.py (which depends on it)
-          # is automatically skipped when pymupdf/fitz is unavailable.
-        ]);
+          pythonEnv = pkgs.python3.withPackages (ps: with ps; [
+            pygments
+            pytest
+            pytest-timeout
+            hypothesis
+            pyyaml
+            pymupdf
+            black
+            isort
+            flake8
+            python-dateutil
+            tqdm
+            rich
+           # NOTE: papersize is not in nixpkgs. test_pdfs.py (which depends on it)
+           # is automatically skipped when pymupdf/fitz is unavailable.
+         ]);
 
         # NOTE: Custom fonts (Monaspace Neon, Atkinson Hyperlegible Next) are
         # not available in nixpkgs. Users needing these fonts should either:
@@ -129,15 +133,16 @@
         # Libertinus is in collection-fontsextra; Font Awesome 5 via fontawesome5 above.
       in
       {
-        devShells.default = pkgs.mkShell {
-          packages = [
-            texlive
-            pythonEnv
-            pkgs.gnumake
-            pkgs.inkscape
-            pkgs.gnuplot
-            pkgs.lean4
-          ];
+         devShells.default = pkgs.mkShell {
+           packages = [
+             texlive
+             pythonEnv
+             pkgs.gnumake
+             pkgs.inkscape
+             pkgs.gnuplot
+             pkgs.lean4
+             pkgs.git
+           ];
 
           shellHook = ''
             echo "OmniLaTeX development environment"
@@ -147,7 +152,7 @@
           '';
         };
 
-        packages = {
+         packages = {
           default = pkgs.stdenvNoCC.mkDerivation {
             name = "omnilatex-manual";
             src = ./.;
@@ -161,6 +166,21 @@
             installPhase = ''
               mkdir -p $out
               cp main.pdf $out/
+            '';
+          };
+
+          omnilatex = pkgs.stdenvNoCC.mkDerivation {
+            name = "omnilatex";
+            src = ./.;
+            installPhase = ''
+              mkdir -p $out/tex/latex/omnilatex \
+                        $out/tex/lualatex/omnilatex/lua \
+                        $out/tex/latex/omnilatex/config
+              cp omnilatex.cls $out/tex/latex/omnilatex/
+              find lib -name '*.sty' -exec cp {} $out/tex/latex/omnilatex/ \;
+              cp lua/*.lua $out/tex/lualatex/omnilatex/lua/
+              cp -r config/* $out/tex/latex/omnilatex/config/
+              runHook postInstall
             '';
           };
 
@@ -194,7 +214,7 @@
             '';
           }));
 
-        checks.reproducibility = pkgs.stdenvNoCC.mkDerivation {
+         checks.reproducibility = pkgs.stdenvNoCC.mkDerivation {
           name = "omnilatex-reproducibility-check";
           src = ./.;
 
@@ -251,6 +271,26 @@ finally:
           echo "PASS: Python syntax check"
           mkdir $out
         '';
+
+        # NOTE: checks.pytest runs the core test suite.
+        # Requires: texlive (for module compilation tests), pymupdf (for visual
+        # regression), hypothesis, pytest-timeout, pytest-cov.
+        # Currently a placeholder because test_visual_regression.py depends on
+        # pymupdf and test_modules.py spawns lualatex, making full CI in a
+        # Nix check non-trivial. To enable, uncomment and ensure all test deps
+        # are available:
+        #
+        # checks.pytest = pkgs.stdenvNoCC.mkDerivation {
+        #   name = "omnilatex-pytest";
+        #   src = ./.;
+        #   nativeBuildInputs = [ texlive pythonEnv ];
+        #   buildPhase = ''
+        #     python3 -m pytest tests/test_modules.py tests/test_ctan.py \
+        #       tests/test_properties.py tests/test_visual_regression.py \
+        #       -m "not slow" --timeout=60
+        #   '';
+        #   installPhase = "mkdir $out";
+        # };
       }
     ) // {
       # Overlays must be functions (not per-system sets), so they live
