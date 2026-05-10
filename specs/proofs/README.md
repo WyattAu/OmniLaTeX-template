@@ -47,32 +47,39 @@ specs/proofs/
 ## Verified Theorems
 
 ### BuildModes.lean
+
 - **`ultra_no_bib`** — Ultra mode never runs bibliography tools
 - **`prod_validates`** — Prod mode validates datamodel and runs biber
 - **`dev_enough_passes`** — Dev mode has ≥3 passes for reference resolution
 - **`all_modes_shell_escape`** — All modes enable shell-escape
 
 ### DoctypeResolution.lean
+
 - **`profile_class_consistency`** — Book-class profiles map to `scrbook`
 - **`known_alias_count`** — Exactly 46 known aliases defined
 
 ### FontHierarchy.lean
+
 - **`font_size_irreflexive`** — No font size is less than itself
 
 ## Proof Strategy
 
 ### Doctype Resolution
+
 - **Determinism**: Pattern matching ensures each alias maps to exactly one profile. Proof by case analysis on all 46 aliases.
 - **Totality**: Each alias in `knownAliases` resolves to `some` profile.
 
 ### Page Geometry
+
 - **Balance equations**: KOMA-Script typearea enforces `textwidth + margins = paperwidth`. Requires formalizing Float arithmetic.
 - **DIV formula**: `textwidth = paperwidth * (DIV-1)/DIV` is strictly between 0 and `paperwidth`.
 
 ### Font Hierarchy
+
 - **Strict total order**: 9 font sizes satisfy irreflexivity, asymmetry, transitivity, and connexity.
 
 ### Float Invariant
+
 - **Section boundary**: Floats with `[h]` placement appear on pages whose section ≥ defining section. Proof sketch — full formalization requires modeling LaTeX's float queue.
 
 ## Integration

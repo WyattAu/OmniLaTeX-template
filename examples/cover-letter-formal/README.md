@@ -11,6 +11,7 @@ This example demonstrates how to create a formal academic cover letter using the
 ## Configuration
 
 The `config/document-settings.sty` file contains placeholders for:
+
 - Sender information (name, academic address, contact details)
 - Recipient information (name, institution, department address)
 - Position and academic details
@@ -20,6 +21,7 @@ Replace all bracketed placeholders (e.g., `[YOUR NAME]`) with actual information
 ## Content Structure
 
 The formal academic cover letter follows a standard academic application format:
+
 - Formal salutation addressing the recipient by name and title
 - Introduction stating the position and how you learned about it
 - Body highlighting research accomplishments, publications, teaching experience, and relevant qualifications
@@ -31,6 +33,7 @@ The formal academic cover letter follows a standard academic application format:
 ## Key Differences from Standard Cover Letter
 
 This formal academic version includes:
+
 - More detailed research and publication information
 - Teaching experience and mentoring details
 - Academic-specific language and structure

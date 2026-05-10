@@ -5,7 +5,7 @@ g1 defined: OK
 g6 defined: OK
 === COLORS: Fluid colors ===
 Underfull \hbox (badness 10000) in paragraph at lines 14--17
-[][]\TU/LibertinusSerif(0)/m/n/10.95 Glass[] []Air[] []Hot-Fluid[] 
+[][]\TU/LibertinusSerif(0)/m/n/10.95 Glass[] []Air[] []Hot-Fluid[]
 \hbox(7.67867+0.143)x448.13095, glue set 16.4749, direction TLT
 .\localpar
 ..\localinterlinepenalty=0
@@ -45,7 +45,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 14--17
 .\glue(\rightskip) 0.0 plus 22.00189
 === COLORS: Plot colors ===
 Underfull \hbox (badness 10000) in paragraph at lines 19--21
-[][]\TU/LibertinusSerif(0)/m/n/10.95 mBlue[] []mRed[] 
+[][]\TU/LibertinusSerif(0)/m/n/10.95 mBlue[] []mRed[]
 \hbox(7.67867+0.143)x448.13095, glue set 17.71477, direction TLT
 .\localpar
 ..\localinterlinepenalty=0
@@ -73,7 +73,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 19--21
 .\glue(\rightskip) 0.0 plus 22.00189
 === COLORS: Code annotation colors ===
 Underfull \hbox (badness 10000) in paragraph at lines 23--27
-[][]\TU/LibertinusSerif(0)/m/n/10.95 cRed[] []cBlue[] []cGreen[] []cOr-ange[] 
+[][]\TU/LibertinusSerif(0)/m/n/10.95 cRed[] []cBlue[] []cGreen[] []cOr-ange[]
 \hbox(7.67867+2.61823)x448.13095, glue set 14.58633, direction TLT
 .\localpar
 ..\localinterlinepenalty=0
@@ -124,7 +124,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 23--27
 .\glue(\rightskip) 0.0 plus 22.00189
 === COLORS: ColorBrewer ===
 Underfull \hbox (badness 10000) in paragraph at lines 29--31
-[][]\TU/LibertinusSerif(0)/m/n/10.95 rdylbu󰂸[] []rdylbu󰂽[] 
+[][]\TU/LibertinusSerif(0)/m/n/10.95 rdylbu󰂸[] []rdylbu󰂽[]
 \hbox(7.67867+2.55222)x448.13095, glue set 17.04208, direction TLT
 .\localpar
 ..\localinterlinepenalty=0
@@ -158,7 +158,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 29--31
 .\glue(\rightskip) 0.0 plus 22.00189
 === COLORS: Set2 qualitative ===
 Underfull \hbox (badness 10000) in paragraph at lines 33--35
-[][]\TU/LibertinusSerif(0)/m/n/10.95 Set󰂹A[] []Set󰂹H[] 
+[][]\TU/LibertinusSerif(0)/m/n/10.95 Set󰂹A[] []Set󰂹H[]
 \hbox(7.23862+0.11002)x448.13095, glue set 17.76883, direction TLT
 .\localpar
 ..\localinterlinepenalty=0
@@ -186,7 +186,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 33--35
 .\glue(\rightskip) 0.0 plus 22.00189
 === COLORS: darklink ===
 Underfull \hbox (badness 10000) in paragraph at lines 37--38
-[][]\TU/LibertinusSerif(0)/m/n/10.95 dark-link[] 
+[][]\TU/LibertinusSerif(0)/m/n/10.95 dark-link[]
 \hbox(7.67867+0.143)x448.13095, glue set 18.62848, direction TLT
 .\localpar
 ..\localinterlinepenalty=0

@@ -1,7 +1,5 @@
-import os
 import pathlib
 import shutil
-import subprocess
 import zipfile
 
 import pytest
@@ -29,16 +27,21 @@ def _build_ctan_zip_with_python(output_path):
     shutil.copytree(REPO_ROOT / "lib", pkg_dir / "lib")
 
     (pkg_dir / "config" / "document-types").mkdir(parents=True, exist_ok=True)
-    shutil.copy2(REPO_ROOT / "config" / "document-settings.sty",
-                 pkg_dir / "config" / "document-settings.sty")
+    shutil.copy2(
+        REPO_ROOT / "config" / "document-settings.sty",
+        pkg_dir / "config" / "document-settings.sty",
+    )
     if (REPO_ROOT / "config" / "document-types").is_dir():
         for item in (REPO_ROOT / "config" / "document-types").iterdir():
             if item.is_file():
-                shutil.copy2(str(item), pkg_dir / "config" / "document-types" / item.name)
+                shutil.copy2(
+                    str(item), pkg_dir / "config" / "document-types" / item.name
+                )
     (pkg_dir / "bib").mkdir(parents=True, exist_ok=True)
     if (REPO_ROOT / "bib" / "bibliography.bib").is_file():
-        shutil.copy2(REPO_ROOT / "bib" / "bibliography.bib",
-                     pkg_dir / "bib" / "bibliography.bib")
+        shutil.copy2(
+            REPO_ROOT / "bib" / "bibliography.bib", pkg_dir / "bib" / "bibliography.bib"
+        )
     for name in ("README.md", "LICENSE", "CHANGELOG.md", "VERSION.md"):
         src = REPO_ROOT / name
         if src.is_file():
@@ -65,11 +68,14 @@ def _build_overleaf_zip_with_python(example_name, output_path):
 
     shutil.copy2(REPO_ROOT / "omnilatex.cls", pkg_dir / "omnilatex.cls")
     shutil.copytree(REPO_ROOT / "lib", pkg_dir / "lib")
-    shutil.copytree(REPO_ROOT / "config" / "document-types",
-                    pkg_dir / "config" / "document-types")
+    shutil.copytree(
+        REPO_ROOT / "config" / "document-types", pkg_dir / "config" / "document-types"
+    )
     if (REPO_ROOT / "config" / "document-settings.sty").is_file():
-        shutil.copy2(REPO_ROOT / "config" / "document-settings.sty",
-                     pkg_dir / "config" / "document-settings.sty")
+        shutil.copy2(
+            REPO_ROOT / "config" / "document-settings.sty",
+            pkg_dir / "config" / "document-settings.sty",
+        )
     if (REPO_ROOT / "bib").is_dir():
         shutil.copytree(REPO_ROOT / "bib", pkg_dir / "bib")
     if (example_dir / "main.tex").is_file():
@@ -108,14 +114,16 @@ def overleaf_zip_path(tmp_path_factory):
 
 class TestCTANZip:
     def test_zip_is_valid(self, ctan_zip_path):
-        assert zipfile.is_zipfile(str(ctan_zip_path)), "omnilatex.zip is not a valid zip"
+        assert zipfile.is_zipfile(
+            str(ctan_zip_path)
+        ), "omnilatex.zip is not a valid zip"
 
     def test_zip_contains_omnilatex_cls(self, ctan_zip_path):
         with zipfile.ZipFile(str(ctan_zip_path)) as zf:
             names = zf.namelist()
-        assert any(n.endswith("omnilatex.cls") for n in names), (
-            "omnilatex.zip missing omnilatex.cls"
-        )
+        assert any(
+            n.endswith("omnilatex.cls") for n in names
+        ), "omnilatex.zip missing omnilatex.cls"
 
     def test_zip_contains_lib_directory(self, ctan_zip_path):
         with zipfile.ZipFile(str(ctan_zip_path)) as zf:
@@ -132,67 +140,67 @@ class TestCTANZip:
     def test_zip_contains_document_settings(self, ctan_zip_path):
         with zipfile.ZipFile(str(ctan_zip_path)) as zf:
             names = zf.namelist()
-        assert any("document-settings.sty" in n for n in names), (
-            "omnilatex.zip missing document-settings.sty"
-        )
+        assert any(
+            "document-settings.sty" in n for n in names
+        ), "omnilatex.zip missing document-settings.sty"
 
     def test_zip_contains_bib(self, ctan_zip_path):
         with zipfile.ZipFile(str(ctan_zip_path)) as zf:
             names = zf.namelist()
-        assert any("bibliography.bib" in n for n in names), (
-            "omnilatex.zip missing bibliography.bib"
-        )
+        assert any(
+            "bibliography.bib" in n for n in names
+        ), "omnilatex.zip missing bibliography.bib"
 
     def test_zip_contains_readme(self, ctan_zip_path):
         with zipfile.ZipFile(str(ctan_zip_path)) as zf:
             names = zf.namelist()
-        assert any(n.endswith("README.md") for n in names), (
-            "omnilatex.zip missing README.md"
-        )
+        assert any(
+            n.endswith("README.md") for n in names
+        ), "omnilatex.zip missing README.md"
 
     def test_zip_contains_license(self, ctan_zip_path):
         with zipfile.ZipFile(str(ctan_zip_path)) as zf:
             names = zf.namelist()
-        assert any(n.endswith("LICENSE") for n in names), (
-            "omnilatex.zip missing LICENSE"
-        )
+        assert any(
+            n.endswith("LICENSE") for n in names
+        ), "omnilatex.zip missing LICENSE"
 
     def test_zip_omits_examples(self, ctan_zip_path):
         with zipfile.ZipFile(str(ctan_zip_path)) as zf:
             names = zf.namelist()
         example_files = [n for n in names if "/examples/" in n]
-        assert len(example_files) == 0, (
-            f"omnilatex.zip should not contain examples/ but found: {example_files[:5]}"
-        )
+        assert (
+            len(example_files) == 0
+        ), f"omnilatex.zip should not contain examples/ but found: {example_files[:5]}"
 
     def test_zip_omits_institutions(self, ctan_zip_path):
         with zipfile.ZipFile(str(ctan_zip_path)) as zf:
             names = zf.namelist()
         inst_files = [n for n in names if "/institutions/" in n]
-        assert len(inst_files) == 0, (
-            f"omnilatex.zip should not contain institutions/ but found: {inst_files[:5]}"
-        )
+        assert (
+            len(inst_files) == 0
+        ), f"omnilatex.zip should not contain institutions/ but found: {inst_files[:5]}"
 
 
 class TestOverleafZip:
     def test_zip_is_valid(self, overleaf_zip_path):
-        assert zipfile.is_zipfile(str(overleaf_zip_path)), (
-            "omnilatex-overleaf.zip is not a valid zip"
-        )
+        assert zipfile.is_zipfile(
+            str(overleaf_zip_path)
+        ), "omnilatex-overleaf.zip is not a valid zip"
 
     def test_zip_contains_main_tex(self, overleaf_zip_path):
         with zipfile.ZipFile(str(overleaf_zip_path)) as zf:
             names = zf.namelist()
-        assert any(n.endswith("main.tex") for n in names), (
-            "omnilatex-overleaf.zip missing main.tex"
-        )
+        assert any(
+            n.endswith("main.tex") for n in names
+        ), "omnilatex-overleaf.zip missing main.tex"
 
     def test_zip_contains_omnilatex_cls(self, overleaf_zip_path):
         with zipfile.ZipFile(str(overleaf_zip_path)) as zf:
             names = zf.namelist()
-        assert any(n.endswith("omnilatex.cls") for n in names), (
-            "omnilatex-overleaf.zip missing omnilatex.cls"
-        )
+        assert any(
+            n.endswith("omnilatex.cls") for n in names
+        ), "omnilatex-overleaf.zip missing omnilatex.cls"
 
     def test_zip_contains_lib(self, overleaf_zip_path):
         with zipfile.ZipFile(str(overleaf_zip_path)) as zf:
@@ -204,6 +212,6 @@ class TestOverleafZip:
         with zipfile.ZipFile(str(overleaf_zip_path)) as zf:
             names = zf.namelist()
         git_files = [n for n in names if ".git" in n]
-        assert len(git_files) == 0, (
-            f"omnilatex-overleaf.zip should not contain .git files: {git_files[:5]}"
-        )
+        assert (
+            len(git_files) == 0
+        ), f"omnilatex-overleaf.zip should not contain .git files: {git_files[:5]}"

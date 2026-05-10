@@ -7,13 +7,16 @@
 **Purpose:** Get OmniLaTeX running on any platform in under 10 minutes.
 
 **Sections:**
+
 1. **Prerequisites** — Docker (recommended), Nix (alternative), TeX Live 2026 (manual)
 2. **Docker Method** — Pull image, verify, first build
+
    ```
    docker pull ghcr.io/wyattau/omnilatex-docker
    docker run --rm --entrypoint "" -v "$PWD:/workspace" -w /workspace \
      ghcr.io/wyattau/omnilatex-docker python3 build.py build-all
    ```
+
 3. **Nix Method** — `nix develop .#`, `lake build` for Lean
 4. **TeX Live Method** — `tlmgr install omnilatex` (after CTAN publishes)
 5. **DevContainer** — VS Code one-click setup
@@ -29,13 +32,16 @@
 **Purpose:** 5-minute first document. Copy-paste ready.
 
 **Sections:**
+
 1. **Minimal Document** — Smallest possible OmniLaTeX document
+
    ```latex
    \documentclass{omnilatex}
    \begin{document}
    Hello, OmniLaTeX!
    \end{document}
    ```
+
 2. **Adding Options** — Language, doctype, institution
 3. **Your First Real Document** — Complete article with title, sections, a figure, bibliography
 4. **Building** — `build.py build-example article`
@@ -50,6 +56,7 @@
 **Purpose:** Complete reference for `build.py` and `latexmk`.
 
 **Sections:**
+
 1. **build.py Overview** — Python build orchestrator, 2060 lines, all commands
 2. **Build Commands** — Table of all commands with examples:
    | Command | Description |
@@ -77,6 +84,7 @@
 **Purpose:** Complete reference for all 15 class options.
 
 **Sections:**
+
 1. **Option Loading** — How `\documentclass[options]{omnilatex}` works
 2. **Option Reference Table:**
    | Option | Type | Default | Chapter |
@@ -108,6 +116,7 @@
 **Purpose:** How the 55+ doctype aliases map to 3 KOMA classes.
 
 **Sections:**
+
 1. **Architecture** — Three-tier system: user alias → canonical name → KOMA class
 2. **Canonical Doctypes** — Table of 26 canonical names with KOMA base:
    | Canonical | KOMA Class | Category | Chapter |

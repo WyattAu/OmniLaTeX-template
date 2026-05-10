@@ -5,6 +5,7 @@ This example demonstrates a standard document structure using OmniLaTeX.
 ## Usage
 
 1. Build the document:
+
    ```bash
    latexmk
    ```
@@ -14,6 +15,7 @@ This example demonstrates a standard document structure using OmniLaTeX.
 ## Features
 
 This example showcases:
+
 - Standard document formatting
 - Professional layout
 - Bibliography integration

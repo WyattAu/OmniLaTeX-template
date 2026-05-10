@@ -5,6 +5,7 @@ Quick-start boilerplate demonstrating all OmniLaTeX capabilities with minimal bu
 ## Description
 
 This template is designed for:
+
 - **Learning OmniLaTeX**: See how to use each feature correctly
 - **Quick Starts**: Copy and adapt for your own projects
 - **Reference**: Idiomatic patterns for common tasks
@@ -13,19 +14,19 @@ Each chapter demonstrates one category of features with commented, copy-paste-re
 
 ## Features Demonstrated
 
-- ✅ Text formatting and Unicode support
-- ✅ Citations and bibliography
-- ✅ Cross-references (sections, figures, tables, equations)
-- ✅ Lists (itemize, enumerate, description)
-- ✅ Mathematics (inline and display)
-- ✅ Figures with TikZ
-- ✅ Tables with booktabs
-- ✅ Code listings with syntax highlighting
-- ✅ Glossaries and acronyms
-- ✅ Hyperlinks and URLs
-- ✅ Footnotes
-- ✅ Colors
-- ✅ Appendices
+- [x] Text formatting and Unicode support
+- [x] Citations and bibliography
+- [x] Cross-references (sections, figures, tables, equations)
+- [x] Lists (itemize, enumerate, description)
+- [x] Mathematics (inline and display)
+- [x] Figures with TikZ
+- [x] Tables with booktabs
+- [x] Code listings with syntax highlighting
+- [x] Glossaries and acronyms
+- [x] Hyperlinks and URLs
+- [x] Footnotes
+- [x] Colors
+- [x] Appendices
 
 ## Building
 
@@ -54,6 +55,7 @@ minimal-starter/
 ### Quick Start
 
 1. **Copy this template** to your project:
+
    ```bash
    cp -r examples/minimal-starter my-project
    ```
@@ -68,6 +70,7 @@ minimal-starter/
    - Remove features you don't need
 
 4. **Build**:
+
    ```bash
    cd my-project
    latexmk main.tex
@@ -78,6 +81,7 @@ minimal-starter/
 This minimal template uses a single-file structure. For larger projects:
 
 1. **Split content** into separate files:
+
    ```
    content/
    ├── chapter1.tex
@@ -86,6 +90,7 @@ This minimal template uses a single-file structure. For larger projects:
    ```
 
 2. **Include files** in main.tex:
+
    ```latex
    \import{content/}{chapter1}
    \import{content/}{chapter2}
@@ -97,6 +102,7 @@ This minimal template uses a single-file structure. For larger projects:
 ### Adding Your Own Content
 
 #### New Chapter
+
 ```latex
 \chapter{Your Chapter Title}
 
@@ -104,6 +110,7 @@ Your content here...
 ```
 
 #### New Section
+
 ```latex
 \section{Your Section}
 
@@ -115,6 +122,7 @@ More content...
 ```
 
 #### Figure
+
 ```latex
 \begin{figure}[htbp]
     \centering
@@ -125,6 +133,7 @@ More content...
 ```
 
 #### Table
+
 ```latex
 \begin{table}[htbp]
     \centering
@@ -141,6 +150,7 @@ More content...
 ```
 
 #### Code Listing
+
 ```latex
 \begin{listing}[htbp]
 \begin{minted}{python}
@@ -154,11 +164,13 @@ def example():
 ```
 
 #### Citation
+
 ```latex
 According to \cite{key}, ...
 ```
 
 Add entry to `../../bib/bibliography.bib`:
+
 ```bibtex
 @article{key,
     author = {Author Name},
@@ -169,11 +181,13 @@ Add entry to `../../bib/bibliography.bib`:
 ```
 
 #### Glossary Term
+
 ```latex
 The \gls{term} is defined...
 ```
 
 Add to `../../bib/glossaries/abbreviations.bib`:
+
 ```bibtex
 @abbreviation{term,
     short = {TERM},
@@ -199,6 +213,7 @@ In `main.tex`, you can modify options:
 ## Common Patterns
 
 ### Multiple Authors
+
 ```latex
 \author{%
     First Author\and
@@ -208,6 +223,7 @@ In `main.tex`, you can modify options:
 ```
 
 ### Custom Date
+
 ```latex
 \date{January 15, 2024}
 % or
@@ -215,11 +231,13 @@ In `main.tex`, you can modify options:
 ```
 
 ### Suppress Page Numbers
+
 ```latex
 \pagestyle{empty}  % No headers/footers
 ```
 
 ### Change Paper Size
+
 ```latex
 \documentclass[
     a5,  % A5 paper (default is A4)
@@ -228,6 +246,7 @@ In `main.tex`, you can modify options:
 ```
 
 ### Two-Column Layout
+
 ```latex
 \documentclass[
     twocolumn,  % Two-column layout
@@ -253,14 +272,14 @@ In `main.tex`, you can modify options:
 
 ### Common Mistakes
 
-❌ **Wrong**: `\cite{key}` but key not in .bib file
-✅ **Right**: Add entry to bibliography.bib first
+- **Wrong**: `\cite{key}` but key not in .bib file
+- **Right**: Add entry to bibliography.bib first
 
-❌ **Wrong**: `\ref{fig:label}` but label doesn't exist
-✅ **Right**: Add `\label{fig:label}` after `\caption{}`
+- **Wrong**: `\ref{fig:label}` but label doesn't exist
+- **Right**: Add `\label{fig:label}` after `\caption{}`
 
-❌ **Wrong**: `\gls{term}` but term not defined
-✅ **Right**: Add term to glossaries/*.bib first
+- **Wrong**: `\gls{term}` but term not defined
+- **Right**: Add term to glossaries/*.bib first
 
 ### Best Practices
 
@@ -273,22 +292,26 @@ In `main.tex`, you can modify options:
 ## Troubleshooting
 
 ### Bibliography Not Showing
+
 - Ensure you have `\cite{}` commands
 - Check `\addbibresource{}` path
 - Run latexmk (it handles multiple passes)
 
 ### Glossaries Not Appearing
+
 - Add terms to `../../bib/glossaries/*.bib`
 - Use `\gls{}` commands in text
 - Enable `loadGlossaries` in documentclass
 - Ensure bib2gls is installed
 
 ### Code Highlighting Not Working
+
 - Minted requires Python and Pygments
 - Install: `pip install Pygments`
 - Or use `listings` package instead
 
 ### TikZ Errors
+
 - Check syntax carefully
 - Start simple, add complexity gradually
 - See TikZ manual: `texdoc tikz`
@@ -335,6 +358,6 @@ docker run --rm -v $(pwd):/tex -w /tex/examples/minimal-starter \
 
 ---
 
-**Start building your document!** 🚀
+**Start building your document!**
 
 This template gives you everything you need to get started with OmniLaTeX.

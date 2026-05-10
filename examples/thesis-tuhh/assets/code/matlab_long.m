@@ -1,6 +1,6 @@
         fullfilepath = mfilename('fullpath');
         [filepath, filename, ~] = fileparts(fullfilepath);
-    
+
         %% Begin Dialogue
         %{
         Extract Data from user-specified input. Can be either a File that is run
@@ -16,7 +16,7 @@
             'Tables named ''', dflt.comp, ''' and ''', dflt.turb, '''.'], '',...
             'If you choose no, existing values are used.'}, ...
             'Machine Data Prompt', btnFF, btnWS, btnNo, btnFF);
-    
+
         switch pass_data
             case btnFF
                 prompt = {'File name containing the Tables:', ...

@@ -171,7 +171,7 @@ The primary build tool. Run from the repository root.
 # Building
 python build.py build-root               # Build root main.tex
 python build.py build-example thesis     # Build one example
-python build.py build-examples           # Build all 42 examples
+python build.py build-examples           # Build all 43 examples
 python build.py build-examples -j 8      # Parallel build (8 jobs)
 python build.py build-examples --force   # Force rebuild (ignore cache)
 
@@ -303,7 +303,7 @@ lib/                          # 27 modules across 9 subdirectories
 config/
   document-types/             # 26 doctype profiles
   institutions/               # 16 institution configs
-examples/                     # 42 example templates
+examples/                     # 43 example templates
 tests/                        # Test suite (pytest + l3build)
 specs/                        # Formal specs and Lean 4 proofs
 ```

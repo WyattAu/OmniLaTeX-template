@@ -11,6 +11,7 @@ This example demonstrates how to create a professional cover letter using the Om
 ## Configuration
 
 The `config/document-settings.sty` file contains placeholders for:
+
 - Sender information (name, address, contact details)
 - Recipient information (name, company, address)
 - Position and company details
@@ -20,6 +21,7 @@ Replace all bracketed placeholders (e.g., `[YOUR NAME]`) with actual information
 ## Content Structure
 
 The cover letter follows a standard professional format:
+
 - Salutation
 - Introduction expressing interest
 - Body highlighting relevant experience and skills

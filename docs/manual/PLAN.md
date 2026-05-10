@@ -184,26 +184,31 @@ B4_APPENDIX_SIUNITS.md   — Quick-reference: all custom SI units and qualifiers
 ## Implementation Plan
 
 ### Phase 1: Scaffold (chapters 00-02, 10-14)
+
 - Create the `examples/manual/` directory structure
 - `config/document-types/manual.sty` already exists
 - Write front matter + Part I (foundations)
 - Establish consistent formatting conventions
 
 ### Phase 2: Core Content (chapters 30-34, 50-53, 60-63, 70-72)
+
 - Typography, math, layout, floats, references
 - These have the most overlap with TUHH book — can adapt
 - Most valuable chapters for daily use
 
 ### Phase 3: Extended Content (chapters 20-25, 40-44, 80-81, 90-95)
+
 - All 26 doctypes, i18n, code, advanced features
 - CJK/RTL coverage (unique selling point)
 - Presentation/poster/CV chapters
 
 ### Phase 4: Automation & Verification (chapters 100-104, 110-111)
+
 - Build system, CI/CD, Lean proofs
 - Architecture documentation
 
 ### Phase 5: Back Matter & Polish (chapters B0-B4)
+
 - Quick-reference appendices
 - Index compilation
 - Final proofread

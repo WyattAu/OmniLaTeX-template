@@ -332,9 +332,9 @@
     % all otherwise missing but maybe required commands,
     % like \glsgroupskip if --group option is used for bib2gls
     \setglossarystyle{custom-base}
-    
+
     \renewcommand*{\glsgroupskip}{\addlinespace\addlinespace}%
-    
+
     % This command is taken from the source code, I hope I am not abusing it:
     \ifglsnonumberlist
         % User requested NO location list/number list/page list to be printed, so
@@ -359,14 +359,14 @@
                 \end{longtable}%
             }%
         \fi
-        
+
         \renewcommand*{\glsgroupheading}[1]{%
             \glshdrfont{\glsgetgrouptitle{##1}} &
             \glshdrfont{\descriptionname} &
             \glshdrfont{\GetTranslation{Unit}}
             \tabularnewline
         }%
-        
+
         \renewcommand*{\glossentry}[2]{%
             \glsentryitem{##1}\glstarget{##1}{\glossentryname{##1}} &
             \glossentrydesc{##1}\glspostdescription &
@@ -396,7 +396,7 @@
                 \end{longtable}%
             }%
         \fi
-        
+
         \renewcommand*{\glsgroupheading}[1]{%
             \glshdrfont{\glsgetgrouptitle{##1}} &
             \glshdrfont{\descriptionname} &
@@ -404,7 +404,7 @@
             \glshdrfont{\GetTranslation{Unit}}
             \tabularnewline
         }%
-        
+
         \renewcommand*{\glossentry}[2]{%
             \glsentryitem{##1}\glstarget{##1}{\glossentryname{##1}} &
             \glossentrydesc{##1}\glspostdescription &
@@ -414,7 +414,7 @@
             \glsentryunit{##1}
             \tabularnewline
         }
-        
+
     \fi
 }
 
@@ -427,7 +427,7 @@
     % all otherwise missing but maybe required commands, like
     % \glsgroupskip if --group option is used for bib2gls
     \setglossarystyle{custom-base}
-    
+
     % This command is taken from the source code, I hope I am not abusing it:
     \ifglsnonumberlist
         % User requested NO location list/number list/page list to be printed, so
@@ -452,14 +452,14 @@
                 \end{longtable}%
             }%
         \fi
-        
+
         \renewcommand*{\glossaryheader}{%
             \glshdrfont{\symbolname} &
             \glshdrfont{\descriptionname} &
             \multicolumn{2}{l}{{\glshdrfont{\GetTranslation{PhysicalQuantity}}}}
             \tabularnewline
         }%
-        
+
         \renewcommand*{\glossentry}[2]{%
             \glsentryitem{##1}\glstarget{##1}{\glossentryname{##1}} &
             \glossentrydesc{##1}\glspostdescription &
@@ -491,7 +491,7 @@
                 \end{longtable}%
             }%
         \fi
-        
+
         \renewcommand*{\glossaryheader}{%
             \glshdrfont{\symbolname} &
             \glshdrfont{\descriptionname} &
@@ -499,7 +499,7 @@
             \glshdrfont{\pagelistname}
             \tabularnewline
         }%
-        
+
         \renewcommand*{\glossentry}[2]{%
             \glsentryitem{##1}\glstarget{##1}{\glossentryname{##1}} &
             \glossentrydesc{##1}\glspostdescription &

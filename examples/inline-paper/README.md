@@ -5,6 +5,7 @@ This example demonstrates how to use OmniLaTeX for short inline papers.
 ## Usage
 
 1. Build the document:
+
    ```bash
    latexmk
    ```
@@ -14,6 +15,7 @@ This example demonstrates how to use OmniLaTeX for short inline papers.
 ## Features
 
 This example showcases:
+
 - Inline paper layout
 - Minimal structure
 - Academic formatting

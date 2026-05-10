@@ -25,21 +25,25 @@ Current version: **v1.3.1** (2026-04-24)
 | **P4.4 TeX Live 2025 readiness** | Medium | Pending |
 
 ### P4.1 Documentation Accuracy
+
 - Reconcile README counts (55 aliases, 24 examples, 16 profiles)
 - Update Docker section for monorepo structure
 - Fix stale line counts in project structure
 - Update institution listing (TUHH, TUM, ETH Zürich, generic)
 
 ### P4.2 Lean 4 CI Integration
+
 - Add CI job running `lake build` + `lake check`
 - Gate on proof compilation success
 - Update `flake.nix` checks
 
 ### P4.3 Docker Digest Automation
+
 - Post-push workflow: after docker-ci.yml builds new image, auto-update digest in `build.yml` and `.env.docker`
 - Prevent stale digest references
 
 ### P4.4 TeX Live 2025 Readiness
+
 - Test Nix flake with TL2025 when released
 - Rebuild Docker image with TL2025
 - Full example test suite pass
@@ -55,6 +59,7 @@ Current version: **v1.3.1** (2026-04-24)
 | **P5.3 Color theme system** | Medium | Pending |
 
 ### P5.1 New Institution Configs
+
 - MIT (brand colors, logo placeholder)
 - Stanford (brand colors, logo placeholder)
 - Cambridge (brand colors, logo placeholder)
@@ -62,6 +67,7 @@ Current version: **v1.3.1** (2026-04-24)
 - University template generator: `build.py scaffold-institution <name>`
 
 ### P5.2 Beamer Theme Overhaul
+
 - Branded footers with institution logo + short title
 - Progress bar / frame counter
 - Custom block environments (theorem, example, alert)
@@ -69,6 +75,7 @@ Current version: **v1.3.1** (2026-04-24)
 - Navigation symbols toggle
 
 ### P5.3 Color Theme System
+
 - Formal color theme API (`\usetheme{omnilatex}` for Beamer)
 - Institution-aware color switching
 - Dark mode support (experimental)
@@ -84,6 +91,7 @@ Current version: **v1.3.1** (2026-04-24)
 | **P6.3 RTL language support** | Medium | Pending |
 
 ### P6.1 CJK Full Support
+
 - CJK font integration (Noto Sans CJK, Source Han)
 - Vertical text mode
 - Proper line breaking for CJK
@@ -91,12 +99,14 @@ Current version: **v1.3.1** (2026-04-24)
 - Japanese (JP), Korean (KO), Chinese (ZH) examples
 
 ### P6.2 Accessibility Hardening
+
 - Screen reader testing with NVDA/JAWS
 - Alt text for all TikZ diagrams
 - Tagged PDF as default option
 - WCAG 2.1 AA compliance documentation
 
 ### P6.3 RTL Language Support
+
 - Arabic (AR), Hebrew (HE) bidi support
 - Proper paragraph direction
 - RTL-aware page layout
@@ -113,21 +123,25 @@ Current version: **v1.3.1** (2026-04-24)
 | **P7.4 Template marketplace** | Low | Pending |
 
 ### P7.1 Citation Style Library
+
 - Pre-configured biblatex styles: IEEE, ACM, Nature, Science, APA, Chicago
 - `\usepackage[style=ieee]{omnilatex-citations}` convenience wrapper
 - Journal-aware bibliography formatting
 
 ### P7.2 Overleaf Gallery Submission
+
 - Overleaf-compatible zip (already have `scripts/make-overleaf-zip.sh`)
 - Submit to Overleaf template gallery
 - Documentation for Overleaf users
 
 ### P7.3 VS Code Extension
+
 - OmniLaTeX command palette (doctype picker, institution switcher)
 - Project initialization wizard
 - Build status integration
 
 ### P7.4 Template Marketplace
+
 - Web page: pick doctype + institution + language → download zip
 - GitHub Pages hosted
 - API for programmatic access

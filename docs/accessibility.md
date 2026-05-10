@@ -100,6 +100,7 @@ Use `\validatstructure` at the end of your document to log a structural
 check. In OmniLaTeX, `\section` maps to H1, `\subsection` to H2, and so on.
 
 Best practices:
+
 - Use `\section` for top-level headings.
 - Use `\subsection` for sub-headings within a section.
 - Do not skip from `\section` to `\subsubsection`.

@@ -1,6 +1,6 @@
 # OmniLaTeX
 
-A modular, engineering-grade LaTeX document class for academic and professional documents. 55+ doctype aliases, 27 modules, 44 example templates, a 238-page reference manual, byte-for-byte reproducible builds, and formal Lean 4 verification.
+A modular, engineering-grade LaTeX document class for academic and professional documents. 55+ doctype aliases, 27 modules, 43 example templates, a 238-page reference manual, byte-for-byte reproducible builds, and formal Lean 4 verification.
 
 Built on LuaTeX (LuaHBTeX 1.21.0) + KOMA-Script + TeX Live 2025. Compile with `latexmk -lualatex` or `build.py`.
 
@@ -9,7 +9,7 @@ Built on LuaTeX (LuaHBTeX 1.21.0) + KOMA-Script + TeX Live 2025. Compile with `l
 | | OmniLaTeX | Typical template |
 |---|---|---|
 | **Document types** | 55+ aliases (thesis, CV, patent, journal, ...) | 1–3 |
-| **Test coverage** | 530+ test cases (structural, property-based, unicode, hypothesis) | 0 |
+| **Test coverage** | 529+ test cases (structural, property-based, unicode, hypothesis) | 0 |
 | **Reproducible builds** | Byte-for-byte deterministic | No |
 | **Formal verification** | Lean 4 proofs (10 proof modules, 53/53 theorems proven) | No |
 | **CI platforms** | 9 GitHub Actions workflows + 4 other platforms | 0–1 |
@@ -38,7 +38,7 @@ python build.py build-example minimal-starter
 
 ## Features
 
-- **55+ doctype aliases** resolving to 16 document profiles across 3 KOMA-Script base classes
+- **55+ doctype aliases** resolving to 26 document profiles across 3 KOMA-Script base classes
 - **27 modular `.sty` packages** with formal interface contracts
 - **Lazy module loading** — only load what you need (`enablemath`, `enabletikz`, `enablecode`, ...)
 - **Modern font stack** — Libertinus Serif + Math, Monaspace Neon, Atkinson Hyperlegible Next (with graceful fallback)
@@ -100,7 +100,7 @@ OmniLaTeX supports 9 primary languages and 19 secondary languages via Polyglossi
 
 ## Examples
 
-44 ready-to-use templates in `examples/` (43 compile on TeX Live 2026; `thesis-tuhh` requires TUHH assets):
+43 ready-to-use templates in `examples/` (42 compile on TeX Live 2026; `thesis-tuhh` requires TUHH assets):
 
 | Example | Doctype | Description |
 |---------|---------|-------------|
@@ -135,6 +135,15 @@ OmniLaTeX supports 9 primary languages and 19 secondary languages via Polyglossi
 | `rtl-hebrew` | article | Hebrew document with RTL support |
 | `citation-styles` | article | Demonstrates all 9 citation styles |
 | `color-themes` | article | Demonstrates all 6 color themes + dark/light toggle |
+| `lua-showcase` | article | Lua extension showcase |
+| `white-paper` | white-paper | White paper document |
+| `exam` | exam | Examination paper |
+| `homework` | homework | Homework assignment |
+| `research-proposal` | research-proposal | Research proposal |
+| `handout` | handout | Class handout |
+| `memo` | memo | Internal memorandum |
+| `invoice` | invoice | Invoice document |
+| `recipe` | recipe | Recipe document |
 
 ```bash
 python build.py build-example <name>
@@ -263,6 +272,7 @@ python build.py clean                    # Remove build artifacts
 ### Pages Deployment
 
 Set the public base URL for PDF verification:
+
 - GitHub Pages: automatic
 - Other: set `OMNILATEX_VERIFICATION_BASE_URL`, `CF_PAGES_URL`, or `PAGES_URL`
 
@@ -280,7 +290,7 @@ config/
 ├── document-types/
 │   ├── thesis.sty               # Thesis profile
 │   ├── article.sty              # Article profile
-│   └── ...                      # 16 document type profiles
+│   └── ...                      # 26 document type profiles
 └── institutions/
     ├── eth/                     # ETH Zürich branding
     ├── tuhh/                    # TUHH branding
@@ -304,7 +314,7 @@ config/
 ## Project Structure
 
 ```
-├── omnilatex.cls                # Main document class (363 lines)
+├── omnilatex.cls                # Main document class (390 lines)
 ├── build.py                     # Build automation
 ├── build.lua                    # l3build configuration
 ├── .latexmkrc                   # LaTeX compilation settings
@@ -349,6 +359,7 @@ python build.py test --verbose    # Verbose output
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for:
+
 - Adding institution configs, languages, and doctypes
 - Development setup (Docker, Nix, local TeX Live)
 - PR checklist and code style conventions

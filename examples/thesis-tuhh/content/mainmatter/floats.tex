@@ -11,7 +11,7 @@ These are mainly handled by the packages:
           case \hologo{LuaLaTeX}, is not very straightforward.
           In fact, it is anything but: \abb{scalable_vector_graphics} files cannot
           be included directly at all and intermediate steps are needed.
-          
+
           Using the \ctanpackage{svg} package, the workflow is somewhat automated.
           Only the original \abb{scalable_vector_graphics} files are kept as the
           \abb{single_source_of_truth}, and the generation of the
@@ -34,7 +34,7 @@ These are mainly handled by the packages:
           \end{enumerate}
           Once the files are generated, they can be treated as temporary junk and are
           always easily regenerated from the source \abb{scalable_vector_graphics}.
-          
+
           After years of experimentation, this seems like the best workflow.
           The only laborious manual task left is placement of annotations onto the
           generated \abb{portable_document_format} files.
@@ -51,7 +51,7 @@ These are mainly handled by the packages:
           property can be assumed.
           This also makes functions like \emph{Resize page to drawing or selection}
           futile if text is part of the outer elements of a drawing.
-          
+
           Wanting to change any text later on results in having to start InkScape
           instead of just doing it conveniently in the \LaTeX{} source.
           The alternative is to place macros (\verb|\newcommand*{}|) everywhere
@@ -60,7 +60,7 @@ These are mainly handled by the packages:
           These macros serve as labels, but are ugly, annoying, and remove the
           usability of the plain, original \abb{scalable_vector_graphics} file
           (since we would first need to know what each macro stands for).
-          
+
           Using the \ctanpackage{svg} package to generate plain, text\-/less
           \abb{portable_document_format} and only later adding any
           text or annotation in the \LaTeX{} source itself seems the best of both
@@ -71,7 +71,7 @@ These are mainly handled by the packages:
           An example for annotations (with loops) is shown in \cref{fig:bitmap_tikz}.
           All other graphics that are neither bitmaps nor \idx{tikz} graphics are
           handled using the \ctanpackage{svg} approach.
-          
+
           All of this is very convenient indeed, since we can now do everything in
           \LaTeX{} and \ctanpackage{tikz} and basically never have to revisit the base
           \abb{scalable_vector_graphics} file, unless the graphic itself changes.
@@ -82,7 +82,7 @@ These are mainly handled by the packages:
           float they are attached to.
           This tends to look much tighter and tidier, see
           \cref{fig:wide_caption,fig:tighter_caption} for a comparison.
-          
+
           Other features are automatic centering of floats, automatic positioning
           of captions (tables on top, figures below, independent of where the
           \verb|\caption| command occurs in the source), multiple floats and
@@ -278,109 +278,109 @@ No need for tedious repetition.
                 @{}
             }
             \toprule
-            Name                                                        & 
-            \multicolumn{7}{c}{{Mass fraction \(\sym{mass_fraction}\)}} & 
-            {\(\sym{density}\)}                                         & 
+            Name                                                        &
+            \multicolumn{7}{c}{{Mass fraction \(\sym{mass_fraction}\)}} &
+            {\(\sym{density}\)}                                         &
             {\(\sym{heating_value}\)}\\
-                                                                        & 
-            \multicolumn{7}{c}{{[--]}}                                  & 
-            \(\brackets*{\unit{\kilogram\per\meter\cubed}}\)            & 
+                                                                        &
+            \multicolumn{7}{c}{{[--]}}                                  &
+            \(\brackets*{\unit{\kilogram\per\meter\cubed}}\)            &
             \(\brackets*{\unit{\mega\joule\per\kilogram}}\)\\
             \cmidrule(lr){2-8}% truncate left and right
-                                                                        & 
-            \chcpd{C}                                                   & 
-            \chcpd{H}                                                   & 
-            \chcpd{S}                                                   & 
-            \chcpd{O}                                                   & 
-            \chcpd{N}                                                   & 
-            \chcpd{H2O}                                                 & 
-            {Ash}                                                       & 
+                                                                        &
+            \chcpd{C}                                                   &
+            \chcpd{H}                                                   &
+            \chcpd{S}                                                   &
+            \chcpd{O}                                                   &
+            \chcpd{N}                                                   &
+            \chcpd{H2O}                                                 &
+            {Ash}                                                       &
                                                                         & \\[-0.4\baselineskip]
             \midrule
-            Diesel\omnlFloatFootmark[1]                                 & 
-            0.8600                                                      & 
-            0.1320                                                      & 
-            0.0060                                                      & 
-            \multicolumn{2}{c}{\num{0.0020}\omnlFloatFootmark[2]}      & 
-            {n.a.}                                                      & 
-            {n.a.}                                                      & 
-            840                                                         & 
+            Diesel\omnlFloatFootmark[1]                                 &
+            0.8600                                                      &
+            0.1320                                                      &
+            0.0060                                                      &
+            \multicolumn{2}{c}{\num{0.0020}\omnlFloatFootmark[2]}      &
+            {n.a.}                                                      &
+            {n.a.}                                                      &
+            840                                                         &
             42.7\\
-            Oil EL\omnlFloatFootmark[1]                                 & 
-            0.8570                                                      & 
-            0.1310                                                      & 
-            0.0100                                                      & 
-            \multicolumn{2}{c}{\num{0.0020}\omnlFloatFootmark[2]}      & 
-            {n.a.}                                                      & 
-            {n.a.}                                                      & 
-            840                                                         & 
+            Oil EL\omnlFloatFootmark[1]                                 &
+            0.8570                                                      &
+            0.1310                                                      &
+            0.0100                                                      &
+            \multicolumn{2}{c}{\num{0.0020}\omnlFloatFootmark[2]}      &
+            {n.a.}                                                      &
+            {n.a.}                                                      &
+            840                                                         &
             42.7\\
-            Oil H\omnlFloatFootmark[1]                                  & 
-            0.8490                                                      & 
-            0.1060                                                      & 
-            0.0350                                                      & 
-            \multicolumn{2}{c}{\num{0.0100}\omnlFloatFootmark[2]}      & 
-            {n.a.}                                                      & 
-            {n.a.}                                                      & 
-            980                                                         & 
+            Oil H\omnlFloatFootmark[1]                                  &
+            0.8490                                                      &
+            0.1060                                                      &
+            0.0350                                                      &
+            \multicolumn{2}{c}{\num{0.0100}\omnlFloatFootmark[2]}      &
+            {n.a.}                                                      &
+            {n.a.}                                                      &
+            980                                                         &
             40.0\\
-            \abb{marine_diesel_oil}\omnlFloatFootmark[3]                & 
-            {n.a.}                                                      & 
-            {n.a.}                                                      & 
-            0.0150                                                      & 
-            {n.a.}                                                      & 
-            {n.a.}                                                      & 
-            {\num{0.0030}\omnlFloatFootmark[4]}                        & 
-            0.0001                                                      & 
-            900                                                         & 
+            \abb{marine_diesel_oil}\omnlFloatFootmark[3]                &
+            {n.a.}                                                      &
+            {n.a.}                                                      &
+            0.0150                                                      &
+            {n.a.}                                                      &
+            {n.a.}                                                      &
+            {\num{0.0030}\omnlFloatFootmark[4]}                        &
+            0.0001                                                      &
+            900                                                         &
             {n.a.}\\
-            \abb{heavy_fuel_oil}\omnlFloatFootmark[5]                   & 
-            {n.a.}                                                      & 
-            {n.a.}                                                      & 
-            {\num{0.0350}\omnlFloatFootmark[6]}                        & 
-            {n.a.}                                                      & 
-            {n.a.}                                                      & 
-            {\num{0.0050}\omnlFloatFootmark[4]}                        & 
-            0.0015                                                      & 
-            1010                                                        & 
+            \abb{heavy_fuel_oil}\omnlFloatFootmark[5]                   &
+            {n.a.}                                                      &
+            {n.a.}                                                      &
+            {\num{0.0350}\omnlFloatFootmark[6]}                        &
+            {n.a.}                                                      &
+            {n.a.}                                                      &
+            {\num{0.0050}\omnlFloatFootmark[4]}                        &
+            0.0015                                                      &
+            1010                                                        &
             {n.a.}\\
             \addlinespace
-            Light\omnlFloatFootmark[7]                                  & 
-            0.8600                                                      & 
-            0.1320                                                      & 
-            0.0060                                                      & 
-            0.0010                                                      & 
-            0.0010                                                      & 
-            0                                                           & 
-            0                                                           & 
-            840                                                         & 
+            Light\omnlFloatFootmark[7]                                  &
+            0.8600                                                      &
+            0.1320                                                      &
+            0.0060                                                      &
+            0.0010                                                      &
+            0.0010                                                      &
+            0                                                           &
+            0                                                           &
+            840                                                         &
             {\Cref{eq:boie}}\\
-            Medium\omnlFloatFootmark[7]                                 & 
-            0.8530                                                      & 
-            0.1269                                                      & 
-            0.0150                                                      & 
-            0.0010                                                      & 
-            0.0010                                                      & 
-            0.0030                                                      & 
-            0.0001                                                      & 
-            900                                                         & 
+            Medium\omnlFloatFootmark[7]                                 &
+            0.8530                                                      &
+            0.1269                                                      &
+            0.0150                                                      &
+            0.0010                                                      &
+            0.0010                                                      &
+            0.0030                                                      &
+            0.0001                                                      &
+            900                                                         &
             {\Cref{eq:boie}}\\
-            Heavy\omnlFloatFootmark[7]                                  & 
-            0.8460                                                      & 
-            0.1025                                                      & 
-            0.0350                                                      & 
-            0.0050                                                      & 
-            0.0050                                                      & 
-            0.0050                                                      & 
-            0.0015                                                      & 
-            1010                                                        & 
+            Heavy\omnlFloatFootmark[7]                                  &
+            0.8460                                                      &
+            0.1025                                                      &
+            0.0350                                                      &
+            0.0050                                                      &
+            0.0050                                                      &
+            0.0050                                                      &
+            0.0015                                                      &
+            1010                                                        &
             {\Cref{eq:boie}}\\
             \bottomrule
         \end{tabular}
         \omnlFloatFoottext[1]{
             \cite[634]{baehrThermodynamikGrundlagenUnd2016}; see also
             \cite[L70]{dubbelTaschenbuchFurMaschinenbau2007} and
-            \cite[97]{mollenhauerHandbuchDieselmotoren2007}.% 
+            \cite[97]{mollenhauerHandbuchDieselmotoren2007}.%
         }
         \omnlFloatFoottext[2]{
             Given as a sum \(\sym{mass_fraction}_{\chcpd{O}} + \sym{mass_fraction}_{\chcpd{N}}\).%
@@ -402,7 +402,7 @@ No need for tedious repetition.
         \omnlFloatFoottext[7]{
             Derived, \emph{virtual} fuels.%
         }
-    
+
     \end{table}
 \end{landscape}
 
@@ -1126,7 +1126,7 @@ lines that effectively do something useful.
                 \addlegendentry{%
                     Specific Enthalpy in \unit{\kilo\joule\per\kilogram\dryair}%
                 }
-                
+
                 % Add nodes and connect them. Connect the one we are currently
                 % drawing to the previous one.
                 % x and y coordinates are moisture content and temperature respectively
@@ -1143,7 +1143,7 @@ lines that effectively do something useful.
                 \edef\temp{\noexpand\coordinate (LABELDOT_\i) at
                     (\MoistureContent, \Temperature);}
                 \temp
-                
+
                 \edef\temp{\noexpand\node[
                         \nodeorientation,
                         align=center,
@@ -1154,7 +1154,7 @@ lines that effectively do something useful.
                         font=\noexpand\small
                     ] at (LABELDOT_\i) {\nodetext};}
                 \temp
-                
+
                 % After the first one, start connecting backwards.
                 \ifnum \i > 1
                     \edef\temp{
@@ -1185,7 +1185,7 @@ For this to work best and most reliably, dates and times should be in
 \abb{international_organization_for_standardization} 8601 format:
 \begin{center}
     \texttt{YYYY-MM-DDThh:mm:ss\phantom{Z}}:% \phantom for budget alignment
-    
+
     \texttt{2020-05-19T12:15:31Z},
 \end{center}
 where \texttt{Z} is time\-/zone information and \texttt{T} is an arbitrary, but
@@ -1453,7 +1453,7 @@ need to be written to an auxiliary file first.
     \newcommand*{\setmuskip}[2]{#1=#2\relax}
     \setmuskip{\medmuskip}{15mu plus 2mu minus 4mu}
     \setmuskip{\thickmuskip}{18mu plus 2mu minus 4mu}
-    
+
     \begin{equation}\label{eq:tikz_in_text}
         \tikzmark{c}\sym{mass_fraction}_{\chcpd{C}}
         +
@@ -1472,7 +1472,7 @@ need to be written to an auxiliary file first.
         \num{1}
         \eqend{}
     \end{equation}
-    
+
     \begin{tikzpicture}[%
             remember picture,%
             overlay,%
@@ -1483,7 +1483,7 @@ need to be written to an auxiliary file first.
         \pgfmathsetmacro{\hshiftone}{1}
         \pgfmathsetmacro{\hshifttwo}{2}
         \pgfmathsetmacro{\hshiftthree}{3}
-        
+
         \foreach \x/\y/\a/\b in {%
                 c/Carbon/\vshiftone/-\hshiftthree,%
                 h/Hydrogen/\vshifttwo/-\hshifttwo,%
@@ -1502,7 +1502,7 @@ need to be written to an auxiliary file first.
                 \draw[-stealth] [out=90](\x2) to [in=270](\x1);
             }%
     \end{tikzpicture}
-    
+
     % We need to use 'overlay', but this also means we lose the bounding box.
     % Eye-ball it here, sadly.
     \vspace{4\baselineskip}
@@ -1686,17 +1686,17 @@ More \idx{tikz} examples are shown in
         ] {}
         (\circuitwidth,\circuitheight) -- node[contact] (CONTACT_RIGHT) {}
         (\circuitwidth,0) to [battery] (0,0);
-        
+
         \draw[<->, shorten <>=0.7em] (CONTACT_LEFT) -- (CONTACT_RIGHT)
         node[arrowlabel] {\(\sym{voltage}\)};
-        
+
         \node[
             fit={(RESISTOR)(ELECTRIC_CURRENT_LABEL)(CONTACT_LEFT)(CONTACT_RIGHT)},
             inner sep=1em,
             draw,
             dashed
         ] (BOUNDARY) {};
-        
+
         % The following draws a label directly onto the node border.
         % Cannot really be done with supplying a 'label' directly to the node
         % BOUNDARY (?)
@@ -1717,14 +1717,14 @@ More \idx{tikz} examples are shown in
         % \draw (0,0,0) -- (1,0,0) node[right] {\(x\)};
         % \draw (0,0,0) -- (0,1,0) node[left] {\(y\)};
         % \draw (0,0,0) -- (0,0,1) node[above] {\(z\)};
-        
+
         % Base measurements. Default unit is centimeter
         \pgfmathsetmacro{\plateheight}{0.2}
         \pgfmathsetmacro{\platewidth}{4}
         \pgfmathsetmacro{\platedepth}{3}
         % Stretch how arrows are distanced from the plate:
         \pgfmathsetmacro{\arrowdistance}{2.5}
-        
+
         % Bottom arrow:
         \begin{scope}[canvas is xy plane at z=-\plateheight/\arrowdistance]
             \draw[flowarrow={4em}{0.2em}, solid] (-\platewidth*0.25,\platedepth*0.5)
@@ -1733,7 +1733,7 @@ More \idx{tikz} examples are shown in
             (\platewidth*1.25,\platedepth*0.5)
             node[right] {\(\flow{\sym{mass}}_{2}'\)};
         \end{scope}
-        
+
         % Top surface:
         \begin{scope}[canvas is xy plane at z=\plateheight]
             \draw[wall] (0,0) rectangle (\platewidth,\platedepth)
@@ -1746,14 +1746,14 @@ More \idx{tikz} examples are shown in
         % Front surface:
         \begin{scope}[canvas is xz plane at y=\platedepth]
             \draw[wall] (0,0) rectangle (\platewidth,\plateheight);
-            
+
             \foreach [count=\i] \posfraction in {0.2, 0.4, ..., 0.8}{%
                     \draw[->, dashed, thick] (\posfraction*\platewidth, \plateheight*2)
                     --
                     (\posfraction*\platewidth, -2*\plateheight) coordinate[below] (ARROW_\i);
                 }
         \end{scope}
-        
+
         % Top arrow:
         \begin{scope}[canvas is xy plane at z=\plateheight*\arrowdistance]
             \draw[flowarrow={4em}{0.2em}, solid] (\platewidth*1.25,\platedepth*0.5)
@@ -1762,7 +1762,7 @@ More \idx{tikz} examples are shown in
             (-\platewidth*0.25,\platedepth*0.5)
             node[left] {\(\flow{\sym{mass}}_{1}'\)};
         \end{scope}
-        
+
         % Manually set arrow label here:
         \node at ($(ARROW_1)!0.5!(ARROW_4)$) {\(\flow{\sym{volume}}\)};
     \end{tikzpicture}
@@ -1817,15 +1817,15 @@ Refer to their source code to see how more or less easily they are created.
         node[midway, compressor, label=above:Compressor, rotate=180] (COMPRESSOR) {} --
         node[midway, heat exchanger, label=above:Evaporator] (EVAPORATOR) {}
         cycle;
-        
+
         % Engine on right of compressor:
         \draw[thisshaft] (COMPRESSOR) -- ++ (2,0)
         node [right, rectangle, draw, thin] (ENGINE) {Engine}
         coordinate[midway] (SHAFT_MIDDLE);
-        
+
         % Shift down by 7pt (shaft line width is 3pt) and also specify that as a radius
         \draw[->] ([yshift=-7pt]SHAFT_MIDDLE) arc (290:60:7pt);
-        
+
         \foreach [count=\i] \xcomponent/\ycomponent/\orientation in {
                 COMPRESSOR/EVAPORATOR/right,
                 COMPRESSOR/CONDENSER/right,
@@ -1837,28 +1837,28 @@ Refer to their source code to see how more or less easily they are created.
                     label={[name=NUMBER_\i]\orientation:{\num{\i}}}
                 ] at (\xcomponent|-\ycomponent) {};
             }
-        
+
         \draw[<-] (EVAPORATOR) -- ++ (0,-0.8)
         node[at end, below, align=center]
         {supplied heat} coordinate[near start] (LOWER_BOUNDARY);
-        
+
         \draw[->] (CONDENSER) -- ++ (0,1.2) coordinate[pos=0.6] (UPPER_BOUNDARY)
         node[at end, above, align=center]
             {heat discharge} coordinate[near start] (A);
-        
+
         % Drawings around engine
         \draw[->, dashdotted] (ENGINE) |-
         node[very near end, right, fill=white] {excess engine heat} (A);
         \draw[<-] (ENGINE) -- ++ (1.3,0) node[right, align=left]
         {Electricity,\\gas} coordinate[midway] (RIGHT_BOUNDARY);
-        
+
         % Fit a rectangle around the relevant parts:
         \node[
             fit={(UPPER_BOUNDARY)(LOWER_BOUNDARY)(RIGHT_BOUNDARY)(VALVE)(NUMBER_3)(NUMBER_4)},
             draw,
             dashed
         ] (COP_BOUNDARY) {};
-        
+
         % COP area labels.
         \node[fill=white, left] at ([xshift=-2em]COP_BOUNDARY.north east)
         {\glsxtrshort{abb.coefficient_of_performance}-Boundary};
@@ -1884,11 +1884,11 @@ Refer to their source code to see how more or less easily they are created.
         \pgfmathsetmacro{\numberofcolumns}{3}
         % Extension by which the pipes expand to the left, out of the radiators:
         \pgfmathsetmacro{\pipeextension}{1}
-        
+
         \foreach [remember=\x as \prevx] \x in {1, 2, ..., \numberofcolumns}{
                 \foreach [remember=\y as \prevy] \y in {1, 2, ..., \numberofrows}{
                         \node[radiator] at (\x*\gridspread, 0.7*\y*\gridspread) (RADIATOR_\x_\y) {};
-                        
+
                         % Draw the radiators with pipes sticking out:
                         % \ifnum doesn't have elseif, so nest if
                         \ifnum \x = 1
@@ -1930,10 +1930,10 @@ Refer to their source code to see how more or less easily they are created.
                         \fi
                     }
             }
-        
+
         \pic[below left=0em and 3em of LOWER_PIPE_END_1_1, scale=0.3, pic text={Boiler}]
         (BOILER) {boiler};
-        
+
         % Helper coordinates because perpendicularity operator (-| or |-) seems to have trouble in conjunction with calculated nodes ($ $)
         \coordinate (BOILERTOP) at ($(BOILER.before top)!0.5!(BOILER.after top)$);
         % Pipe from boiler straight up, until criteration is met:
@@ -1941,7 +1941,7 @@ Refer to their source code to see how more or less easily they are created.
         ([yshift=1.5em]BOILERTOP|-UPPER_PIPE_END_1_\numberofrows)
         coordinate[at end] (BOILER_OUT_PIPE_END)
         node[pos=0.2, pump] {};
-        
+
         \foreach \x in {1, 2, ..., \numberofcolumns}{
                 % Connect end of boiler vertical pipe to each radiator column:
                 \draw[thispipe] (BOILER_OUT_PIPE_END) -|
@@ -1949,14 +1949,14 @@ Refer to their source code to see how more or less easily they are created.
                 % Connect bottom row lower pipes to boiler:
                 \draw[thispipe, ->] (LOWER_PIPE_END_\x_1) |- (BOILER.east);
             }
-        
+
         % Helper coords to make calc etc work reliably
         \coordinate (B) at (BOILER.east|-LOWER_PIPE_END_1_1);
         \coordinate (EQUALIZING_TANK_PIPE_POSITION) at ($(B)!0.5!(BOILER.east)$);
-        
+
         % Set it above horizontal middle of boiler and start of first row.
         \draw (EQUALIZING_TANK_PIPE_POSITION) -- ++ (0, 2em) node[equalizing tank] {};
-        
+
         % 'Air discharged (Lufttopf)' at top
         \draw[thispipe] (BOILER_OUT_PIPE_END) -- ++ (0, 0.5em)
         node[
@@ -2005,13 +2005,13 @@ For an example box, see \cref{ex:example}.
         1 = 1
     \end{equation}
     still holds true after all these years!
-    
+
     If the \verb|float| setting is set, this box also floats.
     Inserting other floats in here will then cause \LaTeX{} to have a massive fit
     (floats inside floats do not make sense).
     This is circumvented setting the \verb|[H]| flag,
     saying \enquote{this float is not really a float, pin it down \emph{right} here}.
-    
+
     \textbf{In any other context, setting any such flag is code smell/poor style.}
     These are often used wrong and just as often set prematurely and then reset
     countless times, all the while \LaTeX{} complains (rightfully so) about the poor
@@ -2025,7 +2025,7 @@ For an example box, see \cref{ex:example}.
     (still not using \verb|htb!| flags).
     This ensures minimal pain and maximum usage of \LaTeX{}'s spacing and placing
     capabilities.
-    
+
     Anyway --- here is such a float within an example box:
     \begin{center}
         \begin{minipage}[t]{0.4\linewidth}
@@ -2042,7 +2042,7 @@ For an example box, see \cref{ex:example}.
     \end{center}
     Note how using \verb|\linewidth| as a length, not the global constant
     \verb|\textwidth|, figures can be scaled according to the current context.
-    
+
     This box even breaks across pages if so required.
     Should this turn out ugly, some manual action is certainly required.
 \end{example}

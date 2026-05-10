@@ -1,5 +1,5 @@
-import re
 import pathlib
+import re
 
 import pytest
 
@@ -93,9 +93,9 @@ class TestDocumentTypeRegistration:
             + re.escape(baseclass)
             + re.escape("}")
         )
-        assert re.search(pattern, cls_text), (
-            f"doctype '{doctype}' does not map to '{baseclass}' in omnilatex.cls"
-        )
+        assert re.search(
+            pattern, cls_text
+        ), f"doctype '{doctype}' does not map to '{baseclass}' in omnilatex.cls"
 
     def test_warning_message_lists_all_doctypes(self, repo_root):
         cls_text = _read(repo_root / "omnilatex.cls")
@@ -107,9 +107,7 @@ class TestDocumentTypeRegistration:
         assert warning_match, "Could not find doctype warning message in omnilatex.cls"
         warning_text = warning_match.group(1)
         for dt in ALL_DOCTYPE_NAMES:
-            assert dt in warning_text, (
-                f"doctype '{dt}' not listed in warning message"
-            )
+            assert dt in warning_text, f"doctype '{dt}' not listed in warning message"
 
     def test_doctype_count(self, repo_root):
         cls_text = _read(repo_root / "omnilatex.cls")
@@ -119,17 +117,20 @@ class TestDocumentTypeRegistration:
             if name != "book":
                 unique_primary.add(name)
         unique_primary.add("book")
-        assert len(unique_primary) >= 26, (
-            f"Expected at least 25 unique doctypes, found {len(unique_primary)}: {sorted(unique_primary)}"
+        assert (
+            len(unique_primary) >= 26
+        ), (
+            f"Expected at least 25 unique doctypes, "
+            f"found {len(unique_primary)}: {sorted(unique_primary)}"
         )
 
 
 class TestModuleFileIntegrity:
     def test_lib_subdirectories_exist(self, repo_root):
         for subdir in EXPECTED_LIB_SUBDIRS:
-            assert (repo_root / "lib" / subdir).is_dir(), (
-                f"lib/{subdir}/ directory missing"
-            )
+            assert (
+                repo_root / "lib" / subdir
+            ).is_dir(), f"lib/{subdir}/ directory missing"
 
     def test_lib_subdirectories_contain_sty_files(self, repo_root):
         for subdir in EXPECTED_LIB_SUBDIRS:
@@ -152,9 +153,7 @@ class TestModuleFileIntegrity:
     def test_doctype_sty_has_needs_tex_format(self, repo_root, doctype):
         path = repo_root / "config" / "document-types" / f"{doctype}.sty"
         text = _read(path)
-        assert r"\NeedsTeXFormat" in text, (
-            f"{doctype}.sty missing \\NeedsTeXFormat"
-        )
+        assert r"\NeedsTeXFormat" in text, f"{doctype}.sty missing \\NeedsTeXFormat"
 
     @pytest.mark.parametrize("doctype", ALL_DOCTYPE_NAMES)
     def test_doctype_sty_has_provides_file(self, repo_root, doctype):
@@ -193,18 +192,20 @@ class TestConfigFileValidation:
 
     @pytest.mark.parametrize("institution", INSTITUTION_NAMES)
     def test_institution_config_has_proper_structure(self, repo_root, institution):
-        path = repo_root / "config" / "institutions" / institution / f"{institution}.sty"
-        text = _read(path)
-        assert r"\NeedsTeXFormat" in text, (
-            f"{institution}.sty missing \\NeedsTeXFormat"
+        path = (
+            repo_root / "config" / "institutions" / institution / f"{institution}.sty"
         )
+        text = _read(path)
+        assert r"\NeedsTeXFormat" in text, f"{institution}.sty missing \\NeedsTeXFormat"
         assert (
             r"\ProvidesPackage" in text or r"\ProvidesFile" in text
         ), f"{institution}.sty missing \\ProvidesPackage or \\ProvidesFile"
 
     def test_at_least_five_institutions(self, repo_root):
         inst_dir = repo_root / "config" / "institutions"
-        count = sum(1 for d in inst_dir.iterdir() if d.is_dir() and not d.name.startswith("."))
+        count = sum(
+            1 for d in inst_dir.iterdir() if d.is_dir() and not d.name.startswith(".")
+        )
         assert count >= 5, f"Expected at least 5 institutions, found {count}"
 
 
@@ -217,7 +218,9 @@ class TestExampleIntegrity:
     @pytest.mark.parametrize("example", ALL_EXAMPLE_NAMES)
     def test_example_has_document_settings(self, repo_root, example):
         path = repo_root / "examples" / example / "config" / "document-settings.sty"
-        assert path.is_file(), f"examples/{example}/config/document-settings.sty missing"
+        assert (
+            path.is_file()
+        ), f"examples/{example}/config/document-settings.sty missing"
 
     @pytest.mark.parametrize("example", ALL_EXAMPLE_NAMES)
     def test_example_doctype_is_valid(self, repo_root, example):
@@ -238,7 +241,8 @@ class TestExampleIntegrity:
     def test_all_42_examples_exist(self, repo_root):
         examples_dir = repo_root / "examples"
         actual = sorted(
-            d.name for d in examples_dir.iterdir()
+            d.name
+            for d in examples_dir.iterdir()
             if d.is_dir() and not d.name.startswith(".")
         )
         expected = sorted(ALL_EXAMPLE_NAMES)
@@ -289,9 +293,9 @@ class TestCrossReferenceConsistency:
                 ref_lua = repo_root / ref
                 if not (ref.endswith(".lua") and ref_lua.is_file()):
                     missing.append(ref)
-        assert not missing, (
-            f"config/document-types/{doctype}.sty references missing lib files: {missing}"
-        )
+        assert (
+            not missing
+        ), f"config/document-types/{doctype}.sty references missing lib files: {missing}"
 
 
 class TestCTANPackage:
@@ -301,6 +305,7 @@ class TestCTANPackage:
     def test_ctan_zip_script_executable(self, repo_root):
         script = repo_root / "scripts" / "make-ctan-zip.sh"
         import os
+
         assert os.access(script, os.X_OK), "make-ctan-zip.sh is not executable"
 
     def test_overleaf_zip_script_exists(self, repo_root):
@@ -309,6 +314,7 @@ class TestCTANPackage:
     def test_overleaf_zip_script_executable(self, repo_root):
         script = repo_root / "scripts" / "make-overleaf-zip.sh"
         import os
+
         assert os.access(script, os.X_OK), "make-overleaf-zip.sh is not executable"
 
     def test_ctan_readme_exists(self, repo_root):
@@ -327,9 +333,7 @@ class TestCTANPackage:
             target_path = repo_root / target
             if not target_path.exists():
                 missing.append(target)
-        assert not missing, (
-            f"make-ctan-zip.sh references missing files: {missing}"
-        )
+        assert not missing, f"make-ctan-zip.sh references missing files: {missing}"
 
     def test_overleaf_script_references_existing_files(self, repo_root):
         script_text = _read(repo_root / "scripts" / "make-overleaf-zip.sh")
@@ -344,6 +348,4 @@ class TestCTANPackage:
             target_path = repo_root / target
             if not target_path.exists():
                 missing.append(target)
-        assert not missing, (
-            f"make-overleaf-zip.sh references missing files: {missing}"
-        )
+        assert not missing, f"make-overleaf-zip.sh references missing files: {missing}"

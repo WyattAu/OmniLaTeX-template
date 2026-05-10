@@ -7,7 +7,7 @@ Testing url: \url {https://example.com}
 === HYPERREF: href command ===
 PASS: href command works
 Underfull \hbox (badness 10000) in paragraph at lines 22--24
-[][][][][]\TU/LibertinusSerif(0)/m/n/10.95 Ex-am-ple Link[][][][][][][][][][][][][][]  
+[][][][][]\TU/LibertinusSerif(0)/m/n/10.95 Ex-am-ple Link[][][][][][][][][][][][][][]
 \hbox(7.67867+2.57422)x448.13095, glue set 17.37556, direction TLT
 .\localpar
 ..\localinterlinepenalty=0
@@ -18,7 +18,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 22--24
 .\pdfstartlink(*+*)x* attr{/Border[0 0 0]/H/I/C[0 1 1]} action user{/Subtype/Link/A<</Type/Action/S/URI/URI(https://example.com)>>}
 .\hbox(0.0+0.0)x0.0, glue set - 0.00278fil, direction TLT
 ..\glue 0.0 plus 1.0fil minus 1.0fil
-..\l_tmpa_tl  
+..\l_tmpa_tl
 .\pdfliteral page{q 7 Tr}
 .\write1{\ocgxii@lnkcol@stack@on@page{\int_use:N \g_ocgxii_page_int }{{darklin\ETC.}
 .\TU/LibertinusSerif(0)/m/n/10.95 E
@@ -40,7 +40,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 22--24
 .\write1{\ocgxii@lnkcol@stack@on@page{\int_use:N \g_ocgxii_page_int }{}}
 .\hbox(0.0+0.0)x0.0, glue set - 0.00278fil, direction TLT
 ..\glue 0.0 plus 1.0fil minus 1.0fil
-..\l_tmpa_tl  
+..\l_tmpa_tl
 .\pdfliteral page{/OC/rm@oc0 BDC}
 .\write1{\pbs@seq@push@cx{pbs@props@\int_use:N \g_pbs_page_int }{/rm@oc0 31 0 \ETC.}
 .\pdfliteral page{-88888 -88888 99999 99999 re f}

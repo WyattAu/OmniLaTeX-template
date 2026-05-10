@@ -1,10 +1,11 @@
 # Template Gallery
 
-Visual showcase of all 24 OmniLaTeX example templates.
+Visual showcase of OmniLaTeX example templates.
 
 ## Quick Start
 
 Build any example with:
+
 ```bash
 python build.py build-example <name>
 ```

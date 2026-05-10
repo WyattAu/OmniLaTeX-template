@@ -13,10 +13,11 @@ from pathlib import Path
 
 import pytest
 
-from tests.constants import DOCTYPE_TO_CLASS, DOCTYPE_ALIASES as _DOCTYPE_ALIAS_MAP
+from tests.constants import DOCTYPE_ALIASES as _DOCTYPE_ALIAS_MAP
+from tests.constants import DOCTYPE_TO_CLASS
 
 try:
-    from hypothesis import given, settings, HealthCheck
+    from hypothesis import HealthCheck, given, settings
     from hypothesis.strategies import sampled_from
 except ImportError:
     pytest.skip("hypothesis not installed", allow_module_level=True)
@@ -26,9 +27,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 def _check_docker() -> bool:
     try:
-        result = subprocess.run(
-            ["docker", "info"], capture_output=True, timeout=10
-        )
+        result = subprocess.run(["docker", "info"], capture_output=True, timeout=10)
         return result.returncode == 0
     except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
         return False
@@ -49,8 +48,36 @@ def _get_docker_image() -> str:
 
 DOCKER_IMAGE = _get_docker_image()
 
+
+def _check_docker_image() -> bool:
+    """Check that the specific Docker image is available and Docker can run containers."""
+    if not DOCKER_AVAILABLE:
+        return False
+    try:
+        # First check image exists
+        inspect = subprocess.run(
+            ["docker", "image", "inspect", DOCKER_IMAGE],
+            capture_output=True,
+            timeout=15,
+        )
+        if inspect.returncode != 0:
+            return False
+        # Then verify Docker can actually start a container
+        result = subprocess.run(
+            ["docker", "run", "--rm", "--entrypoint", "", DOCKER_IMAGE, "echo", "ok"],
+            capture_output=True,
+            timeout=30,
+        )
+        return result.returncode == 0
+    except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
+        return False
+
+
+DOCKER_IMAGE_AVAILABLE = _check_docker_image()
+
 docker_required = pytest.mark.skipif(
-    not DOCKER_AVAILABLE, reason="Docker not available"
+    not DOCKER_IMAGE_AVAILABLE,
+    reason=f"Docker image not available locally: {DOCKER_IMAGE}",
 )
 
 DOCTYPE_ALIASES = [
@@ -151,13 +178,23 @@ def compile_tex_docker(tex_content: str, timeout: int = 180) -> tuple:
         tex_file = Path(tmpdir) / "test.tex"
         tex_file.write_text(tex_content)
         cmd = [
-            "docker", "run", "--rm", "--entrypoint", "",
-            "-v", f"{PROJECT_ROOT}:/repo",
-            "-v", f"{tmpdir}:/work",
-            "-w", "/work",
+            "docker",
+            "run",
+            "--rm",
+            "--entrypoint",
+            "",
+            "-v",
+            f"{PROJECT_ROOT}:/repo",
+            "-v",
+            f"{tmpdir}:/work",
+            "-w",
+            "/work",
             DOCKER_IMAGE,
-            "latexmk", "-lualatex", "-interaction=nonstopmode",
-            "-output-directory=/work", "test.tex",
+            "latexmk",
+            "-lualatex",
+            "-interaction=nonstopmode",
+            "-output-directory=/work",
+            "test.tex",
         ]
         env = os.environ.copy()
         env["TEXINPUTS"] = "/repo:"
@@ -193,7 +230,9 @@ class TestPropertyBasedFuzzing:
     @docker_required
     @pytest.mark.timeout(300)
     @given(doctype=sampled_from(DOCTYPE_ALIASES))
-    @settings(max_examples=20, deadline=None, suppress_health_check=[HealthCheck.too_slow])
+    @settings(
+        max_examples=20, deadline=None, suppress_health_check=[HealthCheck.too_slow]
+    )
     def test_random_doctype_compiles(self, doctype):
         tex = TEMPLATE.format(options=f"doctype={doctype}", doctype=doctype)
         success, _ = compile_tex_docker(tex)
@@ -206,11 +245,32 @@ class TestStructuralProperties:
     VALID_KOMA_CLASSES = {"scrartcl", "scrbook", "scrreprt"}
 
     CANONICAL_DOCTYPES = [
-        "article", "book", "cover-letter", "cv", "dictionary", "dissertation",
-        "exam", "handout", "homework", "inlinepaper", "invoice", "journal",
-        "lecture-notes", "letter", "manual", "memo", "patent", "poster",
-        "presentation", "recipe", "research-proposal", "standard", "syllabus",
-        "technicalreport", "thesis", "white-paper",
+        "article",
+        "book",
+        "cover-letter",
+        "cv",
+        "dictionary",
+        "dissertation",
+        "exam",
+        "handout",
+        "homework",
+        "inlinepaper",
+        "invoice",
+        "journal",
+        "lecture-notes",
+        "letter",
+        "manual",
+        "memo",
+        "patent",
+        "poster",
+        "presentation",
+        "recipe",
+        "research-proposal",
+        "standard",
+        "syllabus",
+        "technicalreport",
+        "thesis",
+        "white-paper",
     ]
 
     def _get_doctype_names(self) -> list[str]:
@@ -224,9 +284,7 @@ class TestStructuralProperties:
         if not inst_dir.is_dir():
             return []
         return sorted(
-            d.name
-            for d in inst_dir.iterdir()
-            if d.is_dir() and d.name != "README.md"
+            d.name for d in inst_dir.iterdir() if d.is_dir() and d.name != "README.md"
         )
 
     def _get_example_doctypes(self) -> dict[str, str]:
@@ -287,21 +345,21 @@ class TestStructuralProperties:
     @settings(max_examples=50, deadline=None)
     def test_doctype_maps_to_valid_koma_class(self, doctype):
         koma_class = DOCTYPE_TO_CLASS[doctype]
-        assert koma_class in self.VALID_KOMA_CLASSES, (
-            f"doctype '{doctype}' maps to '{koma_class}', not a valid KOMA class"
-        )
+        assert (
+            koma_class in self.VALID_KOMA_CLASSES
+        ), f"doctype '{doctype}' maps to '{koma_class}', not a valid KOMA class"
 
     def test_all_doctype_files_map_to_koma_classes(self):
         doctype_names = self._get_doctype_names()
         assert len(doctype_names) > 0, "No doctype .sty files found"
         for name in doctype_names:
-            assert name in DOCTYPE_TO_CLASS, (
-                f"Doctype file '{name}.sty' has no mapping in DOCTYPE_TO_CLASS"
-            )
+            assert (
+                name in DOCTYPE_TO_CLASS
+            ), f"Doctype file '{name}.sty' has no mapping in DOCTYPE_TO_CLASS"
             koma_class = DOCTYPE_TO_CLASS[name]
-            assert koma_class in self.VALID_KOMA_CLASSES, (
-                f"Doctype '{name}' maps to invalid KOMA class '{koma_class}'"
-            )
+            assert (
+                koma_class in self.VALID_KOMA_CLASSES
+            ), f"Doctype '{name}' maps to invalid KOMA class '{koma_class}'"
 
     @given(institution=sampled_from(list(_get_institution_names(None) or ["generic"])))
     @settings(max_examples=20, deadline=None)
@@ -311,9 +369,9 @@ class TestStructuralProperties:
         assert len(sty_files) > 0, f"No .sty file in institution '{institution}'"
         for sty_file in sty_files:
             content = sty_file.read_text(encoding="utf-8", errors="replace")
-            assert "\\ProvidesPackage" in content, (
-                f"{sty_file.relative_to(PROJECT_ROOT)} missing \\ProvidesPackage"
-            )
+            assert (
+                "\\ProvidesPackage" in content
+            ), f"{sty_file.relative_to(PROJECT_ROOT)} missing \\ProvidesPackage"
 
     def test_all_institutions_have_providespackage(self):
         institutions = self._get_institution_names()
@@ -324,17 +382,17 @@ class TestStructuralProperties:
             assert len(sty_files) > 0, f"No .sty in institution '{inst}'"
             for sty_file in sty_files:
                 content = sty_file.read_text(encoding="utf-8", errors="replace")
-                assert "\\ProvidesPackage" in content, (
-                    f"{sty_file.relative_to(PROJECT_ROOT)} missing \\ProvidesPackage"
-                )
+                assert (
+                    "\\ProvidesPackage" in content
+                ), f"{sty_file.relative_to(PROJECT_ROOT)} missing \\ProvidesPackage"
 
     def test_translation_key_parity(self):
         counts = self._get_translation_counts()
         assert len(counts) > 0, "No translations found in i18n module"
         values = list(counts.values())
-        assert all(v == values[0] for v in values), (
-            f"Translation key counts are not equal across languages: {counts}"
-        )
+        assert all(
+            v == values[0] for v in values
+        ), f"Translation key counts are not equal across languages: {counts}"
 
     @given(example=sampled_from(list(_get_example_doctypes(None).keys()) or ["thesis"]))
     @settings(max_examples=30, deadline=None)
@@ -343,17 +401,17 @@ class TestStructuralProperties:
         if not example_doctypes:
             pytest.skip("No examples found")
         doctype = example_doctypes[example]
-        assert doctype in DOCTYPE_TO_CLASS, (
-            f"Example '{example}' uses doctype '{doctype}' which is not registered"
-        )
+        assert (
+            doctype in DOCTYPE_TO_CLASS
+        ), f"Example '{example}' uses doctype '{doctype}' which is not registered"
 
     def test_all_examples_use_registered_doctypes(self):
         example_doctypes = self._get_example_doctypes()
         assert len(example_doctypes) > 0, "No examples with doctypes found"
         for ex_name, doctype in example_doctypes.items():
-            assert doctype in DOCTYPE_TO_CLASS, (
-                f"Example '{ex_name}' uses unregistered doctype '{doctype}'"
-            )
+            assert (
+                doctype in DOCTYPE_TO_CLASS
+            ), f"Example '{ex_name}' uses unregistered doctype '{doctype}'"
 
     def test_all_modules_exist(self):
         packages = self._get_require_packages()
@@ -372,15 +430,13 @@ class TestStructuralProperties:
         if not pkg.startswith("lib/"):
             return
         pkg_path = PROJECT_ROOT / (pkg + ".sty")
-        assert pkg_path.is_file(), (
-            f"\\RequirePackage{{{pkg}}}: {pkg_path.relative_to(PROJECT_ROOT)} not found"
-        )
+        assert (
+            pkg_path.is_file()
+        ), f"\\RequirePackage{{{pkg}}}: {pkg_path.relative_to(PROJECT_ROOT)} not found"
 
     def test_no_duplicate_translation_keys(self):
         dupes = self._get_translation_key_dupes()
-        assert len(dupes) == 0, (
-            f"Duplicate translation keys found: {dupes}"
-        )
+        assert len(dupes) == 0, f"Duplicate translation keys found: {dupes}"
 
     @given(doctype=sampled_from(CANONICAL_DOCTYPES))
     @settings(max_examples=50, deadline=None)
@@ -400,9 +456,9 @@ class TestLeanProofConsistency:
         proof_dir = PROJECT_ROOT / "specs" / "proofs" / "OmniLaTeXProofs"
         modules = sorted(p.stem for p in proof_dir.glob("*.lean"))
         for mod in modules:
-            assert f"import OmniLaTeXProofs.{mod}" in content, (
-                f"Module '{mod}' not imported in root proof file"
-            )
+            assert (
+                f"import OmniLaTeXProofs.{mod}" in content
+            ), f"Module '{mod}' not imported in root proof file"
 
     def test_no_sorry_in_proofs(self):
         """Zero sorry in all proof files."""
@@ -414,9 +470,9 @@ class TestLeanProofConsistency:
                 if stripped.startswith("--") or stripped.startswith("/-"):
                     continue
                 if "sorry" in stripped and "No " not in stripped:
-                    assert False, (
-                        f"{lean_file.relative_to(PROJECT_ROOT)}:{i} contains 'sorry'"
-                    )
+                    assert (
+                        False
+                    ), f"{lean_file.relative_to(PROJECT_ROOT)}:{i} contains 'sorry'"
 
     def test_proof_module_count(self):
         """At least 10 proof modules in OmniLaTeXProofs/."""
@@ -446,8 +502,9 @@ class TestDockerDigestConsistency:
     def test_env_docker_has_digest(self):
         digest = self._get_digest_from_env()
         assert digest != "", ".env.docker has no DOCKER_IMAGE"
-        assert digest.startswith("ghcr.io/wyattau/omnilatex-docker@"), \
-            f"Unexpected image format: {digest}"
+        assert digest.startswith(
+            "ghcr.io/wyattau/omnilatex-docker@"
+        ), f"Unexpected image format: {digest}"
 
     def test_github_workflows_use_consistent_digest(self):
         """All GitHub workflow files reference the same digest as .env.docker."""
@@ -457,11 +514,11 @@ class TestDockerDigestConsistency:
         wf_dir = PROJECT_ROOT / ".github" / "workflows"
         for wf in wf_dir.glob("*.yml"):
             content = wf.read_text(encoding="utf-8")
-            digests = re.findall(r'sha256:[a-f0-9]{64}', content)
+            digests = re.findall(r"sha256:[a-f0-9]{64}", content)
             for d in digests:
-                assert d in canonical or canonical.endswith(d), (
-                    f"{wf.name}: digest {d[:20]}... doesn't match .env.docker"
-                )
+                assert d in canonical or canonical.endswith(
+                    d
+                ), f"{wf.name}: digest {d[:20]}... doesn't match .env.docker"
 
     def test_no_latest_tag_in_workflows(self):
         """No :latest tag in GitHub workflow files (except digest-sync)."""
@@ -470,6 +527,4 @@ class TestDockerDigestConsistency:
             if "digest-sync" in wf.name:
                 continue
             content = wf.read_text(encoding="utf-8")
-            assert ":latest" not in content, (
-                f"{wf.name} uses unpinned :latest tag"
-            )
+            assert ":latest" not in content, f"{wf.name} uses unpinned :latest tag"

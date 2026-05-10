@@ -17,7 +17,7 @@ LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
 (Font)              scaled to size 8.80075pt on input line ....
 hologo: OK
 Underfull \hbox (badness 10000) in paragraph at lines 10--12
-[][]  
+[][]
 \hbox(7.18362+2.3817)x448.13095, glue set 18.43669, direction TLT
 .\localpar
 ..\localinterlinepenalty=0
@@ -63,7 +63,7 @@ LaTeX Font Info:    Font shape `TU/LibertinusSans(0)/m/n' will be
 (Font)              scaled to size 7.4956pt on input line ....
 menukeys: OK
 Underfull \hbox (badness 10000) in paragraph at lines 14--16
-[][] [][][] []  
+[][] [][][] []
 \hbox(9.75674+2.5597)x448.13095, glue set 16.69452, direction TLT
 .\localpar
 ..\localinterlinepenalty=0
@@ -222,7 +222,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 14--16
 === UTILS: cancel loaded ===
 cancel: OK
 Underfull \hbox (badness 10000) in paragraph at lines 18--20
-[]$[]$  
+[]$[]$
 \hbox(7.34877+0.49823)x448.13095, glue set 20.0139, direction TLT
 .\localpar
 ..\localinterlinepenalty=0
@@ -279,7 +279,7 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             See the microtype manual for details.
 fakeverb: OK
 Underfull \hbox (badness 10000) in paragraph at lines 25--27
-[]\TU/LatinModernMono(0)/m/n/10.95 test_cmd  
+[]\TU/LatinModernMono(0)/m/n/10.95 test_cmd
 \hbox(6.69034+1.82863)x448.13095, glue set 18.1526, direction TLT
 .\localpar
 ..\localinterlinepenalty=0

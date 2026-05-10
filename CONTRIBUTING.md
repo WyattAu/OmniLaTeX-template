@@ -89,7 +89,7 @@ User writes:  \documentclass[doctype=thesis,institution=tuhh,language=german]{om
               (page layout, font size, title page, spacing)
                         │
                         ▼
-              Load 21 modules (conditional on enable* flags)
+              Load 27 modules (conditional on enable* flags)
 ```
 
 ### Key Files
@@ -101,7 +101,7 @@ User writes:  \documentclass[doctype=thesis,institution=tuhh,language=german]{om
 | `build.py` | Build orchestrator — compile, test, watch, doctor |
 | `.latexmkrc` | latexmk config — compilation flags, SDE support, multi-pass |
 | `specs/option_schema.toml` | Formal schema of all 10 options and 46 aliases |
-| `specs/module_contracts/*.toml` | Interface contracts for all 21 modules |
+| `specs/module_contracts/*.toml` | Interface contracts for 21 core modules |
 
 ---
 
@@ -180,7 +180,7 @@ OmniLaTeX-specific translations (captions, TOC headings, etc.).
 ### Step 1: Verify polyglossia support
 
 Check that your language is supported by polyglossia:
-https://ctan.org/pkg/polyglossia
+<https://ctan.org/pkg/polyglossia>
 
 Most major languages (French, Spanish, Italian, Portuguese, Chinese,
 Japanese, Russian, Arabic, etc.) are supported.
@@ -297,6 +297,7 @@ Add these lines **before** your `\documentclass`:
 ### Testing
 
 Build the accessibility example:
+
 ```bash
 python build.py build-example accessibility-test
 ```
@@ -373,6 +374,7 @@ cp -r examples/minimal-starter examples/mytype
 ### Step 5: Add a test
 
 Create `testfiles/omnilatex-mytype.lvt` and generate a baseline:
+
 ```bash
 python scripts/gen_tlg.py omnilatex-mytype
 ```
@@ -415,21 +417,25 @@ Add an entry under `[Unreleased] > Added`.
 ### Before submitting
 
 1. **Run the full test suite:**
+
    ```bash
    python build.py test
    ```
 
 2. **Run l3build checks** (if you modified `.sty` or `.cls` files):
+
    ```bash
    python build.py test --verbose
    ```
 
 3. **Build at least one example** to verify compilation:
+
    ```bash
    python build.py build-example minimal-starter
    ```
 
 4. **Check for warnings** in the build log:
+
    ```bash
    python build.py build-example minimal-starter --timings 2>&1 | grep -i warning
    ```

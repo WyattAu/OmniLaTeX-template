@@ -6,8 +6,8 @@ from pathlib import Path
 
 try:
     import fitz
-    from PIL import Image
     import numpy as np
+    from PIL import Image
 except ImportError:
     print("Install: poetry add pymupdf pillow numpy")
     sys.exit(1)
@@ -95,7 +95,8 @@ def main():
         print(f"{status}: {name}")
         for page in result.get("pages", []):
             print(
-                f"  Page {page['page']}: SSIM={page['ssim']:.4f} ({'PASS' if page['pass'] else 'FAIL'})"
+                f"  Page {page['page']}: SSIM={page['ssim']:.4f} "
+                f"({'PASS' if page['pass'] else 'FAIL'})"
             )
         if not result["pass"]:
             all_pass = False

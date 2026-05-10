@@ -37,6 +37,7 @@
 for major universities lower the barrier.
 
 **Action:**
+
 - [x] `build.py scaffold-institution NAME` command
 - [x] `generic` template — minimal branding placeholder
 - [ ] `tum` — TU Munich (large German university, high demand)
@@ -49,6 +50,7 @@ for major universities lower the barrier.
 **Why:** Users on Windows and macOS need confidence OmniLaTeX works.
 
 **Action:**
+
 - [ ] Add `windows-latest` CI job (TeX Live via Chocolatey + `tlmgr`)
 - [ ] Add `macos-latest` CI job (MacTeX + `tlmgr`)
 - [ ] Fix `.latexmkrc` path separator for Windows
@@ -59,6 +61,7 @@ for major universities lower the barrier.
 **Why:** Annual TL release. Forward compat must be verified.
 
 **Action:**
+
 - [ ] Test in Docker `texlive/texlive:TL2025` when available
 - [ ] Update Nix flake to nixpkgs with TL 2025
 - [ ] Run full test suite on TL 2025
@@ -70,6 +73,7 @@ for major universities lower the barrier.
 Verifying them closes the mathematical proof loop.
 
 **Action:**
+
 - [x] Add Lean 4 toolchain to Nix flake
 - [ ] Set up Lake project configuration
 - [x] Verify all 5 proofs compile (4/5 fully proven, 1 partial)
@@ -81,6 +85,7 @@ Verifying them closes the mathematical proof loop.
 **Why:** OmniLaTeX-specific completions in editors reduce lookup friction.
 
 **Action:**
+
 - [x] Add `.cwl` (command completion) file for OmniLaTeX commands (80+ commands)
 - [ ] Test with texlab / LaTeX Workshop
 
@@ -103,6 +108,7 @@ Verifying them closes the mathematical proof loop.
 **Why:** Cover more document categories to reduce need for alternative templates.
 
 **Action:**
+
 - [x] `poster` — conference poster (A1 landscape, tcolorbox blocks, multicol)
 - [x] `presentation` — KOMA-based slides (tcolorbox slideframe environment)
 - [x] `letter` — formal letter (sender/recipient/closing commands)
@@ -114,6 +120,7 @@ Verifying them closes the mathematical proof loop.
 **Why:** Starting a project should be one command with sensible defaults.
 
 **Action:**
+
 - [x] `build.py init NAME --doctype=thesis --institution=tuhh --language=english`
 - [ ] `build.py scaffold-language LANG` — creates language addition guide
 - [x] Fill in metadata from flags when creating project
@@ -123,6 +130,7 @@ Verifying them closes the mathematical proof loop.
 **Why:** Quantitative targets for build speed.
 
 **Action:**
+
 - [x] Benchmark all 23 examples (cold + incremental)
 - [x] Establish baselines in `specs/performance_baselines.toml`
 - [x] Target: cold build < 15s for simple documents (16/22 pass)
@@ -133,6 +141,7 @@ Verifying them closes the mathematical proof loop.
 **Why:** Accessibility increasingly required by institutions (PDF/UA, EN 301 549).
 
 **Action:**
+
 - [x] Tagged PDF support via `tagpdf` package
 - [x] `lib/layout/omnilatex-accessibility.sty` module
 - [x] `examples/accessibility-test/` working example

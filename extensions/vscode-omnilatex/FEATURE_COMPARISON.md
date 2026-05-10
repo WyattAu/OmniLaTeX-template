@@ -256,6 +256,7 @@
 ## Build System Architecture
 
 ### LaTeX Workshop
+
 - **Recipe system**: User-defined recipes combining tools in sequence
 - **Default tools**: latexmk, lualatexmk, xelatexmk, pdflatex, bibtex, tectonic
 - **Magic comments**: `% !TeX program`, `% !BIB program`
@@ -266,6 +267,7 @@
 - **Output/aux dirs**: Configurable with placeholders
 
 ### OmniLaTeX
+
 - **Current state**: Stub that shows `showInformationMessage`
 - **Target**: Should invoke `python3 build.py build-example <name>` or `python3 build.py build-all`
 - **Unique need**: Build example documents by name (LW has no concept of "example builds")
@@ -275,12 +277,14 @@
 ## SyncTeX Architecture
 
 ### LaTeX Workshop
+
 - Forward search: Editor cursor → PDF position (internal viewer + external via `synctex view`)
 - Reverse search: PDF click → editor line (internal viewer ctrl-click/double-click)
 - Configurable indicator (none/circle/rectangle)
 - Auto-sync after build (configurable)
 
 ### OmniLaTeX
+
 - N/A — fully defers to LaTeX Workshop
 
 ---
@@ -298,11 +302,13 @@
 ## Extension Dependencies
 
 ### LaTeX Workshop
+
 - **Runtime**: cross-spawn, glob, iconv-lite, latex-utensils, mathjax-full, micromatch, pdfjs-dist, tmp, vsls, workerpool, ws
 - **Dev**: TypeScript, ESLint, Mocha, unified-latex, esbuild, vscode-test-electron
 - **Extension conflicts**: Checks for `tomoki1207.pdf` (vscode-pdf)
 
 ### OmniLaTeX
+
 - **Runtime**: None
 - **Dev**: @types/node, @types/vscode, typescript
 - **Should depend on**: LaTeX Workshop (soft dependency via `extensionDependencies`)

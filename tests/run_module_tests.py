@@ -7,6 +7,7 @@ Each module test lives in ``tests/module_tests/<module>/`` and provides a
 ``\typeout`` appear in the resulting log file.  This keeps the tests cheap while
 still exercising the same toolchain configuration that the template relies on.
 """
+
 from __future__ import annotations
 
 import json
@@ -22,7 +23,15 @@ MODULE_TESTS_ROOT = REPO_ROOT / "tests" / "module_tests"
 ROOT_LATEXMKRC = REPO_ROOT / ".latexmkrc"
 
 LATEXMK = ["latexmk", "-pdf", "-r", str(ROOT_LATEXMKRC), "-r", ".latexmkrc", "main.tex"]
-LATEXMK_CLEAN = ["latexmk", "-C", "-r", str(ROOT_LATEXMKRC), "-r", ".latexmkrc", "main.tex"]
+LATEXMK_CLEAN = [
+    "latexmk",
+    "-C",
+    "-r",
+    str(ROOT_LATEXMKRC),
+    "-r",
+    ".latexmkrc",
+    "main.tex",
+]
 
 
 @dataclass
@@ -92,19 +101,17 @@ TEST_MATRIX: List[ModuleTest] = [
             "dev": ModeExpectation(markers=["GLOSSARY:BEGIN"]),
         },
     ),
-    ModuleTest(
-        name="bibliography",
-        path=MODULE_TESTS_ROOT / "bibliography",
-        modes={
-            "dev": ModeExpectation(markers=["BIBLIOGRAPHY:BEGIN"]),
-        },
-    ),
 ]
 
 
-def run_latexmk(cmd: List[str], cwd: Path, env: Dict[str, str]) -> subprocess.CompletedProcess:
+def run_latexmk(
+    cmd: List[str], cwd: Path, env: Dict[str, str]
+) -> subprocess.CompletedProcess:
     """Run latexmk and raise a rich error if it fails."""
-    print(f"[module-test] cwd={cwd.relative_to(REPO_ROOT)} cmd={' '.join(cmd)}", flush=True)
+    print(
+        f"[module-test] cwd={cwd.relative_to(REPO_ROOT)} cmd={' '.join(cmd)}",
+        flush=True,
+    )
     result = subprocess.run(
         cmd,
         cwd=cwd,

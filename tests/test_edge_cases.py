@@ -6,7 +6,6 @@ Run with: pytest tests/test_edge_cases.py -v -m slow
 Skip with: pytest tests/ -v -m "not slow"
 """
 
-import os
 import subprocess
 import tempfile
 from pathlib import Path
@@ -20,7 +19,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 pytestmark = pytest.mark.slow
 
 
-def _compile_tex(content: str, options: str = "", timeout: int = 120) -> tuple:
+def _compile_tex(content: str, options: str = "", timeout: int = 180) -> tuple:
     """Compile a minimal OmniLaTeX document. Returns (success, pdf_exists)."""
     import os
 

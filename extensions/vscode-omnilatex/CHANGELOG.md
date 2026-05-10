@@ -5,6 +5,7 @@ All notable changes to the "vscode-omnilatex" extension will be documented in th
 ## [0.1.0] - 2026-04-26
 
 ### Added
+
 - Initial release
 - Doctype picker with all 16 OmniLaTeX document types
 - Institution switcher (scans `config/institutions/`)

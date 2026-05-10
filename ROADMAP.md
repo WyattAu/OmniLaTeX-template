@@ -22,13 +22,13 @@ Current version: **v1.17.0**
 | Languages | 18 primary (EN, DE, FR, ES, RU, IT, PT, NL, PL, CS, EL, TR, DA, ZH, JA, KO, AR, HE) + 8 secondary via polyglossia |
 | Translation keys | 846 total (47 keys × 18 languages) |
 | CI workflows | 9 GitHub Actions + 4 other platforms |
-| Tests | 530+ (367 structural + 20 property + 10 unicode + 132 hypothesis) |
+| Tests | 529+ (367 structural + 18 property + 10 unicode + 7 negative + 132 hypothesis) |
 | Lean 4 proofs | 53/53 proven, 10 modules, 0 sorry |
-| Color themes | 7 presets + dark/light toggle |
+| Color themes | 6 presets + dark/light toggle |
 | Citation styles | 9 (IEEE, ACM, APA, Chicago, Nature, Science, Harvard, Vancouver, MLA) |
 | CJK support | Chinese (SC+TC), Japanese, Korean |
 | RTL support | Arabic, Hebrew, Persian |
-| Manual | 238 pages, 60 chapters, 10.7k lines |
+| Manual | 238 pages, 57 chapters, 10.7k lines |
 | Core code | ~16,500 lines |
 | License | Apache 2.0 |
 
@@ -72,25 +72,30 @@ Current version: **v1.17.0**
 | **P17.5 Manual expansion** | Medium | 57 chapters written, 12 thin chapters need expansion |
 
 ### P17.1 CTAN Submission
+
 - Run `scripts/ctan-upload.sh` (5-phase automated upload)
 - Monitor CTAN review queue
 - Maintain CTAN metadata on future releases
 
 ### P17.2 Overleaf Gallery Submission
+
 - Navigate to Overleaf gallery submission form (no API)
 - Upload `omnilatex-overleaf.zip` for a representative example
 - Manual review by Overleaf team (async, ~1 week)
 
 ### P17.3 VS Code Marketplace
+
 - `vsce publish` with publisher token
 - Monitor extension analytics
 
 ### P17.4 Code Quality
+
 - Fix 18 remaining medium/low audit findings
 - Deduplicate test constants, add pyproject.toml
 - Fix Gitea workflow, remove dead code
 
 ### P17.5 Manual Expansion
+
 - Expand 12 thin chapters (<100 lines → >150 lines)
 - Add index, list of examples, list of listings
 - Target: ~600 compiled pages
@@ -108,11 +113,13 @@ Current version: **v1.17.0**
 | **P18.3 Publish manual PDF** | Medium | Planned |
 
 ### P18.1 Complete Manual Chapters
+
 - Expand all chapters to >150 lines
 - Add advanced usage patterns, troubleshooting, FAQs
 - Cross-reference between chapters
 
 ### P18.2 Visual Assets
+
 - Screenshots of VS Code extension
 - PDF screenshots of key doctypes
 - TikZ diagrams for architecture concepts
@@ -133,21 +140,25 @@ Current version: **v1.17.0**
 | **P20.6 Performance regression CI** | Medium | Planned |
 
 ### P20.1 Beamer Theme
+
 - `omnilatex-beamer` package using OmniLaTeX colour/font system
 - Compatible with existing institution configs
-- Example slides matching all 7 colour themes
+- Example slides matching all 6 colour themes
 
 ### P20.2 Community Institutions
+
 - Aalto, Chalmers, KIT, NTNU, University of Toronto, etc.
 - Contribution guide for new institutions
 - CI validation for each config
 
 ### P20.3 Citation Defaults
+
 - IEEE default for article/journal/inlinepaper
 - APA default for thesis/dissertation
 - Vancouver default for medical/standard
 
 ### P20.4 Accessibility Testing
+
 - NVDA screen reader validation
 - PDF/UA-1 compliance verification
 - EN 301 549 documentation

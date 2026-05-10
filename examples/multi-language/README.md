@@ -14,6 +14,7 @@ This example demonstrates the comprehensive multilingual capabilities of OmniLaT
 ## Features Demonstrated
 
 ### Typography & Font Coverage
+
 - Complete character coverage for all European languages
 - Proper rendering of special characters:
   - German: ä, ö, ü, ß
@@ -23,16 +24,19 @@ This example demonstrates the comprehensive multilingual capabilities of OmniLaT
   - Portuguese: ç, á, à, â, ã, é, ê, í, ó, ô, õ, ú, û
 
 ### Language Switching
+
 - Seamless language switching using babel
 - Proper hyphenation rules for each language
 - Language-specific typography conventions
 
 ### Mixed Language Content
+
 - Demonstrates mixing multiple languages within the same document
 - Proper formatting for language-specific quotation marks and conventions
 - International mathematical notation with multilingual labels
 
 ### Bibliography Support
+
 - Unicode support in bibliography entries
 - Language-specific sorting and formatting
 - Proper handling of international author names and titles
@@ -68,22 +72,26 @@ latexmk -pdflua main.tex
 ## Key Implementation Details
 
 ### Babel Configuration
+
 ```latex
 \usepackage[main=english, ngerman, french, spanish, italian, portuguese]{babel}
 ```
 
 ### Language Switching
+
 ```latex
 \foreignlanguage{german}{Deutscher Text mit Umlauten}
 \selectlanguage{french}  % Switch document language
 ```
 
 ### Font Coverage
+
 The example uses Libertinus Serif, which provides excellent coverage for all European languages, ensuring consistent and beautiful typography across all supported languages.
 
 ## Educational Value
 
 This example serves as a comprehensive reference for:
+
 - Setting up multilingual documents
 - Proper language switching techniques
 - International bibliography management

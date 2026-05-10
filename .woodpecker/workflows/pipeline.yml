@@ -23,7 +23,7 @@ pipeline:
       event: [push, pull_request, tag]
     depends_on:
       - lint
-  
+
   test:
     image: ghcr.io/wyattau/omnilatex-docker@sha256:dae352cb84391a30478c0a18778bc0c82e8b620a3e56dd14a894433f7dd90988
     environment:

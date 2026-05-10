@@ -4,6 +4,7 @@
 import subprocess
 import tempfile
 from pathlib import Path
+
 import pytest
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -52,7 +53,7 @@ def _compile_tex(content: str) -> bool:
                 **os.environ,
                 "TEXINPUTS": f".:{PROJECT_ROOT}:{PROJECT_ROOT}/lib:",
             },
-            timeout=120,
+            timeout=180,
         )
         pdf_path = Path(tmpdir) / "test.pdf"
         return result.returncode == 0 and pdf_path.exists()

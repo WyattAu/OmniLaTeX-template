@@ -8,7 +8,7 @@ svg: OK
 contour: Using real outline for `\textcolor {black}{Test contour white}' on input line ....
 contour: Using real outline for `\textcolor {white}{Test contour black}' on input line ....
 Underfull \hbox (badness 10000) in paragraph at lines 16--18
-[][][][][][][] [][][][][][] 
+[][][][][][][] [][][][][][]
 \hbox(7.67867+0.143)x448.13095, glue set 12.65033, direction TLT
 .\kern-0.33003 (left margin)
 .\localpar

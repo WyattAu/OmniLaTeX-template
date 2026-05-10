@@ -200,10 +200,10 @@ radiator/.pic={
 % Right surface:
 \begin{scope}[canvas is yz plane at x=\radiatorwidth]
     \draw[fill=g4] (0,0) rectangle (\radiatorheight,\radiatordepth);
-    
+
     % Fake the thermostat a bit:
     \draw[fill=g3] (0.8*\radiatorheight,0.5*\radiatordepth) circle (0.2*\radiatordepth);
-    
+
     % Generate some coordinates in analogy to regular tikz naming convetions:
     \foreach \yfrac/\zfrac/\coordname in {%
             0.5/0.5/center,%
@@ -224,10 +224,10 @@ radiator/.pic={
 % Top surface:
 \begin{scope}[canvas is xz plane at y=\radiatorheight]
     \draw (0,0) rectangle (\radiatorwidth,\radiatordepth);
-    
+
     % "Hollow space" inside the radiator:
     \draw[fill=g2, rounded corners=0.75] (0.05*\radiatorwidth,0.3*\radiatordepth) rectangle (0.95*\radiatorwidth,0.7*\radiatordepth);
-    
+
     % Generate some coordinates in analogy to regular tikz naming convetions:
     \foreach \xfrac/\zfrac/\coordname in {%
             0.5/0.5/center,%
@@ -247,7 +247,7 @@ radiator/.pic={
 % Front surface:
 \begin{scope}[canvas is xy plane at z=\radiatordepth]
     \draw (0,0) rectangle (\radiatorwidth,\radiatorheight);
-    
+
     \foreach \posfraction in {0.1, 0.2, ..., 0.9}
         {%
             \draw[
@@ -299,7 +299,7 @@ TUHHuman/.pic={% A human member of TUHH. Hilarious......
         -- ++ (-0.25,0)% Left arm pit
         -- ++ (0,{-(4 - \roundingradius)}) arc (0:-90:\roundingradius) -- ++ ({-(0.8 - 2*\roundingradius},0) arc (270:180:\roundingradius) -- ++ (0,{5 - 2*\roundingradius})% Left arm
         arc (180:90:\roundingradius)-- cycle;% Left shoulder; cycle back to below head
-        
+
         \node[right, transform shape] at (-1.25,-2.5) {\ctrw{\textcolor[RGB]{45,198,214}{\textbf{\textsf{TUHH}}}}};% Chest emblem; transform shape allows node to be affected by 'scale' option
         %
         % \draw[help lines] (-3,-11) grid (3,1);% Debugging grid
@@ -485,12 +485,12 @@ level indicator/.default={0.25em}
     \inheritanchor[from=rectangle]{south}
     \inheritanchor[from=rectangle]{south west}
     \inheritanchor[from=rectangle]{south east}
-    
+
     \backgroundpath{%
         % Store lower left in xa/ya and upper right in xb/yb
         \southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
         \northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
-        
+
         % Construct main path, basically 'two triangles touching'
         \pgfpathmoveto{\pgfpoint{\pgf@xa}{\pgf@ya}}
         \pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@yb}}
@@ -502,10 +502,10 @@ level indicator/.default={0.25em}
 
 \pgfdeclareshape{threeway valve}{
     % This is asymetrical and stuff, so inheriting from the base valve is a bit hopeless, I don't know how to do it properly
-    
+
     \inheritsavedanchors[from=rectangle]% Inherit from rectangle, should be good enough
     \inheritanchorborder[from=rectangle]
-    
+
     \inheritanchor[from=rectangle]{north west}
     \inheritanchor[from=rectangle]{north east}
     \inheritanchor[from=rectangle]{center}
@@ -519,7 +519,7 @@ level indicator/.default={0.25em}
     \inheritanchor[from=rectangle]{base east}
     \inheritanchor[from=rectangle]{south west}
     \inheritanchor[from=rectangle]{south east}
-    
+
     % These have shifted now, since the three-point valve middle is not the node center anymore:
     \anchor{center}{
         \northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
@@ -539,12 +539,12 @@ level indicator/.default={0.25em}
         \pgfmathsetlength\pgf@x{\pgf@xa + 0.5*0.75*(\pgf@xb - \pgf@xa)}
         \pgfmathsetlength\pgf@y{\pgf@ya}
     }
-    
+
     % The triangles meeting at their middle, each with an aspect ratio of 0.75 (base) to 0.5 (height)
     \backgroundpath{
         \southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
         \northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
-        
+
         \pgfpathmoveto{\southwest}
         \pgfpathlineto{\pgfpoint{\pgf@xa + 0.75*(\pgf@xb - \pgf@xa)}{\pgf@yb}}
         \pgfpathlineto{\pgfpoint{\pgf@xa}{\pgf@yb}}
@@ -575,12 +575,12 @@ level indicator/.default={0.25em}
     \inheritanchor[from=rectangle]{south}
     \inheritanchor[from=rectangle]{south west}
     \inheritanchor[from=rectangle]{south east}
-    
+
     \backgroundpath{%
         % Store lower left in xa/ya and upper right in xb/yb
         \southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
         \northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
-        
+
         % This yields four triangles meeting in the middle, each with an aspect ratio of 0.6/1.
         % Construct main path, basically 'two triangles touching'
         \pgfpathmoveto{\pgfpoint{\pgf@xa + 0.2*(\pgf@xb - \pgf@xa)}{\pgf@ya}}
@@ -588,7 +588,7 @@ level indicator/.default={0.25em}
         \pgfpathlineto{\pgfpoint{\pgf@xa + 0.2*(\pgf@xb - \pgf@xa)}{\pgf@yb}}
         \pgfpathlineto{\pgfpoint{\pgf@xa + 0.8*(\pgf@xb - \pgf@xa)}{\pgf@ya}}
         \pgfpathclose
-        
+
         % Do the same again in the horizontal direction:
         \pgfpathmoveto{\pgfpoint{\pgf@xa}{\pgf@ya + 0.2*(\pgf@yb - \pgf@ya)}}
         \pgfpathlineto{\pgfpoint{\pgf@xa}{\pgf@ya + 0.8*(\pgf@yb - \pgf@ya)}}
@@ -616,18 +616,18 @@ level indicator/.default={0.25em}
     \inheritanchor[from=valve]{south}
     \inheritanchor[from=valve]{south west}
     \inheritanchor[from=valve]{south east}
-    
+
     \inheritbackgroundpath[from={valve}]
-    
+
     \beforebackgroundpath{%
         % Store lower left in xa/ya and upper right in xb/yb
         \southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
         \northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
-        
+
         % Extension line to control wheel:
         \pgfpathmoveto{\pgfpoint{(\pgf@xa + \pgf@xb)/2}{(\pgf@ya + \pgf@yb)/2}}
         \pgfpathlineto{\pgfpoint{\pgf@xb}{(\pgf@ya + \pgf@yb)/2}}
-        
+
         % The factors 0.3, 0.4 and 0.3 need to add up to 1 to give a symmetrical, nice semicircle.
         % Factor 0.4 is divided by 2 to give the radius
         \pgfpathmoveto{\pgfpoint{\pgf@xb}{\pgf@ya + 0.3*(\pgf@yb - \pgf@ya)}}
@@ -647,7 +647,7 @@ level indicator/.default={0.25em}
     \inheritanchor[from=circle]{south}
     \inheritanchor[from=circle]{west}
     \inheritanchor[from=circle]{east}
-    
+
     \beforebackgroundpath{
         % The simple-most approach:
         \pgfpathmoveto{\pgf@anchor@pump@west}
@@ -666,32 +666,32 @@ level indicator/.default={0.25em}
     \inheritanchor[from=circle]{south}%
     \inheritanchor[from=circle]{west}%
     \inheritanchor[from=circle]{east}%
-    
+
     % Circle has savedanchor of 'centerpoint' and saveddim of 'radius', that's it
-    
+
     \beforebackgroundpath{
         \centerpoint \pgf@yc=\pgf@y
-        
+
         % Pythagorean theorem is enough here.
         % Assumption is that default compressor shape 'points to the right'.
         % This is important to get coorect behaviour out of the 'sloped' node option!
-        
+
         % Idea (Example for top right point):
         % 1. Go to center point.
         % 2. On y-axis, move a fraction of the radius up. This is the y-portion of our top-right coordinate point.
         % 3. On x-axis, move as far right as Pythagorean theorem dictates (hypotenuse is the radius vector, other known length is the y-length we just specified)
         % 4. Repeat process to draw and move accordingly; don't forget squares and sqrt() in correct places.
-        
+
         \pgfmathsetmacro{\upperyfraction}{0.3}% y-coordinate of the upper points is \upperyfraction*\radius to the sides of the centerpoint
         \pgfmathsetmacro{\loweryfraction}{0.7}% y-coordinate of the lower points is \loweryfraction*\radius to the sides of the centerpoint
-        
+
         \foreach \signdirection in {1, -1}{% For left and right side
                 % Upper (always same x-dimension, only y switches sign):
                 \pgfpathmoveto{\pgfpoint{sqrt(\radius^2 - (\pgf@yc + \upperyfraction*\radius)^2)}{\pgf@yc + \signdirection*\upperyfraction*\radius}}
                 % Bottom (always same x-dimension, only y switches sign):
                 \pgfpathlineto{\pgfpoint{-1*sqrt(\radius^2 - (\pgf@yc - \loweryfraction*\radius)^2)}{\pgf@yc + \signdirection*\loweryfraction*\radius}}
             }
-        
+
         \pgfusepath{stroke}
     }
 }
@@ -715,9 +715,9 @@ level indicator/.default={0.25em}
     \inheritanchor[from=rectangle]{south}
     \inheritanchor[from=rectangle]{south west}
     \inheritanchor[from=rectangle]{south east}
-    
+
     \inheritbackgroundpath[from={rectangle}]
-    
+
     % Anchor to 'in' port of heat exchanger.
     % This code does not get executed necessarily; we cannot use the \pgfsetmacros from below.
     % A solution is probably \pgfkeys, but this will do for now.
@@ -734,16 +734,16 @@ level indicator/.default={0.25em}
         \pgfmathsetlength\pgf@x{\pgf@xb - (1 - 0.7)/2*(\pgf@xb - \pgf@xa)}
         \pgfmathsetlength\pgf@y{\pgf@ya - 0.3*(\pgf@yb - \pgf@ya)}
     }
-    
+
     \beforebackgroundpath{
         \southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
         \northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
-        
+
         \pgfmathsetmacro{\heatsymbolextension}{0.3}% How far out the 'legs' extend out of the rectangle as a fraction of the overall node's height
         \pgfmathsetmacro{\heatsymbolwidth}{0.7}% The inner drawing's width as a fraction of the node's overall width
         \pgfmathsetmacro{\heatsymbolheight}{0.8}% How high the inner drawing reaches as a fraction of the node's overall height (at 1, it touches the upper rectangle border)
         \pgfmathsetmacro{\heatsymbolindentation}{0.3}% How 'indented' the triangle is, i.e. the vertical distance between the inner drawings highest point and the triangle's down-pointing 'tip'
-        
+
         \pgfpathmoveto{\pgfpoint{\pgf@xa + (1 - \heatsymbolwidth)/2*(\pgf@xb - \pgf@xa)}{\pgf@ya - \heatsymbolextension*(\pgf@yb - \pgf@ya)}}% Bottom left corner
         \pgfpathlineto{\pgfpoint{\pgf@xa + (1 - \heatsymbolwidth)/2*(\pgf@xb - \pgf@xa)}{\pgf@ya + \heatsymbolheight*(\pgf@yb - \pgf@ya)}}% Straight line up
         \pgfpathlineto{\pgfpoint{\pgf@xa + 0.5*(\pgf@xb - \pgf@xa)}{\pgf@ya + (\heatsymbolheight - \heatsymbolindentation)*(\pgf@yb - \pgf@ya)}}% Line down, to the right; x-coordinate is the middle of the node
@@ -772,13 +772,13 @@ level indicator/.default={0.25em}
     \inheritanchor[from=rectangle]{south}
     \inheritanchor[from=rectangle]{south west}
     \inheritanchor[from=rectangle]{south east}
-    
+
     \inheritbackgroundpath[from={rectangle}]
-    
+
     \beforebackgroundpath{
         \southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
         \northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
-        
+
         \pgfpathmoveto{\pgfpoint{\pgf@xa}{\pgf@yb}}% Top left corner
         \pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@ya}}% Bottom right corner
         \pgfusepath{stroke}
@@ -808,14 +808,14 @@ level indicator/.default={0.25em}
     \inheritanchor[from=rectangle]{south}
     \inheritanchor[from=rectangle]{south west}
     \inheritanchor[from=rectangle]{south east}
-    
+
     \saveddimen{\xoffset}{% https://tex.stackexchange.com/a/181283/120853
         \pgfmathsetlength\pgf@x{\pgfkeysvalueof{/pgf/radiator offset x}}
     }
     \saveddimen{\yoffset}{
         \pgfmathsetlength\pgf@y{\pgfkeysvalueof{/pgf/radiator offset y}}
     }
-    
+
     % In the middle of the right surface:
     \anchor{right}{%
         \southwest \pgf@ya=\pgf@y
@@ -850,36 +850,36 @@ level indicator/.default={0.25em}
         \southwest \pgf@ya=\pgf@y% x is now given implicitly
         \pgfmathsetlength\pgf@y{\pgf@ya + 0.2*(\pgf@yb - \pgf@ya)}
     }
-    
+
     % Alternative entry in the top left somewhere:
     \anchor{upper entry}{%
         \northeast \pgf@yb=\pgf@y
         \southwest \pgf@ya=\pgf@y% x is now given implicitly
         \pgfmathsetlength\pgf@y{\pgf@ya + 0.8*(\pgf@yb - \pgf@ya)}
     }
-    
+
     % Front surface is inherited from rectangle:
     \inheritbackgroundpath[from={rectangle}]
-    
+
     % Background is inherited already, so add behind background path:
     \behindbackgroundpath{%
         % Store lower left in xa/ya and upper right in xb/yb
         \southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
         \northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
-        
+
         % Top surface:
         \pgfpathmoveto{\pgfpoint{\pgf@xa}{\pgf@yb}}% Top left
         \pgfpathlineto{\pgfpointadd{\pgfpoint{\pgf@xa}{\pgf@yb}}{\pgfqpoint{\xoffset}{\yoffset}}}% Top left plus offset vector
         \pgfpathlineto{\pgfpointadd{\northeast}{\pgfqpoint{\xoffset}{\yoffset}}}% Top right (northeast) plus offset vector
         \pgfpathlineto{\northeast}
         \pgfpathclose
-        
+
         % Access current fillcolor as specified by user
         % Make sides darker than current fill color for some 3D effect
         \colorlet{currentfill}{\tikz@fillcolor}
         \pgfsetfillcolor{currentfill!90!black}
         \pgfusepath{fill, stroke}
-        
+
         % Right surface:
         \pgfpathmoveto{\northeast}
         \pgfpathlineto{\pgfpointadd{\northeast}{\pgfqpoint{\xoffset}{\yoffset}}}% Top right corner plus offset vector
@@ -888,7 +888,7 @@ level indicator/.default={0.25em}
         \pgfpathclose
         \pgfsetfillcolor{currentfill!80!black}% Even darker than top surface
         \pgfusepath{fill, stroke}
-        
+
         % Draw an ellipse to fake a thermostat or pipe exit.
         % Position it at 0.8 / 80% height
         % Ellipse axes are confusing and I did not do it properly fully
@@ -901,7 +901,7 @@ level indicator/.default={0.25em}
         % Store lower left in xa/ya and upper right in xb/yb
         \southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
         \northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
-        
+
         % Draw vertical lines on top of front surface:
         \foreach \posfraction in {0.2, 0.4, ..., 0.8}{
                 \pgfpathmoveto{\pgfpoint{\pgf@xa + \posfraction*(\pgf@xb - \pgf@xa)}{\pgf@ya + 0.2*(\pgf@yb - \pgf@ya)}}
@@ -930,19 +930,19 @@ level indicator/.default={0.25em}
     \inheritanchor[from=radiator]{south}
     \inheritanchor[from=radiator]{south west}
     \inheritanchor[from=radiator]{south east}
-    
+
     % Inherit our special nodes:
     \inheritanchor[from=radiator]{right}
     \inheritanchor[from=radiator]{top}
     \inheritanchor[from=radiator]{exit}
     \inheritanchor[from=radiator]{lower entry}
     \inheritanchor[from=radiator]{upper entry}
-    
+
     % Inherit all stuff from base radiator:
     \inheritbackgroundpath[from={radiator}]
     \inheritbehindbackgroundpath[from={radiator}]
     \inheritbeforebackgroundpath[from={radiator}]
-    
+
     % Anchor for the ventilation point.
     % I tried with \savedanchor, but it didn't work so we have to repeat the calculations for the ventilation device
     \anchor{ventilation}{%
@@ -951,11 +951,11 @@ level indicator/.default={0.25em}
         \pgfmathsetlength\pgf@x{\pgf@xa - 3pt}
         \pgfmathsetlength\pgf@y{\pgf@yb - 3pt}
     }
-    
+
     \behindforegroundpath{
         \southwest \pgf@xa=\pgf@x
         \northeast \pgf@yb=\pgf@y
-        
+
         \pgfpathmoveto{\pgfpoint{\pgf@xa}{\pgf@yb}}% Top left corner
         \pgfpatharc{90}{270}{3pt}% Arc from top-top left corner down with specified radius in last argument
         \pgfsetfillcolor{black}
@@ -976,15 +976,15 @@ level indicator/.default={0.25em}
     \inheritanchor[from=rectangle]{south}
     \inheritanchor[from=rectangle]{south west}
     \inheritanchor[from=rectangle]{south east}
-    
+
     \backgroundpath{
         % Store lower left in xa/ya and upper right in xb/yb
         \southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
         \northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
-        
+
         \pgfpathmoveto{\pgfpoint{\pgf@xa + (\pgf@xb - \pgf@xa)/2}{\pgf@yb}}% Upper middle
         \pgfpathlineto{\pgfpoint{\pgf@xa + (\pgf@xb - \pgf@xa)/2}{\pgf@ya + 0.3*(\pgf@yb - \pgf@ya)}}% Down the middle, to 1/4 of the node height
-        
+
         % These are percentages of the node height.
         % At each percentage/fraction of the height, draw a centered line with a width of a certain percentage (fractionlength) of the overall node width
         \foreach \fractionheight/\fractionlength in {
@@ -1012,7 +1012,7 @@ level indicator/.default={0.25em}
     \inheritanchor[from=rectangle]{south}
     \inheritanchor[from=rectangle]{south west}
     \inheritanchor[from=rectangle]{south east}
-    
+
     % When no other anchor is specified, nodes are placed by their 'center' anchor.
     % Change it here to be the lower pointy triangle bit, as opposed to the rectangle center.
     % That way, the triangle always points onto the fluid surface if placed as a node on a drawn line representing this surface
@@ -1022,17 +1022,17 @@ level indicator/.default={0.25em}
         % Lower pointy bit of triangle, as below:
         \pgfpoint{\pgf@xa + (\pgf@xb - \pgf@xa)/2}{\pgf@yb - sqrt(3)*((\pgf@xb - \pgf@xa)/2)}
     }
-    
+
     \backgroundpath{
         % Store lower left in xa/ya and upper right in xb/yb
         \southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
         \northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
-        
+
         \pgfpathmoveto{\pgfpoint{\pgf@xa}{\pgf@yb}}% Upper left corner
         \pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@yb}}% Upper right corner
         \pgfpathlineto{\pgfpoint{\pgf@xa + (\pgf@xb - \pgf@xa)/2}{\pgf@yb - sqrt(3)*((\pgf@xb - \pgf@xa)/2)}}% Forming an equilateral triangle
         \pgfpathclose
-        
+
         % These are percentages of the node height.
         % At each percentage/fraction of the height, draw a centered line with a width of a certain percentage (fractionlength) of the overall node width
         \foreach \fractionheight/\fractionlength in {

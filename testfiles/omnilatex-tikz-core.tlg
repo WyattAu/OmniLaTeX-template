@@ -12,7 +12,7 @@ circuitikz: OK
 pgfplotstable: OK
 === TIKZ-CORE: Simple tikzpicture ===
 Underfull \hbox (badness 10000) in paragraph at lines 28--29
-[][] 
+[][]
 \hbox(28.85274+0.0)x448.13095, glue set 19.05646, direction TLT
 .\localpar
 ..\localinterlinepenalty=0
@@ -92,7 +92,7 @@ File: mt-msb.cfg ....-..-.. v... microtype config. file: AMS symbols (b) (RS)
 LaTeX Font Warning: Font shape `TU/libertinus/b/n' undefined
 (Font)              using `TU/libertinus/m/n' instead on input line ....
 Underfull \hbox (badness 10000) in paragraph at lines 35--36
-[][] 
+[][]
 \hbox(44.83488+0.0)x448.13095, glue set 16.8886, direction TLT
 .\localpar
 ..\localinterlinepenalty=0
