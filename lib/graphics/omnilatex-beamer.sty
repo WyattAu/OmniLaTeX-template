@@ -1,0 +1,46 @@
+%% omnilatex-beamer.sty
+%% OmniLaTeX Beamer integration
+%% Applies OmniLaTeX color and font system to Beamer presentations.
+%%
+%% This module is loaded automatically when doctype=presentation.
+
+\ProvidesPackage{omnilatex-beamer}%
+  [2026/05/11 v1.24.0 OmniLaTeX Beamer integration]%
+
+\RequirePackage{omnilatex-colors}
+\RequirePackage{omnilatex-fonts}
+
+%% Apply OmniLaTeX colors to Beamer elements
+\setbeamercolor{structure}{fg=OmniPrimaryColor}
+\setbeamercolor{frametitle}{fg=white,bg=OmniPrimaryColor}
+\setbeamercolor{title}{fg=white,bg=OmniPrimaryColor}
+\setbeamercolor{subtitle}{fg=OmniAccentColor}
+\setbeamercolor{author}{fg=OmniAccentColor}
+\setbeamercolor{date}{fg=OmniAccentColor}
+\setbeamercolor{institute}{fg=OmniAccentColor}
+\setbeamercolor{section in toc}{fg=OmniPrimaryColor}
+\setbeamercolor{subsection in toc}{fg=OmniAccentColor}
+\setbeamercolor{block title}{fg=white,bg=OmniPrimaryColor}
+\setbeamercolor{block body}{bg=OmniPrimaryColor!10}
+\setbeamercolor{block title alerted}{fg=white,bg=red!70!black}
+\setbeamercolor{block body alerted}{bg=red!5}
+\setbeamercolor{block title example}{fg=white,bg=green!50!black}
+\setbeamercolor{block body example}{bg=green!5}
+\setbeamercolor{item}{fg=OmniPrimaryColor}
+\setbeamercolor{subitem}{fg=OmniAccentColor}
+\setbeamercolor{footline}{fg=OmniAccentColor}
+
+%% Apply OmniLaTeX fonts to Beamer elements
+\setbeamerfont{title}{series=\bfseries,size=\Large}
+\setbeamerfont{frametitle}{series=\bfseries}
+\setbeamerfont{framesubtitle}{size=\small}
+
+%% Remove navigation symbols (cleaner slides)
+\setbeamertemplate{navigation symbols}{}
+
+%% Add frame numbering
+\setbeamertemplate{footline}{%
+  \hfill\insertframenumber\,/\,\inserttotalframenumber\hspace{2mm}\vspace{1mm}%
+}
+
+\endinput

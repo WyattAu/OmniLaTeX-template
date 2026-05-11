@@ -375,6 +375,40 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.commands.registerCommand('omnilatex.buildAll', buildAll),
         vscode.window.onDidChangeActiveTextEditor(updateStatusBar),
         vscode.workspace.onDidChangeTextDocument(updateStatusBar),
+        vscode.workspace.onDidSaveTextDocument(async (document) => {
+            const cfg = vscode.workspace.getConfiguration('omnilatex');
+            if (!cfg.get<boolean>('buildOnSave', false)) { return; }
+            if (!document.fileName.endsWith('.tex')) { return; }
+
+            const root = findWorkspaceRoot();
+            if (!root) { return; }
+
+            const outputChannel = vscode.window.createOutputChannel('OmniLaTeX Build');
+            outputChannel.show(true);
+            outputChannel.appendLine(`[build-on-save] Building ${document.fileName}...`);
+
+            await vscode.window.withProgress(
+                { location: vscode.ProgressLocation.Notification, title: 'Building on save...' },
+                () => new Promise<void>((resolve) => {
+                    const cwd = path.dirname(document.fileName);
+                    exec(
+                        'latexmk -lualatex -interaction=nonstopmode ' +
+                        `"${document.fileName}"`,
+                        { cwd },
+                        (error, stdout, stderr) => {
+                            if (stdout) { outputChannel.append(stdout); }
+                            if (stderr) { outputChannel.append(stderr); }
+                            if (error) {
+                                vscode.window.showErrorMessage(`Build on save failed: ${error.message}`);
+                            } else {
+                                outputChannel.appendLine('[build-on-save] Build succeeded.');
+                            }
+                            resolve();
+                        }
+                    );
+                })
+            );
+        }),
         vscode.workspace.onDidChangeConfiguration(e => {
             if (e.affectsConfiguration('omnilatex')) {
                 updateStatusBar();

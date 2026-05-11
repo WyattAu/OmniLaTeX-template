@@ -270,7 +270,7 @@ jobs:
             --user root \
             -e CI=true \
             "${{ steps.digest.outputs.image }}" \
-            bash -c "pip install -q pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout hypothesis && pytest tests/test_modules.py tests/test_ctan.py tests/test_properties.py tests/test_visual_regression.py -v --tb=short --timeout=60 -m 'not slow' --junitxml=test-results.xml"
+             bash -c "pip install -q pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout hypothesis pytest-cov && pytest tests/test_modules.py tests/test_ctan.py tests/test_properties.py tests/test_visual_regression.py -v --tb=short --timeout=60 -m 'not slow' --junitxml=test-results.xml --cov=tests --cov=build.py --cov-report=term-missing --cov-report=xml"
 
       - name: Run edge case tests (slow)
         continue-on-error: true
@@ -291,6 +291,28 @@ jobs:
           path: tests/test-results.xml
           if-no-files-found: ignore
           retention-days: 7
+
+      - name: Check coverage threshold
+        if: always()
+        run: |
+          if [ -f coverage.xml ]; then
+            COVERAGE=$(python3 -c "
+              import xml.etree.ElementTree as ET
+              root = ET.parse('coverage.xml').getroot()
+              print(root.attrib.get('line-rate', '0'))
+            ")
+            PERCENTAGE=$(python3 -c "print(f'{float(\"$COVERAGE\") * 100:.1f}')")
+            echo "Total coverage: ${PERCENTAGE}%"
+            THRESHOLD=60.0
+            PASS=$(python3 -c "print(float(\"$COVERAGE\") * 100 >= $THRESHOLD)")
+            if [ "$PASS" != "True" ]; then
+              echo "::error::Coverage ${PERCENTAGE}% is below threshold of ${THRESHOLD}%"
+              exit 1
+            fi
+            echo "Coverage ${PERCENTAGE}% meets threshold of ${THRESHOLD}%"
+          else
+            echo "::warning::coverage.xml not found, skipping coverage check"
+          fi
 
   deploy-pages:
     runs-on: ubuntu-latest

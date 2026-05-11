@@ -105,6 +105,11 @@
           "type": "boolean",
           "default": true,
           "description": "Show the OmniLaTeX status bar item"
+        },
+        "omnilatex.buildOnSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "Build on save using latexmk"
         }
       }
     }
