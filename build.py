@@ -326,7 +326,7 @@ class BuildTasks:
             else []
         )
 
-    def list_examples(self, _=None):
+    def list_examples(self, _: object | None = None) -> None:
         self.ui.header("Available Examples")
         for ex in self.discover_examples():
             print(f"  {self.ui.bold}{ex.name}{self.ui.end}")
@@ -649,11 +649,11 @@ class BuildTasks:
     def build_example(self, files: List[str]):
         self.build_examples(files)
 
-    def build_all(self, _=None):
+    def build_all(self, _: object | None = None) -> None:
         self.build_root()
         self.build_examples()
 
-    def build_root(self, _=None):
+    def build_root(self, _: object | None = None) -> None:
         self.ui.header("Building Root")
         pdf_path = Path(MAIN_TEX_FILENAME).with_suffix(".pdf")
 
@@ -745,13 +745,13 @@ class BuildTasks:
 
         return exit_code, logs
 
-    def clean_all(self, _=None):
+    def clean_all(self, _: object | None = None) -> None:
         self.ui.header("Full cleanup")
         self.clean_aux()
         shutil.rmtree(self.config.build_dir, ignore_errors=True)
         self.ui.success("Full cleanup finished.")
 
-    def clean_aux(self, _=None):
+    def clean_aux(self, _: object | None = None) -> None:
         self.ui.header("Cleaning auxiliary files")
         self.runner.run([LATEXMK_COMMAND, "-C"])
         self.clean_example([e.name for e in self.discover_examples()])
@@ -767,7 +767,7 @@ class BuildTasks:
                 except Exception:
                     self.ui.warning(f"Could not clean example {name}")
 
-    def clean_pdf(self, _=None):
+    def clean_pdf(self, _: object | None = None) -> None:
         self.ui.header("Cleaning PDF files")
         count = 0
         for pdf in Path(".").rglob("*.pdf"):
@@ -778,10 +778,10 @@ class BuildTasks:
                 count += 1
         self.ui.success(f"Removed {count} PDF(s).")
 
-    def preflight(self, _=None):
+    def preflight(self, _: object | None = None) -> None:
         self.cmd_preflight()
 
-    def run_tests(self, _=None):
+    def run_tests(self, _: object | None = None) -> object:
         return self.cmd_test()
 
     def cmd_watch(self, files: List[str]):
@@ -855,14 +855,14 @@ class BuildTasks:
         else:
             self.build_examples([])
 
-    def _check_tool(self, tool: str, desc: str, required: bool = True):
+    def _check_tool(self, tool: str, desc: str, required: bool = True) -> tuple[str, bool, str]:
         path = shutil.which(tool)
         if path:
             return (desc, True, f"Found at {path}")
         note = f"Not found" + ("" if not required else " (required)")
         return (desc, not required, note)
 
-    def _get_texlive_version(self):
+    def _get_texlive_version(self) -> int | None:
         try:
             result = subprocess.run(
                 ["tex", "--version"], capture_output=True, text=True, timeout=5
@@ -884,7 +884,7 @@ class BuildTasks:
         except Exception:
             return False
 
-    def cmd_preflight(self, files=None):
+    def cmd_preflight(self, files: list[str] | None = None) -> None:
         """Validate build environment readiness."""
         checks = []
 
@@ -934,7 +934,7 @@ class BuildTasks:
         else:
             self.ui.warning(f"{passed}/{total} checks passed")
 
-    def cmd_test(self, files=None):
+    def cmd_test(self, files: list[str] | None = None) -> int:
         """Run test suite (l3build + pytest)."""
         results = []
         self.ui.info("Running l3build check...")
@@ -1477,7 +1477,7 @@ class BuildTasks:
         self.ui.info(f"    3. python build.py build-root    (from repo root)")
         self.ui.info(f"       or latexmk -lualatex main.tex  (standalone)")
 
-    def cmd_doctor(self, files=None):
+    def cmd_doctor(self, files: list[str] | None = None) -> None:
         """Run comprehensive health diagnostics."""
         import platform as _platform
 
@@ -1649,7 +1649,7 @@ class BuildTasks:
 # -----------------------------------------------------------------------------
 # Interactive Menu (TUI)
 # -----------------------------------------------------------------------------
-def interactive_menu(tasks: BuildTasks, commands: dict) -> None:
+def interactive_menu(tasks: BuildTasks, commands: dict[str, tuple]) -> None:
     """Show an interactive terminal menu when no command is specified."""
 
     # Menu categories with their commands
@@ -1706,7 +1706,7 @@ def interactive_menu(tasks: BuildTasks, commands: dict) -> None:
         _simple_menu(tasks, commands, menu_sections, flat_commands)
 
 
-def _rich_menu(tasks, commands, menu_sections, flat_commands):
+def _rich_menu(tasks: BuildTasks, commands: dict[str, tuple], menu_sections: list[tuple[str, list[tuple[str, str]]]], flat_commands: dict[str, tuple[str, str, bool]]) -> None:
     """Render the interactive menu using rich."""
     from rich.console import Console
     from rich.table import Table as RichTable
@@ -1720,7 +1720,7 @@ def _rich_menu(tasks, commands, menu_sections, flat_commands):
         console.print()
         title = RichText("OmniLaTeX Build System", style="bold cyan")
         subtitle = RichText(
-            f"v1.17.0  •  {len(tasks.discover_examples())} examples  •  "
+            f"v1.19.0  •  {len(tasks.discover_examples())} examples  •  "
             f"{len([f for f in Path('.').rglob('*.sty')])} modules",
             style="dim",
         )
@@ -1823,7 +1823,7 @@ def _rich_menu(tasks, commands, menu_sections, flat_commands):
             return
 
 
-def _simple_menu(tasks, commands, menu_sections, flat_commands):
+def _simple_menu(tasks: BuildTasks, commands: dict[str, tuple], menu_sections: list[tuple[str, list[tuple[str, str]]]], flat_commands: dict[str, tuple[str, str, bool]]) -> None:
     """Render the interactive menu using plain terminal output."""
     ui = tasks.ui
 

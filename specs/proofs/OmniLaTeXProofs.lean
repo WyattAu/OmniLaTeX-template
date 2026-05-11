@@ -2,6 +2,7 @@
 -- Root library file — imports all proof modules
 
 import OmniLaTeXProofs.BuildModes
+import OmniLaTeXProofs.BuildModeStrictness
 import OmniLaTeXProofs.BuildSystem
 import OmniLaTeXProofs.DoctypeClassMapping
 import OmniLaTeXProofs.DocumentSettings

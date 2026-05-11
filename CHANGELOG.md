@@ -7,6 +7,23 @@ This project adheres to [Semantic versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [1.20.0] - 2026-05-11
+
+### Added
+
+- **`BuildModeStrictness.lean`** — 20 theorems proving dev/prod/ultra mode strictness hierarchy from .latexmkrc (feature counts, cross-mode comparisons, lattice properties, default safety)
+- **Root proof import** — OmniLaTeXProofs.lean now imports BuildModeStrictness (11 modules total)
+
+### Changed
+
+- **`build.py`** — added return type annotations to all BuildTasks methods, standalone functions, and menu helpers; fixed hardcoded version string v1.17.0 -> v1.19.0 in rich menu
+- **Total Lean theorems** — 64 -> 84 across 11 modules, 0 sorry
+
+### Verified
+
+- All 84 theorems compile with 0 errors, 0 sorry across 11 Lean 4 modules
+- 375 fast tests pass (48 skipped, 1 expected xfail)
+
 ## [1.19.0] - 2026-05-10
 
 ### Added
