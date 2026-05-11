@@ -1,0 +1,16 @@
+\input{regression-test.tex}
+\documentclass[doctype=presentation,enabletikz=false,enableengineering=false,enablecode=false,enabletables=false]{omnilatex}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== DOCTYPE_PRESENTATION: Class verification ===}
+\makeatletter
+\typeout{doctype: \omnilatex@doctype}
+\typeout{baseclass: \@ifclassloaded{scrbook}{scrbook}{\@ifclassloaded{scrreprt}{scrreprt}{\@ifclassloaded{scrartcl}{scrartcl}{unknown}}}}
+\makeatother
+
+\END
+\end{document}

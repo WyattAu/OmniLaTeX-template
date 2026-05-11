@@ -1,0 +1,26 @@
+\input{regression-test.tex}
+\documentclass[doctype=thesis,enabletikz=false,enableengineering=false,enablecode=false,enabletables=false]{omnilatex}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== DOCTYPE_THESIS: Class verification ===}
+\makeatletter
+\typeout{doctype: \omnilatex@doctype}
+\typeout{baseclass: \@ifclassloaded{scrbook}{scrbook}{\@ifclassloaded{scrreprt}{scrreprt}{\@ifclassloaded{scrartcl}{scrartcl}{unknown}}}}
+\makeatother
+
+\typeout{=== DOCTYPE_THESIS: Thesis commands ===}
+\thesisadvisor{Dr.\ Test Advisor}
+\thesisinstitution{Test University}
+\thesisdepartment{Test Department}
+\makeatletter
+\typeout{advisor: \@thesisadvisor}
+\typeout{institution: \@thesisinstitution}
+\typeout{department: \@thesisdepartment}
+\makeatother
+
+\END
+\end{document}

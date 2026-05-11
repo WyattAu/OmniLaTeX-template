@@ -2,25 +2,7 @@
 
 ## Quick Start
 
-```bash
-git clone https://github.com/WyattAu/OmniLaTeX-template.git
-cd OmniLaTeX-template
-python build.py build-example minimal-starter
-```
-
-Output: `build/examples/minimal-starter.pdf`
-
-Requires **TeX Live 2025+** with LuaLaTeX, Python 3.10+, and Git. Alternatively:
-
-```bash
-nix develop    # enter the Nix dev shell (all tools pre-installed)
-python build.py build-example minimal-starter
-```
-
-```bash
-docker run -it --rm -v $(pwd):/workspace ghcr.io/wyattau/omnilatex-docker:latest
-python build.py build-example minimal-starter
-```
+See the [Quick Start](../README.md#quick-start) section in the main README for clone, build, Docker, and Nix instructions.
 
 ## Minimal Document
 
@@ -288,25 +270,7 @@ Per-example settings go in `examples/<name>/config/`.
 
 ## Project Structure
 
-```
-omnilatex.cls                 # Main document class
-lib/                          # 27 modules across 9 subdirectories
-  core/                       # Build modes, utilities
-  layout/                     # Page layout, floats, KOMA-Script, accessibility
-  typography/                 # Fonts, math, typesetting, lists
-  references/                 # Bibliography, glossary, hyperref, citations
-  language/                   # Internationalization (polyglossia, CJK, RTL)
-  graphics/                   # Images, SVG, TikZ
-  code/                       # Code listings (minted)
-  tables/                     # Table formatting
-  utils/                      # Colors, themes, TODO notes, censoring
-config/
-  document-types/             # 26 doctype profiles
-  institutions/               # 16 institution configs
-examples/                     # 43 example templates
-tests/                        # Test suite (pytest + l3build)
-specs/                        # Formal specs and Lean 4 proofs
-```
+See the [Project Structure](../README.md#project-structure) section in the main README.
 
 ## FAQ / Troubleshooting
 

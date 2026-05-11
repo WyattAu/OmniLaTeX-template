@@ -59,34 +59,13 @@ python build.py build-example minimal-starter
 
 26 document type profiles across 3 KOMA-Script base classes. Switch with `\documentclass[doctype=<type>]{omnilatex}`.
 
-| Type | Class | Description |
-|------|-------|-------------|
-| `thesis` | scrbook | Academic thesis with chapters, bibliography, declaration |
-| `dissertation` | scrbook | PhD dissertation with front matter and committee |
-| `article` | scrartcl | Research article with abstract, keywords, DOI |
-| `journal` | scrartcl | Journal article with volume, issue, highlights |
-| `inlinepaper` | scrartcl | Compact two-column inline research paper (arXiv style) |
-| `book` | scrbook | Book-length document with publisher metadata |
-| `manual` | scrreprt | Product manual / handbook with version and support info |
-| `technicalreport` | scrreprt | Technical report with report number and confidentiality |
-| `standard` | scrreprt | Standards document with ICS codes and designation |
-| `patent` | scrreprt | Patent specification |
-| `cv` | scrartcl | Curriculum vitae with photo, links, and summary |
-| `cover-letter` | scrartcl | Cover letter with recipient and sender metadata |
-| `poster` | scrartcl | Conference poster (A1 landscape) |
-| `presentation` | scrartcl | Presentation slides (KOMA-based) |
-| `letter` | scrartcl | Formal letter with recipient, subject, and closing |
-| `dictionary` | scrbook | Dictionary / lexicon with series and publisher |
-| `homework` | scrartcl | Homework assignment with exercises and solutions |
-| `exam` | scrartcl | Examination paper with questions and answer spaces |
-| `research-proposal` | scrreprt | Research proposal with budget and timeline |
-| `lecture-notes` | scrartcl | Lecture notes with theorem environments |
-| `syllabus` | scrartcl | Course syllabus with grading policy and schedule |
-| `handout` | scrartcl | Two-column handout with key concept boxes |
-| `memo` | scrartcl | Memorandum with TO/FROM/CC/RE fields |
-| `invoice` | scrartcl | Commercial invoice |
-| `recipe` | scrartcl | Recipe with ingredients, steps, and metadata |
-| `white-paper` | scrreprt | White paper / position paper |
+| Base Class | Document Types |
+|-----------|---------------|
+| scrbook | thesis, dissertation, book, dictionary |
+| scrreprt | manual, technicalreport, standard, patent, research-proposal |
+| scrartcl | article, cv, letter, poster, presentation, and 11 more |
+
+See [User Guide](docs/USER_GUIDE.md#document-types) for the full table with descriptions.
 
 All options: `language`, `doctype`, `titlestyle`, `institution`, `censoring`, `loadGlossaries`, `todonotes`, `enablefonts`, `enablegraphics`, `enablemath`, `enabletikz`, `enableengineering`, `enablecode`, `enabletables`.
 
@@ -222,18 +201,13 @@ See [Overleaf Guide](docs/OVERLEAF.md) for details.
 ## Build Script
 
 ```bash
-python build.py build-example thesis     # Build one example
-python build.py build-examples           # Build all examples
-python build.py build-root               # Build root document
-python build.py build-examples -j 4      # Parallel build (4 jobs)
-python build.py build-examples --force   # Force rebuild (clean aux files)
-python build.py watch                    # Watch for changes, rebuild
-python build.py test                     # Run full test suite
-python build.py preflight                # Validate environment
-python build.py doctor                   # Health diagnostics
-python build.py diff <example>           # Visual regression check
-python build.py clean                    # Remove build artifacts
+python build.py build-example thesis    # Build a single example
+python build.py build-examples          # Build all examples
+python build.py test                    # Run test suite
+python build.py doctor                  # Environment health check
 ```
+
+See [User Guide](docs/USER_GUIDE.md#build-system) for all commands and options.
 
 ## CI/CD Integration
 

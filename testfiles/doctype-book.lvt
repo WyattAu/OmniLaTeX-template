@@ -1,0 +1,24 @@
+\input{regression-test.tex}
+\documentclass[doctype=book,enabletikz=false,enableengineering=false,enablecode=false,enabletables=false]{omnilatex}
+
+\START
+\OMIT
+\begin{document}
+\TIMO
+
+\typeout{=== DOCTYPE_BOOK: Class verification ===}
+\makeatletter
+\typeout{doctype: \omnilatex@doctype}
+\typeout{baseclass: \@ifclassloaded{scrbook}{scrbook}{\@ifclassloaded{scrreprt}{scrreprt}{\@ifclassloaded{scrartcl}{scrartcl}{unknown}}}}
+\makeatother
+
+\typeout{=== DOCTYPE_BOOK: Book commands ===}
+\subtitle{Test Subtitle}
+\publisher{Test Press}
+\makeatletter
+\typeout{subtitle: \@subtitle}
+\typeout{publisher: \@publisher}
+\makeatother
+
+\END
+\end{document}

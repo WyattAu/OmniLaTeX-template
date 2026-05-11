@@ -971,9 +971,37 @@ class BuildTasks:
             return 1
         return 0
 
-    def cmd_diff(self, files: List[str]):
-        """Compare built PDFs against references to detect visual regressions."""
+    def cmd_diff(self, files: List[str], regenerate_references: bool = False):
+        """Compare built PDFs against references to detect visual regressions.
+
+        When *regenerate_references* is True, copies built PDFs to
+        tests/references/ instead of comparing.
+        """
         self.ui.header("Visual Regression Diff")
+
+        ref_dir = Path(__file__).resolve().parent / "tests" / "references"
+        build_dir = self.config.build_dir / BUILD_EXAMPLES_SUBDIR
+        repo_root = Path(__file__).resolve().parent
+
+        if not files:
+            self.ui.warning("No examples specified.")
+            return
+
+        if regenerate_references:
+            self.ui.info("Regenerate mode: copying built PDFs to references/")
+            ref_dir.mkdir(parents=True, exist_ok=True)
+            copied = 0
+            for name in files:
+                build_copy = build_dir / f"{name}.pdf"
+                pdf_path = repo_root / "examples" / name / "main.pdf"
+                source = build_copy if build_copy.exists() else pdf_path
+                if not source.exists():
+                    self.ui.warning(f"SKIP: {name} -- PDF not found")
+                    continue
+                shutil.copy2(source, ref_dir / f"{name}.pdf")
+                copied += 1
+            self.ui.success(f"Copied {copied} reference PDF(s) to {ref_dir}")
+            return
 
         try:
             from PIL import Image
@@ -985,14 +1013,6 @@ class BuildTasks:
             self.ui.info(
                 "pillow/numpy not available; falling back to byte-level comparison"
             )
-
-        ref_dir = self.config.build_dir / "references"
-        build_dir = self.config.build_dir / BUILD_EXAMPLES_SUBDIR
-        repo_root = Path(__file__).resolve().parent
-
-        if not files:
-            self.ui.warning("No examples specified.")
-            return
 
         all_pass = True
         for name in files:
@@ -1988,14 +2008,25 @@ def main() -> None:
             True,
         ),
     }
+    diff_subparser = None
     init_subparser = None
     for name, (handler, help_text, takes_files) in commands.items():
         sub = subparsers.add_parser(name, help=help_text)
         sub.set_defaults(handler=handler)
         if takes_files:
             sub.add_argument("files", nargs="*", default=None)
+        if name == "diff":
+            diff_subparser = sub
         if name == "init":
             init_subparser = sub
+    if diff_subparser is not None:
+        diff_subparser.add_argument(
+            "--regenerate-references",
+            action="store_true",
+            dest="regenerate_references",
+            default=False,
+            help="Copy built PDFs to tests/references/ as new baselines instead of comparing.",
+        )
     if init_subparser is not None:
         init_subparser.add_argument(
             "--doctype",
@@ -2045,6 +2076,12 @@ def main() -> None:
                 doctype=getattr(args, "doctype", None),
                 institution=getattr(args, "institution", None),
                 language=getattr(args, "language", None),
+            )
+        elif args.command == "diff":
+            args.handler(
+                tasks,
+                getattr(args, "files", None),
+                regenerate_references=getattr(args, "regenerate_references", False),
             )
         else:
             args.handler(tasks, getattr(args, "files", None))

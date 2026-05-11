@@ -41,6 +41,14 @@ jobs:
             TODAY=$(date +%Y-%m-%d)
             sed -i "s|# Pinned digest (.*)|# Pinned digest (${TODAY})|" .env.docker
             echo "skip=false" >> $GITHUB_OUTPUT
+
+            NEW="${{ steps.digest.outputs.digest }}"
+            sed -i "s|${OLD_DIGEST}|${NEW}|g" .gitlab/ci/pipeline.yml
+            sed -i "s|${OLD_DIGEST}|${NEW}|g" .gitea/workflows/build.yml
+            sed -i "s|${OLD_DIGEST}|${NEW}|g" .forgejo/workflows/build.yml
+            sed -i "s|${OLD_DIGEST}|${NEW}|g" .woodpecker/workflows/pipeline.yml
+            sed -i "s|${OLD_DIGEST}|${NEW}|g" .devcontainer/docker-compose.yml
+            echo "Synced digest to all downstream CI files."
           fi
 
       - name: Create pull request
@@ -55,8 +63,11 @@ jobs:
 
             This PR updates the pinned Docker image digest in:
             - `.env.docker`
-
-            The `build.yml` workflow reads the digest from `.env.docker` at runtime — no workflow file changes needed.
+            - `.gitlab/ci/pipeline.yml`
+            - `.gitea/workflows/build.yml`
+            - `.forgejo/workflows/build.yml`
+            - `.woodpecker/workflows/pipeline.yml`
+            - `.devcontainer/docker-compose.yml`
           branch: chore/docker-digest-sync
           commit-message: "chore: update Docker image digest"
           delete-branch: true

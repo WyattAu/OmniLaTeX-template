@@ -1,0 +1,9 @@
+%% PLACEHOLDER: regenerate with l3build check --generate
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+=== DOCTYPE_MANUAL: Class verification ===
+doctype: manual
+baseclass: scrreprt
+=== DOCTYPE_MANUAL: Manual commands ===
+brand: Test Brand
+version: 2.0

@@ -1,0 +1,10 @@
+%% PLACEHOLDER: regenerate with l3build check --generate
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+=== DOCTYPE_THESIS: Class verification ===
+doctype: thesis
+baseclass: scrbook
+=== DOCTYPE_THESIS: Thesis commands ===
+advisor: Dr.\ Test Advisor
+institution: Test University
+department: Test Department
