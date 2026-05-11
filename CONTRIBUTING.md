@@ -240,67 +240,9 @@ English.
 
 ---
 
-## PDF Accessibility (Tagged PDF / PDF/UA-1)
+## PDF Accessibility
 
-OmniLaTeX supports generating tagged PDFs compatible with screen readers
-(NVDA, VoiceOver, JAWS) via the `tagpdf` package. See
-[docs/accessibility.md](docs/accessibility.md) for the full guide.
-
-### Quick Start
-
-Add these lines **before** your `\documentclass`:
-
-```latex
-\RequirePackage{pdfmanagement-testphase}
-\DocumentMetadata{lang=english, pdfversion=2.0}
-
-\documentclass[doctype=article]{omnilatex}
-
-\RequirePackage{config/document-settings}
-\RequirePackage{lib/layout/omnilatex-accessibility}
-```
-
-### How It Works
-
-1. `pdfmanagement-testphase` activates LuaTeX's PDF resource management
-2. `\DocumentMetadata` sets PDF metadata and version
-3. `omnilatex-accessibility.sty` loads `tagpdf` and configures tagging
-
-### Requirements
-
-- LuaLaTeX engine (already required by OmniLaTeX)
-- `tagpdf` package (included in TeX Live 2024+)
-- `pdfmanagement-testphase` package (included in TeX Live 2020+)
-
-### Available Commands
-
-| Command | Description |
-|---------|-------------|
-| `\alttext{desc}` | Set alt text for the next figure environment |
-| `\tikzalttext{desc}` | Set alt text for the next TikZ picture |
-| `\accessiblelink{text}{url}{desc}` | Link with screen reader tooltip |
-| `\checkcontrast{bg}{fg}` | Log an informational contrast check reminder |
-| `\readingorder{n}` | Hint at logical reading order for complex layouts |
-| `\langtag{code}{text}` | Wrap text with a different language attribute |
-| `\validatstructure` | Log a heading hierarchy check |
-
-### Limitations
-
-- `tagpdf` is under active development; some complex layouts may produce
-  tagging warnings
-- TikZ diagrams and complex floats may need manual tagging adjustments
-- For full PDF/UA-1 compliance, additional metadata (title, author, subject)
-  should be set via `\DocumentMetadata`
-- Color contrast checking is informational only (no runtime pixel analysis)
-- Reading order hints may not be respected by all PDF viewers
-
-### Testing
-
-Build the accessibility example:
-
-```bash
-python build.py build-example accessibility-test
-```
+For PDF accessibility features (tagged PDFs, alt text, contrast checking), see [docs/accessibility.md](docs/accessibility.md).
 
 ---
 

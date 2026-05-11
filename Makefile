@@ -1,4 +1,4 @@
-.PHONY: test test-fast test-slow test-lean lint format clean build build-all preflight
+.PHONY: test test-fast test-slow test-lean lint format clean build build-all preflight validate-digest check-semver
 
 PYTHON := python3
 LAKE := lake
@@ -50,3 +50,9 @@ build-all:
 
 preflight: test-fast test-lean lint
 	@echo "All preflight checks passed."
+
+validate-digest: ## Validate Docker digest consistency across CI configs
+	@python3 scripts/validate-digest-consistency.py
+
+check-semver: ## Validate semantic versioning consistency
+	@python3 scripts/check_semver.py

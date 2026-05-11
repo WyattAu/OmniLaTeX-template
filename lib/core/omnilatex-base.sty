@@ -73,4 +73,24 @@
 \linespread{1.05}
 % Note: KOMAoption singlespacing requires KOMA-Script to be already loaded
 
+% =========================================================================
+% Deprecation Mechanism (v1.23.0)
+% =========================================================================
+% Usage: \omnilatexdeprecate{<old-command>}{<new-command>}
+% Issues a PackageWarning and redefines the old command to call the new one.
+% Example: \omnilatexdeprecate{\oldFontCmd}{\setMainFont}
+
+\ExplSyntaxOn
+\NewDocumentCommand{\omnilatexdeprecate}{mm}
+  {
+    \msg_warning:nnnn {omnilatex} {deprecated-command}
+      {Command~\token_to_str:N{#1}~is~deprecated.}
+      {Use~\token_to_str:N{#2}~instead.}
+    \cs_if_exist:cT{#1}
+      {
+        \cs_set_eq:NN #1 #2
+      }
+  }
+\ExplSyntaxOff
+
 \endinput

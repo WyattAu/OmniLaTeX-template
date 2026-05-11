@@ -15,3 +15,4 @@ import OmniLaTeXProofs.ModuleIntegrity
 import OmniLaTeXProofs.PageGeometry
 import OmniLaTeXProofs.DoctypePageGeometry
 import OmniLaTeXProofs.SecondaryLanguageCompleteness
+import OmniLaTeXProofs.CrossReferenceConsistency

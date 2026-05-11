@@ -148,5 +148,135 @@
       "}"
     ],
     "description": "Glossary entry definition"
+  },
+  "OmniLaTeX doctype thesis": {
+    "prefix": "doctype-thesis",
+    "body": ["\\documentclass[doctype=thesis]{omnilatex}"],
+    "description": "OmniLaTeX thesis document"
+  },
+  "OmniLaTeX doctype dissertation": {
+    "prefix": "doctype-dissertation",
+    "body": ["\\documentclass[doctype=dissertation]{omnilatex}"],
+    "description": "OmniLaTeX dissertation document"
+  },
+  "OmniLaTeX doctype article": {
+    "prefix": "doctype-article",
+    "body": ["\\documentclass[doctype=article]{omnilatex}"],
+    "description": "OmniLaTeX article document"
+  },
+  "OmniLaTeX doctype journal": {
+    "prefix": "doctype-journal",
+    "body": ["\\documentclass[doctype=journal]{omnilatex}"],
+    "description": "OmniLaTeX journal document"
+  },
+  "OmniLaTeX doctype inlinepaper": {
+    "prefix": "doctype-inlinepaper",
+    "body": ["\\documentclass[doctype=inlinepaper]{omnilatex}"],
+    "description": "OmniLaTeX inlinepaper document"
+  },
+  "OmniLaTeX doctype book": {
+    "prefix": "doctype-book",
+    "body": ["\\documentclass[doctype=book]{omnilatex}"],
+    "description": "OmniLaTeX book document"
+  },
+  "OmniLaTeX doctype manual": {
+    "prefix": "doctype-manual",
+    "body": ["\\documentclass[doctype=manual]{omnilatex}"],
+    "description": "OmniLaTeX manual document"
+  },
+  "OmniLaTeX doctype technicalreport": {
+    "prefix": "doctype-technicalreport",
+    "body": ["\\documentclass[doctype=technicalreport]{omnilatex}"],
+    "description": "OmniLaTeX technicalreport document"
+  },
+  "OmniLaTeX doctype standard": {
+    "prefix": "doctype-standard",
+    "body": ["\\documentclass[doctype=standard]{omnilatex}"],
+    "description": "OmniLaTeX standard document"
+  },
+  "OmniLaTeX doctype patent": {
+    "prefix": "doctype-patent",
+    "body": ["\\documentclass[doctype=patent]{omnilatex}"],
+    "description": "OmniLaTeX patent document"
+  },
+  "OmniLaTeX doctype cv": {
+    "prefix": "doctype-cv",
+    "body": ["\\documentclass[doctype=cv]{omnilatex}"],
+    "description": "OmniLaTeX cv document"
+  },
+  "OmniLaTeX doctype cover-letter": {
+    "prefix": "doctype-cover-letter",
+    "body": ["\\documentclass[doctype=cover-letter]{omnilatex}"],
+    "description": "OmniLaTeX cover-letter document"
+  },
+  "OmniLaTeX doctype poster": {
+    "prefix": "doctype-poster",
+    "body": ["\\documentclass[doctype=poster]{omnilatex}"],
+    "description": "OmniLaTeX poster document"
+  },
+  "OmniLaTeX doctype presentation": {
+    "prefix": "doctype-presentation",
+    "body": ["\\documentclass[doctype=presentation]{omnilatex}"],
+    "description": "OmniLaTeX presentation document"
+  },
+  "OmniLaTeX doctype letter": {
+    "prefix": "doctype-letter",
+    "body": ["\\documentclass[doctype=letter]{omnilatex}"],
+    "description": "OmniLaTeX letter document"
+  },
+  "OmniLaTeX doctype dictionary": {
+    "prefix": "doctype-dictionary",
+    "body": ["\\documentclass[doctype=dictionary]{omnilatex}"],
+    "description": "OmniLaTeX dictionary document"
+  },
+  "OmniLaTeX doctype homework": {
+    "prefix": "doctype-homework",
+    "body": ["\\documentclass[doctype=homework]{omnilatex}"],
+    "description": "OmniLaTeX homework document"
+  },
+  "OmniLaTeX doctype exam": {
+    "prefix": "doctype-exam",
+    "body": ["\\documentclass[doctype=exam]{omnilatex}"],
+    "description": "OmniLaTeX exam document"
+  },
+  "OmniLaTeX doctype research-proposal": {
+    "prefix": "doctype-research-proposal",
+    "body": ["\\documentclass[doctype=research-proposal]{omnilatex}"],
+    "description": "OmniLaTeX research-proposal document"
+  },
+  "OmniLaTeX doctype recipe": {
+    "prefix": "doctype-recipe",
+    "body": ["\\documentclass[doctype=recipe]{omnilatex}"],
+    "description": "OmniLaTeX recipe document"
+  },
+  "OmniLaTeX doctype lecture-notes": {
+    "prefix": "doctype-lecture-notes",
+    "body": ["\\documentclass[doctype=lecture-notes]{omnilatex}"],
+    "description": "OmniLaTeX lecture-notes document"
+  },
+  "OmniLaTeX doctype syllabus": {
+    "prefix": "doctype-syllabus",
+    "body": ["\\documentclass[doctype=syllabus]{omnilatex}"],
+    "description": "OmniLaTeX syllabus document"
+  },
+  "OmniLaTeX doctype handout": {
+    "prefix": "doctype-handout",
+    "body": ["\\documentclass[doctype=handout]{omnilatex}"],
+    "description": "OmniLaTeX handout document"
+  },
+  "OmniLaTeX doctype memo": {
+    "prefix": "doctype-memo",
+    "body": ["\\documentclass[doctype=memo]{omnilatex}"],
+    "description": "OmniLaTeX memo document"
+  },
+  "OmniLaTeX doctype white-paper": {
+    "prefix": "doctype-white-paper",
+    "body": ["\\documentclass[doctype=white-paper]{omnilatex}"],
+    "description": "OmniLaTeX white-paper document"
+  },
+  "OmniLaTeX doctype invoice": {
+    "prefix": "doctype-invoice",
+    "body": ["\\documentclass[doctype=invoice]{omnilatex}"],
+    "description": "OmniLaTeX invoice document"
   }
 }

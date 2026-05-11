@@ -42,7 +42,7 @@ def compute_ssim(img1: Image.Image, img2: Image.Image) -> float:
     return ssim
 
 
-def compare_pdfs(ref_path: Path, test_path: Path, threshold: float = 0.95) -> dict:
+def compare_pdfs(ref_path: Path, test_path: Path, threshold: float = 0.99) -> dict:
     ref_images = pdf_to_images(ref_path)
     test_images = pdf_to_images(test_path)
     if len(ref_images) != len(test_images):
@@ -64,20 +64,60 @@ def main():
     parser = argparse.ArgumentParser(description="Visual regression for OmniLaTeX")
     parser.add_argument("--reference-dir", type=Path, default=Path("tests/references"))
     parser.add_argument("--build-dir", type=Path, default=Path("build/examples"))
-    parser.add_argument("--threshold", type=float, default=0.95)
+    parser.add_argument("--threshold", type=float, default=0.99)
     parser.add_argument(
         "--generate", action="store_true", help="Generate reference images"
     )
     args = parser.parse_args()
 
     examples = {
-        "thesis": "thesis/main.pdf",
-        "article": "article/main.pdf",
-        "cv": "cv-twopage/main.pdf",
+        "accessibility-test": {"pages": None},
+        "article-color": {"pages": None},
+        "article": {"pages": None},
+        "book": {"pages": None},
+        "citation-styles": {"pages": None},
+        "cjk-chinese": {"pages": None},
+        "cjk-japanese": {"pages": None},
+        "cjk-korean": {"pages": None},
+        "color-themes": {"pages": None},
+        "cover-letter-formal": {"pages": None},
+        "cover-letter": {"pages": None},
+        "cv-twopage": {"pages": None},
+        "cv": {"pages": None},
+        "dictionary": {"pages": None},
+        "dissertation": {"pages": None},
+        "exam": {"pages": None},
+        "handout": {"pages": None},
+        "homework": {"pages": None},
+        "inline-paper": {"pages": None},
+        "journal": {"pages": None},
+        "lecture-notes": {"pages": None},
+        "letter": {"pages": None},
+        "lua-showcase": {"pages": None},
+        "manual": {"pages": None},
+        "memo": {"pages": None},
+        "minimal-custom": {"pages": None},
+        "minimal-starter": {"pages": None},
+        "multi-language": {"pages": None},
+        "patent": {"pages": None},
+        "poster": {"pages": None},
+        "presentation": {"pages": None},
+        "research-proposal": {"pages": None},
+        "recipe": {"pages": None},
+        "rtl-arabic": {"pages": None},
+        "rtl-hebrew": {"pages": None},
+        "standard": {"pages": None},
+        "syllabus": {"pages": None},
+        "technical-report": {"pages": None},
+        "thesis-spacing": {"pages": None},
+        "thesis-tuhh": {"pages": None},
+        "thesis": {"pages": None},
+        "white-paper": {"pages": None},
+        "invoice": {"pages": None},
     }
     all_pass = True
-    for name, rel_path in examples.items():
-        pdf_path = args.build_dir / rel_path
+    for name, info in examples.items():
+        pdf_path = args.build_dir / f"{name}/main.pdf"
         ref_path = args.reference_dir / f"{name}.pdf"
         if not pdf_path.exists():
             print(f"SKIP: {name} — PDF not found at {pdf_path}")
