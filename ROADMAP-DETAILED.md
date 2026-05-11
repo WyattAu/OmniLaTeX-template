@@ -1,6 +1,6 @@
 # OmniLaTeX Detailed Roadmap
 
-**Current version:** v1.18.0 | **Date:** 2026-05-10 | **License:** Apache 2.0
+**Current version:** v1.21.0 | **Date:** 2026-05-11 | **License:** Apache 2.0
 
 ---
 
@@ -15,7 +15,7 @@
 | Examples | Stable | 43 example templates, all compile on TeX Live 2025+ |
 | Languages | Stable | 25 via polyglossia, 18 with full OmniLaTeX translations (47 keys each) |
 | Institutions | Stable | 16 pluggable configs (ETH, MIT, Stanford, TUHH, TUM, Cambridge, etc.) |
-| Formal verification | Stable | 64 Lean 4 theorems across 10 modules, 0 `sorry`, all compile |
+| Formal verification | Stable | 110 Lean 4 theorems across 12 modules, 0 `sorry`, all compile |
 | Test suite | Stable | 368 structural + 19 property + 7 negative + 5 visual + 5 edge case = 404+ (132 hypothesis-generated) |
 | CI/CD | Stable | 9 GitHub Actions + GitLab/Gitea/Forgejo/Woodpecker configs |
 | Pre-commit hooks | Stable | 25 hooks: trailing whitespace, black, isort, flake8, markdownlint, pytest gate, Lean gate |
@@ -33,11 +33,11 @@
 | KI-002 | Medium | `I18nCompleteness.lean` only covers 18 primary languages; secondary languages with polyglossia registration but no translations are unverified | RESOLVED in v1.18.0 |
 | KI-003 | Low | `visual_regression.py` SSIM script never runs in CI; `tests/references/` is empty | 4h |
 | KI-004 | Low | `hypothesis` not declared in `tests/pyproject.toml` dependencies; property tests silently skip without it | RESOLVED in v1.18.0 |
-| KI-005 | Low | Stale Docker digests in Forgejo/Woodpecker/GitLab/Gitea CI configs not auto-synced | 2h |
+| KI-005 | Low | Stale Docker digests in Forgejo/Woodpecker/GitLab/Gitea CI configs not auto-synced | AUDITED in v1.21.0 -- all consistent, sync automation recommended |
 | KI-006 | Low | No `pytest-cov` or coverage measurement; branch coverage unknown | 3h |
 | KI-007 | Low | CHANGELOG v1.15.0 and v1.16.0 contain near-duplicate content; v1.12.0/v1.13.0 share duplicate entries | RESOLVED in v1.18.0 |
-| KI-008 | Low | `pre-commit-latex-hooks` and `language-formatters-pre-commit-hooks` have Python version compatibility issues in some environments | 1h |
-| KI-009 | Info | `pretty-format-yaml` hook fails on Python 3.14 (missing `pkg_resources`) | 1h |
+| KI-008 | Low | `pre-commit-latex-hooks` and `language-formatters-pre-commit-hooks` have Python version compatibility issues in some environments | RESOLVED in v1.21.0 |
+| KI-009 | Info | `pretty-format-yaml` hook fails on Python 3.14 (missing `pkg_resources`) | RESOLVED in v1.21.0 |
 | KI-010 | Info | No root-level `Makefile`; only `tests/Makefile` and `tests/module_tests/Makefile` | RESOLVED in v1.18.0 |
 
 ---
@@ -258,9 +258,9 @@ preflight:     ## Run all checks before release
 | TD-001 | `test_properties.py` duplicates `DOCTYPE_ALIASES` from `constants.py` | Low | RESOLVED in v1.18.0 |
 | TD-002 | Build artifacts (main.pdf, *.aux, *.log) committed to repo | Low | N/A (not tracked in git) |
 | TD-003 | No integration test for `build.py` commands (scaffold, init, list) | Medium | v1.19.0 |
-| TD-004 | No type hints in `build.py` (1331 lines) | Medium | v1.19.0 |
+| TD-004 | No type hints in `build.py` (1331 lines) | Medium | RESOLVED in v1.20.0 |
 | TD-005 | `docs/accessibility.md` duplicates `CONTRIBUTING.md` PDF accessibility section | Low | v1.19.0 |
-| TD-006 | README.md document types table duplicates `docs/USER_GUIDE.md` | Low | v2.0.0 |
+| TD-006 | README.md document types table duplicates `docs/USER_GUIDE.md` | Low | AUDITED in v1.21.0 -- overlap documented, refactoring recommended |
 | TD-007 | No `.editorconfig` for consistent formatting across editors | Low | RESOLVED in v1.18.0 |
 | TD-008 | `CHANGELOG.md` exceeds 500 lines; should be split per-version | Low | v2.0.0 |
 
@@ -281,13 +281,14 @@ preflight:     ## Run all checks before release
 
 ## Metrics Dashboard
 
-### Current Metrics (v1.18.0)
+### Current Metrics (v1.21.0)
 
 | Metric | Value | Target |
 |--------|-------|--------|
 | Test cases (non-hypothesis) | 404 | >500 |
 | Test cases (with hypothesis) | 536 | >600 |
-| Lean 4 theorems | 64 | >100 |
+| Lean 4 theorems | 110 | >100 |
+| Lean 4 modules | 12 | 12 |
 | Document types | 26 | 30+ |
 | Examples | 43 | 50+ |
 | Institutions | 16 | 25+ |
@@ -297,7 +298,7 @@ preflight:     ## Run all checks before release
 | Pre-commit hooks | 25 | 25+ |
 | Module TOML contracts | 21 | 27 (all modules) |
 | Manual chapters | 57 | 60+ |
-| Code coverage (Python) | Unknown | >80% |
+| Code coverage (Python) | 65% | >80% |
 
 ### Success Criteria for v2.0.0
 

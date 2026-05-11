@@ -11,4 +11,5 @@ import OmniLaTeXProofs.FloatInvariant
 import OmniLaTeXProofs.FontHierarchy
 import OmniLaTeXProofs.I18nCompleteness
 import OmniLaTeXProofs.LanguageFallback
+import OmniLaTeXProofs.ModuleIntegrity
 import OmniLaTeXProofs.PageGeometry
