@@ -1,12 +1,12 @@
 # OmniLaTeX Detailed Roadmap
 
-**Current version:** v1.21.0 | **Date:** 2026-05-11 | **License:** Apache 2.0
+**Current version:** v1.22.0 | **Date:** 2026-05-11 | **License:** Apache 2.0
 
 ---
 
 ## Current State Assessment
 
-### What Works (v1.17.0)
+### What Works (v1.22.0)
 
 | Area | Status | Details |
 |------|--------|---------|
@@ -16,7 +16,7 @@
 | Languages | Stable | 25 via polyglossia, 18 with full OmniLaTeX translations (47 keys each) |
 | Institutions | Stable | 16 pluggable configs (ETH, MIT, Stanford, TUHH, TUM, Cambridge, etc.) |
 | Formal verification | Stable | 110 Lean 4 theorems across 12 modules, 0 `sorry`, all compile |
-| Test suite | Stable | 368 structural + 19 property + 7 negative + 5 visual + 5 edge case = 404+ (132 hypothesis-generated) |
+| Test suite | Stable | 375 fast tests (48 skipped, 1 xfailed) |
 | CI/CD | Stable | 9 GitHub Actions + GitLab/Gitea/Forgejo/Woodpecker configs |
 | Pre-commit hooks | Stable | 25 hooks: trailing whitespace, black, isort, flake8, markdownlint, pytest gate, Lean gate |
 | Reproducible builds | Stable | SOURCE_DATE_EPOCH, byte-for-byte deterministic PDFs |
@@ -34,7 +34,7 @@
 | KI-003 | Low | `visual_regression.py` SSIM script never runs in CI; `tests/references/` is empty | 4h |
 | KI-004 | Low | `hypothesis` not declared in `tests/pyproject.toml` dependencies; property tests silently skip without it | RESOLVED in v1.18.0 |
 | KI-005 | Low | Stale Docker digests in Forgejo/Woodpecker/GitLab/Gitea CI configs not auto-synced | AUDITED in v1.21.0 -- all consistent, sync automation recommended |
-| KI-006 | Low | No `pytest-cov` or coverage measurement; branch coverage unknown | 3h |
+| KI-006 | Low | No `pytest-cov` or coverage measurement; branch coverage unknown | RESOLVED in v1.19.0 |
 | KI-007 | Low | CHANGELOG v1.15.0 and v1.16.0 contain near-duplicate content; v1.12.0/v1.13.0 share duplicate entries | RESOLVED in v1.18.0 |
 | KI-008 | Low | `pre-commit-latex-hooks` and `language-formatters-pre-commit-hooks` have Python version compatibility issues in some environments | RESOLVED in v1.21.0 |
 | KI-009 | Info | `pretty-format-yaml` hook fails on Python 3.14 (missing `pkg_resources`) | RESOLVED in v1.21.0 |
@@ -281,12 +281,12 @@ preflight:     ## Run all checks before release
 
 ## Metrics Dashboard
 
-### Current Metrics (v1.21.0)
+### Current Metrics (v1.22.0)
 
 | Metric | Value | Target |
 |--------|-------|--------|
-| Test cases (non-hypothesis) | 404 | >500 |
-| Test cases (with hypothesis) | 536 | >600 |
+| Test cases (non-hypothesis) | 375 | >500 |
+| Test cases (with hypothesis) | 375 | >600 |
 | Lean 4 theorems | 110 | >100 |
 | Lean 4 modules | 12 | 12 |
 | Document types | 26 | 30+ |

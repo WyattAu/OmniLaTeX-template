@@ -379,9 +379,9 @@ Create `testfiles/omnilatex-mytype.lvt` and generate a baseline:
 python scripts/gen_tlg.py omnilatex-mytype
 ```
 
-### Step 6: Update CHANGELOG.md
+### Step 6: Update CHANGELOG
 
-Add an entry under `[Unreleased] > Added`.
+Add an entry under `[Unreleased] > Added` in `CHANGELOG/vX.Y.Z.md`.
 
 ---
 
@@ -440,13 +440,13 @@ Add an entry under `[Unreleased] > Added`.
    python build.py build-example minimal-starter --timings 2>&1 | grep -i warning
    ```
 
-5. **Update CHANGELOG.md** (required for any `.sty`/`.cls` changes)
+5. **Update CHANGELOG** (required for any `.sty`/`.cls` changes — add entry to `CHANGELOG/vX.Y.Z.md`)
 
 ### Pull Request Checklist
 
 - [ ] Tests pass (`python build.py test`)
 - [ ] No new LaTeX warnings in build log
-- [ ] CHANGELOG.md updated (if applicable)
+- [ ] CHANGELOG/vX.Y.Z.md updated (if applicable)
 - [ ] New files documented in relevant specs
 - [ ] Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/)
   format: `feat:`, `fix:`, `docs:`, `ci:`, `chore:`, `test:`
@@ -467,7 +467,7 @@ chore: update flake.lock
 ## Changelog Format
 
 This project uses [Keep a Changelog](https://keepachangelog.com/) format.
-Update `CHANGELOG.md` for any user-visible change.
+Update `CHANGELOG/` for any user-visible change (add entry to the appropriate per-version file).
 
 ```markdown
 ## [Unreleased]
@@ -485,7 +485,7 @@ Update `CHANGELOG.md` for any user-visible change.
 - Removed feature description
 ```
 
-CI enforces that `CHANGELOG.md` is updated when `.sty` or `.cls` files
+CI enforces that `CHANGELOG/` is updated when `.sty` or `.cls` files
 are modified.
 
 ---

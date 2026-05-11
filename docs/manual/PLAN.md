@@ -165,7 +165,7 @@ A comprehensive reference manual covering every functionality of modern LaTeX th
 ### Part XI: Formal Verification
 
 ```
-110_LEAN4_PROOFS.md       — 53 theorems across 10 modules, proof structure, how to read/extend
+110_LEAN4_PROOFS.md       — 110 theorems across 12 modules, proof structure, how to read/extend
 111_ARCHITECTURE.md      — 27 modules, dependency graph, module responsibilities
 ```
 

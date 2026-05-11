@@ -13,3 +13,5 @@ import OmniLaTeXProofs.I18nCompleteness
 import OmniLaTeXProofs.LanguageFallback
 import OmniLaTeXProofs.ModuleIntegrity
 import OmniLaTeXProofs.PageGeometry
+import OmniLaTeXProofs.DoctypePageGeometry
+import OmniLaTeXProofs.SecondaryLanguageCompleteness

@@ -1,6 +1,6 @@
 # OmniLaTeX Roadmap
 
-Current version: **v1.17.0**
+Current version: **v1.22.0**
 
 ## Design Principles
 
@@ -14,16 +14,16 @@ Current version: **v1.17.0**
 
 | Metric | Value |
 |--------|-------|
-| Releases | 17 (v1.0.0–v1.17.0) |
+| Releases | 23 (v1.0.0–v1.22.0, no v1.18.0) |
 | `.sty` modules | 27 |
 | Document types | 26 (55+ aliases) across 3 KOMA-Script base classes |
-| Examples | 44 (44/44 compile on Docker TL2026) |
+| Examples | 43 |
 | Institution configs | 16 |
-| Languages | 18 primary (EN, DE, FR, ES, RU, IT, PT, NL, PL, CS, EL, TR, DA, ZH, JA, KO, AR, HE) + 8 secondary via polyglossia |
+| Languages | 18 with full OmniLaTeX translations + 25 via polyglossia |
 | Translation keys | 846 total (47 keys × 18 languages) |
 | CI workflows | 9 GitHub Actions + 4 other platforms |
-| Tests | 529+ (367 structural + 18 property + 10 unicode + 7 negative + 132 hypothesis) |
-| Lean 4 proofs | 53/53 proven, 10 modules, 0 sorry |
+| Tests | 375 fast tests (48 skipped, 1 xfailed) |
+| Lean 4 proofs | 110 proven, 12 modules, 0 sorry |
 | Color themes | 6 presets + dark/light toggle |
 | Citation styles | 9 (IEEE, ACM, APA, Chicago, Nature, Science, Harvard, Vancouver, MLA) |
 | CJK support | Chinese (SC+TC), Japanese, Korean |

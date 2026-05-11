@@ -1,0 +1,6 @@
+%% PLACEHOLDER: regenerate with l3build check --generate
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+=== DOCTYPE_PATENT: Class verification ===
+doctype: patent
+baseclass: scrreprt

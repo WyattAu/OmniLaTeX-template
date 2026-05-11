@@ -112,7 +112,7 @@ See `config/institutions/README.md` for details.
 OmniLaTeX uses Polyglossia for language support. Set with
 `\documentclass[language=<lang>]{omnilatex}`.
 
-### Primary (full translation support)
+### Languages with full OmniLaTeX translations
 
 | Language | Key |
 |----------|-----|
@@ -120,17 +120,26 @@ OmniLaTeX uses Polyglossia for language support. Set with
 | German | `german` |
 | French | `french` |
 | Spanish | `spanish` |
-| Chinese (Simplified) | `chinese` / `simplifiedchinese` |
-| Japanese | `japanese` |
-| Korean | `korean` |
-| Arabic | `arabic` |
-| Hebrew | `hebrew` |
+| Portuguese | `portuguese` |
+| Italian | `italian` |
+| Dutch | `dutch` |
+| Polish | `polish` |
+| Catalan | `catalan` |
+| Brazilian Portuguese | `brazilian` |
+| Romanian | `romanian` |
+| Turkish | `turkish` |
+| Greek | `greek` |
+| Russian | `russian` |
+| Ukrainian | `ukrainian` |
+| Czech | `czech` |
+| Slovak | `slovak` |
+| Slovenian | `slovenian` |
 
-### Secondary (standard captions via Polyglossia)
+### Other languages (standard captions via Polyglossia)
 
-Polish, Dutch, Catalan, Brazilian Portuguese, Italian, Portuguese, Romanian,
-Turkish, Greek, Russian, Ukrainian, Czech, Slovak, Slovenian, Serbian, Croatian,
-Bulgarian, Mongolian, Persian, Vietnamese, Hindi, Swedish, Finnish, Danish, Norwegian.
+Chinese (Simplified + Traditional), Japanese, Korean, Arabic, Hebrew, Persian,
+Danish, Swedish, Finnish, Norwegian, Vietnamese, Hindi, Serbian, Croatian,
+Bulgarian, Mongolian.
 
 ### CJK and RTL
 

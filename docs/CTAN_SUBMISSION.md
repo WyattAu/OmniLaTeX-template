@@ -67,8 +67,8 @@ All 43 examples should compile without errors. Alternatively, run the CI pipelin
 | Field | Value |
 |-------|-------|
 | **Package name** | `omnilatex` |
-| **Version** | (read from `VERSION.md`, e.g. `1.17.0`) |
-| **Summary** | `A modular, engineering-grade LaTeX document class supporting 26 document types, 25+ languages, and multiple color themes` |
+| **Version** | (read from `VERSION.md`, e.g. `1.22.0`) |
+| **Summary** | `A modular, engineering-grade LaTeX document class supporting 26 document types, 25 languages, and multiple color themes` |
 | **Description** | (copy the long description from `README.md`) |
 | **License** | Apache-2.0 |
 | **CTAN path** | `macros/latex/contrib/omnilatex` |

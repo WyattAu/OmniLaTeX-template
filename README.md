@@ -9,13 +9,13 @@ Built on LuaTeX (LuaHBTeX 1.21.0) + KOMA-Script + TeX Live 2025. Compile with `l
 | | OmniLaTeX | Typical template |
 |---|---|---|
 | **Document types** | 55+ aliases (thesis, CV, patent, journal, ...) | 1–3 |
-| **Test coverage** | 529+ test cases (structural, property-based, unicode, hypothesis) | 0 |
+| **Test coverage** | 375 test cases (structural, property, visual regression, integration) | 0 |
 | **Reproducible builds** | Byte-for-byte deterministic | No |
-| **Formal verification** | Lean 4 proofs (10 proof modules, 64/64 theorems proven) | No |
+| **Formal verification** | Lean 4 proofs (12 proof modules, 110 theorems proven, 0 sorry) | No |
 | **CI platforms** | 9 GitHub Actions workflows + 4 other platforms | 0–1 |
 | **Font fallbacks** | Graceful degradation with warnings | Crash or silent substitution |
 | **Institution configs** | 16 pluggable (`config/institutions/`) | Hardcoded |
-| **Languages** | 26 via polyglossia (EN, DE, FR, ES, PT, IT, NL, RU, ZH, JA, KO, AR, HE, DA) | 0–2 |
+| **Languages** | 25 via polyglossia | 0–2 |
 | **Citation styles** | 9 (IEEE, ACM, APA, Chicago, Nature, Science, Harvard, Vancouver, MLA) | 0–1 |
 | **Color themes** | 6 + dark/light toggle (default, midnight, forest, rose, monochrome, sepia) | 0 |
 
@@ -43,7 +43,7 @@ python build.py build-example minimal-starter
 - **Lazy module loading** — only load what you need (`enablemath`, `enabletikz`, `enablecode`, ...)
 - **Modern font stack** — Libertinus Serif + Math, Monaspace Neon, Atkinson Hyperlegible Next (with graceful fallback)
 - **Reproducible builds** — `SOURCE_DATE_EPOCH` support, byte-for-byte deterministic PDFs
-- **Multi-language** — 26 languages via polyglossia (EN, DE, FR, ES, PT, IT, NL, DA, RU, ZH, JA, KO, AR, HE); CJK and RTL support auto-loaded per language
+- **Multi-language** — 25 languages via polyglossia; CJK and RTL support auto-loaded per language
 - **Institution branding** — 16 pluggable configs in `config/institutions/` (ETH Zürich, TUHH, TUM, MIT, Stanford, Cambridge, TU Delft, Oxford, Princeton, Yale, CMU, EPFL, Imperial, generic)
 - **Citation styles** — 9 pre-configured styles via `\citationstyle{}` (IEEE, ACM, APA, Chicago, Nature, Science, Harvard, Vancouver, MLA)
 - **Color themes** — 6 themes with dark/light toggle: default, midnight, forest, rose, monochrome, sepia
@@ -52,7 +52,7 @@ python build.py build-example minimal-starter
 - **RTL support** — automatic bidirectional text for Arabic and Hebrew
 - **Code listings** — syntax highlighting via minted with cached compilation
 - **Engineering diagrams** — 1,000+ lines of TikZ shapes: thermodynamics, P&ID, flowcharts
-- **Formal verification** — Lean 4 proofs (10 proof modules, 64/64 theorems proven)
+- **Formal verification** — Lean 4 proofs (12 proof modules, 110 theorems proven, 0 sorry)
 - **Build automation** — `build.py` with watch mode, concurrent builds, timing metrics, and health diagnostics
 
 ## Document Types
@@ -71,11 +71,11 @@ All options: `language`, `doctype`, `titlestyle`, `institution`, `censoring`, `l
 
 ## Languages
 
-OmniLaTeX supports 9 primary languages and 19 secondary languages via Polyglossia:
+OmniLaTeX supports 18 languages with full OmniLaTeX translations and 25 via polyglossia:
 
-**Primary (full support with translations):** English, German, French, Spanish, Chinese (Simplified + Traditional), Japanese, Korean, Arabic, Hebrew, Persian
+**Languages with full translations:** English, German, French, Spanish, Portuguese, Italian, Dutch, Polish, Catalan, Brazilian, Romanian, Turkish, Greek, Russian, Ukrainian, Czech, Slovak, Slovenian
 
-**Secondary (available for inline use):** German (new spelling), Italian, Portuguese, Russian, Dutch, Polish, Czech, Greek, Turkish
+**Other languages (available via Polyglossia):** Chinese (Simplified + Traditional), Japanese, Korean, Arabic, Hebrew, Persian, Danish, Swedish, Finnish, Norwegian, Vietnamese, Hindi, Serbian, Croatian, Bulgarian, Mongolian
 
 ## Examples
 
@@ -316,7 +316,7 @@ config/
 
 | Suite | Tool | Coverage |
 |-------|------|----------|
-| Module unit tests | l3build | 27 modules with `.tlg` baselines |
+| Module unit tests | l3build | 27 l3build tests (21 module + 6 doctype) |
 | Property-based tests | hypothesis + pytest | 92 doctype × language combinations |
 | Unicode stress tests | pytest | 10 scripts (CJK, RTL, emoji, combining) |
 | Edge case tests | pytest | Empty, large, nested documents |

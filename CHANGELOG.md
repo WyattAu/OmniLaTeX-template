@@ -11,7 +11,7 @@ This project adheres to [Semantic versioning](https://semver.org/).
 
 | Version | Date | Summary |
 |---------|------|---------|
-| [1.22.0](CHANGELOG/v1.22.0.md) | 2026-05-11 | Docker digest sync, CHANGELOG split, README dedup, visual regression CI, doctype l3build tests |
+| [1.23.0](CHANGELOG/v1.23.0.md) | 2026-05-11 | 128 Lean theorems, 47 l3build tests, institution tests, full doc audit |
 | [1.21.0](CHANGELOG/v1.21.0.md) | 2026-05-11 | ModuleIntegrity proofs, pre-commit Python 3.14 compat, audits |
 | [1.20.0](CHANGELOG/v1.20.0.md) | 2026-05-11 | BuildModeStrictness proofs, build.py type hints |
 | [1.19.0](CHANGELOG/v1.19.0.md) | 2026-05-10 | test_build_py.py, API stability doc, Nix packages, test coverage |

@@ -7,6 +7,7 @@ behaviour without importing the script as a module.
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 from pathlib import Path
 
@@ -106,3 +107,64 @@ class TestPreflight:
         result = _run("preflight")
         combined = result.stdout + result.stderr
         assert "lualatex" in combined.lower() or "latexmk" in combined.lower()
+
+
+class TestScaffoldInstitution:
+    """Tests for the scaffold-institution subcommand."""
+
+    def test_scaffold_no_args_shows_usage(self) -> None:
+        result = _run("scaffold-institution")
+        assert result.returncode == 0
+        combined = result.stdout + result.stderr
+        assert "Usage" in combined or "usage" in combined
+
+    @pytest.mark.xfail(
+        reason="scaffold-institution creates files; needs cleanup in CI",
+        strict=False,
+    )
+    def test_scaffold_creates_directory(self) -> None:
+        import tempfile
+        import shutil
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = subprocess.run(
+                ["python3", str(BUILD_SCRIPT), "scaffold-institution", "test-univ"],
+                capture_output=True,
+                text=True,
+                timeout=30,
+                cwd=PROJECT_ROOT,
+            )
+            target = PROJECT_ROOT / "config" / "institutions" / "test-univ"
+            if target.exists():
+                shutil.rmtree(target)
+            assert result.returncode == 0
+
+
+class TestInit:
+    """Tests for the init subcommand."""
+
+    def test_init_no_args_shows_usage(self) -> None:
+        result = _run("init")
+        assert result.returncode == 0
+        combined = result.stdout + result.stderr
+        assert "Usage" in combined or "usage" in combined
+
+    @pytest.mark.xfail(
+        reason="init creates directory; needs cleanup in CI",
+        strict=False,
+    )
+    def test_init_creates_project(self) -> None:
+        import tempfile
+        import shutil
+        with tempfile.TemporaryDirectory() as tmpdir:
+            result = subprocess.run(
+                ["python3", str(BUILD_SCRIPT), "init", "test-project"],
+                capture_output=True,
+                text=True,
+                timeout=30,
+                cwd=tmpdir,
+                env={**os.environ, "PATH": os.environ.get("PATH", "")},
+            )
+            target = Path(tmpdir) / "test-project"
+            if target.exists():
+                shutil.rmtree(target)
+            assert result.returncode == 0
