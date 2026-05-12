@@ -417,6 +417,70 @@ export function activate(context: vscode.ExtensionContext): void {
     );
 
     updateStatusBar();
+
+    // LaTeX log file diagnostic provider
+    const logDiagnostics = vscode.languages.createDiagnosticCollection('latex-log');
+
+    function parseLatexErrors(logContent: string): vscode.Diagnostic[] {
+        const diagnostics: vscode.Diagnostic[] = [];
+        const lines = logContent.split('\n');
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            // Match LaTeX errors: "! Undefined control sequence"
+            let m = line.match(/^!(.*) Undefined control sequence\./);
+            if (m) {
+                const d = new vscode.Diagnostic(
+                    new vscode.Range(i, 0, i, line.length),
+                    `LaTeX: ${m[1]} (line ${i + 1})`,
+                    vscode.DiagnosticSeverity.Error,
+                );
+                diagnostics.push(d);
+                continue;
+            }
+            // Match LaTeX errors: "! LaTeX Error: ..."
+            m = line.match(/^! LaTeX Error:\s*(.*)$/);
+            if (m) {
+                const d = new vscode.Diagnostic(
+                    new vscode.Range(i, 0, i, line.length),
+                    `LaTeX Error: ${m[1]} (line ${i + 1})`,
+                    vscode.DiagnosticSeverity.Error,
+                );
+                diagnostics.push(d);
+                continue;
+            }
+            // Match warnings: "Package xyz Warning: ..."
+            m = line.match(/Package \S+ Warning:\s*(.*)$/);
+            if (m) {
+                const d = new vscode.Diagnostic(
+                    new vscode.Range(i, 0, i, line.length),
+                    `LaTeX Warning: ${m[1]} (line ${i + 1})`,
+                    vscode.DiagnosticSeverity.Warning,
+                );
+                diagnostics.push(d);
+                continue;
+            }
+        }
+        return diagnostics;
+    }
+
+    // Update diagnostics when active editor changes
+    async function updateLogDiagnostics(document: vscode.TextDocument) {
+        if (document.languageId !== 'latex' && !document.fileName.endsWith('.tex')) {
+            return;
+        }
+        const logPath = document.fileName.replace(/\.tex$/, '.log');
+        const logUri = vscode.Uri.file(logPath);
+        try {
+            const content = await vscode.workspace.fs.readFile(logUri);
+            const diagnostics = parseLatexErrors(content.toString());
+            logDiagnostics.set(document.uri, diagnostics);
+        } catch {
+            // .log file may not exist yet, silently ignore
+        }
+    }
+
+    vscode.workspace.onDidSaveTextDocument(updateLogDiagnostics);
+    vscode.workspace.onDidOpenTextDocument(updateLogDiagnostics);
 }
 
 export function deactivate() {}
