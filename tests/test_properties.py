@@ -92,6 +92,7 @@ LANGUAGES = ["english", "german"]
 
 TEMPLATE = r"""
 \documentclass[{options}]{{omnilatex}}
+\title{{Test Document}}
 \begin{{document}}
 Test content for {{doctype}}.
 \end{{document}}
@@ -142,6 +143,8 @@ def compile_tex_docker(tex_content: str, timeout: int = 180) -> tuple:
             "--rm",
             "--entrypoint",
             "",
+            "-e",
+            "TEXINPUTS=/repo:",
             "-v",
             f"{PROJECT_ROOT}:/repo",
             "-v",
@@ -155,10 +158,8 @@ def compile_tex_docker(tex_content: str, timeout: int = 180) -> tuple:
             "-output-directory=/work",
             "test.tex",
         ]
-        env = os.environ.copy()
-        env["TEXINPUTS"] = "/repo:"
         result = subprocess.run(
-            cmd, capture_output=True, text=True, timeout=timeout, env=env
+            cmd, capture_output=True, text=True, timeout=timeout
         )
         pdf_exists = (Path(tmpdir) / "test.pdf").exists()
         return (
