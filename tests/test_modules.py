@@ -238,7 +238,7 @@ class TestExampleIntegrity:
     def test_bib_bibliography_exists(self, repo_root):
         assert (repo_root / "bib" / "bibliography.bib").is_file()
 
-    def test_all_42_examples_exist(self, repo_root):
+    def test_all_examples_exist(self, repo_root):
         examples_dir = repo_root / "examples"
         actual = sorted(
             d.name

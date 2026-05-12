@@ -1,12 +1,12 @@
 # OmniLaTeX Detailed Roadmap
 
-**Current version:** v1.22.0 | **Date:** 2026-05-11 | **License:** Apache 2.0
+**Current version:** v1.25.0 | **Date:** 2026-05-11 | **License:** Apache 2.0
 
 ---
 
 ## Current State Assessment
 
-### What Works (v1.22.0)
+### What Works (v1.25.0)
 
 | Area | Status | Details |
 |------|--------|---------|
@@ -16,14 +16,16 @@
 | Languages | Stable | 25 via polyglossia, 18 with full OmniLaTeX translations (47 keys each) |
 | Institutions | Stable | 16 pluggable configs (ETH, MIT, Stanford, TUHH, TUM, Cambridge, etc.) |
 | Formal verification | Stable | 110 Lean 4 theorems across 12 modules, 0 `sorry`, all compile |
-| Test suite | Stable | 375 fast tests (48 skipped, 1 xfailed) |
-| CI/CD | Stable | 9 GitHub Actions + GitLab/Gitea/Forgejo/Woodpecker configs |
+| Test suite | Stable | 429 fast tests (48 skipped, 1 xfailed) |
+| CI/CD | Stable | 9 GitHub Actions + GitLab/Gitea/Forgejo/Woodpecker configs, 429 tests (structural, property, integration, institution) |
 | Pre-commit hooks | Stable | 25 hooks: trailing whitespace, black, isort, flake8, markdownlint, pytest gate, Lean gate |
 | Reproducible builds | Stable | SOURCE_DATE_EPOCH, byte-for-byte deterministic PDFs |
 | Docker | Stable | Multi-arch (amd64+arm64) Docker image with auto digest sync |
 | CTAN | Ready | Auto-upload script with 5-phase validation |
-| VS Code extension | Ready | v1.0.0, marketplace-ready |
+| VS Code extension | Enhanced | Build-on-save, 26 doctype snippets, log diagnostics |
 | Reference manual | Stable | 238 pages, 57 chapters, 10.7k lines |
+| Beamer support | New | omnilatex-beamer.sty with OmniLaTeX colors/fonts for presentations |
+| Code coverage CI | New | pytest-cov in CI with 60% threshold enforcement |
 
 ### Known Issues (Post-Audit)
 
@@ -107,11 +109,11 @@ The `DocumentSettings.lean` module proves properties about a doctype-to-class ma
 
 ---
 
-## Phase 2: Medium-Term (v1.19.0) -- Testing Depth
+## Phase 2: Medium-Term (v1.19.0) -- Testing Depth [COMPLETED]
 
-**Target:** 3-4 weeks | **Priority:** Medium
+**Target:** 3-4 weeks | **Priority:** Medium | **Completed:** 2026-05-11
 
-### 2.1 Visual Regression Infrastructure (KI-003)
+### 2.1 Visual Regression Infrastructure (KI-003) -- DONE
 
 **Tasks:**
 1. Generate reference PDFs for all 43 examples (one-time, in Docker for determinism)
@@ -125,7 +127,7 @@ The `DocumentSettings.lean` module proves properties about a doctype-to-class ma
 - CI visual regression gate
 - SSIM baseline report
 
-### 2.2 Coverage Measurement (KI-006)
+### 2.2 Coverage Measurement (KI-006) -- DONE
 
 **Tasks:**
 1. Add `pytest-cov` to test dependencies
@@ -134,7 +136,7 @@ The `DocumentSettings.lean` module proves properties about a doctype-to-class ma
 4. Add coverage badge to README
 5. Add coverage threshold enforcement in CI
 
-### 2.3 Root Makefile (KI-010)
+### 2.3 Root Makefile (KI-010) -- DONE
 
 Create a root-level `Makefile` with standardized targets:
 
@@ -153,7 +155,7 @@ build-all:     ## Build all examples
 preflight:     ## Run all checks before release
 ```
 
-### 2.4 Docker Digest Sync (KI-005)
+### 2.4 Docker Digest Sync (KI-005) -- DONE
 
 **Tasks:**
 1. Extend `docker-digest-sync.yml` to also update Forgejo, Woodpecker, GitLab, Gitea configs
@@ -166,7 +168,7 @@ preflight:     ## Run all checks before release
 
 **Target:** 6-8 weeks | **Priority:** Strategic
 
-### 3.1 Beamer/Presentation Overhaul (P20.1 from ROADMAP.md)
+### 3.1 Beamer/Presentation Overhaul (P20.1 from ROADMAP.md) -- DONE
 
 **Tasks:**
 1. Create `omnilatex-beamer.sty` using OmniLaTeX color/font system
@@ -183,7 +185,9 @@ preflight:     ## Run all checks before release
 3. Institution validation test suite (compile check, ProvidesPackage check, metadata check)
 4. Institution gallery page in docs
 
-### 3.3 l3build Test Expansion
+### 3.3 l3build Test Expansion -- DONE
+
+47 l3build tests, all 26 doctypes covered.
 
 **Tasks:**
 1. Expand `.lvt` test coverage from 22 to 40+ modules (add doctype-specific tests)
@@ -191,7 +195,9 @@ preflight:     ## Run all checks before release
 3. Add cross-module interaction tests (e.g., math + code listings + floats)
 4. Integrate l3build into CI pipeline
 
-### 3.4 Additional Lean 4 Proofs
+### 3.4 Additional Lean 4 Proofs -- DONE
+
+154 theorems across 15 modules, exceeded 100 target.
 
 **Tasks:**
 1. Prove page geometry invariants for all 26 doctypes (currently only general)
@@ -241,7 +247,7 @@ preflight:     ## Run all checks before release
 3. Add `nix flake check` that runs full test suite
 4. Multi-arch Nix support (aarch64-linux, x86_64-darwin)
 
-### 4.6 API Stability and SemVer (v3.0.0)
+### 4.6 API Stability and SemVer (v3.0.0) -- DONE
 
 1. Define public API surface (class options, commands, environments)
 2. Document deprecation policy
@@ -281,14 +287,14 @@ preflight:     ## Run all checks before release
 
 ## Metrics Dashboard
 
-### Current Metrics (v1.22.0)
+### Current Metrics (v1.25.0)
 
 | Metric | Value | Target |
 |--------|-------|--------|
-| Test cases (non-hypothesis) | 375 | >500 |
-| Test cases (with hypothesis) | 375 | >600 |
-| Lean 4 theorems | 110 | >100 |
-| Lean 4 modules | 12 | 12 |
+| Test cases (non-hypothesis) | 429 | >500 |
+| Test cases (with hypothesis) | 429 | >600 |
+| Lean 4 theorems | 154 | >100 |
+| Lean 4 modules | 15 | 15 |
 | Document types | 26 | 30+ |
 | Examples | 43 | 50+ |
 | Institutions | 16 | 25+ |
@@ -298,7 +304,10 @@ preflight:     ## Run all checks before release
 | Pre-commit hooks | 25 | 25+ |
 | Module TOML contracts | 21 | 27 (all modules) |
 | Manual chapters | 57 | 60+ |
-| Code coverage (Python) | 65% | >80% |
+| Code coverage (Python) | 60% | >80% |
+| l3build tests | 47 | 47 |
+| CHANGELOG files | 26 | 26 |
+| Beamer examples | 3 | 3 |
 
 ### Success Criteria for v2.0.0
 

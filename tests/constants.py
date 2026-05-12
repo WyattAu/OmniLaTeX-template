@@ -29,6 +29,9 @@ ALL_DOCTYPE_NAMES = [
 
 ALL_EXAMPLE_NAMES = [
     "accessibility-test",
+    "beamer-academic",
+    "beamer-corporate",
+    "beamer-minimal",
     "article-color",
     "article",
     "book",
