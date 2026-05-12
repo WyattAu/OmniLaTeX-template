@@ -1,0 +1,76 @@
+% OmniLaTeX Corporate Beamer Presentation
+% Compile with: latexmk -lualatex main.tex
+
+\documentclass[doctype=presentation]{omnilatex}
+
+\title{Quarterly Business Review}
+\subtitle{Q2 2026}
+\author{Business Team}
+\date{\today}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Agenda}
+  \begin{enumerate}
+    \item Financial Overview
+    \item Product Updates
+    \item Strategic Initiatives
+    \item Q3 Roadmap
+  \end{enumerate}
+\end{frame}
+
+\section{Financial Overview}
+
+\begin{frame}{Revenue}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item Q2 revenue: \$12.4M (+15\% QoQ)
+        \item Annual run rate: \$48M
+        \item Gross margin: 72\%
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{table}[htbp]
+        \centering
+        \begin{tabular}{lr}
+          \hline
+          Metric & Value \\
+          \hline
+          ARR & \$48M \\
+          NRR & 112\% \\
+          LTV/CAC & 3.2x \\
+          \hline
+        \end{tabular}
+      \end{table}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Product Highlights}
+  \begin{block}{New Features}
+    \begin{itemize}
+      \item Real-time collaboration engine
+      \item AI-powered code review
+      \item Mobile app v2.0
+    \end{itemize}
+  \end{block}
+
+  \begin{alertblock}{Known Issues}
+    Onboarding funnel drop-off at step 3 is under investigation.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Q3 Roadmap}
+  \begin{enumerate}
+    \item Enterprise tier launch (July)
+    \item International expansion (August)
+    \item API marketplace (September)
+  \end{enumerate}
+\end{frame}
+
+\end{document}

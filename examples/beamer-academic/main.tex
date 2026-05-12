@@ -1,0 +1,79 @@
+% OmniLaTeX Academic Beamer Presentation
+% Compile with: latexmk -lualatex main.tex
+
+\documentclass[doctype=presentation]{omnilatex}
+
+\title{Research Findings}
+\subtitle{Annual Conference 2026}
+\author{Dr.\ Jane Smith}
+\institute{University of Examples}
+\date{June 2026}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+\section{Introduction}
+
+\begin{frame}{Background}
+  \begin{itemize}
+    \item Prior work established baseline performance
+    \item Gap identified in multi-modal approaches
+    \item This work addresses scalability
+  \end{itemize}
+
+  \begin{block}{Research Question}
+    How can we improve throughput while maintaining accuracy?
+  \end{block}
+\end{frame}
+
+\section{Methodology}
+
+\begin{frame}{Approach}
+  \begin{enumerate}
+    \item Data collection and preprocessing
+    \item Model architecture design
+    \item Training and evaluation
+  \end{enumerate}
+
+  \begin{alertblock}{Key Insight}
+    The proposed method reduces latency by 40\% with no accuracy loss.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Results}
+  \begin{table}[htbp]
+    \caption{Performance Comparison}
+    \centering
+    \begin{tabular}{lcc}
+      \hline
+      Method & Accuracy (\%) & Latency (ms) \\
+      \hline
+      Baseline & 92.1 & 150 \\
+      Proposed & 93.3 & 90 \\
+      \hline
+    \end{tabular}
+  \end{table}
+\end{frame}
+
+\section{Conclusion}
+
+\begin{frame}{Summary}
+  \begin{itemize}
+    \item Proposed method achieves state-of-the-art results
+    \item 40\% latency reduction with maintained accuracy
+    \item Future work: extend to streaming applications
+  \end{itemize}
+
+  \begin{exampleblock}{Next Steps}
+    Open-source release and benchmark integration.
+  \end{exampleblock}
+\end{frame}
+
+\end{document}

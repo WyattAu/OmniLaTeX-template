@@ -1,0 +1,22 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Path Configuration for Examples
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This file defines path macros for resources used by this example
+
+\ProvidesPackage{config/paths}[2024/10/13 Example path configuration]
+
+% Root directory paths (shared resources)
+\newcommand{\omniRootPath}{../..}
+\newcommand{\omniLibPath}{\omniRootPath/lib}
+\newcommand{\omniExamplesPath}{\omniRootPath/examples}
+
+% Local example resources (each example has its own)
+\newcommand{\omniBibPath}{bib}
+\newcommand{\omniAssetsPath}{assets}
+
+% Shared root resources (if needed)
+\newcommand{\omniRootAssetsPath}{\omniRootPath/assets}
+\newcommand{\omniRootBibPath}{\omniRootPath/bib}
+
+% Lua scripts location
+\newcommand{\omniLuaPath}{\omniExamplesPath}
