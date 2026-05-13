@@ -1,8 +1,11 @@
 [meta]
 version = "1.0.0"
 class = "omnilatex"
-source = "omnilatex.cls v0.1.1"
+source = "omnilatex.cls"
 description = "Formal schema for all keyval options accepted by the OmniLaTeX document class"
+option_count = 14
+bool_options = 10
+string_options = 4
 
 # ---------------------------------------------------------------------------
 # Keyval Options
@@ -16,9 +19,7 @@ internal = "omnilatex@language"
 description = "Document language passed to the tracklang package for i18n support"
 applied_at = "after LoadClass — \\RequirePackage[<language>]{tracklang}"
 valid_values = [
-    # BCP-47 / babel-compatible language tags.
-    # The following are verified against lib/language/omnilatex-i18n.sty:
-    "english",   # default
+    "english",
     "german",
     "french",
     "spanish",
@@ -26,24 +27,29 @@ valid_values = [
     "italian",
     "dutch",
     "russian",
-    "chinese",
     "japanese",
     "korean",
     "arabic",
     "hebrew",
+    "persian",
+    "simplifiedchinese",
+    "traditionalchinese",
 ]
 validation = "Non-empty string. Normalized to lowercase. If tracklang does not recognize the tag, a warning is emitted at load time."
-cjk_auto_load = "When language is 'chinese', 'japanese', or 'korean', lib/language/omnilatex-cjk.sty is automatically loaded (provides luatexja fonts, ruby annotations, vertical text)."
-rtl_auto_load = "When language is 'arabic' or 'hebrew', lib/language/omnilatex-rtl.sty is automatically loaded (provides bidi layout, script-specific fonts, Arabic-Indic numerals, LTR math in RTL text)."
+cjk_auto_load = "When language is 'simplifiedchinese', 'traditionalchinese', 'japanese', or 'korean', lib/language/omnilatex-cjk.sty is automatically loaded."
+rtl_auto_load = "When language is 'arabic', 'hebrew', or 'persian', lib/language/omnilatex-rtl.sty is automatically loaded."
 
 [[option]]
 name = "doctype"
 type = "string"
-default = "thesis"
+default = "book"
 internal = "omnilatex@doctype"
 description = "Document type alias that resolves to a profile, base KOMA class, and KOMA options"
 applied_at = "before LoadClass — sets \\@baseclass and \\omnilatexclassoptions"
 validation = "Normalized to lowercase and trimmed. Resolved via the doctype resolution table below. Unrecognized aliases silently fall back to the 'book' profile (scrbook)."
+canonical_count = 27
+alias_count = 67
+sty_file_count = 26
 
 [[option]]
 name = "titlestyle"
@@ -53,24 +59,45 @@ internal = "omnilatex@titlestyle"
 description = "Title page layout style applied by lib/layout/omnilatex-koma.sty"
 applied_at = "at module load — \\ifdefstring branches in omnilatex-koma.sty"
 valid_values = [
-    "thesis",       # graduation-cap icon, examiner/supervisor table
-    "book",         # author above title, subtitle in italic
-    "TUHH",         # TUHH/ITT logos, examiner table (institution-specific)
+    "book",
+    "thesis",
+    "TUHH",
+    "tuhh",
+    "article",
+    "simple",
 ]
 validation = "Normalized to lowercase and trimmed. Unrecognized values silently use the default KOMA title page."
 
 [[option]]
 name = "institution"
 type = "string"
-default = "none"
+default = "generic"
 internal = "omnilatex@institution"
 description = "Institution configuration to load for branding, logos, and metadata"
 applied_at = "after profile load — searches config/institution.sty, then config/institutions/<name>/<name>.sty"
 valid_values = [
-    "none",     # no institution config loaded (generic template)
-    "tuhh",     # Hamburg University of Technology (TUHH)
+    "cambridge",
+    "cmu",
+    "columbia",
+    "epfl",
+    "eth",
+    "generic",
+    "harvard",
+    "imperial",
+    "mit",
+    "oxford",
+    "princeton",
+    "stanford",
+    "tudelft",
+    "tuhh",
+    "tum",
+    "yale",
 ]
-validation = "Non-empty string. 'none' skips loading. Any other value triggers a search: (1) local config/institution.sty, (2) config/institutions/<name>/<name>.sty. If neither is found, a ClassWarning is emitted and loading is skipped."
+validation = "Non-empty string. 'generic' loads the generic template. Any other value triggers a search: (1) local config/institution.sty, (2) config/institutions/<name>/<name>.sty. If neither is found, a ClassWarning is emitted and loading is skipped."
+
+# ---------------------------------------------------------------------------
+# Boolean Options
+# ---------------------------------------------------------------------------
 
 [[option]]
 name = "censoring"
@@ -113,36 +140,44 @@ description = "Enable extended graphics support (graphicx extras, image helpers)
 applied_at = "available after module load"
 
 [[option]]
-name = "citation-style"
-type = "string"
-default = "ieee"
-internal = "omnilatex@citationstyle"
-description = "Pre-configured biblatex citation style loaded by lib/references/omnilatex-citations.sty"
-applied_at = "after module load — passed to \\citationstyle{<value>}"
-valid_values = [
-    "ieee",       # IEEE numeric, [1] brackets
-    "acm",        # ACM numeric
-    "apa",        # APA 7th edition, author-year
-    "chicago",    # Chicago author-date
-    "nature",     # Nature numeric, superscript
-    "science",    # Science numeric
-    "harvard",    # Harvard author-date
-    "vancouver",  # Vancouver numeric
-    "mla",        # MLA 9th edition
-]
-validation = "Normalized to lowercase and trimmed. Unrecognized values emit a PackageWarning and leave biblatex defaults unchanged."
-
-# ---------------------------------------------------------------------------
-# Void (non-keyval) Options
-# ---------------------------------------------------------------------------
+name = "enablemath"
+type = "bool"
+default = true
+internal = "omnilatex@enablemath"
+description = "Enable math typesetting support via lib/typography/omnilatex-math.sty"
+applied_at = "available after module load"
 
 [[option]]
-name = "a5"
-type = "void"
-default = "not set"
-description = "Switch paper size to A5 (148mm x 210mm) and set fontsize=10pt"
-applied_at = "before LoadClass — passes paper=a5 to typearea package"
-side_effect = "Also appends fontsize=10pt to user class options"
+name = "enabletikz"
+type = "bool"
+default = true
+internal = "omnilatex@enabletikz"
+description = "Enable TikZ drawing support via lib/graphics/omnilatex-graphics.sty and lib/graphics/omnilatex-tikz-core.sty"
+applied_at = "available after module load"
+
+[[option]]
+name = "enableengineering"
+type = "bool"
+default = true
+internal = "omnilatex@enableengineering"
+description = "Enable engineering TikZ drawings via lib/graphics/omnilatex-tikz-engineering.sty"
+applied_at = "available after module load"
+
+[[option]]
+name = "enablecode"
+type = "bool"
+default = true
+internal = "omnilatex@enablecode"
+description = "Enable code listing support via lib/code/omnilatex-listings.sty"
+applied_at = "available after module load"
+
+[[option]]
+name = "enabletables"
+type = "bool"
+default = true
+internal = "omnilatex@enabletables"
+description = "Enable table support via lib/tables/omnilatex-tables.sty"
+applied_at = "available after module load"
 
 # ---------------------------------------------------------------------------
 # Default Option Handling
@@ -159,19 +194,17 @@ example = "doctype=article,DIV=12 → DIV=12 is forwarded to scrartcl"
 
 [doctype_resolution]
 
-# -- Base option sets (reusable) -----------------------------------------
-
 [doctype_resolution._option_sets.book_opts]
 value = "listof=totoc,bibliography=totoc,chapterprefix=true,open=right,numbers=noenddot"
 used_by = ["book", "thesis", "dissertation", "dictionary"]
 
 [doctype_resolution._option_sets.report_opts]
 value = "listof=totoc,bibliography=totoc,chapterprefix=false,open=any,numbers=noenddot"
-used_by = ["manual", "technicalreport", "standard", "patent"]
+used_by = ["manual", "technicalreport", "standard", "patent", "homework", "exam", "research-proposal", "lecture-notes", "syllabus", "handout", "memo", "white-paper"]
 
 [doctype_resolution._option_sets.article_opts]
 value = "bibliography=totoc,numbers=noenddot,parskip=half"
-used_by = ["article", "cover-letter", "poster", "presentation", "letter"]
+used_by = ["article", "cover-letter", "poster", "presentation", "letter", "invoice", "recipe"]
 
 [doctype_resolution._option_sets.inlinepaper_opts]
 value = "bibliography=totoc,numbers=noenddot,parskip=half,titlepage=false"
@@ -185,7 +218,7 @@ used_by = ["journal"]
 value = "numbers=noenddot,parskip=full,fontsize=11pt"
 used_by = ["cv"]
 
-# -- Profile: book --------------------------------------------------------
+# -- scrbook doctypes (4) -------------------------------------------------
 
 [doctype_resolution.book]
 profile = "book"
@@ -194,16 +227,12 @@ koma_options = "book_opts"
 has_chapters = true
 aliases = ["book"]
 
-# -- Profile: thesis ------------------------------------------------------
-
 [doctype_resolution.thesis]
 profile = "thesis"
 base_class = "scrbook"
 koma_options = "book_opts"
 has_chapters = true
 aliases = ["thesis", "theses"]
-
-# -- Profile: dissertation ------------------------------------------------
 
 [doctype_resolution.dissertation]
 profile = "dissertation"
@@ -212,7 +241,14 @@ koma_options = "book_opts"
 has_chapters = true
 aliases = ["dissertation", "dissertations"]
 
-# -- Profile: manual ------------------------------------------------------
+[doctype_resolution.dictionary]
+profile = "dictionary"
+base_class = "scrbook"
+koma_options = "book_opts"
+has_chapters = true
+aliases = ["dictionary", "dictionaries", "lexicon", "lexicons"]
+
+# -- scrreprt doctypes (5) ------------------------------------------------
 
 [doctype_resolution.manual]
 profile = "manual"
@@ -220,8 +256,6 @@ base_class = "scrreprt"
 koma_options = "report_opts"
 has_chapters = true
 aliases = ["manual", "manuals", "guide", "guides", "handbook", "handbooks"]
-
-# -- Profile: technicalreport ---------------------------------------------
 
 [doctype_resolution.technicalreport]
 profile = "technicalreport"
@@ -234,16 +268,12 @@ aliases = [
     "techreport", "tech-report", "techreports",
 ]
 
-# -- Profile: standard ----------------------------------------------------
-
 [doctype_resolution.standard]
 profile = "standard"
 base_class = "scrreprt"
 koma_options = "report_opts"
 has_chapters = true
 aliases = ["standard", "standards"]
-
-# -- Profile: patent ------------------------------------------------------
 
 [doctype_resolution.patent]
 profile = "patent"
@@ -252,7 +282,63 @@ koma_options = "report_opts"
 has_chapters = true
 aliases = ["patent", "patents"]
 
-# -- Profile: article -----------------------------------------------------
+[doctype_resolution.homework]
+profile = "homework"
+base_class = "scrreprt"
+koma_options = "report_opts"
+has_chapters = true
+aliases = ["homework", "homeworks"]
+
+[doctype_resolution.exam]
+profile = "exam"
+base_class = "scrreprt"
+koma_options = "report_opts"
+has_chapters = true
+aliases = ["exam", "exams", "examination", "examinations"]
+
+[doctype_resolution.research_proposal]
+profile = "research-proposal"
+base_class = "scrreprt"
+koma_options = "report_opts"
+has_chapters = true
+aliases = ["research-proposal", "researchproposal", "research-proposals"]
+
+[doctype_resolution.lecture_notes]
+profile = "lecture-notes"
+base_class = "scrreprt"
+koma_options = "report_opts"
+has_chapters = true
+aliases = ["lecture-notes", "lecturenotes", "lecture-note"]
+
+[doctype_resolution.syllabus]
+profile = "syllabus"
+base_class = "scrreprt"
+koma_options = "report_opts"
+has_chapters = true
+aliases = ["syllabus", "syllabi"]
+
+[doctype_resolution.handout]
+profile = "handout"
+base_class = "scrreprt"
+koma_options = "report_opts"
+has_chapters = true
+aliases = ["handout", "handouts"]
+
+[doctype_resolution.memo]
+profile = "memo"
+base_class = "scrreprt"
+koma_options = "report_opts"
+has_chapters = true
+aliases = ["memo", "memos", "memorandum", "memorandums"]
+
+[doctype_resolution.white_paper]
+profile = "white-paper"
+base_class = "scrreprt"
+koma_options = "report_opts"
+has_chapters = true
+aliases = ["white-paper", "whitepapers"]
+
+# -- scrartcl doctypes (17) -----------------------------------------------
 
 [doctype_resolution.article]
 profile = "article"
@@ -261,16 +347,12 @@ koma_options = "article_opts"
 has_chapters = false
 aliases = ["article", "articles", "paper", "papers"]
 
-# -- Profile: inlinepaper -------------------------------------------------
-
 [doctype_resolution.inlinepaper]
 profile = "inlinepaper"
 base_class = "scrartcl"
 koma_options = "inlinepaper_opts"
 has_chapters = false
 aliases = ["inlinepaper", "inlinepapers", "inline-research", "inline-research-paper"]
-
-# -- Profile: journal -----------------------------------------------------
 
 [doctype_resolution.journal]
 profile = "journal"
@@ -279,25 +361,12 @@ koma_options = "journal_opts"
 has_chapters = false
 aliases = ["journal", "journals", "magazine", "magazines"]
 
-# -- Profile: dictionary --------------------------------------------------
-
-[doctype_resolution.dictionary]
-profile = "dictionary"
-base_class = "scrbook"
-koma_options = "book_opts"
-has_chapters = true
-aliases = ["dictionary", "dictionaries", "lexicon", "lexicons"]
-
-# -- Profile: cv ----------------------------------------------------------
-
 [doctype_resolution.cv]
 profile = "cv"
 base_class = "scrartcl"
 koma_options = "cv_opts"
 has_chapters = false
 aliases = ["cv", "resume", "resumes", "curriculumvitae"]
-
-# -- Profile: cover-letter ------------------------------------------------
 
 [doctype_resolution.cover_letter]
 profile = "cover-letter"
@@ -306,16 +375,12 @@ koma_options = "article_opts"
 has_chapters = false
 aliases = ["cover-letter", "coverletter"]
 
-# -- Profile: poster ------------------------------------------------------
-
 [doctype_resolution.poster]
 profile = "poster"
 base_class = "scrartcl"
 koma_options = "article_opts"
 has_chapters = false
 aliases = ["poster", "posters"]
-
-# -- Profile: presentation ------------------------------------------------
 
 [doctype_resolution.presentation]
 profile = "presentation"
@@ -324,14 +389,26 @@ koma_options = "article_opts"
 has_chapters = false
 aliases = ["presentation", "presentations", "slides", "talk", "talks"]
 
-# -- Profile: letter ------------------------------------------------------
-
 [doctype_resolution.letter]
 profile = "letter"
 base_class = "scrartcl"
 koma_options = "article_opts"
 has_chapters = false
 aliases = ["letter", "letters"]
+
+[doctype_resolution.invoice]
+profile = "invoice"
+base_class = "scrartcl"
+koma_options = "article_opts"
+has_chapters = false
+aliases = ["invoice", "invoices"]
+
+[doctype_resolution.recipe]
+profile = "recipe"
+base_class = "scrartcl"
+koma_options = "article_opts"
+has_chapters = false
+aliases = ["recipe", "recipes"]
 
 # ---------------------------------------------------------------------------
 # Validation Rules
@@ -351,7 +428,7 @@ normalization = "\\tl_lower_case:n applied after \\tl_trim_spaces:N"
 fallback = "Unrecognized values result in no title style customization; the default KOMA \\maketitle is used."
 
 [validation.institution]
-rule = "exact string match against 'none', then filesystem probe"
+rule = "exact string match, then filesystem probe"
 fallback = "ClassWarning emitted if institution file is not found."
 
 [validation.bool_options]
@@ -419,36 +496,97 @@ false_values = ["false", "off", "no", "0"]
 "talks" = "presentation"
 "letter" = "letter"
 "letters" = "letter"
+"homework" = "homework"
+"homeworks" = "homework"
+"exam" = "exam"
+"exams" = "exam"
+"examination" = "exam"
+"examinations" = "exam"
+"research-proposal" = "research-proposal"
+"researchproposal" = "research-proposal"
+"research-proposals" = "research-proposal"
+"lecture-notes" = "lecture-notes"
+"lecturenotes" = "lecture-notes"
+"lecture-note" = "lecture-notes"
+"syllabus" = "syllabus"
+"syllabi" = "syllabus"
+"handout" = "handout"
+"handouts" = "handout"
+"memo" = "memo"
+"memos" = "memo"
+"memorandum" = "memo"
+"memorandums" = "memo"
+"white-paper" = "white-paper"
+"whitepapers" = "white-paper"
+"invoice" = "invoice"
+"invoices" = "invoice"
+"recipe" = "recipe"
+"recipes" = "recipe"
 
 # ---------------------------------------------------------------------------
-# Unconditional Module Load List (21 OmniLaTeX modules)
+# Module Load Order (28 OmniLaTeX modules in lib/)
 # ---------------------------------------------------------------------------
 
 [modules]
-count = 22
+total_count = 28
+unconditional_count = 14
+conditional_count = 7
+on_demand_count = 5
+toggle_count = 6
+
+[modules.unconditional]
+description = "Always loaded regardless of options"
 load_order = [
     { index = 1,  path = "lib/core/omnilatex-base",                category = "core" },
     { index = 2,  path = "lib/utils/omnilatex-colors",             category = "utils" },
     { index = 3,  path = "lib/utils/omnilatex-utils",              category = "utils" },
     { index = 4,  path = "lib/typography/omnilatex-fonts",         category = "typography" },
-    { index = 5,  path = "lib/typography/omnilatex-math",          category = "typography" },
-    { index = 6,  path = "lib/typography/omnilatex-lists",         category = "typography" },
-    { index = 7,  path = "lib/typography/omnilatex-typesetting",   category = "typography" },
-    { index = 8,  path = "lib/graphics/omnilatex-graphics",        category = "graphics" },
-    { index = 9,  path = "lib/graphics/omnilatex-tikz-core",       category = "graphics" },
-    { index = 10, path = "lib/graphics/omnilatex-tikz-engineering", category = "graphics" },
-    { index = 11, path = "lib/language/omnilatex-i18n",            category = "language" },
-    { index = 12, path = "lib/language/omnilatex-cjk",             category = "language", condition = "language in {chinese,japanese,korean}" },
-    { index = 12, path = "lib/language/omnilatex-rtl",             category = "language", condition = "language in {arabic,hebrew}" },
-    { index = 12, path = "lib/tables/omnilatex-tables",            category = "tables" },
-    { index = 13, path = "lib/code/omnilatex-listings",            category = "code" },
-    { index = 14, path = "lib/layout/omnilatex-page",              category = "layout" },
-    { index = 15, path = "lib/layout/omnilatex-koma",              category = "layout" },
-    { index = 16, path = "lib/layout/omnilatex-floats",            category = "layout" },
-    { index = 17, path = "lib/references/omnilatex-biblio",        category = "references" },
-    { index = 18, path = "lib/references/omnilatex-glossary",      category = "references" },
-    { index = 19, path = "lib/references/omnilatex-hyperref",      category = "references" },
-    { index = 20, path = "lib/layout/omnilatex-boxes",             category = "layout" },
-    { index = 21, path = "lib/layout/omnilatex-document",          category = "layout" },
+    { index = 5,  path = "lib/typography/omnilatex-lists",         category = "typography" },
+    { index = 6,  path = "lib/typography/omnilatex-typesetting",   category = "typography" },
+    { index = 7,  path = "lib/layout/omnilatex-page",              category = "layout" },
+    { index = 8,  path = "lib/layout/omnilatex-koma",              category = "layout" },
+    { index = 9,  path = "lib/layout/omnilatex-floats",            category = "layout" },
+    { index = 10, path = "lib/layout/omnilatex-boxes",             category = "layout" },
+    { index = 11, path = "lib/layout/omnilatex-document",          category = "layout" },
+    { index = 12, path = "lib/references/omnilatex-hyperref",      category = "references" },
+    { index = 13, path = "lib/language/omnilatex-i18n",            category = "language" },
+    { index = 14, path = "lib/references/omnilatex-biblio",        category = "references" },
 ]
-note = "The external package 'setspace' is loaded between modules 7 and 8 (omnilatex.cls line 138) but is not an OmniLaTeX module."
+
+[modules.conditional_language]
+description = "Loaded automatically based on document language"
+modules = [
+    { path = "lib/language/omnilatex-cjk",  condition = "language in {simplifiedchinese, traditionalchinese, japanese, korean}" },
+    { path = "lib/language/omnilatex-rtl",  condition = "language in {arabic, hebrew, persian}" },
+]
+
+[modules.conditional_toggles]
+description = "Loaded based on user boolean toggle options (6 toggles controlling 7 modules)"
+modules = [
+    { path = "lib/typography/omnilatex-math",          toggle = "enablemath",        default = true },
+    { path = "lib/graphics/omnilatex-graphics",        toggle = "enabletikz",        default = true },
+    { path = "lib/graphics/omnilatex-tikz-core",       toggle = "enabletikz",        default = true },
+    { path = "lib/graphics/omnilatex-tikz-engineering", toggle = "enableengineering", default = true },
+    { path = "lib/code/omnilatex-listings",            toggle = "enablecode",        default = true },
+    { path = "lib/tables/omnilatex-tables",            toggle = "enabletables",      default = true },
+    { path = "lib/references/omnilatex-glossary",      toggle = "loadGlossaries",    default = false },
+]
+
+[modules.on_demand]
+description = "Loaded on-demand by doctypes when needed"
+modules = [
+    { path = "lib/layout/omnilatex-themes",        loaded_by = "poster, presentation, etc." },
+    { path = "lib/layout/omnilatex-presentation",   loaded_by = "presentation" },
+    { path = "lib/accessibility/omnilatex-accessibility", loaded_by = "various doctypes" },
+    { path = "lib/presentation/omnilatex-beamer",   loaded_by = "presentation (beamer mode)" },
+    { path = "lib/references/omnilatex-citations",   loaded_by = "doctypes with citation needs" },
+]
+
+# ---------------------------------------------------------------------------
+# Base Class Distribution
+# ---------------------------------------------------------------------------
+
+[base_class_distribution]
+scrbook = 4
+scrreprt = 5
+scrartcl = 17

@@ -1,0 +1,82 @@
+[module]
+name = "omnilatex-cjk"
+file = "lib/language/omnilatex-cjk.sty"
+version = "2026-05-13 v1.25.0"
+description = "CJK typography support: luatexja integration, Noto CJK font fallback chain, per-script presets (SC/TC/JP/KR), CJK-Latin inter-character spacing, ruby annotations (furigana/pinyin), and vertical writing mode"
+line_count = 192
+
+[dependencies]
+requires = ["luatexja", "luatexja-fontspec", "luatexja-ruby", "xstring"]
+optionally_requires = []
+
+[[exports]]
+name = "\\setCJKMainFont"
+type = "command"
+signature = "{font name}"
+description = "Set CJK main (serif) font; auto-applies via omnilatex@apply@cjkfonts"
+
+[[exports]]
+name = "\\setCJKSansFont"
+type = "command"
+signature = "{font name}"
+description = "Set CJK sans-serif font; auto-applies via omnilatex@apply@cjkfonts"
+
+[[exports]]
+name = "\\setCJKMonoFont"
+type = "command"
+signature = "{font name}"
+description = "Set CJK monospace font; auto-applies via omnilatex@apply@cjkfonts"
+
+[[exports]]
+name = "\\setCJKScript"
+type = "command"
+signature = "{sc|tc|jp|kr}"
+description = "Apply per-script font preset: SC (Simplified Chinese), TC (Traditional Chinese), JP (Japanese), KR (Korean)"
+
+[[exports]]
+name = "\\setCJKLatinSpacing"
+type = "command"
+signature = "{length}"
+description = "Adjust CJK-Latin inter-character spacing (xkanjiskip), default 0.25em"
+
+[[exports]]
+name = "\\ruby"
+type = "command"
+signature = "{base text}{ruby text}"
+description = "Ruby annotation (phonetic guide above base text), wraps luatexja-ruby \\ltjruby"
+
+[[exports]]
+name = "\\rubytwo"
+type = "command"
+signature = "{base text}{ruby text}"
+description = "Two-character-per-group ruby annotation, wraps luatexja-ruby \\ltjrubytwo"
+
+[[exports]]
+name = "\\furigana"
+type = "command"
+signature = "{base text}{ruby text}"
+description = "Japanese furigana alias for \\ruby"
+
+[[exports]]
+name = "\\pinyin"
+type = "command"
+signature = "{base text}{ruby text}"
+description = "Chinese pinyin alias for \\ruby"
+
+[[exports]]
+name = "\\setRubyScale"
+type = "command"
+signature = "{scale factor}"
+description = "Set ruby font size relative to base font, default 0.5"
+
+[[exports]]
+name = "vertical"
+type = "environment"
+signature = ""
+description = "Vertical writing mode: right-to-left columns, top-to-bottom lines (traditional CJK layout)"
+
+[[exports]]
+name = "\\verticaltext"
+type = "command"
+signature = "{text}"
+description = "Inline vertical text for short passages"

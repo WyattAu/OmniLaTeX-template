@@ -1,0 +1,46 @@
+[module]
+name = "omnilatex-themes"
+file = "lib/utils/omnilatex-themes.sty"
+version = "2026-05-13 v1.25.0"
+description = "Color theme system with light/dark mode, six built-in palettes (default, midnight, forest, rose, monochrome, sepia), per-slot color overrides, and KOMA-Script compatibility shims"
+line_count = 419
+
+[dependencies]
+requires = ["xcolor", "xstring", "kvoptions"]
+optionally_requires = ["tcolorbox"]
+
+[[exports]]
+name = "\\usetheme"
+type = "command"
+signature = "{name}"
+description = "Apply a complete color theme; handles -dark suffix automatically (e.g. monochrome-dark)"
+
+[[exports]]
+name = "\\darkmode"
+type = "command"
+signature = ""
+description = "Switch to dark mode variant of the current theme"
+
+[[exports]]
+name = "\\lightmode"
+type = "command"
+signature = ""
+description = "Switch back to light mode variant of the current theme"
+
+[[exports]]
+name = "\\setthemecolor"
+type = "command"
+signature = "{slot}{color}"
+description = "Override a single theme color slot; slots: bg, fg, heading, body, accent, blockbg, blockframe, link, rule, codebg, footernote"
+
+[[exports]]
+name = "\\ifthememode"
+type = "command"
+signature = "{dark}{light}"
+description = "Conditional: executes dark branch if dark mode active, light branch otherwise"
+
+[[exports]]
+name = "\\ifdarkmode"
+type = "if_flag"
+signature = ""
+description = "TeX if-switch; true when document is in dark mode (\\darkmodetrue/\\darkmodefalse)"

@@ -1,0 +1,70 @@
+[module]
+name = "omnilatex-citations"
+file = "lib/references/omnilatex-citations.sty"
+version = "2026-05-13 v1.25.0"
+description = "Citation style library with pre-configured biblatex options for 9 academic publishers: ieee, acm, apa, chicago, nature, science, harvard, vancouver, mla"
+line_count = 176
+
+[dependencies]
+requires = ["kvoptions"]
+optionally_requires = ["biblatex-ieee", "biblatex-apa", "biblatex-chicago", "biblatex-nature", "biblatex-science", "biblatex-harvard", "biblatex-vancouver", "biblatex-mla"]
+
+[[exports]]
+name = "\\citationstyle"
+type = "command"
+signature = "{name}"
+description = "Apply a citation style by name; loads dedicated biblatex package if available, otherwise uses built-in options"
+
+[[exports]]
+name = "\\citestyle@ieee"
+type = "command"
+signature = ""
+description = "IEEE style: numeric [1] brackets, citation order, 3 max cite names, giveninits"
+
+[[exports]]
+name = "\\citestyle@acm"
+type = "command"
+signature = ""
+description = "ACM style: numeric [1], alphabetical by author (nyt), up to 9 bib names"
+
+[[exports]]
+name = "\\citestyle@apa"
+type = "command"
+signature = ""
+description = "APA 7th edition: author-year, (Author, Year), natbib=true, 2 max cite names"
+
+[[exports]]
+name = "\\citestyle@chicago"
+type = "command"
+signature = ""
+description = "Chicago author-date: (Author Year), alphabetical, ibidtracker constrict"
+
+[[exports]]
+name = "\\citestyle@nature"
+type = "command"
+signature = ""
+description = "Nature style: numeric, superscript, citation order, 6 max cite names"
+
+[[exports]]
+name = "\\citestyle@science"
+type = "command"
+signature = ""
+description = "Science style: numeric [1], citation order, 10 max names, doi/url/eprint/isbn disabled"
+
+[[exports]]
+name = "\\citestyle@harvard"
+type = "command"
+signature = ""
+description = "Harvard style: author-year, dashed=false, punctfield=false, 2 max cite names"
+
+[[exports]]
+name = "\\citestyle@vancouver"
+type = "command"
+signature = ""
+description = "Vancouver style: numeric [1], citation order, 6 max names, uniquenames=false"
+
+[[exports]]
+name = "\\citestyle@mla"
+type = "command"
+signature = ""
+description = "MLA 9th edition: author-page, alphabetical, 3 max names"

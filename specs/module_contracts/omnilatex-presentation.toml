@@ -1,0 +1,106 @@
+[module]
+name = "omnilatex-presentation"
+file = "lib/layout/omnilatex-presentation.sty"
+version = "2026-05-13 v1.25.0"
+description = "Presentation layout module: slide frames with TikZ headers/footers, progress bar, block environments (presentationblock, alertblock, exampleblock, noteblock, definitionblock), section dividers, and two-column layout"
+line_count = 304
+
+[dependencies]
+requires = ["tcolorbox", "calc", "ifthen"]
+optionally_requires = ["tikz"]
+
+[[exports]]
+name = "presentationframe"
+type = "environment"
+signature = "[optional title]"
+description = "Slide frame with header, footer, and progress bar; auto-increments frame counter"
+
+[[exports]]
+name = "slideframe"
+type = "environment"
+signature = "[optional title]"
+description = "Backward-compatible alias for presentationframe"
+
+[[exports]]
+name = "\\maketitle"
+type = "command"
+signature = ""
+description = "Renders presentation title page with TikZ banner, title, author, institute, date"
+
+[[exports]]
+name = "presentationblock"
+type = "environment"
+signature = "[tcolorbox options]{title}"
+description = "Primary content block with left border accent and universityprimary color"
+
+[[exports]]
+name = "alertblock"
+type = "environment"
+signature = "[tcolorbox options]{title}"
+description = "Alert/warning block with red left border accent"
+
+[[exports]]
+name = "exampleblock"
+type = "environment"
+signature = "[tcolorbox options]{title}"
+description = "Example block with green left border accent"
+
+[[exports]]
+name = "noteblock"
+type = "environment"
+signature = "[tcolorbox options]{title}"
+description = "Note block with blue left border accent"
+
+[[exports]]
+name = "definitionblock"
+type = "environment"
+signature = "[tcolorbox options]{title}"
+description = "Definition block with orange left border accent"
+
+[[exports]]
+name = "\\presentationSection"
+type = "command"
+signature = "{section title}"
+description = "Full-page section divider with TikZ background and large centered title"
+
+[[exports]]
+name = "presentationcolumns"
+type = "environment"
+signature = "[column width fraction]"
+description = "Two-column slide layout wrapper, defaults to 0.48\\textwidth per column"
+
+[[exports]]
+name = "\\presentationcolumn"
+type = "command"
+signature = "[width fraction]"
+description = "Begin a column within presentationcolumns"
+
+[[exports]]
+name = "\\slidetitle"
+type = "command"
+signature = "{title text}"
+description = "Centered slide title with universityprimary color and horizontal rule"
+
+[[exports]]
+name = "\\presentationnavsymbolson"
+type = "command"
+signature = ""
+description = "Enable Beamer navigation symbols"
+
+[[exports]]
+name = "\\presentationnavsymbolsoff"
+type = "command"
+signature = ""
+description = "Disable Beamer navigation symbols (default)"
+
+[[exports]]
+name = "\\presentationprogresson"
+type = "command"
+signature = ""
+description = "Enable bottom progress bar (default)"
+
+[[exports]]
+name = "\\presentationprogressoff"
+type = "command"
+signature = ""
+description = "Disable bottom progress bar"

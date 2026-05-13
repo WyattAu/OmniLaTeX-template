@@ -1,0 +1,34 @@
+[module]
+name = "omnilatex-beamer"
+file = "lib/graphics/omnilatex-beamer.sty"
+version = "2026-05-13 v1.25.0"
+description = "Beamer integration: applies OmniLaTeX color and font system to Beamer presentations, including element colors, fonts, navigation removal, and frame numbering"
+line_count = 46
+
+[dependencies]
+requires = ["omnilatex-colors", "omnilatex-fonts"]
+optionally_requires = []
+
+[[exports]]
+name = "OmniPrimaryColor (beamer)"
+type = "color_application"
+signature = ""
+description = "Applied to Beamer structure, frametitle, title, block title, and items via \\setbeamercolor"
+
+[[exports]]
+name = "OmniAccentColor (beamer)"
+type = "color_application"
+signature = ""
+description = "Applied to Beamer subtitle, author, date, institute, subitem, and footline via \\setbeamercolor"
+
+[[exports]]
+name = "navigation symbols"
+type = "template"
+signature = ""
+description = "Removed via \\setbeamertemplate{navigation symbols}{} for cleaner slides"
+
+[[exports]]
+name = "footline"
+type = "template"
+signature = ""
+description = "Frame number footer: N/M right-aligned, via custom \\setbeamertemplate{footline}"

@@ -1,0 +1,52 @@
+[module]
+name = "omnilatex-accessibility"
+file = "lib/layout/omnilatex-accessibility.sty"
+version = "2026-05-13 v1.25.0"
+description = "PDF/UA-1 accessibility support: tagged PDF via tagpdf, alt text for figures and TikZ, accessible links, table markup, heading hierarchy validation, color contrast checks, reading order hints, and language tagging"
+line_count = 106
+
+[dependencies]
+requires = ["tagpdf", "pdfcomment"]
+optionally_requires = []
+
+[[exports]]
+name = "\\alttext"
+type = "command"
+signature = "{description}"
+description = "Set alt text for the next figure environment; attached via env/figure/begin hook"
+
+[[exports]]
+name = "\\tikzalttext"
+type = "command"
+signature = "{description}"
+description = "Set alt text for the next tikzpicture environment; attached via env/tikzpicture/begin hook"
+
+[[exports]]
+name = "\\accessiblelink"
+type = "command"
+signature = "{display text}{url}{screen reader description}"
+description = "Accessible hyperlink with pdftooltip for screen reader description"
+
+[[exports]]
+name = "\\validatstructure"
+type = "command"
+signature = ""
+description = "Logs informational heading hierarchy validation check at compile time"
+
+[[exports]]
+name = "\\checkcontrast"
+type = "command"
+signature = "{foreground}{background}"
+description = "Informative color contrast check; logs reminder to verify WCAG AA 4.5:1 manually"
+
+[[exports]]
+name = "\\readingorder"
+type = "command"
+signature = "{order specification}"
+description = "Set PDF logical reading order via tagpdf structure/text-order"
+
+[[exports]]
+name = "\\langtag"
+type = "command"
+signature = "{ISO 639-1 code}{text}"
+description = "Wrap text with language attribute for WCAG 2.1 AA 3.1.2 compliance"

@@ -1,0 +1,58 @@
+[module]
+name = "omnilatex-rtl"
+file = "lib/language/omnilatex-rtl.sty"
+version = "2026-05-13 v1.25.0"
+description = "RTL language support for Arabic, Persian, and Hebrew: bidi paragraph direction, mirrored page layout, script-specific font configuration with fallback, Arabic-Indic numerals, LTR math mode, and inline direction overrides"
+line_count = 271
+
+[dependencies]
+requires = ["xstring"]
+optionally_requires = ["bidi", "fontspec"]
+
+[[exports]]
+name = "\\setArabicFont"
+type = "command"
+signature = "{font name}"
+description = "Set Arabic script font family with Script=Arabic and FakeBold=2"
+
+[[exports]]
+name = "\\setArabicBoldFont"
+type = "command"
+signature = "{font name}"
+description = "Set Arabic bold font variant"
+
+[[exports]]
+name = "\\setHebrewFont"
+type = "command"
+signature = "{font name}"
+description = "Set Hebrew script font family with Script=Hebrew and FakeBold=2"
+
+[[exports]]
+name = "\\setHebrewBoldFont"
+type = "command"
+signature = "{font name}"
+description = "Set Hebrew bold font variant"
+
+[[exports]]
+name = "\\arabicindictrue"
+type = "command"
+signature = ""
+description = "Enable Arabic-Indic numerals (٠١٢٣٤٥٦٧٨٩) for Arabic documents"
+
+[[exports]]
+name = "\\arabicindicfalse"
+type = "command"
+signature = ""
+description = "Disable Arabic-Indic numerals, use Western Arabic digits (0123456789) instead"
+
+[[exports]]
+name = "\\LTRinline"
+type = "command"
+signature = "{text}"
+description = "Inline left-to-right text override inside an RTL document, wraps bidi \\textLR"
+
+[[exports]]
+name = "\\RTLinline"
+type = "command"
+signature = "{text}"
+description = "Inline right-to-left text override inside an LTR document, wraps bidi \\textRL"
