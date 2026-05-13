@@ -162,7 +162,7 @@ The primary build tool. Run from the repository root.
 # Building
 python build.py build-root               # Build root main.tex
 python build.py build-example thesis     # Build one example
-python build.py build-examples           # Build all 43 examples
+python build.py build-examples           # Build all 46 examples
 python build.py build-examples -j 8      # Parallel build (8 jobs)
 python build.py build-examples --force   # Force rebuild (ignore cache)
 

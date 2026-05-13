@@ -158,9 +158,7 @@ def compile_tex_docker(tex_content: str, timeout: int = 180) -> tuple:
             "-output-directory=/work",
             "test.tex",
         ]
-        result = subprocess.run(
-            cmd, capture_output=True, text=True, timeout=timeout
-        )
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
         pdf_exists = (Path(tmpdir) / "test.pdf").exists()
         return (
             result.returncode == 0 and pdf_exists,

@@ -1,8 +1,8 @@
 # OmniLaTeX Document Model State Machine
 
-**Version:** 1.0.0  
-**Source:** `omnilatex.cls` v0.1.1  
-**States:** 8 (INIT through READY)  
+**Version:** 1.0.0
+**Source:** `omnilatex.cls` v0.1.1
+**States:** 8 (INIT through READY)
 **Error States:** 2 (DOCTYPE_FALLBACK, INSTITUTION_WARNING)
 
 ---

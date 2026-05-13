@@ -5,6 +5,8 @@
   Reference: .latexmkrc, lib/core/omnilatex-base.sty
 -/
 
+namespace BuildModes
+
 inductive BuildMode where
   | dev : BuildMode
   | prod : BuildMode
@@ -55,3 +57,5 @@ theorem mode_strictness_order :
   ∀ m, (buildConfigFor m).strictWarnings = true ↔ m = .prod := by
   intro m
   cases m <;> simp [buildConfigFor]
+
+end BuildModes

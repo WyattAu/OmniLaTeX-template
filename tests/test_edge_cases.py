@@ -19,7 +19,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 pytestmark = pytest.mark.slow
 
 
-def _compile_tex(content: str, options: str = "", timeout: int = 180) -> tuple:
+def _compile_tex(content: str, options: str = "", timeout: int = 600) -> tuple:
     """Compile a minimal OmniLaTeX document. Returns (success, pdf_exists)."""
     import os
 

@@ -10,11 +10,8 @@
     ultra: max_repeat=1, bibtex_use=0, biber="true", do_gls=0, validate=false
 -/
 
-inductive BuildMode where
-  | dev : BuildMode
-  | prod : BuildMode
-  | ultra : BuildMode
-  deriving DecidableEq, Repr
+import OmniLaTeXProofs.BuildModes
+open BuildModes
 
 /-- Configuration flags extracted from .latexmkrc per build mode. -/
 structure ModeConfig where

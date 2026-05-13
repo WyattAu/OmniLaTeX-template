@@ -28,7 +28,7 @@ The zip **must** contain:
 | Path | Description |
 |------|-------------|
 | `omnilatex/omnilatex.cls` | Main document class |
-| `omnilatex/lib/` | Module library (27 modules across 9 subdirectories) |
+| `omnilatex/lib/` | Module library (28 modules across 9 subdirectories) |
 | `omnilatex/config/document-types/` | 26 document type `.sty` files |
 | `omnilatex/config/document-settings.sty` | Global settings |
 | `omnilatex/bib/bibliography.bib` | Default bibliography |
@@ -52,7 +52,7 @@ docker run -it --rm -v $(pwd):/workspace ghcr.io/wyattau/omnilatex-docker:latest
 python build.py build-examples
 ```
 
-All 43 examples should compile without errors. Alternatively, run the CI pipeline which exercises the full build matrix.
+All 46 examples should compile without errors. Alternatively, run the CI pipeline which exercises the full build matrix.
 
 ## 3. Submission Process
 
@@ -67,7 +67,7 @@ All 43 examples should compile without errors. Alternatively, run the CI pipelin
 | Field | Value |
 |-------|-------|
 | **Package name** | `omnilatex` |
-| **Version** | (read from `VERSION.md`, e.g. `1.22.0`) |
+| **Version** | (read from `VERSION.md`, e.g. `1.25.0`) |
 | **Summary** | `A modular, engineering-grade LaTeX document class supporting 26 document types, 25 languages, and multiple color themes` |
 | **Description** | (copy the long description from `README.md`) |
 | **License** | Apache-2.0 |
@@ -120,4 +120,4 @@ For each new release:
 3. Re-run `bash scripts/make-ctan-zip.sh`
 4. Verify with `pytest tests/test_ctan.py`
 5. Upload the new `omnilatex.zip` to CTAN at <https://ctan.org/upload>
-6. Tag the release in Git (e.g. `git tag v1.11.0`)
+6. Tag the release in Git (e.g. `git tag v1.25.0`)

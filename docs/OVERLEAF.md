@@ -49,7 +49,7 @@ reports success/failure counts and file sizes.
 |------|-------------|
 | `main.tex` | Example document (paths adjusted for flat structure) |
 | `omnilatex.cls` | Document class |
-| `lib/` | Full module library (27 modules) |
+| `lib/` | Full module library (28 modules) |
 | `config/` | Document-type configs and example settings |
 | `bib/` | Bibliography database and glossary files |
 | `README.md` | Overleaf-specific instructions |

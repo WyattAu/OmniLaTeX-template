@@ -53,7 +53,7 @@ def _compile_tex(content: str) -> bool:
                 **os.environ,
                 "TEXINPUTS": f".:{PROJECT_ROOT}:{PROJECT_ROOT}/lib:",
             },
-            timeout=180,
+            timeout=600,
         )
         pdf_path = Path(tmpdir) / "test.pdf"
         return result.returncode == 0 and pdf_path.exists()

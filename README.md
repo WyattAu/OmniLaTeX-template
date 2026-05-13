@@ -1,6 +1,6 @@
 # OmniLaTeX
 
-A modular, engineering-grade LaTeX document class for academic and professional documents. 55+ doctype aliases, 27 modules, 43 example templates, a 238-page reference manual, byte-for-byte reproducible builds, and formal Lean 4 verification.
+A modular, engineering-grade LaTeX document class for academic and professional documents. 55+ doctype aliases, 28 modules, 46 example templates, a 238-page reference manual, byte-for-byte reproducible builds, and formal Lean 4 verification.
 
 Built on LuaTeX (LuaHBTeX 1.21.0) + KOMA-Script + TeX Live 2025. Compile with `latexmk -lualatex` or `build.py`.
 
@@ -9,10 +9,10 @@ Built on LuaTeX (LuaHBTeX 1.21.0) + KOMA-Script + TeX Live 2025. Compile with `l
 | | OmniLaTeX | Typical template |
 |---|---|---|
 | **Document types** | 55+ aliases (thesis, CV, patent, journal, ...) | 1–3 |
-| **Test coverage** | 375 test cases (structural, property, visual regression, integration) | 0 |
+| **Test coverage** | 389 fast tests (structural, property, visual regression, integration) | 0 |
 | **Reproducible builds** | Byte-for-byte deterministic | No |
 | **Formal verification** | Lean 4 proofs (12 proof modules, 110 theorems proven, 0 sorry) | No |
-| **CI platforms** | 9 GitHub Actions workflows + 4 other platforms | 0–1 |
+| **CI platforms** | 10 GitHub Actions workflows + 4 other platforms | 0–1 |
 | **Font fallbacks** | Graceful degradation with warnings | Crash or silent substitution |
 | **Institution configs** | 16 pluggable (`config/institutions/`) | Hardcoded |
 | **Languages** | 25 via polyglossia | 0–2 |
@@ -39,7 +39,7 @@ python build.py build-example minimal-starter
 ## Features
 
 - **55+ doctype aliases** resolving to 26 document profiles across 3 KOMA-Script base classes
-- **27 modular `.sty` packages** with formal interface contracts
+- **28 modular `.sty` packages** with formal interface contracts
 - **Lazy module loading** — only load what you need (`enablemath`, `enabletikz`, `enablecode`, ...)
 - **Modern font stack** — Libertinus Serif + Math, Monaspace Neon, Atkinson Hyperlegible Next (with graceful fallback)
 - **Reproducible builds** — `SOURCE_DATE_EPOCH` support, byte-for-byte deterministic PDFs
@@ -79,7 +79,7 @@ OmniLaTeX supports 18 languages with full OmniLaTeX translations and 25 via poly
 
 ## Examples
 
-43 ready-to-use templates in `examples/` (42 compile on TeX Live 2026; `thesis-tuhh` requires TUHH assets):
+46 ready-to-use templates in `examples/` (42 compile on TeX Live 2026; `thesis-tuhh` requires TUHH assets):
 
 | Example | Doctype | Description |
 |---------|---------|-------------|
@@ -213,7 +213,7 @@ See [User Guide](docs/USER_GUIDE.md#build-system) for all commands and options.
 
 ### GitHub Actions
 
-9 workflows using digest-pinned Docker images for reproducibility:
+10 workflows using digest-pinned Docker images for reproducibility:
 
 | Workflow | Purpose |
 |----------|---------|
@@ -294,7 +294,7 @@ config/
 ├── .latexmkrc                   # LaTeX compilation settings
 ├── flake.nix                    # Nix flake (devShell + checks)
 ├── config/                      # Document type and institution configs
-├── lib/                         # 27 modules across 9 subdirectories
+├── lib/                         # 28 modules across 9 subdirectories
 │   ├── core/                    # Build modes, utilities
 │   ├── layout/                  # Page layout, floats, KOMA-Script, accessibility
 │   ├── typography/              # Fonts, math, typesetting, lists
@@ -305,7 +305,7 @@ config/
 │   ├── tables/                  # Table formatting
 │   └── utils/                   # Colors, themes, TODO notes, censoring
 ├── lua/                         # Lua scripts (git metadata)
-├── examples/                    # 43 example templates
+├── examples/                    # 46 example templates
 ├── specs/                       # Formal specifications and Lean 4 proofs
 ├── tests/                       # Test suite (l3build + pytest + visual regression)
 ├── docs/                        # API reference (auto-generated)
@@ -316,7 +316,7 @@ config/
 
 | Suite | Tool | Coverage |
 |-------|------|----------|
-| Module unit tests | l3build | 27 l3build tests (21 module + 6 doctype) |
+| Module unit tests | l3build | 47 l3build tests (21 module + 26 doctype) |
 | Property-based tests | hypothesis + pytest | 92 doctype × language combinations |
 | Unicode stress tests | pytest | 10 scripts (CJK, RTL, emoji, combining) |
 | Edge case tests | pytest | Empty, large, nested documents |

@@ -118,14 +118,11 @@ class TestScaffoldInstitution:
         combined = result.stdout + result.stderr
         assert "Usage" in combined or "usage" in combined
 
-    @pytest.mark.xfail(
-        reason="scaffold-institution creates files; needs cleanup in CI",
-        strict=False,
-    )
     def test_scaffold_creates_directory(self) -> None:
-        import tempfile
         import shutil
-        with tempfile.TemporaryDirectory() as tmpdir:
+        import tempfile
+
+        with tempfile.TemporaryDirectory():
             result = subprocess.run(
                 ["python3", str(BUILD_SCRIPT), "scaffold-institution", "test-univ"],
                 capture_output=True,
@@ -153,8 +150,9 @@ class TestInit:
         strict=False,
     )
     def test_init_creates_project(self) -> None:
-        import tempfile
         import shutil
+        import tempfile
+
         with tempfile.TemporaryDirectory() as tmpdir:
             result = subprocess.run(
                 ["python3", str(BUILD_SCRIPT), "init", "test-project"],

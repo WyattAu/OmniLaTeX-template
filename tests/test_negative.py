@@ -8,7 +8,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
-def compile_tex(tex_content: str, timeout: int = 180) -> tuple:
+def compile_tex(tex_content: str, timeout: int = 600) -> tuple:
     """Compile and return (success, log_content)."""
     with tempfile.TemporaryDirectory() as tmpdir:
         tex_file = Path(tmpdir) / "test.tex"

@@ -117,9 +117,7 @@ class TestDocumentTypeRegistration:
             if name != "book":
                 unique_primary.add(name)
         unique_primary.add("book")
-        assert (
-            len(unique_primary) >= 26
-        ), (
+        assert len(unique_primary) >= 26, (
             f"Expected at least 25 unique doctypes, "
             f"found {len(unique_primary)}: {sorted(unique_primary)}"
         )

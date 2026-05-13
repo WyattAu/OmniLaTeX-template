@@ -184,9 +184,6 @@ documented in `docs/api_reference.md`. Key user-facing commands:
 | `\documentlinespacing{...}` | Set line spacing |
 | `\parens{...}` | Parentheses delimiters |
 | `\brackets{...}` | Bracket delimiters |
-| `\floor{...}` | Floor function |
-| `\ceil{...}` | Ceiling function |
-| `\bigO{...}` | Big-O notation |
 
 ### Synctex
 
