@@ -10,20 +10,20 @@
 
 | Area | Status | Details |
 |------|--------|---------|
-| Core class | Stable | 390-line `omnilatex.cls`, 27 `.sty` modules across 9 subdirectories |
+| Core class | Stable | 390-line `omnilatex.cls`, 28 `.sty` modules across 9 subdirectories |
 | Document types | Stable | 26 doctypes, 55+ aliases, 3 KOMA-Script base classes (scrartcl/scrbook/scrreprt) |
-| Examples | Stable | 43 example templates, all compile on TeX Live 2025+ |
+| Examples | Stable | 46 example templates, all compile on TeX Live 2025+ |
 | Languages | Stable | 25 via polyglossia, 18 with full OmniLaTeX translations (47 keys each) |
 | Institutions | Stable | 16 pluggable configs (ETH, MIT, Stanford, TUHH, TUM, Cambridge, etc.) |
-| Formal verification | Stable | 110 Lean 4 theorems across 12 modules, 0 `sorry`, all compile |
-| Test suite | Stable | 429 fast tests (48 skipped, 1 xfailed) |
-| CI/CD | Stable | 9 GitHub Actions + GitLab/Gitea/Forgejo/Woodpecker configs, 429 tests (structural, property, integration, institution) |
+| Formal verification | Stable | 154 Lean 4 theorems across 15 modules, 0 `sorry`, all compile |
+| Test suite | Stable | 442 fast tests (48 skipped, 1 xfailed) |
+| CI/CD | Stable | 10 GitHub Actions + GitLab/Gitea/Forgejo/Woodpecker configs, 442 tests (structural, property, integration, institution) |
 | Pre-commit hooks | Stable | 25 hooks: trailing whitespace, black, isort, flake8, markdownlint, pytest gate, Lean gate |
 | Reproducible builds | Stable | SOURCE_DATE_EPOCH, byte-for-byte deterministic PDFs |
 | Docker | Stable | Multi-arch (amd64+arm64) Docker image with auto digest sync |
 | CTAN | Ready | Auto-upload script with 5-phase validation |
 | VS Code extension | Enhanced | Build-on-save, 26 doctype snippets, log diagnostics |
-| Reference manual | Stable | 238 pages, 57 chapters, 10.7k lines |
+| Reference manual | Stable | 238 pages, 59 chapters, 12.4k lines |
 | Beamer support | New | omnilatex-beamer.sty with OmniLaTeX colors/fonts for presentations |
 | Code coverage CI | New | pytest-cov in CI with 60% threshold enforcement |
 
@@ -53,6 +53,7 @@
 The `DocumentSettings.lean` module proves properties about a doctype-to-class mapping that diverges from the actual `DOCTYPE_TO_CLASS` dictionary in `tests/constants.py` and `omnilatex.cls`.
 
 **Tasks:**
+
 1. Extract canonical doctype-to-class mapping from `omnilatex.cls` (the single source of truth)
 2. Generate `constants.py` DOCTYPE_TO_CLASS from the same source (or vice versa)
 3. Update `DocumentSettings.lean` to match the canonical mapping exactly
@@ -60,6 +61,7 @@ The `DocumentSettings.lean` module proves properties about a doctype-to-class ma
 5. Re-verify all 53 theorems still hold with corrected mapping
 
 **Deliverables:**
+
 - Single source of truth for doctype-class mapping
 - Updated Lean proofs
 - New consistency test in `test_properties.py`
@@ -67,6 +69,7 @@ The `DocumentSettings.lean` module proves properties about a doctype-to-class ma
 ### 1.2 Complete i18n Verification (KI-002) -- DONE
 
 **Tasks:**
+
 1. Enumerate all languages in `\setotherlanguages` in `omnilatex-i18n.sty`
 2. For each language with `DeclareTranslation` entries, verify key count matches 47
 3. For languages with polyglossia but no translations, document this as intentional
@@ -74,6 +77,7 @@ The `DocumentSettings.lean` module proves properties about a doctype-to-class ma
 5. Add test verifying no language has partial translation coverage (either 0 or 47 keys)
 
 **Deliverables:**
+
 - Complete language coverage matrix
 - Updated Lean proof
 - New parity test
@@ -81,6 +85,7 @@ The `DocumentSettings.lean` module proves properties about a doctype-to-class ma
 ### 1.3 CI Pipeline Hardening -- DONE
 
 **Tasks:**
+
 1. Add `test_properties.py` (structural + property) to `build.yml` CI pipeline (currently only `test_modules.py` and `test_ctan.py` run)
 2. Add `test_visual_regression.py` to CI
 3. Declare `hypothesis` in `tests/pyproject.toml` so property tests run in CI (KI-004)
@@ -88,6 +93,7 @@ The `DocumentSettings.lean` module proves properties about a doctype-to-class ma
 5. Pin `pre-commit` hook Python versions to `python3` instead of `python3.10`/`python3.14`
 
 **Deliverables:**
+
 - All non-Docker test files run in CI
 - Property tests no longer silently skip
 - Pre-commit hooks work across Python versions
@@ -95,6 +101,7 @@ The `DocumentSettings.lean` module proves properties about a doctype-to-class ma
 ### 1.4 Pre-commit Hook Reliability (KI-008, KI-009) -- DONE
 
 **Tasks:**
+
 1. Update `pre-commit-latex-hooks` to latest version (check for Python 3.13+ compat)
 2. Replace `language-formatters-pre-commit-hooks` YAML formatter with a local `prettier` or `yq`-based hook
 3. Test all hooks on Python 3.10, 3.12, 3.13, and 3.14
@@ -103,6 +110,7 @@ The `DocumentSettings.lean` module proves properties about a doctype-to-class ma
 ### 1.5 CHANGELOG Cleanup (KI-007) -- DONE
 
 **Tasks:**
+
 1. Deduplicate v1.12.0/v1.13.0 shared entries (Persian RTL, Performance docs, Patent example)
 2. Investigate and resolve v1.15.0/v1.16.0 near-duplicate content
 3. Add proper version separation with clear feature ownership per version
@@ -116,20 +124,23 @@ The `DocumentSettings.lean` module proves properties about a doctype-to-class ma
 ### 2.1 Visual Regression Infrastructure (KI-003) -- DONE
 
 **Tasks:**
-1. Generate reference PDFs for all 43 examples (one-time, in Docker for determinism)
+
+1. Generate reference PDFs for all 46 examples (one-time, in Docker for determinism)
 2. Store reference PDFs in `tests/references/` (add to git, ~50MB)
 3. Integrate `visual_regression.py` SSIM script into CI (threshold: 0.99)
 4. Add `--regenerate-references` flag for intentional visual changes
 5. Add GitHub Action that runs visual regression on PRs with PDF changes
 
 **Deliverables:**
-- 43 reference PDFs
+
+- 46 reference PDFs
 - CI visual regression gate
 - SSIM baseline report
 
 ### 2.2 Coverage Measurement (KI-006) -- DONE
 
 **Tasks:**
+
 1. Add `pytest-cov` to test dependencies
 2. Run coverage on Python test suite (tests/*.py, build.py, scripts/*.py)
 3. Target: >80% line coverage for Python code, >95% for critical paths
@@ -158,6 +169,7 @@ preflight:     ## Run all checks before release
 ### 2.4 Docker Digest Sync (KI-005) -- DONE
 
 **Tasks:**
+
 1. Extend `docker-digest-sync.yml` to also update Forgejo, Woodpecker, GitLab, Gitea configs
 2. Read digest from `.env.docker` in all CI configs (not hardcoded)
 3. Add validation that all CI configs reference the same digest
@@ -171,6 +183,7 @@ preflight:     ## Run all checks before release
 ### 3.1 Beamer/Presentation Overhaul (P20.1 from ROADMAP.md) -- DONE
 
 **Tasks:**
+
 1. Create `omnilatex-beamer.sty` using OmniLaTeX color/font system
 2. Support all 6 color themes + dark/light toggle in presentations
 3. Compatible with existing institution configs
@@ -180,6 +193,7 @@ preflight:     ## Run all checks before release
 ### 3.2 Community Institutions (P20.2 from ROADMAP.md)
 
 **Tasks:**
+
 1. Create institution contribution guide (template + checklist)
 2. Add 5+ community-contributed institutions
 3. Institution validation test suite (compile check, ProvidesPackage check, metadata check)
@@ -190,6 +204,7 @@ preflight:     ## Run all checks before release
 47 l3build tests, all 26 doctypes covered.
 
 **Tasks:**
+
 1. Expand `.lvt` test coverage from 22 to 40+ modules (add doctype-specific tests)
 2. Add regression tests for all 26 doctypes
 3. Add cross-module interaction tests (e.g., math + code listings + floats)
@@ -200,6 +215,7 @@ preflight:     ## Run all checks before release
 154 theorems across 15 modules, exceeded 100 target.
 
 **Tasks:**
+
 1. Prove page geometry invariants for all 26 doctypes (currently only general)
 2. Prove translation key completeness for secondary languages
 3. Prove build mode strictness properties (dev < prod < ultra)
@@ -262,7 +278,7 @@ preflight:     ## Run all checks before release
 | ID | Description | Priority | Version Target |
 |----|-------------|----------|----------------|
 | TD-001 | `test_properties.py` duplicates `DOCTYPE_ALIASES` from `constants.py` | Low | RESOLVED in v1.18.0 |
-| TD-002 | Build artifacts (main.pdf, *.aux, *.log) committed to repo | Low | N/A (not tracked in git) |
+| TD-002 | Build artifacts (main.pdf, *.aux,*.log) committed to repo | Low | N/A (not tracked in git) |
 | TD-003 | No integration test for `build.py` commands (scaffold, init, list) | Medium | v1.19.0 |
 | TD-004 | No type hints in `build.py` (1331 lines) | Medium | RESOLVED in v1.20.0 |
 | TD-005 | `docs/accessibility.md` duplicates `CONTRIBUTING.md` PDF accessibility section | Low | v1.19.0 |
@@ -291,19 +307,19 @@ preflight:     ## Run all checks before release
 
 | Metric | Value | Target |
 |--------|-------|--------|
-| Test cases (non-hypothesis) | 429 | >500 |
-| Test cases (with hypothesis) | 429 | >600 |
+| Test cases (non-hypothesis) | 442 | >500 |
+| Test cases (with hypothesis) | 442 | >600 |
 | Lean 4 theorems | 154 | >100 |
 | Lean 4 modules | 15 | 15 |
 | Document types | 26 | 30+ |
-| Examples | 43 | 50+ |
+| Examples | 46 | 50+ |
 | Institutions | 16 | 25+ |
 | Languages (polyglossia) | 25 | 30+ |
 | Languages (full translations) | 18 | 25+ |
 | CI platforms | 5 | 5 |
 | Pre-commit hooks | 25 | 25+ |
 | Module TOML contracts | 21 | 27 (all modules) |
-| Manual chapters | 57 | 60+ |
+| Manual chapters | 59 | 60+ |
 | Code coverage (Python) | 60% | >80% |
 | l3build tests | 47 | 47 |
 | CHANGELOG files | 26 | 26 |
