@@ -5,9 +5,9 @@ env:
 
 on:
   push:
-    branches: [ main, master, develop ]
+    branches: [main, master, develop]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
 
 jobs:
   build:
@@ -16,29 +16,29 @@ jobs:
       image: ${{ env.DOCKER_IMAGE }}
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-      - name: Build all documents (Production mode)
-        env:
-          IS_OMNILATEX_CONTAINER: "true"
-          CI: "true"
-        run: |
-          python3 build.py --mode prod build-all
+    - name: Build all documents (Production mode)
+      env:
+        IS_OMNILATEX_CONTAINER: 'true'
+        CI: 'true'
+      run: |
+        python3 build.py --mode prod build-all
 
-      - name: Upload root PDF
-        uses: actions/upload-artifact@v4
-        with:
-          name: PDF-Root
-          path: main.pdf
+    - name: Upload root PDF
+      uses: actions/upload-artifact@v4
+      with:
+        name: PDF-Root
+        path: main.pdf
 
-      - name: Upload example PDFs
-        uses: actions/upload-artifact@v4
-        with:
-          name: PDF-Examples
-          path: build/examples/*.pdf
+    - name: Upload example PDFs
+      uses: actions/upload-artifact@v4
+      with:
+        name: PDF-Examples
+        path: build/examples/*.pdf
 
   test:
     runs-on: ubuntu-latest
@@ -47,27 +47,27 @@ jobs:
       image: ${{ env.DOCKER_IMAGE }}
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-      - name: Download root PDF
-        uses: actions/download-artifact@v4
-        with:
-          name: PDF-Root
-          path: .
+    - name: Download root PDF
+      uses: actions/download-artifact@v4
+      with:
+        name: PDF-Root
+        path: .
 
-      - name: Download example PDFs
-        uses: actions/download-artifact@v4
-        with:
-          name: PDF-Examples
-          path: build/examples
+    - name: Download example PDFs
+      uses: actions/download-artifact@v4
+      with:
+        name: PDF-Examples
+        path: build/examples
 
-      - name: Run tests
-        env:
-          IS_OMNILATEX_CONTAINER: "true"
-          CI: "true"
-        run: |
-          pip install pytest hypothesis -q
-          python3 -m pytest tests/test_modules.py tests/test_ctan.py tests/test_properties.py --tb=short -q
+    - name: Run tests
+      env:
+        IS_OMNILATEX_CONTAINER: 'true'
+        CI: 'true'
+      run: |
+        pip install -q pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout hypothesis
+        python3 -m pytest tests/test_modules.py tests/test_ctan.py tests/test_properties.py --tb=short -q

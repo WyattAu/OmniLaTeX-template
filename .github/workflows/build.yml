@@ -8,9 +8,9 @@ permissions:
 
 on:
   push:
-    branches: [ main, master, develop ]
+    branches: [main, master, develop]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
   workflow_dispatch:
 
 jobs:
@@ -18,301 +18,301 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Full history for better git metadata
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0    # Full history for better git metadata
 
-      - name: Read Docker image digest
-        id: digest
-        run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
+    - name: Read Docker image digest
+      id: digest
+      run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
 
-      - name: Pull Docker image
-        run: docker pull "${{ steps.digest.outputs.image }}"
+    - name: Pull Docker image
+      run: docker pull "${{ steps.digest.outputs.image }}"
 
-      - name: Build all documents (Production mode)
-        run: |
-          docker run --rm --entrypoint "" \
-            -v "$GITHUB_WORKSPACE:/workspace" \
-            -w /workspace \
-            --user root \
-            -e IS_OMNILATEX_CONTAINER=true \
-            -e CI=true \
-            "${{ steps.digest.outputs.image }}" \
-            python3 build.py --mode prod --verbose build-all
+    - name: Build all documents (Production mode)
+      run: |
+        docker run --rm --entrypoint "" \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -w /workspace \
+          --user root \
+          -e IS_OMNILATEX_CONTAINER=true \
+          -e CI=true \
+          "${{ steps.digest.outputs.image }}" \
+          python3 build.py --mode prod --verbose build-all
 
-      - name: Verify all examples built
-        run: |
-          EXPECTED=$(ls -d examples/*/main.tex 2>/dev/null | wc -l)
-          ACTUAL=$(ls build/examples/*.pdf 2>/dev/null | wc -l)
-          echo "Expected $EXPECTED PDFs, found $ACTUAL"
-          if [ "$ACTUAL" -lt "$EXPECTED" ]; then
-            echo "::error::$((EXPECTED - ACTUAL)) example(s) failed to build"
-            ls build/examples/*.pdf 2>/dev/null | sed 's|build/examples/||; s|\.pdf||' | sort > /tmp/built.txt
-            ls -d examples/*/ | xargs -I{} basename {} | sort > /tmp/all.txt
-            comm -23 /tmp/all.txt /tmp/built.txt | while read name; do
-              echo "::error::Missing: $name"
-            done
-            exit 1
-          fi
-          echo "All $ACTUAL examples built successfully."
+    - name: Verify all examples built
+      run: |
+        EXPECTED=$(ls -d examples/*/main.tex 2>/dev/null | wc -l)
+        ACTUAL=$(ls build/examples/*.pdf 2>/dev/null | wc -l)
+        echo "Expected $EXPECTED PDFs, found $ACTUAL"
+        if [ "$ACTUAL" -lt "$EXPECTED" ]; then
+          echo "::error::$((EXPECTED - ACTUAL)) example(s) failed to build"
+          ls build/examples/*.pdf 2>/dev/null | sed 's|build/examples/||; s|\.pdf||' | sort > /tmp/built.txt
+          ls -d examples/*/ | xargs -I{} basename {} | sort > /tmp/all.txt
+          comm -23 /tmp/all.txt /tmp/built.txt | while read name; do
+            echo "::error::Missing: $name"
+          done
+          exit 1
+        fi
+        echo "All $ACTUAL examples built successfully."
 
-      - name: Upload root PDF
-        uses: actions/upload-artifact@v4
-        with:
-          name: PDF-Root
-          path: main.pdf
-          if-no-files-found: error
-          retention-days: 30
+    - name: Upload root PDF
+      uses: actions/upload-artifact@v4
+      with:
+        name: PDF-Root
+        path: main.pdf
+        if-no-files-found: error
+        retention-days: 30
 
-      - name: Upload example PDFs
-        uses: actions/upload-artifact@v4
-        with:
-          name: PDF-Examples
-          path: build/examples/*.pdf
-          if-no-files-found: error
-          retention-days: 30
+    - name: Upload example PDFs
+      uses: actions/upload-artifact@v4
+      with:
+        name: PDF-Examples
+        path: build/examples/*.pdf
+        if-no-files-found: error
+        retention-days: 30
 
-      - name: Prepare site bundle
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          mkdir -p github-pages/pdfs
-          cp main.pdf github-pages/main.pdf
-          if [ -d pages ]; then
-            cp -r pages/. github-pages/
-          fi
-          # Copy all example PDFs preserving directory structure
-          # e.g. build/examples/thesis/main.pdf -> github-pages/pdfs/thesis/main.pdf
-          if [ -d build/examples ]; then
-            cp -r build/examples/. github-pages/pdfs/
-          fi
+    - name: Prepare site bundle
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: |
+        mkdir -p github-pages/pdfs
+        cp main.pdf github-pages/main.pdf
+        if [ -d pages ]; then
+          cp -r pages/. github-pages/
+        fi
+        # Copy all example PDFs preserving directory structure
+        # e.g. build/examples/thesis/main.pdf -> github-pages/pdfs/thesis/main.pdf
+        if [ -d build/examples ]; then
+          cp -r build/examples/. github-pages/pdfs/
+        fi
 
-      - name: Upload site bundle
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: github-pages
+    - name: Upload site bundle
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: github-pages
 
   performance:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: build
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-      - name: Read Docker image digest
-        id: digest
-        run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
+    - name: Read Docker image digest
+      id: digest
+      run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
 
-      - name: Pull Docker image
-        run: docker pull "${{ steps.digest.outputs.image }}"
+    - name: Pull Docker image
+      run: docker pull "${{ steps.digest.outputs.image }}"
 
-      - name: Build examples with timings
-        run: |
+    - name: Build examples with timings
+      run: |
+        docker run --rm --entrypoint "" \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -w /workspace \
+          --user root \
+          -e IS_OMNILATEX_CONTAINER=true \
+          -e CI=true \
+          "${{ steps.digest.outputs.image }}" \
+          python3 build.py --mode prod --timings --force build-examples
+
+    - name: Generate performance summary with regression detection
+      if: always()
+      run: |
+        if [ -f build/metrics.json ]; then
+          echo "## Build Performance Metrics" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
           docker run --rm --entrypoint "" \
             -v "$GITHUB_WORKSPACE:/workspace" \
             -w /workspace \
-            --user root \
-            -e IS_OMNILATEX_CONTAINER=true \
-            -e CI=true \
             "${{ steps.digest.outputs.image }}" \
-            python3 build.py --mode prod --timings --force build-examples
+            python3 .github/scripts/extract_metrics.py >> $GITHUB_STEP_SUMMARY
+        else
+          echo "No metrics.json found" >> $GITHUB_STEP_SUMMARY
+        fi
 
-      - name: Generate performance summary with regression detection
-        if: always()
-        run: |
-          if [ -f build/metrics.json ]; then
-            echo "## Build Performance Metrics" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            docker run --rm --entrypoint "" \
-              -v "$GITHUB_WORKSPACE:/workspace" \
-              -w /workspace \
-              "${{ steps.digest.outputs.image }}" \
-              python3 .github/scripts/extract_metrics.py >> $GITHUB_STEP_SUMMARY
-          else
-            echo "No metrics.json found" >> $GITHUB_STEP_SUMMARY
-          fi
-
-      - name: Upload performance metrics
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: performance-metrics
-          path: build/metrics.json
-          retention-days: 90
+    - name: Upload performance metrics
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: performance-metrics
+        path: build/metrics.json
+        retention-days: 90
 
   determinism:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-      - name: Read Docker image digest
-        id: digest
-        run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
+    - name: Read Docker image digest
+      id: digest
+      run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
 
-      - name: Pull Docker image
-        run: docker pull "${{ steps.digest.outputs.image }}"
+    - name: Pull Docker image
+      run: docker pull "${{ steps.digest.outputs.image }}"
 
-      - name: First build
-        run: |
-          docker run --rm --entrypoint "" \
-            -v "$GITHUB_WORKSPACE:/workspace" \
-            -w /workspace \
-            --user root \
-            -e IS_OMNILATEX_CONTAINER=true \
-            -e CI=true \
-            "${{ steps.digest.outputs.image }}" \
-            python3 build.py --mode prod --source-date-epoch 1700000000 build-example thesis
-          cp build/examples/thesis.pdf /tmp/build1.pdf
+    - name: First build
+      run: |
+        docker run --rm --entrypoint "" \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -w /workspace \
+          --user root \
+          -e IS_OMNILATEX_CONTAINER=true \
+          -e CI=true \
+          "${{ steps.digest.outputs.image }}" \
+          python3 build.py --mode prod --source-date-epoch 1700000000 build-example thesis
+        cp build/examples/thesis.pdf /tmp/build1.pdf
 
-      - name: Clean and rebuild
-        run: |
-          docker run --rm --entrypoint "" \
-            -v "$GITHUB_WORKSPACE:/workspace" \
-            -w /workspace \
-            --user root \
-            "${{ steps.digest.outputs.image }}" \
-            python3 build.py clean
-          docker run --rm --entrypoint "" \
-            -v "$GITHUB_WORKSPACE:/workspace" \
-            -w /workspace \
-            --user root \
-            -e IS_OMNILATEX_CONTAINER=true \
-            -e CI=true \
-            "${{ steps.digest.outputs.image }}" \
-            python3 build.py --mode prod --source-date-epoch 1700000000 build-example thesis
+    - name: Clean and rebuild
+      run: |
+        docker run --rm --entrypoint "" \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -w /workspace \
+          --user root \
+          "${{ steps.digest.outputs.image }}" \
+          python3 build.py clean
+        docker run --rm --entrypoint "" \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -w /workspace \
+          --user root \
+          -e IS_OMNILATEX_CONTAINER=true \
+          -e CI=true \
+          "${{ steps.digest.outputs.image }}" \
+          python3 build.py --mode prod --source-date-epoch 1700000000 build-example thesis
 
-      - name: Verify build reproducibility
-        shell: bash
-        run: |
-          echo "Build 1 hash:"
-          sha256sum /tmp/build1.pdf
-          echo "Build 2 hash:"
-          sha256sum build/examples/thesis.pdf
+    - name: Verify build reproducibility
+      shell: bash
+      run: |
+        echo "Build 1 hash:"
+        sha256sum /tmp/build1.pdf
+        echo "Build 2 hash:"
+        sha256sum build/examples/thesis.pdf
 
-          # LuaLaTeX is not fully bit-for-bit deterministic (PDF object ordering,
-          # Lua hash table randomization, font subsetting). Compare page counts
-          # and file sizes instead of exact SHA256.
-          #
-          # NOTE: PAGES1 must read from /tmp/build1.pdf (build 1 output),
-          # PAGES2 from build/examples/thesis.pdf (build 2 output).
-          PAGES1=$(docker run --rm --entrypoint "" \
-            -v /tmp:/tmp \
-            "${{ steps.digest.outputs.image }}" \
-            pdfinfo /tmp/build1.pdf | grep "^Pages:" | awk '{print $2}')
-          PAGES2=$(docker run --rm --entrypoint "" \
-            -v "$GITHUB_WORKSPACE:/workspace" \
-            "${{ steps.digest.outputs.image }}" \
-            pdfinfo /workspace/build/examples/thesis.pdf | grep "^Pages:" | awk '{print $2}')
-          SIZE1=$(stat -c%s /tmp/build1.pdf)
-          SIZE2=$(stat -c%s build/examples/thesis.pdf)
+        # LuaLaTeX is not fully bit-for-bit deterministic (PDF object ordering,
+        # Lua hash table randomization, font subsetting). Compare page counts
+        # and file sizes instead of exact SHA256.
+        #
+        # NOTE: PAGES1 must read from /tmp/build1.pdf (build 1 output),
+        # PAGES2 from build/examples/thesis.pdf (build 2 output).
+        PAGES1=$(docker run --rm --entrypoint "" \
+          -v /tmp:/tmp \
+          "${{ steps.digest.outputs.image }}" \
+          pdfinfo /tmp/build1.pdf | grep "^Pages:" | awk '{print $2}')
+        PAGES2=$(docker run --rm --entrypoint "" \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          "${{ steps.digest.outputs.image }}" \
+          pdfinfo /workspace/build/examples/thesis.pdf | grep "^Pages:" | awk '{print $2}')
+        SIZE1=$(stat -c%s /tmp/build1.pdf)
+        SIZE2=$(stat -c%s build/examples/thesis.pdf)
 
-          echo "Build 1: ${PAGES1} pages, ${SIZE1} bytes"
-          echo "Build 2: ${PAGES2} pages, ${SIZE2} bytes"
+        echo "Build 1: ${PAGES1} pages, ${SIZE1} bytes"
+        echo "Build 2: ${PAGES2} pages, ${SIZE2} bytes"
 
-          if [ "$PAGES1" != "$PAGES2" ]; then
-            echo "::error::Page count mismatch: ${PAGES1} vs ${PAGES2}"
-            exit 1
-          fi
+        if [ "$PAGES1" != "$PAGES2" ]; then
+          echo "::error::Page count mismatch: ${PAGES1} vs ${PAGES2}"
+          exit 1
+        fi
 
-          # Allow 3% file size tolerance for non-determinism.
-          # LuaLaTeX font subsetting and PDF object reordering can cause
-          # size variance across CI runners even with SOURCE_DATE_EPOCH.
-          SIZE_DIFF=$(( (SIZE1 - SIZE2) < 0 ? (SIZE2 - SIZE1) : (SIZE1 - SIZE2) ))
-          SIZE_MAX=$(( SIZE1 > SIZE2 ? SIZE1 : SIZE2 ))
-          TOLERANCE=$(( SIZE_MAX * 3 / 100 ))  # 3%
-          if [ "$SIZE_DIFF" -gt "$TOLERANCE" ]; then
-            echo "::error::File size differs by more than 3%: ${SIZE_DIFF} bytes (tolerance: ${TOLERANCE})"
-            exit 1
-          fi
+        # Allow 3% file size tolerance for non-determinism.
+        # LuaLaTeX font subsetting and PDF object reordering can cause
+        # size variance across CI runners even with SOURCE_DATE_EPOCH.
+        SIZE_DIFF=$(( (SIZE1 - SIZE2) < 0 ? (SIZE2 - SIZE1) : (SIZE1 - SIZE2) ))
+        SIZE_MAX=$(( SIZE1 > SIZE2 ? SIZE1 : SIZE2 ))
+        TOLERANCE=$(( SIZE_MAX * 3 / 100 ))  # 3%
+        if [ "$SIZE_DIFF" -gt "$TOLERANCE" ]; then
+          echo "::error::File size differs by more than 3%: ${SIZE_DIFF} bytes (tolerance: ${TOLERANCE})"
+          exit 1
+        fi
 
-          echo "SUCCESS: Builds are reproducible (${PAGES1} pages, size diff: ${SIZE_DIFF} bytes)"
+        echo "SUCCESS: Builds are reproducible (${PAGES1} pages, size diff: ${SIZE_DIFF} bytes)"
 
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: build
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Read Docker image digest
-        id: digest
-        run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
+    - name: Read Docker image digest
+      id: digest
+      run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
 
-      - name: Pull Docker image
-        run: docker pull "${{ steps.digest.outputs.image }}"
+    - name: Pull Docker image
+      run: docker pull "${{ steps.digest.outputs.image }}"
 
-      - name: Download root PDF
-        uses: actions/download-artifact@v4
-        with:
-          name: PDF-Root
-          path: .
+    - name: Download root PDF
+      uses: actions/download-artifact@v4
+      with:
+        name: PDF-Root
+        path: .
 
-      - name: Download example PDFs
-        uses: actions/download-artifact@v4
-        with:
-          name: PDF-Examples
-          path: build/examples
+    - name: Download example PDFs
+      uses: actions/download-artifact@v4
+      with:
+        name: PDF-Examples
+        path: build/examples
 
-      - name: Install test deps and run integration tests
-        run: |
-          docker run --rm --entrypoint "" \
-            -v "$GITHUB_WORKSPACE:/workspace" \
-            -w /workspace \
-            --user root \
-            -e CI=true \
-            "${{ steps.digest.outputs.image }}" \
-             bash -c "pip install -q pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout hypothesis pytest-cov && pytest tests/test_modules.py tests/test_ctan.py tests/test_properties.py tests/test_visual_regression.py -v --tb=short --timeout=60 -m 'not slow' --junitxml=test-results.xml --cov=tests --cov=build.py --cov-report=term-missing --cov-report=xml"
+    - name: Install test deps and run integration tests
+      run: |
+        docker run --rm --entrypoint "" \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -w /workspace \
+          --user root \
+          -e CI=true \
+          "${{ steps.digest.outputs.image }}" \
+           bash -c "pip install -q pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout hypothesis pytest-cov && pytest tests/test_modules.py tests/test_ctan.py tests/test_properties.py tests/test_visual_regression.py -v --tb=short --timeout=60 -m 'not slow' --junitxml=test-results.xml --cov=tests --cov=build.py --cov-report=term-missing --cov-report=xml"
 
-      - name: Run edge case tests (slow)
-        continue-on-error: true
-        run: |
-          docker run --rm --entrypoint "" \
-            -v "$GITHUB_WORKSPACE:/workspace" \
-            -w /workspace \
-            --user root \
-            -e CI=true \
-            "${{ steps.digest.outputs.image }}" \
-            bash -c "pip install -q pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout && pytest tests/test_edge_cases.py -v --tb=short -m slow --timeout=300"
+    - name: Run edge case tests (slow)
+      continue-on-error: true
+      run: |
+        docker run --rm --entrypoint "" \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -w /workspace \
+          --user root \
+          -e CI=true \
+          "${{ steps.digest.outputs.image }}" \
+          bash -c "pip install -q pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout && pytest tests/test_edge_cases.py -v --tb=short -m slow --timeout=300"
 
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: tests/test-results.xml
-          if-no-files-found: ignore
-          retention-days: 7
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: test-results.xml
+        if-no-files-found: ignore
+        retention-days: 7
 
-      - name: Check coverage threshold
-        if: always()
-        run: |
-          if [ -f coverage.xml ]; then
-            COVERAGE=$(python3 -c "
-              import xml.etree.ElementTree as ET
-              root = ET.parse('coverage.xml').getroot()
-              print(root.attrib.get('line-rate', '0'))
-            ")
-            PERCENTAGE=$(python3 -c "print(f'{float(\"$COVERAGE\") * 100:.1f}')")
-            echo "Total coverage: ${PERCENTAGE}%"
-            THRESHOLD=60.0
-            PASS=$(python3 -c "print(float(\"$COVERAGE\") * 100 >= $THRESHOLD)")
-            if [ "$PASS" != "True" ]; then
-              echo "::error::Coverage ${PERCENTAGE}% is below threshold of ${THRESHOLD}%"
-              exit 1
-            fi
-            echo "Coverage ${PERCENTAGE}% meets threshold of ${THRESHOLD}%"
-          else
-            echo "::warning::coverage.xml not found, skipping coverage check"
+    - name: Check coverage threshold
+      if: always()
+      run: |
+        if [ -f coverage.xml ]; then
+          COVERAGE=$(python3 -c "
+            import xml.etree.ElementTree as ET
+            root = ET.parse('coverage.xml').getroot()
+            print(root.attrib.get('line-rate', '0'))
+          ")
+          PERCENTAGE=$(python3 -c "print(f'{float(\"$COVERAGE\") * 100:.1f}')")
+          echo "Total coverage: ${PERCENTAGE}%"
+          THRESHOLD=60.0
+          PASS=$(python3 -c "print(float(\"$COVERAGE\") * 100 >= $THRESHOLD)")
+          if [ "$PASS" != "True" ]; then
+            echo "::error::Coverage ${PERCENTAGE}% is below threshold of ${THRESHOLD}%"
+            exit 1
           fi
+          echo "Coverage ${PERCENTAGE}% meets threshold of ${THRESHOLD}%"
+        else
+          echo "::warning::coverage.xml not found, skipping coverage check"
+        fi
 
   deploy-pages:
     runs-on: ubuntu-latest
@@ -327,40 +327,40 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
 
   changelog:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-      - name: Check CHANGELOG.md updated for .sty/.cls changes
-        run: |
-          # Get the list of changed .sty and .cls files vs the base branch
-          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.sty' '*.cls' 2>/dev/null || true)
-          if [ -z "$CHANGED" ]; then
-            echo "No .sty or .cls files changed — changelog check skipped."
-            exit 0
-          fi
+    - name: Check CHANGELOG.md updated for .sty/.cls changes
+      run: |
+        # Get the list of changed .sty and .cls files vs the base branch
+        CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.sty' '*.cls' 2>/dev/null || true)
+        if [ -z "$CHANGED" ]; then
+          echo "No .sty or .cls files changed — changelog check skipped."
+          exit 0
+        fi
 
-          echo "Changed source files:"
-          echo "$CHANGED"
-          echo ""
+        echo "Changed source files:"
+        echo "$CHANGED"
+        echo ""
 
-          # Check if CHANGELOG.md was also modified
-          CHANGELOG_CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- 'CHANGELOG.md' 2>/dev/null || true)
-          if [ -z "$CHANGELOG_CHANGED" ]; then
-            echo "::error::.sty or .cls files were modified but CHANGELOG.md was not updated."
-            echo "Please add an entry under [Unreleased] describing your changes."
-            echo "See CONTRIBUTING.md for the changelog format."
-            exit 1
-          fi
+        # Check if CHANGELOG.md was also modified
+        CHANGELOG_CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- 'CHANGELOG.md' 2>/dev/null || true)
+        if [ -z "$CHANGELOG_CHANGED" ]; then
+          echo "::error::.sty or .cls files were modified but CHANGELOG.md was not updated."
+          echo "Please add an entry under [Unreleased] describing your changes."
+          echo "See CONTRIBUTING.md for the changelog format."
+          exit 1
+        fi
 
-          echo "CHANGELOG.md was updated."
+        echo "CHANGELOG.md was updated."

@@ -5,9 +5,9 @@ permissions:
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
   workflow_dispatch:
 
 jobs:
@@ -16,42 +16,42 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-      - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v16
+    - name: Install Nix
+      uses: DeterminateSystems/nix-installer-action@v16
 
-      - name: Setup Nix cache
-        uses: DeterminateSystems/magic-nix-cache-action@v8
+    - name: Setup Nix cache
+      uses: DeterminateSystems/magic-nix-cache-action@v8
 
-      - name: Build Lean 4 proofs
-        run: |
-          nix develop --command bash -c "
-            cd specs/proofs
-            lake build
-          "
+    - name: Build Lean 4 proofs
+      run: |
+        nix develop --command bash -c "
+          cd specs/proofs
+          lake build
+        "
 
-      - name: Verify proof status
-        if: always()
-        run: |
-          echo "## Lean 4 Proof Verification" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          if grep -rq 'sorry' specs/proofs/; then
-            echo ':warning: Some proofs contain \`sorry\` (unproven theorems)' >> $GITHUB_STEP_SUMMARY
-            echo 'This is expected for work-in-progress proofs.' >> $GITHUB_STEP_SUMMARY
+    - name: Verify proof status
+      if: always()
+      run: |
+        echo "## Lean 4 Proof Verification" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        if grep -rq 'sorry' specs/proofs/; then
+          echo ':warning: Some proofs contain \`sorry\` (unproven theorems)' >> $GITHUB_STEP_SUMMARY
+          echo 'This is expected for work-in-progress proofs.' >> $GITHUB_STEP_SUMMARY
+        else
+          echo ':white_check_mark: All proofs compile without errors' >> $GITHUB_STEP_SUMMARY
+        fi
+        echo '' >> $GITHUB_STEP_SUMMARY
+        echo '| Module | Status |' >> $GITHUB_STEP_SUMMARY
+        echo '|--------|--------|' >> $GITHUB_STEP_SUMMARY
+        for f in BuildModes BuildModeStrictness BuildSystem DoctypeClassMapping DoctypePageGeometry DocumentSettings DoctypeResolution CrossReferenceConsistency FloatInvariant FontHierarchy I18nCompleteness LanguageFallback PageGeometry SecondaryLanguageCompleteness BeamerProperties ModuleIntegrity; do
+          if [ -f "specs/proofs/OmniLaTeXProofs/$f.lean" ]; then
+            echo "| \`$f\` | :white_check_mark: |" >> $GITHUB_STEP_SUMMARY
           else
-            echo ':white_check_mark: All proofs compile without errors' >> $GITHUB_STEP_SUMMARY
+            echo "| \`$f\` | :x: |" >> $GITHUB_STEP_SUMMARY
           fi
-          echo '' >> $GITHUB_STEP_SUMMARY
-          echo '| Module | Status |' >> $GITHUB_STEP_SUMMARY
-          echo '|--------|--------|' >> $GITHUB_STEP_SUMMARY
-          for f in BuildModes BuildSystem DoctypeClassMapping DocumentSettings DoctypeResolution FloatInvariant FontHierarchy I18nCompleteness LanguageFallback PageGeometry; do
-            if [ -f "specs/proofs/OmniLaTeXProofs/$f.lean" ]; then
-              echo "| \`$f\` | :white_check_mark: |" >> $GITHUB_STEP_SUMMARY
-            else
-              echo "| \`$f\` | :x: |" >> $GITHUB_STEP_SUMMARY
-            fi
-          done
+        done

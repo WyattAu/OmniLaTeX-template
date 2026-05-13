@@ -4,9 +4,9 @@
 # Manual update: fill in values from your build environment.
 
 [metadata]
-generated = "2026-04-03"
+generated = "2026-05-13"
 generator = "manual"
-project_version = "1.0.0"
+project_version = "1.25.0"
 
 [texlive]
 # TeX Live release year and version
@@ -45,7 +45,7 @@ image = "ghcr.io/wyattau/omnilatex-docker:latest"
 # Obtain via: docker pull ghcr.io/wyattau/omnilatex-docker:latest
 #             docker inspect --format='{{index .RepoDigests 0}}' IMAGE
 # Then update .env.docker with the digest.
-digest = "sha256:3e0c27240f5b0b02c3bc635628540de8f7adfd7b581165534f550432e634d9d5"
+digest = "sha256:dae352cb84391a30478c0a18778bc0c82e8b620a3e56dd14a894433f7dd90988"
 
 [nix]
 # Nixpkgs commit hash from flake.lock

@@ -51,7 +51,7 @@ def main() -> int:
 
     print(f"FAIL: {len(digests)} different digests found:")
     for d, files in digests.items():
-        print(f"  {d[:20]}...{digest[-10:]} ({len(files)} files)")
+        print(f"  {d[:20]}...{d[-10:]} ({len(files)} files)")
         for f in sorted(files):
             print(f"    {f}")
     return 1

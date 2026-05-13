@@ -1,10 +1,15 @@
 # OmniLaTeX Execution Plan — Machine-Readable Roadmap
-# Generated: 2026-03-31
+# SUPERSEDED: This file is archived. See ROADMAP-PRODUCTION.md and
+# ROADMAP-DETAILED.md for current planning. Kept for historical reference.
+#
+# Generated: 2026-03-31 (archived 2026-05-13)
 # Schema: v1.0.0
 
 [metadata]
 project = "OmniLaTeX-template"
 version = "0.1.1"
+status = "superseded"
+superseded_by = "ROADMAP-PRODUCTION.md"
 total_phases = 8
 estimated_weeks = 23
 critical_path = "0 -> 1 -> 6"
