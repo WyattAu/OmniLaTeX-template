@@ -195,7 +195,7 @@ scope = "all"
 invariant = "1.0 ≤ linespacing ≤ 2.0"
 expression = "1.0 <= linespacing <= 2.0"
 units = "dimensionless (multiplier)"
-notes = "Controlled by \\linespread or the setspace package. OmniLaTeX default is \\linespread{1.10} (set in lib/typography/omnilatex-typesetting.sty). Named presets: single=1.0, onehalf≈1.25, double≈2.0. Custom values via \\documentlinespacing{<factor>} are passed to \\setstretch."
+notes = "Controlled by \\linespread or the setspaceenhanced package. OmniLaTeX default is \\linespread{1.10} (set in lib/typography/omnilatex-typesetting.sty). Named presets: single=1.0, onehalf≈1.25, double≈2.0. Custom values via \\documentlinespacing{<factor>} are passed to \\setstretch."
 
 # ---------------------------------------------------------------------------
 # 11. Running Header Rule Height

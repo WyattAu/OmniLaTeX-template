@@ -15,7 +15,7 @@
 | Examples | Stable | 46 example templates, all compile on TeX Live 2025+ |
 | Languages | Stable | 25 via polyglossia, 18 with full OmniLaTeX translations (47 keys each) |
 | Institutions | Stable | 16 pluggable configs (ETH, MIT, Stanford, TUHH, TUM, Cambridge, etc.) |
-| Formal verification | Stable | 154 Lean 4 theorems across 15 modules, 0 `sorry`, all compile |
+| Formal verification | Stable | 198 Lean 4 theorems across 16 modules, 0 `sorry`, all compile |
 | Test suite | Stable | 442 fast tests (48 skipped, 1 xfailed) |
 | CI/CD | Stable | 10 GitHub Actions + GitLab/Gitea/Forgejo/Woodpecker configs, 442 tests (structural, property, integration, institution) |
 | Pre-commit hooks | Stable | 25 hooks: trailing whitespace, black, isort, flake8, markdownlint, pytest gate, Lean gate |
@@ -212,7 +212,7 @@ preflight:     ## Run all checks before release
 
 ### 3.4 Additional Lean 4 Proofs -- DONE
 
-154 theorems across 15 modules, exceeded 100 target.
+198 theorems across 15 modules, exceeded 100 target.
 
 **Tasks:**
 
@@ -309,7 +309,7 @@ preflight:     ## Run all checks before release
 |--------|-------|--------|
 | Test cases (non-hypothesis) | 442 | >500 |
 | Test cases (with hypothesis) | 442 | >600 |
-| Lean 4 theorems | 154 | >100 |
+| Lean 4 theorems | 198 | >100 |
 | Lean 4 modules | 15 | 15 |
 | Document types | 26 | 30+ |
 | Examples | 46 | 50+ |

@@ -1,9 +1,9 @@
 /-
-  Formal Verification: OmniLaTeX Doctype Resolution
-  Property: The doctype resolution function is deterministic and total over the specified alias set.
+   Formal Verification: OmniLaTeX Doctype Resolution
+   Property: The doctype resolution function is deterministic and total over the specified alias set.
 
-  Reference: omnilatex.cls v1.3.0-dev, lines 111-127
-  State Machine: specs/document_model_state_machine.md
+   Reference: omnilatex.cls v1.25.0, lines 111-137
+   State Machine: specs/document_model_state_machine.md
 -/
 
 -- Define the three KOMA-Script base classes
@@ -13,7 +13,7 @@ inductive BaseClass where
   | scrartcl : BaseClass
   deriving DecidableEq, Repr
 
--- Define the 16 document type profiles
+-- Define the 26 document type profiles
 inductive DocProfile where
   | book : DocProfile
   | thesis : DocProfile
@@ -31,6 +31,16 @@ inductive DocProfile where
   | poster : DocProfile
   | presentation : DocProfile
   | letter : DocProfile
+  | homework : DocProfile
+  | exam : DocProfile
+  | research_proposal : DocProfile
+  | lecture_notes : DocProfile
+  | syllabus : DocProfile
+  | handout : DocProfile
+  | memo : DocProfile
+  | white_paper : DocProfile
+  | invoice : DocProfile
+  | recipe : DocProfile
   deriving DecidableEq, Repr
 
 -- Profile to base class mapping
@@ -43,6 +53,7 @@ def profileToClass : DocProfile → BaseClass
   | .technicalreport => .scrreprt
   | .standard => .scrreprt
   | .patent => .scrreprt
+  | .research_proposal => .scrreprt
   | .article => .scrartcl
   | .inlinepaper => .scrartcl
   | .journal => .scrartcl
@@ -51,6 +62,15 @@ def profileToClass : DocProfile → BaseClass
   | .poster => .scrartcl
   | .presentation => .scrartcl
   | .letter => .scrartcl
+  | .homework => .scrartcl
+  | .exam => .scrartcl
+  | .lecture_notes => .scrartcl
+  | .syllabus => .scrartcl
+  | .handout => .scrartcl
+  | .memo => .scrartcl
+  | .white_paper => .scrartcl
+  | .invoice => .scrartcl
+  | .recipe => .scrartcl
 
 -- Doctype alias to profile resolution (partial function)
 def doctypeResolve : String → Option DocProfile
@@ -72,6 +92,16 @@ def doctypeResolve : String → Option DocProfile
   | "poster" | "posters" => .some .poster
   | "presentation" | "presentations" | "slides" | "talk" | "talks" => .some .presentation
   | "letter" | "letters" => .some .letter
+  | "homework" | "homeworks" => .some .homework
+  | "exam" | "exams" | "examination" | "examinations" => .some .exam
+  | "research-proposal" | "researchproposal" | "research-proposals" => .some .research_proposal
+  | "lecture-notes" | "lecturenotes" | "lecture-note" => .some .lecture_notes
+  | "syllabus" | "syllabi" => .some .syllabus
+  | "handout" | "handouts" => .some .handout
+  | "memo" | "memos" | "memorandum" | "memorandums" => .some .memo
+  | "white-paper" | "whitepapers" => .some .white_paper
+  | "invoice" | "invoices" => .some .invoice
+  | "recipe" | "recipes" => .some .recipe
   | _ => .none
 
 -- The set of all known aliases
@@ -92,7 +122,17 @@ def knownAliases : List String := [
   "cover-letter", "coverletter",
   "poster", "posters",
   "presentation", "presentations", "slides", "talk", "talks",
-  "letter", "letters"
+  "letter", "letters",
+  "homework", "homeworks",
+  "exam", "exams", "examination", "examinations",
+  "research-proposal", "researchproposal", "research-proposals",
+  "lecture-notes", "lecturenotes", "lecture-note",
+  "syllabus", "syllabi",
+  "handout", "handouts",
+  "memo", "memos", "memorandum", "memorandums",
+  "white-paper", "whitepapers",
+  "invoice", "invoices",
+  "recipe", "recipes"
 ]
 
 -- Theorem 1: Determinism — each input maps to at most one output
@@ -114,6 +154,10 @@ theorem profile_class_consistency :
   cases p <;> simp [profileToClass] <;> try simp
 
 -- Theorem 4: Known alias count
--- Count: 1 + 2 + 2 + 6 + 9 + 2 + 2 + 4 + 4 + 4 + 4 + 4 + 2 + 2 + 5 + 2 = 55
-theorem known_alias_count : knownAliases.length = 55 := by
+-- 1+2+2+6+9+2+2+4+4+4+4+4+2+2+5+2+2+4+3+3+2+2+4+2+2+2 = 81
+theorem known_alias_count : knownAliases.length = 81 := by
+  simp [knownAliases]
+
+-- Theorem 5: All known aliases are unique (no duplicates)
+theorem known_aliases_unique : List.Nodup knownAliases := by
   simp [knownAliases]

@@ -6,7 +6,7 @@
 
 ## Executive Summary
 
-OmniLaTeX is a modular LaTeX template system with 28 `.sty` modules, 26 doctypes, 16 institution configs, 25 language support, 154 Lean 4 formal theorems, and 442 fast tests. This document charts the path from current state to production release (CTAN), ecosystem expansion, and long-term sustainability.
+OmniLaTeX is a modular LaTeX template system with 28 `.sty` modules, 26 doctypes, 16 institution configs, 25 language support, 198 Lean 4 formal theorems, and 442 fast tests. This document charts the path from current state to production release (CTAN), ecosystem expansion, and long-term sustainability.
 
 ---
 
@@ -17,7 +17,7 @@ OmniLaTeX is a modular LaTeX template system with 28 `.sty` modules, 26 doctypes
 | Area | Maturity | Evidence |
 |------|----------|----------|
 | Core template | Production-ready | 390-line `omnilatex.cls`, 28 modules, 55+ aliases |
-| Formal verification | Industry-leading | 154 Lean 4 theorems (0 `sorry`), state machine proofs |
+| Formal verification | Industry-leading | 198 Lean 4 theorems (0 `sorry`), state machine proofs |
 | Test coverage | High | 442 fast + 52 institution + slow tests, hypothesis property testing |
 | CI/CD | Comprehensive | 10 GitHub Actions + 4 other platforms, digest-synced Docker |
 | Reproducibility | Deterministic | SOURCE_DATE_EPOCH, byte-for-byte PDF, pinned Nix flake |
@@ -34,7 +34,7 @@ OmniLaTeX is a modular LaTeX template system with 28 `.sty` modules, 26 doctypes
 | Institution configs | 16 | Stable |
 | Languages (full translations) | 18 | Stable |
 | Languages (polyglossia) | 25 | Stable |
-| Lean 4 theorems | 154 | +25 (beamer, v1.25.0) |
+| Lean 4 theorems | 198 | +25 (beamer, v1.25.0) |
 | Fast test count | 442 | +53 (institutions, v1.23.0) |
 | CI workflows | 14 | Stable |
 | Manual pages | 238 (12.4k lines) | Stable |
@@ -230,7 +230,7 @@ This is a breaking change release (major version bump) due to potential API surf
 
 ### Lean 4 Proof Expansion
 
-Current: 154 theorems. Target areas for expansion:
+Current: 198 theorems. Target areas for expansion:
 
 | Domain | Current | Target | Priority |
 |--------|---------|--------|----------|
@@ -292,7 +292,7 @@ v1.25.0 (current) -----> v1.26.0 (CTAN) -----> v1.27.0 (Ecosystem)
 | CTAN availability | Pending | Live | Live |
 | Overleaf gallery | No | Submitted | Premium |
 | VS Code installs | 0 | 100+ | 1000+ |
-| Lean 4 theorems | 154 | 200+ | 300+ |
+| Lean 4 theorems | 198 | 200+ | 300+ |
 | Fast tests | 442 | 500+ | 700+ |
 | Examples | 46 | 50+ | 60+ |
 | Institutions | 16 | 25+ | 40+ |

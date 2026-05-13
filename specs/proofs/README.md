@@ -23,7 +23,7 @@ lean specs/proofs/OmniLaTeXProofs/BuildModes.lean
 
 ## Proof Status
 
-All 154 theorems are proven. Zero `sorry` declarations remain.
+All 198 theorems are proven. Zero `sorry` declarations remain.
 
 | # | Module | Theorems |
 |---|--------|----------|

@@ -23,7 +23,7 @@ Current version: **v1.25.0**
 | Translation keys | 846 total (47 keys x 18 languages) |
 | CI workflows | 10 GitHub Actions + 4 other platforms |
 | Tests | 389 fast tests + 52 institution tests + slow tests |
-| Lean 4 proofs | 154 theorems, 15 modules, 0 sorry |
+| Lean 4 proofs | 198 theorems, 15 modules, 0 sorry |
 | Color themes | 6 presets + dark/light toggle |
 | Citation styles | 9 (IEEE, ACM, APA, Chicago, Nature, Science, Harvard, Vancouver, MLA) |
 | CJK support | Chinese (SC+TC), Japanese, Korean |
@@ -39,7 +39,7 @@ Current version: **v1.25.0**
 | Version | Date | Summary |
 |---------|------|---------|
 | v1.25.0 | 2026-05-11 | Beamer support, pytest-cov CI, VS Code build-on-save |
-| v1.24.0 | 2026-05-11 | 154 Lean theorems, deprecation mechanism, institution docs, semver/digest checks |
+| v1.24.0 | 2026-05-11 | 198 Lean theorems, deprecation mechanism, institution docs, semver/digest checks |
 | v1.23.0 | 2026-05-11 | 128 Lean theorems, 47 l3build tests, institution tests, full doc audit |
 | v1.22.0 | 2026-05-11 | Docker digest sync, CHANGELOG split, README dedup, visual regression CI, doctype tests |
 | v1.21.0 | 2026-05-11 | ModuleIntegrity proofs, pre-commit Python 3.14 compat, audits |
