@@ -33,7 +33,7 @@
 |----|----------|-------------|--------|
 | KI-001 | Medium | `DocumentSettings.lean` proof model does not match actual `DOCTYPE_TO_CLASS` mapping in `constants.py` (thesis/dictionary mapped to `report` in proof but `scrbook` in code) | RESOLVED in v1.18.0 |
 | KI-002 | Medium | `I18nCompleteness.lean` only covers 18 primary languages; secondary languages with polyglossia registration but no translations are unverified | RESOLVED in v1.18.0 |
-| KI-003 | Low | `visual_regression.py` SSIM script never runs in CI; `tests/references/` is empty | 4h |
+| KI-003 | Low | `visual_regression.py` SSIM script never runs in CI; `tests/references/` is empty | RESOLVED in v1.25.0 -- 46 reference PDFs generated, visual regression CI active |
 | KI-004 | Low | `hypothesis` not declared in `tests/pyproject.toml` dependencies; property tests silently skip without it | RESOLVED in v1.18.0 |
 | KI-005 | Low | Stale Docker digests in Forgejo/Woodpecker/GitLab/Gitea CI configs not auto-synced | AUDITED in v1.21.0 -- all consistent, sync automation recommended |
 | KI-006 | Low | No `pytest-cov` or coverage measurement; branch coverage unknown | RESOLVED in v1.19.0 |
