@@ -9,9 +9,9 @@ Built on LuaTeX (LuaHBTeX 1.21.0) + KOMA-Script + TeX Live 2025. Compile with `l
 | | OmniLaTeX | Typical template |
 |---|---|---|
 | **Document types** | 55+ aliases (thesis, CV, patent, journal, ...) | 1–3 |
-| **Test coverage** | 389 fast tests (structural, property, visual regression, integration) | 0 |
+| **Test coverage** | 442 fast tests (structural, property, visual regression, integration) | 0 |
 | **Reproducible builds** | Byte-for-byte deterministic | No |
-| **Formal verification** | Lean 4 proofs (12 proof modules, 110 theorems proven, 0 sorry) | No |
+| **Formal verification** | Lean 4 proofs (16 proof modules, 180 theorems proven, 0 sorry) | No |
 | **CI platforms** | 10 GitHub Actions workflows + 4 other platforms | 0–1 |
 | **Font fallbacks** | Graceful degradation with warnings | Crash or silent substitution |
 | **Institution configs** | 16 pluggable (`config/institutions/`) | Hardcoded |
@@ -73,7 +73,7 @@ All options: `language`, `doctype`, `titlestyle`, `institution`, `censoring`, `l
 
 OmniLaTeX supports 18 languages with full OmniLaTeX translations and 25 via polyglossia:
 
-**Languages with full translations:** English, German, French, Spanish, Portuguese, Italian, Dutch, Polish, Catalan, Brazilian, Romanian, Turkish, Greek, Russian, Ukrainian, Czech, Slovak, Slovenian
+**Languages with full translations:** English, German, French, Spanish, Portuguese, Italian, Dutch, Polish, Turkish, Greek, Russian, Czech, Danish, Swedish, Finnish, Norwegian, Vietnamese, Hindi
 
 **Other languages (available via Polyglossia):** Chinese (Simplified + Traditional), Japanese, Korean, Arabic, Hebrew, Persian, Danish, Swedish, Finnish, Norwegian, Vietnamese, Hindi, Serbian, Croatian, Bulgarian, Mongolian
 
@@ -226,6 +226,7 @@ See [User Guide](docs/USER_GUIDE.md#build-system) for all commands and options.
 | `ctan-release.yml` | Auto-publish GitHub Release + CTAN zip on tag push |
 | `ctan-upload.yml` | Automated CTAN submission with pre-flight validation |
 | `integration-matrix.yml` | Cross-version compatibility matrix |
+| `visual-regression.yml` | PDF visual regression (build, diff, regenerate) |
 
 ### Other Platforms
 

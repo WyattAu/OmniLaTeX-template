@@ -2,7 +2,7 @@ name: Sync Docker Digest
 
 on:
   workflow_run:
-    workflows: ["Docker Image CI/CD"]
+    workflows: [Docker Image CI/CD]
     types: [completed]
     branches: [main]
 
@@ -17,58 +17,58 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Get new image digest
-        id: digest
-        run: |
-          docker pull ghcr.io/wyattau/omnilatex-docker:latest
-          DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' ghcr.io/wyattau/omnilatex-docker:latest | sed 's/.*@//')
-          echo "digest=${DIGEST}" >> $GITHUB_OUTPUT
-          echo "Image digest: ${DIGEST}"
+    - name: Get new image digest
+      id: digest
+      run: |
+        docker pull ghcr.io/wyattau/omnilatex-docker:latest
+        DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' ghcr.io/wyattau/omnilatex-docker:latest | sed 's/.*@//')
+        echo "digest=${DIGEST}" >> $GITHUB_OUTPUT
+        echo "Image digest: ${DIGEST}"
 
-      - name: Update digest in .env.docker
-        id: update-digest
-        run: |
-          OLD_DIGEST=$(grep -oP 'sha256:[a-f0-9]+' .env.docker | head -1)
-          if [ "${OLD_DIGEST}" = "${{ steps.digest.outputs.digest }}" ]; then
-            echo "Digest already up to date, skipping."
-            echo "skip=true" >> $GITHUB_OUTPUT
-          else
-            echo "Updating digest: ${OLD_DIGEST} -> ${{ steps.digest.outputs.digest }}"
-            sed -i "s|${OLD_DIGEST}|${{ steps.digest.outputs.digest }}|g" .env.docker
-            TODAY=$(date +%Y-%m-%d)
-            sed -i "s|# Pinned digest (.*)|# Pinned digest (${TODAY})|" .env.docker
-            echo "skip=false" >> $GITHUB_OUTPUT
+    - name: Update digest in .env.docker
+      id: update-digest
+      run: |
+        OLD_DIGEST=$(grep -oP 'sha256:[a-f0-9]+' .env.docker | head -1)
+        if [ "${OLD_DIGEST}" = "${{ steps.digest.outputs.digest }}" ]; then
+          echo "Digest already up to date, skipping."
+          echo "skip=true" >> $GITHUB_OUTPUT
+        else
+          echo "Updating digest: ${OLD_DIGEST} -> ${{ steps.digest.outputs.digest }}"
+          sed -i "s|${OLD_DIGEST}|${{ steps.digest.outputs.digest }}|g" .env.docker
+          TODAY=$(date +%Y-%m-%d)
+          sed -i "s|# Pinned digest (.*)|# Pinned digest (${TODAY})|" .env.docker
+          echo "skip=false" >> $GITHUB_OUTPUT
 
-            NEW="${{ steps.digest.outputs.digest }}"
-            sed -i "s|${OLD_DIGEST}|${NEW}|g" .gitlab/ci/pipeline.yml
-            sed -i "s|${OLD_DIGEST}|${NEW}|g" .gitea/workflows/build.yml
-            sed -i "s|${OLD_DIGEST}|${NEW}|g" .forgejo/workflows/build.yml
-            sed -i "s|${OLD_DIGEST}|${NEW}|g" .woodpecker/workflows/pipeline.yml
-            sed -i "s|${OLD_DIGEST}|${NEW}|g" .devcontainer/docker-compose.yml
-            echo "Synced digest to all downstream CI files."
-          fi
+          NEW="${{ steps.digest.outputs.digest }}"
+          sed -i "s|${OLD_DIGEST}|${NEW}|g" .gitlab/ci/pipeline.yml
+          sed -i "s|${OLD_DIGEST}|${NEW}|g" .gitea/workflows/build.yml
+          sed -i "s|${OLD_DIGEST}|${NEW}|g" .forgejo/workflows/build.yml
+          sed -i "s|${OLD_DIGEST}|${NEW}|g" .woodpecker/workflows/pipeline.yml
+          sed -i "s|${OLD_DIGEST}|${NEW}|g" .devcontainer/docker-compose.yml
+          echo "Synced digest to all downstream CI files."
+        fi
 
-      - name: Create pull request
-        if: steps.update-digest.outputs.skip != 'true'
-        uses: peter-evans/create-pull-request@v6
-        with:
-          title: "chore: update Docker image digest to ${{ steps.digest.outputs.digest }}"
-          body: |
-            Automated digest sync from [Docker Image CI/CD](${{ github.event.workflow_run.html_url }}).
+    - name: Create pull request
+      if: steps.update-digest.outputs.skip != 'true'
+      uses: peter-evans/create-pull-request@v7
+      with:
+        title: 'chore: update Docker image digest to ${{ steps.digest.outputs.digest }}'
+        body: |
+          Automated digest sync from [Docker Image CI/CD](${{ github.event.workflow_run.html_url }}).
 
-            **New digest:** `${{ steps.digest.outputs.digest }}`
+          **New digest:** `${{ steps.digest.outputs.digest }}`
 
-            This PR updates the pinned Docker image digest in:
-            - `.env.docker`
-            - `.gitlab/ci/pipeline.yml`
-            - `.gitea/workflows/build.yml`
-            - `.forgejo/workflows/build.yml`
-            - `.woodpecker/workflows/pipeline.yml`
-            - `.devcontainer/docker-compose.yml`
-          branch: chore/docker-digest-sync
-          commit-message: "chore: update Docker image digest"
-          delete-branch: true
-          labels: automation
+          This PR updates the pinned Docker image digest in:
+          - `.env.docker`
+          - `.gitlab/ci/pipeline.yml`
+          - `.gitea/workflows/build.yml`
+          - `.forgejo/workflows/build.yml`
+          - `.woodpecker/workflows/pipeline.yml`
+          - `.devcontainer/docker-compose.yml`
+        branch: chore/docker-digest-sync
+        commit-message: 'chore: update Docker image digest'
+        delete-branch: true
+        labels: automation

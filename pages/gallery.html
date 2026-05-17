@@ -199,13 +199,17 @@ footer a{color:var(--text-secondary)}
   <p class="tagline">Pick a template. Choose your options. Start writing. Professional LaTeX documents made simple.</p>
 </header>
 
-<nav>
-  <a href="#profiles" class="active">Templates</a>
+<nav aria-label="Main navigation">
+  <a href="index.html">PDF Gallery</a>
+  <a href="gallery.html" class="active">Template Gallery</a>
+  <a href="verify.html">Verify Builds</a>
+  <a href="#profiles">Templates</a>
   <a href="#preview">Preview</a>
   <a href="#quickstart">Quick Start</a>
   <a href="https://github.com/WyattAu/OmniLaTeX-template" target="_blank">GitHub</a>
 </nav>
 
+<main>
 <section id="profiles">
   <div class="container">
     <h2 class="section-title">
@@ -301,6 +305,7 @@ footer a{color:var(--text-secondary)}
     </div>
   </div>
 </section>
+</main>
 
 <footer>
   <p>
@@ -357,7 +362,7 @@ const codeOut = document.getElementById('code-output');
 
 function renderCards() {
   grid.innerHTML = PROFILES.map(p => `
-    <div class="card${p.id===selected?' selected':''}" data-id="${p.id}">
+    <div class="card${p.id===selected?' selected':''}" data-id="${p.id}" role="button" tabindex="0">
       <div class="card-icon">${p.icon}</div>
       <div class="card-name">${p.name}</div>
       <div class="card-desc">${p.desc}</div>

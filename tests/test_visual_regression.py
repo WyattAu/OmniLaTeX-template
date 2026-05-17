@@ -48,11 +48,14 @@ def test_all_pdfs_are_valid(example_pdfs):
 
 @pytest.mark.slow
 def test_pdf_page_counts_reasonable(example_pdfs):
+    # manual.pdf is a full user manual (~240 pages); other examples should be concise.
+    # The threshold guards against infinite-loop regressions, not legitimate long docs.
+    PAGE_LIMIT = 300
     for pdf_path in example_pdfs:
         doc = fitz.open(str(pdf_path))
         try:
-            assert doc.page_count <= 100, (
-                f"{pdf_path.name} has {doc.page_count} pages (>100), "
+            assert doc.page_count <= PAGE_LIMIT, (
+                f"{pdf_path.name} has {doc.page_count} pages (>{PAGE_LIMIT}), "
                 "possible infinite loop"
             )
         finally:

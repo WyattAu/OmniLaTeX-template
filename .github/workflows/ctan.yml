@@ -6,7 +6,7 @@ permissions:
 on:
   push:
     branches: [main]
-    tags: ['v*']
+    tags: [v*]
   workflow_dispatch:
 
 jobs:
@@ -14,67 +14,68 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Build CTAN zip
-        run: bash scripts/make-ctan-zip.sh
+    - name: Build CTAN zip
+      run: bash scripts/make-ctan-zip.sh
 
-      - name: Validate CTAN zip contents
-        run: |
-          echo "Validating omnilatex.zip..."
-          ERRORS=0
+    - name: Validate CTAN zip contents
+      run: |
+        echo "Validating omnilatex.zip..."
+        ERRORS=0
 
-          if ! unzip -l omnilatex.zip | grep -q 'omnilatex\.cls$'; then
-            echo "::error::omnilatex.cls not found in zip"
+        if ! unzip -l omnilatex.zip | grep -q 'omnilatex\.cls$'; then
+          echo "::error::omnilatex.cls not found in zip"
+          ERRORS=$((ERRORS + 1))
+        else
+          echo "  [OK] omnilatex.cls found"
+        fi
+
+        EXPECTED_STY=(
+          article book cover-letter cv dictionary dissertation
+          exam handout homework inlinepaper invoice journal lecture-notes
+          letter manual memo patent poster presentation
+          research-proposal standard syllabus technicalreport thesis
+          white-paper
+          recipe
+        )
+        for sty in "${EXPECTED_STY[@]}"; do
+          if ! unzip -l omnilatex.zip | grep -q "document-types/${sty}\.sty$"; then
+            echo "::error::document-types/${sty}.sty not found in zip"
             ERRORS=$((ERRORS + 1))
           else
-            echo "  [OK] omnilatex.cls found"
+            echo "  [OK] document-types/${sty}.sty found"
           fi
+        done
 
-          EXPECTED_STY=(
-            article book cover-letter cv dictionary dissertation
-            exam handout homework inlinepaper invoice journal lecture-notes
-            letter manual memo patent poster presentation
-            research-proposal standard syllabus technicalreport thesis
-            white-paper
-            recipe
-          )
-          for sty in "${EXPECTED_STY[@]}"; do
-            if ! unzip -l omnilatex.zip | grep -q "document-types/${sty}\.sty$"; then
-              echo "::error::document-types/${sty}.sty not found in zip"
-              ERRORS=$((ERRORS + 1))
-            else
-              echo "  [OK] document-types/${sty}.sty found"
-            fi
-          done
+        STY_COUNT=$(unzip -l omnilatex.zip | grep -c 'document-types/.*\.sty$' || true)
+        EXPECTED_COUNT=${#EXPECTED_STY[@]}
+        if [ "$STY_COUNT" -ne "$EXPECTED_COUNT" ]; then
+          echo "::error::Expected ${EXPECTED_COUNT} .sty files in document-types/, found ${STY_COUNT}"
+          ERRORS=$((ERRORS + 1))
+        else
+          echo "  [OK] All ${EXPECTED_COUNT} document-type .sty files found"
+        fi
 
-          STY_COUNT=$(unzip -l omnilatex.zip | grep -c 'document-types/.*\.sty$' || true)
-          if [ "$STY_COUNT" -ne 26 ]; then
-            echo "::error::Expected 26 .sty files in document-types/, found ${STY_COUNT}"
-            ERRORS=$((ERRORS + 1))
-          else
-            echo "  [OK] All 26 document-type .sty files found"
-          fi
+        if ! unzip -l omnilatex.zip | grep -q 'LICENSE$'; then
+          echo "::error::LICENSE not found in zip"
+          ERRORS=$((ERRORS + 1))
+        else
+          echo "  [OK] LICENSE found"
+        fi
 
-          if ! unzip -l omnilatex.zip | grep -q 'LICENSE$'; then
-            echo "::error::LICENSE not found in zip"
-            ERRORS=$((ERRORS + 1))
-          else
-            echo "  [OK] LICENSE found"
-          fi
+        if [ "$ERRORS" -gt 0 ]; then
+          echo "::error::Validation failed with ${ERRORS} error(s)"
+          exit 1
+        fi
 
-          if [ "$ERRORS" -gt 0 ]; then
-            echo "::error::Validation failed with ${ERRORS} error(s)"
-            exit 1
-          fi
+        echo ""
+        echo "All CTAN zip validation checks passed."
 
-          echo ""
-          echo "All CTAN zip validation checks passed."
-
-      - name: Upload CTAN zip artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: omnilatex-ctan-zip
-          path: omnilatex.zip
-          retention-days: 90
+    - name: Upload CTAN zip artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: omnilatex-ctan-zip
+        path: omnilatex.zip
+        retention-days: 90
