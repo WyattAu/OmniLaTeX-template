@@ -48,15 +48,14 @@ find "$TDS_DIR" -name "*.aux" -o -name "*.log" -o -name "*.pdf" \
 cp "$REPO_ROOT/CTAN_README.txt" "$CTAN_DIR/README"
 cp "$REPO_ROOT/LICENSE" "$CTAN_DIR/"
 
+CTAN_FILES="README LICENSE ${PKG_NAME}.tds.zip"
 if [ -f "$TDS_DIR/doc/latex/$PKG_NAME/${PKG_NAME}.pdf" ]; then
     cp "$TDS_DIR/doc/latex/$PKG_NAME/${PKG_NAME}.pdf" "$CTAN_DIR/"
+    CTAN_FILES="$CTAN_FILES ${PKG_NAME}.pdf"
 fi
 
-(cd "$CTAN_DIR" && zip -r "$REPO_ROOT/ctan/${PKG_NAME}.zip" \
-    README \
-    LICENSE \
-    "${PKG_NAME}.pdf" \
-    "${PKG_NAME}.tds.zip")
+mkdir -p "$REPO_ROOT/ctan"
+(cd "$CTAN_DIR" && zip -r "$REPO_ROOT/ctan/${PKG_NAME}.zip" $CTAN_FILES)
 
 # ── Also build simple flat zip (for non-TDS distribution) ────────────────────
 mkdir -p "$PKG_DIR"
