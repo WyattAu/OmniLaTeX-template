@@ -1,6 +1,7 @@
 """Negative tests for OmniLaTeX -- graceful failure for invalid inputs."""
 
 import os
+import shutil
 import subprocess
 import tempfile
 from pathlib import Path
@@ -9,10 +10,21 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
 def compile_tex(tex_content: str, timeout: int = 600) -> tuple:
-    """Compile and return (success, log_content)."""
+    """Compile and return (success, log_content).
+
+    Success is determined by PDF existence, not latexmk return code,
+    because latexmk returns non-zero when biber/glossary reruns are
+    needed even though the PDF was produced.
+    """
     with tempfile.TemporaryDirectory() as tmpdir:
         tex_file = Path(tmpdir) / "test.tex"
         tex_file.write_text(tex_content)
+        for rel in ["config/document-settings.sty", "bib/bibliography.bib"]:
+            src = PROJECT_ROOT / rel
+            if src.exists():
+                dst = Path(tmpdir) / rel
+                dst.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(src, dst)
         env = os.environ.copy()
         env["TEXINPUTS"] = f"{PROJECT_ROOT}{os.pathsep}{tmpdir}{os.pathsep}"
         result = subprocess.run(
@@ -29,7 +41,8 @@ def compile_tex(tex_content: str, timeout: int = 600) -> tuple:
             env=env,
             cwd=tmpdir,
         )
-        return (result.returncode == 0, result.stdout + result.stderr)
+        pdf_exists = (Path(tmpdir) / "test.pdf").exists()
+        return (pdf_exists, result.stdout + result.stderr)
 
 
 class TestUnknownDoctype:

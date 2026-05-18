@@ -13,13 +13,9 @@ from pathlib import Path
 
 import pytest
 
-from tests.constants import (
-    ALL_DOCTYPE_NAMES,
-)
+from tests.constants import ALL_DOCTYPE_NAMES
 from tests.constants import DOCTYPE_ALIASES as _DOCTYPE_ALIAS_MAP
-from tests.constants import (
-    DOCTYPE_TO_CLASS,
-)
+from tests.constants import DOCTYPE_TO_CLASS
 
 try:
     from hypothesis import HealthCheck, given, settings

@@ -45,7 +45,7 @@ repos:
 
   # Python import sorting
 - repo: https://github.com/PyCQA/isort
-  rev: 6.0.1
+  rev: 7.0.0
   hooks:
   - id: isort
     args: [--profile, black]
@@ -90,7 +90,7 @@ repos:
 
   - id: run-pytest-fast
     name: Run non-Docker pytest suite (structural + property + visual regression + institutions)
-    entry: python3 -m pytest tests/test_modules.py tests/test_ctan.py tests/test_properties.py tests/test_visual_regression.py tests/test_build_py.py tests/test_institutions.py -v --timeout=60 -m "not slow" --tb=short -q
+    entry: python3 -m pytest tests/test_modules.py tests/test_ctan.py tests/test_properties.py tests/test_visual_regression.py tests/test_build_py.py tests/test_institutions.py tests/test_negative.py -v --timeout=120 -m "not slow" --tb=short -q
     language: system
     pass_filenames: false
     always_run: true
