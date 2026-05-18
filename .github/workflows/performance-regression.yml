@@ -82,10 +82,12 @@ jobs:
         regressions = []
         improvements = []
 
-        for example, build_info in metrics.items():
-            if not isinstance(build_info, dict):
+        # metrics.json structure: {"examples": [{"name": "...", "wall_time_s": ...}]}
+        for entry in metrics.get('examples', []):
+            example = entry.get('name')
+            if not example:
                 continue
-            cold_time = build_info.get('cold_mean') or build_info.get('cold_time')
+            cold_time = entry.get('wall_time_s')
             if cold_time is None:
                 continue
 

@@ -543,8 +543,16 @@ incremental_max = 0.226
 incremental_stdev = 0.0
 # thesis-tuhh: now builds successfully (was previously skipped)
 
+# beamer-defense: estimated baseline (no benchmark run yet)
+[baselines.beamer-defense]
+cold_mean = 30.0
+cold_median = 30.0
+cold_min = 30.0
+cold_max = 30.0
+cold_stdev = 0.0
+
 [summary]
-total_examples = 46
+total_examples = 47
 cold_mean_all = 51.376
 cold_median_all = 23.14
 cold_fastest = 10.375

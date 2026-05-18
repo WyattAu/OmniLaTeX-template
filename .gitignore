@@ -9,6 +9,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.ruff_cache/
 
 # C extensions
 *.so
@@ -487,3 +488,4 @@ omnilatex.zip
 omnilatex-overleaf.zip
 _FAD58DE7366495DB4650CFEFAC2FCD61.config.minted
 testfmt.log
+build-all-output.log

@@ -9,10 +9,10 @@ Built on LuaTeX (LuaHBTeX 1.21.0) + KOMA-Script + TeX Live 2025. Compile with `l
 | | OmniLaTeX | Typical template |
 |---|---|---|
 | **Document types** | 55+ aliases (thesis, CV, patent, journal, ...) | 1–3 |
-| **Test coverage** | 442 fast tests (structural, property, visual regression, integration) | 0 |
+| **Test coverage** | 473 fast tests (structural, property, visual regression, integration) | 0 |
 | **Reproducible builds** | Byte-for-byte deterministic | No |
-| **Formal verification** | Lean 4 proofs (16 proof modules, 180 theorems proven, 0 sorry) | No |
-| **CI platforms** | 10 GitHub Actions workflows + 4 other platforms | 0–1 |
+| **Formal verification** | Lean 4 proofs (16 proof modules, 196 theorems proven, 0 sorry) | No |
+| **CI platforms** | 11 GitHub Actions workflows + 4 other platforms | 0–1 |
 | **Font fallbacks** | Graceful degradation with warnings | Crash or silent substitution |
 | **Institution configs** | 21 pluggable (`config/institutions/`) | Hardcoded |
 | **Languages** | 18 full translations + 25 via polyglossia | 0–2 |

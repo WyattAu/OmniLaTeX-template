@@ -31,9 +31,11 @@ Document Types
 
 Languages
 ---------
-  26 languages via polyglossia: English, German, French, Spanish,
-  Portuguese, Italian, Dutch, Danish, Russian, Chinese, Japanese,
-  Korean, Arabic, Hebrew, Persian.
+  25 languages via polyglossia: English, German, French, Spanish,
+  Portuguese, Italian, Dutch, Danish, Russian, Chinese (Simplified
+  and Traditional), Japanese, Korean, Arabic, Hebrew, Persian,
+  Vietnamese, Hindi, Swedish, Finnish, Norwegian, Polish, Czech,
+  Greek, Turkish.
 
   CJK and RTL script support with automatic font fallback chains.
 
@@ -45,8 +47,9 @@ Features
   - 26 document type profiles with one-line switching
   - 55+ doctype aliases
   - 21 institution configurations (TUHH, TUM, ETH, MIT, ...)
-  - 26 languages via polyglossia (EN, DE, FR, ES, PT, IT, NL,
-    DA, RU, ZH, JA, KO, AR, HE)
+  - 25 languages via polyglossia (EN, DE, FR, ES, PT, IT, NL,
+    DA, RU, ZH, JA, KO, AR, HE, VI, HI, SV, FI, NO, PL, CZ,
+    EL, TR)
   - CJK and RTL script support with font fallback chains
   - Color theme system with 6 built-in palettes and dark mode
   - Font setter commands for easy customization
