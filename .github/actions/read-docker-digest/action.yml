@@ -1,0 +1,21 @@
+name: Read Docker Image Digest
+description: Reads the pinned Docker image digest from .env.docker
+inputs:
+  required: false
+  default: ''
+outputs:
+  image:
+    description: Full Docker image reference with digest
+    value: ${{ steps.read.outputs.image }}
+runs:
+  using: composite
+  steps:
+  - id: read
+    shell: bash
+    run: |
+      DOCKER_IMAGE=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)
+      if [ -z "$DOCKER_IMAGE" ]; then
+        echo "::error::.env.docker missing or DOCKER_IMAGE not set"
+        exit 1
+      fi
+      echo "image=$DOCKER_IMAGE" >> "$GITHUB_OUTPUT"

@@ -2,9 +2,9 @@ name: Cross-Platform Docker CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
   workflow_dispatch:
 
 permissions:
@@ -19,62 +19,69 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+        # v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
-      - name: Read Docker image digest
-        id: digest
-        run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
+    - name: Read Docker image digest
+      id: digest
+      uses: ./.github/actions/read-docker-digest
 
-      - name: Pull Docker image
-        run: docker pull "${{ steps.digest.outputs.image }}"
+    - name: Pull Docker image
+      run: docker pull "${{ steps.digest.outputs.image }}"
 
-      - name: Build article example
-        env:
-          IS_OMNILATEX_CONTAINER: "true"
-          CI: "true"
-        run: |
-          docker run --rm --entrypoint "" \
-            -v "$GITHUB_WORKSPACE:/workspace" \
-            -w /workspace \
-            -u root \
-            -e IS_OMNILATEX_CONTAINER=true \
-            -e CI=true \
-            "${{ steps.digest.outputs.image }}" \
-            python3 build.py --mode prod build-example article
+    - name: Build article example
+      env:
+        IS_OMNILATEX_CONTAINER: 'true'
+        CI: 'true'
+      run: |
+        docker run --rm --entrypoint "" \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -w /workspace \
+          -u root \
+          -e IS_OMNILATEX_CONTAINER=true \
+          -e CI=true \
+          "${{ steps.digest.outputs.image }}" \
+          python3 build.py --mode prod build-example article
 
-      - name: Verify PDF
-        run: |
-          test -f build/examples/article.pdf && echo "✅ PDF generated" || (echo "❌ PDF not found" && exit 1)
+    - name: Verify PDF
+      run: |
+        test -f build/examples/article.pdf && echo "✅ PDF generated" || (echo "❌ PDF not found" && exit 1)
 
   windows:
     runs-on: windows-latest
     timeout-minutes: 30
     continue-on-error: true  # Docker Desktop not available on windows-2025
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+        # v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
-      - name: Build article example
-        shell: bash
-        env:
-          IS_OMNILATEX_CONTAINER: "true"
-          CI: "true"
-        run: |
-          docker run --rm --entrypoint "" \
-            --platform ${{ env.DOCKER_PLATFORM }} \
-            -v "$GITHUB_WORKSPACE:/workspace" \
-            -w /workspace \
-            -e IS_OMNILATEX_CONTAINER=true \
-            -e CI=true \
-            "$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" \
-            python3 build.py --mode prod build-example article
+    - name: Build article example
+      shell: bash
+      env:
+        IS_OMNILATEX_CONTAINER: 'true'
+        CI: 'true'
+      run: |
+        DOCKER_IMAGE=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)
+        if [ -z "$DOCKER_IMAGE" ]; then
+          echo "::error::.env.docker missing or DOCKER_IMAGE not set"
+          exit 1
+        fi
+        docker run --rm --entrypoint "" \
+          --platform ${{ env.DOCKER_PLATFORM }} \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -w /workspace \
+          -e IS_OMNILATEX_CONTAINER=true \
+          -e CI=true \
+          "$DOCKER_IMAGE" \
+          python3 build.py --mode prod build-example article
 
-      - name: Verify PDF
-        shell: bash
-        if: success()
-        run: |
-          test -f build/examples/article.pdf && echo "✅ PDF generated" || (echo "❌ PDF not found" && exit 1)
+    - name: Verify PDF
+      shell: bash
+      if: success()
+      run: |
+        test -f build/examples/article.pdf && echo "✅ PDF generated" || (echo "❌ PDF not found" && exit 1)
 
   report:
     runs-on: ubuntu-latest
@@ -82,11 +89,11 @@ jobs:
     needs: [linux, windows]
     if: always()
     steps:
-      - name: Cross-platform summary
-        run: |
-          echo "## Cross-Platform Docker CI Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Platform | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|----------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| Linux    | ${{ needs.linux.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Windows  | ${{ needs.windows.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+    - name: Cross-platform summary
+      run: |
+        echo "## Cross-Platform Docker CI Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "| Platform | Status |" >> $GITHUB_STEP_SUMMARY
+        echo "|----------|--------|" >> $GITHUB_STEP_SUMMARY
+        echo "| Linux    | ${{ needs.linux.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Windows  | ${{ needs.windows.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY

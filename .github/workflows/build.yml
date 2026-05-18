@@ -19,13 +19,14 @@ jobs:
     timeout-minutes: 60
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      # v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       with:
-        fetch-depth: 0    # Full history for better git metadata
+        fetch-depth: 1
 
     - name: Read Docker image digest
       id: digest
-      run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
+      uses: ./.github/actions/read-docker-digest
 
     - name: Pull Docker image
       run: docker pull "${{ steps.digest.outputs.image }}"
@@ -58,7 +59,8 @@ jobs:
         echo "All $ACTUAL examples built successfully."
 
     - name: Upload root PDF
-      uses: actions/upload-artifact@v4
+      # v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: PDF-Root
         path: main.pdf
@@ -66,7 +68,8 @@ jobs:
         retention-days: 30
 
     - name: Upload example PDFs
-      uses: actions/upload-artifact@v4
+      # v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: PDF-Examples
         path: build/examples/*.pdf
@@ -89,7 +92,8 @@ jobs:
 
     - name: Upload site bundle
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      uses: actions/upload-pages-artifact@v3
+      # v3
+      uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
       with:
         path: github-pages
 
@@ -99,13 +103,14 @@ jobs:
     needs: build
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      # v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       with:
-        fetch-depth: 0
+        fetch-depth: 1
 
     - name: Read Docker image digest
       id: digest
-      run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
+      uses: ./.github/actions/read-docker-digest
 
     - name: Pull Docker image
       run: docker pull "${{ steps.digest.outputs.image }}"
@@ -138,7 +143,8 @@ jobs:
 
     - name: Upload performance metrics
       if: always()
-      uses: actions/upload-artifact@v4
+      # v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: performance-metrics
         path: build/metrics.json
@@ -149,13 +155,14 @@ jobs:
     timeout-minutes: 30
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      # v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       with:
-        fetch-depth: 0
+        fetch-depth: 1
 
     - name: Read Docker image digest
       id: digest
-      run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
+      uses: ./.github/actions/read-docker-digest
 
     - name: Pull Docker image
       run: docker pull "${{ steps.digest.outputs.image }}"
@@ -241,23 +248,26 @@ jobs:
     needs: build
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      # v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
     - name: Read Docker image digest
       id: digest
-      run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
+      uses: ./.github/actions/read-docker-digest
 
     - name: Pull Docker image
       run: docker pull "${{ steps.digest.outputs.image }}"
 
     - name: Download root PDF
-      uses: actions/download-artifact@v4
+      # v4
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
       with:
         name: PDF-Root
         path: .
 
     - name: Download example PDFs
-      uses: actions/download-artifact@v4
+      # v4
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
       with:
         name: PDF-Examples
         path: build/examples
@@ -285,7 +295,8 @@ jobs:
 
     - name: Upload test results
       if: always()
-      uses: actions/upload-artifact@v4
+      # v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: test-results
         path: test-results.xml
@@ -295,24 +306,24 @@ jobs:
     - name: Check coverage threshold
       if: always()
       run: |
-        if [ -f coverage.xml ]; then
-          COVERAGE=$(python3 -c "
-            import xml.etree.ElementTree as ET
-            root = ET.parse('coverage.xml').getroot()
-            print(root.attrib.get('line-rate', '0'))
-          ")
-          PERCENTAGE=$(python3 -c "print(f'{float(\"$COVERAGE\") * 100:.1f}')")
-          echo "Total coverage: ${PERCENTAGE}%"
-          THRESHOLD=60.0
-          PASS=$(python3 -c "print(float(\"$COVERAGE\") * 100 >= $THRESHOLD)")
-          if [ "$PASS" != "True" ]; then
-            echo "::error::Coverage ${PERCENTAGE}% is below threshold of ${THRESHOLD}%"
-            exit 1
-          fi
-          echo "Coverage ${PERCENTAGE}% meets threshold of ${THRESHOLD}%"
-        else
-          echo "::warning::coverage.xml not found, skipping coverage check"
-        fi
+        docker run --rm --entrypoint "" \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -w /workspace \
+          "${{ steps.digest.outputs.image }}" \
+          python3 -c "import xml.etree.ElementTree as ET, sys
+try:
+    root = ET.parse('coverage.xml').getroot()
+    rate = float(root.attrib.get('line-rate', '0'))
+    pct = rate * 100
+    print(f'Coverage: {pct:.1f}%')
+    threshold = 60.0
+    if pct < threshold:
+        print(f'::error::Coverage {pct:.1f}% below threshold {threshold}%')
+        sys.exit(1)
+    print(f'Coverage {pct:.1f}% meets threshold {threshold}%')
+except FileNotFoundError:
+    print('::warning::coverage.xml not found, skipping')
+"
 
   deploy-pages:
     runs-on: ubuntu-latest
@@ -329,7 +340,8 @@ jobs:
     steps:
     - name: Deploy to GitHub Pages
       id: deployment
-      uses: actions/deploy-pages@v4
+      # v4
+      uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e
 
   changelog:
     runs-on: ubuntu-latest
@@ -337,7 +349,8 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      # v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       with:
         fetch-depth: 0
 

@@ -14,7 +14,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        # v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
       - name: Install dependencies
         run: sudo apt-get update -qq && sudo apt-get install -y -qq zip
@@ -30,13 +31,15 @@ jobs:
           echo "CTAN zip validated OK"
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        # v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65
         with:
           files: omnilatex.zip
           generate_release_notes: true
 
       - name: Upload CTAN zip artifact
-        uses: actions/upload-artifact@v4
+        # v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: ctan-package
           path: omnilatex.zip

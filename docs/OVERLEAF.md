@@ -3,6 +3,18 @@
 OmniLaTeX works on Overleaf with LuaLaTeX. This guide covers setup for single
 and batch projects, manual uploads, font fallbacks, and known limitations.
 
+## Installing via CTAN
+
+If OmniLaTeX is available on CTAN, install it system-wide with TeX Live:
+
+```bash
+tlmgr install omnilatex
+```
+
+This makes `\documentclass{omnilatex}` available without uploading files. On
+Overleaf, CTAN packages are pre-installed and updated regularly, so this may
+work out of the box once the package is accepted.
+
 ## Quick Start
 
 1. **Create the zip locally** (see below)

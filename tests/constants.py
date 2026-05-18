@@ -32,6 +32,7 @@ ALL_EXAMPLE_NAMES = [
     "beamer-academic",
     "beamer-corporate",
     "beamer-minimal",
+    "beamer-defense",
     "article-color",
     "article",
     "book",
@@ -127,4 +128,8 @@ DOCTYPE_ALIASES = {
     "accessibility-test": "article",
     "minimal-custom": None,  # no doctype
     "minimal-starter": None,  # no doctype
+    "beamer-academic": "presentation",
+    "beamer-corporate": "presentation",
+    "beamer-minimal": "presentation",
+    "beamer-defense": "presentation",
 }

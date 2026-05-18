@@ -88,6 +88,10 @@
 \DeclareBoolOption[true]{enablecode}
 \DeclareBoolOption[true]{enabletables}
 
+\DeclareStringOption[169]{beameraspectratio}[169]
+\DeclareBoolOption[true]{beamernavigationsymbols}
+\DeclareStringOption[default]{beamertheme}[default]
+
 \DeclareVoidOption{a5}{%
     \PassOptionsToPackage{paper=a5}{typearea}%
     \omnilatex@adduseroption{fontsize=10pt}%

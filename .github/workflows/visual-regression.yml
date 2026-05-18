@@ -5,76 +5,78 @@ permissions:
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
     paths:
-      - '**.tex'
-      - '**.sty'
-      - '**.cls'
-      - '**.lua'
+    - '**.tex'
+    - '**.sty'
+    - '**.cls'
+    - '**.lua'
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
     paths:
-      - '**.tex'
-      - '**.sty'
-      - '**.cls'
-      - '**.lua'
+    - '**.tex'
+    - '**.sty'
+    - '**.cls'
+    - '**.lua'
   workflow_dispatch:
     inputs:
       regenerate:
-        description: 'Regenerate reference PDFs'
+        description: Regenerate reference PDFs
         required: false
         default: 'false'
         type: choice
         options:
-          - 'false'
-          - 'true'
+        - 'false'
+        - 'true'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    - name: Checkout repository
+        # v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      with:
+        fetch-depth: 1
 
-      - name: Read Docker image digest
-        id: digest
-        run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
+    - name: Read Docker image digest
+      id: digest
+      uses: ./.github/actions/read-docker-digest
 
-      - name: Pull Docker image
-        run: docker pull "${{ steps.digest.outputs.image }}"
+    - name: Pull Docker image
+      run: docker pull "${{ steps.digest.outputs.image }}"
 
-      - name: Cache built PDFs
-        uses: actions/cache@v4
-        with:
-          path: |
-            build/examples/*.pdf
-            main.pdf
-          key: v1-visual-regression-${{ hashFiles('**.tex', '**.sty', '**.cls', '**.lua') }}
-          restore-keys: |
-            v1-visual-regression-
+    - name: Cache built PDFs
+      uses: actions/cache@v4
+      with:
+        path: |
+          build/examples/*.pdf
+          main.pdf
+        key: v1-visual-regression-${{ hashFiles('**.tex', '**.sty', '**.cls', '**.lua') }}
+        restore-keys: |
+          v1-visual-regression-
 
-      - name: Build examples
-        run: |
-          docker run --rm --entrypoint "" \
-            -v "$GITHUB_WORKSPACE:/workspace" \
-            -w /workspace \
-            --user root \
-            -e IS_OMNILATEX_CONTAINER=true \
-            -e CI=true \
-            "${{ steps.digest.outputs.image }}" \
-            python3 build.py --mode prod --force build-examples
+    - name: Build examples
+      run: |
+        docker run --rm --entrypoint "" \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -w /workspace \
+          --user root \
+          -e IS_OMNILATEX_CONTAINER=true \
+          -e CI=true \
+          "${{ steps.digest.outputs.image }}" \
+          python3 build.py --mode prod --force build-examples
 
-      - name: Upload built PDFs
-        uses: actions/upload-artifact@v4
-        with:
-          name: visual-regression-pdfs
-          path: |
-            build/examples/*.pdf
-            main.pdf
-          retention-days: 14
+    - name: Upload built PDFs
+        # v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: visual-regression-pdfs
+        path: |
+          build/examples/*.pdf
+          main.pdf
+        retention-days: 14
 
   diff:
     runs-on: ubuntu-latest
@@ -82,47 +84,49 @@ jobs:
     needs: build
     if: github.event_name != 'workflow_dispatch' || github.event.inputs.regenerate != 'true'
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+        # v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
-      - name: Read Docker image digest
-        id: digest
-        run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
+    - name: Read Docker image digest
+      id: digest
+      uses: ./.github/actions/read-docker-digest
 
-      - name: Pull Docker image
-        run: docker pull "${{ steps.digest.outputs.image }}"
+    - name: Pull Docker image
+      run: docker pull "${{ steps.digest.outputs.image }}"
 
-      - name: Download built PDFs
-        uses: actions/download-artifact@v4
-        with:
-          name: visual-regression-pdfs
-          path: .
+    - name: Download built PDFs
+        # v4
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      with:
+        name: visual-regression-pdfs
+        path: .
 
-      - name: Check for reference PDFs
-        id: refs
-        run: |
-          if ls tests/references/*.pdf 1>/dev/null 2>&1; then
-            echo "has_refs=true" >> $GITHUB_OUTPUT
-          else
-            echo "has_refs=false" >> $GITHUB_OUTPUT
-            echo "No reference PDFs found in tests/references/ -- skipping diff."
-          fi
+    - name: Check for reference PDFs
+      id: refs
+      run: |
+        if ls tests/references/*.pdf 1>/dev/null 2>&1; then
+          echo "has_refs=true" >> $GITHUB_OUTPUT
+        else
+          echo "has_refs=false" >> $GITHUB_OUTPUT
+          echo "No reference PDFs found in tests/references/ -- skipping diff."
+        fi
 
-      - name: Copy references into build dir for comparison
-        if: steps.refs.outputs.has_refs == 'true'
-        run: mkdir -p build/references && cp tests/references/*.pdf build/references/
+    - name: Copy references into build dir for comparison
+      if: steps.refs.outputs.has_refs == 'true'
+      run: mkdir -p build/references && cp tests/references/*.pdf build/references/
 
-      - name: Run visual regression diff
-        if: steps.refs.outputs.has_refs == 'true'
-        run: |
-          EXAMPLES=$(ls build/examples/*.pdf 2>/dev/null | xargs -I{} basename {} .pdf | tr '\n' ' ')
-          docker run --rm --entrypoint "" \
-            -v "$GITHUB_WORKSPACE:/workspace" \
-            -w /workspace \
-            --user root \
-            -e CI=true \
-            "${{ steps.digest.outputs.image }}" \
-            python3 build.py diff $EXAMPLES
+    - name: Run visual regression diff
+      if: steps.refs.outputs.has_refs == 'true'
+      run: |
+        EXAMPLES=$(ls build/examples/*.pdf 2>/dev/null | xargs -I{} basename {} .pdf | tr '\n' ' ')
+        docker run --rm --entrypoint "" \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -w /workspace \
+          --user root \
+          -e CI=true \
+          "${{ steps.digest.outputs.image }}" \
+          python3 build.py diff $EXAMPLES
 
   regenerate:
     runs-on: ubuntu-latest
@@ -132,35 +136,37 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+        # v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
-      - name: Read Docker image digest
-        id: digest
-        run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
+    - name: Read Docker image digest
+      id: digest
+      uses: ./.github/actions/read-docker-digest
 
-      - name: Pull Docker image
-        run: docker pull "${{ steps.digest.outputs.image }}"
+    - name: Pull Docker image
+      run: docker pull "${{ steps.digest.outputs.image }}"
 
-      - name: Download built PDFs
-        uses: actions/download-artifact@v4
-        with:
-          name: visual-regression-pdfs
-          path: .
+    - name: Download built PDFs
+        # v4
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      with:
+        name: visual-regression-pdfs
+        path: .
 
-      - name: Regenerate reference PDFs
-        run: |
-          mkdir -p tests/references
-          cp build/examples/*.pdf tests/references/
+    - name: Regenerate reference PDFs
+      run: |
+        mkdir -p tests/references
+        cp build/examples/*.pdf tests/references/
 
-      - name: Commit updated references
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add tests/references/*.pdf
-          if git diff --cached --quiet; then
-            echo "No changes to reference PDFs."
-          else
-            git commit -m "chore: regenerate visual regression references"
-            git push
-          fi
+    - name: Commit updated references
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add tests/references/*.pdf
+        if git diff --cached --quiet; then
+          echo "No changes to reference PDFs."
+        else
+          git commit -m "chore: regenerate visual regression references"
+          git push
+        fi

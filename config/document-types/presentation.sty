@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{config/document-types/presentation}[2026-04-24 OmniLaTeX presentation profile]
+\ProvidesPackage{config/document-types/presentation}[2026-05-18 v2.0.0 OmniLaTeX presentation profile]
 
 \documenttype{Presentation}
 \documentfontsize{14pt}
@@ -20,10 +20,32 @@
 \RequirePackage{multicol}
 \RequirePackage{lib/layout/omnilatex-presentation}
 
+%% ── Beamer-specific class options ──────────────────
+%% These are set via \DeclareOption in omnilatex.cls
+%% and propagated to the presentation module.
+
 \AtBeginDocument{%
     \setlength{\paperwidth}{254mm}%
     \setlength{\paperheight}{190.5mm}%
     \recalctypearea
 }
+
+%% Aspect ratio override: apply before document begins
+%% Valid values: 43, 169, 161, 149, 54, 32
+\makeatletter
+\@ifundefined{omnilatex@beameraspectratio}{}{%
+    \ClassInfo{presentation}{Beamer aspect ratio: \omnilatex@beameraspectratio}%
+}
+\@ifundefined{omnilatex@beamernavigationsymbols}{}{%
+    \ifomnilatex@beamernavigationsymbols
+        \presentationnavsymbolson
+    \else
+        \presentationnavsymbolsoff
+    \fi
+    \ClassInfo{presentation}{Beamer navigation symbols: \ifomnilatex@beamernavigationsymbols on\else off\fi}%
+}
+\makeatother
+
+\citationstyle{apa}
 
 \endinput

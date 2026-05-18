@@ -2,7 +2,7 @@ name: Integration Matrix
 
 on:
   schedule:
-    - cron: '0 2 * * 0'  # Weekly on Sunday at 02:00 UTC
+  - cron: 0 2 * * 0      # Weekly on Sunday at 02:00 UTC
   workflow_dispatch:
 
 permissions:
@@ -19,70 +19,76 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - doctype: thesis
-            language: english
-          - doctype: article
-            language: english
-          - doctype: book
-            language: english
-          - doctype: presentation
-            language: english
-          - doctype: cv
-            language: english
-          - doctype: cover-letter
-            language: english
-          - doctype: dissertation
-            language: english
-          - doctype: manual
-            language: english
-          - doctype: patent
-            language: english
-          - doctype: thesis
-            language: german
-          - doctype: article
-            language: german
-          - doctype: article
-            language: french
-          - doctype: article
-            language: chinese
+        - doctype: thesis
+          language: english
+        - doctype: article
+          language: english
+        - doctype: book
+          language: english
+        - doctype: presentation
+          language: english
+        - doctype: cv
+          language: english
+        - doctype: cover-letter
+          language: english
+        - doctype: dissertation
+          language: english
+        - doctype: manual
+          language: english
+        - doctype: patent
+          language: english
+        - doctype: thesis
+          language: german
+        - doctype: article
+          language: german
+        - doctype: article
+          language: french
+        - doctype: article
+          language: chinese
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Read Docker image digest
-        id: digest
-        run: echo "image=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)" >> $GITHUB_OUTPUT
-      - name: Build ${{ matrix.doctype }} (${{ matrix.language }})
-        env:
-          IS_OMNILATEX_CONTAINER: "true"
-          CI: "true"
-          TEXINPUTS: ".:${{ github.workspace }}:"
-        run: |
-          docker run --rm --entrypoint "" \
-            -v "$GITHUB_WORKSPACE:/workspace" \
-            -w /workspace \
-            --user root \
-            -e IS_OMNILATEX_CONTAINER=true \
-            -e CI=true \
-            -e "TEXINPUTS=.:/workspace:" \
-            "${{ steps.digest.outputs.image }}" \
-            bash -c '
-              cp .latexmkrc /tmp/.latexmkrc
-              cat > /tmp/test.tex << "TEXEOF"
-              \documentclass[doctype=${{ matrix.doctype }},language=${{ matrix.language }}]{omnilatex}
-              \begin{document}
-              Integration test: ${{ matrix.doctype }} in ${{ matrix.language }}.
-              \end{document}
-              TEXEOF
-              latexmk -lualatex -r /tmp/.latexmkrc -interaction=nonstopmode -outdir=/tmp/build /tmp/test.tex
-              test -f /tmp/build/test.pdf && echo "SUCCESS" || echo "FAIL"
-            '
+      # v4
+    - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      with:
+        fetch-depth: 0
+    - name: Read Docker image digest
+      id: digest
+      uses: ./.github/actions/read-docker-digest
+    - name: Build ${{ matrix.doctype }} (${{ matrix.language }})
+      env:
+        IS_OMNILATEX_CONTAINER: 'true'
+        CI: 'true'
+        TEXINPUTS: '.:${{ github.workspace }}:'
+      run: |
+        docker run --rm --entrypoint "" \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -w /workspace \
+          --user root \
+          -e IS_OMNILATEX_CONTAINER=true \
+          -e CI=true \
+          -e "TEXINPUTS=.:/workspace:" \
+          "${{ steps.digest.outputs.image }}" \
+          bash -c '
+            cp .latexmkrc /tmp/.latexmkrc
+            cat > /tmp/test.tex << "TEXEOF"
+            \documentclass[doctype=${{ matrix.doctype }},language=${{ matrix.language }}]{omnilatex}
+            \begin{document}
+            Integration test: ${{ matrix.doctype }} in ${{ matrix.language }}.
+            \end{document}
+            TEXEOF
+            latexmk -lualatex -r /tmp/.latexmkrc -interaction=nonstopmode -outdir=/tmp/build /tmp/test.tex
+            test -f /tmp/build/test.pdf && echo "SUCCESS" || echo "FAIL"
+          '
 
   report:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: matrix
+    needs: [matrix]
     if: always()
     steps:
-      - name: Matrix summary
-        run: echo "Integration matrix completed. Check individual job results."
+    - name: Matrix summary
+      run: |
+        echo "## Integration Matrix Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "| Doctype | Language | Status |" >> $GITHUB_STEP_SUMMARY
+        echo "|---------|----------|--------|" >> $GITHUB_STEP_SUMMARY
+        echo "| All combinations | -- | ${{ needs.matrix.result == 'success' && 'PASS' || 'FAIL' }} |" >> $GITHUB_STEP_SUMMARY

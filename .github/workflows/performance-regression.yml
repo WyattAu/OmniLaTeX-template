@@ -1,0 +1,155 @@
+name: Performance Regression
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+    - '**.tex'
+    - '**.sty'
+    - '**.cls'
+    - '**.lua'
+  pull_request:
+    branches: [main, master]
+    paths:
+    - '**.tex'
+    - '**.sty'
+    - '**.cls'
+    - '**.lua'
+  workflow_dispatch:
+
+jobs:
+  performance-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+    - name: Checkout repository
+      # v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      with:
+        fetch-depth: 1
+
+    - name: Read Docker image digest
+      id: digest
+      uses: ./.github/actions/read-docker-digest
+
+    - name: Pull Docker image
+      run: docker pull "${{ steps.digest.outputs.image }}"
+
+    - name: Build examples with timings
+      run: |
+        docker run --rm --entrypoint "" \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -w /workspace \
+          --user root \
+          -e IS_OMNILATEX_CONTAINER=true \
+          -e CI=true \
+          "${{ steps.digest.outputs.image }}" \
+          python3 build.py --mode prod --timings --force build-examples
+
+    - name: Compare against baselines
+      if: always()
+      run: |
+        if [ ! -f build/metrics.json ]; then
+          echo "::error::build/metrics.json not found — build may have failed"
+          exit 1
+        fi
+
+        docker run --rm --entrypoint "" \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -w /workspace \
+          "${{ steps.digest.outputs.image }}" \
+          python3 -c "
+        import json
+        import sys
+
+        try:
+            import tomllib
+        except ImportError:
+            import tomli as tomllib
+
+        THRESHOLD = 0.20  # 20% regression threshold
+
+        with open('build/metrics.json') as f:
+            metrics = json.load(f)
+
+        with open('specs/performance_baselines.toml', 'rb') as f:
+            baselines = tomllib.load(f)
+
+        baseline_data = baselines.get('baselines', {})
+        regressions = []
+        improvements = []
+
+        for example, build_info in metrics.items():
+            if not isinstance(build_info, dict):
+                continue
+            cold_time = build_info.get('cold_mean') or build_info.get('cold_time')
+            if cold_time is None:
+                continue
+
+            bl = baseline_data.get(example)
+            if bl is None:
+                print(f'  SKIP {example}: no baseline entry')
+                continue
+
+            bl_time = bl.get('cold_mean')
+            if bl_time is None:
+                continue
+
+            if bl_time > 0:
+                ratio = cold_time / bl_time - 1.0
+                pct = ratio * 100
+                if ratio > THRESHOLD:
+                    regressions.append((example, cold_time, bl_time, pct))
+                elif ratio < -THRESHOLD:
+                    improvements.append((example, cold_time, bl_time, pct))
+
+        print()
+        print('=== Performance Regression Report ===')
+        print()
+
+        if improvements:
+            print('Improvements (>20% faster):')
+            for name, current, baseline, pct in sorted(improvements, key=lambda x: x[3]):
+                print(f'  {name}: {current:.2f}s vs {baseline:.2f}s baseline ({pct:+.1f}%)')
+            print()
+
+        if regressions:
+            print('FAILURES (>20% slower):')
+            for name, current, baseline, pct in sorted(regressions, key=lambda x: -x[3]):
+                print(f'  ::error::PERF REGRESSION {name}: {current:.2f}s vs {baseline:.2f}s baseline ({pct:+.1f}%)')
+            print()
+            print(f'::error::{len(regressions)} example(s) exceeded the {int(THRESHOLD*100)}% regression threshold.')
+            sys.exit(1)
+        else:
+            print('All examples within acceptable performance range.')
+            print(f'Checked {len(metrics)} examples against {len(baseline_data)} baselines.')
+            sys.exit(0)
+        "
+
+    - name: Generate performance summary
+      if: always()
+      run: |
+        echo "## Performance Regression Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        if [ -f build/metrics.json ]; then
+          docker run --rm --entrypoint "" \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            -w /workspace \
+            "${{ steps.digest.outputs.image }}" \
+            python3 .github/scripts/extract_metrics.py >> $GITHUB_STEP_SUMMARY
+        else
+          echo "No metrics.json found" >> $GITHUB_STEP_SUMMARY
+        fi
+
+    - name: Upload performance metrics
+      if: always()
+      # v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: performance-regression-metrics
+        path: build/metrics.json
+        retention-days: 90

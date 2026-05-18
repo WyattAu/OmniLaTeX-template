@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # CTAN Automated Upload Script
 #
-# Uploads omnilatex.zip to CTAN via their web form.
+# Uploads ctan/omnilatex.zip to CTAN via their web form.
 # Uses CTAN's own validation endpoints for pre-flight checks.
 #
 # Usage:

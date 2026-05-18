@@ -44,7 +44,7 @@ python build.py build-example minimal-starter
 - **Modern font stack** — Libertinus Serif + Math, Monaspace Neon, Atkinson Hyperlegible Next (with graceful fallback)
 - **Reproducible builds** — `SOURCE_DATE_EPOCH` support, byte-for-byte deterministic PDFs
 - **Multi-language** — 25 languages via polyglossia; CJK and RTL support auto-loaded per language
-- **Institution branding** — 16 pluggable configs in `config/institutions/` (ETH Zürich, TUHH, TUM, MIT, Stanford, Cambridge, TU Delft, Oxford, Princeton, Yale, CMU, EPFL, Imperial, generic)
+- **Institution branding** — 21 pluggable configs in `config/institutions/` (ETH Zürich, TUHH, TUM, MIT, Stanford, Cambridge, TU Delft, Oxford, Princeton, Yale, CMU, EPFL, Imperial, Columbia, Harvard, Aalto, Chalmers, KIT, NTNU, U of Toronto, generic)
 - **Citation styles** — 9 pre-configured styles via `\citationstyle{}` (IEEE, ACM, APA, Chicago, Nature, Science, Harvard, Vancouver, MLA)
 - **Color themes** — 6 themes with dark/light toggle: default, midnight, forest, rose, monochrome, sepia
 - **Accessibility** — PDF/UA-1 tagged PDF output via tagpdf
@@ -282,6 +282,11 @@ config/
     ├── imperial/                # Imperial College London branding
     ├── columbia/                # Columbia University branding
     ├── harvard/                 # Harvard University branding
+    ├── aalto/                    # Aalto University branding
+    ├── chalmers/                 # Chalmers University of Technology branding
+    ├── kit/                      # KIT branding
+    ├── ntnu/                     # NTNU branding
+    ├── uoft/                     # University of Toronto branding
     ├── generic/                 # Customizable template
     └── README.md                # How to add your institution
 ```

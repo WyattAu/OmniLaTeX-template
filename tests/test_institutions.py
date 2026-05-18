@@ -26,6 +26,11 @@ EXPECTED_INSTITUTIONS = [
     "cmu",
     "epfl",
     "tudelft",
+    "aalto",
+    "chalmers",
+    "kit",
+    "ntnu",
+    "uoft",
 ]
 
 

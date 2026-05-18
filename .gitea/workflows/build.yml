@@ -17,7 +17,8 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      # v4
+      uses: https://github.com/actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       with:
         fetch-depth: 0
 
@@ -29,13 +30,15 @@ jobs:
         python3 build.py --mode prod build-all
 
     - name: Upload root PDF
-      uses: actions/upload-artifact@v4
+      # v4
+      uses: https://github.com/actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: PDF-Root
         path: main.pdf
 
     - name: Upload example PDFs
-      uses: actions/upload-artifact@v4
+      # v4
+      uses: https://github.com/actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: PDF-Examples
         path: build/examples/*.pdf
@@ -48,18 +51,21 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      # v4
+      uses: https://github.com/actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       with:
         fetch-depth: 0
 
     - name: Download root PDF
-      uses: actions/download-artifact@v4
+      # v4
+      uses: https://github.com/actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
       with:
         name: PDF-Root
         path: .
 
     - name: Download example PDFs
-      uses: actions/download-artifact@v4
+      # v4
+      uses: https://github.com/actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
       with:
         name: PDF-Examples
         path: build/examples

@@ -1,0 +1,88 @@
+\documentclass[doctype=presentation,beameraspectratio=169,institution=generic]{omnilatex}
+
+\title{Thesis Defense: Formal Verification of\\LaTeX Document Templates}
+\author{Jane Doe}
+\date{\today}
+\institute{Generic University}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+\section{Introduction}
+
+\begin{frame}{Motivation}
+  \begin{itemize}
+    \item Formal methods ensure mathematical correctness
+    \item Lean 4 provides proof-carrying code
+    \item 180 theorems proven across 16 modules
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Problem Statement}
+  \begin{block}{Research Question}
+    How can we ensure that LaTeX document templates produce
+    correct and reproducible output?
+  \end{block}
+
+  \begin{alertblock}{Challenge}
+    Non-determinism in LuaLaTeX compilation.
+  \end{alertblock}
+\end{frame}
+
+\section{Methodology}
+
+\begin{frame}{Approach}
+  \begin{enumerate}
+    \item Modular architecture (28 .sty modules)
+    \item Property-based testing (hypothesis)
+    \item Formal verification (Lean 4)
+    \item Reproducible builds (SOURCE\_DATE\_EPOCH)
+  \end{enumerate}
+\end{frame}
+
+\section{Results}
+
+\begin{frame}{Test Coverage}
+  \begin{table}
+    \centering
+    \begin{tabular}{lr}
+      \hline
+      Suite & Tests \\
+      \hline
+      Structural & 462 \\
+      Property-based & 21 \\
+      Visual regression & 4 \\
+      Lean 4 theorems & 180 \\
+      \hline
+    \end{tabular}
+  \end{table}
+\end{frame}
+
+\begin{frame}{Key Result}
+  \begin{exampleblock}{Finding}
+    All 462 fast tests pass with 0 failures and 0 known regressions.
+  \end{exampleblock}
+\end{frame}
+
+\section{Conclusion}
+
+\begin{frame}{Future Work}
+  \begin{itemize}
+    \item CTAN submission (v1.26.0)
+    \item WASM preview (v3.0.0)
+    \item Multi-language documentation
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[standout]
+  Thank you!\\Questions?
+\end{frame}
+
+\end{document}

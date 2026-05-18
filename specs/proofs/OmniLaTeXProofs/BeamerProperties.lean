@@ -35,6 +35,20 @@ def supportedEnvironments : List String := [
 def navSymbolsRemoved : Bool := true
 def frameNumberingEnabled : Bool := true
 
+def validAspectRatios : List String := [
+  "43", "169", "161", "149", "54", "32"
+]
+
+def defaultAspectRatio : String := "169"
+
+def defaultNavSymbols : Bool := true
+
+def beamerThemes : List String := [
+  "default", "metropolis", "Madrid", "Warsaw"
+]
+
+def defaultBeamerTheme : String := "default"
+
 def presentationAliases : List String := [
   "presentation", "presentations", "slides", "talk", "talks"
 ]
@@ -110,5 +124,40 @@ theorem color_elements_include_frametitle : "frametitle" ∈ colorElements := by
 
 theorem font_elements_include_title : "title" ∈ fontElements := by
   simp [fontElements]
+
+theorem aspect_ratio_count : validAspectRatios.length = 6 := by
+  simp [validAspectRatios]
+
+theorem default_aspect_ratio_valid : defaultAspectRatio ∈ validAspectRatios := by
+  simp [validAspectRatios, defaultAspectRatio]
+
+theorem aspect_ratios_nonempty : validAspectRatios.length > 0 := by
+  simp [validAspectRatios]
+
+theorem default_nav_symbols_true : defaultNavSymbols = true := by trivial
+
+theorem beamer_theme_count : beamerThemes.length = 4 := by
+  simp [beamerThemes]
+
+theorem default_theme_valid : defaultBeamerTheme ∈ beamerThemes := by
+  simp [beamerThemes, defaultBeamerTheme]
+
+theorem beamer_themes_nonempty : beamerThemes.length > 0 := by
+  simp [beamerThemes]
+
+theorem aspect_ratio_169_valid : "169" ∈ validAspectRatios := by
+  simp [validAspectRatios]
+
+theorem aspect_ratio_43_valid : "43" ∈ validAspectRatios := by
+  simp [validAspectRatios]
+
+theorem theme_metropolis_valid : "metropolis" ∈ beamerThemes := by
+  simp [beamerThemes]
+
+theorem theme_madrid_valid : "Madrid" ∈ beamerThemes := by
+  simp [beamerThemes]
+
+theorem theme_warsaw_valid : "Warsaw" ∈ beamerThemes := by
+  simp [beamerThemes]
 
 end BeamerProperties

@@ -1,6 +1,6 @@
 # Institution Gallery
 
-OmniLaTeX includes configuration files for 16 institutions.
+OmniLaTeX includes configuration files for 21 institutions.
 
 ## Using an Institution
 
@@ -27,6 +27,11 @@ Add `institution=<name>` to your document class options:
 | CMU | `cmu` | Tartan Red | CMU tartan |
 | EPFL | `epfl` | EPFL Red | EPFL logo |
 | TU Delft | `tudelft` | TU Delft Cyan | TU Delft flame |
+| Aalto University | `aalto` | Black/Red | Aalto logo |
+| Chalmers | `chalmers` | Blue/Light Blue | Chalmers logo |
+| KIT | `kit` | Green/Black | KIT logo |
+| NTNU | `ntnu` | Dark Blue | NTNU logo |
+| University of Toronto | `uoft` | Navy/Blue | U of T crest |
 | Generic | `generic` | Default | None |
 
 ## Adding Your Institution

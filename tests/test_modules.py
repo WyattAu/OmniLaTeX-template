@@ -25,19 +25,24 @@ EXPECTED_LIB_SUBDIRS = [
 ]
 
 INSTITUTION_NAMES = [
+    "aalto",
     "cambridge",
+    "chalmers",
     "cmu",
     "epfl",
     "eth",
     "generic",
     "imperial",
+    "kit",
     "mit",
+    "ntnu",
     "oxford",
     "princeton",
     "stanford",
     "tudelft",
     "tuhh",
     "tum",
+    "uoft",
     "yale",
 ]
 

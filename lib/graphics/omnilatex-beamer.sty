@@ -35,12 +35,36 @@
 \setbeamerfont{frametitle}{series=\bfseries}
 \setbeamerfont{framesubtitle}{size=\small}
 
-%% Remove navigation symbols (cleaner slides)
-\setbeamertemplate{navigation symbols}{}
+%% Navigation symbols: respect class option (default: hidden)
+\ifomnilatex@beamernavigationsymbols
+  \setbeamertemplate{navigation symbols}{\insertslidenavigationsymbol}
+\else
+  \setbeamertemplate{navigation symbols}{}
+\fi
 
-%% Add frame numbering
+%% Frame numbering
 \setbeamertemplate{footline}{%
   \hfill\insertframenumber\,/\,\inserttotalframenumber\hspace{2mm}\vspace{1mm}%
 }
+
+%% Aspect ratio
+\expandafter\ifx\csname omnilatex@beameraspectratio\endcsname\relax\else
+  \documentclass[\omnilatex@beameraspectratio]{beamer}%
+\fi
+
+%% Theme selection
+\expandafter\ifx\csname omnilatex@beamertheme\endcsname\relax\else
+  \ifdefstring{\omnilatex@beamertheme}{metropolis}{%
+    \usetheme{metropolis}%
+  }{%
+    \ifdefstring{\omnilatex@beamertheme}{Madrid}{%
+      \usetheme{Madrid}%
+    }{%
+      \ifdefstring{\omnilatex@beamertheme}{Warsaw}{%
+        \usetheme{Warsaw}%
+      }{}%
+    }%
+  }%
+\fi
 
 \endinput

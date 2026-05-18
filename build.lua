@@ -3,8 +3,8 @@
 -- not a standard single-package CTAN distribution.
 
 module = "omnilatex"
-pkgversion = "1.25.0"
-pkgdate = "2026-05-11"
+pkgversion = "2.0.0"
+pkgdate = "2026-05-17"
 
 sourcefiles = {
     "omnilatex.cls",
