@@ -89,7 +89,7 @@ User writes:  \documentclass[doctype=thesis,institution=tuhh,language=german]{om
               (page layout, font size, title page, spacing)
                         │
                         ▼
-              Load 27 modules (conditional on enable* flags)
+              Load 28 modules (conditional on enable* flags)
 ```
 
 ### Key Files

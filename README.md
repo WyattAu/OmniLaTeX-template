@@ -1,6 +1,6 @@
 # OmniLaTeX
 
-A modular, engineering-grade LaTeX document class for academic and professional documents. 55+ doctype aliases, 28 modules, 46 example templates, a 238-page reference manual, byte-for-byte reproducible builds, and formal Lean 4 verification.
+A modular, engineering-grade LaTeX document class for academic and professional documents. 55+ doctype aliases, 28 modules, 47 example templates, a 238-page reference manual, byte-for-byte reproducible builds, and formal Lean 4 verification.
 
 Built on LuaTeX (LuaHBTeX 1.21.0) + KOMA-Script + TeX Live 2025. Compile with `latexmk -lualatex` or `build.py`.
 
@@ -14,7 +14,7 @@ Built on LuaTeX (LuaHBTeX 1.21.0) + KOMA-Script + TeX Live 2025. Compile with `l
 | **Formal verification** | Lean 4 proofs (16 proof modules, 180 theorems proven, 0 sorry) | No |
 | **CI platforms** | 10 GitHub Actions workflows + 4 other platforms | 0–1 |
 | **Font fallbacks** | Graceful degradation with warnings | Crash or silent substitution |
-| **Institution configs** | 16 pluggable (`config/institutions/`) | Hardcoded |
+| **Institution configs** | 21 pluggable (`config/institutions/`) | Hardcoded |
 | **Languages** | 25 via polyglossia | 0–2 |
 | **Citation styles** | 9 (IEEE, ACM, APA, Chicago, Nature, Science, Harvard, Vancouver, MLA) | 0–1 |
 | **Color themes** | 6 + dark/light toggle (default, midnight, forest, rose, monochrome, sepia) | 0 |
@@ -52,7 +52,7 @@ python build.py build-example minimal-starter
 - **RTL support** — automatic bidirectional text for Arabic and Hebrew
 - **Code listings** — syntax highlighting via minted with cached compilation
 - **Engineering diagrams** — 1,000+ lines of TikZ shapes: thermodynamics, P&ID, flowcharts
-- **Formal verification** — Lean 4 proofs (12 proof modules, 110 theorems proven, 0 sorry)
+- **Formal verification** — Lean 4 proofs (16 proof modules, 196 theorems proven, 0 sorry)
 - **Build automation** — `build.py` with watch mode, concurrent builds, timing metrics, and health diagnostics
 
 ## Document Types
@@ -79,7 +79,7 @@ OmniLaTeX supports 18 languages with full OmniLaTeX translations and 25 via poly
 
 ## Examples
 
-46 ready-to-use templates in `examples/` (42 compile on TeX Live 2026; `thesis-tuhh` requires TUHH assets):
+47 ready-to-use templates in `examples/` (46 compile on TeX Live 2026; `thesis-tuhh` requires TUHH assets):
 
 | Example | Doctype | Description |
 |---------|---------|-------------|
@@ -311,7 +311,7 @@ config/
 │   ├── tables/                  # Table formatting
 │   └── utils/                   # Colors, themes, TODO notes, censoring
 ├── lua/                         # Lua scripts (git metadata)
-├── examples/                    # 46 example templates
+├── examples/                    # 47 example templates
 ├── specs/                       # Formal specifications and Lean 4 proofs
 ├── tests/                       # Test suite (l3build + pytest + visual regression)
 ├── docs/                        # API reference (auto-generated)

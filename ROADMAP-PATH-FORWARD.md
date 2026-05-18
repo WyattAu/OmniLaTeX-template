@@ -1,6 +1,6 @@
 # OmniLaTeX: Path Forward and Roadmap
 
-**Date:** 2026-05-17 | **Version:** v1.25.0 | **Post-Audit Status:** All systems green
+**Date:** 2026-05-17 | **Version:** v2.0.0 | **Post-Audit Status:** All systems green
 
 ---
 
@@ -19,7 +19,7 @@ A comprehensive audit was performed covering every aspect of the monorepo:
 | Website pages | PASS (with fixes) | 3 missing beamer examples added; navigation consistency fixed; ARIA accessibility added |
 | Pre-commit hooks | ADDED | Full pytest + lint + digest validation + semver check on every commit and push |
 | Docker digest consistency | PASS | All 8 CI configs use identical sha256 digest |
-| Semantic versioning | PASS | v1.25.0 consistent across VERSION.md and build.lua |
+| Semantic versioning | PASS | v2.0.0 consistent across VERSION.md and build.lua |
 | Lean 4 proofs | PASS | 16 modules, 180 theorems, 0 sorry, all compile via lake build |
 
 ### 1.2 Issues Found and Fixed
@@ -103,7 +103,7 @@ This is the critical path. CTAN submission unlocks `tlmgr install omnilatex` for
 
 ### v2.0.0: Beamer Full Class -- 3-4 weeks
 
-Breaking change release. The Beamer module exists (v1.25.0) but needs a standalone document class.
+Breaking change release. The Beamer module exists (v2.0.0) but needs a standalone document class.
 
 **Tasks:**
 
@@ -157,7 +157,7 @@ Breaking change release. The Beamer module exists (v1.25.0) but needs a standalo
 
 ## 5. Verification Metrics Dashboard
 
-### Current Metrics (v1.25.0, post-audit)
+### Current Metrics (v2.0.0, post-audit)
 
 | Metric | Value | Source |
 |--------|-------|--------|
@@ -165,7 +165,7 @@ Breaking change release. The Beamer module exists (v1.25.0) but needs a standalo
 | Document types | 26 | `ls config/document-types/*.sty \| wc -l` |
 | Doctype aliases | 55+ | `grep omnilatex@setdoctype omnilatex.cls` |
 | Example templates | 46 | `ls -d examples/*/ \| wc -l` |
-| Institution configs | 16 | `ls -d config/institutions/*/ \| wc -l` |
+| Institution configs | 21 | `ls -d config/institutions/*/ \| wc -l` |
 | Languages (full translations) | 18 | `grep DeclareTranslation lib/language/omnilatex-i18n.sty` |
 | Lean 4 proof modules | 16 | `ls specs/proofs/OmniLaTeXProofs/*.lean \| wc -l` |
 | Lean 4 theorems | 180 | `grep -c theorem specs/proofs/OmniLaTeXProofs/*.lean` |
@@ -184,7 +184,7 @@ Breaking change release. The Beamer module exists (v1.25.0) but needs a standalo
 
 ### Target Metrics (v3.0.0)
 
-| Metric | v1.25.0 | v2.0.0 | v3.0.0 |
+| Metric | v2.0.0 | v2.0.0 | v3.0.0 |
 |--------|---------|---------|---------|
 | CTAN availability | Pending | Live | Live |
 | Overleaf gallery | No | Submitted | Premium |
@@ -192,7 +192,7 @@ Breaking change release. The Beamer module exists (v1.25.0) but needs a standalo
 | Lean 4 theorems | 180 | 200+ | 300+ |
 | Fast tests | 442 | 500+ | 700+ |
 | Examples | 46 | 50+ | 60+ |
-| Institutions | 16 | 25+ | 40+ |
+| Institutions | 21 | 25+ | 40+ |
 | Manual pages | 238 | 300+ | 945+ |
 | Web preview | No | No | MVP |
 | Docker pulls | Tracking | 500+ | 5000+ |
@@ -205,7 +205,7 @@ Breaking change release. The Beamer module exists (v1.25.0) but needs a standalo
 |----|-------------|----------|--------|------------|
 | TD-001 | Actions pinned to tags, not SHA digests | High | 2h | v1.0.0 |
 | TD-002 | "read Docker digest" pattern duplicated 8 times | Low | 2h | v1.7.0 |
-| TD-003 | Coverage check runs outside Docker container | Medium | 1h | v1.25.0 |
+| TD-003 | Coverage check runs outside Docker container | Medium | 1h | v2.0.0 |
 | TD-004 | integration-matrix report job is a no-op | Low | 1h | v1.10.0 |
 | TD-005 | Gitea workflow uses GitHub action URLs | Low | 30min | v1.7.0 |
 | TD-006 | Forgejo/Woodpecker/GitLab have no timeouts | Low | 30min | v1.7.0 |
@@ -257,7 +257,7 @@ OmniLaTeX is in a strong position for production release:
 - **442 tests pass** across 7 test suites with 0 failures
 - **180 Lean 4 theorems** provide formal verification with 0 `sorry`
 - **10 CI/CD workflows** provide comprehensive automated validation
-- **46 example templates** demonstrate all 26 doctypes across 16 institutions
+- **46 example templates** demonstrate all 26 doctypes across 21 institutions
 - **18 language translations** provide broad international support
 - **Pre-commit and pre-push hooks** prevent regressions from entering the codebase
 

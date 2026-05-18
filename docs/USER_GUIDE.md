@@ -77,7 +77,7 @@ recognized (see `omnilatex.cls` for the full list).
 
 ## Institutions
 
-OmniLaTeX ships 16 institution configurations. Enable with
+OmniLaTeX ships 21 institution configurations. Enable with
 `\documentclass[doctype=thesis,institution=<name>]{omnilatex}`.
 
 | Institution | Config | Colors |

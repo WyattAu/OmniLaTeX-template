@@ -1,6 +1,6 @@
 # OmniLaTeX Roadmap
 
-Current version: **v1.25.0**
+Current version: **v2.0.0**
 
 ## Design Principles
 
@@ -14,16 +14,16 @@ Current version: **v1.25.0**
 
 | Metric | Value |
 |--------|-------|
-| Releases | 28 (v1.0.0--v1.25.0) |
+| Releases | 28 (v1.0.0--v2.0.0) |
 | `.sty` modules | 28 |
 | Document types | 26 (55+ aliases) across 3 KOMA-Script base classes |
 | Examples | 46 |
-| Institution configs | 16 |
+| Institution configs | 21 |
 | Languages | 18 with full OmniLaTeX translations + 25 via polyglossia |
 | Translation keys | 846 total (47 keys x 18 languages) |
 | CI workflows | 10 GitHub Actions + 4 other platforms |
 | Tests | 442 fast tests + 16 institution tests + slow tests |
-| Lean 4 proofs | 180 theorems, 16 modules, 0 sorry |
+| Lean 4 proofs | 196 theorems, 16 modules, 0 sorry |
 | Color themes | 6 presets + dark/light toggle |
 | Citation styles | 9 (IEEE, ACM, APA, Chicago, Nature, Science, Harvard, Vancouver, MLA) |
 | CJK support | Chinese (SC+TC), Japanese, Korean |
@@ -38,7 +38,7 @@ Current version: **v1.25.0**
 
 | Version | Date | Summary |
 |---------|------|---------|
-| v1.25.0 | 2026-05-11 | Beamer support, pytest-cov CI, VS Code build-on-save |
+| v2.0.0 | 2026-05-11 | Beamer support, pytest-cov CI, VS Code build-on-save |
 | v1.24.0 | 2026-05-11 | 154 Lean theorems, deprecation mechanism, institution docs, semver/digest checks |
 | v1.23.0 | 2026-05-11 | 128 Lean theorems, 47 l3build tests, institution tests, full doc audit |
 | v1.22.0 | 2026-05-11 | Docker digest sync, CHANGELOG split, README dedup, visual regression CI, doctype tests |
@@ -73,7 +73,7 @@ Current version: **v1.25.0**
 
 | Project | Priority | Status |
 |---------|----------|--------|
-| **P20.1 Full Beamer class** | High | Partial -- `omnilatex-beamer.sty` shipped in v1.25.0; standalone Beamer document class planned |
+| **P20.1 Full Beamer class** | High | Partial -- `omnilatex-beamer.sty` shipped in v2.0.0; standalone Beamer document class planned |
 | **P20.2 Community institution configs** | High | Planned |
 | **P20.3 Per-doctype citation defaults** | Medium | Planned |
 | **P20.4 Accessibility testing** | Medium | Planned |

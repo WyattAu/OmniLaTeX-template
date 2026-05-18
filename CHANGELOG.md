@@ -13,9 +13,9 @@ This project adheres to [Semantic versioning](https://semver.org).
 |---------|------|---------|
 | [2.0.0](CHANGELOG/v2.0.0.md) | 2026-05-17 | Beamer class, 5 institutions, CTAN TDS zip, manual expansion, CI hardening |
 | [1.25.0](CHANGELOG/v1.25.0.md) | 2026-05-11 | Beamer support, pytest-cov CI, VS Code build-on-save |
-| [1.24.0](CHANGELOG/v1.24.0.md) | 2026-05-11 | CHANGELOG/v1.24.0.md |
-| [1.23.0](CHANGELOG/v1.23.0.md) | 2026-05-11 | CHANGELOG/v1.23.0.md |
-| [1.22.0](CHANGELOG/v1.22.0.md) | 2026-05-11 | CHANGELOG/v1.22.0.md |
+| [1.24.0](CHANGELOG/v1.24.0.md) | 2026-05-11 | CrossReferenceConsistency proofs, deprecation mechanism, institution docs |
+| [1.23.0](CHANGELOG/v1.23.0.md) | 2026-05-11 | DoctypePageGeometry proofs, institution tests, digest validation |
+| [1.22.0](CHANGELOG/v1.22.0.md) | 2026-05-11 | Docker digest sync, visual regression CI, CHANGELOG split |
 | [1.21.0](CHANGELOG/v1.21.0.md) | 2026-05-11 | ModuleIntegrity proofs, pre-commit Python 3.14 compat, audits |
 | [1.20.0](CHANGELOG/v1.20.0.md) | 2026-05-11 | BuildModeStrictness proofs, build.py type hints |
 | [1.19.0](CHANGELOG/v1.19.0.md) | 2026-05-10 | test_build_py.py, API stability doc, Nix packages, test coverage |

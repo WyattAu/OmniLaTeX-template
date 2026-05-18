@@ -1,16 +1,16 @@
 # OmniLaTeX Production Roadmap
 
-**Current version:** v1.25.0 | **Date:** 2026-05-13 | **License:** Apache 2.0
+**Current version:** v2.0.0 | **Date:** 2026-05-13 | **License:** Apache 2.0
 
 ---
 
 ## Executive Summary
 
-OmniLaTeX is a modular LaTeX template system with 28 `.sty` modules, 26 doctypes, 16 institution configs, 25 language support, 180 Lean 4 formal theorems, and 442 fast tests. This document charts the path from current state to production release (CTAN), ecosystem expansion, and long-term sustainability.
+OmniLaTeX is a modular LaTeX template system with 28 `.sty` modules, 26 doctypes, 21 institution configs, 25 language support, 180 Lean 4 formal theorems, and 442 fast tests. This document charts the path from current state to production release (CTAN), ecosystem expansion, and long-term sustainability.
 
 ---
 
-## Current State (v1.25.0)
+## Current State (v2.0.0)
 
 ### Maturity Assessment
 
@@ -28,13 +28,13 @@ OmniLaTeX is a modular LaTeX template system with 28 `.sty` modules, 26 doctypes
 
 | Metric | Value | Trend |
 |--------|-------|-------|
-| `.sty` modules | 28 | +1 (beamer, v1.25.0) |
+| `.sty` modules | 28 | +1 (beamer, v2.0.0) |
 | Document types | 26 (55+ aliases) | Stable |
-| Example templates | 46 | +3 (beamer, v1.25.0) |
-| Institution configs | 16 | Stable |
+| Example templates | 46 | +3 (beamer, v2.0.0) |
+| Institution configs | 21 | Stable |
 | Languages (full translations) | 18 | Stable |
 | Languages (polyglossia) | 25 | Stable |
-| Lean 4 theorems | 180 | +25 (beamer, v1.25.0) |
+| Lean 4 theorems | 180 | +25 (beamer, v2.0.0) |
 | Fast test count | 442 | +53 (institutions, v1.23.0) |
 | CI workflows | 14 | Stable |
 | Manual pages | 238 (12.4k lines) | Stable |
@@ -126,7 +126,7 @@ This is a breaking change release (major version bump) due to potential API surf
 ### Acceptance Criteria
 
 - `\documentclass[doctype=beamer-academic]{omnilatex}` compiles
-- 25+ Lean theorems for Beamer properties (already have 25 from v1.25.0)
+- 25+ Lean theorems for Beamer properties (already have 25 from v2.0.0)
 - All 3 Beamer examples compile clean
 - API stability doc updated with Beamer surface
 - No regressions in existing 43 non-Beamer examples
@@ -273,7 +273,7 @@ Current: 442 fast + 52 institution. Target areas:
 ## Version Timeline
 
 ```
-v1.25.0 (current) -----> v1.26.0 (CTAN) -----> v1.27.0 (Ecosystem)
+v2.0.0 (current) -----> v1.26.0 (CTAN) -----> v1.27.0 (Ecosystem)
      |                        1 week               2-3 weeks
      |
      +-----> v2.0.0 (Beamer) -----> v2.1.0 (Community) -----> v2.2.0 (Manual)
@@ -287,7 +287,7 @@ v1.25.0 (current) -----> v1.26.0 (CTAN) -----> v1.27.0 (Ecosystem)
 
 ## Success Metrics
 
-| Metric | Current (v1.25.0) | v2.0.0 Target | v3.0.0 Target |
+| Metric | Current (v2.0.0) | v2.0.0 Target | v3.0.0 Target |
 |--------|-------------------|---------------|---------------|
 | CTAN availability | Pending | Live | Live |
 | Overleaf gallery | No | Submitted | Premium |
@@ -295,7 +295,7 @@ v1.25.0 (current) -----> v1.26.0 (CTAN) -----> v1.27.0 (Ecosystem)
 | Lean 4 theorems | 180 | 200+ | 300+ |
 | Fast tests | 442 | 500+ | 700+ |
 | Examples | 46 | 50+ | 60+ |
-| Institutions | 16 | 25+ | 40+ |
+| Institutions | 21 | 25+ | 40+ |
 | Manual pages | 238 | 300+ | 945+ |
 | Web preview | No | No | Yes (MVP) |
 | Docker pulls | Tracking | 500+ | 5000+ |
@@ -311,5 +311,5 @@ v1.25.0 (current) -----> v1.26.0 (CTAN) -----> v1.27.0 (Ecosystem)
 | Lean 4 for verification | Mathematical rigor, no Mathlib dependency, decidable proofs | v1.4.0 |
 | Nix flake for reproducibility | Pinned dependencies, cross-platform, hermetic builds | v1.7.0 |
 | Apache 2.0 license | Permissive, compatible with TeX Live, community-friendly | v1.0.0 |
-| Beamer as module first | Incremental approach: module validates design before full class | v1.25.0 |
+| Beamer as module first | Incremental approach: module validates design before full class | v2.0.0 |
 | Docker multi-arch | arm64 (Apple Silicon) + amd64 coverage | v1.7.0 |

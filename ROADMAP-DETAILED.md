@@ -1,12 +1,12 @@
 # OmniLaTeX Detailed Roadmap
 
-**Current version:** v1.25.0 | **Date:** 2026-05-11 | **License:** Apache 2.0
+**Current version:** v2.0.0 | **Date:** 2026-05-11 | **License:** Apache 2.0
 
 ---
 
 ## Current State Assessment
 
-### What Works (v1.25.0)
+### What Works (v2.0.0)
 
 | Area | Status | Details |
 |------|--------|---------|
@@ -14,8 +14,8 @@
 | Document types | Stable | 26 doctypes, 55+ aliases, 3 KOMA-Script base classes (scrartcl/scrbook/scrreprt) |
 | Examples | Stable | 46 example templates, all compile on TeX Live 2025+ |
 | Languages | Stable | 25 via polyglossia, 18 with full OmniLaTeX translations (47 keys each) |
-| Institutions | Stable | 16 pluggable configs (ETH, MIT, Stanford, TUHH, TUM, Cambridge, etc.) |
-| Formal verification | Stable | 180 Lean 4 theorems across 16 modules, 0 `sorry`, all compile |
+| Institutions | Stable | 21 pluggable configs (ETH, MIT, Stanford, TUHH, TUM, Cambridge, etc.) |
+| Formal verification | Stable | 196 Lean 4 theorems across 16 modules, 0 `sorry`, all compile |
 | Test suite | Stable | 442 fast tests (48 skipped, 1 xfailed) |
 | CI/CD | Stable | 10 GitHub Actions + GitLab/Gitea/Forgejo/Woodpecker configs, 442 tests (structural, property, integration, institution) |
 | Pre-commit hooks | Stable | 25 hooks: trailing whitespace, black, isort, flake8, markdownlint, pytest gate, Lean gate |
@@ -33,7 +33,7 @@
 |----|----------|-------------|--------|
 | KI-001 | Medium | `DocumentSettings.lean` proof model does not match actual `DOCTYPE_TO_CLASS` mapping in `constants.py` (thesis/dictionary mapped to `report` in proof but `scrbook` in code) | RESOLVED in v1.18.0 |
 | KI-002 | Medium | `I18nCompleteness.lean` only covers 18 primary languages; secondary languages with polyglossia registration but no translations are unverified | RESOLVED in v1.18.0 |
-| KI-003 | Low | `visual_regression.py` SSIM script never runs in CI; `tests/references/` is empty | RESOLVED in v1.25.0 -- 46 reference PDFs generated, visual regression CI active |
+| KI-003 | Low | `visual_regression.py` SSIM script never runs in CI; `tests/references/` is empty | RESOLVED in v2.0.0 -- 46 reference PDFs generated, visual regression CI active |
 | KI-004 | Low | `hypothesis` not declared in `tests/pyproject.toml` dependencies; property tests silently skip without it | RESOLVED in v1.18.0 |
 | KI-005 | Low | Stale Docker digests in Forgejo/Woodpecker/GitLab/Gitea CI configs not auto-synced | AUDITED in v1.21.0 -- all consistent, sync automation recommended |
 | KI-006 | Low | No `pytest-cov` or coverage measurement; branch coverage unknown | RESOLVED in v1.19.0 |
@@ -212,7 +212,7 @@ preflight:     ## Run all checks before release
 
 ### 3.4 Additional Lean 4 Proofs -- DONE
 
-180 theorems across 16 modules, exceeded 100 target.
+196 theorems across 16 modules, exceeded 100 target.
 
 **Tasks:**
 
@@ -303,17 +303,17 @@ preflight:     ## Run all checks before release
 
 ## Metrics Dashboard
 
-### Current Metrics (v1.25.0)
+### Current Metrics (v2.0.0)
 
 | Metric | Value | Target |
 |--------|-------|--------|
 | Test cases (non-hypothesis) | 442 | >500 |
 | Test cases (with hypothesis) | 442 | >600 |
-| Lean 4 theorems | 180 | >100 |
-| Lean 4 modules | 15 | 15 |
+| Lean 4 theorems | 196 | >100 |
+| Lean 4 modules | 16 | 16 |
 | Document types | 26 | 30+ |
 | Examples | 46 | 50+ |
-| Institutions | 16 | 25+ |
+| Institutions | 21 | 25+ |
 | Languages (polyglossia) | 25 | 30+ |
 | Languages (full translations) | 18 | 25+ |
 | CI platforms | 5 | 5 |

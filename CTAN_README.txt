@@ -44,7 +44,7 @@ Features
 --------
   - 26 document type profiles with one-line switching
   - 55+ doctype aliases
-  - 16 institution configurations (TUHH, TUM, ETH, MIT, ...)
+  - 21 institution configurations (TUHH, TUM, ETH, MIT, ...)
   - 26 languages via polyglossia (EN, DE, FR, ES, PT, IT, NL,
     DA, RU, ZH, JA, KO, AR, HE)
   - CJK and RTL script support with font fallback chains
@@ -55,7 +55,7 @@ Features
   - Deterministic builds via Docker (multi-arch) and Nix flakes
   - Lean 4 formal verification for core algorithms
   - VS Code extension with doctype picker and build commands
-  - 43 example templates
+  - 47 example templates
 
 Overleaf
 --------
@@ -76,7 +76,7 @@ Repository
 
 Documentation
 -------------
-  Full documentation, 43 example templates, and performance
+  Full documentation, 47 example templates, and performance
   benchmarks are available in the GitHub repository:
 
     git clone https://github.com/WyattAu/OmniLaTeX-template.git
