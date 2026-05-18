@@ -3,13 +3,20 @@
 OmniLaTeX build entry point.
 
 Key capabilities:
-  • Explicit dev/prod/ultra modes with diagnostics announced up front.
-  • Comprehensive logging of every subprocess invocation with elapsed timing.
-  • Per-command verbose output toggled via --verbose / OMNILATEX_VERBOSE=1.
-  • High-level commands for root builds, example builds, cleaning, preflight, and tests.
-  • ALWAYS-CONCURRENT example building with a robust Rich UI or a simple TQDM-based fallback.
-  • Meticulously preserved build logic from the original script to ensure correctness.
-  • Robust success checking based on PDF existence, not exit codes.
+  • Explicit dev/prod/ultra modes with diagnostics
+    announced up front.
+  • Comprehensive logging of every subprocess invocation
+    with elapsed timing.
+  • Per-command verbose output toggled via
+    --verbose / OMNILATEX_VERBOSE=1.
+  • High-level commands for root builds, example builds,
+    cleaning, preflight, and tests.
+  • ALWAYS-CONCURRENT example building with a robust
+    Rich UI or a simple TQDM-based fallback.
+  • Meticulously preserved build logic from the original
+    script to ensure correctness.
+  • Robust success checking based on PDF existence,
+    not exit codes.
 """
 
 from __future__ import annotations
@@ -93,10 +100,15 @@ class ProjectConfig:
     build_dir: Path = Path("build")
 
     def is_ci(self) -> bool:
-        return any(os.environ.get(var) for var in ["CI", "GITHUB_ACTIONS", "GITLAB_CI"])
+        return any(
+            os.environ.get(var)
+            for var in ["CI", "GITHUB_ACTIONS", "GITLAB_CI"]
+        )
 
     def verbose_enabled(self) -> bool:
-        return os.environ.get("OMNILATEX_VERBOSE", "0").lower() in {"1", "true", "yes"}
+        return os.environ.get(
+            "OMNILATEX_VERBOSE", "0"
+        ).lower() in {"1", "true", "yes"}
 
 
 # -----------------------------------------------------------------------------
@@ -153,9 +165,13 @@ class CommandRunner:
         cwd: Optional[Path] = None,
         on_line: Optional[Callable[[str], None]] = None,
     ) -> Tuple[int, List[str]]:
-        """Executes a command, streams output, and returns (exit_code, logs). Does NOT raise on failure."""
+        """Executes a command, streams output, and returns
+        (exit_code, logs). Does NOT raise on failure."""
         if self.verbose:
-            self.ui.debug(f"RUN in '{cwd or Path.cwd()}': {' '.join(cmd_args)}")
+            self.ui.debug(
+                f"RUN in '{cwd or Path.cwd()}': "
+                f"{' '.join(cmd_args)}"
+            )
         env = os.environ.copy()
         env["BUILD_MODE"] = self.build_mode
         if extra_env:
@@ -295,7 +311,10 @@ class BuildTasks:
     def _save_build_cache(self, cache: dict) -> None:
         cache_path = self.config.build_dir / "build_cache.json"
         cache_path.parent.mkdir(parents=True, exist_ok=True)
-        cache_path.write_text(json.dumps(cache, indent=2) + "\n", encoding="utf-8")
+        cache_path.write_text(
+            json.dumps(cache, indent=2) + "\n",
+            encoding="utf-8",
+        )
 
     def _collect_source_files(self, example_name: str) -> List[Path]:
         repo_root = Path(__file__).resolve().parent
@@ -334,8 +353,9 @@ class BuildTasks:
 
     def _compile_example_worker(self, example_name: str) -> Tuple[str, bool, List[str]]:
         """
-        Worker function that faithfully reproduces the original script's logic.
-        Success is determined ONLY by the existence of the final PDF.
+        Worker function that faithfully reproduces the
+        original script's logic. Success is determined ONLY
+        by the existence of the final PDF.
         """
         all_logs = []
         start_time = time.perf_counter()
@@ -359,7 +379,8 @@ class BuildTasks:
                     and dest_pdf.exists()
                 ):
                     all_logs.append(
-                        f"[green]✓ Cache hit for {example_name}, skipping build.[/green]"
+                        "[green]✓ Cache hit for "
+                        f"{example_name}, skipping build.[/green]"
                     )
                     _timing_success = True
                     return example_name, True, all_logs
@@ -383,8 +404,13 @@ class BuildTasks:
             if self.force:
                 self.runner.run([LATEXMK_COMMAND, "-C"], cwd=example_dir)
 
-            for cache_dir in (Path(MINTED_CACHE_SUBDIR), Path(SVG_INKSCAPE_CACHE)):
-                (example_dir / cache_dir).mkdir(parents=True, exist_ok=True)
+            for cache_dir in (
+                Path(MINTED_CACHE_SUBDIR),
+                Path(SVG_INKSCAPE_CACHE),
+            ):
+                (example_dir / cache_dir).mkdir(
+                    parents=True, exist_ok=True
+                )
 
             minted_cache_dir = example_dir / MINTED_CACHE_SUBDIR
             minted_cache_dir.mkdir(parents=True, exist_ok=True)
@@ -403,12 +429,17 @@ class BuildTasks:
             all_logs.extend(logs_from_run)
             # --- End: EXACT reproduction of original script's core logic ---
 
-            # Create build/examples directory early to avoid race conditions in concurrent builds
+            # Create build/examples directory early to
+            # avoid race conditions in concurrent builds
             repo_root = Path(__file__).resolve().parent
             build_examples_dir = (
-                repo_root / self.config.build_dir / BUILD_EXAMPLES_SUBDIR
+                repo_root / self.config.build_dir
+                / BUILD_EXAMPLES_SUBDIR
             )
-            all_logs.append(f"[DEBUG] Build examples dir: {build_examples_dir}")
+            all_logs.append(
+                f"[DEBUG] Build examples dir: "
+                f"{build_examples_dir}"
+            )
             build_examples_dir.mkdir(parents=True, exist_ok=True)
 
             # THE SOLE CRITERION FOR SUCCESS: Does the PDF exist?
@@ -416,7 +447,8 @@ class BuildTasks:
             all_logs.append(f"[DEBUG] Checking for PDF at: {src_pdf}")
             if src_pdf.exists():
                 all_logs.append(
-                    f"[DEBUG] PDF exists, size: {src_pdf.stat().st_size} bytes"
+                    "[DEBUG] PDF exists, size: "
+                    f"{src_pdf.stat().st_size} bytes"
                 )
                 dest_pdf = build_examples_dir / f"{example_name}.pdf"
                 all_logs.append(f"[DEBUG] Destination PDF: {dest_pdf}")
@@ -425,20 +457,25 @@ class BuildTasks:
                     all_logs.append(f"[DEBUG] Copy operation completed")
                     if dest_pdf.exists():
                         all_logs.append(
-                            f"[DEBUG] Destination PDF confirmed, size: {dest_pdf.stat().st_size} bytes"
+                            "[DEBUG] Destination PDF "
+                            "confirmed, size: "
+                            f"{dest_pdf.stat().st_size} bytes"
                         )
                         all_logs.append(
                             f"[green]✓ PDF found and copied to build directory.[/green]"
                         )
                     else:
                         all_logs.append(
-                            f"[bold red]✗ FAILURE: Copy reported success but destination PDF not found[/bold red]"
+                            "[bold red]✗ FAILURE: Copy reported "
+                            "success but destination PDF not "
+                            "found[/bold red]"
                         )
                         return example_name, False, all_logs
                 except Exception as copy_exc:
                     all_logs.append(f"[DEBUG] Copy exception: {copy_exc}")
                     all_logs.append(
-                        f"[bold red]✗ FAILURE: Could not copy PDF: {copy_exc}[/bold red]"
+                        "[bold red]✗ FAILURE: Could not copy "
+                        f"PDF: {copy_exc}[/bold red]"
                     )
                     return example_name, False, all_logs
                 _timing_success = True
@@ -457,12 +494,14 @@ class BuildTasks:
                 return example_name, True, all_logs
             else:
                 all_logs.append(
-                    f"[bold red]✗ FAILURE: PDF not found at {src_pdf} after build attempt.[/bold red]"
+                    "[bold red]✗ FAILURE: PDF not found at "
+                    f"{src_pdf} after build attempt.[/bold red]"
                 )
                 return example_name, False, all_logs
         except Exception as exc:
             all_logs.append(
-                f"[bold red]✗ A critical error occurred in worker for {example_name}: {exc}[/bold red]"
+                "[bold red]✗ A critical error occurred in "
+                f"worker for {example_name}: {exc}[/bold red]"
             )
             return example_name, False, all_logs
         finally:
@@ -512,20 +551,37 @@ class BuildTasks:
 
         layout = Layout()
         layout.split(
-            Layout(overall_progress, size=3),
-            Layout(Panel(Text(""), title="[b]Active Workers[/b]"), name="jobs"),
+            Layout(
+                overall_progress, size=3
+            ),
             Layout(
                 Panel(
-                    Text(""), title="[b yellow]Logs[/b yellow]", border_style="green"
+                    Text(""),
+                    title="[b]Active Workers[/b]",
+                ),
+                name="jobs",
+            ),
+            Layout(
+                Panel(
+                    Text(""),
+                    title="[b yellow]Logs[/b yellow]",
+                    border_style="green",
                 ),
                 name="logs",
             ),
         )
         active_jobs_text, log_panel_text = Text(""), Text("")
-        layout["jobs"].update(Panel(active_jobs_text, title="[b]Active Workers[/b]"))
+        layout["jobs"].update(
+            Panel(
+                active_jobs_text,
+                title="[b]Active Workers[/b]",
+            )
+        )
         layout["logs"].update(
             Panel(
-                log_panel_text, title="[b yellow]Logs[/b yellow]", border_style="green"
+                log_panel_text,
+                title="[b yellow]Logs[/b yellow]",
+                border_style="green",
             )
         )
 
@@ -534,15 +590,24 @@ class BuildTasks:
             lines = []
             for name, t0 in active_jobs.items():
                 elapsed = time.perf_counter() - t0
-                lines.append(f"[cyan]⠋ {name}[/cyan]  [dim]{elapsed:.1f}s[/dim]")
-            active_jobs_text.plain = "\n".join(lines) if lines else "[dim]—[/dim]"
+                lines.append(
+                    f"[cyan]⠋ {name}[/cyan]"
+                    f"  [dim]{elapsed:.1f}s[/dim]"
+                )
+            active_jobs_text.plain = (
+                "\n".join(lines)
+                if lines
+                else "[dim]—[/dim]"
+            )
 
         results = []
         with Live(layout, console=console, screen=True, refresh_per_second=10):
             with ThreadPoolExecutor(max_workers=self.jobs) as executor:
                 futures = {}
                 for name in example_names:
-                    future = executor.submit(self._compile_example_worker, name)
+                    future = executor.submit(
+                        self._compile_example_worker, name
+                    )
                     futures[future] = name
                     with active_lock:
                         active_jobs[name] = time.perf_counter()
@@ -557,15 +622,22 @@ class BuildTasks:
                             log_lines.extend(logs)
                     except Exception as exc:
                         results.append(False)
-                        log_lines.append(f"[b red]FATAL ERROR: {name}: {exc}[/b red]")
+                        log_lines.append(
+                            f"[b red]FATAL ERROR: "
+                            f"{name}: {exc}[/b red]"
+                        )
                     finally:
                         with active_lock:
                             active_jobs.pop(name, None)
                             _refresh_active()
                             log_panel_text.plain = "\n".join(log_lines)
-                        overall_progress.update(overall_task, advance=1)
+                        overall_progress.update(
+                            overall_task, advance=1
+                        )
         self.ui.header(
-            f"Build Summary: {sum(1 for r in results if r)}/{len(example_names)} successful"
+            "Build Summary: "
+            f"{sum(1 for r in results if r)}"
+            f"/{len(example_names)} successful"
         )
 
     def _build_examples_simple_concurrent(self, example_names: List[str]):
@@ -589,7 +661,10 @@ class BuildTasks:
                             if success
                             else self.ui.red + "✗ Failed"
                         )
-                        self.ui.info(f"Finished: {name} ({status}{self.ui.end})")
+                        self.ui.info(
+                            f"Finished: {name} "
+                            f"({status}{self.ui.end})"
+                        )
                         if self.runner.verbose or not success:
                             self.ui.debug(f"--- Logs for {name} ---")
                             for line in logs:

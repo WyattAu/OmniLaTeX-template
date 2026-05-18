@@ -18,7 +18,7 @@ jobs:
     steps:
     - name: Checkout repository
       # v4
-      uses: https://github.com/actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      uses: https://code.forgejo.org/actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       with:
         fetch-depth: 0
 
@@ -37,7 +37,7 @@ jobs:
     steps:
     - name: Checkout repository
       # v4
-      uses: https://github.com/actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      uses: https://code.forgejo.org/actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       with:
         fetch-depth: 0
 
@@ -50,14 +50,14 @@ jobs:
 
     - name: Upload root PDF
       # v4
-      uses: https://github.com/actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      uses: https://code.forgejo.org/actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: PDF-Root
         path: main.pdf
 
     - name: Upload example PDFs
       # v4
-      uses: https://github.com/actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      uses: https://code.forgejo.org/actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: PDF-Examples
         path: build/examples/*.pdf
@@ -71,20 +71,20 @@ jobs:
     steps:
     - name: Checkout repository
       # v4
-      uses: https://github.com/actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      uses: https://code.forgejo.org/actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       with:
         fetch-depth: 0
 
     - name: Download root PDF
       # v4
-      uses: https://github.com/actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      uses: https://code.forgejo.org/actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
       with:
         name: PDF-Root
         path: .
 
     - name: Download example PDFs
       # v4
-      uses: https://github.com/actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      uses: https://code.forgejo.org/actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
       with:
         name: PDF-Examples
         path: build/examples

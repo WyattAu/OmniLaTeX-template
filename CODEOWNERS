@@ -1,0 +1,21 @@
+# Default code owners
+* @WyattAu
+
+# Tests
+/tests/ @WyattAu
+
+# CI/CD workflows
+/.github/workflows/ @WyattAu
+/.woodpecker/ @WyattAu
+/.forgejo/ @WyattAu
+/.gitea/ @WyattAu
+/.gitlab/ @WyattAu
+
+# LaTeX source
+*.cls @WyattAu
+*.sty @WyattAu
+*.tex @WyattAu
+lua/ @WyattAu
+
+# Lean 4 proofs
+specs/proofs/ @WyattAu

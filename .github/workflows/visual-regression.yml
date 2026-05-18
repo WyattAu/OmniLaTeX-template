@@ -166,7 +166,12 @@ jobs:
         git add tests/references/*.pdf
         if git diff --cached --quiet; then
           echo "No changes to reference PDFs."
-        else
-          git commit -m "chore: regenerate visual regression references"
-          git push
         fi
+
+    - name: Create pull request for updated references
+      if: '!git diff --cached --quiet'
+      uses: peter-evans/create-pull-request@v7
+      with:
+        branch: chore/update-visual-references
+        title: 'chore: update visual regression reference PDFs'
+        delete-branch: true

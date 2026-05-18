@@ -15,7 +15,7 @@ Built on LuaTeX (LuaHBTeX 1.21.0) + KOMA-Script + TeX Live 2025. Compile with `l
 | **CI platforms** | 10 GitHub Actions workflows + 4 other platforms | 0–1 |
 | **Font fallbacks** | Graceful degradation with warnings | Crash or silent substitution |
 | **Institution configs** | 21 pluggable (`config/institutions/`) | Hardcoded |
-| **Languages** | 25 via polyglossia | 0–2 |
+| **Languages** | 20 full translations + 25 via polyglossia | 0–2 |
 | **Citation styles** | 9 (IEEE, ACM, APA, Chicago, Nature, Science, Harvard, Vancouver, MLA) | 0–1 |
 | **Color themes** | 6 + dark/light toggle (default, midnight, forest, rose, monochrome, sepia) | 0 |
 
@@ -71,9 +71,9 @@ All options: `language`, `doctype`, `titlestyle`, `institution`, `censoring`, `l
 
 ## Languages
 
-OmniLaTeX supports 18 languages with full OmniLaTeX translations and 25 via polyglossia:
+OmniLaTeX supports 20 languages with full OmniLaTeX translations and 25 via polyglossia:
 
-**Languages with full translations:** English, German, French, Spanish, Portuguese, Italian, Dutch, Polish, Turkish, Greek, Russian, Czech, Danish, Swedish, Finnish, Norwegian, Vietnamese, Hindi
+**Languages with full translations:** English, German, French, Spanish, Portuguese, Italian, Dutch, Polish, Catalan, Brazilian Portuguese, Romanian, Turkish, Greek, Russian, Ukrainian, Czech, Slovak, Slovenian
 
 **Other languages (available via Polyglossia):** Chinese (Simplified + Traditional), Japanese, Korean, Arabic, Hebrew, Persian, Danish, Swedish, Finnish, Norwegian, Vietnamese, Hindi, Serbian, Croatian, Bulgarian, Mongolian
 
@@ -105,6 +105,10 @@ OmniLaTeX supports 18 languages with full OmniLaTeX translations and 25 via poly
 | `multi-language` | article | Multilingual document (English/German) |
 | `poster` | poster | Conference poster (A1 landscape) |
 | `presentation` | presentation | Presentation slides (KOMA-based) |
+| `beamer-minimal` | presentation | Minimal Beamer presentation |
+| `beamer-corporate` | presentation | Corporate Beamer presentation |
+| `beamer-academic` | presentation | Academic Beamer presentation |
+| `beamer-defense` | presentation | Thesis defense presentation |
 | `letter` | letter | Formal letter |
 | `accessibility-test` | article | Tagged PDF (PDF/UA-1) via tagpdf |
 | `cjk-chinese` | article | Chinese document with CJK fonts |

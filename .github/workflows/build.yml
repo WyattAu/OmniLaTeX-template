@@ -14,6 +14,18 @@ on:
   workflow_dispatch:
 
 jobs:
+  dependency-review:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+    - name: Dependency Review
+      uses: actions/dependency-review-action@v4
+      with:
+        fail-on-severity: moderate
+
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 60
