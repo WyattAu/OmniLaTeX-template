@@ -1,8 +1,5 @@
 name: Read Docker Image Digest
 description: Reads the pinned Docker image digest from .env.docker
-inputs:
-  required: false
-  default: ''
 outputs:
   image:
     description: Full Docker image reference with digest
