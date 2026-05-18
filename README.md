@@ -217,7 +217,7 @@ See [User Guide](docs/USER_GUIDE.md#build-system) for all commands and options.
 
 ### GitHub Actions
 
-10 workflows using digest-pinned Docker images for reproducibility:
+ 11 workflows using digest-pinned Docker images for reproducibility:
 
 | Workflow | Purpose |
 |----------|---------|
@@ -231,6 +231,7 @@ See [User Guide](docs/USER_GUIDE.md#build-system) for all commands and options.
 | `ctan-upload.yml` | Automated CTAN submission with pre-flight validation |
 | `integration-matrix.yml` | Cross-version compatibility matrix |
 | `visual-regression.yml` | PDF visual regression (build, diff, regenerate) |
+| `performance-regression.yml` | Build time regression detection (20% threshold) |
 
 ### Other Platforms
 
