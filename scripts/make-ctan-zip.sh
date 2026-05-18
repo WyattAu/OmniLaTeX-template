@@ -42,7 +42,8 @@ find "$TDS_DIR" -name "*.aux" -o -name "*.log" -o -name "*.pdf" \
     -exec rm -rf {} + 2>/dev/null || true
 
 # ── Build TDS zip ────────────────────────────────────────────────────────────
-(cd "$TDS_DIR" && zip -r "$CTAN_DIR/${PKG_NAME}.tds.zip" .)
+mkdir -p "$REPO_ROOT/ctan"
+(cd "$TDS_DIR" && zip -r "$REPO_ROOT/ctan/${PKG_NAME}.tds.zip" .)
 
 # ── Build CTAN package zip ───────────────────────────────────────────────────
 cp "$REPO_ROOT/CTAN_README.txt" "$CTAN_DIR/README"
@@ -54,7 +55,7 @@ if [ -f "$TDS_DIR/doc/latex/$PKG_NAME/${PKG_NAME}.pdf" ]; then
     CTAN_FILES="$CTAN_FILES ${PKG_NAME}.pdf"
 fi
 
-mkdir -p "$REPO_ROOT/ctan"
+cp "$REPO_ROOT/ctan/${PKG_NAME}.tds.zip" "$CTAN_DIR/"
 (cd "$CTAN_DIR" && zip -r "$REPO_ROOT/ctan/${PKG_NAME}.zip" $CTAN_FILES)
 
 # ── Also build simple flat zip (for non-TDS distribution) ────────────────────
