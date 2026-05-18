@@ -59,6 +59,7 @@ def _compile_tex(content: str) -> bool:
         return result.returncode == 0 and pdf_path.exists()
 
 
+@pytest.mark.slow
 @pytest.mark.parametrize("name,description,content", UNICODE_TEST_CASES)
 def test_unicode_compilation(name, description, content):
     """Test that documents with various Unicode content compile."""

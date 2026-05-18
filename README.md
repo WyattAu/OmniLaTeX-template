@@ -15,7 +15,7 @@ Built on LuaTeX (LuaHBTeX 1.21.0) + KOMA-Script + TeX Live 2025. Compile with `l
 | **CI platforms** | 10 GitHub Actions workflows + 4 other platforms | 0–1 |
 | **Font fallbacks** | Graceful degradation with warnings | Crash or silent substitution |
 | **Institution configs** | 21 pluggable (`config/institutions/`) | Hardcoded |
-| **Languages** | 20 full translations + 25 via polyglossia | 0–2 |
+| **Languages** | 18 full translations + 25 via polyglossia | 0–2 |
 | **Citation styles** | 9 (IEEE, ACM, APA, Chicago, Nature, Science, Harvard, Vancouver, MLA) | 0–1 |
 | **Color themes** | 6 + dark/light toggle (default, midnight, forest, rose, monochrome, sepia) | 0 |
 
@@ -71,11 +71,11 @@ All options: `language`, `doctype`, `titlestyle`, `institution`, `censoring`, `l
 
 ## Languages
 
-OmniLaTeX supports 20 languages with full OmniLaTeX translations and 25 via polyglossia:
+OmniLaTeX supports 18 languages with full OmniLaTeX translations and 25 via polyglossia:
 
-**Languages with full translations:** English, German, French, Spanish, Portuguese, Italian, Dutch, Polish, Catalan, Brazilian Portuguese, Romanian, Turkish, Greek, Russian, Ukrainian, Czech, Slovak, Slovenian
+**Languages with full translations:** English, German, French, Spanish, Portuguese, Italian, Dutch, Polish, Czech, Greek, Turkish, Russian, Vietnamese, Hindi, Swedish, Finnish, Danish, Norwegian
 
-**Other languages (available via Polyglossia):** Chinese (Simplified + Traditional), Japanese, Korean, Arabic, Hebrew, Persian, Danish, Swedish, Finnish, Norwegian, Vietnamese, Hindi, Serbian, Croatian, Bulgarian, Mongolian
+**Other languages (available via Polyglossia):** Chinese (Simplified + Traditional), Japanese, Korean, Arabic, Hebrew, Persian, Catalan, Brazilian Portuguese, Romanian, Ukrainian, Slovak, Slovenian, Serbian, Croatian, Bulgarian, Mongolian
 
 ## Examples
 

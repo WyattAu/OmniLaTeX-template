@@ -109,6 +109,15 @@ User writes:  \documentclass[doctype=thesis,institution=tuhh,language=german]{om
 
 Create a pluggable branding config for a university, company, or organization.
 
+### Prerequisites Checklist
+
+Before starting, verify you have:
+
+- [ ] The institution's official brand guidelines (colors, logo format)
+- [ ] Logo files in PDF or PNG format (vector preferred)
+- [ ] The institution's primary and secondary brand colors (RGB or HEX)
+- [ ] Permission to redistribute the logo under Apache 2.0 license
+
 ### Step 1: Create the directory
 
 ```bash
@@ -153,7 +162,13 @@ mkdir -p assets/logos/myuniversity
 # Place logo_en.pdf and logo_de.pdf here
 ```
 
-### Step 4: Test it
+Logo requirements:
+- Format: PDF (preferred) or high-resolution PNG
+- No transparent backgrounds for print doctypes
+- Maximum height: 3cm for title pages (configurable)
+- File naming: `logo_en.pdf`, `logo_de.pdf` (language suffix)
+
+### Step 4: Test compilation
 
 ```latex
 % In any example .tex file:
@@ -164,10 +179,40 @@ mkdir -p assets/logos/myuniversity
 python build.py build-example minimal-starter
 ```
 
-### Step 5: Add to integration matrix
+Verify:
+- [ ] Document compiles without errors
+- [ ] Logo renders at correct size and position
+- [ ] Colors match the official brand guidelines
+- [ ] No LaTeX warnings in build log
+
+### Step 5: Run institution validation tests
+
+```bash
+python -m pytest tests/test_institutions.py -v -k myuniversity
+```
+
+The test suite validates:
+- `\ProvidesPackage` metadata is present and correct
+- Color definitions use valid RGB values
+- Logo translation keys are defined for at least English
+- The .sty file loads without errors
+
+### Step 6: Add to CI integration matrix (optional)
 
 Edit `.github/workflows/integration-matrix.yml` and add your institution
-to the matrix if desired.
+to the matrix to get CI validation on every push.
+
+### Institution PR Checklist
+
+- [ ] Directory: `config/institutions/<name>/<name>.sty`
+- [ ] `\ProvidesPackage` includes version date and description
+- [ ] At least `english` logo translation defined
+- [ ] Primary and secondary colors defined with `\definecolor`
+- [ ] Logo assets placed in `assets/logos/<name>/`
+- [ ] Example compilation passes: `python build.py build-example minimal-starter`
+- [ ] Institution tests pass: `python -m pytest tests/test_institutions.py`
+- [ ] CHANGELOG entry added under `[Unreleased] > Added`
+- [ ] No hardcoded paths or absolute paths in the .sty file
 
 ---
 

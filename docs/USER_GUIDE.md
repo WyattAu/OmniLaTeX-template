@@ -114,32 +114,35 @@ OmniLaTeX uses Polyglossia for language support. Set with
 
 ### Languages with full OmniLaTeX translations
 
-| Language | Key |
-|----------|-----|
-| English | `english` |
-| German | `german` |
-| French | `french` |
-| Spanish | `spanish` |
-| Portuguese | `portuguese` |
-| Italian | `italian` |
-| Dutch | `dutch` |
-| Polish | `polish` |
-| Catalan | `catalan` |
-| Brazilian Portuguese | `brazilian` |
-| Romanian | `romanian` |
-| Turkish | `turkish` |
-| Greek | `greek` |
-| Russian | `russian` |
-| Ukrainian | `ukrainian` |
-| Czech | `czech` |
-| Slovak | `slovak` |
-| Slovenian | `slovenian` |
+18 languages have custom UI-string translations (Glossary, Supervisor,
+Examiner, compiled-on timestamp, etc.):
+
+| Language | Key | Coverage |
+|----------|-----|----------|
+| English | `english` | Base (all keys) |
+| German | `german` | Base (all keys) |
+| French | `french` | Base (all keys) |
+| Spanish | `spanish` | Base (all keys) |
+| Russian | `russian` | Full (25+ keys) |
+| Italian | `italian` | Full (25+ keys) |
+| Portuguese | `portuguese` | Full (25+ keys) |
+| Dutch | `dutch` | Full (25+ keys) |
+| Czech | `czech` | Full (25+ keys) |
+| Polish | `polish` | Full (25+ keys) |
+| Greek | `greek` | Full (25+ keys) |
+| Turkish | `turkish` | Full (25+ keys) |
+| Vietnamese | `vietnamese` | Full (25+ keys) |
+| Hindi | `hindi` | Full (25+ keys) |
+| Swedish | `swedish` | Full (25+ keys) |
+| Finnish | `finnish` | Full (25+ keys) |
+| Danish | `danish` | Full (25+ keys) |
+| Norwegian | `norsk` | Full (25+ keys) |
 
 ### Other languages (standard captions via Polyglossia)
 
 Chinese (Simplified + Traditional), Japanese, Korean, Arabic, Hebrew, Persian,
-Danish, Swedish, Finnish, Norwegian, Vietnamese, Hindi, Serbian, Croatian,
-Bulgarian, Mongolian.
+Catalan, Brazilian Portuguese, Romanian, Ukrainian, Slovak, Slovenian,
+Serbian, Croatian, Bulgarian, Mongolian.
 
 ### CJK and RTL
 

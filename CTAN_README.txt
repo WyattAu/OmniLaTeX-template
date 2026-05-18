@@ -37,8 +37,8 @@ Languages
 
   CJK and RTL script support with automatic font fallback chains.
 
-  18 translation languages (EN, DE, FR, ES, PT, IT, NL, RU, PL,
-  CZ, EL, TR) for UI strings.
+  18 translation languages (EN, DE, FR, ES, PT, IT, NL, PL,
+  CZ, EL, TR, RU, VI, HI, SV, FI, DA, NO) for UI strings.
 
 Features
 --------
