@@ -84,8 +84,8 @@ jobs:
         if [ -d pages ]; then
           cp -r pages/. github-pages/
         fi
-        # Copy all example PDFs preserving directory structure
-        # e.g. build/examples/thesis/main.pdf -> github-pages/pdfs/thesis/main.pdf
+        # Copy all example PDFs (flat structure)
+        # e.g. build/examples/thesis.pdf -> github-pages/pdfs/thesis.pdf
         if [ -d build/examples ]; then
           cp -r build/examples/. github-pages/pdfs/
         fi

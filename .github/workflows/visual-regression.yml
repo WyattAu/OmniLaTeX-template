@@ -48,7 +48,7 @@ jobs:
       run: docker pull "${{ steps.digest.outputs.image }}"
 
     - name: Cache built PDFs
-      uses: actions/cache@v4
+      uses: actions/cache@0c4571b45c8c25430183612f1470ac4b9e0f8f29
       with:
         path: |
           build/examples/*.pdf
