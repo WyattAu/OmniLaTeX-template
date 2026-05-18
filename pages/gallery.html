@@ -206,7 +206,7 @@ footer a{color:var(--text-secondary)}
   <a href="#profiles">Templates</a>
   <a href="#preview">Preview</a>
   <a href="#quickstart">Quick Start</a>
-  <a href="https://github.com/WyattAu/OmniLaTeX-template" target="_blank">GitHub</a>
+  <a href="https://github.com/WyattAu/OmniLaTeX-template" target="_blank" rel="noopener noreferrer">GitHub</a>
 </nav>
 
 <main>
@@ -310,8 +310,8 @@ footer a{color:var(--text-secondary)}
 <footer>
   <p>
     OmniLaTeX Template &mdash;
-    <a href="https://github.com/WyattAu/OmniLaTeX-template" target="_blank">GitHub</a> &middot;
-    <a href="https://github.com/WyattAu/OmniLaTeX-template/issues" target="_blank">Issues</a>
+    <a href="https://github.com/WyattAu/OmniLaTeX-template" target="_blank" rel="noopener noreferrer">GitHub</a> &middot;
+    <a href="https://github.com/WyattAu/OmniLaTeX-template/issues" target="_blank" rel="noopener noreferrer">Issues</a>
   </p>
 </footer>
 
@@ -319,22 +319,22 @@ footer a{color:var(--text-secondary)}
 
 <script>
 const PROFILES = [
-  {id:'thesis',        name:'Thesis',           desc:'Academic thesis',               cls:'scrbook',  icon:'&#x1F4DC;'},
-  {id:'dissertation',  name:'Dissertation',      desc:'Dissertation',                  cls:'scrbook',  icon:'&#x1F393;'},
-  {id:'article',       name:'Article',           desc:'Standard article',              cls:'scrartcl', icon:'&#x1F4C4;'},
-  {id:'journal',       name:'Journal',           desc:'Journal article',               cls:'scrartcl', icon:'&#x1F4F0;'},
-  {id:'cv',            name:'CV',                desc:'Curriculum vitae',              cls:'scrartcl', icon:'&#x1F4CB;'},
-  {id:'presentation',  name:'Presentation',      desc:'Presentation slides',           cls:'scrartcl', icon:'&#x1F4CA;'},
-  {id:'poster',        name:'Poster',            desc:'Conference poster',             cls:'scrartcl', icon:'&#x1F3A8;'},
-  {id:'letter',        name:'Letter',            desc:'Formal letter',                 cls:'scrartcl', icon:'&#x2709;&#xFE0F;'},
-  {id:'book',          name:'Book',              desc:'Book',                          cls:'scrbook',  icon:'&#x1F4DA;'},
-  {id:'manual',        name:'Manual',            desc:'Manual / handbook',             cls:'scrreprt', icon:'&#x1F4D1;'},
-  {id:'technicalreport',name:'Technical Report', desc:'Technical report',              cls:'scrreprt', icon:'&#x1F4CC;'},
-  {id:'standard',      name:'Standard',          desc:'Standards document',            cls:'scrreprt', icon:'&#x1F6E0;&#xFE0F;'},
-  {id:'patent',        name:'Patent',            desc:'Patent application',            cls:'scrreprt', icon:'&#x1F4E2;'},
-  {id:'cover-letter',  name:'Cover Letter',      desc:'Cover letter',                  cls:'scrartcl', icon:'&#x1F4E7;'},
-  {id:'dictionary',    name:'Dictionary',        desc:'Dictionary / lexicon',          cls:'scrbook',  icon:'&#x1F524;'},
-  {id:'inlinepaper',   name:'Inline Paper',      desc:'Inline research paper',         cls:'scrartcl', icon:'&#x1F50D;'},
+  {id:'thesis',        name:'Thesis',           desc:'Academic thesis',               cls:'scrbook',  icon:'Doc'},
+  {id:'dissertation',  name:'Dissertation',      desc:'Dissertation',                  cls:'scrbook',  icon:'Dis'},
+  {id:'article',       name:'Article',           desc:'Standard article',              cls:'scrartcl', icon:'Art'},
+  {id:'journal',       name:'Journal',           desc:'Journal article',               cls:'scrartcl', icon:'Jnl'},
+  {id:'cv',            name:'CV',                desc:'Curriculum vitae',              cls:'scrartcl', icon:'CV'},
+  {id:'presentation',  name:'Presentation',      desc:'Presentation slides',           cls:'scrartcl', icon:'Pres'},
+  {id:'poster',        name:'Poster',            desc:'Conference poster',             cls:'scrartcl', icon:'Pos'},
+  {id:'letter',        name:'Letter',            desc:'Formal letter',                 cls:'scrartcl', icon:'Let'},
+  {id:'book',          name:'Book',              desc:'Book',                          cls:'scrbook',  icon:'Bk'},
+  {id:'manual',        name:'Manual',            desc:'Manual / handbook',             cls:'scrreprt', icon:'Man'},
+  {id:'technicalreport',name:'Technical Report', desc:'Technical report',              cls:'scrreprt', icon:'TR'},
+  {id:'standard',      name:'Standard',          desc:'Standards document',            cls:'scrreprt', icon:'Std'},
+  {id:'patent',        name:'Patent',            desc:'Patent application',            cls:'scrreprt', icon:'Pat'},
+  {id:'cover-letter',  name:'Cover Letter',      desc:'Cover letter',                  cls:'scrartcl', icon:'CL'},
+  {id:'dictionary',    name:'Dictionary',        desc:'Dictionary / lexicon',          cls:'scrbook',  icon:'Dic'},
+  {id:'inlinepaper',   name:'Inline Paper',      desc:'Inline research paper',         cls:'scrartcl', icon:'IP'},
 ];
 
 const INST_MAP = {
@@ -375,7 +375,7 @@ function getDocClass() {
   const lang = langSel.value;
   const inst = instSel.value;
   const profile = PROFILES.find(p => p.id === selected);
-  let opts = `profile=${profile.id},lang=${lang}`;
+  let opts = `doctype=${profile.id},language=${lang}`;
   if (inst !== 'none') opts += `,institution=${inst}`;
   return `\\documentclass[${opts}]{omnilatex}`;
 }
@@ -384,7 +384,7 @@ function updatePreview() {
   const lang = langSel.value;
   const inst = instSel.value;
   const profile = PROFILES.find(p => p.id === selected);
-  let optsParts = [`profile=<span class="val">${profile.id}</span>`, `lang=<span class="val">${lang}</span>`];
+  let optsParts = [`doctype=<span class="val">${profile.id}</span>`, `language=<span class="val">${lang}</span>`];
   if (inst !== 'none') optsParts.push(`institution=<span class="val">${inst}</span>`);
   const optsStr = optsParts.join(',<span class="opt"> </span>');
   codeOut.innerHTML =
