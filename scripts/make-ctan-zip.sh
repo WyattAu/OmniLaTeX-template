@@ -55,7 +55,8 @@ if [ -f "$TDS_DIR/doc/latex/$PKG_NAME/${PKG_NAME}.pdf" ]; then
     CTAN_FILES="$CTAN_FILES ${PKG_NAME}.pdf"
 fi
 
-cp "$REPO_ROOT/ctan/${PKG_NAME}.tds.zip" "$CTAN_DIR/"
+TDS_ZIP="$REPO_ROOT/ctan/${PKG_NAME}.tds.zip"
+cp "$TDS_ZIP" "$CTAN_DIR/"
 (cd "$CTAN_DIR" && zip -r "$REPO_ROOT/ctan/${PKG_NAME}.zip" $CTAN_FILES)
 
 # ── Also build simple flat zip (for non-TDS distribution) ────────────────────
