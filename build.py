@@ -154,6 +154,9 @@ class TerminalOutput:
 # Command Execution
 # -----------------------------------------------------------------------------
 class CommandRunner:
+    """Default timeout for all subprocess invocations (seconds)."""
+    DEFAULT_TIMEOUT = 3600  # 1 hour
+
     def __init__(self, ui: TerminalOutput, build_mode: str, verbose: bool):
         self.ui, self.build_mode, self.verbose = ui, build_mode, verbose
 
@@ -164,6 +167,7 @@ class CommandRunner:
         extra_env: Optional[Dict[str, str]] = None,
         cwd: Optional[Path] = None,
         on_line: Optional[Callable[[str], None]] = None,
+        timeout: Optional[int] = None,
     ) -> Tuple[int, List[str]]:
         """Executes a command, streams output, and returns
         (exit_code, logs). Does NOT raise on failure."""
@@ -194,7 +198,7 @@ class CommandRunner:
                     logs.append(line.rstrip())
                     if on_line:
                         on_line(line.rstrip())
-            return_code = process.wait()
+            return_code = process.wait(timeout=timeout or self.DEFAULT_TIMEOUT)
             return return_code, logs
         except FileNotFoundError as e:
             return -1, [f"Command not found: {cmd_args[0]}", str(e)]
@@ -202,6 +206,10 @@ class CommandRunner:
             return -1, [f"Permission denied: {cmd_args[0]}", str(e)]
         except OSError as e:
             return -1, [f"OS error running {cmd_args[0]}: {e}"]
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait()
+            return -1, [f"Command timed out after {self.timeout}s: {cmd_args[0]}"]
 
 
 @contextmanager
@@ -529,7 +537,7 @@ class BuildTasks:
                         )
                         package_info = parse_log_for_package_times(log_content)
                         timing_record["package_timing"] = package_info
-                    except Exception:
+                    except (OSError, UnicodeDecodeError, KeyError):
                         pass
                 with self._timings_lock:
                     self.timings_data.append(timing_record)
@@ -710,14 +718,14 @@ class BuildTasks:
                     ),
                 },
             }
-            metrics_path.write_text(json.dumps(summary, indent=2) + "\n")
+            metrics_path.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
             self.ui.success(f"Timing metrics written to {metrics_path}")
 
             history_dir = self.config.build_dir / "metrics_history"
             history_dir.mkdir(parents=True, exist_ok=True)
             timestamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
             history_path = history_dir / f"metrics_{timestamp}.json"
-            history_path.write_text(json.dumps(summary, indent=2) + "\n")
+            history_path.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
             self.ui.success(f"Metrics history written to {history_path}")
 
     # --- ALL ORIGINAL COMMANDS ---
@@ -813,9 +821,9 @@ class BuildTasks:
                         f"[red]✗ Failed (exit {exit_code})[/red]"
                     )
                 status_table.rows[1].cells[1] = Text(f"{elapsed:.1f}s")
-        except Exception:
+        except Exception as exc:
             # Dashboard failed, fall back to simple run
-            self.ui.warning("Dashboard error, falling back to simple output.")
+            self.ui.warning(f"Dashboard error ({exc}), falling back to simple output.")
             return self.runner.run(cmd_args)
 
         return exit_code, logs
@@ -839,7 +847,7 @@ class BuildTasks:
                     self.runner.run(
                         [LATEXMK_COMMAND, "-c"], cwd=Path("examples") / name
                     )
-                except Exception:
+                except (OSError, subprocess.SubprocessError):
                     self.ui.warning(f"Could not clean example {name}")
 
     def clean_pdf(self, _: object | None = None) -> None:
@@ -920,6 +928,11 @@ class BuildTasks:
                     if path.suffix in extensions:
                         ui.info(f"\nChange detected: {path}")
                         self._rebuild_affected(path, files)
+            except FileNotFoundError:
+                ui.error(
+                    "Neither watchdog nor inotifywait found. "
+                    "Install one to use watch mode: pip install watchdog"
+                )
             except KeyboardInterrupt:
                 process.terminate()
 
@@ -946,7 +959,7 @@ class BuildTasks:
                 m = re.match(r".*TeX Live (\d{4})", line)
                 if m:
                     return int(m.group(1))
-        except Exception:
+        except (subprocess.TimeoutExpired, OSError, ValueError):
             pass
         return None
 
@@ -956,7 +969,7 @@ class BuildTasks:
                 ["kpsewhich", f"{pkg}.sty"], capture_output=True, text=True, timeout=5
             )
             return result.returncode == 0
-        except Exception:
+        except (subprocess.TimeoutExpired, OSError):
             return False
 
     def cmd_preflight(self, files: list[str] | None = None) -> None:
@@ -1019,6 +1032,7 @@ class BuildTasks:
             capture_output=True,
             text=True,
             cwd=project_root,
+            timeout=600,
         )
         results.append(("l3build check", result.returncode == 0))
         if result.returncode != 0:
@@ -1032,6 +1046,7 @@ class BuildTasks:
             capture_output=True,
             text=True,
             cwd=project_root,
+            timeout=600,
         )
         results.append(("pytest", result.returncode == 0))
         if result.returncode != 0:
@@ -1245,7 +1260,7 @@ class BuildTasks:
 
         # Update ProvidesPackage and comments
         if new_sty.exists():
-            content = new_sty.read_text()
+            content = new_sty.read_text(encoding="utf-8")
             content = content.replace(
                 "config/institutions/generic/generic",
                 f"config/institutions/{name}/{name}",
@@ -1255,7 +1270,7 @@ class BuildTasks:
             )
             content = content.replace("assets/logos/generic", f"assets/logos/{name}")
             content = content.replace("institution=generic]", f"institution={name}]")
-            new_sty.write_text(content)
+            new_sty.write_text(content, encoding="utf-8")
 
         self.ui.success(f"Scaffolded institution: {name}")
         self.ui.info(f"  Config: {dst / f'{name}.sty'}")
@@ -1602,7 +1617,7 @@ class BuildTasks:
                     )
                     version = (result.stdout or result.stderr).split("\n")[0].strip()
                     checks.append((desc, True, f"{path}\n  {version}"))
-                except Exception:
+                except (subprocess.TimeoutExpired, OSError, ValueError):
                     checks.append((desc, True, f"{path}"))
             else:
                 remediation = {
@@ -1638,7 +1653,7 @@ class BuildTasks:
                     )
                     if result.stdout.strip() and font_name.lower() in result.stdout.lower():
                         found = True
-                except Exception:
+                except (subprocess.TimeoutExpired, OSError):
                     pass
 
             if found is None:
@@ -1651,7 +1666,7 @@ class BuildTasks:
                     )
                     if font_name.lower() in result.stdout.lower():
                         found = True
-                except Exception:
+                except (subprocess.TimeoutExpired, OSError):
                     pass
 
             if found is None:
@@ -1705,7 +1720,7 @@ class BuildTasks:
                         os.unlink(tmp_path)
 
                     lualatex_check_done = True
-                except Exception:
+                except (OSError, subprocess.SubprocessError):
                     lualatex_check_done = True
 
             if found is not None and font_name not in font_results:

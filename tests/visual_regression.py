@@ -117,7 +117,7 @@ def main():
     }
     all_pass = True
     for name, info in examples.items():
-        pdf_path = args.build_dir / f"{name}/main.pdf"
+        pdf_path = args.build_dir / f"{name}.pdf"
         ref_path = args.reference_dir / f"{name}.pdf"
         if not pdf_path.exists():
             print(f"SKIP: {name} — PDF not found at {pdf_path}")

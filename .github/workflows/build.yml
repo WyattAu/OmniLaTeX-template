@@ -295,7 +295,6 @@ jobs:
            bash -c "pip install -q pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout hypothesis pytest-cov && pytest tests/test_modules.py tests/test_ctan.py tests/test_properties.py tests/test_visual_regression.py -v --tb=short --timeout=60 -m 'not slow' --junitxml=test-results.xml --cov=tests --cov=build.py --cov-report=term-missing --cov-report=xml"
 
     - name: Run edge case tests (slow)
-      continue-on-error: true
       run: |
         docker run --rm --entrypoint "" \
           -v "$GITHUB_WORKSPACE:/workspace" \
@@ -328,7 +327,7 @@ jobs:
             root = ET.parse("coverage.xml").getroot()
             rate = float(root.attrib.get("line-rate", "0"))
             pct = rate * 100
-            threshold = 60.0
+            threshold = 80.0
             if pct < threshold:
                 sys.exit(1)
         except FileNotFoundError:
@@ -356,6 +355,7 @@ jobs:
   changelog:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
+    timeout-minutes: 10
 
     steps:
     - name: Checkout repository
@@ -394,18 +394,13 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
-      security-events: write
     steps:
     - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       with:
         fetch-depth: 1
-    - name: Generate SBOM
+    - name: Generate and upload SBOM
       uses: anchore/sbom-action@v0
       with:
         format: spdx-json
         output-file: sbom.spdx.json
-    - name: Upload SBOM to GitHub Security
-      uses: github/codeql-action/upload-sarif@v3
-      with:
-        sarif_file: sbom.spdx.json
-        category: sbom
+        upload-sbom: true

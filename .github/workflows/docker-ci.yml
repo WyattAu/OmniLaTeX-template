@@ -12,6 +12,9 @@ env:
   CACHE_SCOPE: global-cache-v2
   PLATFORMS: linux/amd64,linux/arm64
 
+permissions:
+  contents: read
+
 jobs:
   build-push:
     runs-on: ubuntu-latest

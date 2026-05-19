@@ -1,6 +1,6 @@
 # OmniLaTeX Roadmap v2
 
-**Current version:** v2.0.0 | **Date:** 2026-05-18 | **License:** Apache 2.0
+**Current version:** v2.0.0 | **Date:** 2026-05-17 | **License:** Apache 2.0
 
 ---
 

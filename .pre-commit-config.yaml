@@ -95,7 +95,6 @@ repos:
     pass_filenames: false
     always_run: true
     verbose: true
-    timeout: 600
 
   - id: check-lean-proofs
     name: Verify Lean 4 proofs compile (lake build)
@@ -104,7 +103,6 @@ repos:
     pass_filenames: false
     always_run: true
     verbose: true
-    timeout: 300
 
   # Spell checking (optional - requires aspell)
   # - repo: https://github.com/codespell-project/codespell
