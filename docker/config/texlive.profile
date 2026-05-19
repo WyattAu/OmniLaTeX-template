@@ -79,10 +79,10 @@ collection-langgerman 1
 collection-langarabic 1
 collection-langchinese 1
 collection-langcjk 1
-collection-langcyrillic 0
+collection-langcyrillic 1
 collection-langczechslovak 0
 collection-langfrench 0
-collection-langgreek 0
+collection-langgreek 1
 collection-langitalian 0
 collection-langjapanese 1
 collection-langkorean 1

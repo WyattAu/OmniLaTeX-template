@@ -45,6 +45,16 @@ jobs:
           language: french
         - doctype: article
           language: chinese
+        - doctype: article
+          language: russian
+        - doctype: article
+          language: arabic
+        - doctype: article
+          language: hebrew
+        - doctype: article
+          language: japanese
+        - doctype: article
+          language: korean
     steps:
       # v4
     - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5

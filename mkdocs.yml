@@ -1,0 +1,80 @@
+site_name: OmniLaTeX
+site_description: Universal LaTeX document class with 26 doctypes, 21 institutions, 18 languages
+site_url: https://wyattau.github.io/OmniLaTeX-template/
+repo_url: https://github.com/WyattAu/OmniLaTeX-template
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  language: en
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.indexes
+    - navigation.sections
+    - navigation.instant
+    - navigation.tracking
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  logo: null
+  favicon: null
+
+plugins:
+  - search
+  - markdown-exec
+
+markdown_extensions:
+  - toc:
+      permalink: true
+      slugify: pymdownx.slugs.slugify
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - def_list
+  - attr_list
+  - md_in_html
+
+nav:
+  - Home: index.md
+  - User Guide: user_guide.md
+  - API Reference: api_reference.md
+  - Document Types: gallery.md
+  - Institutions: institutions.md
+  - Editor Integration: editor_integration.md
+  - Overleaf: overleaf.md
+  - Accessibility: accessibility.md
+  - Performance: performance.md
+  - API Stability: api_stability.md
+  - Breaking Changes: breaking_changes.md
+  - CTAN Submission: ctan_submission.md
+  - Contributing: ../CONTRIBUTING.md
+  - Changelog: ../CHANGELOG.md
+
+extra:
+  version: 2.0.0
+
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn

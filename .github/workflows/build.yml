@@ -387,3 +387,25 @@ jobs:
         fi
 
         echo "CHANGELOG.md was updated."
+
+  sbom:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+    - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      with:
+        fetch-depth: 1
+    - name: Generate SBOM
+      uses: anchore/sbom-action@v0
+      with:
+        format: spdx-json
+        output-file: sbom.spdx.json
+    - name: Upload SBOM to GitHub Security
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: sbom.spdx.json
+        category: sbom

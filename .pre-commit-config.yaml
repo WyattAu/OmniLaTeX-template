@@ -89,8 +89,8 @@ repos:
         # stages: [manual]
 
   - id: run-pytest-fast
-    name: Run non-Docker pytest suite (structural + property + visual regression + institutions)
-    entry: python3 -m pytest tests/test_modules.py tests/test_ctan.py tests/test_properties.py tests/test_visual_regression.py tests/test_build_py.py tests/test_institutions.py tests/test_negative.py -v --timeout=120 -m "not slow" --tb=short -q
+    name: Run non-Docker pytest suite (structural + property + visual regression + institutions + config)
+    entry: python3 -m pytest tests/test_modules.py tests/test_ctan.py tests/test_properties.py tests/test_visual_regression.py tests/test_build_py.py tests/test_institutions.py tests/test_negative.py tests/test_config.py -v --timeout=120 -m "not slow" --tb=short -q
     language: system
     pass_filenames: false
     always_run: true

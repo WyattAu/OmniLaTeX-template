@@ -164,4 +164,34 @@ theorem book_doctypes_consistent :
   simp [doctypeClass] at *
   cases d <;> simp [bookDoctypes] at hd <;> try decide
 
+-- Total doctype count verification
+theorem total_doctype_count :
+    articleDoctypes.length + reportDoctypes.length + bookDoctypes.length = 26 := by
+  simp [articleDoctypes, reportDoctypes, bookDoctypes]
+
+-- No doctype belongs to more than one class
+theorem class_partition_disjoint :
+    ∀ d : Doctype, ¬(doctypeClass d = .article ∧ doctypeClass d = .report) := by
+  intro d h
+  cases d <;> simp [doctypeClass] at * <;> contradiction
+
+-- Every doctype resolves to some class (exhaustiveness)
+theorem all_doctypes_have_class :
+    ∀ d : Doctype, doctypeClass d = .article ∨ doctypeClass d = .report ∨ doctypeClass d = .book := by
+  intro d
+  cases d <;> simp [doctypeClass] <;> try left <;> try right <;> try left <;> rfl
+
+-- Presentation and poster are article-class (common assumption)
+theorem presentation_is_article_class :
+    doctypeClass .presentation = .article := by
+  rfl
+
+theorem thesis_is_book_class :
+    doctypeClass .thesis = .book := by
+  rfl
+
+theorem manual_is_report_class :
+    doctypeClass .manual = .report := by
+  rfl
+
 end DocSettings

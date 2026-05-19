@@ -1,0 +1,49 @@
+name: Deploy Docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+    - 'docs/**'
+    - 'mkdocs.yml'
+    - 'CONTRIBUTING.md'
+    - 'CHANGELOG.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      with:
+        fetch-depth: 1
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+        cache: pip
+    - run: pip install -r docs/requirements.txt
+    - run: mkdocs build --strict
+    - uses: actions/upload-pages-artifact@v4
+      with:
+        path: site
+
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+    - id: deployment
+      uses: actions/deploy-pages@v4

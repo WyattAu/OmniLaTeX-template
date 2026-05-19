@@ -357,6 +357,15 @@ RUN wget -qO /tmp/atkinson-next.zip https://github.com/googlefonts/atkinson-hype
     rm -rf /tmp/atkinson-next.zip /tmp/atkinson-next && \
     fc-cache -f -v
 
+# Install Noto fonts for CJK, Cyrillic, Arabic, Hebrew script support
+# Enables integration matrix tests for RU/AR/HE/JA/KO/ZH languages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        fonts-noto-cjk \
+        fonts-noto-core \
+        fonts-noto-extra \
+    && rm -rf /var/lib/apt/lists/* \
+    && fc-cache -f -v
+
 # Give back control to own user files; might be root-owned from previous copying processes
 # Make our class file available for the entire latex/TeXLive installation, see also
 # https://tex.stackexchange.com/a/1138/120853
