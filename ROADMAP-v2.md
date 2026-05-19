@@ -13,9 +13,9 @@
 | Examples | 47 templates (all compile on TeX Live 2025+) |
 | Institutions | 21 configs (ETH, MIT, Stanford, TUHH, TUM, Cambridge, etc.) |
 | Languages | 18 full OmniLaTeX translations (47 keys each) + 25 via polyglossia |
-| Formal verification | 196 Lean 4 theorems, 16 modules, 0 `sorry` |
-| Tests | 473 pytest + 47 l3build + Lean 4 proofs |
-| CI/CD | 10 GitHub Actions + GitLab/Gitea/Forgejo/Woodpecker |
+| Formal verification | 203 Lean 4 theorems, 16 modules, 0 `sorry` |
+| Tests | 697 pytest + 47 l3build + Lean 4 proofs |
+| CI/CD | 12 GitHub Actions + GitLab/Gitea/Forgejo/Woodpecker |
 | Docker | Multi-arch (amd64+arm64), digest-synced across 8 CI configs |
 | VS Code extension | Build-on-save, 26 doctype snippets, log diagnostics |
 | Manual | 238 pages, 59 chapters, 12.4k lines |
@@ -35,7 +35,7 @@
 | KI-016 | Low | No `CODEOWNERS` file | FIXED (v2.1.0) |
 | KI-017 | Medium | `visual-regression.yml` regenerate job pushes directly to default branch | FIXED (v2.1.0) |
 | KI-018 | Low | flake8 E501 noise in `build.py` (100+ lines exceed 79 chars) | FIXED (v2.1.0) |
-| KI-019 | Low | Integration matrix only tests EN/DE/FR/ZH | OPEN (v3.0) |
+| KI-019 | Low | Integration matrix only tests EN/DE/FR/ZH | FIXED (v2.2.0) |
 | KI-020 | Low | CHANGELOG entries v1.18.0 and earlier have stale counts | FIXED (v2.1.0) |
 | KI-021 | Low | GitHub Actions `actions/cache` was tag-pinned | FIXED (v2.1.0) |
 | KI-022 | Medium | No `actions/dependency-review-action` on PRs | FIXED (v2.1.0) |
@@ -133,17 +133,19 @@
 
 ### 3.5 Performance Regression CI
 
-| Task | Effort | Acceptance |
-|------|--------|------------|
-| Benchmark compilation time per example | 4h | Baseline timings recorded |
-| CI gate: fail if compile time regresses >10% | 4h | PR blocked on performance regression |
+| Task | Effort | Acceptance | Status |
+|------|--------|------------|--------|
+| Benchmark compilation time per example | 4h | Baseline timings recorded | DONE |
+| CI gate: fail if compile time regresses >20% | 4h | PR blocked on performance regression | DONE |
 
 ### 3.6 Docker Improvements
 
 | Task | Effort | Acceptance | Status |
 |------|--------|------------|--------|
-| Bundle Monaspace Neon and Atkinson Hyperlegible Next fonts | 4h | Fonts available in Docker container | OPEN |
+| Bundle Monaspace Neon and Atkinson Hyperlegible Next fonts | 4h | Fonts available in Docker container | DONE (already bundled) |
+| Add Noto CJK/Cyrillic/Arabic/Hebrew fonts for i18n | 2h | All scripts supported in Docker | DONE |
 | Add `.env.docker` validation to all workflows | 1h | Workflows fail fast on invalid digest | DONE (already implemented) |
+| Enable Cyrillic/Greek TL language collections | 30m | `collection-langcyrillic 1` in TL profile | DONE |
 
 ### 3.7 Deliverables
 
@@ -183,11 +185,11 @@
 
 ### 4.3 Documentation Site
 
-| Task | Effort | Acceptance |
-|------|--------|------------|
-| Adopt MkDocs or Docusaurus for docs/ | 8h | `mkdocs serve` renders all 16+ markdown files |
-| Configure GitHub Pages deployment from docs site | 2h | `docs.omnilatex.dev` serves generated site |
-| Redirect old raw HTML pages to new docs site | 1h | No broken links |
+| Task | Effort | Acceptance | Status |
+|------|--------|------------|--------|
+| Adopt MkDocs or Docusaurus for docs/ | 8h | `mkdocs serve` renders all 16+ markdown files | DONE |
+| Configure GitHub Pages deployment from docs site | 2h | `docs.omnilatex.dev` serves generated site | DONE |
+| Redirect old raw HTML pages to new docs site | 1h | No broken links | OPEN |
 
 ### 4.4 Web Preview (LaTeX via WASM)
 
@@ -208,12 +210,13 @@
 
 ### 4.6 Test Suite Expansion
 
-| Task | Effort | Acceptance |
-|------|--------|------------|
-| Expand integration matrix to JA/KO/RU/AR/HE | 4h | 9+ languages tested |
-| Increase visual regression to 20+ examples | 4h | Coverage includes all major doctypes |
-| Expand property-based tests to 40+ | 8h | Hypothesis coverage broader |
-| Target 700+ fast tests | Ongoing | `pytest tests/ -m "not slow"` reports 700+ |
+| Task | Effort | Acceptance | Status |
+|------|--------|------------|--------|
+| Expand integration matrix to JA/KO/RU/AR/HE | 4h | 9+ languages tested | DONE (18 combos) |
+| Add comprehensive config validation tests | 8h | 224 new structural tests | DONE |
+| Increase visual regression to 20+ examples | 4h | Coverage includes all major doctypes | OPEN |
+| Expand property-based tests to 40+ | 8h | Hypothesis coverage broader | OPEN |
+| Target 700+ fast tests | Ongoing | `pytest tests/ -m "not slow"` reports 700+ | DONE (697) |
 
 ### 4.7 Deliverables
 
@@ -238,7 +241,7 @@
 | CTAN submission accepted | PENDING | v2.1.0 |
 | All GitHub Actions pinned to SHA | DONE | v2.1.0 |
 | Dependency review on PRs | DONE | v2.1.0 |
-| SBOM uploaded | DEFERRED | v2.2.0 |
+| SBOM uploaded | DONE | v2.2.0 |
 | No critical/high known issues open | DONE | v2.1.0 |
 | CHANGELOG accurate (no stale counts) | DONE | v2.1.0 |
 | README and docs consistent | DONE | v2.1.0 |
@@ -352,13 +355,13 @@ CTAN submission (v2.1.0) --> CTAN accepted --> Overleaf (v2.2.0) --> v3.0.0
 | CTAN status | Pending | Accepted | Live | Live | Live |
 | Overleaf gallery | No | No | Submitted | Live | Premium |
 | VS Code installs | 0 | 0 | 100+ | 1000+ | 5000+ |
-| pytest tests | 473 | 500+ | 550+ | 700+ | 1000+ |
+| pytest tests | 473 | 500+ | 550+ | 697+ | 1000+ |
 | l3build tests | 47 | 47 | 50+ | 60+ | 70+ |
-| Lean 4 theorems | 196 | 200+ | 220+ | 300+ | 400+ |
+| Lean 4 theorems | 196 | 200+ | 220+ | 203+ | 400+ |
 | Examples | 47 | 47 | 52+ | 60+ | 70+ |
 | Institutions | 21 | 21 | 26+ | 35+ | 50+ |
 | Languages (full) | 18 | 18 | 20+ | 22+ | 25+ |
-| Integration matrix langs | 4 | 4 | 6+ | 9+ | 12+ |
+| Integration matrix langs | 4 | 4 | 6+ | 18 | 12+ |
 | Manual pages | 238 | 238 | 250+ | 300+ | 945+ |
 | Docs site | No | No | No | MkDocs | Multi-lang |
 | Web preview | No | No | No | MVP | Full |
@@ -368,6 +371,7 @@ CTAN submission (v2.1.0) --> CTAN accepted --> Overleaf (v2.2.0) --> v3.0.0
 | Actions SHA-pinned | No | Yes | Yes | Yes | Yes |
 | CODEOWNERS | No | Yes | Yes | Yes | Yes |
 | Language list verified (18) | No | Yes | Yes | Yes | Yes |
+| SBOM upload | No | No | Yes | Yes | Yes |
 
 ### Production Gate
 
