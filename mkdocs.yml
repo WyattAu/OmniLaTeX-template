@@ -1,5 +1,5 @@
 site_name: OmniLaTeX
-site_description: Universal LaTeX document class with 26 doctypes, 21 institutions, 18 languages
+site_description: Universal LaTeX document class with 26 doctypes, 21 institutions, 25 languages
 site_url: https://wyattau.github.io/OmniLaTeX-template/
 repo_url: https://github.com/WyattAu/OmniLaTeX-template
 edit_uri: edit/main/docs/
@@ -57,17 +57,17 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - User Guide: user_guide.md
+  - User Guide: USER_GUIDE.md
   - API Reference: api_reference.md
   - Document Types: gallery.md
-  - Institutions: institutions.md
-  - Editor Integration: editor_integration.md
-  - Overleaf: overleaf.md
+  - Institution Gallery: INSTITUTION_GALLERY.md
+  - Editor Integration: editor-integration.md
+  - Overleaf: OVERLEAF.md
   - Accessibility: accessibility.md
-  - Performance: performance.md
-  - API Stability: api_stability.md
-  - Breaking Changes: breaking_changes.md
-  - CTAN Submission: ctan_submission.md
+  - Performance: PERFORMANCE.md
+  - API Stability: API_STABILITY.md
+  - Breaking Changes: BREAKING_CHANGES.md
+  - CTAN Submission: CTAN_SUBMISSION.md
   - Contributing: ../CONTRIBUTING.md
   - Changelog: ../CHANGELOG.md
 
