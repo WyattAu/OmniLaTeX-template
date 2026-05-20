@@ -73,7 +73,7 @@ repos:
   hooks:
   - id: pretty-format-yaml
     args: [--autofix, --indent, '2']
-    exclude: ^\.woodpecker\.yml$
+    exclude: ^(\\.woodpecker\\.yml|\\.github/workflows/)
     language_version: python3
 
   # Check for common LaTeX mistakes
