@@ -44,7 +44,7 @@ jobs:
         EXPECTED_STY=(
           article book cover-letter cv dictionary dissertation
           exam handout homework inlinepaper invoice journal lecture-notes
-          letter manual memo patent poster presentation
+          letter manual memo patent poster presentation beamer
           research-proposal standard syllabus technicalreport thesis
           white-paper recipe
         )
