@@ -172,6 +172,7 @@
           omnilatex = pkgs.stdenvNoCC.mkDerivation {
             name = "omnilatex";
             src = ./.;
+            dontBuild = true;
             installPhase = ''
               mkdir -p $out/tex/latex/omnilatex \
                         $out/tex/lualatex/omnilatex/lua \

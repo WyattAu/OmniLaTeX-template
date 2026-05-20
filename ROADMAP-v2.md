@@ -14,7 +14,7 @@
 | Institutions | 21 configs (ETH, MIT, Stanford, TUHH, TUM, Cambridge, etc.) |
 | Languages | 18 full OmniLaTeX translations (47 keys each) + 25 via polyglossia |
 | Formal verification | 203 Lean 4 theorems, 16 modules, 0 `sorry` |
-| Tests | 697 pytest + 47 l3build + Lean 4 proofs |
+| Tests | 750 pytest + 47 l3build + Lean 4 proofs |
 | CI/CD | 12 GitHub Actions + GitLab/Gitea/Forgejo/Woodpecker |
 | Docker | Multi-arch (amd64+arm64), digest-synced across 8 CI configs |
 | VS Code extension | Build-on-save, 26 doctype snippets, log diagnostics |
@@ -53,7 +53,7 @@
 | Pin all GitHub Actions to SHA digests | 2h | `rg "uses:" .github/workflows/` shows no tag refs | DONE |
 | Add `actions/dependency-review-action` to PR workflow | 1h | PRs blocked on new vulnerable deps | DONE |
 | Fix `visual-regression.yml` regenerate pushing to default branch | 1h | Regenerate opens PR instead of direct push | DONE |
-| Add SBOM upload to GitHub Security tab | 2h | SBOM artifact visible in Security tab | DEFERRED (low priority) |
+| Add SBOM upload to GitHub Security tab | 2h | SBOM artifact visible in Security tab | DONE |
 | Add timeout-minutes to Forgejo/Woodpecker/GitLab jobs | 30m | No job runs unbounded | DONE |
 | Use full action URLs in Gitea workflow | 30m | Gitea CI runs without URL resolution errors | DONE |
 
@@ -105,8 +105,8 @@
 |------|--------|------------|
 | Submit 10 curated templates to Overleaf gallery | 2h | Submission confirmed |
 | Publish VS Code extension to marketplace | 2h | Extension installable from marketplace |
-| Update README install section with CTAN path | 1h | CTAN, Overleaf, Nix, Docker, VS Code all documented |
-| Verify Nix package: `nix build .#omnilatex` | 2h | Build succeeds, output valid |
+| Update README install section with CTAN path | 1h | CTAN, Overleaf, Nix, Docker, VS Code all documented | DONE |
+| Verify Nix package: `nix build .#omnilatex` | 2h | Build succeeds, output valid | DONE |
 
 ### 3.2 Community Contributions
 
@@ -189,7 +189,7 @@
 |------|--------|------------|--------|
 | Adopt MkDocs or Docusaurus for docs/ | 8h | `mkdocs serve` renders all 16+ markdown files | DONE |
 | Configure GitHub Pages deployment from docs site | 2h | `docs.omnilatex.dev` serves generated site | DONE |
-| Redirect old raw HTML pages to new docs site | 1h | No broken links | OPEN |
+| Redirect old raw HTML pages to new docs site | 1h | No broken links | DONE |
 
 ### 4.4 Web Preview (LaTeX via WASM)
 
@@ -203,7 +203,7 @@
 
 | Task | Effort | Acceptance |
 |------|--------|------------|
-| Profile first-run compilation time (baseline: ~42s) | 4h | Baseline recorded |
+| Profile first-run compilation time (baseline: ~42s) | 4h | Baseline recorded | DONE |
 | Optimize font loading (pre-cache OTF indices) | 8h | First-run < 25s |
 | Reduce latexmk passes for simple documents | 4h | Simple docs compile in 1-2 passes |
 | Incremental build support (only rebuild changed examples) | 8h | `build.py --changed` builds only modified examples |
@@ -214,8 +214,8 @@
 |------|--------|------------|--------|
 | Expand integration matrix to JA/KO/RU/AR/HE | 4h | 9+ languages tested | DONE (18 combos) |
 | Add comprehensive config validation tests | 8h | 224 new structural tests | DONE |
-| Increase visual regression to 20+ examples | 4h | Coverage includes all major doctypes | OPEN |
-| Expand property-based tests to 40+ | 8h | Hypothesis coverage broader | OPEN |
+| Increase visual regression to 20+ examples | 4h | Coverage includes all major doctypes | DONE (46 examples) |
+| Expand property-based tests to 40+ | 8h | Hypothesis coverage broader | DONE (72 passing) |
 | Target 700+ fast tests | Ongoing | `pytest tests/ -m "not slow"` reports 700+ | DONE (697) |
 
 ### 4.7 Deliverables
@@ -355,7 +355,7 @@ CTAN submission (v2.1.0) --> CTAN accepted --> Overleaf (v2.2.0) --> v3.0.0
 | CTAN status | Pending | Accepted | Live | Live | Live |
 | Overleaf gallery | No | No | Submitted | Live | Premium |
 | VS Code installs | 0 | 0 | 100+ | 1000+ | 5000+ |
-| pytest tests | 473 | 500+ | 550+ | 697+ | 1000+ |
+| pytest tests | 473 | 500+ | 550+ | 750+ | 1000+ |
 | l3build tests | 47 | 47 | 50+ | 60+ | 70+ |
 | Lean 4 theorems | 196 | 200+ | 220+ | 203+ | 400+ |
 | Examples | 47 | 47 | 52+ | 60+ | 70+ |

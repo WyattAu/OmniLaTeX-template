@@ -69,6 +69,76 @@ def test_root_pdf_exists():
     assert root_pdf.stat().st_size > 0, "main.pdf is empty"
 
 
+EXAMPLES: dict[str, int | None] = {
+    "accessibility-test": 3,
+    "article-color": 9,
+    "article": 10,
+    "beamer-academic": 4,
+    "beamer-corporate": 3,
+    "beamer-defense": None,
+    "beamer-minimal": 2,
+    "book": 17,
+    "citation-styles": 7,
+    "cjk-chinese": 9,
+    "cjk-japanese": 8,
+    "cjk-korean": 9,
+    "color-themes": 18,
+    "cover-letter-formal": 3,
+    "cover-letter": 3,
+    "cv-twopage": 3,
+    "cv": 3,
+    "dictionary": 11,
+    "dissertation": 26,
+    "exam": 4,
+    "handout": 3,
+    "homework": 5,
+    "inline-paper": 3,
+    "invoice": 3,
+    "journal": 10,
+    "lecture-notes": 7,
+    "letter": 3,
+    "lua-showcase": 9,
+    "manual": 240,
+    "memo": 3,
+    "minimal-custom": 12,
+    "minimal-starter": 27,
+    "multi-language": 10,
+    "patent": 5,
+    "poster": 2,
+    "presentation": 11,
+    "recipe": 3,
+    "research-proposal": 15,
+    "rtl-arabic": 7,
+    "rtl-hebrew": 7,
+    "standard": 4,
+    "syllabus": 5,
+    "technical-report": 9,
+    "thesis-spacing": 22,
+    "thesis": 25,
+    "white-paper": 7,
+}
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize(
+    "name,expected_pages", list(EXAMPLES.items()), ids=list(EXAMPLES.keys())
+)
+def test_example_page_count(requires_build_dir, name, expected_pages):
+    pdf_path = requires_build_dir / f"{name}.pdf"
+    if not pdf_path.is_file():
+        pytest.skip(f"{name}.pdf not found in build/examples/")
+    ref_path = PROJECT_ROOT / "tests" / "references" / f"{name}.pdf"
+    if not ref_path.is_file():
+        pytest.skip(f"{name} reference PDF not yet generated")
+    doc = fitz.open(str(pdf_path))
+    try:
+        assert (
+            doc.page_count == expected_pages
+        ), f"{name}: expected {expected_pages} pages, got {doc.page_count}"
+    finally:
+        doc.close()
+
+
 @pytest.mark.slow
 def test_pdf_metadata_consistent():
     root_pdf = PROJECT_ROOT / "main.pdf"

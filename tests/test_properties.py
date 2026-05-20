@@ -456,6 +456,368 @@ class TestLeanProofConsistency:
         assert lakefile.is_file(), "lakefile.toml not found"
 
 
+class TestStyFileConsistency:
+    """Verify .sty files in lib/ are well-formed and consistent."""
+
+    def _get_lib_sty_files(self) -> list[Path]:
+        lib_dir = PROJECT_ROOT / "lib"
+        if not lib_dir.is_dir():
+            return []
+        return sorted(lib_dir.rglob("*.sty"))
+
+    def _get_cls_version(self) -> str:
+        cls_file = PROJECT_ROOT / "omnilatex.cls"
+        content = cls_file.read_text(encoding="utf-8", errors="replace")
+        m = re.search(r"\\ProvidesClass\{omnilatex\}\[([^\]]+)\]", content)
+        return m.group(1) if m else ""
+
+    def _get_lib_packages_from_cls(self) -> set[str]:
+        cls_file = PROJECT_ROOT / "omnilatex.cls"
+        content = cls_file.read_text(encoding="utf-8", errors="replace")
+        packages = set()
+        for m in re.finditer(
+            r"\\RequirePackage(?:\[[^\]]*\])?\{lib/([^}]+)\}", content
+        ):
+            packages.add(m.group(1))
+        return packages
+
+    def _get_lib_packages_from_doctypes(self) -> set[str]:
+        dt_dir = PROJECT_ROOT / "config" / "document-types"
+        packages = set()
+        if not dt_dir.is_dir():
+            return packages
+        for sty_file in dt_dir.glob("*.sty"):
+            content = sty_file.read_text(encoding="utf-8", errors="replace")
+            for m in re.finditer(
+                r"\\RequirePackage(?:\[[^\]]*\])?\{lib/([^}]+)\}", content
+            ):
+                packages.add(m.group(1))
+        return packages
+
+    def test_lib_sty_files_have_providespackage(self):
+        sty_files = self._get_lib_sty_files()
+        assert len(sty_files) > 0, "No .sty files found in lib/"
+        for sty_file in sty_files:
+            content = sty_file.read_text(encoding="utf-8", errors="replace")
+            assert (
+                "\\ProvidesPackage" in content
+            ), f"{sty_file.relative_to(PROJECT_ROOT)} missing \\ProvidesPackage"
+
+    def test_lib_sty_providespackage_path_matches_file(self):
+        beamer_sty = PROJECT_ROOT / "lib" / "graphics" / "omnilatex-beamer.sty"
+        for sty_file in self._get_lib_sty_files():
+            content = sty_file.read_text(encoding="utf-8", errors="replace")
+            m = re.search(r"\\ProvidesPackage\{([^}]+)\}", content)
+            assert m, f"{sty_file.name} has no \\ProvidesPackage"
+            pkg_path = m.group(1)
+            if sty_file == beamer_sty:
+                assert pkg_path == "omnilatex-beamer", (
+                    f"{sty_file.name}: expected "
+                    f"\\ProvidesPackage{{omnilatex-beamer}} (beamer uses short name)"
+                )
+            else:
+                rel = sty_file.relative_to(PROJECT_ROOT).with_suffix("")
+                expected = str(rel)
+                assert (
+                    pkg_path == expected
+                ), f"{sty_file.name}: \\ProvidesPackage{{{pkg_path}}} != expected path '{expected}'"
+
+    def test_lib_sty_files_have_version_string(self):
+        for sty_file in self._get_lib_sty_files():
+            content = sty_file.read_text(encoding="utf-8", errors="replace")
+            content = re.sub(r"%\n\s*", " ", content)
+            m = re.search(r"\\ProvidesPackage\{[^}]+\}\s*\[([^\]]*)\]", content)
+            assert m, f"{sty_file.name}: \\ProvidesPackage has no version bracket"
+
+    def test_lib_sty_files_have_latex2e_header(self):
+        beamer_sty = PROJECT_ROOT / "lib" / "graphics" / "omnilatex-beamer.sty"
+        for sty_file in self._get_lib_sty_files():
+            if sty_file == beamer_sty:
+                continue
+            content = sty_file.read_text(encoding="utf-8", errors="replace")
+            assert (
+                "\\NeedsTeXFormat{LaTeX2e}" in content
+            ), f"{sty_file.relative_to(PROJECT_ROOT)} missing \\NeedsTeXFormat{{LaTeX2e}}"
+
+    def test_no_orphaned_lib_sty_files(self):
+        cls_packages = self._get_lib_packages_from_cls()
+        dt_packages = self._get_lib_packages_from_doctypes()
+        all_referenced = cls_packages | dt_packages
+        on_demand = {
+            "graphics/omnilatex-beamer",
+            "layout/omnilatex-accessibility",
+            "references/omnilatex-citations",
+            "utils/omnilatex-themes",
+        }
+        all_known = all_referenced | on_demand
+        for sty_file in self._get_lib_sty_files():
+            rel = sty_file.relative_to(PROJECT_ROOT / "lib")
+            pkg_id = str(rel.with_suffix(""))
+            assert pkg_id in all_known, (
+                f"{sty_file.name} is not referenced by "
+                f"omnilatex.cls, doctypes, or marked as on-demand"
+            )
+
+    def test_cls_requirepackage_lib_files_exist(self):
+        cls_packages = self._get_lib_packages_from_cls()
+        assert len(cls_packages) > 0, "No lib/ \\RequirePackage found in omnilatex.cls"
+        for pkg_id in cls_packages:
+            pkg_path = PROJECT_ROOT / "lib" / f"{pkg_id}.sty"
+            assert (
+                pkg_path.is_file()
+            ), f"\\RequirePackage{{lib/{pkg_id}}}: {pkg_path.relative_to(PROJECT_ROOT)} not found"
+
+
+class TestInstitutionConfigs:
+    """Verify institution configuration .sty files are consistent."""
+
+    def _get_institution_dirs(self) -> list[Path]:
+        inst_dir = PROJECT_ROOT / "config" / "institutions"
+        if not inst_dir.is_dir():
+            return []
+        return sorted(
+            d for d in inst_dir.iterdir() if d.is_dir() and not d.name.startswith(".")
+        )
+
+    def _get_institution_sty(self, inst_dir: Path) -> Path | None:
+        sty_files = list(inst_dir.glob("*.sty"))
+        return sty_files[0] if sty_files else None
+
+    @pytest.mark.parametrize(
+        "inst_dir",
+        _get_institution_dirs(None)
+        or [PROJECT_ROOT / "config" / "institutions" / "generic"],
+        indirect=False,
+    )
+    def test_institution_dir_has_sty_file(self, inst_dir):
+        assert inst_dir.is_dir(), f"Institution dir missing: {inst_dir}"
+        sty_files = list(inst_dir.glob("*.sty"))
+        assert len(sty_files) > 0, f"No .sty file in {inst_dir.name}/"
+
+    def test_all_institution_dirs_have_sty_file(self):
+        inst_dirs = self._get_institution_dirs()
+        assert len(inst_dirs) > 0, "No institution directories found"
+        for inst_dir in inst_dirs:
+            sty_files = list(inst_dir.glob("*.sty"))
+            assert len(sty_files) > 0, f"No .sty in institution '{inst_dir.name}'"
+
+    def test_institution_sty_has_matching_providespackage(self):
+        for inst_dir in self._get_institution_dirs():
+            sty = self._get_institution_sty(inst_dir)
+            assert sty is not None, f"No .sty in {inst_dir.name}/"
+            content = sty.read_text(encoding="utf-8", errors="replace")
+            m = re.search(r"\\ProvidesPackage\{([^}]+)\}", content)
+            assert m, f"{sty.name} missing \\ProvidesPackage"
+            expected_suffix = f"/{inst_dir.name}/{inst_dir.name}"
+            assert m.group(1).endswith(expected_suffix), (
+                f"{sty.name}: \\ProvidesPackage path "
+                f"'{m.group(1)}' doesn't end with '{expected_suffix}'"
+            )
+
+    def test_institution_sty_has_needs_tex_format(self):
+        for inst_dir in self._get_institution_dirs():
+            sty = self._get_institution_sty(inst_dir)
+            assert sty is not None, f"No .sty in {inst_dir.name}/"
+            content = sty.read_text(encoding="utf-8", errors="replace")
+            assert (
+                "\\NeedsTeXFormat{LaTeX2e}" in content
+            ), f"{sty.relative_to(PROJECT_ROOT)} missing \\NeedsTeXFormat{{LaTeX2e}}"
+
+    def test_institution_sty_has_date_in_providespackage(self):
+        for inst_dir in self._get_institution_dirs():
+            sty = self._get_institution_sty(inst_dir)
+            assert sty is not None, f"No .sty in {inst_dir.name}/"
+            content = sty.read_text(encoding="utf-8", errors="replace")
+            m = re.search(r"\\ProvidesPackage\{[^}]+\}\[([^\]]+)\]", content)
+            assert m, f"{sty.name} has no version/date in \\ProvidesPackage"
+            date_part = m.group(1).split()[0]
+            assert re.match(
+                r"\d{4}[-/]\d{2}[-/]\d{2}", date_part
+            ), f"{sty.name}: date '{date_part}' doesn't match YYYY-MM-DD or YYYY/MM/DD"
+
+    def test_no_duplicate_institution_names(self):
+        inst_dirs = self._get_institution_dirs()
+        names = [d.name for d in inst_dirs]
+        counts = Counter(names)
+        dupes = {name: count for name, count in counts.items() if count > 1}
+        assert len(dupes) == 0, f"Duplicate institution names: {dupes}"
+
+    def test_institution_sty_count(self):
+        inst_dirs = self._get_institution_dirs()
+        assert (
+            len(inst_dirs) >= 20
+        ), f"Expected >= 20 institution configs, found {len(inst_dirs)}"
+
+
+class TestDocumentTypeConfigs:
+    """Verify document-type configuration .sty files are consistent."""
+
+    def _get_doctype_sty_files(self) -> list[Path]:
+        dt_dir = PROJECT_ROOT / "config" / "document-types"
+        if not dt_dir.is_dir():
+            return []
+        return sorted(dt_dir.glob("*.sty"))
+
+    def test_doctype_sty_files_exist(self):
+        sty_files = self._get_doctype_sty_files()
+        assert len(sty_files) > 0, "No doctype .sty files found"
+
+    def test_doctype_sty_has_matching_providespackage(self):
+        for sty_file in self._get_doctype_sty_files():
+            content = sty_file.read_text(encoding="utf-8", errors="replace")
+            m = re.search(r"\\ProvidesPackage\{([^}]+)\}", content)
+            assert m, f"{sty_file.name} missing \\ProvidesPackage"
+            expected = f"config/document-types/{sty_file.stem}"
+            assert (
+                m.group(1) == expected
+            ), f"{sty_file.name}: \\ProvidesPackage path '{m.group(1)}' != expected '{expected}'"
+
+    def test_doctype_sty_has_citationstyle(self):
+        for sty_file in self._get_doctype_sty_files():
+            content = sty_file.read_text(encoding="utf-8", errors="replace")
+            assert (
+                "\\citationstyle" in content
+            ), f"{sty_file.name} missing \\citationstyle{{}} call"
+
+    def test_doctype_sty_ends_with_endinput(self):
+        for sty_file in self._get_doctype_sty_files():
+            content = sty_file.read_text(encoding="utf-8", errors="replace")
+            stripped = content.rstrip()
+            assert stripped.endswith(
+                "\\endinput"
+            ), f"{sty_file.name} does not end with \\endinput"
+
+    def test_doctype_sty_has_needs_tex_format(self):
+        for sty_file in self._get_doctype_sty_files():
+            content = sty_file.read_text(encoding="utf-8", errors="replace")
+            assert (
+                "\\NeedsTeXFormat{LaTeX2e}" in content
+            ), f"{sty_file.name} missing \\NeedsTeXFormat{{LaTeX2e}}"
+
+    def test_doctype_count_matches_constants(self):
+        sty_files = self._get_doctype_sty_files()
+        assert len(sty_files) == len(ALL_DOCTYPE_NAMES), (
+            f"Doctype .sty count ({len(sty_files)}) != "
+            f"ALL_DOCTYPE_NAMES count ({len(ALL_DOCTYPE_NAMES)})"
+        )
+
+    def test_doctype_count_is_26(self):
+        sty_files = self._get_doctype_sty_files()
+        assert (
+            len(sty_files) == 26
+        ), f"Expected 26 doctype .sty files, found {len(sty_files)}"
+
+    def test_all_doctype_names_have_sty_file(self):
+        sty_names = {p.stem for p in self._get_doctype_sty_files()}
+        for name in ALL_DOCTYPE_NAMES:
+            assert (
+                name in sty_names
+            ), f"ALL_DOCTYPE_NAMES '{name}' has no matching .sty file"
+
+
+class TestFileStructureIntegrity:
+    """Verify project file structure is well-formed."""
+
+    REQUIRED_DIRS = ["lib", "config", "examples", "docs"]
+
+    def test_omnilatex_cls_exists_and_readable(self):
+        cls_file = PROJECT_ROOT / "omnilatex.cls"
+        assert cls_file.is_file(), "omnilatex.cls not found"
+        content = cls_file.read_text(encoding="utf-8")
+        assert len(content) > 0, "omnilatex.cls is empty"
+
+    def test_required_directories_exist(self):
+        for dirname in self.REQUIRED_DIRS:
+            dir_path = PROJECT_ROOT / dirname
+            assert dir_path.is_dir(), f"Required directory '{dirname}/' not found"
+
+    def test_all_example_dirs_have_main_tex(self):
+        examples_dir = PROJECT_ROOT / "examples"
+        assert examples_dir.is_dir(), "examples/ directory not found"
+        for ex_dir in examples_dir.iterdir():
+            if not ex_dir.is_dir() or ex_dir.name.startswith("."):
+                continue
+            main_tex = ex_dir / "main.tex"
+            assert main_tex.is_file(), f"Example '{ex_dir.name}/' missing main.tex"
+
+    def test_lib_sty_files_use_utf8(self):
+        lib_dir = PROJECT_ROOT / "lib"
+        for sty_file in lib_dir.rglob("*.sty"):
+            try:
+                sty_file.read_text(encoding="utf-8")
+            except UnicodeDecodeError:
+                pytest.fail(f"{sty_file.relative_to(PROJECT_ROOT)} is not valid UTF-8")
+
+    def test_doctype_sty_files_use_utf8(self):
+        dt_dir = PROJECT_ROOT / "config" / "document-types"
+        for sty_file in dt_dir.glob("*.sty"):
+            try:
+                sty_file.read_text(encoding="utf-8")
+            except UnicodeDecodeError:
+                pytest.fail(f"{sty_file.relative_to(PROJECT_ROOT)} is not valid UTF-8")
+
+    def test_institution_sty_files_use_utf8(self):
+        inst_dir = PROJECT_ROOT / "config" / "institutions"
+        for sty_file in inst_dir.rglob("*.sty"):
+            try:
+                sty_file.read_text(encoding="utf-8")
+            except UnicodeDecodeError:
+                pytest.fail(f"{sty_file.relative_to(PROJECT_ROOT)} is not valid UTF-8")
+
+    def test_omnilatex_cls_has_providesclass(self):
+        cls_file = PROJECT_ROOT / "omnilatex.cls"
+        content = cls_file.read_text(encoding="utf-8")
+        assert (
+            "\\ProvidesClass{omnilatex}" in content
+        ), "omnilatex.cls missing \\ProvidesClass{omnilatex}"
+
+    def test_omnilatex_cls_has_needs_tex_format(self):
+        cls_file = PROJECT_ROOT / "omnilatex.cls"
+        content = cls_file.read_text(encoding="utf-8")
+        assert (
+            "\\NeedsTeXFormat{LaTeX2e}" in content
+        ), "omnilatex.cls missing \\NeedsTeXFormat{LaTeX2e}"
+
+    def test_no_circular_input_in_lib_sty(self):
+        lib_dir = PROJECT_ROOT / "lib"
+        for sty_file in lib_dir.rglob("*.sty"):
+            content = sty_file.read_text(encoding="utf-8", errors="replace")
+            for line in content.splitlines():
+                stripped = line.strip()
+                if stripped.startswith("%"):
+                    continue
+                m = re.match(r"\\input\{(.+?)\}", stripped)
+                if m:
+                    input_path = m.group(1)
+                    assert not input_path.startswith("lib/"), (
+                        f"{sty_file.relative_to(PROJECT_ROOT)}: "
+                        f"\\input{{{input_path}}} creates potential circular dependency in lib/"
+                    )
+
+    def test_config_document_settings_sty_exists(self):
+        settings = PROJECT_ROOT / "config" / "document-settings.sty"
+        assert settings.is_file(), "config/document-settings.sty not found"
+
+    def test_lib_subdirectories_nonempty(self):
+        lib_dir = PROJECT_ROOT / "lib"
+        for subdir in sorted(lib_dir.iterdir()):
+            if not subdir.is_dir() or subdir.name.startswith("."):
+                continue
+            sty_files = list(subdir.glob("*.sty"))
+            assert len(sty_files) > 0, f"lib/{subdir.name}/ has no .sty files"
+
+    @given(doctype=sampled_from(ALL_DOCTYPE_NAMES))
+    @settings(max_examples=50, deadline=None)
+    def test_doctype_sty_is_self_contained(self, doctype):
+        sty_path = PROJECT_ROOT / "config" / "document-types" / f"{doctype}.sty"
+        assert sty_path.is_file(), f"Missing {sty_path}"
+        content = sty_path.read_text(encoding="utf-8", errors="replace")
+        assert "\\NeedsTeXFormat" in content
+        assert "\\ProvidesPackage" in content
+        assert "\\citationstyle" in content
+        assert "\\endinput" in content
+
+
 class TestDockerDigestConsistency:
     """Verify Docker image digest is consistent across all CI configs."""
 

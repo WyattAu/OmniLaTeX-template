@@ -38,7 +38,7 @@ HOMEPAGE="https://github.com/WyattAu/OmniLaTeX-template"
 BUG_TRACKER="https://github.com/WyattAu/OmniLaTeX-template/issues"
 REPOSITORY="https://github.com/WyattAu/OmniLaTeX-template"
 SUPPORT_URL="https://github.com/WyattAu/OmniLaTeX-template/discussions"
-SUMMARY="Comprehensive KOMA-Script LaTeX template with 26 document types, 16 institutions, and 18 languages"
+SUMMARY="Comprehensive KOMA-Script LaTeX template with 26 document types, 21 institutions, and 18 languages"
 DESCRIPTION="OmniLaTeX is a comprehensive KOMA-Script-based LaTeX template providing 26 document types (thesis, dissertation, presentation, CV, white paper, invoice, recipe, and more), 21 institutional configurations, and support for 18 languages with full i18n. It uses a modular architecture with a single class file delegating to specialized modules for fonts, colors, floats, tables, and document types. Designed for both novice and advanced users with sensible defaults and extensive customization. All document types are CI-tested."
 USER_AGENT="OmniLaTeX-CTAN-Uploader/1.0 (github.com/WyattAu/OmniLaTeX-template)"
 

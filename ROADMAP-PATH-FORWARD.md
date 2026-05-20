@@ -12,23 +12,23 @@ A comprehensive audit was performed covering every aspect of the monorepo:
 
 | Area | Status | Details |
 |------|--------|---------|
-| Test suite | PASS | 442 fast tests, 6 edge case tests, 10 unicode tests, 6 negative tests, 180 Lean 4 theorems (0 sorry), 19 Lean build jobs |
+| Test suite | PASS | 697 pytest + 47 l3build + 203 Lean 4 theorems (0 sorry), 19 Lean build jobs |
 | Code quality | PASS | black, isort, flake8 all clean; no stubs found |
-| CI/CD | PASS (with fixes) | 10 GitHub Actions workflows; 3 action versions updated; hardcoded count fixed |
+| CI/CD | PASS (with fixes) | 12 GitHub Actions workflows; all actions SHA-pinned; 3 action versions updated; hardcoded count fixed |
 | Documentation | PASS (with fixes) | Stale metrics corrected across README, ROADMAP, ROADMAP-DETAILED, ROADMAP-PRODUCTION |
 | Website pages | PASS (with fixes) | 3 missing beamer examples added; navigation consistency fixed; ARIA accessibility added |
 | Pre-commit hooks | ADDED | Full pytest + lint + digest validation + semver check on every commit and push |
 | Docker digest consistency | PASS | All 8 CI configs use identical sha256 digest |
 | Semantic versioning | PASS | v2.0.0 consistent across VERSION.md and build.lua |
-| Lean 4 proofs | PASS | 16 modules, 180 theorems, 0 sorry, all compile via lake build |
+| Lean 4 proofs | PASS | 16 modules, 203 theorems, 0 sorry, all compile via lake build |
 
 ### 1.2 Issues Found and Fixed
 
 | # | Issue | Severity | File(s) | Fix |
 |---|-------|----------|---------|-----|
-| 1 | Stale theorem count (198 -> 180) | Medium | README.md, ROADMAP*.md | Updated all references |
+| 1 | Stale theorem count (198 -> 180 -> 203) | Medium | README.md, ROADMAP*.md | Updated all references |
 | 2 | Stale module count (15 -> 16) | Medium | ROADMAP.md | Updated |
-| 3 | Stale test count (389 -> 442) | Medium | README.md, ROADMAP.md | Updated |
+| 3 | Stale test count (389 -> 442 -> 697 pytest + 47 l3build) | Medium | README.md, ROADMAP.md | Updated |
 | 4 | Wrong i18n language list | High | README.md | Corrected to actual 18 languages |
 | 5 | Missing CI workflow in table | Low | README.md | Added visual-regression.yml |
 | 6 | Page count test threshold too low | Low | test_visual_regression.py | 100 -> 300 |
@@ -42,22 +42,22 @@ A comprehensive audit was performed covering every aspect of the monorepo:
 | 14 | No navigation on verify.html | High | pages/verify.html | Added full nav bar |
 | 15 | Missing ARIA attributes | Medium | pages/*.html | Added role, tabindex, aria-label, main |
 
-### 1.3 Remaining CI/CD Improvements (Not Yet Implemented)
+### 1.3 CI/CD Improvements (All Completed in v2.0.0)
 
-These were identified during the audit but are lower priority:
+All improvements identified during the audit have been completed in v2.0.0 and subsequent audit sessions:
 
 | # | Improvement | Severity | Effort |
 |---|------------|----------|--------|
-| R1 | Pin all GitHub Actions to SHA digests (not tags) | High | 2h |
-| R2 | Add dependency review action on PRs | High | 1h |
-| R3 | Fix coverage check running outside Docker container | Medium | 1h |
-| R4 | Add SBOM upload to GitHub Security tab | Medium | 2h |
-| R5 | Add .env.docker validation before Docker pull | Low | 1h |
-| R6 | Make integration-matrix report job useful | Low | 1h |
-| R7 | Add timeout-minutes to Forgejo/Woodpecker/GitLab jobs | Low | 30min |
-| R8 | Use full action URLs in Gitea workflow | Low | 30min |
-| R9 | Extract "read Docker digest" into composite action | Low | 2h |
-| R10 | Reduce fetch-depth: 0 to fetch-depth: 1 where full history not needed | Low | 30min |
+| R1 | Pin all GitHub Actions to SHA digests (not tags) | High | DONE |
+| R2 | Add dependency review action on PRs | High | DONE |
+| R3 | Fix coverage check running outside Docker container | Medium | DONE |
+| R4 | Add SBOM upload to GitHub Security tab | Medium | DONE (anchore/sbom-action with upload-sbom) |
+| R5 | Add .env.docker validation before Docker pull | Low | DONE |
+| R6 | Make integration-matrix report job useful | Low | DONE |
+| R7 | Add timeout-minutes to Forgejo/Woodpecker/GitLab jobs | Low | DONE |
+| R8 | Use full action URLs in Gitea workflow | Low | DONE |
+| R9 | Extract "read Docker digest" into composite action | Low | DONE |
+| R10 | Reduce fetch-depth: 0 to fetch-depth: 1 where full history not needed | Low | DONE |
 
 ---
 
@@ -164,18 +164,19 @@ Breaking change release. The Beamer module exists (v2.0.0) but needs a standalon
 | .sty modules | 28 | `ls lib/**/*.sty \| wc -l` |
 | Document types | 26 | `ls config/document-types/*.sty \| wc -l` |
 | Doctype aliases | 55+ | `grep omnilatex@setdoctype omnilatex.cls` |
-| Example templates | 46 | `ls -d examples/*/ \| wc -l` |
+| Example templates | 47 | `ls -d examples/*/ \| wc -l` |
 | Institution configs | 21 | `ls -d config/institutions/*/ \| wc -l` |
 | Languages (full translations) | 18 | `grep DeclareTranslation lib/language/omnilatex-i18n.sty` |
 | Lean 4 proof modules | 16 | `ls specs/proofs/OmniLaTeXProofs/*.lean \| wc -l` |
-| Lean 4 theorems | 180 | `grep -c theorem specs/proofs/OmniLaTeXProofs/*.lean` |
-| Fast tests | 442 | `pytest tests/ -m "not slow" -q` |
-| Institution tests | 16 | `pytest tests/test_institutions.py -q` |
-| Edge case tests | 6 | `pytest tests/test_edge_cases.py -m slow -q` |
-| Unicode tests | 10 | `pytest tests/test_unicode.py -q` |
-| Negative tests | 6 | `pytest tests/test_negative.py -q` |
-| Visual regression tests | 4 | `pytest tests/test_visual_regression.py -m slow -q` |
-| CI workflows (GitHub) | 10 | `ls .github/workflows/*.yml \| wc -l` |
+| Lean 4 theorems | 203 | `grep -c theorem specs/proofs/OmniLaTeXProofs/*.lean` |
+| Pytest tests | 697 | `pytest tests/ -q` |
+| l3build tests | 47 | `l3build check` |
+| CI workflows (GitHub) | 12 | `ls .github/workflows/*.yml \| wc -l` |
+| Actions SHA-pinned | 100% | All GitHub Actions pinned to commit SHA |
+| Coverage threshold | 80% | `--cov-fail-under=80` in pytest config |
+| Concurrency groups | 11 | All 11 applicable workflows have concurrency groups |
+| SBOM upload | Yes | anchore/sbom-action with upload-sbom |
+| CTAN upload script | Ready | scripts/ctan-upload.sh with artifact passing |
 | CI configs (other) | 4 | Forgejo, Gitea, GitLab, Woodpecker |
 | Manual pages | 238 | PDF page count |
 | Pre-commit hooks | 10 | trailing-whitespace, end-of-file-fixer, check-yaml, check-toml, black, isort, flake8, markdownlint, pretty-format-yaml, pytest-fast, lean-proofs |
@@ -189,9 +190,10 @@ Breaking change release. The Beamer module exists (v2.0.0) but needs a standalon
 | CTAN availability | Pending | Live | Live |
 | Overleaf gallery | No | Submitted | Premium |
 | VS Code installs | 0 | 100+ | 1000+ |
-| Lean 4 theorems | 180 | 200+ | 300+ |
-| Fast tests | 442 | 500+ | 700+ |
-| Examples | 46 | 50+ | 60+ |
+| Lean 4 theorems | 203 | 220+ | 300+ |
+| Pytest tests | 697 | 750+ | 900+ |
+| l3build tests | 47 | 50+ | 60+ |
+| Examples | 47 | 50+ | 60+ |
 | Institutions | 21 | 25+ | 40+ |
 | Manual pages | 238 | 300+ | 945+ |
 | Web preview | No | No | MVP |
@@ -201,19 +203,19 @@ Breaking change release. The Beamer module exists (v2.0.0) but needs a standalon
 
 ## 6. Technical Debt Register
 
-| ID | Description | Priority | Effort | Introduced |
-|----|-------------|----------|--------|------------|
-| TD-001 | Actions pinned to tags, not SHA digests | High | 2h | v1.0.0 |
-| TD-002 | "read Docker digest" pattern duplicated 8 times | Low | 2h | v1.7.0 |
-| TD-003 | Coverage check runs outside Docker container | Medium | 1h | v2.0.0 |
-| TD-004 | integration-matrix report job is a no-op | Low | 1h | v1.10.0 |
-| TD-005 | Gitea workflow uses GitHub action URLs | Low | 30min | v1.7.0 |
-| TD-006 | Forgejo/Woodpecker/GitLab have no timeouts | Low | 30min | v1.7.0 |
-| TD-007 | No dependency review on PRs | High | 1h | v1.0.0 |
-| TD-008 | No SBOM upload to GitHub Security | Medium | 2h | v1.7.0 |
-| TD-009 | build.py is Python (slower than native, requires runtime) | Low | 120h | v1.0.0 |
-| TD-010 | Manual has 12 thin chapters (<150 lines) | Medium | 16h | v1.17.0 |
-| TD-011 | No Dependabot for GitHub Actions | Low | 30min | v1.0.0 |
+| ID | Description | Priority | Effort | Status |
+|----|-------------|----------|--------|--------|
+| TD-001 | Actions pinned to tags, not SHA digests | High | 2h | DONE (v2.0.0) |
+| TD-002 | "read Docker digest" pattern duplicated 8 times | Low | 2h | DONE (v2.0.0) |
+| TD-003 | Coverage check runs outside Docker container | Medium | 1h | DONE (v2.0.0) |
+| TD-004 | integration-matrix report job is a no-op | Low | 1h | DONE (v2.0.0) |
+| TD-005 | Gitea workflow uses GitHub action URLs | Low | 30min | DONE (v2.0.0) |
+| TD-006 | Forgejo/Woodpecker/GitLab have no timeouts | Low | 30min | DONE (v2.0.0) |
+| TD-007 | No dependency review on PRs | High | 1h | DONE (v2.0.0) |
+| TD-008 | No SBOM upload to GitHub Security | Medium | 2h | DONE (v2.0.0, anchore/sbom-action) |
+| TD-009 | build.py is Python (slower than native, requires runtime) | Low | 120h | Open |
+| TD-010 | Manual has 12 thin chapters (<150 lines) | Medium | 16h | Open |
+| TD-011 | No Dependabot for GitHub Actions | Low | 30min | Open |
 
 ---
 
@@ -254,11 +256,13 @@ The repository has Forgejo CI configs at `.forgejo/workflows/build.yml`. These a
 
 OmniLaTeX is in a strong position for production release:
 
-- **442 tests pass** across 7 test suites with 0 failures
-- **180 Lean 4 theorems** provide formal verification with 0 `sorry`
-- **10 CI/CD workflows** provide comprehensive automated validation
-- **46 example templates** demonstrate all 26 doctypes across 21 institutions
+- **697 pytest + 47 l3build tests pass** with 0 failures
+- **203 Lean 4 theorems** provide formal verification with 0 `sorry`
+- **12 CI/CD workflows** provide comprehensive automated validation (100% SHA-pinned)
+- **47 example templates** demonstrate all 26 doctypes across 21 institutions
 - **18 language translations** provide broad international support
 - **Pre-commit and pre-push hooks** prevent regressions from entering the codebase
+- **All R1-R10 CI/CD improvements** completed; 80% coverage threshold enforced
+- **CTAN upload script** ready with artifact passing; SBOM uploaded via anchore/sbom-action
 
 The critical path is CTAN submission (Phase 1), which unlocks global distribution via `tlmgr install omnilatex`. All prerequisite work (testing, documentation, packaging scripts) is complete.
