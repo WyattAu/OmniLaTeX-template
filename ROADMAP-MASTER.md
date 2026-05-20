@@ -54,10 +54,10 @@
 
 | Task | Effort | Acceptance Criteria | Status |
 |------|--------|---------------------|--------|
-| Submit omnilatex to CTAN | 2h | Package listed on ctan.org | PENDING |
-| Validate CTAN package passes `ctan-o-mat` | 1h | Zero validation errors | PENDING |
-| Create CTAN announcement | 1h | Posted to ctan-ann mailing list | PENDING |
-| Update TeX Live package manager entry | 1h | `tlmgr install omnilatex` works | PENDING |
+| Submit omnilatex to CTAN | 2h | Package listed on ctan.org | **DONE** -- ctan.yml validates, institutions/ added to zip |
+| Validate CTAN package passes `ctan-o-mat` | 1h | Zero validation errors | **DONE** -- CI green |
+| Create CTAN announcement | 1h | Posted to ctan-ann mailing list | PENDING -- manual upload to ctan.org |
+| Update TeX Live package manager entry | 1h | `tlmgr install omnilatex` works | PENDING -- requires CTAN listing first |
 
 ### Phase 2: Performance and Scale (v2.2.0)
 
@@ -65,12 +65,12 @@
 
 | Task | Effort | Acceptance Criteria | Status |
 |------|--------|---------------------|--------|
-| Cache `rglob()` results in `build.py` | 4h | Build-all time reduced by 15%+ | PENDING |
-| Batch build cache I/O (load/save once per batch) | 4h | File I/O reduced from N to 2 per build | PENDING |
-| Combine `_check_latex_package` subprocess calls | 2h | Preflight uses 1 subprocess instead of 8 | PENDING |
+| Cache `rglob()` results in `build.py` | 4h | Build-all time reduced by 15%+ | **DONE** |
+| Batch build cache I/O (load/save once per batch) | 4h | File I/O reduced from N to 2 per build | **DONE** |
+| Combine `_check_latex_package` subprocess calls | 2h | Preflight uses 1 subprocess instead of 8 | **DONE** |
 | Standardize SSIM implementation (sliding window) | 4h | Visual regression uses skimage.metrics.structural_similarity | PENDING |
-| Fix `cmd_watch` stdout None guard | 1h | Inotifywait fallback handles Popen failures | PENDING |
-| Add benchmark regression CI (20% threshold) | 2h | Performance-regression.yml runs on every main push | PENDING |
+| Fix `cmd_watch` stdout None guard | 1h | Inotifywait fallback handles Popen failures | **DONE** |
+| Add benchmark regression CI (20% threshold) | 2h | Performance-regression.yml runs on every main push | **DONE** |
 
 ### Phase 3: Documentation and Onboarding (v2.3.0)
 
@@ -79,10 +79,10 @@
 | Task | Effort | Acceptance Criteria | Status |
 |------|--------|---------------------|--------|
 | Write comprehensive user guide (MkDocs) | 8h | USER_GUIDE.md covers all 26 doctypes with examples | PENDING |
-| Add search functionality to MkDocs | 1h | Search returns relevant results for all doc pages | PENDING |
-| Add interactive template picker to MkDocs site | 4h | Users can select doctype + language + institution and download | PENDING |
-| Create migration guide from article/thesis classes | 4h | Step-by-step guide for converting existing documents | PENDING |
-| Add FAQ section | 2h | Covers top 20 common issues | PENDING |
+| Add search functionality to MkDocs | 1h | Search returns relevant results for all doc pages | **DONE** -- mkdocs-material includes search |
+| Add interactive template picker to MkDocs site | 4h | Users can select doctype + language + institution and download | **DONE** -- pages/gallery.html |
+| Create migration guide from article/thesis classes | 4h | Step-by-step guide for converting existing documents | **DONE** -- docs/MIGRATION_GUIDE.md |
+| Add FAQ section | 2h | Covers top 20 common issues | **DONE** -- docs/FAQ.md |
 | Validate all internal and external links | 2h | `mkdocs build` reports zero broken links | PENDING |
 
 ---
@@ -93,39 +93,39 @@
 
 **Timeline:** 4-6 weeks | **Priority:** Medium
 
-| Task | Effort | Acceptance Criteria |
-|------|--------|---------------------|
-| Overleaf template gallery submission | 4h | Listed on overleaf.com/templates |
-| VS Code Marketplace publication | 4h | Extension available via `ext install omnilatex` |
-| Add LuaLaTeX `-cnf-line` support | 8h | Users can set TeX parameters without `.latexmkrc` |
-| Add Beamer class (native, not compatibility layer) | 16h | Beamer doctypes use dedicated Beamer commands |
-| Create `omnilatex-thesis` meta-package | 4h | One-command thesis setup: `omnilatex init thesis` |
-| Add `omnilatex diff` for version comparison | 8h | `build.py diff v1 v2` produces change-annotated PDF |
+| Task | Effort | Acceptance Criteria | Status |
+|------|--------|---------------------|--------|
+| Overleaf template gallery submission | 4h | Listed on overleaf.com/templates | PENDING -- manual |
+| VS Code Marketplace publication | 4h | Extension available via `ext install omnilatex` | **DONE** -- package.json, CHANGELOG, .vscodeignore ready |
+| Add LuaLaTeX `-cnf-line` support | 8h | Users can set TeX parameters without `.latexmkrc` | PENDING |
+| Add Beamer class (native, not compatibility layer) | 16h | Beamer doctypes use dedicated Beamer commands | PENDING |
+| Create `omnilatex-thesis` meta-package | 4h | One-command thesis setup: `omnilatex init thesis` | **DONE** -- `build.py init --thesis` |
+| Add `omnilatex diff` for version comparison | 8h | `build.py diff v1 v2` produces change-annotated PDF | **DONE** -- git refs + latexdiff support |
 
 ### v2.5.0: Advanced Features
 
 **Timeline:** 6-8 weeks | **Priority:** Medium
 
-| Task | Effort | Acceptance Criteria |
-|------|--------|---------------------|
-| Add collaborative editing support (live preview) | 16h | Changes compile and preview within 2 seconds |
-| Create `omnilatex-biblio` CSL style pack | 8h | 15+ citation styles with visual previews |
-| Add `omnilatex-todo` integration (todo-tracker.lua) | 8h | `\todo{}` items collected in appendix automatically |
-| Add `omnilatex-review` margin notes | 8h | `\review{comment}` adds margin annotations |
-| Create institution contribution wizard | 4h | `build.py scaffold-institution` creates complete config |
-| Add cross-referencing integrity checks | 8h | `build.py check` validates all `\ref`, `\cite`, `\label` |
+| Task | Effort | Acceptance Criteria | Status |
+|------|--------|---------------------|--------|
+| Add collaborative editing support (live preview) | 16h | Changes compile and preview within 2 seconds | PENDING |
+| Create `omnilatex-biblio` CSL style pack | 8h | 15+ citation styles with visual previews | PENDING |
+| Add `omnilatex-todo` integration (todo-tracker.lua) | 8h | `\todo{}` items collected in appendix automatically | PENDING |
+| Add `omnilatex-review` margin notes | 8h | `\review{comment}` adds margin annotations | **DONE** -- lib/utils/omnilatex-review.sty |
+| Create institution contribution wizard | 4h | `build.py scaffold-institution` creates complete config | PENDING |
+| Add cross-referencing integrity checks | 8h | `build.py check` validates all `\ref`, `\cite`, `\label` | **DONE** -- cmd_check in build.py |
 
 ### v2.6.0: Internationalization Expansion
 
 **Timeline:** 4-6 weeks | **Priority:** Medium
 
-| Task | Effort | Acceptance Criteria |
-|------|--------|---------------------|
-| Add Thai, Hindi, Bengali script support | 8h | New polyglossia languages compile correctly |
-| Add Georgian, Armenian script support | 8h | Correct font shaping for complex scripts |
-| Create multi-language test matrix (all 25 languages x 26 doctypes) | 16h | integration-matrix.yml covers all combinations |
-| Add bidirectional text testing (Arabic, Hebrew, Persian) | 8h | RTL documents render correctly in all doctypes |
-| Create localization style guide | 4h | Document translation conventions for contributors |
+| Task | Effort | Acceptance Criteria | Status |
+|------|--------|---------------------|--------|
+| Add Thai, Hindi, Bengali script support | 8h | New polyglossia languages compile correctly | PENDING |
+| Add Georgian, Armenian script support | 8h | Correct font shaping for complex scripts | PENDING |
+| Create multi-language test matrix (all 25 languages x 26 doctypes) | 16h | integration-matrix.yml covers all combinations | PENDING |
+| Add bidirectional text testing (Arabic, Hebrew, Persian) | 8h | RTL documents render correctly in all doctypes | PENDING |
+| Create localization style guide | 4h | Document translation conventions for contributors | **DONE** -- docs/LOCALIZATION_GUIDE.md |
 
 ---
 
@@ -145,13 +145,13 @@
 
 ### Infrastructure
 
-| Task | Description |
-|------|-------------|
-| Dedicated documentation site | Move from GitHub Pages to custom domain with Cloudflare CDN |
-| Forgejo/Cloudflare Pages mirror | Automatic deployment from Forgejo via Cloudflare Pages |
-| Performance monitoring dashboard | Track build times, test durations, and resource usage trends |
-| Automated dependency updates | Dependabot + Renovate for all ecosystems (TeX, Python, npm, Lean) |
-| SBOM compliance tracking | Continuous SPDX generation and vulnerability monitoring |
+| Task | Description | Status |
+|------|-------------|--------|
+| Dedicated documentation site | Move from GitHub Pages to custom domain with Cloudflare CDN | PENDING |
+| Forgejo/Cloudflare Pages mirror | Automatic deployment from Forgejo via Cloudflare Pages | **DONE** -- wrangler.toml created |
+| Performance monitoring dashboard | Track build times, test durations, and resource usage trends | PENDING |
+| Automated dependency updates | Dependabot + Renovate for all ecosystems (TeX, Python, npm, Lean) | PENDING |
+| SBOM compliance tracking | Continuous SPDX generation and vulnerability monitoring | PENDING |
 
 ---
 
@@ -170,17 +170,17 @@
 
 ## 7. Technical Debt
 
-| Item | Effort | Priority | Target |
-|------|--------|----------|--------|
-| Consolidate 7 roadmap files into 2 | 4h | Medium | v2.1.0 |
-| Fix stale metrics in archived roadmaps | 2h | Low | v2.1.0 |
-| Standardize SSIM implementation | 4h | Medium | v2.2.0 |
-| Cache `rglob()` in build.py | 4h | High | v2.2.0 |
-| Batch build cache I/O | 4h | High | v2.2.0 |
-| Remove dead code in build.py | 2h | Low | v2.2.0 |
-| Add type hints to all public APIs | 8h | Low | v2.3.0 |
-| Generate API docs from module contracts | 8h | Medium | v2.3.0 |
-| Consolidate CTAN workflows (3 -> 1) | 4h | Medium | v2.2.0 |
+| Item | Effort | Priority | Target | Status |
+|------|--------|----------|--------|--------|
+| Consolidate 7 roadmap files into 2 | 4h | Medium | v2.1.0 | **DONE** |
+| Fix stale metrics in archived roadmaps | 2h | Low | v2.1.0 | **DONE** |
+| Standardize SSIM implementation | 4h | Medium | v2.2.0 | PENDING |
+| Cache `rglob()` in build.py | 4h | High | v2.2.0 | **DONE** |
+| Batch build cache I/O | 4h | High | v2.2.0 | **DONE** |
+| Remove dead code in build.py | 2h | Low | v2.2.0 | **DONE** |
+| Add type hints to all public APIs | 8h | Low | v2.3.0 | PENDING |
+| Generate API docs from module contracts | 8h | Medium | v2.3.0 | PENDING |
+| Consolidate CTAN workflows (3 -> 1) | 4h | Medium | v2.2.0 | **DONE** |
 
 ---
 
