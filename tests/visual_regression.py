@@ -49,7 +49,7 @@ def compute_ssim(img1: Image.Image, img2: Image.Image, window_size: int = 7) -> 
 
     sigma = 1.5
     coords = np.arange(window_size) - window_size // 2
-    g1d = np.exp(-coords**2 / (2 * sigma**2))
+    g1d = np.exp(-(coords**2) / (2 * sigma**2))
     g2d = np.outer(g1d, g1d)
     g2d /= g2d.sum()
 
@@ -62,8 +62,12 @@ def compute_ssim(img1: Image.Image, img2: Image.Image, window_size: int = 7) -> 
         mu1_sq = mu1 * mu1
         mu2_sq = mu2 * mu2
         mu12 = mu1 * mu2
-        sigma1_sq = uniform_filter(arr1 * arr1, size=window_size, mode="constant") - mu1_sq
-        sigma2_sq = uniform_filter(arr2 * arr2, size=window_size, mode="constant") - mu2_sq
+        sigma1_sq = (
+            uniform_filter(arr1 * arr1, size=window_size, mode="constant") - mu1_sq
+        )
+        sigma2_sq = (
+            uniform_filter(arr2 * arr2, size=window_size, mode="constant") - mu2_sq
+        )
         sigma12 = uniform_filter(arr1 * arr2, size=window_size, mode="constant") - mu12
     except ImportError:
         from numpy import convolve as _np_conv
@@ -75,7 +79,7 @@ def compute_ssim(img1: Image.Image, img2: Image.Image, window_size: int = 7) -> 
             out = np.zeros_like(a)
             for i in range(a.shape[0]):
                 for j in range(a.shape[1]):
-                    out[i, j] = np.sum(padded[i:i + kh, j:j + kw] * kernel)
+                    out[i, j] = np.sum(padded[i : i + kh, j : j + kw] * kernel)
             return out
 
         mu1 = _conv2d(arr1, g2d)
