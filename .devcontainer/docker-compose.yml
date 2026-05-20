@@ -9,7 +9,7 @@ services:
   app:
     # Use the pre-built, feature-rich omnilatex-docker image.
     # Update .env.docker when bumping the image version.
-    image: ghcr.io/wyattau/omnilatex-docker@sha256:dae352cb84391a30478c0a18778bc0c82e8b620a3e56dd14a894433f7dd90988
+    image: ghcr.io/wyattau/omnilatex-docker@sha256:e0a4ea64f6a4b7a5a6e7ca75d95d31131c861f7adc011ba5646d138a8ada8150
 
     # Mount the entire project directory into the container's workspace.
     # Using :cached improves performance on macOS
