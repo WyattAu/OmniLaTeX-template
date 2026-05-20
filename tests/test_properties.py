@@ -548,6 +548,7 @@ class TestStyFileConsistency:
             "layout/omnilatex-accessibility",
             "references/omnilatex-citations",
             "utils/omnilatex-themes",
+            "utils/omnilatex-review",
         }
         all_known = all_referenced | on_demand
         for sty_file in self._get_lib_sty_files():
