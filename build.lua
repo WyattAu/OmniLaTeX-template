@@ -4,7 +4,7 @@
 
 module = "omnilatex"
 pkgversion = "2.0.0"
-pkgdate = "2026-05-17"
+pkgdate = "2026-05-18"
 
 sourcefiles = {
     "omnilatex.cls",
@@ -17,12 +17,14 @@ sourcefiles = {
 installfiles = {
     "omnilatex.cls",
     "lib/**/*.sty",
+    "config/**/*.sty",
+    "lua/*.lua",
 }
 
 testfiles = {"testfiles/*"}
 
 typesetfiles = {
-    "examples/thesis/main.tex",
+    "doc/omnilatex.tex",
 }
 
 tdsroot = ""

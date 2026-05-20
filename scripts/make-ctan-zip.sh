@@ -19,8 +19,10 @@ cp "$REPO_ROOT/omnilatex.cls" "$TDS_DIR/tex/latex/$PKG_NAME/"
 cp -r "$REPO_ROOT/lib" "$TDS_DIR/tex/latex/$PKG_NAME/lib"
 
 mkdir -p "$TDS_DIR/tex/latex/$PKG_NAME/config/document-types"
+mkdir -p "$TDS_DIR/tex/latex/$PKG_NAME/config/institutions"
 cp "$REPO_ROOT/config/document-settings.sty" "$TDS_DIR/tex/latex/$PKG_NAME/config/"
 cp -r "$REPO_ROOT/config/document-types/." "$TDS_DIR/tex/latex/$PKG_NAME/config/document-types/"
+cp -r "$REPO_ROOT/config/institutions/." "$TDS_DIR/tex/latex/$PKG_NAME/config/institutions/"
 
 # ── TDS: source/latex/omnilatex/ ────────────────────────────────────────────
 cp "$REPO_ROOT/omnilatex.cls" "$TDS_DIR/source/latex/$PKG_NAME/omnilatex.tex"
@@ -65,8 +67,10 @@ cp "$REPO_ROOT/omnilatex.cls" "$PKG_DIR/"
 cp -r "$REPO_ROOT/lib" "$PKG_DIR/lib"
 
 mkdir -p "$PKG_DIR/config/document-types"
+mkdir -p "$PKG_DIR/config/institutions"
 cp "$REPO_ROOT/config/document-settings.sty" "$PKG_DIR/config/"
 cp -r "$REPO_ROOT/config/document-types/." "$PKG_DIR/config/document-types/"
+cp -r "$REPO_ROOT/config/institutions/." "$PKG_DIR/config/institutions/"
 
 mkdir -p "$PKG_DIR/bib"
 cp "$REPO_ROOT/bib/bibliography.bib" "$PKG_DIR/bib/"

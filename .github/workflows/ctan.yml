@@ -9,14 +9,22 @@ on:
     tags: [v*]
   workflow_dispatch:
 
+concurrency:
+  group: ctan-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   ctan-zip:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
     - name: Checkout repository
       # v4
       uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      with:
+        fetch-depth: 0
 
     - name: Build CTAN zip
       run: bash scripts/make-ctan-zip.sh
@@ -38,8 +46,7 @@ jobs:
           exam handout homework inlinepaper invoice journal lecture-notes
           letter manual memo patent poster presentation
           research-proposal standard syllabus technicalreport thesis
-          white-paper
-          recipe
+          white-paper recipe
         )
         for sty in "${EXPECTED_STY[@]}"; do
           if ! unzip -l omnilatex.zip | grep -q "document-types/${sty}\.sty$"; then
@@ -59,6 +66,14 @@ jobs:
           echo "  [OK] All ${EXPECTED_COUNT} document-type .sty files found"
         fi
 
+        # Validate institutions are included
+        INST_COUNT=$(unzip -l omnilatex.zip | grep -c 'institutions/.*\.sty$' || true)
+        if [ "$INST_COUNT" -lt 5 ]; then
+          echo "::warning::Only ${INST_COUNT} institution .sty files found in zip (expected 21)"
+        else
+          echo "  [OK] ${INST_COUNT} institution .sty files found"
+        fi
+
         if ! unzip -l omnilatex.zip | grep -q 'LICENSE$'; then
           echo "::error::LICENSE not found in zip"
           ERRORS=$((ERRORS + 1))
@@ -74,6 +89,10 @@ jobs:
         echo ""
         echo "All CTAN zip validation checks passed."
 
+    - name: Extract version
+      id: version
+      run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
     - name: Upload CTAN zip artifact
       # v4
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -81,3 +100,27 @@ jobs:
         name: omnilatex-ctan-zip
         path: omnilatex.zip
         retention-days: 90
+
+  release:
+    needs: ctan-zip
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+    - name: Checkout repository
+      # v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+
+    - name: Download CTAN zip
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      with:
+        name: omnilatex-ctan-zip
+
+    - name: Create GitHub Release
+      # v2
+      uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65
+      with:
+        files: omnilatex.zip
+        generate_release_notes: true

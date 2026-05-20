@@ -60,6 +60,8 @@ markdown_extensions:
 nav:
   - Home: index.md
   - User Guide: USER_GUIDE.md
+  - Migration Guide: MIGRATION_GUIDE.md
+  - FAQ: FAQ.md
   - API Reference: api_reference.md
   - Document Types: gallery.md
   - Institution Gallery: INSTITUTION_GALLERY.md

@@ -282,6 +282,8 @@ class BuildTasks:
         self.timings_data: List[dict] = []
         self._timings_lock = threading.Lock()
         self._cache_lock = threading.Lock()
+        self._source_files_cache: Dict[str, List[Path]] = {}
+        self._shared_build_cache: Optional[dict] = None
 
     @staticmethod
     def _hash_for_paths(paths: List[Path]) -> str:
@@ -308,6 +310,14 @@ class BuildTasks:
             encoding="utf-8",
         )
 
+    def _get_source_files(self, repo_root: Path) -> List[Path]:
+        key = str(repo_root)
+        if key not in self._source_files_cache:
+            sty_files = list(repo_root.rglob("*.sty"))
+            cls_files = list(repo_root.rglob("*.cls"))
+            self._source_files_cache[key] = sty_files + cls_files
+        return self._source_files_cache[key]
+
     def _collect_source_files(self, example_name: str) -> List[Path]:
         repo_root = Path(__file__).resolve().parent
         example_dir = repo_root / "examples" / example_name
@@ -317,10 +327,7 @@ class BuildTasks:
             files.append(tex_file)
         for bib in example_dir.rglob("*.bib"):
             files.append(bib)
-        for sty in repo_root.rglob("*.sty"):
-            files.append(sty)
-        for cls in repo_root.rglob("*.cls"):
-            files.append(cls)
+        files.extend(self._get_source_files(repo_root))
         return files
 
     def discover_examples(self) -> List[Path]:
@@ -360,7 +367,10 @@ class BuildTasks:
                 source_files = self._collect_source_files(example_name)
                 source_hash = self._hash_for_paths(source_files)
                 with self._cache_lock:
-                    cache = self._load_build_cache()
+                    if self._shared_build_cache is not None:
+                        cache = self._shared_build_cache
+                    else:
+                        cache = self._load_build_cache()
                     cached = cache.get(f"examples/{example_name}")
                 dest_pdf = (
                     repo_root / self.config.build_dir / BUILD_EXAMPLES_SUBDIR
@@ -474,7 +484,10 @@ class BuildTasks:
                 source_files = self._collect_source_files(example_name)
                 source_hash = self._hash_for_paths(source_files)
                 with self._cache_lock:
-                    cache = self._load_build_cache()
+                    if self._shared_build_cache is not None:
+                        cache = self._shared_build_cache
+                    else:
+                        cache = self._load_build_cache()
                     cache[f"examples/{example_name}"] = {
                         "source_hash": source_hash,
                         "pdf_size": dest_pdf.stat().st_size,
@@ -482,7 +495,8 @@ class BuildTasks:
                             "%Y-%m-%dT%H:%M:%SZ", time.gmtime()
                         ),
                     }
-                    self._save_build_cache(cache)
+                    if self._shared_build_cache is None:
+                        self._save_build_cache(cache)
                 return example_name, True, all_logs
             else:
                 all_logs.append(
@@ -679,13 +693,20 @@ class BuildTasks:
             return
 
         self.ui.info(f"Queued {len(names)} example(s) for build.")
-        if RICH_AVAILABLE:
-            self._build_examples_rich_concurrent(names)
-        else:
-            self.ui.warning(
-                "`rich` not found. Falling back to simple concurrent display."
-            )
-            self._build_examples_simple_concurrent(names)
+
+        self._shared_build_cache = self._load_build_cache()
+        try:
+            if RICH_AVAILABLE:
+                self._build_examples_rich_concurrent(names)
+            else:
+                self.ui.warning(
+                    "`rich` not found. Falling back to simple concurrent display."
+                )
+                self._build_examples_simple_concurrent(names)
+        finally:
+            with self._cache_lock:
+                self._save_build_cache(self._shared_build_cache)
+            self._shared_build_cache = None
 
         if self.timings and self.timings_data:
             metrics_path = self.config.build_dir / "metrics.json"
@@ -907,6 +928,9 @@ class BuildTasks:
                 cmd.append(str(d))
             try:
                 process = subprocess.Popen(cmd, stdout=subprocess.PIPE, text=True)
+                if process.stdout is None:
+                    ui.error("inotifywait stdout is None, cannot watch")
+                    return
                 for line in process.stdout:
                     path = Path(line.strip())
                     if path.suffix in extensions:
@@ -956,6 +980,28 @@ class BuildTasks:
         except (subprocess.TimeoutExpired, OSError):
             return False
 
+    def _check_all_latex_packages(self, packages: list[str]) -> dict[str, bool]:
+        try:
+            result = subprocess.run(
+                ["kpsewhich"] + [f"{pkg}.sty" for pkg in packages],
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            found = set()
+            if result.returncode == 0 and result.stdout:
+                for line in result.stdout.strip().splitlines():
+                    stem = Path(line.strip()).stem
+                    found.add(stem)
+            elif result.returncode != 0 and result.stdout:
+                for line in result.stdout.strip().splitlines():
+                    if line.strip():
+                        stem = Path(line.strip()).stem
+                        found.add(stem)
+            return {pkg: pkg in found for pkg in packages}
+        except (subprocess.TimeoutExpired, OSError):
+            return {pkg: False for pkg in packages}
+
     def cmd_preflight(self, files: list[str] | None = None) -> None:
         """Validate build environment readiness."""
         checks = []
@@ -991,8 +1037,9 @@ class BuildTasks:
             "circuitikz",
             "forest",
         ]
+        pkg_results = self._check_all_latex_packages(packages)
         for pkg in packages:
-            found = self._check_latex_package(pkg)
+            found = pkg_results[pkg]
             checks.append((f"Package {pkg}", found, "Found" if found else "Missing"))
 
         passed = sum(1 for _, ok, _ in checks if ok)
@@ -1615,38 +1662,29 @@ class BuildTasks:
         ]
 
         font_results: dict[str, tuple[bool, str]] = {}
+
+        fc_list_output = ""
+        try:
+            result = subprocess.run(
+                ["fc-list", ":family"],
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
+            if result.returncode == 0:
+                fc_list_output = result.stdout.lower()
+        except (subprocess.TimeoutExpired, OSError):
+            pass
+
         lualatex_check_done = False
 
         for font_name in font_names:
             found = None
 
-            if not lualatex_check_done:
-                try:
-                    result = subprocess.run(
-                        ["fc-match", font_name],
-                        capture_output=True,
-                        text=True,
-                        timeout=5,
-                    )
-                    if result.stdout.strip() and font_name.lower() in result.stdout.lower():
-                        found = True
-                except (subprocess.TimeoutExpired, OSError):
-                    pass
+            if font_name.lower() in fc_list_output:
+                found = True
 
-            if found is None:
-                try:
-                    result = subprocess.run(
-                        ["fc-list", ":family", font_name],
-                        capture_output=True,
-                        text=True,
-                        timeout=5,
-                    )
-                    if font_name.lower() in result.stdout.lower():
-                        found = True
-                except (subprocess.TimeoutExpired, OSError):
-                    pass
-
-            if found is None:
+            if found is None and not lualatex_check_done:
                 try:
                     import tempfile
                     import os
@@ -1682,11 +1720,6 @@ class BuildTasks:
                                     font_results[fn] = (
                                         True,
                                         "Found (via LuaLaTeX)",
-                                    )
-                                elif f"FONTMISSING:{fn}" in output:
-                                    font_results[fn] = (
-                                        False,
-                                        "Not found (fallback font will be used)",
                                     )
                                 else:
                                     font_results[fn] = (
