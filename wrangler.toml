@@ -1,0 +1,59 @@
+# Cloudflare Pages Configuration
+# For Forgejo-hosted repositories
+# Deploy MkDocs documentation site to Cloudflare Pages
+
+name = "omnilatex-docs"
+compatibility_date = "2024-01-01"
+
+[build]
+command = "pip install -r docs/requirements.txt && mkdocs build"
+cwd = "."
+
+[build.upload]
+format = "output-directory"
+dir = "site"
+
+[[headers]]
+for = "/assets/*"
+[headers.values]
+Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+for = "/*.css"
+[headers.values]
+Cache-Control = "public, max-age=86400"
+
+[[headers]]
+for = "/*.js"
+[headers.values]
+Cache-Control = "public, max-age=86400"
+
+[[headers]]
+for = "/*.html"
+[headers.values]
+Cache-Control = "public, max-age=3600"
+X-Content-Type-Options = "nosniff"
+X-Frame-Options = "DENY"
+X-XSS-Protection = "1; mode=block"
+Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+for = "/pdfs/*"
+[headers.values]
+Cache-Control = "public, max-age=86400"
+Content-Disposition = "inline"
+
+[[redirects]]
+from = "/docs"
+to = "/USER_GUIDE/"
+status = 302
+
+[[redirects]]
+from = "/api"
+to = "/api_reference/"
+status = 302
+
+[[redirects]]
+from = "/guide"
+to = "/USER_GUIDE/"
+status = 302

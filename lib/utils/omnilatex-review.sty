@@ -1,0 +1,216 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OmniLaTeX Review Module
+%
+% Margin note review functionality for collaborative editing
+% Part of OmniLaTeX-template modular architecture
+%
+% Usage:
+%   \usepackage{lib/utils/omnilatex-review}
+%   \usepackage[inline]{lib/utils/omnilatex-review}
+%   \usepackage[disable]{lib/utils/omnilatex-review}
+%   \usepackage[color=red!20]{lib/utils/omnilatex-review}
+%
+% Commands:
+%   \review{comment}           — colored margin note
+%   \review[label]{comment}    — numbered review item with optional label
+%   \reviewfootnote{comment}   — review as a footnote
+%   \reviewlist                — list all review items at current position
+%
+% Environments:
+%   reviewblock{title}         — inline review block with highlighted bg
+%
+% Options:
+%   margin   (default) — review notes in margins
+%   inline            — review notes inline
+%   disable           — suppress all review output
+%   color=<color>     — set highlight color (default: orange!30)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/utils/omnilatex-review}[2026/05/18 v2.0.0 OmniLaTeX review module]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Dependencies
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{lib/utils/omnilatex-utils}
+\RequirePackage{xcolor}
+\RequirePackage{marginnote}
+\RequirePackage{etoolbox}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Option Handling
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newif\ifreview@margin   \review@margintrue
+\newif\ifreview@inline   \review@inlinefalse
+\newif\ifreview@disable  \review@disablefalse
+
+\def\review@color{orange!30}
+
+\DeclareOption{margin}{%
+    \review@margintrue
+    \review@inlinefalse
+    \review@disablefalse
+}
+
+\DeclareOption{inline}{%
+    \review@marginfalse
+    \review@inlinetrue
+    \review@disablefalse
+}
+
+\DeclareOption{disable}{%
+    \review@disabletrue
+}
+
+\DeclareOption*{%
+    \in@{color=}{\CurrentOption}%
+    \ifin@
+        \review@parsecolor{\CurrentOption}%
+    \else
+        \OptionNotUsed
+    \fi
+}
+
+\def\review@parsecolor#1{%
+    \def\review@tempa##1=##2\@nil{\def\review@color{##2}}%
+    \review@tempa#1\@nil
+}
+
+\ProcessOptions\relax
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Counter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcounter{review}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Internal: Review List Accumulator
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newtoks\review@list@toks
+\review@list@toks={}
+
+\newcommand{\review@addtolist}[1]{%
+    \review@list@toks=\expandafter{\the\review@list@toks
+        \item #1}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Internal: Review Note Rendering
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\review@render@margin}[1]{%
+    \marginnote{%
+        \colorbox{\review@color}{%
+            \parbox{2.2cm}{%
+                \small\sffamily #1%
+            }%
+        }%
+    }%
+}
+
+\newcommand{\review@render@inline}[1]{%
+    \colorbox{\review@color}{\small\sffamily #1}%
+}
+
+\newcommand{\review@render}[1]{%
+    \ifreview@disable
+        \relax
+    \else
+        \ifreview@margin
+            \review@render@margin{#1}%
+        \else
+            \ifreview@inline
+                \review@render@inline{#1}%
+            \fi
+        \fi
+    \fi
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \review[label]{comment}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\review}[2][]{%
+    \ifreview@disable
+        \relax
+    \else
+        \stepcounter{review}%
+        \def\review@prefmt{}%
+        \def\review@label{}%
+        \ifx\\#1\\%
+            \def\review@prefmt{[\thereview]}%
+        \else
+            \def\review@prefmt{[\thereview: #1]}%
+            \def\review@label{#1}%
+        \fi
+        \review@addtolist{\review@prefmt{} #2}%
+        \ifreview@margin
+            \review@render@margin{\review@prefmt{} #2}%
+        \else
+            \ifreview@inline
+                \review@render@inline{\review@prefmt{} #2}%
+            \fi
+        \fi
+    \fi
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \reviewfootnote{comment}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\reviewfootnote}[1]{%
+    \ifreview@disable
+        \relax
+    \else
+        \footnote{%
+            \colorbox{\review@color}{%
+                \small\sffamily\textbf{Review:} #1%
+            }%
+        }%
+    \fi
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% reviewblock Environment
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{tcolorbox}
+\tcbuselibrary{skins}
+
+\newtcolorbox{reviewblock}[1]{%
+    enhanced,
+    colback=\review@color,
+    colframe=orange!60!black,
+    coltitle=black,
+    fonttitle=\bfseries\sffamily,
+    title={Review: #1},
+    boxrule=0.6pt,
+    arc=2pt,
+    left=6pt,
+    right=6pt,
+    top=4pt,
+    bottom=4pt,
+    before skip=8pt,
+    after skip=8pt,
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \reviewlist
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\reviewlist}{%
+    \ifreview@disable
+        \relax
+    \else
+        \section*{Review Items}%
+        \begin{enumerate}%
+            \the\review@list@toks
+        \end{enumerate}%
+    \fi
+}
+
+\endinput

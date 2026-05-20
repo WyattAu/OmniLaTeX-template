@@ -1,30 +1,40 @@
 {
   "name": "omnilatex",
   "displayName": "OmniLaTeX",
-  "description": "OmniLaTeX document class support — doctype picker, institution switcher, and build commands",
-  "version": "1.0.0",
-  "publisher": "WyattAu",
+  "description": "VS Code support for the OmniLaTeX document class — doctype picker, institution switcher, LuaLaTeX build commands, IntelliSense completion for \\documentclass options, LaTeX log diagnostics, and configurable build-on-save via latexmk.",
+  "version": "2.0.0",
+  "publisher": "wyattau",
+  "license": "Apache-2.0",
   "icon": "icon.png",
+  "galleryBanner": {
+    "color": "#1a1a2e"
+  },
+  "homepage": "https://wyattau.github.io/OmniLaTeX-template/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WyattAu/OmniLaTeX-template"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },
   "categories": [
     "Programming Languages",
-    "Snippets"
+    "Snippets",
+    "Other"
   ],
   "keywords": [
     "latex",
-    "document class",
+    "luatex",
+    "lualatex",
     "omnilatex",
-    "koma-script",
-    "lua"
+    "thesis",
+    "academic"
   ],
   "activationEvents": [
     "onLanguage:latex",
     "onLanguage:latex-expl3",
     "onCommand:omnilatex.switchDoctype",
     "onCommand:omnilatex.switchInstitution",
-    "onCommand:omnilatex.switchLanguage",
     "onCommand:omnilatex.build",
     "onCommand:omnilatex.buildAll"
   ],
@@ -35,6 +45,18 @@
     "watch": "tsc -watch -p ./"
   },
   "contributes": {
+    "languages": [
+      {
+        "id": "latex",
+        "extensions": [
+          ".tex"
+        ],
+        "aliases": [
+          "LaTeX",
+          "tex"
+        ]
+      }
+    ],
     "commands": [
       {
         "command": "omnilatex.switchDoctype",
@@ -59,18 +81,18 @@
     ],
     "keybindings": [
       {
+        "command": "omnilatex.build",
+        "key": "ctrl+shift+b",
+        "when": "editorTextFocus && (resourceLangId == latex || resourceLangId == latex-expl3)"
+      },
+      {
         "command": "omnilatex.switchDoctype",
-        "key": "ctrl+alt+d",
+        "key": "ctrl+shift+t",
         "when": "editorTextFocus && (resourceLangId == latex || resourceLangId == latex-expl3)"
       },
       {
         "command": "omnilatex.switchInstitution",
         "key": "ctrl+alt+i",
-        "when": "editorTextFocus && (resourceLangId == latex || resourceLangId == latex-expl3)"
-      },
-      {
-        "command": "omnilatex.build",
-        "key": "ctrl+alt+b",
         "when": "editorTextFocus && (resourceLangId == latex || resourceLangId == latex-expl3)"
       }
     ],
@@ -104,12 +126,40 @@
         "omnilatex.statusBar.show": {
           "type": "boolean",
           "default": true,
-          "description": "Show the OmniLaTeX status bar item"
+          "description": "Show the OmniLaTeX status bar item displaying current doctype and institution."
         },
         "omnilatex.buildOnSave": {
           "type": "boolean",
           "default": false,
-          "description": "Build on save using latexmk"
+          "description": "Automatically build the current .tex file on save using latexmk with LuaLaTeX."
+        },
+        "omnilatex.build.engine": {
+          "type": "string",
+          "default": "latexmk",
+          "enum": [
+            "latexmk",
+            "lualatex"
+          ],
+          "description": "Build engine to use for compile commands.",
+          "order": 2
+        },
+        "omnilatex.build.outputDirectory": {
+          "type": "string",
+          "default": "",
+          "description": "Output directory for build artifacts. Leave empty to use the default LaTeX output location.",
+          "order": 3
+        },
+        "omnilatex.completion.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable IntelliSense completion for OmniLaTeX \\documentclass options (doctype, institution, language, color-mode, link-style, code-style).",
+          "order": 4
+        },
+        "omnilatex.diagnostics.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Parse LaTeX .log files for errors and warnings, and display them as VS Code diagnostics.",
+          "order": 5
         }
       }
     }

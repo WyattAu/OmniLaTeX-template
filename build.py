@@ -1092,12 +1092,169 @@ class BuildTasks:
             return 1
         return 0
 
-    def cmd_diff(self, files: List[str], regenerate_references: bool = False):
-        """Compare built PDFs against references to detect visual regressions.
+    def _is_git_ref(self, ref: str) -> bool:
+        try:
+            result = subprocess.run(
+                ["git", "rev-parse", "--verify", ref],
+                capture_output=True, text=True, timeout=5,
+            )
+            return result.returncode == 0
+        except (subprocess.TimeoutExpired, OSError):
+            return False
+
+    def _find_tex_for_pdf(self, pdf_path: str) -> Optional[Path]:
+        pdf = Path(pdf_path)
+        tex = pdf.with_suffix(".tex")
+        if tex.exists():
+            return tex
+        tex = pdf.parent / MAIN_TEX_FILENAME
+        if tex.exists():
+            return tex
+        return None
+
+    def _diff_two_pdfs(self, a: str, b: str, output: str = None):
+        self.ui.header(f"Diff: {Path(a).name} vs {Path(b).name}")
+        latexdiff_path = shutil.which("latexdiff")
+        tex_a = self._find_tex_for_pdf(a)
+        tex_b = self._find_tex_for_pdf(b)
+        if latexdiff_path and tex_a and tex_b:
+            self.ui.info("Using latexdiff to produce annotated diff PDF")
+            self._run_latexdiff(tex_a, tex_b, output)
+        else:
+            if not latexdiff_path:
+                self.ui.warning("latexdiff not available; falling back to basic comparison")
+            else:
+                self.ui.warning("Could not locate .tex sources for both PDFs; falling back to basic comparison")
+            self._basic_pdf_compare(a, b)
+
+    def _diff_git_refs(self, ref_a: str, ref_b: str, output: str = None):
+        self.ui.header(f"Git Diff: {ref_a} vs {ref_b}")
+        import tempfile
+        tmpdir = Path(tempfile.mkdtemp(prefix="omnilatex-diff-"))
+        try:
+            old_tex = tmpdir / "old.tex"
+            new_tex = tmpdir / "new.tex"
+            for ref, dest in [(ref_a, old_tex), (ref_b, new_tex)]:
+                result = subprocess.run(
+                    ["git", "show", f"{ref}:{MAIN_TEX_FILENAME}"],
+                    capture_output=True, text=True, timeout=10,
+                )
+                if result.returncode != 0:
+                    self.ui.error(f"Could not extract {MAIN_TEX_FILENAME} from ref '{ref}'")
+                    self.ui.info(f"  git error: {result.stderr.strip()}")
+                    return
+                dest.write_text(result.stdout, encoding="utf-8")
+            latexdiff_path = shutil.which("latexdiff")
+            if latexdiff_path:
+                self.ui.info("Using latexdiff to produce annotated diff PDF")
+                self._run_latexdiff(old_tex, new_tex, output, cwd=tmpdir)
+            else:
+                self.ui.warning("latexdiff not available; showing textual diff")
+                result = subprocess.run(
+                    ["diff", "-u", str(old_tex), str(new_tex)],
+                    capture_output=True, text=True, timeout=10,
+                )
+                if result.stdout:
+                    print(result.stdout)
+                if result.returncode != 0:
+                    self.ui.info("Files differ")
+                else:
+                    self.ui.success("Files are identical")
+        finally:
+            shutil.rmtree(tmpdir, ignore_errors=True)
+
+    def _run_latexdiff(self, tex_a: Path, tex_b: Path, output: str = None, cwd: Path = None):
+        import tempfile
+        work_dir = cwd or Path(tempfile.mkdtemp(prefix="omnilatex-diff-"))
+        cleanup = cwd is None
+        try:
+            diff_tex = work_dir / "diff.tex"
+            result = subprocess.run(
+                ["latexdiff", str(tex_a.resolve()), str(tex_b.resolve())],
+                capture_output=True, text=True, timeout=30,
+                cwd=work_dir,
+            )
+            if result.returncode != 0:
+                self.ui.error(f"latexdiff failed: {result.stderr.strip()}")
+                return
+            diff_tex.write_text(result.stdout, encoding="utf-8")
+            self.ui.info("Compiling diff PDF...")
+            repo_root = Path(__file__).resolve().parent
+            extra_env = {
+                "TEXINPUTS": os.pathsep.join([".", str(repo_root), ""]),
+            }
+            root_latexmkrc = repo_root / ".latexmkrc"
+            cmd = [LATEXMK_COMMAND, INTERACTION_NONSTOP]
+            if root_latexmkrc.exists():
+                cmd.extend(["-r", str(root_latexmkrc)])
+            cmd.append(diff_tex.name)
+            result = subprocess.run(
+                cmd,
+                capture_output=True, text=True, timeout=120,
+                cwd=work_dir, env={**os.environ, **extra_env},
+            )
+            diff_pdf = work_dir / "diff.pdf"
+            if diff_pdf.exists():
+                out_path = Path(output) if output else Path.cwd() / "diff.pdf"
+                shutil.copy2(diff_pdf, out_path)
+                self.ui.success(f"Annotated diff PDF: {out_path}")
+            else:
+                self.ui.error("Failed to compile diff PDF")
+                if result.stdout:
+                    for line in result.stdout.splitlines()[-20:]:
+                        print(f"  {line}")
+        finally:
+            if cleanup:
+                shutil.rmtree(work_dir, ignore_errors=True)
+
+    def _basic_pdf_compare(self, a: str, b: str):
+        size_a = Path(a).stat().st_size
+        size_b = Path(b).stat().st_size
+        self.ui.info(f"  {Path(a).name}: {size_a:,} bytes")
+        self.ui.info(f"  {Path(b).name}: {size_b:,} bytes")
+        try:
+            import fitz
+            doc_a = fitz.open(a)
+            doc_b = fitz.open(b)
+            if doc_a.page_count != doc_b.page_count:
+                self.ui.warning(
+                    f"Page count mismatch: {doc_a.page_count} vs {doc_b.page_count}"
+                )
+            else:
+                self.ui.info(f"Page count: {doc_a.page_count} (match)")
+            diff_pct = abs(size_a - size_b) / max(size_a, size_b, 1) * 100
+            if diff_pct < 1:
+                self.ui.success(f"File sizes nearly identical ({diff_pct:.1f}% diff)")
+            else:
+                self.ui.warning(f"File sizes differ by {diff_pct:.1f}%")
+            doc_a.close()
+            doc_b.close()
+        except ImportError:
+            if size_a == size_b:
+                self.ui.success("Files are identical in size")
+            else:
+                self.ui.warning("File sizes differ")
+
+    def cmd_diff(self, files: List[str], regenerate_references: bool = False, output: str = None):
+        """Compare PDFs, git refs, or example references.
+
+        Modes:
+          - Two PDF paths: Direct comparison, with latexdiff if .tex sources are found.
+          - Two git refs: Extract sources and produce an annotated diff PDF.
+          - Example names: Visual regression against reference baselines.
 
         When *regenerate_references* is True, copies built PDFs to
         tests/references/ instead of comparing.
         """
+        if files and len(files) == 2 and not regenerate_references:
+            a, b = files[0], files[1]
+            a_pdf = Path(a).exists() and a.lower().endswith(".pdf")
+            b_pdf = Path(b).exists() and b.lower().endswith(".pdf")
+            if a_pdf and b_pdf:
+                return self._diff_two_pdfs(a, b, output)
+            if self._is_git_ref(a) and self._is_git_ref(b):
+                return self._diff_git_refs(a, b, output)
+
         self.ui.header("Visual Regression Diff")
 
         ref_dir = Path(__file__).resolve().parent / "tests" / "references"
@@ -1455,6 +1612,7 @@ class BuildTasks:
         doctype: str = None,
         institution: str = None,
         language: str = None,
+        thesis: bool = False,
     ):
         """Initialize a new OmniLaTeX project from a template."""
         self.ui.header("Initialize Project")
@@ -1468,7 +1626,11 @@ class BuildTasks:
             self.ui.info("  --doctype TYPE      Set document type (default: book)")
             self.ui.info("  --institution NAME  Set institution (default: none)")
             self.ui.info("  --language LANG     Set language (default: english)")
+            self.ui.info("  --thesis            Shortcut for --doctype thesis with full thesis structure")
             return
+
+        if thesis and doctype is None:
+            doctype = "thesis"
 
         project_name = files[0]
         if not re.match(r'^[a-zA-Z0-9_-]+$', project_name):
@@ -1596,6 +1758,9 @@ class BuildTasks:
                 content = content[: m.start()] + new_docclass + content[m.end() :]
                 main_tex.write_text(content, encoding="utf-8")
 
+        if thesis:
+            self._create_thesis_structure(dst, project_name, doctype, institution, language)
+
         self.ui.success(f"Initialized project: {project_name}")
         self.ui.info(f"  Location: {dst}")
         self.ui.info(f"  Template: minimal-starter")
@@ -1605,11 +1770,135 @@ class BuildTasks:
             self.ui.info(f"  Institution: {institution}")
         if language:
             self.ui.info(f"  Language: {language}")
+        if thesis:
+            self.ui.info(f"  Structure: thesis (chapters, bib, figures)")
         self.ui.info(f"  Next steps:")
         self.ui.info(f"    1. cd {project_name}")
-        self.ui.info(f"    2. Edit main.tex to set your title, author, and content")
-        self.ui.info(f"    3. python build.py build-root    (from repo root)")
-        self.ui.info(f"       or latexmk -lualatex main.tex  (standalone)")
+        if thesis:
+            self.ui.info(f"    2. Edit chapters/ with your thesis content")
+            self.ui.info(f"    3. Add references to bib/bibliography.bib")
+            self.ui.info(f"    4. latexmk -lualatex main.tex")
+        else:
+            self.ui.info(f"    2. Edit main.tex to set your title, author, and content")
+            self.ui.info(f"    3. python build.py build-root    (from repo root)")
+            self.ui.info(f"       or latexmk -lualatex main.tex  (standalone)")
+
+    def _create_thesis_structure(
+        self, dst: Path, project_name: str, doctype: str, institution: str, language: str,
+    ):
+        chapters_dir = dst / "chapters"
+        chapters_dir.mkdir(parents=True, exist_ok=True)
+
+        chapter_templates = {
+            "introduction.tex": (
+                "\\chapter{Introduction}\n"
+                "\n"
+            ),
+            "methodology.tex": (
+                "\\chapter{Methodology}\n"
+                "\n"
+            ),
+            "results.tex": (
+                "\\chapter{Results}\n"
+                "\n"
+            ),
+            "conclusion.tex": (
+                "\\chapter{Conclusion}\n"
+                "\n"
+            ),
+        }
+        for filename, content in chapter_templates.items():
+            (chapters_dir / filename).write_text(content, encoding="utf-8")
+
+        bib_dir = dst / "bib"
+        bib_dir.mkdir(parents=True, exist_ok=True)
+        (bib_dir / "bibliography.bib").write_text(
+            "@article{example2024,\n"
+            "  author  = {Author, Example},\n"
+            "  title   = {Example Article Title},\n"
+            "  journal = {Journal of Examples},\n"
+            "  year    = {2024},\n"
+            "  volume  = {1},\n"
+            "  pages   = {1--10},\n"
+            "}\n",
+            encoding="utf-8",
+        )
+
+        figures_dir = dst / "figures"
+        figures_dir.mkdir(parents=True, exist_ok=True)
+        (figures_dir / ".gitkeep").touch()
+
+        repo_root = Path(__file__).resolve().parent
+        latexmkrc_src = repo_root / ".latexmkrc"
+        latexmkrc_dst = dst / ".latexmkrc"
+        if latexmkrc_src.exists():
+            if latexmkrc_dst.is_symlink():
+                latexmkrc_dst.unlink()
+            if not latexmkrc_dst.exists():
+                latexmkrc_dst.symlink_to(latexmkrc_src)
+
+        main_tex = dst / "main.tex"
+        opts_parts = []
+        if doctype:
+            opts_parts.append(f"doctype={doctype}")
+        else:
+            opts_parts.append("doctype=thesis")
+        if institution:
+            opts_parts.append(f"institution={institution}")
+        if language:
+            opts_parts.append(f"language={language}")
+        opts_str = ", ".join(opts_parts)
+        main_tex.write_text(
+            f"\\documentclass[{opts_str}]{{omnilatex}}\n"
+            "\n"
+            f"\\title{{{project_name.replace('-', ' ').replace('_', ' ').title()}}}\n"
+            "\\author{Your Name}\n"
+            "\\date{\\today}\n"
+            "\n"
+            "\\addbibresource{bib/bibliography.bib}\n"
+            "\n"
+            "\\graphicspath{{figures/}}\n"
+            "\n"
+            "\\begin{document}\n"
+            "\\maketitle\n"
+            "\\tableofcontents\n"
+            "\n"
+            "\\include{chapters/introduction}\n"
+            "\\include{chapters/methodology}\n"
+            "\\include{chapters/results}\n"
+            "\\include{chapters/conclusion}\n"
+            "\n"
+            "\\printbibliography\n"
+            "\\end{document}\n",
+            encoding="utf-8",
+        )
+
+        (dst / "README.md").write_text(
+            f"# {project_name}\n"
+            "\n"
+            "A thesis project built with [OmniLaTeX](https://github.com/WyattAu/OmniLaTeX-template).\n"
+            "\n"
+            "## Structure\n"
+            "\n"
+            "- `main.tex` — Main document file\n"
+            "- `chapters/` — Thesis chapters (introduction, methodology, results, conclusion)\n"
+            "- `bib/bibliography.bib` — Bibliography database\n"
+            "- `figures/` — Figure assets\n"
+            "- `.latexmkrc` — Build configuration (symlink to OmniLaTeX root)\n"
+            "\n"
+            "## Building\n"
+            "\n"
+            "```bash\n"
+            "latexmk -lualatex main.tex\n"
+            "```\n"
+            "\n"
+            "Or from the OmniLaTeX repo root:\n"
+            "\n"
+            "```bash\n"
+            f"python build.py build-example {project_name}\n"
+            "```\n",
+            encoding="utf-8",
+        )
 
     def cmd_doctor(self, files: list[str] | None = None) -> None:
         """Run comprehensive health diagnostics."""
@@ -1765,6 +2054,206 @@ class BuildTasks:
             for name, detail in failed:
                 self.ui.info(f"  \u2022 {name}: {detail}")
 
+    def cmd_check(self, files: list[str] | None = None) -> int:
+        """Cross-reference integrity check on LaTeX files."""
+        from collections import defaultdict
+
+        self.ui.header("Cross-Reference Integrity Check")
+
+        scan_dir = Path(files[0]) if files and files else Path.cwd()
+
+        if not scan_dir.is_dir():
+            self.ui.error(f"Not a directory: {scan_dir}")
+            return 1
+
+        tex_files = sorted(
+            f for f in scan_dir.rglob("*.tex")
+            if self.config.build_dir not in f.parents
+            and "_minted" not in str(f)
+        )
+        bib_files = sorted(
+            f for f in scan_dir.rglob("*.bib")
+            if self.config.build_dir not in f.parents
+        )
+
+        if not tex_files:
+            self.ui.warning(f"No .tex files found in {scan_dir}")
+            return 0
+
+        self.ui.info(f"Scanning {len(tex_files)} .tex file(s), {len(bib_files)} .bib file(s)")
+
+        _LABEL_RE = re.compile(r"\\label\{([^}]+)\}")
+        _REF_RE = re.compile(r"\\(?:ref|eqref|autoref|cref|Cref|pageref)\{([^}]+)\}")
+        _CITE_RE = re.compile(r"\\(?:cite|nocite)\{([^}]+)\}")
+        _BIB_ENTRY_RE = re.compile(r"@\w+\{([^,\s]+),")
+
+        labels: dict[str, list[str]] = defaultdict(list)
+        refs: dict[str, list[str]] = defaultdict(list)
+        cites: dict[str, list[str]] = defaultdict(list)
+        bib_keys: set[str] = set()
+
+        for tex in tex_files:
+            try:
+                content = tex.read_text(encoding="utf-8", errors="replace")
+            except OSError as exc:
+                self.ui.warning(f"Cannot read {tex}: {exc}")
+                continue
+
+            rel = tex.relative_to(scan_dir) if tex.is_relative_to(scan_dir) else tex
+
+            for m in _LABEL_RE.finditer(content):
+                labels[m.group(1)].append(str(rel))
+
+            for m in _REF_RE.finditer(content):
+                for key in m.group(1).split(","):
+                    key = key.strip()
+                    if key:
+                        refs[key].append(str(rel))
+
+            for m in _CITE_RE.finditer(content):
+                for key in m.group(1).split(","):
+                    key = key.strip()
+                    if key:
+                        cites[key].append(str(rel))
+
+        for bib in bib_files:
+            try:
+                content = bib.read_text(encoding="utf-8", errors="replace")
+            except OSError as exc:
+                self.ui.warning(f"Cannot read {bib}: {exc}")
+                continue
+            for m in _BIB_ENTRY_RE.finditer(content):
+                bib_keys.add(m.group(1))
+
+        label_set = set(labels.keys())
+        ref_set = set(refs.keys())
+        cite_set = set(cites.keys())
+
+        undefined_refs = sorted(ref_set - label_set)
+        unused_labels = sorted(label_set - ref_set)
+        undefined_cites = sorted(cite_set - bib_keys)
+
+        total_labels = len(label_set)
+        total_refs = sum(len(v) for v in refs.values())
+        total_cites = sum(len(v) for v in cites.values())
+
+        self.ui.info(f"Labels: {total_labels}  |  References: {total_refs}  |  Citations: {total_cites}  |  Bib entries: {len(bib_keys)}")
+
+        has_errors = False
+
+        if undefined_refs:
+            has_errors = True
+            self.ui.warning(f"Undefined references ({len(undefined_refs)}):")
+            for key in undefined_refs:
+                locs = refs[key]
+                self.ui.warning(f"  \\ref{{{key}}} referenced in: {', '.join(locs)}")
+
+        if unused_labels:
+            self.ui.info(f"Unused labels ({len(unused_labels)}):")
+            for key in unused_labels:
+                locs = labels[key]
+                self.ui.info(f"  \\label{{{key}}} defined in: {', '.join(locs)}")
+
+        if undefined_cites:
+            has_errors = True
+            self.ui.warning(f"Undefined citations ({len(undefined_cites)}):")
+            for key in undefined_cites:
+                locs = cites[key]
+                self.ui.warning(f"  \\cite{{{key}}} referenced in: {', '.join(locs)}")
+
+        if not undefined_refs and not unused_labels and not undefined_cites:
+            self.ui.success("All cross-references and citations are valid.")
+        elif not has_errors:
+            self.ui.success("No errors found (unused labels are informational only).")
+        else:
+            self.ui.error("Cross-reference check failed: undefined references or citations found.")
+
+        return 1 if has_errors else 0
+
+    def cmd_lint(self, files: list[str] | None = None) -> int:
+        """Lint .tex files with chktex and lacheck."""
+        self.ui.header("Linting .tex files")
+
+        repo_root = Path(__file__).resolve().parent
+
+        if files:
+            tex_files = [Path(f) for f in files if Path(f).exists()]
+        else:
+            tex_files = sorted(
+                f for f in repo_root.rglob("*.tex")
+                if self.config.build_dir not in f.parents
+                and "_minted" not in str(f)
+            )
+
+        if not tex_files:
+            self.ui.warning("No .tex files found")
+            return 0
+
+        has_chktex = shutil.which("chktex") is not None
+        has_lacheck = shutil.which("lacheck") is not None
+
+        if not has_chktex and not has_lacheck:
+            self.ui.error("Neither chktex nor lacheck found.")
+            self.ui.info("  Install with: tlmgr install chktex lacheck")
+            return 1
+
+        self.ui.info(f"Scanning {len(tex_files)} file(s) with {'chktex' if has_chktex else ''}{' and ' if has_chktex and has_lacheck else ''}{'lacheck' if has_lacheck else ''}")
+
+        total_errors = 0
+        total_warnings = 0
+        error_re = re.compile(r"Error\s+\d+", re.IGNORECASE)
+
+        for tex_file in tex_files:
+            try:
+                rel = tex_file.relative_to(repo_root)
+            except ValueError:
+                rel = tex_file
+
+            if has_chktex:
+                try:
+                    result = subprocess.run(
+                        ["chktex", "-q", "-f", "%f:%l:%c:%n:%m%n", str(tex_file)],
+                        capture_output=True, text=True, timeout=30,
+                    )
+                    if result.stdout.strip():
+                        self.ui.info(f"[chktex] {rel}:")
+                        for line in result.stdout.strip().splitlines():
+                            print(f"  {line}")
+                            if error_re.search(line):
+                                total_errors += 1
+                            else:
+                                total_warnings += 1
+                except (subprocess.TimeoutExpired, OSError) as exc:
+                    self.ui.warning(f"[chktex] Failed to process {rel}: {exc}")
+
+            if has_lacheck:
+                try:
+                    result = subprocess.run(
+                        ["lacheck", str(tex_file)],
+                        capture_output=True, text=True, timeout=30,
+                    )
+                    if result.stdout.strip():
+                        self.ui.info(f"[lacheck] {rel}:")
+                        for line in result.stdout.strip().splitlines():
+                            print(f"  {line}")
+                            total_warnings += 1
+                except (subprocess.TimeoutExpired, OSError) as exc:
+                    self.ui.warning(f"[lacheck] Failed to process {rel}: {exc}")
+
+        self.ui.info(
+            f"\nLint summary: {total_errors} error(s), {total_warnings} warning(s) "
+            f"across {len(tex_files)} file(s)"
+        )
+
+        if total_errors > 0:
+            self.ui.error("Linting found errors")
+            return 1
+        if total_warnings > 0:
+            self.ui.warning(f"Linting passed with {total_warnings} warning(s)")
+        else:
+            self.ui.success("Linting passed with no issues")
+        return 0
+
 
 # -----------------------------------------------------------------------------
 # Interactive Menu (TUI)
@@ -1799,6 +2288,8 @@ def interactive_menu(tasks: BuildTasks, commands: dict[str, tuple]) -> None:
                 ("preflight", "Run preflight checks"),
                 ("doctor", "Health diagnostics"),
                 ("diff", "Visual regression diff"),
+                ("lint", "Lint .tex files (chktex/lacheck)"),
+                ("check", "Cross-reference integrity check"),
             ],
         ),
         (
@@ -2066,7 +2557,8 @@ def main() -> None:
         "clean-aux": (BuildTasks.clean_aux, "Clean aux files.", False),
         "clean-pdf": (BuildTasks.clean_pdf, "Clean all PDFs.", False),
         "preflight": (BuildTasks.preflight, "Run preflight checks.", False),
-        "lint": (BuildTasks.preflight, "Alias for 'preflight'.", False),
+        "check": (BuildTasks.cmd_check, "Cross-reference integrity check on .tex files.", True),
+        "lint": (BuildTasks.cmd_lint, "Lint .tex files with chktex/lacheck.", True),
         "list-examples": (BuildTasks.list_examples, "List all examples.", False),
         "build-example": (
             BuildTasks.build_example,
@@ -2127,6 +2619,13 @@ def main() -> None:
             default=False,
             help="Copy built PDFs to tests/references/ as new baselines instead of comparing.",
         )
+        diff_subparser.add_argument(
+            "--output", "-o",
+            type=str,
+            default=None,
+            metavar="PATH",
+            help="Output path for annotated diff PDF (used with two-PDF or git-ref mode).",
+        )
     if init_subparser is not None:
         init_subparser.add_argument(
             "--doctype",
@@ -2145,6 +2644,12 @@ def main() -> None:
             type=str,
             default=None,
             help="Document language (e.g. english, german, chinese)",
+        )
+        init_subparser.add_argument(
+            "--thesis",
+            action="store_true",
+            default=False,
+            help="Shortcut: set doctype=thesis and create full thesis project structure.",
         )
 
     args = parser.parse_args()
@@ -2176,13 +2681,23 @@ def main() -> None:
                 doctype=getattr(args, "doctype", None),
                 institution=getattr(args, "institution", None),
                 language=getattr(args, "language", None),
+                thesis=getattr(args, "thesis", False),
             )
         elif args.command == "diff":
             args.handler(
                 tasks,
                 getattr(args, "files", None),
                 regenerate_references=getattr(args, "regenerate_references", False),
+                output=getattr(args, "output", None),
             )
+        elif args.command == "lint":
+            rc = args.handler(tasks, getattr(args, "files", None))
+            if rc:
+                sys.exit(rc)
+        elif args.command == "check":
+            rc = args.handler(tasks, getattr(args, "files", None))
+            if rc:
+                sys.exit(rc)
         else:
             args.handler(tasks, getattr(args, "files", None))
     except Exception as e:

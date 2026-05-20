@@ -1,0 +1,45 @@
+[module]
+name = "omnilatex-review"
+file = "lib/utils/omnilatex-review.sty"
+version = "2026/05/18 v2.0.0"
+description = "Margin note review functionality: numbered review items, review footnotes, review blocks, and review list for collaborative editing"
+
+[dependencies]
+requires = ["omnilatex-utils", "xcolor", "marginnote", "etoolbox", "tcolorbox"]
+optionally_requires = []
+
+[options]
+margin = "Review notes appear in margins (default)"
+inline = "Review notes appear inline in the text"
+disable = "Suppress all review output entirely"
+"color=<color>" = "Set review highlight color (default: orange!30)"
+
+[[exports]]
+name = "review"
+type = "counter"
+signature = ""
+description = "Counter for numbering review items sequentially across the document"
+
+[[exports]]
+name = "\\review"
+type = "command"
+signature = "[label]{comment}"
+description = "Adds a colored margin note with reviewer comment; optional label prefixes the numbered item"
+
+[[exports]]
+name = "\\reviewfootnote"
+type = "command"
+signature = "{comment}"
+description = "Adds review comment as a footnote with highlighted background"
+
+[[exports]]
+name = "\\reviewlist"
+type = "command"
+signature = ""
+description = "Lists all review items accumulated in the document at the current position"
+
+[[exports]]
+name = "reviewblock"
+type = "environment"
+signature = "{title}"
+description = "Inline review block with highlighted background and titled header"

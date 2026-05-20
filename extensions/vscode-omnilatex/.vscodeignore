@@ -1,4 +1,10 @@
 .vscode/**
 .vscode-test/**
 node_modules/**
+src/**
 *.vsix
+*.map
+tsconfig.json
+package-lock.json
+.gitignore
+FEATURE_COMPARISON.md
