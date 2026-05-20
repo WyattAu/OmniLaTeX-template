@@ -20,16 +20,16 @@ def pytest_configure(config):
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def repo_root():
     return REPO_ROOT
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def all_doctype_names():
     return list(ALL_DOCTYPE_NAMES)
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def all_example_names():
     return list(ALL_EXAMPLE_NAMES)

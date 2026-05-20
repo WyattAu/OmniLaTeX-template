@@ -21,14 +21,38 @@ else
 	TEST_FLAGS =
 endif
 
-test: test-self test-pdfs # Runs all tests.
+test: test-modules test-config test-properties test-ctan test-build-py test-institutions test-negative test-edge-cases test-unicode test-visual-regression
 	@echo "All tests passed."
 
 # Target names correspond to actual Python test files, with some modifications made, see
 # the `run_test` function.
 
-test-self:  # Runs tests on the tests themselves.
-	@$(call run_test,$@)
+test-modules:
+	@$(call run_test,modules)
 
-test-pdfs:  # Runs tests on found PDFs.
-	@$(call run_test,$@)
+test-config:
+	@$(call run_test,config)
+
+test-properties:
+	@$(call run_test,properties)
+
+test-ctan:
+	@$(call run_test,ctan)
+
+test-build-py:
+	@$(call run_test,build_py)
+
+test-institutions:
+	@$(call run_test,institutions)
+
+test-negative:
+	@$(call run_test,negative)
+
+test-edge-cases:
+	@$(call run_test,edge_cases)
+
+test-unicode:
+	@$(call run_test,unicode)
+
+test-visual-regression:
+	@$(call run_test,visual_regression)

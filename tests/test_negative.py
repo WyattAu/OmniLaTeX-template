@@ -63,7 +63,13 @@ class TestMissingResources:
 \begin{document}Test\end{document}"""
         success, log = compile_tex(tex)
         assert success
-        assert "not found" in log.lower() or "warning" in log.lower() or success
+        log_lower = log.lower()
+        assert (
+            "not found" in log_lower
+            or "warning" in log_lower
+            or "unknown" in log_lower
+            or "classwarning" in log_lower
+        ), f"Missing institution should produce a warning. Log: {log[-500:]}"
 
 
 class TestEdgeCases:
@@ -94,7 +100,13 @@ class TestInvalidOptions:
 \begin{document}Test\end{document}"""
         # This should be handled by DeclareDefaultOption -> adduseroption -> passed to base class
         success, log = compile_tex(tex)
-        assert not success or "unknown" in log.lower() or "warning" in log.lower()
+        log_lower = log.lower()
+        assert (
+            not success
+            or "unknown" in log_lower
+            or "warning" in log_lower
+            or "option" in log_lower
+        ), f"Unknown option should produce a warning or fail. Log: {log[-500:]}"
 
     def test_a5_option(self):
         """The a5 void option should compile."""

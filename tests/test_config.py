@@ -564,7 +564,7 @@ class TestDocumentation:
         "doc",
         [
             "USER_GUIDE.md",
-            "api_reference.md",
+            "API_REFERENCE.md",
             "gallery.md",
             "accessibility.md",
             "editor-integration.md",

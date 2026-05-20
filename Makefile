@@ -8,7 +8,7 @@ PROOF_DIR := specs/proofs
 test: test-fast
 
 test-fast:
-	$(PYTHON) -m pytest $(TEST_DIR)/test_modules.py $(TEST_DIR)/test_ctan.py $(TEST_DIR)/test_properties.py $(TEST_DIR)/test_visual_regression.py -v --timeout=60 -m "not slow" --tb=short
+	$(PYTHON) -m pytest $(TEST_DIR)/test_modules.py $(TEST_DIR)/test_ctan.py $(TEST_DIR)/test_properties.py $(TEST_DIR)/test_visual_regression.py $(TEST_DIR)/test_build_py.py $(TEST_DIR)/test_institutions.py $(TEST_DIR)/test_negative.py $(TEST_DIR)/test_config.py $(TEST_DIR)/test_edge_cases.py $(TEST_DIR)/test_unicode.py -v --timeout=60 -m "not slow" --tb=short
 
 test-slow:
 	$(PYTHON) -m pytest $(TEST_DIR)/ -v --timeout=300 --tb=short

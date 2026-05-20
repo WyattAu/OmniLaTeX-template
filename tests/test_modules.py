@@ -3,14 +3,14 @@ import re
 
 import pytest
 
-from tests.constants import ALL_DOCTYPE_NAMES, ALL_EXAMPLE_NAMES, DOCTYPE_TO_CLASS
+from tests.constants import (
+    ALL_DOCTYPE_NAMES,
+    ALL_EXAMPLE_NAMES,
+    DOCTYPE_ALIASES,
+    DOCTYPE_TO_CLASS,
+)
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
-
-DOCTYPE_ALIASES = {
-    "technical-report": "technicalreport",
-    "researchproposal": "research-proposal",
-}
 
 EXPECTED_LIB_SUBDIRS = [
     "code",
@@ -29,9 +29,11 @@ INSTITUTION_NAMES = [
     "cambridge",
     "chalmers",
     "cmu",
+    "columbia",
     "epfl",
     "eth",
     "generic",
+    "harvard",
     "imperial",
     "kit",
     "mit",
@@ -61,7 +63,7 @@ def _read(path):
 
 def _extract_doctype_from_main(main_tex_path):
     text = _read(main_tex_path)
-    m = re.search(r"doctype\s*=\s*([\w-]+)", text)
+    m = re.search(r'doctype\s*=\s*["\']?([\w-]+)["\']?', text)
     if m:
         return m.group(1).strip().lower()
     return None
@@ -83,7 +85,7 @@ class TestDocumentTypeRegistration:
     def test_cls_file_exists(self, repo_root):
         assert (repo_root / "omnilatex.cls").is_file()
 
-    def test_all_19_doctypes_registered_in_cls(self, repo_root):
+    def test_all_doctypes_registered_in_cls(self, repo_root):
         cls_text = _read(repo_root / "omnilatex.cls")
         for dt in ALL_DOCTYPE_NAMES:
             assert dt in cls_text, f"doctype '{dt}' not found in omnilatex.cls"
@@ -123,7 +125,7 @@ class TestDocumentTypeRegistration:
                 unique_primary.add(name)
         unique_primary.add("book")
         assert len(unique_primary) >= 26, (
-            f"Expected at least 25 unique doctypes, "
+            f"Expected at least 26 unique doctypes, "
             f"found {len(unique_primary)}: {sorted(unique_primary)}"
         )
 
