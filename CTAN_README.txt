@@ -1,7 +1,7 @@
 OmniLaTeX — Universal LaTeX Template System
 ============================================
 
-A modular LaTeX document class supporting 26 document types with
+A modular LaTeX document class supporting 27 document types with
 consistent branding, multi-language support, and reproducible
 builds via Docker and Nix.
 

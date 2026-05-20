@@ -1,6 +1,6 @@
 # OmniLaTeX
 
-**Universal LaTeX document class** -- 26 doctypes, 21 institutions, 25 languages, 198 Lean 4 theorems.
+**Universal LaTeX document class** -- 27 doctypes, 21 institutions, 25 languages, 198 Lean 4 theorems.
 
 ## Quick Start
 
@@ -35,7 +35,7 @@ python build.py build-example minimal-starter
 
 ## Features
 
-- **26 doctypes** -- thesis, article, book, cv, presentation, letter, memo, invoice, recipe, and more
+- **27 doctypes** -- thesis, article, book, cv, presentation, letter, memo, invoice, recipe, and more
 - **21 institutions** -- ETH, MIT, Stanford, TUHH, TUM, Cambridge, Oxford, Harvard, Yale, Princeton, Columbia, EPFL, CMU, Imperial, TU Delft, Aalto, Chalmers, KIT, NTNU, UofT, Generic
 - **25 full translations** -- EN, DE, FR, ES, PT, IT, NL, PL, CZ, EL, TR, RU, VI, HI, SV, FI, DA, NO, and more
 - **25 polyglossia languages** -- full script support including CJK, Arabic, Hebrew, Cyrillic

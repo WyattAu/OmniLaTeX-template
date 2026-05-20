@@ -1,5 +1,5 @@
 site_name: OmniLaTeX
-site_description: Universal LaTeX document class with 26 doctypes, 21 institutions, 25 languages
+site_description: Universal LaTeX document class with 27 doctypes, 21 institutions, 25 languages
 site_url: https://wyattau.github.io/OmniLaTeX-template/
 repo_url: https://github.com/WyattAu/OmniLaTeX-template
 edit_uri: edit/main/docs/
@@ -8,76 +8,76 @@ theme:
   name: material
   language: en
   palette:
-    - scheme: default
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/brightness-7
-        name: Switch to dark mode
-    - scheme: slate
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/brightness-4
-        name: Switch to light mode
+  - scheme: default
+    primary: indigo
+    accent: indigo
+    toggle:
+      icon: material/brightness-7
+      name: Switch to dark mode
+  - scheme: slate
+    primary: indigo
+    accent: indigo
+    toggle:
+      icon: material/brightness-4
+      name: Switch to light mode
   features:
-    - navigation.indexes
-    - navigation.sections
-    - navigation.instant
-    - navigation.tracking
-    - toc.follow
-    - search.suggest
-    - search.highlight
-    - content.code.copy
-  logo: null
-  favicon: null
+  - navigation.indexes
+  - navigation.sections
+  - navigation.instant
+  - navigation.tracking
+  - toc.follow
+  - search.suggest
+  - search.highlight
+  - content.code.copy
+  logo:
+  favicon:
 
 plugins:
-  - search
-  - markdown-exec
+- search
+- markdown-exec
 
 markdown_extensions:
-  - toc:
-      permalink: true
-      slugify: !!python/object/apply:pymdownx.slugs.slugify
-        kwds:
-          case: lower
-  - admonition
-  - pymdownx.details
-  - pymdownx.superfences:
-      custom_fences:
-        - name: mermaid
-          class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format
-  - pymdownx.tabbed:
-      alternate_style: true
-  - pymdownx.tasklist:
-      custom_checkbox: true
-  - def_list
-  - attr_list
-  - md_in_html
+- toc:
+    permalink: true
+    slugify: !!python/object/apply:pymdownx.slugs.slugify
+      kwds:
+        case: lower
+- admonition
+- pymdownx.details
+- pymdownx.superfences:
+    custom_fences:
+    - name: mermaid
+      class: mermaid
+      format: !!python/name:pymdownx.superfences.fence_code_format
+- pymdownx.tabbed:
+    alternate_style: true
+- pymdownx.tasklist:
+    custom_checkbox: true
+- def_list
+- attr_list
+- md_in_html
 
 nav:
-  - Home: index.md
-  - User Guide: USER_GUIDE.md
-  - Migration Guide: MIGRATION_GUIDE.md
-  - FAQ: FAQ.md
-  - API Reference: API_REFERENCE.md
-  - Document Types: gallery.md
-  - Institution Gallery: INSTITUTION_GALLERY.md
-  - Editor Integration: editor-integration.md
-  - Overleaf: OVERLEAF.md
-  - Accessibility: accessibility.md
-  - Performance: PERFORMANCE.md
-  - API Stability: API_STABILITY.md
-  - Breaking Changes: BREAKING_CHANGES.md
-  - CTAN Submission: CTAN_SUBMISSION.md
-  - Institution Contributing: INSTITUTION_CONTRIBUTING.md
-  - Localization Guide: LOCALIZATION_GUIDE.md
-  - Manual Plan: manual/PLAN.md
-  - Manual Part I: manual/PART_I_FOUNDATIONS.md
-  - Manual Part II: manual/PART_II_DOCTYPES.md
-  - Manual Parts III-XI: manual/PARTS_III_THROUGH_XI.md
+- Home: index.md
+- User Guide: USER_GUIDE.md
+- Migration Guide: MIGRATION_GUIDE.md
+- FAQ: FAQ.md
+- API Reference: API_REFERENCE.md
+- Document Types: gallery.md
+- Institution Gallery: INSTITUTION_GALLERY.md
+- Editor Integration: editor-integration.md
+- Overleaf: OVERLEAF.md
+- Accessibility: accessibility.md
+- Performance: PERFORMANCE.md
+- API Stability: API_STABILITY.md
+- Breaking Changes: BREAKING_CHANGES.md
+- CTAN Submission: CTAN_SUBMISSION.md
+- Institution Contributing: INSTITUTION_CONTRIBUTING.md
+- Localization Guide: LOCALIZATION_GUIDE.md
+- Manual Plan: manual/PLAN.md
+- Manual Part I: manual/PART_I_FOUNDATIONS.md
+- Manual Part II: manual/PART_II_DOCTYPES.md
+- Manual Parts III-XI: manual/PARTS_III_THROUGH_XI.md
 
 extra:
   version: 2.0.0

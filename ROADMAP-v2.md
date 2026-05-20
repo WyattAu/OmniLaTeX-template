@@ -9,11 +9,11 @@
 | Dimension | Value |
 |-----------|-------|
 | Core class | `omnilatex.cls` (390 lines), 28 `.sty` modules, 9 subdirectories |
-| Document types | 26 doctypes, 55+ aliases, 3 KOMA-Script base classes |
-| Examples | 47 templates (all compile on TeX Live 2025+) |
+| Document types | 27 doctypes, 55+ aliases, 3 KOMA-Script base classes |
+| Examples | 48 templates (all compile on TeX Live 2025+) |
 | Institutions | 21 configs (ETH, MIT, Stanford, TUHH, TUM, Cambridge, etc.) |
 | Languages | 18 full OmniLaTeX translations (47 keys each) + 25 via polyglossia |
-| Formal verification | 203 Lean 4 theorems, 16 modules, 0 `sorry` |
+| Formal verification | 198 Lean 4 theorems, 16 modules, 0 `sorry` |
 | Tests | 750 pytest + 47 l3build + Lean 4 proofs |
 | CI/CD | 12 GitHub Actions + GitLab/Gitea/Forgejo/Woodpecker |
 | Docker | Multi-arch (amd64+arm64), digest-synced across 8 CI configs |
@@ -61,7 +61,7 @@
 
 | Task | Effort | Acceptance | Status |
 |------|--------|------------|--------|
-| Add `beamer-defense` to README examples table | 15m | Table includes all 47 examples | DONE |
+| Add `beamer-defense` to README examples table | 15m | Table includes all 48 examples | DONE |
 | Synchronize language lists across README and USER_GUIDE | 30m | Identical lists in both files | DONE |
 | Fix CHANGELOG stale counts for v1.18.0 and earlier | 1h | All version entries reflect actual metrics at time of release | DONE |
 | Add `CODEOWNERS` file | 30m | File exists with sensible ownership rules | DONE |
@@ -152,7 +152,7 @@
 - Overleaf gallery submission confirmed
 - VS Code extension live in marketplace
 - 21 institution configs (all present, CI-validated)
-- Per-doctype citation defaults functional (all 26 doctypes)
+- Per-doctype citation defaults functional (all 27 doctypes)
 - Institution contribution guide in CONTRIBUTING.md
 - Performance regression gate active in CI
 
@@ -214,7 +214,7 @@
 |------|--------|------------|--------|
 | Expand integration matrix to JA/KO/RU/AR/HE | 4h | 9+ languages tested | DONE (18 combos) |
 | Add comprehensive config validation tests | 8h | 224 new structural tests | DONE |
-| Increase visual regression to 20+ examples | 4h | Coverage includes all major doctypes | DONE (46 examples) |
+| Increase visual regression to 20+ examples | 4h | Coverage includes all major doctypes | DONE (48 examples) |
 | Expand property-based tests to 40+ | 8h | Hypothesis coverage broader | DONE (72 passing) |
 | Target 700+ fast tests | Ongoing | `pytest tests/ -m "not slow"` reports 700+ | DONE (697) |
 
@@ -270,7 +270,7 @@
 | Multi-language docs | Translate USER_GUIDE to ZH, DE, FR | Medium | Native speakers for QA |
 | Overleaf premium listing | Enhanced templates with Overleaf-specific features | Medium | Overleaf gallery (v2.2) |
 | Full manual (945 pages) | Comprehensive reference covering every module, option, and edge case | High | v3.0 manual foundation |
-| LaTeX WASM full compilation | All 26 doctypes compilable in-browser | Low | WASM MVP (v3.0) |
+| LaTeX WASM full compilation | All 27 doctypes compilable in-browser | Low | WASM MVP (v3.0) |
 | Emacs/Vim/Neovim plugins | LSP integration, snippet expansion, build commands | Medium | API stability |
 | Community translation portal | Crowdin or Weblate for i18n contributions | Medium | v3.0+ stability |
 | TeX Live 2026+ pre-release testing | CI against TL pre-release to catch breakage early | High | TL pre-release access |

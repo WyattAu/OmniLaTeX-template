@@ -81,5 +81,5 @@ Change the doctype, language, and institution in your `.tex` file:
 ]{omnilatex}
 ```
 
-See [CONTRIBUTING.md](../CONTRIBUTING.md) for guides on adding custom institutions,
+See [CONTRIBUTING.md](https://github.com/WyattAu/OmniLaTeX-template/blob/main/CONTRIBUTING.md) for guides on adding custom institutions,
 languages, and doctypes.

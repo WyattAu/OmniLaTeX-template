@@ -6,7 +6,7 @@
 
 ## Executive Summary
 
-OmniLaTeX is a modular LaTeX template system with 28 `.sty` modules, 26 doctypes, 21 institution configs, 25 language support, 180 Lean 4 formal theorems, and 442 fast tests. This document charts the path from current state to production release (CTAN), ecosystem expansion, and long-term sustainability.
+OmniLaTeX is a modular LaTeX template system with 28 `.sty` modules, 27 doctypes, 21 institution configs, 25 language support, 180 Lean 4 formal theorems, and 442 fast tests. This document charts the path from current state to production release (CTAN), ecosystem expansion, and long-term sustainability.
 
 ---
 
@@ -16,10 +16,10 @@ OmniLaTeX is a modular LaTeX template system with 28 `.sty` modules, 26 doctypes
 
 | Area | Maturity | Evidence |
 |------|----------|----------|
-| Core template | Production-ready | 390-line `omnilatex.cls`, 28 modules, 55+ aliases |
+| Core template | Production-ready | 390-line `omnilatex.cls`, 31 modules, 55+ aliases |
 | Formal verification | Industry-leading | 180 Lean 4 theorems (0 `sorry`), state machine proofs |
 | Test coverage | High | 442 fast + 52 institution + slow tests, hypothesis property testing |
-| CI/CD | Comprehensive | 10 GitHub Actions + 4 other platforms, digest-synced Docker |
+| CI/CD | Comprehensive | 12 GitHub Actions + 4 other platforms, digest-synced Docker |
 | Reproducibility | Deterministic | SOURCE_DATE_EPOCH, byte-for-byte PDF, pinned Nix flake |
 | Documentation | Thorough | 238-page manual, API reference, user guide, 13 doc files |
 | Distribution | CTAN-ready | Auto-upload script, Overleaf zip, VS Code extension |
@@ -58,7 +58,7 @@ OmniLaTeX is a modular LaTeX template system with 28 `.sty` modules, 26 doctypes
 | ID | Task | Effort | Dependency |
 |----|------|--------|------------|
 | 1.1 | Final CTAN metadata review (README, CTAN_README.txt) | 2h | None |
-| 1.2 | Verify all 46 examples compile clean on TeX Live 2025+ | 4h | Docker |
+| 1.2 | Verify all 48 examples compile clean on TeX Live 2025+ | 4h | Docker |
 | 1.3 | Run `scripts/ctan-upload.sh` dry-run validation | 1h | 1.1, 1.2 |
 | 1.4 | Submit to CTAN via web form or `ctan-upload` script | 1h | 1.3 |
 | 1.5 | Monitor CTAN review queue (typically 1-2 weeks) | Ongoing | 1.4 |

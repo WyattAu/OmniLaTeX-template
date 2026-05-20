@@ -1,6 +1,6 @@
 # OmniLaTeX
 
-A modular, engineering-grade LaTeX document class for academic and professional documents. 55+ doctype aliases, 28 modules, 47 example templates, a 238-page reference manual, byte-for-byte reproducible builds, and formal Lean 4 verification.
+A modular, engineering-grade LaTeX document class for academic and professional documents. 55+ doctype aliases, 31 modules, 48 example templates, a 238-page reference manual, byte-for-byte reproducible builds, and formal Lean 4 verification.
 
 Built on LuaTeX (LuaHBTeX 1.21.0) + KOMA-Script + TeX Live 2025. Compile with `latexmk -lualatex` or `build.py`.
 
@@ -38,7 +38,7 @@ python build.py build-example minimal-starter
 
 ## Features
 
-- **55+ doctype aliases** resolving to 26 document profiles across 3 KOMA-Script base classes
+- **55+ doctype aliases** resolving to 27 document profiles across 3 KOMA-Script base classes
 - **28 modular `.sty` packages** with formal interface contracts
 - **Lazy module loading** — only load what you need (`enablemath`, `enabletikz`, `enablecode`, ...)
 - **Modern font stack** — Libertinus Serif + Math, Monaspace Neon, Atkinson Hyperlegible Next (with graceful fallback)
@@ -52,12 +52,12 @@ python build.py build-example minimal-starter
 - **RTL support** — automatic bidirectional text for Arabic and Hebrew
 - **Code listings** — syntax highlighting via minted with cached compilation
 - **Engineering diagrams** — 1,000+ lines of TikZ shapes: thermodynamics, P&ID, flowcharts
-- **Formal verification** — Lean 4 proofs (16 proof modules, 196 theorems proven, 0 sorry)
+- **Formal verification** — Lean 4 proofs (16 proof modules, 198 theorems proven, 0 sorry)
 - **Build automation** — `build.py` with watch mode, concurrent builds, timing metrics, and health diagnostics
 
 ## Document Types
 
-26 document type profiles across 3 KOMA-Script base classes. Switch with `\documentclass[doctype=<type>]{omnilatex}`.
+27 document type profiles across 3 KOMA-Script base classes. Switch with `\documentclass[doctype=<type>]{omnilatex}`.
 
 | Base Class | Document Types |
 |-----------|---------------|
@@ -79,7 +79,7 @@ OmniLaTeX supports 18 languages with full OmniLaTeX translations and 25 via poly
 
 ## Examples
 
-47 ready-to-use templates in `examples/` (46 compile on TeX Live 2026; `thesis-tuhh` requires TUHH assets):
+48 ready-to-use templates in `examples/` (47 compile on TeX Live 2026; `thesis-tuhh` requires TUHH assets):
 
 | Example | Doctype | Description |
 |---------|---------|-------------|
@@ -106,6 +106,7 @@ OmniLaTeX supports 18 languages with full OmniLaTeX translations and 25 via poly
 | `poster` | poster | Conference poster (A1 landscape) |
 | `presentation` | presentation | Presentation slides (KOMA-based) |
 | `beamer-minimal` | presentation | Minimal Beamer presentation |
+| `beamer-native` | presentation | Beamer with native OmniLaTeX integration |
 | `beamer-corporate` | presentation | Corporate Beamer presentation |
 | `beamer-academic` | presentation | Academic Beamer presentation |
 | `beamer-defense` | presentation | Thesis defense presentation |
@@ -217,7 +218,7 @@ See [User Guide](docs/USER_GUIDE.md#build-system) for all commands and options.
 
 ### GitHub Actions
 
- 11 workflows using digest-pinned Docker images for reproducibility:
+ 12 workflows using digest-pinned Docker images for reproducibility:
 
 | Workflow | Purpose |
 |----------|---------|
@@ -270,7 +271,7 @@ config/
 ├── document-types/
 │   ├── thesis.sty               # Thesis profile
 │   ├── article.sty              # Article profile
-│   └── ...                      # 26 document type profiles
+│   └── ...                      # 27 document type profiles
 └── institutions/
     ├── eth/                     # ETH Zürich branding
     ├── tuhh/                    # TUHH branding
@@ -299,13 +300,13 @@ config/
 ## Project Structure
 
 ```
-├── omnilatex.cls                # Main document class (390 lines)
+├── omnilatex.cls                # Main document class (412 lines)
 ├── build.py                     # Build automation
 ├── build.lua                    # l3build configuration
 ├── .latexmkrc                   # LaTeX compilation settings
 ├── flake.nix                    # Nix flake (devShell + checks)
 ├── config/                      # Document type and institution configs
-├── lib/                         # 28 modules across 9 subdirectories
+├── lib/                         # 31 modules across 9 subdirectories
 │   ├── core/                    # Build modes, utilities
 │   ├── layout/                  # Page layout, floats, KOMA-Script, accessibility
 │   ├── typography/              # Fonts, math, typesetting, lists
@@ -316,7 +317,7 @@ config/
 │   ├── tables/                  # Table formatting
 │   └── utils/                   # Colors, themes, TODO notes, censoring
 ├── lua/                         # Lua scripts (git metadata)
-├── examples/                    # 47 example templates
+├── examples/                    # 48 example templates
 ├── specs/                       # Formal specifications and Lean 4 proofs
 ├── tests/                       # Test suite (l3build + pytest + visual regression)
 ├── docs/                        # API reference (auto-generated)
@@ -327,7 +328,7 @@ config/
 
 | Suite | Tool | Coverage |
 |-------|------|----------|
-| Module unit tests | l3build | 47 l3build tests (21 module + 26 doctype) |
+| Module unit tests | l3build | 47 l3build tests (21 module + 27 doctype) |
 | Property-based tests | hypothesis + pytest | 92 doctype × language combinations |
 | Unicode stress tests | pytest | 10 scripts (CJK, RTL, emoji, combining) |
 | Edge case tests | pytest | Empty, large, nested documents |

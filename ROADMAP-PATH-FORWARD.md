@@ -12,7 +12,7 @@ A comprehensive audit was performed covering every aspect of the monorepo:
 
 | Area | Status | Details |
 |------|--------|---------|
-| Test suite | PASS | 697 pytest + 47 l3build + 203 Lean 4 theorems (0 sorry), 19 Lean build jobs |
+| Test suite | PASS | 697 pytest + 47 l3build + 198 Lean 4 theorems (0 sorry), 19 Lean build jobs |
 | Code quality | PASS | black, isort, flake8 all clean; no stubs found |
 | CI/CD | PASS (with fixes) | 12 GitHub Actions workflows; all actions SHA-pinned; 3 action versions updated; hardcoded count fixed |
 | Documentation | PASS (with fixes) | Stale metrics corrected across README, ROADMAP, ROADMAP-DETAILED, ROADMAP-PRODUCTION |
@@ -20,7 +20,7 @@ A comprehensive audit was performed covering every aspect of the monorepo:
 | Pre-commit hooks | ADDED | Full pytest + lint + digest validation + semver check on every commit and push |
 | Docker digest consistency | PASS | All 8 CI configs use identical sha256 digest |
 | Semantic versioning | PASS | v2.0.0 consistent across VERSION.md and build.lua |
-| Lean 4 proofs | PASS | 16 modules, 203 theorems, 0 sorry, all compile via lake build |
+| Lean 4 proofs | PASS | 16 modules, 198 theorems, 0 sorry, all compile via lake build |
 
 ### 1.2 Issues Found and Fixed
 
@@ -257,9 +257,9 @@ The repository has Forgejo CI configs at `.forgejo/workflows/build.yml`. These a
 OmniLaTeX is in a strong position for production release:
 
 - **697 pytest + 47 l3build tests pass** with 0 failures
-- **203 Lean 4 theorems** provide formal verification with 0 `sorry`
+- **198 Lean 4 theorems** provide formal verification with 0 `sorry`
 - **12 CI/CD workflows** provide comprehensive automated validation (100% SHA-pinned)
-- **47 example templates** demonstrate all 26 doctypes across 21 institutions
+- **47 example templates** demonstrate all 27 doctypes across 21 institutions
 - **18 language translations** provide broad international support
 - **Pre-commit and pre-push hooks** prevent regressions from entering the codebase
 - **All R1-R10 CI/CD improvements** completed; 80% coverage threshold enforced

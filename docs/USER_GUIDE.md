@@ -2,7 +2,7 @@
 
 ## Quick Start
 
-See the [Quick Start](../README.md#quick-start) section in the main README for clone, build, Docker, and Nix instructions.
+See the [Quick Start](https://github.com/WyattAu/OmniLaTeX-template/blob/main/README.md#quick-start) section in the main README for clone, build, Docker, and Nix instructions.
 
 ## Minimal Document
 
@@ -342,7 +342,7 @@ Base class: `scrreprt`. Standards document with ICS codes and designation fields
 
 ### white-paper
 
-Base class: `scrreprt`. White paper / position paper for policy or technology briefings.
+Base class: `scrartcl`. White paper / position paper for policy or technology briefings.
 
 ```latex
 \documentclass[doctype=white-paper]{omnilatex}
@@ -631,7 +631,7 @@ Per-example settings go in `examples/<name>/config/`.
 
 ## Project Structure
 
-See the [Project Structure](../README.md#project-structure) section in the main README.
+See the [Project Structure](https://github.com/WyattAu/OmniLaTeX-template/blob/main/README.md#project-structure) section in the main README.
 
 ## FAQ / Troubleshooting
 

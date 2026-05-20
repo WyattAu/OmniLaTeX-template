@@ -28,7 +28,7 @@ The zip **must** contain:
 | Path | Description |
 |------|-------------|
 | `omnilatex/omnilatex.cls` | Main document class |
-| `omnilatex/lib/` | Module library (28 modules across 9 subdirectories) |
+| `omnilatex/lib/` | Module library (31 modules across 9 subdirectories) |
 | `omnilatex/config/document-types/` | 26 document type `.sty` files |
 | `omnilatex/config/document-settings.sty` | Global settings |
 | `omnilatex/bib/bibliography.bib` | Default bibliography |
@@ -68,7 +68,7 @@ All 46 examples should compile without errors. Alternatively, run the CI pipelin
 |-------|-------|
 | **Package name** | `omnilatex` |
 | **Version** | (read from `VERSION.md`, e.g. `1.25.0`) |
-| **Summary** | `A modular, engineering-grade LaTeX document class supporting 26 document types, 25 languages, and multiple color themes` |
+| **Summary** | `A modular, engineering-grade LaTeX document class supporting 27 document types, 25 languages, and multiple color themes` |
 | **Description** | (copy the long description from `README.md`) |
 | **License** | Apache-2.0 |
 | **CTAN path** | `macros/latex/contrib/omnilatex` |

@@ -89,7 +89,7 @@ User writes:  \documentclass[doctype=thesis,institution=tuhh,language=german]{om
               (page layout, font size, title page, spacing)
                         │
                         ▼
-              Load 28 modules (conditional on enable* flags)
+              Load 31 modules (conditional on enable* flags)
 ```
 
 ### Key Files
@@ -163,6 +163,7 @@ mkdir -p assets/logos/myuniversity
 ```
 
 Logo requirements:
+
 - Format: PDF (preferred) or high-resolution PNG
 - No transparent backgrounds for print doctypes
 - Maximum height: 3cm for title pages (configurable)
@@ -180,6 +181,7 @@ python build.py build-example minimal-starter
 ```
 
 Verify:
+
 - [ ] Document compiles without errors
 - [ ] Logo renders at correct size and position
 - [ ] Colors match the official brand guidelines
@@ -192,6 +194,7 @@ python -m pytest tests/test_institutions.py -v -k myuniversity
 ```
 
 The test suite validates:
+
 - `\ProvidesPackage` metadata is present and correct
 - Color definitions use valid RGB values
 - Logo translation keys are defined for at least English

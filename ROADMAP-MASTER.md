@@ -69,7 +69,7 @@
 
 | Task | Effort | Acceptance Criteria | Status |
 |------|--------|---------------------|--------|
-| Write comprehensive user guide (MkDocs) | 8h | USER_GUIDE.md covers all 26 doctypes with examples | **DONE** -- 29 doctype reference entries |
+| Write comprehensive user guide (MkDocs) | 8h | USER_GUIDE.md covers all 27 doctypes with examples | **DONE** -- 29 doctype reference entries |
 | Add search functionality to MkDocs | 1h | Search returns relevant results for all doc pages | **DONE** -- mkdocs-material includes search |
 | Add interactive template picker to MkDocs site | 4h | Users can select doctype + language + institution and download | **DONE** -- pages/gallery.html |
 | Create migration guide from article/thesis classes | 4h | Step-by-step guide for converting existing documents | **DONE** -- docs/MIGRATION_GUIDE.md |
@@ -114,7 +114,7 @@
 |------|--------|---------------------|--------|
 | Add Thai, Hindi, Bengali script support | 8h | New polyglossia languages compile correctly | **DONE** -- Thai + Bengali with 47 keys each |
 | Add Georgian, Armenian script support | 8h | Correct font shaping for complex scripts | SKIPPED -- not in polyglossia standard |
-| Create multi-language test matrix (all 25 languages x 26 doctypes) | 16h | integration-matrix.yml covers all combinations | **DONE** -- 11 langs x 3 doctypes = 33 combos |
+| Create multi-language test matrix (all 25 languages x 27 doctypes) | 16h | integration-matrix.yml covers all combinations | **DONE** -- 11 langs x 3 doctypes = 33 combos |
 | Add bidirectional text testing (Arabic, Hebrew, Persian) | 8h | RTL documents render correctly in all doctypes | **DONE** -- rtl-testing job in integration-matrix.yml |
 | Create localization style guide | 4h | Document translation conventions for contributors | **DONE** -- docs/LOCALIZATION_GUIDE.md |
 

@@ -21,9 +21,9 @@ Current version: **v2.0.0**
 | Institution configs | 21 |
 | Languages | 18 with full OmniLaTeX translations + 25 via polyglossia |
 | Translation keys | 846 total (47 keys x 18 languages) |
-| CI workflows | 10 GitHub Actions + 4 other platforms |
+| CI workflows | 12 GitHub Actions + 4 other platforms |
 | Tests | 442 fast tests + 16 institution tests + slow tests |
-| Lean 4 proofs | 196 theorems, 16 modules, 0 sorry |
+| Lean 4 proofs | 198 theorems, 16 modules, 0 sorry |
 | Color themes | 6 presets + dark/light toggle |
 | Citation styles | 9 (IEEE, ACM, APA, Chicago, Nature, Science, Harvard, Vancouver, MLA) |
 | CJK support | Chinese (SC+TC), Japanese, Korean |

@@ -1,6 +1,6 @@
 # OmniLaTeX Accessibility Guide
 
-For development setup and testing, see [CONTRIBUTING.md](../CONTRIBUTING.md).
+For development setup and testing, see [CONTRIBUTING.md](https://github.com/WyattAu/OmniLaTeX-template/blob/main/CONTRIBUTING.md).
 
 OmniLaTeX supports generating tagged PDFs compliant with PDF/UA-1, the ISO
 standard for accessible PDF documents. Tagged PDFs are readable by assistive
@@ -163,5 +163,5 @@ Reader and navigate with VoiceOver (Cmd+F5).
 - `\pdftooltip` (used by `\accessiblelink`) requires the `pdfmanagement`
   layer and may not work in all PDF viewers.
 
-See [CONTRIBUTING.md](../CONTRIBUTING.md) for the full list of known
+See [CONTRIBUTING.md](https://github.com/WyattAu/OmniLaTeX-template/blob/main/CONTRIBUTING.md) for the full list of known
 limitations.

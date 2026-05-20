@@ -39,8 +39,8 @@ A comprehensive reference manual covering every functionality of modern LaTeX th
 | **RTL (Arabic/Hebrew/Persian)** | NO | YES |
 | **CJK (Chinese/Japanese/Korean)** | NO | YES |
 | **PDF accessibility** | NO | YES |
-| **All 26 doctypes** | NO (thesis only) | YES (dedicated chapter per category) |
-| **All 16 institutions** | NO (TUHH only) | YES (institution branding chapter) |
+| **All 27 doctypes** | NO (thesis only) | YES (dedicated chapter per category) |
+| **All 21 institutions** | NO (TUHH only) | YES (institution branding chapter) |
 | **9 citation styles** | NO | YES |
 | **Custom SI units** | NO | YES |
 | **Lua scripting** | NO | YES |
@@ -166,7 +166,7 @@ A comprehensive reference manual covering every functionality of modern LaTeX th
 
 ```
 110_LEAN4_PROOFS.md       — 110 theorems across 12 modules, proof structure, how to read/extend
-111_ARCHITECTURE.md      — 27 modules, dependency graph, module responsibilities
+111_ARCHITECTURE.md      — 31 modules, dependency graph, module responsibilities
 ```
 
 ### Back Matter
@@ -174,7 +174,7 @@ A comprehensive reference manual covering every functionality of modern LaTeX th
 ```
 B0_APPENDIX_COMMANDS.md — Quick-reference: every OmniLaTeX command alphabetically
 B1_APPENDIX_OPTIONS.md   — Quick-reference: every class option
-B2_APPENDIX_DOCTYPES.md  — Quick-reference: all 26 doctypes with aliases
+B2_APPENDIX_DOCTYPES.md  — Quick-reference: all 27 doctypes with aliases
 B3_APPENDIX_MODULES.md   — Quick-reference: all 27 lib modules
 B4_APPENDIX_SIUNITS.md   — Quick-reference: all custom SI units and qualifiers
 ```
@@ -198,7 +198,7 @@ B4_APPENDIX_SIUNITS.md   — Quick-reference: all custom SI units and qualifiers
 
 ### Phase 3: Extended Content (chapters 20-25, 40-44, 80-81, 90-95)
 
-- All 26 doctypes, i18n, code, advanced features
+- All 27 doctypes, i18n, code, advanced features
 - CJK/RTL coverage (unique selling point)
 - Presentation/poster/CV chapters
 

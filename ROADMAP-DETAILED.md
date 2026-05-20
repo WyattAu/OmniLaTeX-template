@@ -11,13 +11,13 @@
 | Area | Status | Details |
 |------|--------|---------|
 | Core class | Stable | 390-line `omnilatex.cls`, 28 `.sty` modules across 9 subdirectories |
-| Document types | Stable | 26 doctypes, 55+ aliases, 3 KOMA-Script base classes (scrartcl/scrbook/scrreprt) |
+| Document types | Stable | 27 doctypes, 55+ aliases, 3 KOMA-Script base classes (scrartcl/scrbook/scrreprt) |
 | Examples | Stable | 46 example templates, all compile on TeX Live 2025+ |
 | Languages | Stable | 25 via polyglossia, 18 with full OmniLaTeX translations (47 keys each) |
 | Institutions | Stable | 21 pluggable configs (ETH, MIT, Stanford, TUHH, TUM, Cambridge, etc.) |
-| Formal verification | Stable | 196 Lean 4 theorems across 16 modules, 0 `sorry`, all compile |
+| Formal verification | Stable | 198 Lean 4 theorems across 16 modules, 0 `sorry`, all compile |
 | Test suite | Stable | 442 fast tests (48 skipped, 1 xfailed) |
-| CI/CD | Stable | 10 GitHub Actions + GitLab/Gitea/Forgejo/Woodpecker configs, 442 tests (structural, property, integration, institution) |
+| CI/CD | Stable | 12 GitHub Actions + GitLab/Gitea/Forgejo/Woodpecker configs, 442 tests (structural, property, integration, institution) |
 | Pre-commit hooks | Stable | 25 hooks: trailing whitespace, black, isort, flake8, markdownlint, pytest gate, Lean gate |
 | Reproducible builds | Stable | SOURCE_DATE_EPOCH, byte-for-byte deterministic PDFs |
 | Docker | Stable | Multi-arch (amd64+arm64) Docker image with auto digest sync |
@@ -125,7 +125,7 @@ The `DocumentSettings.lean` module proves properties about a doctype-to-class ma
 
 **Tasks:**
 
-1. Generate reference PDFs for all 46 examples (one-time, in Docker for determinism)
+1. Generate reference PDFs for all 48 examples (one-time, in Docker for determinism)
 2. Store reference PDFs in `tests/references/` (add to git, ~50MB)
 3. Integrate `visual_regression.py` SSIM script into CI (threshold: 0.99)
 4. Add `--regenerate-references` flag for intentional visual changes
@@ -201,22 +201,22 @@ preflight:     ## Run all checks before release
 
 ### 3.3 l3build Test Expansion -- DONE
 
-47 l3build tests, all 26 doctypes covered.
+47 l3build tests, all 27 doctypes covered.
 
 **Tasks:**
 
 1. Expand `.lvt` test coverage from 22 to 40+ modules (add doctype-specific tests)
-2. Add regression tests for all 26 doctypes
+2. Add regression tests for all 27 doctypes
 3. Add cross-module interaction tests (e.g., math + code listings + floats)
 4. Integrate l3build into CI pipeline
 
 ### 3.4 Additional Lean 4 Proofs -- DONE
 
-196 theorems across 16 modules, exceeded 100 target.
+198 theorems across 16 modules, exceeded 100 target.
 
 **Tasks:**
 
-1. Prove page geometry invariants for all 26 doctypes (currently only general)
+1. Prove page geometry invariants for all 27 doctypes (currently only general)
 2. Prove translation key completeness for secondary languages
 3. Prove build mode strictness properties (dev < prod < ultra)
 4. Prove cross-reference consistency (no dangling labels)
@@ -244,7 +244,7 @@ preflight:     ## Run all checks before release
 ### 4.3 VS Code Extension Updates (v2.2.0)
 
 1. Publish to VS Code marketplace
-2. Add snippet library for all 26 doctypes
+2. Add snippet library for all 27 doctypes
 3. Add build-on-save integration
 4. Add error parsing and diagnostics
 

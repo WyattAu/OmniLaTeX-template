@@ -800,6 +800,6 @@ The Nix flake includes a reproducibility check (`nix build .#checks.reproducibil
 
 ### Chapter 111: Architecture
 
-1. **Module Dependency Graph** -- 27 modules, load order
+1. **Module Dependency Graph** -- 31 modules, load order
 2. **Module Responsibilities** -- One paragraph per module
 3. **Design Principles** -- Single responsibility, optional loading, KOMA integration
