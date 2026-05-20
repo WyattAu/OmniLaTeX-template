@@ -3,11 +3,6 @@ name: Deploy Docs
 on:
   push:
     branches: [main]
-    paths:
-    - docs/**
-    - mkdocs.yml
-    - CONTRIBUTING.md
-    - CHANGELOG.md
   workflow_dispatch:
 
 permissions:
@@ -16,14 +11,15 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-deploy
   cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
+    # v4
     - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       with:
         fetch-depth: 1
@@ -34,8 +30,15 @@ jobs:
         cache: pip
     - run: pip install -r docs/requirements.txt
     - run: mkdocs build --strict
-    # v4
-    - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b
+
+    - name: Merge pages/ gallery into site
+      run: |
+        if [ -d pages ]; then
+          cp -r pages/. site/
+        fi
+
+    # v3
+    - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
       with:
         path: site
 

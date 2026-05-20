@@ -209,17 +209,7 @@ class CommandRunner:
         except subprocess.TimeoutExpired:
             process.kill()
             process.wait()
-            return -1, [f"Command timed out after {self.timeout}s: {cmd_args[0]}"]
-
-
-@contextmanager
-def working_directory(path: Path):
-    prev = Path.cwd()
-    os.chdir(path)
-    try:
-        yield
-    finally:
-        os.chdir(prev)
+            return -1, [f"Command timed out after {timeout or self.DEFAULT_TIMEOUT}s: {cmd_args[0]}"]
 
 
 # -----------------------------------------------------------------------------
@@ -228,12 +218,6 @@ def working_directory(path: Path):
 
 _PACKAGE_RE = re.compile(r"^Package:\s+(\S+)\s+(\d{4}/\d{2}/\d{2})\s*(.*)")
 _LOAD_LUC_RE = re.compile(r"\(load luc:\s+(.+\.luc\))")
-_CPU_TIME_RE = re.compile(
-    r"^(\d+)\s+bytes\s+written.*\(([0-9.]+)\s+seconds\)", re.DOTALL
-)
-_LATEX_RUN_TIME_RE = re.compile(
-    r" Transcript written on .*?\.\n.*?\(([^)]+)\)\s*$", re.DOTALL
-)
 _TOTAL_TIME_RE = re.compile(r"([0-9.]+)\s+seconds?")
 
 
@@ -1123,7 +1107,6 @@ class BuildTasks:
                     f"GENERATE: {name} \u2014 no reference, copying as baseline"
                 )
                 ref_path.parent.mkdir(parents=True, exist_ok=True)
-                import shutil
 
                 shutil.copy2(source, ref_path)
                 continue
@@ -1242,8 +1225,6 @@ class BuildTasks:
             self.ui.error(f"Institution '{name}' already exists at {dst}")
             return
 
-        import shutil
-
         shutil.copytree(src, dst)
 
         # Rename generic.sty -> <name>.sty
@@ -1300,7 +1281,6 @@ class BuildTasks:
             return
 
         # Extract all translation keys from the i18n file
-        import re
 
         content = i18n_file.read_text(encoding="utf-8")
         keys = sorted(set(re.findall(r"\\DeclareTranslation\{(?:english|german|french|spanish)\}\{(\w+)\}", content)))
@@ -1487,8 +1467,6 @@ class BuildTasks:
                 return
             language = language.lower()
 
-        import shutil
-
         # Copy template (exclude build artifacts)
         ignore = shutil.ignore_patterns(
             "*.aux",
@@ -1532,7 +1510,6 @@ class BuildTasks:
         # Patch main.tex if any options were specified
         main_tex = dst / "main.tex"
         if (doctype or institution or language) and main_tex.exists():
-            import re
 
             content = main_tex.read_text(encoding="utf-8")
 

@@ -7,6 +7,9 @@ concurrency:
   group: build-${{ github.ref }}
   cancel-in-progress: true
 
+# Separate concurrency group for Pages deployment to prevent conflicts with docs.yml.
+# Both build.yml and docs.yml deploy to the same github-pages environment.
+
 # Docker image digest is sourced from .env.docker at runtime.
 # The digest-sync workflow updates only .env.docker (no workflow file edits needed).
 
@@ -170,6 +173,7 @@ jobs:
   determinism:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    needs: build
     steps:
     - name: Checkout repository
       # v4
@@ -343,7 +347,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # Disabled: docs.yml handles all GitHub Pages deployments (MkDocs + pages/ gallery).
+    # Re-enable if docs.yml is removed or if separate PDF-only deployment is needed.
+    if: false
+    concurrency:
+      group: pages-deploy
+      cancel-in-progress: false
     permissions:
       pages: write
       id-token: write

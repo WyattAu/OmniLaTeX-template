@@ -18,6 +18,8 @@ env:
 
 permissions:
   contents: read
+  id-token: write
+  packages: write
 
 jobs:
   build-push:
@@ -25,6 +27,7 @@ jobs:
     timeout-minutes: 180
     permissions:
       contents: read
+      id-token: write
       packages: write
 
     steps:

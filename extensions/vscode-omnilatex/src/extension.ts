@@ -1,7 +1,25 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-import { exec } from 'child_process';
+import { spawn } from 'child_process';
+
+function spawnAsync(command: string, args: string[], options: { cwd: string }): Promise<{ error: Error | null; stdout: string; stderr: string }> {
+    return new Promise((resolve) => {
+        const proc = spawn(command, args, options);
+        let stdout = '';
+        let stderr = '';
+        proc.stdout?.on('data', (data: Buffer) => { stdout += data.toString(); });
+        proc.stderr?.on('data', (data: Buffer) => { stderr += data.toString(); });
+        proc.on('error', (err) => { resolve({ error: err, stdout, stderr }); });
+        proc.on('close', (code) => {
+            if (code !== 0) {
+                resolve({ error: new Error(`Process exited with code ${code}`), stdout, stderr });
+            } else {
+                resolve({ error: null, stdout, stderr });
+            }
+        });
+    });
+}
 
 const DOCTYPES: string[] = [
     'article', 'book', 'cover-letter', 'cv', 'dictionary', 'dissertation',
@@ -293,7 +311,7 @@ async function buildExample(): Promise<void> {
     await vscode.window.withProgress(
         { location: vscode.ProgressLocation.Notification, title: `Building ${exampleName}...` },
         () => new Promise<void>((resolve) => {
-            exec(`python3 "${buildPy}" build-example ${exampleName}`, { cwd: root }, (error) => {
+            spawnAsync('python3', [buildPy, 'build-example', exampleName], { cwd: root }).then(({ error }) => {
                 if (error) {
                     vscode.window.showErrorMessage(`Build failed: ${error.message}`);
                 } else {
@@ -316,7 +334,7 @@ async function buildAll(): Promise<void> {
     await vscode.window.withProgress(
         { location: vscode.ProgressLocation.Notification, title: 'Building all examples...' },
         () => new Promise<void>((resolve) => {
-            exec(`python3 "${buildPy}" build-all`, { cwd: root }, (error) => {
+            spawnAsync('python3', [buildPy, 'build-all'], { cwd: root }).then(({ error }) => {
                 if (error) {
                     vscode.window.showErrorMessage(`Build failed: ${error.message}`);
                 } else {
@@ -391,11 +409,7 @@ export function activate(context: vscode.ExtensionContext): void {
                 { location: vscode.ProgressLocation.Notification, title: 'Building on save...' },
                 () => new Promise<void>((resolve) => {
                     const cwd = path.dirname(document.fileName);
-                    exec(
-                        'latexmk -lualatex -interaction=nonstopmode ' +
-                        `"${document.fileName}"`,
-                        { cwd },
-                        (error, stdout, stderr) => {
+                    spawnAsync('latexmk', ['-lualatex', '-interaction=nonstopmode', document.fileName], { cwd }).then(({ error, stdout, stderr }) => {
                             if (stdout) { outputChannel.append(stdout); }
                             if (stderr) { outputChannel.append(stderr); }
                             if (error) {
@@ -404,8 +418,7 @@ export function activate(context: vscode.ExtensionContext): void {
                                 outputChannel.appendLine('[build-on-save] Build succeeded.');
                             }
                             resolve();
-                        }
-                    );
+                        });
                 })
             );
         }),

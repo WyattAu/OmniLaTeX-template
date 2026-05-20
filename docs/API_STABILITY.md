@@ -43,7 +43,7 @@ Defined in `omnilatex.cls` via `\DeclareStringOption` / `\DeclareBoolOption`.
 
 ### Valid `doctype` Values
 
-`book`, `thesis`, `dissertation`, `manual`, `guide`, `handbook`, `report`, `technicalreport`, `standard`, `patent`, `article`, `inlinepaper`, `journal`, `dictionary`, `cv`, `cover-letter`, `poster`, `presentation`, `letter`, `homework`, `exam`, `research-proposal`, `recipe`, `lecture-notes`, `syllabus`, `handout`, `memo`, `white-paper`, `invoice`.
+`book`, `thesis`, `dissertation`, `manual`, `technicalreport`, `standard`, `patent`, `article`, `inlinepaper`, `journal`, `dictionary`, `cv`, `cover-letter`, `poster`, `presentation`, `letter`, `homework`, `exam`, `research-proposal`, `recipe`, `lecture-notes`, `syllabus`, `handout`, `memo`, `white-paper`, `invoice`.
 
 ### Valid `titlestyle` Values
 
