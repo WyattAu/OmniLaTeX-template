@@ -56,7 +56,6 @@ def compute_ssim(img1: Image.Image, img2: Image.Image, window_size: int = 7) -> 
     try:
         from scipy.ndimage import uniform_filter
 
-        pad = window_size // 2
         mu1 = uniform_filter(arr1, size=window_size, mode="constant")
         mu2 = uniform_filter(arr2, size=window_size, mode="constant")
         mu1_sq = mu1 * mu1
@@ -70,7 +69,6 @@ def compute_ssim(img1: Image.Image, img2: Image.Image, window_size: int = 7) -> 
         )
         sigma12 = uniform_filter(arr1 * arr2, size=window_size, mode="constant") - mu12
     except ImportError:
-        from numpy import convolve as _np_conv
 
         def _conv2d(a, kernel):
             kh, kw = kernel.shape
