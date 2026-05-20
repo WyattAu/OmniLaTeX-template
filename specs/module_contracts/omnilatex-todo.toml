@@ -1,0 +1,37 @@
+[module]
+name = "omnilatex-todo"
+file = "lib/utils/omnilatex-todo.sty"
+version = "2.0.0"
+description = "TODO item tracker with priority grouping and inline margin notes"
+line_count = 30
+
+[dependencies]
+requires = ["xcolor"]
+optionally_requires = []
+
+[options]
+todonotes = "Boolean: enable todo tracking and inline notes"
+
+[[exports]]
+name = "todo"
+type = "command"
+signature = "{text}"
+description = "Add a TODO item (tracked by Lua, displayed as margin note)"
+
+[[exports]]
+name = "todo"
+type = "command"
+signature = "[priority]{text}"
+description = "Add a TODO item with priority (high/medium/low)"
+
+[[exports]]
+name = "todolist"
+type = "command"
+signature = ""
+description = "Print grouped summary of all TODO items by priority"
+
+[[exports]]
+name = "todocount"
+type = "command"
+signature = ""
+description = "Expand to total number of TODO items found"

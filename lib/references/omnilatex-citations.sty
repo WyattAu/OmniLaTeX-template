@@ -5,7 +5,8 @@
 %%        \citationstyle{ieee}
 %%
 %% Available styles:
-%%   ieee, acm, apa, chicago, nature, science, harvard, vancouver, mla
+%%   ieee, acm, apa, chicago, nature, science, harvard, vancouver, mla,
+%%   turabian, abnt, mhra, cse, asa, bluebook
 %%
 %% Note: This package requires biblatex to already be loaded (as done by
 %%       omnilatex-biblio).  The dedicated biblatex style packages
@@ -25,7 +26,7 @@
   \PackageWarning{omnilatex-citations}{%
     Unknown citation style '#1'.%
     \MessageBreak
-    Available: ieee, acm, apa, chicago, nature, science, harvard, vancouver, mla%
+    Available: ieee, acm, apa, chicago, nature, science, harvard, vancouver, mla, turabian, abnt, mhra, cse, asa, bluebook%
   }%
 }
 
@@ -170,6 +171,89 @@
     maxbibnames=3,
     maxcitenames=3,
     mincitenames=1,
+  }%
+}
+
+% -- Style: Turabian -- 
+% Author-date variant, similar to Chicago but with specific Turabian formatting
+\newcommand{\citestyle@turabian}{%
+  \ExecuteBibliographyOptions{%
+    sorting=nyt,
+    maxbibnames=99,
+    maxcitenames=3,
+    mincitenames=1,
+    uniquelist=false,
+    ibidtracker=constrict,
+    idemtracker=constrict,
+    locctracker=constrict,
+    giveninits=true,
+  }%
+}
+
+% -- Style: ABNT (Brazilian standards) --
+% Numeric, [1], alphabetical by author
+\newcommand{\citestyle@abnt}{%
+  \ExecuteBibliographyOptions{%
+    sorting=nyt,
+    maxbibnames=99,
+    maxcitenames=3,
+    mincitenames=1,
+    giveninits=true,
+    uniquelist=false,
+  }%
+}
+
+% -- Style: MHRA (Modern Humanities Research Association) --
+% Footnote-based, author-title style
+\newcommand{\citestyle@mhra}{%
+  \ExecuteBibliographyOptions{%
+    sorting=nyt,
+    maxbibnames=99,
+    maxcitenames=3,
+    mincitenames=1,
+    uniquelist=false,
+    ibidtracker=constrict,
+    idemtracker=constrict,
+    locctracker=constrict,
+  }%
+}
+
+% -- Style: CSE (Council of Science Editors) --
+% Author-year, name-year system
+\newcommand{\citestyle@cse}{%
+  \ExecuteBibliographyOptions{%
+    sorting=nyt,
+    maxbibnames=99,
+    maxcitenames=2,
+    mincitenames=1,
+    giveninits=true,
+    uniquelist=false,
+  }%
+}
+
+% -- Style: ASA (American Sociological Association) --
+% Author-year, similar to APA with sociology conventions
+\newcommand{\citestyle@asa}{%
+  \ExecuteBibliographyOptions{%
+    sorting=nyt,
+    maxbibnames=99,
+    maxcitenames=3,
+    mincitenames=1,
+    uniquelist=false,
+    giveninits=true,
+  }%
+}
+
+% -- Style: Bluebook (Legal) --
+% Footnote-based legal citation style
+\newcommand{\citestyle@bluebook}{%
+  \ExecuteBibliographyOptions{%
+    sorting=nyt,
+    maxbibnames=99,
+    maxcitenames=1,
+    mincitenames=1,
+    uniquelist=false,
+    ibidtracker=constrict,
   }%
 }
 

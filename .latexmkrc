@@ -141,6 +141,14 @@ if ($build_mode eq 'prod') {
 # latexmk already detects errors from the last pass and reports them.
 set_tex_cmds("--shell-escape --synctex=0 --file-line-error %O %S");
 
+# Handle extra cnf-line options from OMNILATEX_CNF_LINES env var
+if (exists $ENV{'OMNILATEX_CNF_LINES'} && $ENV{'OMNILATEX_CNF_LINES'} ne '') {
+    my @cnf_lines = split(/;/, $ENV{'OMNILATEX_CNF_LINES'});
+    for my $line (@cnf_lines) {
+        $lualatex = "$lualatex --cnf-line=\"$line\"";
+    }
+}
+
 # option 2 is same as 1 (run biber when necessary), but also deletes the
 # regeneratable bbl-file in a clenaup (`latexmk -c`). Do not use if original
 # bib file is not available!

@@ -25,6 +25,7 @@ ALL_DOCTYPE_NAMES = [
     "memo",
     "white-paper",
     "invoice",
+    "beamer",
 ]
 
 ALL_EXAMPLE_NAMES = [
@@ -33,6 +34,7 @@ ALL_EXAMPLE_NAMES = [
     "beamer-corporate",
     "beamer-minimal",
     "beamer-defense",
+    "beamer-native",
     "article-color",
     "article",
     "book",
@@ -99,6 +101,7 @@ DOCTYPE_TO_CLASS = {
     "white-paper": "scrartcl",
     "invoice": "scrartcl",
     "recipe": "scrartcl",
+    "beamer": "beamer",
     "manual": "scrreprt",
     "technicalreport": "scrreprt",
     "standard": "scrreprt",

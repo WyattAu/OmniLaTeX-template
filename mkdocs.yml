@@ -62,7 +62,7 @@ nav:
   - User Guide: USER_GUIDE.md
   - Migration Guide: MIGRATION_GUIDE.md
   - FAQ: FAQ.md
-  - API Reference: api_reference.md
+  - API Reference: API_REFERENCE.md
   - Document Types: gallery.md
   - Institution Gallery: INSTITUTION_GALLERY.md
   - Editor Integration: editor-integration.md

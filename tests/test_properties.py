@@ -196,7 +196,7 @@ class TestPropertyBasedFuzzing:
 class TestStructuralProperties:
     """Static structural property tests for OmniLaTeX configuration."""
 
-    VALID_KOMA_CLASSES = {"scrartcl", "scrbook", "scrreprt"}
+    VALID_KOMA_CLASSES = {"scrartcl", "scrbook", "scrreprt", "beamer"}
 
     CANONICAL_DOCTYPES = [
         "article",
@@ -549,6 +549,8 @@ class TestStyFileConsistency:
             "references/omnilatex-citations",
             "utils/omnilatex-themes",
             "utils/omnilatex-review",
+            "utils/omnilatex-todo",
+            "utils/omnilatex-plugin",
         }
         all_known = all_referenced | on_demand
         for sty_file in self._get_lib_sty_files():
@@ -705,8 +707,8 @@ class TestDocumentTypeConfigs:
     def test_doctype_count_is_26(self):
         sty_files = self._get_doctype_sty_files()
         assert (
-            len(sty_files) == 26
-        ), f"Expected 26 doctype .sty files, found {len(sty_files)}"
+            len(sty_files) == 27
+        ), f"Expected 27 doctype .sty files, found {len(sty_files)}"
 
     def test_all_doctype_names_have_sty_file(self):
         sty_names = {p.stem for p in self._get_doctype_sty_files()}

@@ -20,6 +20,8 @@
 \omnilatex@haschaptersfalse
 \newif\ifomnilatex@doctypematched
 \omnilatex@doctypematchedfalse
+\newif\ifomnilatex@beamer
+\omnilatex@beamerfalse
 
 \ExplSyntaxOn
 \tl_new:N \l__omnilatex_tmp_tl
@@ -69,6 +71,7 @@
 \newcommand*{\omnilatex@inlinepaperoptions}{bibliography=totoc,numbers=noenddot,parskip=half,titlepage=false}
 \newcommand*{\omnilatex@journaloptions}{bibliography=totoc,numbers=noenddot,parskip=half,titlepage=true}
 \newcommand*{\omnilatex@cvoptions}{numbers=noenddot,parskip=full,fontsize=11pt}
+\newcommand*{\omnilatex@beameraoptions}{}
 
 \RequirePackage{kvoptions}
 \SetupKeyvalOptions{family=omnilatex,prefix=omnilatex@}
@@ -139,6 +142,7 @@
 \omnilatex@matchdoctypes{white-paper,whitepapers}{\omnilatex@setdoctype{white-paper}{scrartcl}{\omnilatex@articleoptions}}%
 \omnilatex@matchdoctypes{invoice,invoices}{\omnilatex@setdoctype{invoice}{scrartcl}{\omnilatex@articleoptions}}%
 \omnilatex@matchdoctypes{recipe,recipes}{\omnilatex@setdoctype{recipe}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{beamer,beamers}{\omnilatex@setdoctype{beamer}{beamer}{\omnilatex@beameraoptions}\omnilatex@beamertrue}%
 
 % Validate doctype: warn if user passed an unknown doctype that didn't match
 \ifomnilatex@doctypematched\else
@@ -146,8 +150,8 @@
         Falling back to 'book'. Valid options: book, thesis, dissertation,%
         manual, guide, handbook, report, technicalreport, standard, patent,%
         article, inlinepaper, journal, dictionary, cv, cover-letter, poster,%
-        presentation, letter, homework, exam, research-proposal, recipe,
-        lecture-notes, syllabus, handout, memo, white-paper, invoice}%
+        presentation, letter, homework, exam, research-proposal, recipe,%
+        lecture-notes, syllabus, handout, memo, white-paper, invoice, beamer}%
 \fi
 
 % Validate titlestyle
@@ -167,10 +171,16 @@
 }
 \ExplSyntaxOff
 
-\ifx\omnilatexuserclassoptions\@empty
-    \PassOptionsToClass{\omnilatexclassoptions}{\@baseclass}
+\ifomnilatex@beamer
+    \ifx\omnilatexuserclassoptions\@empty\else
+        \PassOptionsToClass{\omnilatexuserclassoptions}{\@baseclass}
+    \fi
 \else
-    \PassOptionsToClass{\omnilatexclassoptions,\omnilatexuserclassoptions}{\@baseclass}
+    \ifx\omnilatexuserclassoptions\@empty
+        \PassOptionsToClass{\omnilatexclassoptions}{\@baseclass}
+    \else
+        \PassOptionsToClass{\omnilatexclassoptions,\omnilatexuserclassoptions}{\@baseclass}
+    \fi
 \fi
 
 \LoadClass{\@baseclass}
@@ -348,6 +358,9 @@
 \fi
 \RequirePackage{lib/references/omnilatex-biblio}
 
+% Plugin system (always available)
+\RequirePackage{lib/utils/omnilatex-plugin}
+
 \def\@doctypefile{}
 \edef\@doctypecandidate{config/document-types/\omnilatex@doctypeprofile}
 \IfFileExists{\@doctypecandidate.sty}{\edef\@doctypefile{\@doctypecandidate}}{%
@@ -356,6 +369,11 @@
     }{}
 }
 \ifx\@doctypefile\@empty\else\RequirePackage{\@doctypefile}\fi
+
+% Load todo-tracker if todonotes option is enabled
+\ifomnilatex@todonotes
+    \RequirePackage{lib/utils/omnilatex-todo}
+\fi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Load Institution Configuration

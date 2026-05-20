@@ -1,0 +1,71 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/utils/omnilatex-plugin}[2026/05/18 v2.0.0 OmniLaTeX plugin loader]
+
+% Plugin system for OmniLaTeX
+% Allows loading third-party packages from the omnilatex-plugin namespace
+%
+% Usage:
+%   \useplugin{name}           — Load plugin from omnilatex-plugin-name.sty
+%   \useplugin[option]{name}   — Load with options
+%   \pluginpath{name}          — Expand to the expected file path
+%   \listplugins               — List available plugins (logs to console)
+%
+% Plugin files should be named: omnilatex-plugin-<name>.sty
+% and placed in the TEXINPUTS path (same directory as document, or in texmf)
+
+\RequirePackage{kvoptions}
+
+% Store loaded plugins
+\newcommand{\omnilatex@loaded@plugins}{}
+
+% \useplugin[options]{name} — Load a plugin by name
+\newcommand{\useplugin}[2][]{%
+  \def\omnilatex@plugin@opts{#1}%
+  \def\omnilatex@plugin@name{#2}%
+  \def\omnilatex@plugin@file{omnilatex-plugin-#2}%
+  %
+  \IfFileExists{\omnilatex@plugin@file.sty}{%
+    \ClassInfo{omnilatex}{Loading plugin '#2' from \omnilatex@plugin@file.sty}%
+    \ifx\omnilatex@plugin@opts\@empty
+      \RequirePackage{\omnilatex@plugin@file}%
+    \else
+      \RequirePackage[\omnilatex@plugin@opts]{\omnilatex@plugin@file}%
+    \fi
+    % Track loaded plugins
+    \g@addto@macro\omnilatex@loaded@plugins{,#2}%
+  }{%
+    \ClassError{omnilatex}{%
+      Plugin '#2' not found.\MessageBreak
+      Expected file: \omnilatex@plugin@file.sty\MessageBreak
+      Searched in TEXINPUTS path.%
+    }{%
+      Make sure omnilatex-plugin-#2.sty is in your TEXINPUTS path.%
+    }%
+  }%
+}
+
+% \pluginpath{name} — Expand to expected plugin file path
+\newcommand{\pluginpath}[1]{omnilatex-plugin-#1.sty}
+
+% \listplugins — List loaded plugins
+\newcommand{\listplugins}{%
+  \ClassInfo{omnilatex}{%
+    Loaded plugins: \omnilatex@loaded@plugins{}%
+  }%
+}
+
+% \ifpluginloaded{name}{true}{false} — Conditional execution
+\newcommand{\ifpluginloaded}[3]{%
+  \def\omnilatex@test@plugin{#1}%
+  \def\omnilatex@check@plugins##1,\omnilatex@test@plugin,##2\@nil{%
+    \def\omnilatex@found{##2}%
+  }%
+  \expandafter\omnilatex@check@plugins\expandafter,\omnilatex@loaded@plugins,\omnilatex@test@plugin,\@nil
+  \ifx\omnilatex@found\@empty
+    #3%
+  \else
+    #2%
+  \fi
+}
+
+\endinput

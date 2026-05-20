@@ -25,21 +25,72 @@ def pdf_to_images(pdf_path: Path, dpi: int = 150) -> list:
     return images
 
 
-def compute_ssim(img1: Image.Image, img2: Image.Image) -> float:
+def compute_ssim(img1: Image.Image, img2: Image.Image, window_size: int = 7) -> float:
+    """Compute SSIM using sliding-window approach (Wang et al. 2004).
+
+    Uses Gaussian window with sigma=1.5, processing luminance channel.
+    Falls back to global SSIM for very small images.
+    """
     arr1 = np.array(img1.convert("L"), dtype=np.float64)
     arr2 = np.array(img2.convert("L"), dtype=np.float64)
     if arr1.shape != arr2.shape:
         return 0.0
+
     C1, C2 = (0.01 * 255) ** 2, (0.03 * 255) ** 2
-    mu1 = np.mean(arr1)
-    mu2 = np.mean(arr2)
-    sigma1 = np.var(arr1)
-    sigma2 = np.var(arr2)
-    sigma12 = np.mean((arr1 - mu1) * (arr2 - mu2))
-    ssim = ((2 * mu1 * mu2 + C1) * (2 * sigma12 + C2)) / (
-        (mu1**2 + mu2**2 + C1) * (sigma1 + sigma2 + C2)
+
+    h, w = arr1.shape
+    if h < window_size or w < window_size:
+        mu1, mu2 = np.mean(arr1), np.mean(arr2)
+        sigma1, sigma2 = np.var(arr1), np.var(arr2)
+        sigma12 = np.mean((arr1 - mu1) * (arr2 - mu2))
+        return ((2 * mu1 * mu2 + C1) * (2 * sigma12 + C2)) / (
+            (mu1**2 + mu2**2 + C1) * (sigma1 + sigma2 + C2)
+        )
+
+    sigma = 1.5
+    coords = np.arange(window_size) - window_size // 2
+    g1d = np.exp(-coords**2 / (2 * sigma**2))
+    g2d = np.outer(g1d, g1d)
+    g2d /= g2d.sum()
+
+    try:
+        from scipy.ndimage import uniform_filter
+
+        pad = window_size // 2
+        mu1 = uniform_filter(arr1, size=window_size, mode="constant")
+        mu2 = uniform_filter(arr2, size=window_size, mode="constant")
+        mu1_sq = mu1 * mu1
+        mu2_sq = mu2 * mu2
+        mu12 = mu1 * mu2
+        sigma1_sq = uniform_filter(arr1 * arr1, size=window_size, mode="constant") - mu1_sq
+        sigma2_sq = uniform_filter(arr2 * arr2, size=window_size, mode="constant") - mu2_sq
+        sigma12 = uniform_filter(arr1 * arr2, size=window_size, mode="constant") - mu12
+    except ImportError:
+        from numpy import convolve as _np_conv
+
+        def _conv2d(a, kernel):
+            kh, kw = kernel.shape
+            ph, pw = kh // 2, kw // 2
+            padded = np.pad(a, ((ph, ph), (pw, pw)), mode="constant")
+            out = np.zeros_like(a)
+            for i in range(a.shape[0]):
+                for j in range(a.shape[1]):
+                    out[i, j] = np.sum(padded[i:i + kh, j:j + kw] * kernel)
+            return out
+
+        mu1 = _conv2d(arr1, g2d)
+        mu2 = _conv2d(arr2, g2d)
+        mu1_sq = mu1 * mu1
+        mu2_sq = mu2 * mu2
+        mu12 = mu1 * mu2
+        sigma1_sq = _conv2d(arr1 * arr1, g2d) - mu1_sq
+        sigma2_sq = _conv2d(arr2 * arr2, g2d) - mu2_sq
+        sigma12 = _conv2d(arr1 * arr2, g2d) - mu12
+
+    ssim_map = ((2 * mu12 + C1) * (2 * sigma12 + C2)) / (
+        (mu1_sq + mu2_sq + C1) * (sigma1_sq + sigma2_sq + C2)
     )
-    return ssim
+    return float(np.mean(ssim_map))
 
 
 def compare_pdfs(ref_path: Path, test_path: Path, threshold: float = 0.99) -> dict:

@@ -1,0 +1,25 @@
+[doctype]
+name = "example-memo"
+base_class = "scrartcl"
+description = "Internal memo format with compact layout"
+
+[doctype.geometry]
+paper_size = "a4"
+margin_left = "20mm"
+margin_right = "20mm"
+margin_top = "15mm"
+margin_bottom = "15mm"
+
+[doctype.features]
+math = false
+tikz = false
+code = false
+tables = true
+glossaries = false
+
+[doctype.typography]
+line_spacing = 1.15
+paragraph_indent = "0pt"
+
+[doctype.aliases]
+short = ["memo", "internal-memo"]

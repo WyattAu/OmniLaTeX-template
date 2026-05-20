@@ -1,0 +1,20 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/beamer}[2026/05/18 v2.0.0 OmniLaTeX Beamer document type]
+
+\RequirePackage{lib/graphics/omnilatex-beamer}
+
+\mode<presentation>
+
+\setbeamersize{text margin left=8mm, text margin right=8mm}
+
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamertemplate{footline}{%
+  \hfill\insertframenumber/\inserttotalframenumber\hspace*{2mm}\vspace{2mm}%
+}
+
+\mode<all>
+
+\citationstyle{apa}
+
+\endinput

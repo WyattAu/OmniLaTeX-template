@@ -1,0 +1,42 @@
+[module]
+name = "omnilatex-plugin"
+file = "lib/utils/omnilatex-plugin.sty"
+version = "2.0.0"
+description = "Plugin loading system for third-party OmniLaTeX extensions"
+line_count = 80
+
+[dependencies]
+requires = ["kvoptions"]
+optionally_requires = []
+
+[options]
+
+[[exports]]
+name = "useplugin"
+type = "command"
+signature = "{name}"
+description = "Load plugin omnilatex-plugin-<name>.sty"
+
+[[exports]]
+name = "useplugin"
+type = "command"
+signature = "[options]{name}"
+description = "Load plugin with options"
+
+[[exports]]
+name = "pluginpath"
+type = "command"
+signature = "{name}"
+description = "Expand to expected plugin file path"
+
+[[exports]]
+name = "listplugins"
+type = "command"
+signature = ""
+description = "List all loaded plugins (to log)"
+
+[[exports]]
+name = "ifpluginloaded"
+type = "command"
+signature = "{name}{true}{false}"
+description = "Conditional: execute true branch if plugin is loaded"

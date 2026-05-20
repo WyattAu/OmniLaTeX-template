@@ -62,3 +62,20 @@ jobs:
             echo "| \`$f\` | :x: |" >> $GITHUB_STEP_SUMMARY
           fi
         done
+
+  proof-gate:
+    needs: verify
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+
+    - name: Check for sorry in proofs
+      run: |
+        if grep -rq 'sorry' specs/proofs/; then
+          echo "::error::Proofs contain 'sorry' — unproven theorems block merge"
+          grep -rn 'sorry' specs/proofs/ | head -20
+          exit 1
+        fi
+        echo "No sorry found — all proofs are complete"

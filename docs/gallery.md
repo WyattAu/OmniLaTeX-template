@@ -17,7 +17,7 @@ python build.py build-example <name>
 | Example | Doctype | Description | PDF |
 |---------|---------|-------------|-----|
 | `thesis` | thesis | Generic academic thesis | [thesis.pdf](../build/examples/thesis.pdf) |
-| `thesis-tuhh` | thesis | TUHH thesis with institutional branding | [thesis-tuhh.pdf](../build/examples/thesis-tuhh.pdf) |
+| `thesis-tuhh` | thesis | TUHH thesis with institutional branding | [source](../examples/thesis-tuhh/) |
 | `thesis-spacing` | thesis | Thesis with custom line spacing | [thesis-spacing.pdf](../build/examples/thesis-spacing.pdf) |
 | `dissertation` | dissertation | Dissertation document | [dissertation.pdf](../build/examples/dissertation.pdf) |
 | `inline-paper` | inlinepaper | Inline research paper | [inline-paper.pdf](../build/examples/inline-paper.pdf) |

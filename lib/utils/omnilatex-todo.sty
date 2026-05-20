@@ -1,0 +1,16 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/utils/omnilatex-todo}[2026/05/18 v2.0.0 OmniLaTeX todo tracker]
+
+\RequirePackage{xcolor}
+
+\definecolor{todohigh}{RGB}{220, 50, 47}
+\definecolor{todomedium}{RGB}{203, 129, 47}
+\definecolor{todolow}{RGB}{131, 148, 150}
+
+\directlua{dofile(kpse.find_file("lua/todo-tracker.lua") or "lua/todo-tracker.lua")}
+
+\newcommand{\todomark}[1]{%
+  \marginpar{\scriptsize\colorbox{todomedium!20}{\textcolor{todomedium!80!black}{\textsf{TODO: #1}}}}%
+}
+
+\endinput

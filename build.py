@@ -32,7 +32,7 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 import re
-from typing import Callable, Dict, List, Optional, Tuple
+from typing import Callable
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
 
@@ -95,9 +95,55 @@ SVG_INKSCAPE_CACHE = "svg-inkscape"
 BUILD_EXAMPLES_SUBDIR = "examples"
 
 
-@dataclass(frozen=True)
+def _compute_ssim_windowed(
+    arr1: "np.ndarray", arr2: "np.ndarray", window_size: int = 7
+) -> float:
+    """Sliding-window SSIM (Wang et al. 2004). Returns mean SSIM index."""
+    C1, C2 = (0.01 * 255) ** 2, (0.03 * 255) ** 2
+
+    h, w = arr1.shape
+    if h < window_size or w < window_size:
+        mu1, mu2 = np.mean(arr1), np.mean(arr2)
+        sigma1, sigma2 = np.var(arr1), np.var(arr2)
+        sigma12 = np.mean((arr1 - mu1) * (arr2 - mu2))
+        return ((2 * mu1 * mu2 + C1) * (2 * sigma12 + C2)) / (
+            (mu1**2 + mu2**2 + C1) * (sigma1 + sigma2 + C2)
+        )
+
+    sigma = 1.5
+    coords = np.arange(window_size) - window_size // 2
+    g1d = np.exp(-(coords**2) / (2 * sigma**2))
+    kernel = np.outer(g1d, g1d)
+    kernel /= kernel.sum()
+    kh, kw = kernel.shape
+    ph, pw = kh // 2, kw // 2
+
+    def _conv2d(a, k):
+        padded = np.pad(a, ((ph, ph), (pw, pw)), mode="constant")
+        rows, cols = a.shape
+        out = np.zeros((rows, cols), dtype=np.float64)
+        for r in range(rows):
+            for c in range(cols):
+                out[r, c] = np.sum(padded[r : r + kh, c : c + kw] * k)
+        return out
+
+    mu1 = _conv2d(arr1, kernel)
+    mu2 = _conv2d(arr2, kernel)
+    mu1_sq, mu2_sq, mu12 = mu1 * mu1, mu2 * mu2, mu1 * mu2
+    sigma1_sq = _conv2d(arr1 * arr1, kernel) - mu1_sq
+    sigma2_sq = _conv2d(arr2 * arr2, kernel) - mu2_sq
+    sigma12 = _conv2d(arr1 * arr2, kernel) - mu12
+
+    ssim_map = ((2 * mu12 + C1) * (2 * sigma12 + C2)) / (
+        (mu1_sq + mu2_sq + C1) * (sigma1_sq + sigma2_sq + C2)
+    )
+    return float(np.mean(ssim_map))
+
+
+@dataclass
 class ProjectConfig:
     build_dir: Path = Path("build")
+    cnf_lines: list[str] = None
 
     def is_ci(self) -> bool:
         return any(
@@ -162,13 +208,13 @@ class CommandRunner:
 
     def run(
         self,
-        cmd_args: List[str],
+        cmd_args: list[str],
         *,
-        extra_env: Optional[Dict[str, str]] = None,
-        cwd: Optional[Path] = None,
-        on_line: Optional[Callable[[str], None]] = None,
-        timeout: Optional[int] = None,
-    ) -> Tuple[int, List[str]]:
+        extra_env: dict[str, str] | None = None,
+        cwd: Path | None = None,
+        on_line: Callable[[str], None] | None = None,
+        timeout: int | None = None,
+    ) -> tuple[int, list[str]]:
         """Executes a command, streams output, and returns
         (exit_code, logs). Does NOT raise on failure."""
         if self.verbose:
@@ -221,9 +267,9 @@ _LOAD_LUC_RE = re.compile(r"\(load luc:\s+(.+\.luc\))")
 _TOTAL_TIME_RE = re.compile(r"([0-9.]+)\s+seconds?")
 
 
-def parse_log_for_package_times(log_content: str) -> Dict[str, dict]:
+def parse_log_for_package_times(log_content: str) -> dict[str, dict]:
     """Parse LaTeX log content for per-package information and timing data."""
-    packages: Dict[str, dict] = {}
+    packages: dict[str, dict] = {}
     for line in log_content.splitlines():
         m = _PACKAGE_RE.match(line.strip())
         if m:
@@ -257,7 +303,7 @@ def parse_log_for_package_times(log_content: str) -> Dict[str, dict]:
     }
 
 
-def extract_log_path(example_dir: Path) -> Optional[Path]:
+def extract_log_path(example_dir: Path) -> Path | None:
     """Find the main.log file for an example."""
     log_path = example_dir / "main.log"
     return log_path if log_path.exists() else None
@@ -279,14 +325,14 @@ class BuildTasks:
         self.config, self.runner, self.ui, self.jobs = config, runner, ui, jobs
         self.timings = timings
         self.force = force
-        self.timings_data: List[dict] = []
+        self.timings_data: list[dict] = []
         self._timings_lock = threading.Lock()
         self._cache_lock = threading.Lock()
-        self._source_files_cache: Dict[str, List[Path]] = {}
-        self._shared_build_cache: Optional[dict] = None
+        self._source_files_cache: dict[str, list[Path]] = {}
+        self._shared_build_cache: dict | None = None
 
     @staticmethod
-    def _hash_for_paths(paths: List[Path]) -> str:
+    def _hash_for_paths(paths: list[Path]) -> str:
         h = hashlib.sha256()
         for p in sorted(paths):
             if p.exists():
@@ -310,7 +356,7 @@ class BuildTasks:
             encoding="utf-8",
         )
 
-    def _get_source_files(self, repo_root: Path) -> List[Path]:
+    def _get_source_files(self, repo_root: Path) -> list[Path]:
         key = str(repo_root)
         if key not in self._source_files_cache:
             sty_files = list(repo_root.rglob("*.sty"))
@@ -318,10 +364,10 @@ class BuildTasks:
             self._source_files_cache[key] = sty_files + cls_files
         return self._source_files_cache[key]
 
-    def _collect_source_files(self, example_name: str) -> List[Path]:
+    def _collect_source_files(self, example_name: str) -> list[Path]:
         repo_root = Path(__file__).resolve().parent
         example_dir = repo_root / "examples" / example_name
-        files: List[Path] = []
+        files: list[Path] = []
         tex_file = example_dir / MAIN_TEX_FILENAME
         if tex_file.exists():
             files.append(tex_file)
@@ -330,7 +376,7 @@ class BuildTasks:
         files.extend(self._get_source_files(repo_root))
         return files
 
-    def discover_examples(self) -> List[Path]:
+    def discover_examples(self) -> list[Path]:
         d = Path("examples")
         return (
             sorted(
@@ -350,7 +396,7 @@ class BuildTasks:
             print(f"  {self.ui.bold}{ex.name}{self.ui.end}")
         self.ui.success(f"Found {len(self.discover_examples())} example(s).")
 
-    def _compile_example_worker(self, example_name: str) -> Tuple[str, bool, List[str]]:
+    def _compile_example_worker(self, example_name: str) -> tuple[str, bool, list[str]]:
         """
         Worker function that faithfully reproduces the
         original script's logic. Success is determined ONLY
@@ -389,11 +435,11 @@ class BuildTasks:
 
             # --- Start: EXACT reproduction of original script's core logic ---
             cmd = [LATEXMK_COMMAND]
-            latexmk_flags: List[str] = [INTERACTION_NONSTOP]
+            latexmk_flags: list[str] = [INTERACTION_NONSTOP]
             if os.environ.get("OMNILATEX_FORCE_REBUILD") == "1":
                 latexmk_flags.append(FORCE_REBUILD_FLAG)
 
-            invoke: List[str] = cmd + latexmk_flags
+            invoke: list[str] = cmd + latexmk_flags
 
             root_latexmkrc = repo_root / ".latexmkrc"
             if root_latexmkrc.exists():
@@ -423,6 +469,9 @@ class BuildTasks:
                 "TEXINPUTS": os.pathsep.join([".", str(repo_root), ""]),
                 "LC_ALL": "C.utf8",
             }
+
+            if self.config.cnf_lines:
+                extra_env["OMNILATEX_CNF_LINES"] = ";".join(self.config.cnf_lines)
 
             # Run the command but do not raise an exception on failure
             exit_code, logs_from_run = self.runner.run(
@@ -540,10 +589,10 @@ class BuildTasks:
                 with self._timings_lock:
                     self.timings_data.append(timing_record)
 
-    def _build_examples_rich_concurrent(self, example_names: List[str]):
+    def _build_examples_rich_concurrent(self, example_names: list[str]):
         console = Console()
         log_lines, log_lock = deque(maxlen=200), threading.Lock()
-        active_jobs: Dict[str, float] = {}  # name -> start_time
+        active_jobs: dict[str, float] = {}  # name -> start_time
         active_lock = threading.Lock()
         overall_progress = Progress(
             TextColumn("[b blue]Overall"),
@@ -646,7 +695,7 @@ class BuildTasks:
             f"/{len(example_names)} successful"
         )
 
-    def _build_examples_simple_concurrent(self, example_names: List[str]):
+    def _build_examples_simple_concurrent(self, example_names: list[str]):
         results, print_lock = [], threading.Lock()
         with ThreadPoolExecutor(max_workers=self.jobs) as executor:
             futures = {
@@ -684,7 +733,7 @@ class BuildTasks:
             f"Build Summary: {sum(1 for r in results if r)}/{len(example_names)} successful"
         )
 
-    def build_examples(self, files: Optional[List[str]] = None):
+    def build_examples(self, files: list[str] | None = None):
         self.ui.header(f"Building examples (up to {self.jobs} in parallel)")
         all_names = [e.name for e in self.discover_examples()]
         names = all_names if not files else [n for n in files if n in all_names]
@@ -734,7 +783,7 @@ class BuildTasks:
             self.ui.success(f"Metrics history written to {history_path}")
 
     # --- ALL ORIGINAL COMMANDS ---
-    def build_example(self, files: List[str]):
+    def build_example(self, files: list[str]):
         self.build_examples(files)
 
     def build_all(self, _: object | None = None) -> None:
@@ -772,8 +821,8 @@ class BuildTasks:
             raise SystemExit(1)
 
     def _run_with_dashboard(
-        self, cmd_args: List[str], *, title: str = "Building"
-    ) -> Tuple[int, List[str]]:
+        self, cmd_args: list[str], *, title: str = "Building"
+    ) -> tuple[int, list[str]]:
         """Run a command with a rich live dashboard showing progress and logs."""
         console = Console()
         log_lines: deque = deque(maxlen=50)
@@ -814,7 +863,7 @@ class BuildTasks:
             status_table.rows[1].cells[1] = Text(f"{elapsed:.1f}s")
 
         exit_code = 0
-        logs: List[str] = []
+        logs: list[str] = []
         try:
             with Live(layout, console=console, refresh_per_second=5):
                 exit_code, logs = self.runner.run(cmd_args, on_line=on_line)
@@ -844,7 +893,7 @@ class BuildTasks:
         self.runner.run([LATEXMK_COMMAND, "-C"])
         self.clean_example([e.name for e in self.discover_examples()])
 
-    def clean_example(self, files: List[str]):
+    def clean_example(self, files: list[str]):
         if files:
             self.ui.info(f"Cleaning {len(files)} example(s)")
             for name in files:
@@ -872,7 +921,7 @@ class BuildTasks:
     def run_tests(self, _: object | None = None) -> object:
         return self.cmd_test()
 
-    def cmd_watch(self, files: List[str]):
+    def cmd_watch(self, files: list[str]):
         """Watch source files for changes and rebuild."""
         watch_dirs = [Path(".")]
         extensions = {".tex", ".sty", ".cls", ".bib", ".lua", ".toml"}
@@ -944,7 +993,7 @@ class BuildTasks:
             except KeyboardInterrupt:
                 process.terminate()
 
-    def _rebuild_affected(self, changed_path: Path, files: List[str]):
+    def _rebuild_affected(self, changed_path: Path, files: list[str]):
         """Rebuild documents affected by a changed file."""
         if files:
             self.build_example(files)
@@ -1102,7 +1151,7 @@ class BuildTasks:
         except (subprocess.TimeoutExpired, OSError):
             return False
 
-    def _find_tex_for_pdf(self, pdf_path: str) -> Optional[Path]:
+    def _find_tex_for_pdf(self, pdf_path: str) -> Path | None:
         pdf = Path(pdf_path)
         tex = pdf.with_suffix(".tex")
         if tex.exists():
@@ -1235,7 +1284,7 @@ class BuildTasks:
             else:
                 self.ui.warning("File sizes differ")
 
-    def cmd_diff(self, files: List[str], regenerate_references: bool = False, output: str = None):
+    def cmd_diff(self, files: list[str], regenerate_references: bool = False, output: str = None):
         """Compare PDFs, git refs, or example references.
 
         Modes:
@@ -1352,15 +1401,7 @@ class BuildTasks:
                                 all_pass = False
                                 continue
 
-                            C1, C2 = (0.01 * 255) ** 2, (0.03 * 255) ** 2
-                            mu1 = np.mean(arr1)
-                            mu2 = np.mean(arr2)
-                            sigma1 = np.var(arr1)
-                            sigma2 = np.var(arr2)
-                            sigma12 = np.mean((arr1 - mu1) * (arr2 - mu2))
-                            ssim = ((2 * mu1 * mu2 + C1) * (2 * sigma12 + C2)) / (
-                                (mu1**2 + mu2**2 + C1) * (sigma1 + sigma2 + C2)
-                            )
+                            ssim = _compute_ssim_windowed(arr1, arr2)
 
                             threshold = 0.95
                             page_pass = ssim >= threshold
@@ -1394,7 +1435,7 @@ class BuildTasks:
         else:
             self.ui.error("Visual regressions detected")
 
-    def cmd_scaffold_institution(self, files: List[str]):
+    def cmd_scaffold_institution(self, files: list[str]):
         """Create a new institution config from the generic template."""
         self.ui.header("Scaffold Institution")
 
@@ -1465,7 +1506,7 @@ class BuildTasks:
             f"  Usage: \\documentclass[doctype=thesis,institution={name}]{{omnilatex}}"
         )
 
-    def cmd_scaffold_language(self, files: List[str]):
+    def cmd_scaffold_language(self, files: list[str]):
         """Create a language addition guide with translation stubs."""
         self.ui.header("Scaffold Language")
 
@@ -1608,7 +1649,7 @@ class BuildTasks:
 
     def cmd_init(
         self,
-        files: List[str],
+        files: list[str],
         doctype: str = None,
         institution: str = None,
         language: str = None,
@@ -2254,6 +2295,107 @@ class BuildTasks:
             self.ui.success("Linting passed with no issues")
         return 0
 
+    def cmd_export(self, files: list[str] | None = None, output_format: str = "html"):
+        """Export LaTeX to alternative formats (html, epub, docx).
+
+        Requires: latexml (for HTML), pandoc (for EPUB/DOCX)
+        """
+        import subprocess
+
+        self.ui.header(f"Export to {output_format.upper()}")
+
+        repo_root = Path(__file__).resolve().parent
+
+        if files:
+            source = Path(files[0])
+            if not source.is_absolute():
+                source = repo_root / source
+        else:
+            source = repo_root / "main.tex"
+
+        if not source.exists():
+            self.ui.error(f"Source file not found: {source}")
+            return
+
+        output_dir = repo_root / self.config.build_dir / "export" / output_format
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        stem = source.stem
+
+        if output_format == "html":
+            if not shutil.which("latexml"):
+                self.ui.error("latexml not found. Install: apt-get install latexml")
+                return
+
+            html_file = output_dir / f"{stem}.html"
+            self.ui.info(f"Converting {source.name} -> {html_file}")
+
+            rc, _ = self.runner.run([
+                "latexml",
+                "--dest=" + str(output_dir / f"{stem}.xml"),
+                str(source),
+            ], cwd=source.parent)
+
+            if rc == 0:
+                rc, _ = self.runner.run([
+                    "latexmlpost",
+                    "--dest=" + str(html_file),
+                    "--format=html",
+                    str(output_dir / f"{stem}.xml"),
+                ], cwd=source.parent)
+
+            if rc == 0 and html_file.exists():
+                self.ui.success(f"HTML exported: {html_file}")
+            else:
+                self.ui.error("HTML export failed")
+
+        elif output_format in ("epub", "docx"):
+            if not shutil.which("pandoc"):
+                self.ui.error(f"pandoc not found. Install: apt-get install pandoc")
+                return
+
+            out_file = output_dir / f"{stem}.{output_format}"
+            self.ui.info(f"Converting {source.name} -> {out_file}")
+
+            xml_file = output_dir / f"{stem}.xml"
+            html_file = output_dir / f"{stem}.html"
+
+            if shutil.which("latexml"):
+                rc, _ = self.runner.run([
+                    "latexml",
+                    f"--dest={xml_file}",
+                    str(source),
+                ], cwd=source.parent)
+                if rc == 0:
+                    rc, _ = self.runner.run([
+                        "latexmlpost",
+                        f"--dest={html_file}",
+                        "--format=html",
+                        str(xml_file),
+                    ], cwd=source.parent)
+
+            if html_file.exists():
+                pandoc_from = "html"
+                pandoc_input = str(html_file)
+            else:
+                pandoc_from = "latex"
+                pandoc_input = str(source)
+
+            rc, _ = self.runner.run([
+                "pandoc",
+                f"--from={pandoc_from}",
+                f"--to={output_format}",
+                "-o", str(out_file),
+                pandoc_input,
+            ], cwd=source.parent)
+
+            if rc == 0 and out_file.exists():
+                self.ui.success(f"{output_format.upper()} exported: {out_file}")
+            else:
+                self.ui.error(f"{output_format.upper()} export failed")
+        else:
+            self.ui.error(f"Unknown format: {output_format}. Use: html, epub, docx")
+
 
 # -----------------------------------------------------------------------------
 # Interactive Menu (TUI)
@@ -2299,6 +2441,7 @@ def interactive_menu(tasks: BuildTasks, commands: dict[str, tuple]) -> None:
                 ("init", "New project from template"),
                 ("scaffold-institution", "New institution config"),
                 ("watch", "Watch files & rebuild"),
+                ("export", "Export LaTeX to HTML/EPUB/DOCX"),
             ],
         ),
     ]
@@ -2545,6 +2688,13 @@ def main() -> None:
         default=default_jobs,
         help=f"Parallel jobs. Default: {default_jobs}",
     )
+    parser.add_argument(
+        "--cnf-line",
+        action="append",
+        default=[],
+        metavar="LINE",
+        help="Extra TeX configuration line passed to lualatex via --cnf-line (can be repeated).",
+    )
 
     subparsers = parser.add_subparsers(dest="command")
     # Note: subparsers are NOT required — running without a command shows the
@@ -2599,9 +2749,15 @@ def main() -> None:
             "Initialize a new OmniLaTeX project from a template.",
             True,
         ),
+        "export": (
+            lambda tasks, files: tasks.cmd_export(files, output_format=getattr(args, "export_format", "html")),
+            "Export LaTeX to HTML, EPUB, or DOCX",
+            True,
+        ),
     }
     diff_subparser = None
     init_subparser = None
+    export_subparser = None
     for name, (handler, help_text, takes_files) in commands.items():
         sub = subparsers.add_parser(name, help=help_text)
         sub.set_defaults(handler=handler)
@@ -2611,6 +2767,8 @@ def main() -> None:
             diff_subparser = sub
         if name == "init":
             init_subparser = sub
+        if name == "export":
+            export_subparser = sub
     if diff_subparser is not None:
         diff_subparser.add_argument(
             "--regenerate-references",
@@ -2651,11 +2809,21 @@ def main() -> None:
             default=False,
             help="Shortcut: set doctype=thesis and create full thesis project structure.",
         )
+    if export_subparser is not None:
+        export_subparser.add_argument(
+            "--format", "-f",
+            dest="export_format",
+            type=str,
+            default="html",
+            choices=["html", "epub", "docx"],
+            help="Output format (default: html)",
+        )
 
     args = parser.parse_args()
 
     if args.source_date_epoch is not None:
         os.environ["SOURCE_DATE_EPOCH"] = str(args.source_date_epoch)
+    config.cnf_lines = args.cnf_line
     if args.command and "build" in args.command:
         ui.info(f"Using up to {args.jobs} parallel jobs.")
     runner = CommandRunner(
@@ -2698,6 +2866,8 @@ def main() -> None:
             rc = args.handler(tasks, getattr(args, "files", None))
             if rc:
                 sys.exit(rc)
+        elif args.command == "export":
+            args.handler(tasks, getattr(args, "files", None))
         else:
             args.handler(tasks, getattr(args, "files", None))
     except Exception as e:

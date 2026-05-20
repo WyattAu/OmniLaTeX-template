@@ -75,6 +75,355 @@ Each doctype accepts plural and alternative forms: `doctype=articles`, `doctype=
 `doctype=technical-report`, `doctype=cv`, `doctype=resume`, etc. Over 55 aliases are
 recognized (see `omnilatex.cls` for the full list).
 
+## Document Type Reference
+
+### article
+
+Base class: `scrartcl`. Research article with abstract, keywords, and DOI support.
+
+```latex
+\documentclass[doctype=article]{omnilatex}
+\begin{document}
+\maketitle
+\section{Introduction}
+\end{document}
+```
+
+### book
+
+Base class: `scrbook`. Full book with chapters, publisher metadata, edition, and ISBN fields.
+
+```latex
+\documentclass[doctype=book]{omnilatex}
+\begin{document}
+\maketitle
+\chapter{Chapter One}
+\end{document}
+```
+
+### report
+
+Base class: `scrreprt`. General-purpose report with chapters, `open=any` page style.
+
+```latex
+\documentclass[doctype=report]{omnilatex}
+\begin{document}
+\maketitle
+\chapter{Findings}
+\end{document}
+```
+
+### thesis
+
+Base class: `scrbook`. Academic thesis with advisor, committee, and declaration of authorship.
+
+```latex
+\documentclass[doctype=thesis]{omnilatex}
+\begin{document}
+\maketitle
+\chapter{Introduction}
+\end{document}
+```
+
+### dissertation
+
+Base class: `scrbook`. PhD dissertation with front matter, committee, and extended metadata.
+
+```latex
+\documentclass[doctype=dissertation]{omnilatex}
+\begin{document}
+\maketitle
+\chapter{Introduction}
+\end{document}
+```
+
+### homework
+
+Base class: `scrartcl`. Homework assignment with numbered exercises and solution environments.
+
+```latex
+\documentclass[doctype=homework]{omnilatex}
+\begin{document}
+\maketitle
+\section{Problem 1}
+\end{document}
+```
+
+### exam
+
+Base class: `scrartcl`. Examination paper with questions, point values, and answer spaces.
+
+```latex
+\documentclass[doctype=exam]{omnilatex}
+\begin{document}
+\maketitle
+\section{Section A}
+\end{document}
+```
+
+### syllabus
+
+Base class: `scrartcl`. Course syllabus with grading policy, schedule, and instructor info.
+
+```latex
+\documentclass[doctype=syllabus]{omnilatex}
+\begin{document}
+\maketitle
+\section{Course Overview}
+\end{document}
+```
+
+### lecture-notes
+
+Base class: `scrartcl`. Lecture notes with theorem, definition, and proof environments.
+
+```latex
+\documentclass[doctype=lecture-notes]{omnilatex}
+\begin{document}
+\maketitle
+\section{Topic One}
+\end{document}
+```
+
+### letter
+
+Base class: `scrartcl`. Formal letter with recipient address, subject line, and closing.
+
+```latex
+\documentclass[doctype=letter]{omnilatex}
+\begin{document}
+\maketitle
+Dear Recipient,
+\end{document}
+```
+
+### memo
+
+Base class: `scrartcl`. Memorandum with TO/FROM/CC/RE header fields.
+
+```latex
+\documentclass[doctype=memo]{omnilatex}
+\begin{document}
+\maketitle
+\section{Background}
+\end{document}
+```
+
+### cover-letter
+
+Base class: `scrartcl`. Cover letter with recipient and sender metadata, single-page layout.
+
+```latex
+\documentclass[doctype=cover-letter]{omnilatex}
+\begin{document}
+\maketitle
+Dear Hiring Manager,
+\end{document}
+```
+
+### cover-letter-formal
+
+Base class: `scrartcl`. Formal variant of cover letter with structured sections.
+
+```latex
+\documentclass[doctype=cover-letter-formal]{omnilatex}
+\begin{document}
+\maketitle
+\end{document}
+```
+
+### cv
+
+Base class: `scrartcl`. Curriculum vitae with photo, links, summary, and sectioned entries.
+
+```latex
+\documentclass[doctype=cv]{omnilatex}
+\begin{document}
+\maketitle
+\section{Experience}
+\end{document}
+```
+
+### cv-twopage
+
+Base class: `scrartcl`. Two-page CV variant with extended sections.
+
+```latex
+\documentclass[doctype=cv-twopage]{omnilatex}
+\begin{document}
+\maketitle
+\section{Experience}
+\end{document}
+```
+
+### invoice
+
+Base class: `scrartcl`. Commercial invoice with itemized table, totals, and payment terms.
+
+```latex
+\documentclass[doctype=invoice]{omnilatex}
+\begin{document}
+\maketitle
+\end{document}
+```
+
+### poster
+
+Base class: `scrartcl`. Conference poster in A1 landscape with column layout.
+
+```latex
+\documentclass[doctype=poster]{omnilatex}
+\begin{document}
+\maketitle
+\section{Results}
+\end{document}
+```
+
+### presentation
+
+Base class: `scrartcl`. Presentation slides using KOMA-based layout (non-Beamer).
+
+```latex
+\documentclass[doctype=presentation]{omnilatex}
+\begin{document}
+\maketitle
+\section{Slide Title}
+\end{document}
+```
+
+### beamer
+
+Base class: `beamer`. Beamer-based slides with full theme and overlay support.
+
+```latex
+\documentclass[doctype=beamer]{omnilatex}
+\begin{document}
+\begin{frame}{Title}
+Content here.
+\end{frame}
+\end{document}
+```
+
+### research-proposal
+
+Base class: `scrreprt`. Research proposal with budget, timeline, and methodology sections.
+
+```latex
+\documentclass[doctype=research-proposal]{omnilatex}
+\begin{document}
+\maketitle
+\chapter{Objectives}
+\end{document}
+```
+
+### patent
+
+Base class: `scrreprt`. Patent specification with claims, abstract, and formal structure.
+
+```latex
+\documentclass[doctype=patent]{omnilatex}
+\begin{document}
+\maketitle
+\chapter{Description}
+\end{document}
+```
+
+### standard
+
+Base class: `scrreprt`. Standards document with ICS codes and designation fields.
+
+```latex
+\documentclass[doctype=standard]{omnilatex}
+\begin{document}
+\maketitle
+\chapter{Scope}
+\end{document}
+```
+
+### white-paper
+
+Base class: `scrreprt`. White paper / position paper for policy or technology briefings.
+
+```latex
+\documentclass[doctype=white-paper]{omnilatex}
+\begin{document}
+\maketitle
+\chapter{Executive Summary}
+\end{document}
+```
+
+### technical-report
+
+Base class: `scrreprt`. Technical report with report number, confidentiality, and chapters.
+
+```latex
+\documentclass[doctype=technical-report]{omnilatex}
+\begin{document}
+\maketitle
+\chapter{Methodology}
+\end{document}
+```
+
+### journal
+
+Base class: `scrartcl`. Journal article with volume, issue, highlights, and DOI.
+
+```latex
+\documentclass[doctype=journal]{omnilatex}
+\begin{document}
+\maketitle
+\section{Abstract}
+\end{document}
+```
+
+### recipe
+
+Base class: `scrartcl`. Recipe card with ingredients list, instructions, and yield.
+
+```latex
+\documentclass[doctype=recipe]{omnilatex}
+\begin{document}
+\maketitle
+\section{Ingredients}
+\end{document}
+```
+
+### dictionary
+
+Base class: `scrbook`. Dictionary/lexicon with series and publisher info, twoside layout.
+
+```latex
+\documentclass[doctype=dictionary]{omnilatex}
+\begin{document}
+\maketitle
+\chapter{A}
+\end{document}
+```
+
+### handout
+
+Base class: `scrartcl`. Two-column handout with key concept boxes and summary sections.
+
+```latex
+\documentclass[doctype=handout]{omnilatex}
+\begin{document}
+\maketitle
+\section{Key Concepts}
+\end{document}
+```
+
+### manual
+
+Base class: `scrreprt`. Product manual/handbook with version, support info, and chapters.
+
+```latex
+\documentclass[doctype=manual]{omnilatex}
+\begin{document}
+\maketitle
+\chapter{Getting Started}
+\end{document}
+```
+
 ## Institutions
 
 OmniLaTeX ships 21 institution configurations. Enable with
