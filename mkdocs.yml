@@ -70,13 +70,15 @@ nav:
   - API Stability: API_STABILITY.md
   - Breaking Changes: BREAKING_CHANGES.md
   - CTAN Submission: CTAN_SUBMISSION.md
-  - Contributing: ../CONTRIBUTING.md
-  - Changelog: ../CHANGELOG.md
+  - Institution Contributing: INSTITUTION_CONTRIBUTING.md
+  - Manual Plan: manual/PLAN.md
+  - Manual Part I: manual/PART_I_FOUNDATIONS.md
+  - Manual Part II: manual/PART_II_DOCTYPES.md
+  - Manual Parts III-XI: manual/PARTS_III_THROUGH_XI.md
 
 extra:
   version: 2.0.0
 
 validation:
-  omitted_files: warn
   absolute_links: warn
   unrecognized_links: warn
