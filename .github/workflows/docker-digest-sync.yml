@@ -21,11 +21,17 @@ jobs:
       # v4
       uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
+    - name: Resolve image reference
+      id: resolve-image
+      run: |
+        IMAGE_NAME=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')
+        echo "image_ref=ghcr.io/${IMAGE_NAME}:latest" >> $GITHUB_OUTPUT
+
     - name: Get new image digest
       id: digest
       run: |
-        docker pull ghcr.io/wyattau/omnilatex-docker:latest
-        DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' ghcr.io/wyattau/omnilatex-docker:latest | sed 's/.*@//')
+        docker pull ${{ steps.resolve-image.outputs.image_ref }}
+        DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' ${{ steps.resolve-image.outputs.image_ref }} | sed 's/.*@//')
         echo "digest=${DIGEST}" >> $GITHUB_OUTPUT
         echo "Image digest: ${DIGEST}"
 

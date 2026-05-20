@@ -38,8 +38,7 @@ jobs:
     - name: Set lowercase Image name
       id: set-image-name
       run: |
-        # Convert repository name to lowercase and set as environment variable
-        echo "IMAGE_NAME=wyattau/omnilatex-docker" >> $GITHUB_ENV
+        echo "IMAGE_NAME=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
     - name: Set up Docker Buildx
       id: buildx
       # v3
@@ -100,7 +99,7 @@ jobs:
           OMNILATEX_CLS_SHA256=${{ secrets.OMNILATEX_CLS_SHA256 }}
 
     - name: Inspect build cache
-      if: always()
+      if: always() && github.event_name != 'pull_request'
       run: |
         docker buildx du
         docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
