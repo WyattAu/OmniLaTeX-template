@@ -3,6 +3,10 @@ name: Build LaTeX Document
 permissions:
   contents: read
 
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
 # Docker image digest is sourced from .env.docker at runtime.
 # The digest-sync workflow updates only .env.docker (no workflow file edits needed).
 
@@ -22,7 +26,8 @@ jobs:
       contents: read
     steps:
     - name: Dependency Review
-      uses: actions/dependency-review-action@v4
+      # v4
+      uses: actions/dependency-review-action@2031cfc080254a8a887f58cffee85186f0e49e48
       with:
         fail-on-severity: moderate
 
@@ -399,7 +404,8 @@ jobs:
       with:
         fetch-depth: 1
     - name: Generate and upload SBOM
-      uses: anchore/sbom-action@v0
+      # v0
+      uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610
       with:
         format: spdx-json
         output-file: sbom.spdx.json

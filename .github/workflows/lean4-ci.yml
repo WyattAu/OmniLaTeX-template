@@ -3,6 +3,10 @@ name: Lean 4 Proofs
 permissions:
   contents: read
 
+concurrency:
+  group: lean4-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches: [main, master]

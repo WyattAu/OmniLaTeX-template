@@ -8,6 +8,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ctan-upload-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   # ── Pre-flight: validate everything before attempting upload ────────────
   pre-flight:
@@ -15,6 +19,7 @@ jobs:
     timeout-minutes: 5
     outputs:
       version: ${{ steps.version.outputs.version }}
+      changelog: ${{ steps.changelog.outputs.changelog }}
     steps:
       # v4
     - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
@@ -73,39 +78,33 @@ jobs:
           --dry-run \
           --changelog "${{ steps.changelog.outputs.changelog }}"
 
+    - name: Upload CTAN zip artifact
+      # v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: ctan-zip
+        path: ctan/omnilatex.zip
+        retention-days: 1
+
   # ── Upload: only runs if pre-flight passes ──────────────────────────────
   upload:
     needs: pre-flight
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      # v4
-    - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
-      with:
-        fetch-depth: 0
-        fetch-tags: true
-
     - name: Install dependencies
-      run: sudo apt-get update -qq && sudo apt-get install -y -qq zip unzip jq
+      run: sudo apt-get update -qq && sudo apt-get install -y -qq unzip
 
-    - name: Build CTAN zip
-      run: bash scripts/make-ctan-zip.sh
+    - name: Download CTAN zip artifact
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      with:
+        name: ctan-zip
+        path: ctan
 
-    - name: Generate changelog
-      id: changelog
+    - name: Validate downloaded zip
       run: |
-        CURRENT="${GITHUB_REF_NAME}"
-        PREV=$(git tag --sort=-version:refname | grep -v "^${CURRENT}$" | head -1 || true)
-        if [ -n "$PREV" ]; then
-          LOG=$(git log --oneline "${PREV}..${CURRENT}")
-        else
-          LOG=$(git log --oneline -20)
-        fi
-        {
-          echo "changelog<<EOF"
-          echo "${LOG:-Release ${CURRENT}}"
-          echo "EOF"
-        } >> "$GITHUB_OUTPUT"
+        test -f ctan/omnilatex.zip || { echo "::error::Downloaded zip not found"; exit 1; }
+        test -s ctan/omnilatex.zip || { echo "::error::Downloaded zip is empty"; exit 1; }
 
     - name: Upload to CTAN
       env:
@@ -115,4 +114,4 @@ jobs:
         bash scripts/ctan-upload.sh \
           "${{ needs.pre-flight.outputs.version }}" \
           ctan/omnilatex.zip \
-          --changelog "${{ steps.changelog.outputs.changelog }}"
+          --changelog "${{ needs.pre-flight.outputs.changelog }}"

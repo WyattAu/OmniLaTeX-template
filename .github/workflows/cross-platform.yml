@@ -11,6 +11,10 @@ permissions:
   contents: read
   packages: read
 
+concurrency:
+  group: cross-platform-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   DOCKER_PLATFORM: linux/amd64
 

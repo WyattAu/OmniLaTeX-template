@@ -3,6 +3,10 @@ name: Visual Regression
 permissions:
   contents: read
 
+concurrency:
+  group: visual-regression-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches: [main, master]
@@ -160,7 +164,8 @@ jobs:
         cp build/examples/*.pdf tests/references/
 
     - name: Create pull request for updated references
-      uses: peter-evans/create-pull-request@v7
+      # v7
+      uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676
       with:
         branch: chore/update-visual-references
         title: 'chore: update visual regression reference PDFs'

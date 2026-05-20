@@ -3,44 +3,48 @@ name: CTAN Release
 on:
   push:
     tags:
-      - 'v*'
+    - v*
 
 permissions:
   contents: write
+
+concurrency:
+  group: ctan-release-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   release:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Checkout repository
+    - name: Checkout repository
         # v4
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
-      - name: Install dependencies
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq zip
+    - name: Install dependencies
+      run: sudo apt-get update -qq && sudo apt-get install -y -qq zip
 
-      - name: Build CTAN zip
-        run: bash scripts/make-ctan-zip.sh
+    - name: Build CTAN zip
+      run: bash scripts/make-ctan-zip.sh
 
-      - name: Validate CTAN zip
-        run: |
-          test -f omnilatex.zip || { echo "::error::omnilatex.zip not found"; exit 1; }
-          test -s omnilatex.zip || { echo "::error::omnilatex.zip is empty"; exit 1; }
-          unzip -l omnilatex.zip | grep -q 'omnilatex\.cls$' || { echo "::error::omnilatex.cls missing"; exit 1; }
-          echo "CTAN zip validated OK"
+    - name: Validate CTAN zip
+      run: |
+        test -f omnilatex.zip || { echo "::error::omnilatex.zip not found"; exit 1; }
+        test -s omnilatex.zip || { echo "::error::omnilatex.zip is empty"; exit 1; }
+        unzip -l omnilatex.zip | grep -q 'omnilatex\.cls$' || { echo "::error::omnilatex.cls missing"; exit 1; }
+        echo "CTAN zip validated OK"
 
-      - name: Create GitHub Release
+    - name: Create GitHub Release
         # v2
-        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65
-        with:
-          files: omnilatex.zip
-          generate_release_notes: true
+      uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65
+      with:
+        files: omnilatex.zip
+        generate_release_notes: true
 
-      - name: Upload CTAN zip artifact
+    - name: Upload CTAN zip artifact
         # v4
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: ctan-package
-          path: omnilatex.zip
-          retention-days: 90
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: ctan-package
+        path: omnilatex.zip
+        retention-days: 90

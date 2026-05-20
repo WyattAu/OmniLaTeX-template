@@ -3,6 +3,10 @@ name: Performance Regression
 permissions:
   contents: read
 
+concurrency:
+  group: perf-regression-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches: [main, master]

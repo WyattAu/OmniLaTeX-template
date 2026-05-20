@@ -8,6 +8,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: integration-matrix
+  cancel-in-progress: false
+
 # Docker image digest is sourced from .env.docker at runtime.
 # The digest-sync workflow updates only .env.docker (no workflow file edits needed).
 
