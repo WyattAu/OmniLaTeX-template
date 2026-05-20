@@ -39,7 +39,9 @@ plugins:
 markdown_extensions:
   - toc:
       permalink: true
-      slugify: pymdownx.slugs.slugify
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
   - admonition
   - pymdownx.details
   - pymdownx.superfences:
