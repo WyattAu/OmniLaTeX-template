@@ -50,7 +50,7 @@ status = 302
 
 [[redirects]]
 from = "/api"
-to = "/api_reference/"
+to = "/API_REFERENCE/"
 status = 302
 
 [[redirects]]

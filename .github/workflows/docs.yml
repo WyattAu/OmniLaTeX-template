@@ -34,7 +34,17 @@ jobs:
     - name: Merge pages/ gallery into site
       run: |
         if [ -d pages ]; then
-          cp -r pages/. site/
+          for f in pages/*.html pages/*.css; do
+            fname=$(basename "$f")
+            # Skip index.html to avoid overwriting mkdocs home page
+            if [ "$fname" = "index.html" ]; then
+              cp "$f" "site/gallery-app.html"
+            else
+              cp "$f" "site/$fname"
+            fi
+          done
+          # Copy .nojekyll for GitHub Pages
+          cp pages/.nojekyll site/.nojekyll 2>/dev/null || true
         fi
 
     # v3
