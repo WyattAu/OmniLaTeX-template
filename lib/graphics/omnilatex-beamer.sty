@@ -7,8 +7,15 @@
 \ProvidesPackage{omnilatex-beamer}%
   [2026/05/18 v2.0.0 OmniLaTeX Beamer integration]%
 
-\RequirePackage{omnilatex-colors}
-\RequirePackage{omnilatex-fonts}
+\RequirePackage{lib/utils/omnilatex-colors}
+\RequirePackage{lib/typography/omnilatex-fonts}
+
+%% KOMA-Script compatibility stubs for Beamer mode.
+%% When TEXINPUTS includes the repo root, stale .toc/.aux files from KOMA
+%% builds may be read by beamer. Provide no-op definitions for KOMA-only
+%% commands to prevent undefined control sequence errors.
+\@ifundefined{nonumberline}{\newcommand{\nonumberline}{}}{}
+\@ifundefined{texorpdfstring}{\newcommand{\texorpdfstring}[2]{#2}}{}
 
 %% Define OmniLaTeX primary and accent colors for Beamer
 %% These are derived from the indigo color scheme used in documentation

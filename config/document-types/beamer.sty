@@ -1,7 +1,8 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{config/document-types/beamer}[2026/05/18 v2.0.0 OmniLaTeX Beamer document type]
 
-\RequirePackage{lib/graphics/omnilatex-beamer}
+% Note: lib/graphics/omnilatex-beamer is already loaded by omnilatex.cls
+% when doctype=beamer, so we skip the duplicate RequirePackage here.
 
 \mode<presentation>
 
@@ -15,6 +16,8 @@
 
 \mode<all>
 
-\citationstyle{apa}
+% Citations: beamer presentations typically do not need full biblatex.
+% Users who need bibliography support in beamer can load omnilatex-biblio
+% manually in their preamble.
 
 \endinput

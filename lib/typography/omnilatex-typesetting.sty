@@ -48,9 +48,11 @@
 ]
 {csquotes}
 % Change the default used cite command to \parencite
-% Must be done after biblatex is loaded
+% Must be done after biblatex is loaded; guard for non-biblatex contexts (e.g. beamer)
 \AtBeginDocument{%
-    \SetCiteCommand{\parencite}%
+    \@ifundefined{parencite}{}{%
+        \SetCiteCommand{\parencite}%
+    }%
 }
 % Add itshape to beginning (beg) of display quote environments:
 \renewcommand*{\mkbegdispquote}[2]{\itshape}

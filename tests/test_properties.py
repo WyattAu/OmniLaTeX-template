@@ -678,6 +678,10 @@ class TestDocumentTypeConfigs:
     def test_doctype_sty_has_citationstyle(self):
         for sty_file in self._get_doctype_sty_files():
             content = sty_file.read_text(encoding="utf-8", errors="replace")
+            # Beamer skips biblatex entirely (incompatible with beamer's
+            # built-in hyperref), so citation style is not required.
+            if sty_file.stem == "beamer":
+                continue
             assert (
                 "\\citationstyle" in content
             ), f"{sty_file.name} missing \\citationstyle{{}} call"
@@ -817,7 +821,9 @@ class TestFileStructureIntegrity:
         content = sty_path.read_text(encoding="utf-8", errors="replace")
         assert "\\NeedsTeXFormat" in content
         assert "\\ProvidesPackage" in content
-        assert "\\citationstyle" in content
+        # Beamer skips biblatex (incompatible with beamer's hyperref)
+        if doctype != "beamer":
+            assert "\\citationstyle" in content
         assert "\\endinput" in content
 
 

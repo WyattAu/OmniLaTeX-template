@@ -202,14 +202,23 @@
 \RequirePackage{lib/utils/omnilatex-colors}
 \RequirePackage{lib/utils/omnilatex-utils}
 \RequirePackage{lib/typography/omnilatex-fonts}
-\RequirePackage{lib/typography/omnilatex-lists}
+% omnilatex-lists uses enumitem which conflicts with beamer's list handling
+\ifomnilatex@beamer\else
+    \RequirePackage{lib/typography/omnilatex-lists}
+\fi
 \RequirePackage{lib/typography/omnilatex-typesetting}
-\RequirePackage{lib/layout/omnilatex-page}
-\RequirePackage{lib/layout/omnilatex-koma}
-\RequirePackage{lib/layout/omnilatex-floats}
-\RequirePackage{lib/layout/omnilatex-boxes}
-\RequirePackage{lib/layout/omnilatex-document}
-\RequirePackage{lib/references/omnilatex-hyperref}
+% KOMA-Script layout modules are incompatible with beamer base class
+\ifomnilatex@beamer\else
+    \RequirePackage{lib/layout/omnilatex-page}
+    \RequirePackage{lib/layout/omnilatex-koma}
+    \RequirePackage{lib/layout/omnilatex-floats}
+    \RequirePackage{lib/layout/omnilatex-boxes}
+    \RequirePackage{lib/layout/omnilatex-document}
+\fi
+% Beamer loads its own hyperref; skip our hyperref module to avoid option clash
+\ifomnilatex@beamer\else
+    \RequirePackage{lib/references/omnilatex-hyperref}
+\fi
 % Workaround: luaotfload-multiscript.lua calls kpse.find_file('ScriptExtensions.txt')
 % which returns nil in Nix/TL2025, then calls os.exit(-1). Patch kpse.find_file
 % to return a dummy temp file when the real file is missing.
@@ -363,7 +372,10 @@
 \ifomnilatex@loadGlossaries
     \RequirePackage{lib/references/omnilatex-glossary}
 \fi
-\RequirePackage{lib/references/omnilatex-biblio}
+% Bibliography module uses KOMA-specific features; skip for beamer
+\ifomnilatex@beamer\else
+    \RequirePackage{lib/references/omnilatex-biblio}
+\fi
 
 % Plugin system (always available)
 \RequirePackage{lib/utils/omnilatex-plugin}
