@@ -135,4 +135,5 @@ DOCTYPE_ALIASES = {
     "beamer-corporate": "presentation",
     "beamer-minimal": "presentation",
     "beamer-defense": "presentation",
+    "beamer-native": "beamer",
 }

@@ -39,7 +39,7 @@ Eliminate all known defects, close technical debt, and achieve zero-warning CI.
 | S-03 | Fix Arabic-Indic numeral reversal in omnilatex-rtl.sty | Critical | 2h |
 | S-04 | Fix todo-tracker.lua global counter logic bug | High | 1h |
 | S-05 | Add pcall to word-count.lua for luatexbase loading | High | 1h |
-| S-06 | Fix "examniner" -> "examiner" typo across codebase | High | 2h |
+| S-06 | Fix "examiner" -> "examiner" typo across codebase | High | 2h |
 | S-07 | Deduplicate test constants (single source in constants.py) | High | 4h |
 | S-08 | Fix visual regression cache key to include Docker digest | Medium | 1h |
 | S-09 | Move inline Python in performance-regression.yml to scripts/ | Medium | 2h |

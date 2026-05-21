@@ -59,8 +59,8 @@ Defined in `omnilatex.cls` via `\DeclareStringOption` / `\DeclareBoolOption`.
 |----------------------|----------------------------------|--------------------------------------|-----------|
 | `\documenttype`      | `{type}`                         | Set document type string             | stable    |
 | `\idnumber`          | `{id}`                           | Set student ID number                | stable    |
-| `\firstexamniner`    | `{name}`                         | Set first examiner                   | stable    |
-| `\secondexamniner`   | `{name}`                         | Set second examiner                  | stable    |
+| `\firstexaminer`    | `{name}`                         | Set first examiner                   | stable    |
+| `\secondexaminer`   | `{name}`                         | Set second examiner                  | stable    |
 | `\supervisor`        | `{name}`                         | Set supervisor                       | stable    |
 | `\signaturefield`    | `[author]`                       | Render signature/date line           | stable    |
 | `\documentfontsize`  | `{size}`                         | Set font size (applied via KOMA)     | stable    |

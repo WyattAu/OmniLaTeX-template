@@ -180,13 +180,14 @@
     \newcount\@indic@temp
     \def\arabic@indic##1{%
       \@indic@temp=##1\relax
-      \ifcase\@indic@temp\or ٠\or ١\or ٢\or ٣\or ٤\or
-      ٥\or ٦\or ٧\or ٨\or ٩\fi
       \ifnum\@indic@temp>9\relax
         \expandafter\arabic@indic\expandafter
           {\the\numexpr\@indic@temp/10\relax}%
         \expandafter\arabic@indic\expandafter
           {\the\numexpr\@indic@temp-10*(\@indic@temp/10)\relax}%
+      \else
+        \ifcase\@indic@temp ٠\or ١\or ٢\or ٣\or ٤\or
+        ٥\or ٦\or ٧\or ٨\or ٩\fi
       \fi
     }%
     \makeatother

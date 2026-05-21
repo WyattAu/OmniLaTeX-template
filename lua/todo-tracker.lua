@@ -58,16 +58,14 @@ local function process_input_buffer(buffer)
         })
     end
 
-    -- Then try without optional argument (if the above didn't match)
-    if _todo_counter == 0 then
-        for text in buffer:gmatch(simple_pattern) do
-            _todo_counter = _todo_counter + 1
-            table.insert(_todos, {
-                id = _todo_counter,
-                text = text,
-                priority = "medium",
-            })
-        end
+    -- Then try without optional argument
+    for text in buffer:gmatch(simple_pattern) do
+        _todo_counter = _todo_counter + 1
+        table.insert(_todos, {
+            id = _todo_counter,
+            text = text,
+            priority = "medium",
+        })
     end
 
     return buffer

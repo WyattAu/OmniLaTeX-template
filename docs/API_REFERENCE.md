@@ -51,6 +51,7 @@
 **Line count:** 106
 
 **Dependencies:**
+
 - Required: `tagpdf`, `pdfcomment`
 
 **Exports:**
@@ -75,6 +76,7 @@
 **Line count:** 75
 
 **Dependencies:**
+
 - Required: `import`, `nth`, `etoolbox`, `xstring`, `datetime2`, `setspaceenhanced`
 
 **Exports:**
@@ -97,6 +99,7 @@
 **Line count:** 46
 
 **Dependencies:**
+
 - Required: `omnilatex-colors`, `omnilatex-fonts`
 
 **Exports:**
@@ -118,6 +121,7 @@
 **Line count:** 119
 
 **Dependencies:**
+
 - Required: `biblatex`
 
 **Exports:**
@@ -139,6 +143,7 @@
 **Line count:** 84
 
 **Dependencies:**
+
 - Required: `tcolorbox`
 
 **Exports:**
@@ -158,6 +163,7 @@
 **Line count:** 176
 
 **Dependencies:**
+
 - Required: `kvoptions`
 - Optional: `biblatex-ieee`, `biblatex-apa`, `biblatex-chicago`, `biblatex-nature`, `biblatex-science`, `biblatex-harvard`, `biblatex-vancouver`, `biblatex-mla`
 
@@ -186,6 +192,7 @@
 **Line count:** 192
 
 **Dependencies:**
+
 - Required: `luatexja`, `luatexja-fontspec`, `luatexja-ruby`, `xstring`
 
 **Exports:**
@@ -215,6 +222,7 @@
 **Line count:** 80
 
 **Dependencies:**
+
 - Required: `xcolor`
 
 **Exports:**
@@ -287,8 +295,8 @@
 | `\documentlinkstyle` | command | `{style}` | Set document link style (color/plain) applied at begin-document |
 | `\documentcodestyle` | command | `{style}` | Set document code listing style (color/bw or minted style name) applied at begin-document |
 | `\idnumber` | command | `{id}` | Set student ID number |
-| `\firstexamniner` | command | `{name}` | Set first examiner name |
-| `\secondexamniner` | command | `{name}` | Set second examiner name |
+| `\firstexaminer` | command | `{name}` | Set first examiner name |
+| `\secondexaminer` | command | `{name}` | Set second examiner name |
 | `\supervisor` | command | `{name}` | Set supervisor name |
 | `\signaturefield` | command | `[name]` | Typeset a signature field with lines for name and place/date, defaults to \@author |
 | `\iecfeg` | command | `{text}` | Wraps text in italics for abbreviations like i.e., e.g., c.f. |
@@ -306,6 +314,7 @@
 **Line count:** 293
 
 **Dependencies:**
+
 - Required: `flafter`, `caption`, `xparse`, `array`, `subcaption`
 
 **Exports:**
@@ -330,6 +339,7 @@
 **Line count:** 114
 
 **Dependencies:**
+
 - Required: `fontspec`, `fix-cm`, `amsmath`, `lualatex-math`, `amssymb`, `unicode-math`, `fontawesome5`
 
 **Exports:**
@@ -348,6 +358,7 @@
 **Line count:** 515
 
 **Dependencies:**
+
 - Required: `glossaries-extra`, `longtable`, `glossary-longextra`, `glossary-bookindex`, `glossary-mcols`
 - Optional: `tabularray`
 
@@ -387,6 +398,7 @@
 **Line count:** 126
 
 **Dependencies:**
+
 - Required: `graphicx`, `xparse`, `svg`, `scalerel`, `contour`
 
 **Exports:**
@@ -408,6 +420,7 @@
 **Line count:** 165
 
 **Dependencies:**
+
 - Required: `hyperref`, `ocgx2`, `bookmark`, `cleveref`
 
 **Exports:**
@@ -436,6 +449,7 @@
 **Line count:** 219
 
 **Dependencies:**
+
 - Required: `polyglossia`, `translations`
 
 **Exports:**
@@ -489,6 +503,7 @@
 **Line count:** 86
 
 **Dependencies:**
+
 - Required: `minted`, `accsupp`
 
 **Exports:**
@@ -512,6 +527,7 @@
 **Line count:** 70
 
 **Dependencies:**
+
 - Required: `enumitem`
 
 **Exports:**
@@ -533,6 +549,7 @@
 **Line count:** 416
 
 **Dependencies:**
+
 - Required: `mathtools`, `empheq`, `chemmacros`, `siunitx`, `suffix`, `xfrac`, `nicefrac`, `eurosym`
 
 **Exports:**
@@ -592,6 +609,7 @@
 **Line count:** 96
 
 **Dependencies:**
+
 - Required: `scrlayer-scrpage`
 
 **Exports:**
@@ -613,6 +631,7 @@
 **Line count:** 80
 
 **Dependencies:**
+
 - Required: `kvoptions`
 
 **Exports:**
@@ -635,6 +654,7 @@
 **Line count:** 304
 
 **Dependencies:**
+
 - Required: `tcolorbox`, `calc`, `ifthen`
 - Optional: `tikz`
 
@@ -669,6 +689,7 @@
 **Line count:** N/A
 
 **Dependencies:**
+
 - Required: `omnilatex-utils`, `xcolor`, `marginnote`, `etoolbox`, `tcolorbox`
 
 **Options:**
@@ -700,6 +721,7 @@
 **Line count:** 271
 
 **Dependencies:**
+
 - Required: `xstring`
 - Optional: `bidi`, `fontspec`
 
@@ -726,6 +748,7 @@
 **Line count:** 64
 
 **Dependencies:**
+
 - Required: `array`, `multirow`, `booktabs`, `tabularray`, `fvextra`
 - Optional: `longtblr`
 
@@ -746,6 +769,7 @@
 **Line count:** 419
 
 **Dependencies:**
+
 - Required: `xcolor`, `xstring`, `kvoptions`
 - Optional: `tcolorbox`
 
@@ -770,6 +794,7 @@
 **Line count:** 209
 
 **Dependencies:**
+
 - Required: `pgfplots`, `pgfplotstable`, `forest`, `tikz-3dplot`, `circuitikz`
 
 **Exports:**
@@ -843,6 +868,7 @@
 **Line count:** 30
 
 **Dependencies:**
+
 - Required: `xcolor`
 
 **Options:**
@@ -870,6 +896,7 @@
 **Line count:** 74
 
 **Dependencies:**
+
 - Required: `extdash`, `microtype`, `ragged2e`, `blindtext`, `pdflscape`, `url`, `setspaceenhanced`, `csquotes`
 
 **Exports:**
@@ -888,6 +915,7 @@
 **Line count:** 109
 
 **Dependencies:**
+
 - Required: `hologo`, `menukeys`, `censor`, `cancel`
 - Optional: `todonotes`
 

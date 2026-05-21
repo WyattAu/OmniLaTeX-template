@@ -210,18 +210,22 @@
 }
 
 % First examiner
-\newcommand*{\firstexamniner}[1]{%
-    \renewcommand*{\@firstexamniner}{#1}%
+\newcommand*{\firstexaminer}[1]{%
+    \renewcommand*{\@firstexaminer}{#1}%
 }
-\newcommand*{\@firstexamniner}{%
+\newcommand*{\@firstexaminer}{%
     Prof.~Dr.~Jane Doe}%
 
 % Second examiner
-\newcommand*{\secondexamniner}[1]{%
-    \renewcommand*{\@secondexamniner}{#1}%
+\newcommand*{\secondexaminer}[1]{%
+    \renewcommand*{\@secondexaminer}{#1}%
 }
-\newcommand*{\@secondexamniner}{%
+\newcommand*{\@secondexaminer}{%
     Prof.~Dr.~Foo Bar}%
+
+% Backward compatibility: deprecated typo aliases
+\newcommand{\firstexamniner}[1]{\firstexaminer{#1}}
+\newcommand{\secondexamniner}[1]{\secondexaminer{#1}}
 
 % Supervisor
 \newcommand*{\supervisor}[1]{%

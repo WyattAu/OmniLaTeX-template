@@ -175,6 +175,7 @@
     \ifx\omnilatexuserclassoptions\@empty\else
         \PassOptionsToClass{\omnilatexuserclassoptions}{\@baseclass}
     \fi
+    \PassOptionsToClass{aspectratio=\omnilatex@beameraspectratio}{\@baseclass}
 \else
     \ifx\omnilatexuserclassoptions\@empty
         \PassOptionsToClass{\omnilatexclassoptions}{\@baseclass}
@@ -184,6 +185,12 @@
 \fi
 
 \LoadClass{\@baseclass}
+
+% Load Beamer integration module when doctype=beamer
+\ifomnilatex@beamer
+    \RequirePackage{lib/graphics/omnilatex-beamer}
+\fi
+
 \RequirePackage[\omnilatex@language]{tracklang}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

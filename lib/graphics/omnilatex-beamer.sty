@@ -2,13 +2,18 @@
 %% OmniLaTeX Beamer integration
 %% Applies OmniLaTeX color and font system to Beamer presentations.
 %%
-%% This module is loaded automatically when doctype=presentation.
+%% This module is loaded automatically when doctype=beamer.
 
 \ProvidesPackage{omnilatex-beamer}%
   [2026/05/18 v2.0.0 OmniLaTeX Beamer integration]%
 
 \RequirePackage{omnilatex-colors}
 \RequirePackage{omnilatex-fonts}
+
+%% Define OmniLaTeX primary and accent colors for Beamer
+%% These are derived from the indigo color scheme used in documentation
+\providecolor{OmniPrimaryColor}{RGB}{63, 81, 181}%
+\providecolor{OmniAccentColor}{RGB}{92, 107, 192}%
 
 %% Apply OmniLaTeX colors to Beamer elements
 \setbeamercolor{structure}{fg=OmniPrimaryColor}
@@ -47,10 +52,8 @@
   \hfill\insertframenumber\,/\,\inserttotalframenumber\hspace{2mm}\vspace{1mm}%
 }
 
-%% Aspect ratio
-\expandafter\ifx\csname omnilatex@beameraspectratio\endcsname\relax\else
-  \documentclass[\omnilatex@beameraspectratio]{beamer}%
-\fi
+%% Aspect ratio is handled via \PassOptionsToClass in omnilatex.cls
+%% before \LoadClass{beamer} is called.
 
 %% Theme selection
 \expandafter\ifx\csname omnilatex@beamertheme\endcsname\relax\else
