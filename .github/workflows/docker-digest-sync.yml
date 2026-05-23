@@ -9,6 +9,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  packages: read
 
 jobs:
   sync:
@@ -30,6 +31,7 @@ jobs:
     - name: Get new image digest
       id: digest
       run: |
+        echo "${{ github.token }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
         docker pull ${{ steps.resolve-image.outputs.image_ref }}
         DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' ${{ steps.resolve-image.outputs.image_ref }} | sed 's/.*@//')
         echo "digest=${DIGEST}" >> $GITHUB_OUTPUT

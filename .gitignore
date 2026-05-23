@@ -486,6 +486,6 @@ specs/proofs/build/
 *.ltjruby
 omnilatex.zip
 omnilatex-overleaf.zip
-_FAD58DE7366495DB4650CFEFAC2FCD61.config.minted
+*.minted
 testfmt.log
 build-all-output.log

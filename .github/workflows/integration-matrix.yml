@@ -14,9 +14,9 @@ on:
   push:
     branches: [main, master]
     paths:
-      - 'lib/language/**'
-      - 'omnilatex.cls'
-      - 'config/document-types/**'
+    - lib/language/**
+    - omnilatex.cls
+    - config/document-types/**
   pull_request:
     branches: [main, master]
   workflow_dispatch:
@@ -31,45 +31,46 @@ jobs:
         language: [english, german, french, spanish, russian, chinese, japanese, korean, arabic, hebrew, hindi]
         doctype: [article, book, report]
     steps:
-      - name: Checkout repository
+    - name: Checkout repository
         # v4
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
-        with:
-          fetch-depth: 1
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      with:
+        fetch-depth: 1
 
-      - name: Read Docker image digest
-        id: digest
-        uses: ./.github/actions/read-docker-digest
+    - name: Read Docker image digest
+      id: digest
+      uses: ./.github/actions/read-docker-digest
 
-      - name: Pull Docker image
-        run: docker pull "${{ steps.digest.outputs.image }}"
+    - name: Pull Docker image
+      run: docker pull "${{ steps.digest.outputs.image }}"
 
-      - name: Build language-doctype combination
-        run: |
-          mkdir -p /tmp/test-matrix
-          cat > /tmp/test-matrix/main.tex << 'TEXEOF'
-          \documentclass[doctype=${{ matrix.doctype }},language=${{ matrix.language }}]{omnilatex}
-          \begin{document}
-          Test document for language=${{ matrix.language }}, doctype=${{ matrix.doctype }}.
-          \section{Test Section}
-          This is a test paragraph.
-          \end{document}
-          TEXEOF
+    - name: Build language-doctype combination
+      run: |
+        mkdir -p /tmp/test-matrix
+        cat > /tmp/test-matrix/main.tex << 'TEXEOF'
+        \documentclass[doctype=${{ matrix.doctype }},language=${{ matrix.language }}]{omnilatex}
+        \begin{document}
+        Test document for language=${{ matrix.language }}, doctype=${{ matrix.doctype }}.
+        \section{Test Section}
+        This is a test paragraph.
+        \end{document}
+        TEXEOF
 
-          docker run --rm \
-            -v "$GITHUB_WORKSPACE:/opt/omnilatex" \
-            -v "/tmp/test-matrix:/workspace" \
-            -w /workspace \
-            --entrypoint "" \
-            "${{ steps.digest.outputs.image }}" \
-            bash -c "cp -r /opt/omnilatex/omnilatex.cls /opt/omnilatex/lib /opt/omnilatex/config /workspace/ && lualatex --shell-escape --interaction=nonstopmode main.tex && lualatex --shell-escape --interaction=nonstopmode main.tex"
+        docker run --rm \
+          -v "$GITHUB_WORKSPACE:/opt/omnilatex" \
+          -v "/tmp/test-matrix:/workspace" \
+          -w /workspace \
+          --user root \
+          --entrypoint "" \
+          "${{ steps.digest.outputs.image }}" \
+          bash -c "cp -r /opt/omnilatex/omnilatex.cls /opt/omnilatex/lib /opt/omnilatex/config /workspace/ && lualatex --shell-escape --interaction=nonstopmode main.tex && lualatex --shell-escape --interaction=nonstopmode main.tex"
 
-      - name: Verify PDF output
-        run: |
-          test -f /tmp/test-matrix/main.pdf || (echo "FAIL: No PDF generated" && exit 1)
-          size=$(stat -c%s /tmp/test-matrix/main.pdf)
-          echo "PDF size: ${size} bytes for ${{ matrix.language }}-${{ matrix.doctype }}"
-          test "$size" -gt 1000 || (echo "FAIL: PDF too small (${size} bytes)" && exit 1)
+    - name: Verify PDF output
+      run: |
+        test -f /tmp/test-matrix/main.pdf || (echo "FAIL: No PDF generated" && exit 1)
+        size=$(stat -c%s /tmp/test-matrix/main.pdf)
+        echo "PDF size: ${size} bytes for ${{ matrix.language }}-${{ matrix.doctype }}"
+        test "$size" -gt 1000 || (echo "FAIL: PDF too small (${size} bytes)" && exit 1)
 
   rtl-testing:
     runs-on: ubuntu-latest
@@ -79,43 +80,44 @@ jobs:
       matrix:
         language: [arabic, hebrew]
     steps:
-      - name: Checkout repository
+    - name: Checkout repository
         # v4
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
-        with:
-          fetch-depth: 1
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      with:
+        fetch-depth: 1
 
-      - name: Read Docker image digest
-        id: digest
-        uses: ./.github/actions/read-docker-digest
+    - name: Read Docker image digest
+      id: digest
+      uses: ./.github/actions/read-docker-digest
 
-      - name: Pull Docker image
-        run: docker pull "${{ steps.digest.outputs.image }}"
+    - name: Pull Docker image
+      run: docker pull "${{ steps.digest.outputs.image }}"
 
-      - name: Build RTL document
-        run: |
-          mkdir -p /tmp/test-rtl
-          cat > /tmp/test-rtl/main.tex << 'TEXEOF'
-          \documentclass[doctype=article,language=${{ matrix.language }}]{omnilatex}
-          \begin{document}
-          Test RTL document for ${{ matrix.language }}.
-          \section{Test}
-          Content in ${{ matrix.language }} language.
-          \end{document}
-          TEXEOF
+    - name: Build RTL document
+      run: |
+        mkdir -p /tmp/test-rtl
+        cat > /tmp/test-rtl/main.tex << 'TEXEOF'
+        \documentclass[doctype=article,language=${{ matrix.language }}]{omnilatex}
+        \begin{document}
+        Test RTL document for ${{ matrix.language }}.
+        \section{Test}
+        Content in ${{ matrix.language }} language.
+        \end{document}
+        TEXEOF
 
-          docker run --rm \
-            -v "$GITHUB_WORKSPACE:/opt/omnilatex" \
-            -v "/tmp/test-rtl:/workspace" \
-            -w /workspace \
-            --entrypoint "" \
-            "${{ steps.digest.outputs.image }}" \
-            bash -c "cp -r /opt/omnilatex/omnilatex.cls /opt/omnilatex/lib /opt/omnilatex/config /workspace/ && lualatex --shell-escape --interaction=nonstopmode main.tex && lualatex --shell-escape --interaction=nonstopmode main.tex"
+        docker run --rm \
+          -v "$GITHUB_WORKSPACE:/opt/omnilatex" \
+          -v "/tmp/test-rtl:/workspace" \
+          -w /workspace \
+          --user root \
+          --entrypoint "" \
+          "${{ steps.digest.outputs.image }}" \
+          bash -c "cp -r /opt/omnilatex/omnilatex.cls /opt/omnilatex/lib /opt/omnilatex/config /workspace/ && lualatex --shell-escape --interaction=nonstopmode main.tex && lualatex --shell-escape --interaction=nonstopmode main.tex"
 
-      - name: Verify RTL PDF
-        run: |
-          test -f /tmp/test-rtl/main.pdf || (echo "FAIL: No RTL PDF" && exit 1)
-          echo "RTL PDF generated for ${{ matrix.language }}"
+    - name: Verify RTL PDF
+      run: |
+        test -f /tmp/test-rtl/main.pdf || (echo "FAIL: No RTL PDF" && exit 1)
+        echo "RTL PDF generated for ${{ matrix.language }}"
 
   report:
     runs-on: ubuntu-latest

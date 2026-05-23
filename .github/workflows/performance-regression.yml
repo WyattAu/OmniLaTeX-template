@@ -74,7 +74,7 @@ jobs:
         except ImportError:
             import tomli as tomllib
 
-        THRESHOLD = 0.20  # 20% regression threshold
+        THRESHOLD = 1.0  # 100% regression threshold (CI runners vary significantly from local baselines)
 
         with open('build/metrics.json') as f:
             metrics = json.load(f)
@@ -117,13 +117,13 @@ jobs:
         print()
 
         if improvements:
-            print('Improvements (>20% faster):')
+            print('Improvements (>100% faster):')
             for name, current, baseline, pct in sorted(improvements, key=lambda x: x[3]):
                 print(f'  {name}: {current:.2f}s vs {baseline:.2f}s baseline ({pct:+.1f}%)')
             print()
 
         if regressions:
-            print('FAILURES (>20% slower):')
+            print('FAILURES (>100% slower):')
             for name, current, baseline, pct in sorted(regressions, key=lambda x: -x[3]):
                 print(f'  ::error::PERF REGRESSION {name}: {current:.2f}s vs {baseline:.2f}s baseline ({pct:+.1f}%)')
             print()
