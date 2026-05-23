@@ -58,7 +58,7 @@ jobs:
           --user root \
           --entrypoint "" \
           "${{ steps.digest.outputs.image }}" \
-          bash -c "cp -r /opt/omnilatex/omnilatex.cls /opt/omnilatex/lib /opt/omnilatex/config /workspace/ && lualatex --shell-escape --interaction=nonstopmode main.tex && lualatex --shell-escape --interaction=nonstopmode main.tex"
+          bash -c "cp -r /opt/omnilatex/omnilatex.cls /opt/omnilatex/lib /opt/omnilatex/config /workspace/ && lualatex --shell-escape --interaction=nonstopmode main.tex"
 
     - name: Verify PDF output
       run: |
@@ -102,7 +102,7 @@ jobs:
           --user root \
           --entrypoint "" \
           "${{ steps.digest.outputs.image }}" \
-          bash -c "cp -r /opt/omnilatex/omnilatex.cls /opt/omnilatex/lib /opt/omnilatex/config /workspace/ && lualatex --shell-escape --interaction=nonstopmode main.tex && lualatex --shell-escape --interaction=nonstopmode main.tex"
+          bash -c "cp -r /opt/omnilatex/omnilatex.cls /opt/omnilatex/lib /opt/omnilatex/config /workspace/ && lualatex --shell-escape --interaction=nonstopmode main.tex"
 
     - name: Verify RTL PDF
       run: |
