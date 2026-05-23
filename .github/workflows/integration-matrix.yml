@@ -47,17 +47,9 @@ jobs:
     - name: Build language-doctype combination
       run: |
         mkdir -p /tmp/test-matrix
-        cat > /tmp/test-matrix/main.tex << 'TEXEOF'
-        \documentclass[doctype=${{ matrix.doctype }},language=${{ matrix.language }}]{omnilatex}
-        \begin{document}
-        Test document for language=${{ matrix.language }}, doctype=${{ matrix.doctype }}.
-        \section{Test Section}
-        This is a test paragraph.
-        \end{document}
-        TEXEOF
-
-        # Strip leading whitespace from heredoc
-        sed -i 's/^[[:space:]]*//' /tmp/test-matrix/main.tex
+        printf '\\documentclass[doctype=%s,language=%s]{omnilatex}\n\\begin{document}\nTest document for language=%s, doctype=%s.\n\\section{Test Section}\nThis is a test paragraph.\n\\end{document}\n' \
+          "${{ matrix.doctype }}" "${{ matrix.language }}" "${{ matrix.language }}" "${{ matrix.doctype }}" \
+          > /tmp/test-matrix/main.tex
 
         docker run --rm \
           -v "$GITHUB_WORKSPACE:/opt/omnilatex" \
@@ -99,17 +91,9 @@ jobs:
     - name: Build RTL document
       run: |
         mkdir -p /tmp/test-rtl
-        cat > /tmp/test-rtl/main.tex << 'TEXEOF'
-        \documentclass[doctype=article,language=${{ matrix.language }}]{omnilatex}
-        \begin{document}
-        Test RTL document for ${{ matrix.language }}.
-        \section{Test}
-        Content in ${{ matrix.language }} language.
-        \end{document}
-        TEXEOF
-
-        # Strip leading whitespace from heredoc
-        sed -i 's/^[[:space:]]*//' /tmp/test-rtl/main.tex
+        printf '\\documentclass[doctype=article,language=%s]{omnilatex}\n\\begin{document}\nTest RTL document for %s.\n\\section{Test}\nContent in %s language.\n\\end{document}\n' \
+          "${{ matrix.language }}" "${{ matrix.language }}" "${{ matrix.language }}" \
+          > /tmp/test-rtl/main.tex
 
         docker run --rm \
           -v "$GITHUB_WORKSPACE:/opt/omnilatex" \
