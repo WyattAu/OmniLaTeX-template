@@ -47,9 +47,14 @@ jobs:
     - name: Build language-doctype combination
       run: |
         mkdir -p /tmp/test-matrix
-        printf '\\documentclass[doctype=%s,language=%s]{omnilatex}\n\\begin{document}\nTest document for language=%s, doctype=%s.\n\\section{Test Section}\nThis is a test paragraph.\n\\end{document}\n' \
-          "${{ matrix.doctype }}" "${{ matrix.language }}" "${{ matrix.language }}" "${{ matrix.doctype }}" \
-          > /tmp/test-matrix/main.tex
+        {
+          echo "\documentclass[doctype=${{ matrix.doctype }},language=${{ matrix.language }}]{omnilatex}"
+          echo "\begin{document}"
+          echo "Test document for language=${{ matrix.language }}, doctype=${{ matrix.doctype }}."
+          echo "\section{Test Section}"
+          echo "This is a test paragraph."
+          echo "\end{document}"
+        } > /tmp/test-matrix/main.tex
 
         docker run --rm \
           -v "$GITHUB_WORKSPACE:/opt/omnilatex" \
@@ -91,9 +96,14 @@ jobs:
     - name: Build RTL document
       run: |
         mkdir -p /tmp/test-rtl
-        printf '\\documentclass[doctype=article,language=%s]{omnilatex}\n\\begin{document}\nTest RTL document for %s.\n\\section{Test}\nContent in %s language.\n\\end{document}\n' \
-          "${{ matrix.language }}" "${{ matrix.language }}" "${{ matrix.language }}" \
-          > /tmp/test-rtl/main.tex
+        {
+          echo "\documentclass[doctype=article,language=${{ matrix.language }}]{omnilatex}"
+          echo "\begin{document}"
+          echo "Test RTL document for ${{ matrix.language }}."
+          echo "\section{Test}"
+          echo "Content in ${{ matrix.language }} language."
+          echo "\end{document}"
+        } > /tmp/test-rtl/main.tex
 
         docker run --rm \
           -v "$GITHUB_WORKSPACE:/opt/omnilatex" \
