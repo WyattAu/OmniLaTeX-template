@@ -56,6 +56,9 @@ jobs:
         \end{document}
         TEXEOF
 
+        # Strip leading whitespace from heredoc
+        sed -i 's/^[[:space:]]*//' /tmp/test-matrix/main.tex
+
         docker run --rm \
           -v "$GITHUB_WORKSPACE:/opt/omnilatex" \
           -v "/tmp/test-matrix:/workspace" \
@@ -104,6 +107,9 @@ jobs:
         Content in ${{ matrix.language }} language.
         \end{document}
         TEXEOF
+
+        # Strip leading whitespace from heredoc
+        sed -i 's/^[[:space:]]*//' /tmp/test-rtl/main.tex
 
         docker run --rm \
           -v "$GITHUB_WORKSPACE:/opt/omnilatex" \
