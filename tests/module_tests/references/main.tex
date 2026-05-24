@@ -1,0 +1,29 @@
+\documentclass{scrartcl}
+
+\makeatletter
+\newcommand*{\omnilatex@language}{english}
+\makeatother
+
+\usepackage[table]{xcolor}
+\definecolor{darklink}{RGB}{48,62,116}
+
+\usepackage{tikz}
+\usepackage{translations}
+\DeclareTranslation{english}{Example}{Example}
+\DeclareTranslation{english}{Examples}{Examples}
+\DeclareTranslation{english}{Listing}{Code Listing}
+\DeclareTranslation{english}{Listings}{Code Listings}
+
+\usepackage{lib/references/omnilatex-hyperref}
+
+\begin{document}
+\typeout{REFS:HYPERREF_LOADED}
+
+\section{Test Section}\label{sec:test}
+
+\href{https://example.com}{Example link}
+
+See \cref{sec:test}.
+\typeout{REFS:CREF_WORKS}
+
+\end{document}

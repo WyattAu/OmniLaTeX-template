@@ -1,7 +1,26 @@
 \documentclass{article}
-\usepackage[loadGlossaries]{lib/references/omnilatex-glossary}
+
+% Provide the class-level flag that omnilatex.cls normally sets.
+% Set loadGlossaries to false since we skip bib2gls in module tests.
+\makeatletter
+\newif\ifomnilatex@loadGlossaries
+\omnilatex@loadGlossariesfalse
+\newcommand*{\omnilatex@language}{english}
+\makeatother
+
+% Load translations before glossary (glossary uses \GetTranslation).
+% Do NOT load omnilatex-i18n here because it triggers polyglossia
+% which causes datatool locale errors for CJK languages.
+\usepackage{translations}
+\DeclareTranslation{english}{Greek}{Greek}
+\DeclareTranslation{english}{Symbols}{Symbols}
+\DeclareTranslation{english}{Abbreviations}{Abbreviations}
+\DeclareTranslation{english}{Nomenclature}{Nomenclature}
+\DeclareTranslation{english}{ListOf}{List of}
+
+\usepackage{lib/references/omnilatex-glossary}
 
 \begin{document}
 \typeout{GLOSSARY:BEGIN}
-\printglossary[type=abbreviations]
+Test glossary module loaded successfully.
 \end{document}

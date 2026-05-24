@@ -1,0 +1,47 @@
+\documentclass[chapterprefix=true,numbers=noenddot]{scrbook}
+
+\makeatletter
+\newcommand*{\omnilatex@language}{english}
+\newif\ifomnilatex@haschapters
+\omnilatex@haschapterstrue
+\newcommand*{\omnilatex@titlestyle}{book}
+\makeatother
+
+\usepackage{etoolbox}
+\usepackage[table]{xcolor}
+\colorlet{g1}{black!70}
+\colorlet{g2}{black!55}
+\colorlet{g3}{black!40}
+\colorlet{g4}{black!20}
+\colorlet{g5}{black!10}
+\colorlet{g6}{black!05}
+
+\usepackage{translations}
+\DeclareTranslation{english}{BlankPage}{Rest of this page intentionally left blank.}
+\DeclareTranslation{english}{Example}{Example}
+\DeclareTranslation{english}{ListOfExamples}{List of Examples}
+
+\usepackage{lib/layout/omnilatex-page}
+\usepackage{lib/layout/omnilatex-koma}
+\usepackage{lib/layout/omnilatex-floats}
+\usepackage{lib/layout/omnilatex-boxes}
+
+\begin{document}
+\typeout{LAYOUT:PAGE_LOADED}
+
+\chapter{Layout Test Chapter}
+
+\begin{figure}[htbp]
+  \centering
+  \rule{2cm}{2cm}
+  \caption{Test figure in layout module}
+  \label{fig:layout-test}
+\end{figure}
+\typeout{LAYOUT:FLOATS_LOADED}
+
+\begin{example}{Box Test}
+Content inside tcolorbox example environment.
+\end{example}
+\typeout{LAYOUT:BOXES_LOADED}
+
+\end{document}

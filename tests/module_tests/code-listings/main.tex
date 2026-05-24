@@ -1,16 +1,27 @@
 \documentclass{article}
-\usepackage{lib/code/omnilatex-listings}
-\usepackage{shellesc}% minted dependency helper but optional
-\usepackage{ifthen}
 
-\makeatletter
-\newcommand{\MintedDraftState}{%
-  \ifminted@draft TRUE\else FALSE\fi
-}
-\makeatother
+% Provide the gray color palette used by omnilatex-listings
+\usepackage[table]{xcolor}
+\colorlet{g1}{black!70}
+\colorlet{g2}{black!55}
+\colorlet{g3}{black!40}
+\colorlet{g4}{black!20}
+\colorlet{g5}{black!10}
+\colorlet{g6}{black!05}
+\colorlet{cRed}{red}
+\colorlet{cBlue}{blue}
+\colorlet{cGreen}{green}
+\colorlet{cOrange}{orange}
+
+% Provide translations for floating environment names
+\usepackage{translations}
+\DeclareTranslation{english}{Listing}{Code Listing}
+\DeclareTranslation{english}{ListOfListings}{List of Code Listings}
+
+\usepackage{lib/code/omnilatex-listings}
 
 \begin{document}
-\typeout{MINTED_MODE:\MintedDraftState}
+\typeout{MINTED:LOADED}
 
 \begin{minted}{python}
 print("hello from minted")

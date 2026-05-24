@@ -166,3 +166,109 @@ class TestInit:
             if target.exists():
                 shutil.rmtree(target)
             assert result.returncode == 0
+
+
+class TestDoctor:
+    """Tests for the doctor subcommand."""
+
+    def test_doctor_runs_without_crash(self) -> None:
+        """doctor should execute without raising an unhandled exception."""
+        result = _run("doctor", timeout=60)
+        assert result.returncode == 0
+        combined = result.stdout + result.stderr
+        assert len(combined) > 0, "doctor produced no output"
+
+    def test_doctor_checks_core_tools(self) -> None:
+        """doctor should report on lualatex and latexmk."""
+        result = _run("doctor", timeout=60)
+        combined = result.stdout + result.stderr
+        assert "lualatex" in combined.lower(), "doctor should mention lualatex"
+        assert "latexmk" in combined.lower(), "doctor should mention latexmk"
+
+    def test_doctor_reports_environment(self) -> None:
+        """doctor should show TeX distribution or environment info."""
+        result = _run("doctor", timeout=60)
+        combined = (result.stdout + result.stderr).lower()
+        # Should mention something about the environment
+        has_env_info = any(
+            kw in combined
+            for kw in ["tex live", "texlive", "distribution", "environment", "version"]
+        )
+        assert has_env_info, "doctor should report environment info"
+
+
+class TestLint:
+    """Tests for the lint subcommand."""
+
+    def test_lint_no_args_shows_usage(self) -> None:
+        result = _run("lint", timeout=120)
+        # lint may exit 0 with usage or exit 1 if no files match
+        combined = result.stdout + result.stderr
+        assert len(combined) > 0, "lint produced no output"
+
+
+class TestCheck:
+    """Tests for the check subcommand."""
+
+    def test_check_no_args_shows_usage_or_runs(self) -> None:
+        result = _run("check", timeout=30)
+        # check should either show usage or run against repo files
+        combined = result.stdout + result.stderr
+        assert len(combined) > 0, "check produced no output"
+
+
+class TestClean:
+    """Tests for the clean subcommand."""
+
+    def test_clean_aux_runs(self) -> None:
+        result = _run("clean-aux", timeout=30)
+        # Should not crash even if nothing to clean
+        assert result.returncode == 0
+
+    def test_clean_dry_run(self) -> None:
+        """clean with --dry-run should list files without deleting."""
+        result = _run("clean", "--dry-run", timeout=30)
+        combined = result.stdout + result.stderr
+        # Should at least not crash
+        assert result.returncode == 0 or "dry" in combined.lower()
+
+
+class TestExport:
+    """Tests for the export subcommand."""
+
+    def test_export_no_args_shows_usage(self) -> None:
+        result = _run("export", timeout=30)
+        combined = result.stdout + result.stderr
+        # Export may show "not found" for missing tools (latexml)
+        # or "usage"/"format" for help text
+        assert len(combined) > 0, "export produced no output"
+        assert "export" in combined.lower() or "latexml" in combined.lower()
+
+
+class TestDiff:
+    """Tests for the diff subcommand."""
+
+    def test_diff_no_args_runs(self) -> None:
+        result = _run("diff", timeout=30)
+        # Should either show usage or report no references to compare
+        combined = result.stdout + result.stderr
+        assert len(combined) > 0 or result.returncode == 0
+
+
+class TestVersionAndModes:
+    """Tests for version/mode flags."""
+
+    def test_build_with_mode_flag(self) -> None:
+        """--mode should be accepted without error."""
+        result = _run("--mode", "dev", "list-examples", timeout=15)
+        assert result.returncode == 0
+
+    def test_build_with_verbose_flag(self) -> None:
+        """--verbose should be accepted without error."""
+        result = _run("--verbose", "list-examples", timeout=15)
+        assert result.returncode == 0
+
+    def test_invalid_subcommand_exits_nonzero(self) -> None:
+        """Unknown subcommand should exit with non-zero."""
+        result = _run("nonexistent-command-xyz", timeout=10)
+        assert result.returncode != 0

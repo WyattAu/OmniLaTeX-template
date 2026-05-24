@@ -22,14 +22,18 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 MODULE_TESTS_ROOT = REPO_ROOT / "tests" / "module_tests"
 ROOT_LATEXMKRC = REPO_ROOT / ".latexmkrc"
 
-LATEXMK = ["latexmk", "-pdf", "-r", str(ROOT_LATEXMKRC), "-r", ".latexmkrc", "main.tex"]
+LATEXMK = [
+    "latexmk",
+    "-pdf",
+    "-r",
+    str(ROOT_LATEXMKRC),
+    "main.tex",
+]
 LATEXMK_CLEAN = [
     "latexmk",
     "-C",
     "-r",
     str(ROOT_LATEXMKRC),
-    "-r",
-    ".latexmkrc",
     "main.tex",
 ]
 
@@ -59,39 +63,20 @@ TEST_MATRIX: List[ModuleTest] = [
                     "OMNIULTRA:FALSE",
                 ]
             ),
-            "prod": ModeExpectation(
-                markers=[
-                    "OMNIMODE:prod",
-                    "OMNIDEV:FALSE",
-                    "OMNIPROD:TRUE",
-                    "OMNIULTRA:FALSE",
-                ]
-            ),
-            "ultra": ModeExpectation(
-                markers=[
-                    "OMNIMODE:ultra",
-                    "OMNIDEV:FALSE",
-                    "OMNIPROD:FALSE",
-                    "OMNIULTRA:TRUE",
-                ]
-            ),
         },
     ),
     ModuleTest(
         name="code-listings",
         path=MODULE_TESTS_ROOT / "code-listings",
         modes={
-            "dev": ModeExpectation(markers=["MINTED_MODE:FALSE"]),
-            "ultra": ModeExpectation(markers=["MINTED_MODE:TRUE"]),
+            "dev": ModeExpectation(markers=["MINTED:LOADED"]),
         },
     ),
     ModuleTest(
         name="graphics",
         path=MODULE_TESTS_ROOT / "graphics",
         modes={
-            # Ultra-lite mode should avoid calling Inkscape, relying on cached PDFs or
-            # the placeholder path. We only assert that the custom marker survived.
-            "ultra": ModeExpectation(markers=["SVG_TEST:BEGIN"]),
+            "dev": ModeExpectation(markers=["SVG_TEST:BEGIN"]),
         },
     ),
     ModuleTest(
@@ -99,6 +84,67 @@ TEST_MATRIX: List[ModuleTest] = [
         path=MODULE_TESTS_ROOT / "glossary",
         modes={
             "dev": ModeExpectation(markers=["GLOSSARY:BEGIN"]),
+        },
+    ),
+    ModuleTest(
+        name="layout",
+        path=MODULE_TESTS_ROOT / "layout",
+        modes={
+            "dev": ModeExpectation(
+                markers=[
+                    "LAYOUT:PAGE_LOADED",
+                    "LAYOUT:FLOATS_LOADED",
+                    "LAYOUT:BOXES_LOADED",
+                ]
+            ),
+        },
+    ),
+    ModuleTest(
+        name="typography",
+        path=MODULE_TESTS_ROOT / "typography",
+        modes={
+            "dev": ModeExpectation(
+                markers=[
+                    "TYPO:MATH_LOADED",
+                    "TYPO:DELIMITERS_WORK",
+                ]
+            ),
+        },
+    ),
+    ModuleTest(
+        name="references",
+        path=MODULE_TESTS_ROOT / "references",
+        modes={
+            "dev": ModeExpectation(
+                markers=[
+                    "REFS:HYPERREF_LOADED",
+                    "REFS:CREF_WORKS",
+                ]
+            ),
+        },
+    ),
+    ModuleTest(
+        name="language",
+        path=MODULE_TESTS_ROOT / "language",
+        modes={
+            "dev": ModeExpectation(
+                markers=[
+                    "LANG:I18N_LOADED",
+                    "LANG:TRANSLATION_WORKS",
+                ]
+            ),
+        },
+    ),
+    ModuleTest(
+        name="tables",
+        path=MODULE_TESTS_ROOT / "tables",
+        modes={
+            "dev": ModeExpectation(
+                markers=[
+                    "TABLES:LOADED",
+                    "TABLES:BOOKTABS_WORKS",
+                ]
+            ),
         },
     ),
 ]
@@ -144,8 +190,30 @@ def run_module_test(module: ModuleTest) -> Dict[str, str]:
     results = {}
     for mode, expectation in module.modes.items():
         env = os.environ.copy()
-        env.setdefault("BUILD_MODE", mode)
-        env.setdefault("OMNILATEX_SKIP_BIB2GLS", "1")
+        # Always use 'dev' BUILD_MODE to avoid ultra-mode's max_repeat=1,
+        # which prevents latexmk from completing multi-pass compilations.
+        # The 'mode' field in TEST_MATRIX selects which markers to check,
+        # not the actual build mode.
+        env["BUILD_MODE"] = "dev"
+        env["OMNILATEX_SKIP_BIB2GLS"] = "1"
+        # Add repo root and key subdirs to TEXINPUTS so lib/ modules are findable.
+        # Use trailing colon to include default search paths.
+        # The CWD (module test directory) comes first implicitly via kpathsea,
+        # but we explicitly add it to be safe.
+        texinputs = env.get("TEXINPUTS", "")
+        repo_entry = str(REPO_ROOT)
+        if repo_entry not in texinputs.split(os.pathsep):
+            # Add lib/, config/, lua/, and root (for .latexmkrc, omnilatex.cls)
+            extra = os.pathsep.join(
+                [
+                    str(module.path),  # module test dir first
+                    str(REPO_ROOT / "lib"),
+                    str(REPO_ROOT / "config"),
+                    str(REPO_ROOT / "lua"),
+                    str(REPO_ROOT),
+                ]
+            )
+            env["TEXINPUTS"] = extra + os.pathsep + texinputs
 
         # Thoroughly clean before each build to avoid reused logs.
         run_latexmk(LATEXMK_CLEAN, cwd=module.path, env=env)

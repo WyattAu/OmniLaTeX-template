@@ -1,0 +1,35 @@
+\documentclass{scrartcl}
+
+\usepackage{translations}
+\DeclareTranslation{english}{Contfoot}{Continued on next page}
+\DeclareTranslation{english}{Conthead}{ (Continued)}
+
+\usepackage{lib/tables/omnilatex-tables}
+
+\begin{document}
+\typeout{TABLES:LOADED}
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lcc}
+\toprule
+Name  & Value & Unit \\
+\midrule
+Alpha & 1.0   & m    \\
+Beta  & 2.0   & s    \\
+\bottomrule
+\end{tabular}
+\caption{Booktabs table test}
+\end{table}
+\typeout{TABLES:BOOKTABS_WORKS}
+
+\begin{tblr}{colspec={lcc}, rowsep=2pt}
+\toprule
+Name  & Value & Unit \\
+\midrule
+Gamma & 3.0   & kg   \\
+Delta & 4.0   & K    \\
+\bottomrule
+\end{tblr}
+
+\end{document}

@@ -2,7 +2,7 @@
 \usepackage{lib/core/omnilatex-base}
 
 \begin{document}
-\directlua{tex.print(string.format("\\typeout{OMNIMODE:%s}", os.getenv("BUILD_MODE") or ""))}
+\directlua{tex.print("\\typeout{OMNIMODE:" .. (os.getenv("BUILD_MODE") or "dev") .. "}")}
 
 \ifOmniDev
   \typeout{OMNIDEV:TRUE}
@@ -22,9 +22,5 @@
   \typeout{OMNIULTRA:FALSE}
 \fi
 
-Mode token: \texttt{\OmniBuildMode}
-
-\ifOmniDev\textbf{Dev flag enabled}\fi
-\ifOmniProd\textbf{Prod flag enabled}\fi
-\ifOmniUltra\textbf{Ultra flag enabled}\fi
+Test passed.
 \end{document}

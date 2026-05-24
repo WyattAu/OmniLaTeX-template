@@ -1,0 +1,35 @@
+\documentclass{scrartcl}
+
+\makeatletter
+\newcommand*{\omnilatex@language}{english}
+\newcommand*{\omnilatex@titlestyle}{book}
+\newif\ifomnilatex@haschapters
+\omnilatex@haschaptersfalse
+\makeatother
+
+\usepackage{etoolbox}
+\usepackage{xstring}
+\usepackage[table]{xcolor}
+\colorlet{g1}{black!70}
+\colorlet{g2}{black!55}
+\colorlet{g3}{black!40}
+\colorlet{g4}{black!20}
+\colorlet{g5}{black!10}
+\colorlet{g6}{black!05}
+
+\usepackage{lib/typography/omnilatex-fonts}
+\usepackage{lib/typography/omnilatex-math}
+
+\begin{document}
+\typeout{TYPO:MATH_LOADED}
+
+Delimiters: $\parens{x}$ and $\brackets{y}$
+
+\begin{equation}
+  E = mc^{2} \tag{1}
+\end{equation}
+
+\qty{9.8}{\meter\per\second\squared}
+\typeout{TYPO:DELIMITERS_WORK}
+
+\end{document}

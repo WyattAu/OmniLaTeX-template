@@ -1,0 +1,15 @@
+\documentclass{scrartcl}
+
+\makeatletter
+\newcommand*{\omnilatex@language}{english}
+\makeatother
+
+\usepackage{lib/language/omnilatex-i18n}
+
+\begin{document}
+\typeout{LANG:I18N_LOADED}
+
+\GetTranslation{Example}
+\typeout{LANG:TRANSLATION_WORKS}
+
+\end{document}
