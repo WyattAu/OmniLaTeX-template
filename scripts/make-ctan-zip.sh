@@ -35,6 +35,8 @@ cp "$REPO_ROOT/VERSION.md" "$TDS_DIR/doc/latex/$PKG_NAME/"
 
 if [ -f "$REPO_ROOT/main.pdf" ]; then
     cp "$REPO_ROOT/main.pdf" "$TDS_DIR/doc/latex/$PKG_NAME/${PKG_NAME}.pdf"
+elif [ -f "$REPO_ROOT/doc/omnilatex.pdf" ]; then
+    cp "$REPO_ROOT/doc/omnilatex.pdf" "$TDS_DIR/doc/latex/$PKG_NAME/${PKG_NAME}.pdf"
 fi
 
 # ── Clean build artifacts from TDS ───────────────────────────────────────────
