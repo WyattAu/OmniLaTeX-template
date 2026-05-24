@@ -1,0 +1,102 @@
+# .github/workflows/release.yml
+# Auto-publish GitHub Release with assets on tag push (vX.Y.Z)
+name: Release
+
+on:
+  push:
+    tags:
+    - v[0-9]+.[0-9]+.[0-9]+
+    - v[0-9]+.[0-9]+.[0-9]+-*
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683   # v4.2.2
+      with:
+        fetch-depth: 0
+
+    - name: Extract version from tag
+      id: version
+      run: |
+        TAG="${GITHUB_REF_NAME}"
+        VERSION="${TAG#v}"
+        echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+        echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+    - name: Read changelog
+      id: changelog
+      run: |
+        CHANGELOG_FILE="CHANGELOG/${GITHUB_REF_NAME}.md"
+        if [ -f "$CHANGELOG_FILE" ]; then
+          echo "exists=true" >> "$GITHUB_OUTPUT"
+          # Use multiline output
+          {
+            echo "content<<CHANGELOG_EOF"
+            cat "$CHANGELOG_FILE"
+            echo ""
+            echo "CHANGELOG_EOF"
+          } >> "$GITHUB_OUTPUT"
+        else
+          echo "exists=false" >> "$GITHUB_OUTPUT"
+          echo "content=Release ${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Generate CTAN zip
+      run: |
+        chmod +x scripts/make-ctan-zip.sh
+        scripts/make-ctan-zip.sh
+
+    - name: Generate Overleaf zip
+      run: |
+        chmod +x scripts/make-overleaf-zip.sh
+        scripts/make-overleaf-zip.sh
+
+    - name: Create release archive
+      run: |
+        tar czf "omnilatex-${{ steps.version.outputs.version }}.tar.gz" \
+          --exclude='.git' \
+          --exclude='node_modules' \
+          --exclude='__pycache__' \
+          --exclude='.pytest_cache' \
+          --exclude='.hypothesis' \
+          --exclude='*.pdf' \
+          --exclude='build/' \
+          --exclude='main.aux' \
+          --exclude='main.log' \
+          --exclude='main.out' \
+          --exclude='main.toc' \
+          --exclude='main.fls' \
+          --exclude='main.fdb_latexmk' \
+          --exclude='.vscode' \
+          .
+
+    - name: Verify release assets
+      run: |
+        echo "=== Release Assets ==="
+        ls -lh ctan/omnilatex.zip overleaf/omnilatex-overleaf.zip "omnilatex-${{ steps.version.outputs.version }}.tar.gz"
+        echo ""
+        echo "=== CTAN zip contents (sample) ==="
+        unzip -l ctan/omnilatex.zip | head -20
+        echo ""
+        echo "=== Overleaf zip contents (sample) ==="
+        unzip -l overleaf/omnilatex-overleaf.zip | head -20
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@da05d552573ad5aba039eaac05058a918a7bf631   # v2.2.2
+      with:
+        tag_name: ${{ github.ref_name }}
+        name: OmniLaTeX ${{ github.ref_name }}
+        body: ${{ steps.changelog.outputs.content }}
+        draft: false
+        prerelease: ${{ contains(github.ref_name, '-') }}
+        files: |
+          ctan/omnilatex.zip
+          overleaf/omnilatex-overleaf.zip
+          omnilatex-${{ steps.version.outputs.version }}.tar.gz
+        fail_on_unmatched_files: true
