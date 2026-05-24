@@ -48,12 +48,12 @@ jobs:
       run: |
         mkdir -p /tmp/test-matrix
         {
-          echo "\documentclass[doctype=${{ matrix.doctype }},language=${{ matrix.language }}]{omnilatex}"
-          echo "\begin{document}"
-          echo "Test document for language=${{ matrix.language }}, doctype=${{ matrix.doctype }}."
-          echo "\section{Test Section}"
-          echo "This is a test paragraph."
-          echo "\end{document}"
+          echo '\\documentclass[doctype=${{ matrix.doctype }},language=${{ matrix.language }}]{omnilatex}'
+          echo '\\begin{document}'
+          echo 'Test document for language=${{ matrix.language }}, doctype=${{ matrix.doctype }}.'
+          echo '\\section{Test Section}'
+          echo 'This is a test paragraph.'
+          echo '\\end{document}'
         } > /tmp/test-matrix/main.tex
 
         docker run --rm \
@@ -97,12 +97,12 @@ jobs:
       run: |
         mkdir -p /tmp/test-rtl
         {
-          echo "\documentclass[doctype=article,language=${{ matrix.language }}]{omnilatex}"
-          echo "\begin{document}"
-          echo "Test RTL document for ${{ matrix.language }}."
-          echo "\section{Test}"
-          echo "Content in ${{ matrix.language }} language."
-          echo "\end{document}"
+          echo '\\documentclass[doctype=article,language=${{ matrix.language }}]{omnilatex}'
+          echo '\\begin{document}'
+          echo 'Test RTL document for ${{ matrix.language }}.'
+          echo '\\section{Test}'
+          echo 'Content in ${{ matrix.language }} language.'
+          echo '\\end{document}'
         } > /tmp/test-rtl/main.tex
 
         docker run --rm \
