@@ -329,12 +329,16 @@ class TestCTANPackage:
         script_text = _read(repo_root / "scripts" / "make-ctan-zip.sh")
         cp_targets = re.findall(r'cp\s+"?\$REPO_ROOT/([^"]+)"?', script_text)
         cp_targets += re.findall(r'cp\s+-r\s+"?\$REPO_ROOT/([^"]+)"?', script_text)
+        # Files guarded by `if [ -f ... ]` are conditional -- skip them
+        conditional = set(re.findall(r'if\s+\[ -f "\$REPO_ROOT/([^"]+)"', script_text))
         missing = []
         seen = set()
         for target in cp_targets:
             if target in seen:
                 continue
             seen.add(target)
+            if target in conditional:
+                continue
             target_path = repo_root / target
             if not target_path.exists():
                 missing.append(target)
