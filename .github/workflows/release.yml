@@ -81,13 +81,13 @@ jobs:
     - name: Verify release assets
       run: |
         echo "=== Release Assets ==="
-        ls -lh ctan/omnilatex.zip overleaf/omnilatex-overleaf.zip "omnilatex-${{ steps.version.outputs.version }}.tar.gz"
+        ls -lh ctan/omnilatex.zip omnilatex-overleaf.zip "omnilatex-${{ steps.version.outputs.version }}.tar.gz"
         echo ""
         echo "=== CTAN zip contents (sample) ==="
         unzip -l ctan/omnilatex.zip | head -20
         echo ""
         echo "=== Overleaf zip contents (sample) ==="
-        unzip -l overleaf/omnilatex-overleaf.zip | head -20
+        unzip -l omnilatex-overleaf.zip | head -20
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@da05d552573ad5aba039eaac05058a918a7bf631   # v2.2.2
@@ -99,6 +99,6 @@ jobs:
         prerelease: ${{ contains(github.ref_name, '-') }}
         files: |
           ctan/omnilatex.zip
-          overleaf/omnilatex-overleaf.zip
+          omnilatex-overleaf.zip
           omnilatex-${{ steps.version.outputs.version }}.tar.gz
         fail_on_unmatched_files: true
