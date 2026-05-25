@@ -2,7 +2,7 @@
   "name": "omnilatex",
   "displayName": "OmniLaTeX",
   "description": "VS Code support for the OmniLaTeX document class — doctype picker, institution switcher, LuaLaTeX build commands, IntelliSense completion for \\documentclass options, LaTeX log diagnostics, and configurable build-on-save via latexmk.",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "publisher": "wyattau",
   "license": "Apache-2.0",
   "icon": "icon.png",
@@ -166,7 +166,7 @@
   },
   "devDependencies": {
     "@types/node": "^25.6.0",
-    "@types/vscode": "^1.118.0",
+    "@types/vscode": "^1.85.0",
     "typescript": "^6.0.3"
   }
 }
