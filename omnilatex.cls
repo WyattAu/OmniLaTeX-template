@@ -9,7 +9,7 @@
 
 \RequirePackage{iftex}
 \RequirePackage{etoolbox}
-\RequirePackage{expl3}
+% expl3 is part of the LaTeX2e kernel since 2020; no explicit load needed.
 \RequireLuaTeX{}
 
 \newcommand*{\@baseclass}{scrbook}

@@ -91,7 +91,9 @@
 % Scientific Typesetting - Units
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\RequirePackage{siunitx}% Typesetting physical units correctly
+% siunitx v3+ required (v3-only API: mode=match, text-font-command, \qty).
+% Pin to v3.0 release date to prevent silent breakage on siunitx v2.
+\RequirePackage[{2021-06-22}]{siunitx}% Typesetting physical units correctly
 \sisetup{%
     % For siunitx v3, the following block replaces what used to be
     % `detect-all` (removed in that release, see
