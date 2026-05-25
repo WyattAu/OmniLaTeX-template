@@ -59,7 +59,8 @@ jobs:
 
     - name: Create release archive
       run: |
-        tar czf "omnilatex-${{ steps.version.outputs.version }}.tar.gz" \
+        ARCHIVE="/tmp/omnilatex-${{ steps.version.outputs.version }}.tar.gz"
+        tar czf "$ARCHIVE" \
           --exclude='.git' \
           --exclude='node_modules' \
           --exclude='__pycache__' \
@@ -75,6 +76,7 @@ jobs:
           --exclude='main.fdb_latexmk' \
           --exclude='.vscode' \
           .
+        cp "$ARCHIVE" "omnilatex-${{ steps.version.outputs.version }}.tar.gz"
 
     - name: Verify release assets
       run: |
