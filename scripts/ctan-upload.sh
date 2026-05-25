@@ -121,9 +121,9 @@ if ! echo "$VERSION" | grep -qP '^\d+\.\d+(\.\d+)?$'; then
     fail "Invalid version format: $VERSION (expected X.Y or X.Y.Z)" 1
 fi
 
-# Validate zip contains omnilatex.cls
-if ! unzip -l "$ZIP_PATH" | grep -q 'omnilatex\.cls$'; then
-    fail "Zip does not contain omnilatex.cls" 1
+# Validate zip contains omnilatex.tds.zip (which itself contains omnilatex.cls)
+if ! unzip -l "$ZIP_PATH" | grep -q 'omnilatex\.tds\.zip'; then
+    fail "Zip does not contain omnilatex.tds.zip" 1
 fi
 
 # Validate zip contains README
