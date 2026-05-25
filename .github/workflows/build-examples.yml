@@ -1,0 +1,254 @@
+name: Build Examples
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-examples
+  cancel-in-progress: false
+
+on:
+  push:
+    branches: [main]
+    paths:
+    - '**.tex'
+    - '**.sty'
+    - '**.cls'
+    - '**.lua'
+    - '.env.docker'
+  workflow_dispatch:
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - name: Checkout repository
+        # v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      with:
+        fetch-depth: 1
+
+    - name: List examples
+      id: list
+      run: |
+        EXAMPLES=$(ls -d examples/*/main.tex 2>/dev/null | sed 's|examples/||;s|/main.tex||' | jq -R -s -c 'split("\n") | map(select(length > 0))')
+        echo "examples=$EXAMPLES" >> "$GITHUB_OUTPUT"
+        COUNT=$(echo "$EXAMPLES" | jq 'length')
+        echo "Discovered ${COUNT} examples"
+
+    outputs:
+      examples: ${{ steps.list.outputs.examples }}
+
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: discover
+    strategy:
+      fail-fast: false
+      matrix:
+        example: ${{ fromJson(needs.discover.outputs.examples) }}
+    steps:
+    - name: Checkout repository
+        # v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      with:
+        fetch-depth: 1
+
+    - name: Read Docker image digest
+      id: digest
+      uses: ./.github/actions/read-docker-digest
+
+    - name: Pull Docker image
+      run: docker pull "${{ steps.digest.outputs.image }}"
+
+    - name: Build example
+      id: build-step
+      run: |
+        EXAMPLE="${{ matrix.example }}"
+        WORKDIR="/tmp/build-${EXAMPLE}"
+        mkdir -p "${WORKDIR}"
+
+        docker run --rm \
+          -v "$GITHUB_WORKSPACE:/repo" \
+          -v "${WORKDIR}:/work" \
+          -w /work \
+          --user root \
+          --entrypoint "" \
+          "${{ steps.digest.outputs.image }}" \
+          bash -c "\
+            cp -r /repo/omnilatex.cls /repo/lib /repo/config /work/ 2>/dev/null || true; \
+            cp /repo/examples/${EXAMPLE}/* /work/; \
+            latexmk -lualatex -interaction=nonstopmode -output-directory=/work main.tex"
+
+        if [ -f "${WORKDIR}/main.pdf" ]; then
+          cp "${WORKDIR}/main.pdf" "/tmp/${EXAMPLE}.pdf"
+          SIZE=$(stat -c%s "/tmp/${EXAMPLE}.pdf")
+          echo "Built ${EXAMPLE}: ${SIZE} bytes"
+          echo "status=success" >> "$GITHUB_OUTPUT"
+        else
+          echo "::error::Example ${EXAMPLE} did not produce a PDF"
+          echo "status=failed" >> "$GITHUB_OUTPUT"
+          exit 1
+        fi
+
+    - name: Upload PDF
+      if: steps.build-step.outputs.status == 'success'
+        # v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: pdf-${{ matrix.example }}
+        path: /tmp/${{ matrix.example }}.pdf
+        retention-days: 5
+
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [discover, build]
+    if: always()
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+    - name: Checkout repository
+        # v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      with:
+        fetch-depth: 1
+
+    - name: Download all PDF artifacts
+        # v4
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      with:
+        path: all-pdfs
+        pattern: pdf-*
+      continue-on-error: true
+
+    - name: Generate manifest and index page
+      run: |
+        mkdir -p site/pdfs
+
+        find all-pdfs -name '*.pdf' -exec cp {} site/pdfs/ \; 2>/dev/null || true
+
+        echo '${{ needs.discover.outputs.examples }}' > /tmp/examples.json
+
+        python3 << 'PYEOF'
+        import json, os, datetime
+
+        with open("/tmp/examples.json") as f:
+            examples = json.load(f)
+
+        manifest = []
+        for name in examples:
+            pdf_path = f"site/pdfs/{name}.pdf"
+            if os.path.isfile(pdf_path):
+                size = os.path.getsize(pdf_path)
+                manifest.append({
+                    "name": name,
+                    "status": "success",
+                    "size": size,
+                    "pdf": f"pdfs/{name}.pdf"
+                })
+            else:
+                manifest.append({
+                    "name": name,
+                    "status": "failed",
+                    "size": 0,
+                    "pdf": None
+                })
+
+        summary = {
+            "examples": manifest,
+            "total": len(manifest),
+            "built": sum(1 for m in manifest if m["status"] == "success"),
+            "timestamp": datetime.datetime.utcnow().isoformat() + "Z"
+        }
+
+        with open("site/manifest.json", "w") as f:
+            json.dump(summary, f, indent=2)
+
+        rows = ""
+        for m in manifest:
+            if m["status"] == "success":
+                rows += (
+                    f'<tr><td>{m["name"]}</td>'
+                    f'<td><a href="{m["pdf"]}">PDF</a></td>'
+                    f'<td>{m["size"]:,}</td>'
+                    f'<td style="color:green">OK</td></tr>\n'
+                )
+            else:
+                rows += (
+                    f'<tr><td>{m["name"]}</td>'
+                    f'<td>-</td><td>-</td>'
+                    f'<td style="color:red">FAILED</td></tr>\n'
+                )
+
+        now = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
+        html = f"""<!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>OmniLaTeX Examples</title>
+        <style>
+          body {{ font-family: system-ui, sans-serif; max-width: 900px; margin: 2em auto; padding: 0 1em; }}
+          h1 {{ border-bottom: 2px solid #333; padding-bottom: .3em; }}
+          table {{ width: 100%; border-collapse: collapse; }}
+          th, td {{ text-align: left; padding: 8px 12px; border-bottom: 1px solid #eee; }}
+          th {{ background: #f5f5f5; font-weight: 600; }}
+          tr:hover {{ background: #fafafa; }}
+          .meta {{ color: #666; margin-bottom: 1.5em; }}
+        </style>
+        </head>
+        <body>
+        <h1>OmniLaTeX Example Gallery</h1>
+        <p class="meta">Built {now} &mdash; {summary["built"]}/{summary["total"]} examples</p>
+        <table>
+        <tr><th>Example</th><th>PDF</th><th>Size (bytes)</th><th>Status</th></tr>
+        {rows}
+        </table>
+        </body>
+        </html>"""
+
+        with open("site/index.html", "w") as f:
+            f.write(html)
+
+        print(f"Manifest: {summary['built']}/{summary['total']} examples built successfully")
+        PYEOF
+
+    - name: Upload examples site artifact
+        # v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: examples-site
+        path: site
+        retention-days: 30
+
+    - name: Upload GitHub Pages artifact
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        # v3
+      uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
+      with:
+        path: site
+
+    - name: Build summary
+      if: always()
+      run: |
+        if [ -f site/manifest.json ]; then
+          echo "## Build Examples Summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          python3 << 'PYEOF'
+        import json
+        with open("site/manifest.json") as f:
+            d = json.load(f)
+        built = d["built"]
+        total = d["total"]
+        failed = total - built
+        print(f"**{built}/{total}** examples built successfully" + (f", {failed} failed" if failed else ""))
+        print("")
+        for e in d["examples"]:
+            icon = "PASS" if e["status"] == "success" else "FAIL"
+            print(f"- {e['name']}: {icon}")
+        PYEOF
+        fi
