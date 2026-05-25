@@ -44,30 +44,29 @@ end
 
 --- Process the TeX input buffer for \todo commands
 local function process_input_buffer(buffer)
-    -- Match \todo[optional]{text} and \todo{text}
-    local pattern = "\\todo%[([^%]]*)%]{([^}]*)}"
-    local simple_pattern = "\\todo{([^}]*)}"
-
-    -- First try with optional argument
-    for arg, text in buffer:gmatch(pattern) do
-        _todo_counter = _todo_counter + 1
-        table.insert(_todos, {
-            id = _todo_counter,
-            text = text,
-            priority = parse_priority(arg),
-        })
+    local pos = 1
+    while true do
+        local s, e, arg, text = buffer:find("\\todo%[([^%]]*)%]{([^}]*)}", pos)
+        if s then
+            _todo_counter = _todo_counter + 1
+            table.insert(_todos, {
+                id = _todo_counter,
+                text = text,
+                priority = parse_priority(arg),
+            })
+            pos = e + 1
+        else
+            local s2, e2, text2 = buffer:find("\\todo{([^}]*)}", pos)
+            if not s2 then break end
+            _todo_counter = _todo_counter + 1
+            table.insert(_todos, {
+                id = _todo_counter,
+                text = text2,
+                priority = "medium",
+            })
+            pos = e2 + 1
+        end
     end
-
-    -- Then try without optional argument
-    for text in buffer:gmatch(simple_pattern) do
-        _todo_counter = _todo_counter + 1
-        table.insert(_todos, {
-            id = _todo_counter,
-            text = text,
-            priority = "medium",
-        })
-    end
-
     return buffer
 end
 

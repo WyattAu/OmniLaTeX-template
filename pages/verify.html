@@ -331,9 +331,13 @@
     const headingEl = document.getElementById("page-heading");
     const introTextEl = document.getElementById("intro-text");
 
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+
     function updateStatus(type, message, sub) {
       statusBox.dataset.state = type;
-      statusBox.innerHTML = `<strong>${message}</strong>` + (sub ? `<span>${sub}</span>` : "");
+      statusBox.innerHTML = `<strong>${escapeHtml(message)}</strong>` + (sub ? `<span>${escapeHtml(sub)}</span>` : "");
       // Trigger animation by removing and re-adding the class
       statusBox.style.animation = 'none';
       statusBox.offsetHeight; // Trigger reflow
@@ -353,10 +357,10 @@
 
     function showDetails(data) {
       detailsSection.hidden = false;
-      commitShaEl.innerHTML = `<a href="https://github.com/${data.repo}/commit/${data.sha}" target="_blank" rel="noopener" class="truncate" data-full-text="${data.sha}">${data.sha}</a>`;
+      commitShaEl.innerHTML = `<a href="https://github.com/${encodeURIComponent(data.repo)}/commit/${encodeURIComponent(data.sha)}" target="_blank" rel="noopener" class="truncate" data-full-text="${escapeHtml(data.sha)}">${escapeHtml(data.sha)}</a>`;
       commitAuthorEl.textContent = `${data.author} (${data.email})`;
       commitDateEl.textContent = formatDate(data.date);
-      branchHeadEl.innerHTML = `<a href="https://github.com/${data.repo}/commit/${data.branchHead}" target="_blank" rel="noopener" class="truncate" data-full-text="${data.branchHead}">${data.branchHead}</a>`;
+      branchHeadEl.innerHTML = `<a href="https://github.com/${encodeURIComponent(data.repo)}/commit/${encodeURIComponent(data.branchHead)}" target="_blank" rel="noopener" class="truncate" data-full-text="${escapeHtml(data.branchHead)}">${escapeHtml(data.branchHead)}</a>`;
     }
 
     async function verify({ commit, repo, branch }) {
@@ -451,7 +455,7 @@
       if (!project) {
         return;
       }
-      const safeProject = project.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      const safeProject = escapeHtml(project);
       pageTitleEl.textContent = `${safeProject} PDF Verification`;
       headingEl.textContent = `Verify ${safeProject} Build Provenance`;
       introTextEl.innerHTML = `This tool confirms whether the PDF you are reading was generated from the latest commit of the <strong>${safeProject}</strong> repository. Pass the commit hash (embedded in the PDF) through the <code>?commit=&lt;sha&gt;</code> query parameter—links inside the template do this automatically.`;

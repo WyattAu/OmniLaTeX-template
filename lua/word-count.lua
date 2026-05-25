@@ -96,14 +96,19 @@ end
 local tex = require("tex")
 local token = require("token")
 
-token.set_macro("wordcount",
-    "\\detokenize{" .. tostring(_counters.words) .. "}")
+local function get_wordcount()
+    tex.sprint(tostring(_counters.words))
+end
+local function get_charcount()
+    tex.sprint(tostring(_counters.chars))
+end
+local function get_pagecount()
+    tex.sprint(tostring(_counters.pages))
+end
 
-token.set_macro("charcount",
-    "\\detokenize{" .. tostring(_counters.chars) .. "}")
-
-token.set_macro("pagecount",
-    "\\detokenize{" .. tostring(_counters.pages) .. "}")
+token.set_macro("wordcount", get_wordcount)
+token.set_macro("charcount", get_charcount)
+token.set_macro("pagecount", get_pagecount)
 
 --- \wordmark — Insert a metadata marker with word count
 -- Creates a PDF metadata entry for document management systems.

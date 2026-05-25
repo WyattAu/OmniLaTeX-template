@@ -4,6 +4,8 @@
 -- Patch kpse.find_file to return a dummy temp file when the real file is missing.
 
 local _orig_find = kpse.find_file
+local _tmp_files = {}
+
 kpse.find_file = function(name, ...)
   if name == "ScriptExtensions.txt" then
     local r = _orig_find(name, ...)
@@ -14,7 +16,17 @@ kpse.find_file = function(name, ...)
       fh:write("# Dummy ScriptExtensions.txt for luaotfload compatibility\n")
       fh:close()
     end
+    table.insert(_tmp_files, tmp)
     return tmp
   end
   return _orig_find(name, ...)
+end
+
+local ok, luatexbase = pcall(require, "luatexbase")
+if ok then
+  luatexbase.add_to_callback("finish_run", function()
+    for _, f in ipairs(_tmp_files) do
+      os.remove(f)
+    end
+  end, "luaotfload-workaround cleanup")
 end

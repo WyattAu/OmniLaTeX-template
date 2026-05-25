@@ -2474,7 +2474,7 @@ def _rich_menu(tasks: BuildTasks, commands: dict[str, tuple], menu_sections: lis
         console.print()
         title = RichText("OmniLaTeX Build System", style="bold cyan")
         subtitle = RichText(
-            f"v2.0.0  •  {len(tasks.discover_examples())} examples  •  "
+            f"v2.1.0  •  {len(tasks.discover_examples())} examples  •  "
             f"{len([f for f in Path('.').rglob('*.sty')])} modules",
             style="dim",
         )

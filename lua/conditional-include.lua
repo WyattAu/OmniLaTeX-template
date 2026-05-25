@@ -123,39 +123,22 @@ end
 -- This is done via \newenvironment in LaTeX, triggered from Lua.
 
 local function setup_environments()
-    tex.sprint("\\newenvironment{onlyif}[1]{")
-    tex.sprint("  \\ifflag{#1}{}")
-    tex.sprint("  \\def\\endonlyif{")
-    tex.sprint("  }")
-    tex.sprint("}{")
-    tex.sprint("  \\endonlyif")
+    tex.sprint("\\newenvironment{onlyif}[1]{%")
+    tex.sprint("  \\def\\onlyif@end{\\relax}%")
+    tex.sprint("  \\ifflag{#1}{}{\\setbox0=\\vbox\\bgroup\\def\\onlyif@end{\\egroup}}%")
+    tex.sprint("}{%")
+    tex.sprint("  \\onlyif@end")
     tex.sprint("}")
 
-    tex.sprint("\\newenvironment{unless}[1]{")
-    tex.sprint("  \\ifflag{#1}")
-    tex.sprint("    \\def\\endunless{")
-    tex.sprint("      \\endunless")
-    tex.sprint("    }")
-    tex.sprint("  }")
-    tex.sprint("}{")
-    tex.sprint("  \\endunless")
+    tex.sprint("\\newenvironment{unless}[1]{%")
+    tex.sprint("  \\def\\unless@end{\\relax}%")
+    tex.sprint("  \\ifflag{#1}{\\setbox0=\\vbox\\bgroup\\def\\unless@end{\\egroup}}{}%")
+    tex.sprint("}{%")
+    tex.sprint("  \\unless@end")
     tex.sprint("}")
 end
 
--- Defer environment setup to \AtBeginDocument so packages are loaded
-local function at_begin_document()
-    setup_environments()
-end
-
--- Register via callback
-local function finish_callback()
-    setup_environments()
-end
-
-if not _flags._registered then
-    callback.register("finish_pdffile", finish_callback)
-    _flags._registered = true
-end
+setup_environments()
 
 --- \flaglist — Print all active flags (useful for debugging)
 local function cmd_flaglist()
