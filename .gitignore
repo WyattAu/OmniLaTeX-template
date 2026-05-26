@@ -490,3 +490,6 @@ omnilatex-overleaf.zip
 *.minted
 testfmt.log
 build-all-output.log
+
+# Test scaffolding artifacts
+config/institutions/test-univ/

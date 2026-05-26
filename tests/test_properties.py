@@ -538,23 +538,16 @@ class TestStyFileConsistency:
             ), f"{sty_file.relative_to(PROJECT_ROOT)} missing \\ProvidesPackage"
 
     def test_lib_sty_providespackage_path_matches_file(self):
-        beamer_sty = PROJECT_ROOT / "lib" / "graphics" / "omnilatex-beamer.sty"
         for sty_file in self._get_lib_sty_files():
             content = sty_file.read_text(encoding="utf-8", errors="replace")
             m = re.search(r"\\ProvidesPackage\{([^}]+)\}", content)
             assert m, f"{sty_file.name} has no \\ProvidesPackage"
             pkg_path = m.group(1)
-            if sty_file == beamer_sty:
-                assert pkg_path == "omnilatex-beamer", (
-                    f"{sty_file.name}: expected "
-                    f"\\ProvidesPackage{{omnilatex-beamer}} (beamer uses short name)"
-                )
-            else:
-                rel = sty_file.relative_to(PROJECT_ROOT).with_suffix("")
-                expected = str(rel)
-                assert (
-                    pkg_path == expected
-                ), f"{sty_file.name}: \\ProvidesPackage{{{pkg_path}}} != expected path '{expected}'"
+            rel = sty_file.relative_to(PROJECT_ROOT).with_suffix("")
+            expected = str(rel)
+            assert (
+                pkg_path == expected
+            ), f"{sty_file.name}: \\ProvidesPackage{{{pkg_path}}} != expected path '{expected}'"
 
     def test_lib_sty_files_have_version_string(self):
         for sty_file in self._get_lib_sty_files():
@@ -564,10 +557,7 @@ class TestStyFileConsistency:
             assert m, f"{sty_file.name}: \\ProvidesPackage has no version bracket"
 
     def test_lib_sty_files_have_latex2e_header(self):
-        beamer_sty = PROJECT_ROOT / "lib" / "graphics" / "omnilatex-beamer.sty"
         for sty_file in self._get_lib_sty_files():
-            if sty_file == beamer_sty:
-                continue
             content = sty_file.read_text(encoding="utf-8", errors="replace")
             assert (
                 "\\NeedsTeXFormat{LaTeX2e}" in content

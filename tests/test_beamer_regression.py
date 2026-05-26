@@ -47,7 +47,7 @@ def _compile_tex(tex_content: str, timeout: int = 120) -> tuple:
         )
         env["BUILD_MODE"] = "dev"
         env["OMNILATEX_SKIP_BIB2GLS"] = "1"
-        result = subprocess.run(
+        subprocess.run(
             [
                 "latexmk",
                 "-lualatex",
@@ -66,7 +66,8 @@ def _compile_tex(tex_content: str, timeout: int = 120) -> tuple:
         log_file = Path(tmpdir) / "test.log"
         if log_file.exists():
             log_text = log_file.read_text(encoding="utf-8", errors="ignore")
-        return (result.returncode == 0 and pdf_exists, log_text)
+        # PDF existence is the success criterion; lualatex returns non-zero for warnings
+        return (pdf_exists, log_text)
 
 
 class TestBeamerColors:

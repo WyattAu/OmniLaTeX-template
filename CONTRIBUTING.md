@@ -480,6 +480,134 @@ are modified.
 
 ---
 
+## Reference
+
+### Existing Institutions
+
+| ID | Institution | Directory |
+|----|-------------|-----------|
+| aalto | Aalto University | `config/institutions/aalto/` |
+| cambridge | University of Cambridge | `config/institutions/cambridge/` |
+| chalmers | Chalmers University of Technology | `config/institutions/chalmers/` |
+| cmu | Carnegie Mellon University | `config/institutions/cmu/` |
+| columbia | Columbia University | `config/institutions/columbia/` |
+| epfl | EPFL | `config/institutions/epfl/` |
+| eth | ETH Zurich | `config/institutions/eth/` |
+| harvard | Harvard University | `config/institutions/harvard/` |
+| imperial | Imperial College London | `config/institutions/imperial/` |
+| kit | Karlsruhe Institute of Technology | `config/institutions/kit/` |
+| mit | MIT | `config/institutions/mit/` |
+| ntnu | NTNU | `config/institutions/ntnu/` |
+| oxford | University of Oxford | `config/institutions/oxford/` |
+| princeton | Princeton University | `config/institutions/princeton/` |
+| stanford | Stanford University | `config/institutions/stanford/` |
+| tudelft | TU Delft | `config/institutions/tudelft/` |
+| tuhh | TU Hamburg | `config/institutions/tuhh/` |
+| tum | TU Munich | `config/institutions/tum/` |
+| uoft | University of Toronto | `config/institutions/uoft/` |
+| yale | Yale University | `config/institutions/yale/` |
+
+Use `config/institutions/generic/` as a template with neutral branding.
+
+### Supported Languages
+
+Polyglossia languages activated in `lib/language/omnilatex-i18n.sty`:
+
+| Language | Polyglossia Name | CJK | RTL |
+|----------|-----------------|-----|-----|
+| Arabic | `arabic` | No | Yes |
+| Bengali | `bengali` | No | No |
+| Chinese (Simplified) | `simplifiedchinese` | Yes | No |
+| Chinese (Traditional) | `traditionalchinese` | Yes | No |
+| Czech | `czech` | No | No |
+| Danish | `danish` | No | No |
+| Dutch | `dutch` | No | No |
+| English | `english` | No | No |
+| Finnish | `finnish` | No | No |
+| French | `french` | No | No |
+| German | `german` / `ngerman` | No | No |
+| Greek | `greek` | No | No |
+| Hebrew | `hebrew` | No | Yes |
+| Hindi | `hindi` | No | No |
+| Italian | `italian` | No | No |
+| Japanese | `japanese` | Yes | No |
+| Korean | `korean` | Yes | No |
+| Norwegian | `norsk` | No | No |
+| Polish | `polish` | No | No |
+| Portuguese | `portuguese` | No | No |
+| Russian | `russian` | No | No |
+| Spanish | `spanish` | No | No |
+| Swedish | `swedish` | No | No |
+| Thai | `thai` | No | No |
+| Turkish | `turkish` | No | No |
+| Vietnamese | `vietnamese` | No | No |
+
+### Doctype Generator
+
+Use the scaffold script to bootstrap a new doctype with all required files:
+
+```bash
+python scripts/doctype_generator.py --name mytype --base scrartcl
+```
+
+This creates:
+
+- `config/document-types/mytype.sty` with standard options
+- An entry in `specs/option_schema.toml`
+- A test file in `testfiles/omnilatex-mytype.lvt`
+
+### Version Synchronization
+
+After changing the version in `VERSION.md`, run:
+
+```bash
+python scripts/sync_versions.py
+```
+
+This propagates the version to all `.sty`, `.cls`, `build.lua`, `mkdocs.yml`, and config files.
+
+---
+
+## Troubleshooting
+
+### "Font not found" errors
+
+LuaLaTeX resolves fonts via `luaotfload`. Run:
+
+```bash
+luaotfload-tool --update
+```
+
+For CJK languages, ensure appropriate fonts are installed (Noto CJK, IPAex, etc.).
+
+### Shell-escape warnings
+
+OmniLaTeX enables shell-escape by default (required for `minted` code listings and SVG inclusion). To disable:
+
+```bash
+export OMNILATEX_SHELL_ESCAPE=0
+python build.py build-example minimal-starter
+```
+
+Note: `minted` requires shell-escape unless `cache=true` and a prior cached build exists.
+
+### Translation fallback to English
+
+The `translations` package does not support CJK languages. OmniLaTeX-specific strings
+(like "Glossary", "List of Abbreviations") fall back to English for CJK doctypes.
+Polyglossia handles native captions correctly regardless.
+
+### Build cache corruption
+
+If builds fail after a version bump, clear the cache:
+
+```bash
+python build.py cache-clear
+python build.py build-example minimal-starter
+```
+
+---
+
 ## Getting Help
 
 - Open a [Discussion](https://github.com/WyattAu/OmniLaTeX-template/discussions)
