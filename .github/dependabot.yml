@@ -4,17 +4,75 @@ updates:
   directory: /
   schedule:
     interval: weekly
+    day: monday
+  target-branch: main
+  open-pull-requests-limit: 10
+  labels:
+  - dependencies
+  - automated
+  reviewers: []
+  groups:
+    actions:
+      update-types:
+      - patch
+      - minor
+
 - package-ecosystem: pip
-  directory: /tests
+  directory: /docs
   schedule:
     interval: weekly
-- package-ecosystem: npm
-  directory: /extensions/vscode-omnilatex
+    day: monday
+  target-branch: main
+  open-pull-requests-limit: 10
+  labels:
+  - dependencies
+  - automated
+  reviewers: []
+
+- package-ecosystem: pip
+  directory: /
   schedule:
     interval: weekly
-  allow:
-  - dependency-type: direct
+    day: monday
+  target-branch: main
+  open-pull-requests-limit: 10
+  labels:
+  - dependencies
+  - automated
+  reviewers: []
+
 - package-ecosystem: docker
-  directory: /docker
+  directory: /
   schedule:
     interval: weekly
+    day: monday
+  target-branch: main
+  open-pull-requests-limit: 10
+  labels:
+  - dependencies
+  - automated
+  reviewers: []
+
+- package-ecosystem: npm
+  directory: /
+  schedule:
+    interval: weekly
+    day: monday
+  target-branch: main
+  open-pull-requests-limit: 10
+  labels:
+  - dependencies
+  - automated
+  reviewers: []
+
+- package-ecosystem: gitsubmodule
+  directory: /specs/proofs
+  schedule:
+    interval: weekly
+    day: monday
+  target-branch: main
+  open-pull-requests-limit: 10
+  labels:
+  - dependencies
+  - automated
+  reviewers: []
