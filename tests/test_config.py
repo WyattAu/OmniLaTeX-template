@@ -577,3 +577,26 @@ class TestDocumentation:
 
     def test_ctan_readme_exists(self):
         assert (REPO_ROOT / "CTAN_README.txt").is_file()
+
+
+class TestTranslationPlaceholders:
+    """Ensure no untranslated '???' placeholders in committed .sty files.
+
+    The scaffold-language command generates guide files with '???' stubs.
+    Those stubs must be replaced before the translations are integrated
+    into the actual .sty files in lib/language/.
+    """
+
+    def test_no_placeholder_values_in_sty_files(self):
+        """No DeclareTranslation{...}{???} in any .sty file."""
+        hits: list[str] = []
+        for sty in sorted(REPO_ROOT.glob("lib/**/*.sty")):
+            content = sty.read_text(encoding="utf-8", errors="replace")
+            for lineno, line in enumerate(content.splitlines(), 1):
+                if "DeclareTranslation" in line and "{???}" in line:
+                    rel = sty.relative_to(REPO_ROOT)
+                    hits.append(f"{rel}:{lineno}: {line.strip()}")
+        assert hits == [], (
+            f"Found {len(hits)} untranslated placeholder(s) in .sty files:\n"
+            + "\n".join(hits)
+        )
