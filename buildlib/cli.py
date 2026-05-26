@@ -82,6 +82,8 @@ def main() -> None:
         ),
         "clean-example": (BuildTasks.clean_example, "Clean specific example(s).", True),
         "clean-examples": (BuildTasks.clean_aux, "Clean all examples.", False),
+        "cache-stats": (BuildTasks.cmd_cache_stats, "Show build cache statistics.", False),
+        "cache-clear": (BuildTasks.cmd_cache_clear, "Delete build cache.", False),
         "test": (BuildTasks.run_tests, "Run test suite.", True),
         "watch": (BuildTasks.cmd_watch, "Watch files for changes and rebuild.", True),
         "doctor": (

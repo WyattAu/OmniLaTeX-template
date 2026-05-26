@@ -56,6 +56,8 @@ def interactive_menu(tasks, commands: dict[str, tuple]) -> None:
                 ("scaffold-institution", "New institution config"),
                 ("watch", "Watch files & rebuild"),
                 ("export", "Export LaTeX to HTML/EPUB/DOCX"),
+                ("cache-stats", "Show build cache statistics"),
+                ("cache-clear", "Delete build cache"),
             ],
         ),
     ]

@@ -191,6 +191,41 @@ class _BuildCore:
         files.extend(self._get_source_files(repo_root))
         return files
 
+    def cmd_cache_stats(self, _: object | None = None) -> None:
+        self.ui.header("Build Cache Statistics")
+        cache_path = REPO_ROOT / self.config.build_dir / "build_cache.json"
+        if not cache_path.exists():
+            self.ui.info("No build cache found.")
+            return
+        cache_data = self._load_build_cache()
+        entries = {k: v for k, v in cache_data.items() if k.startswith("examples/")}
+        total_examples = len(self.discover_examples())
+        cached_examples = len(entries)
+        file_size = cache_path.stat().st_size
+        mtimes = [
+            (k, v["build_time"])
+            for k, v in entries.items()
+            if "build_time" in v
+        ]
+        mtimes.sort(key=lambda x: x[1])
+        self.ui.info(f"Cached entries:    {cached_examples}")
+        self.ui.info(f"Cache file size:   {file_size:,} bytes")
+        self.ui.info(f"Total examples:    {total_examples}")
+        self.ui.info(f"Cached examples:   {cached_examples}/{total_examples}")
+        if mtimes:
+            self.ui.info(f"Oldest entry:      {mtimes[0][0]} ({mtimes[0][1]})")
+            self.ui.info(f"Newest entry:      {mtimes[-1][0]} ({mtimes[-1][1]})")
+        self.ui.success("Cache statistics complete.")
+
+    def cmd_cache_clear(self, _: object | None = None) -> None:
+        self.ui.header("Clearing Build Cache")
+        cache_path = REPO_ROOT / self.config.build_dir / "build_cache.json"
+        if cache_path.exists():
+            cache_path.unlink()
+            self.ui.success(f"Deleted build cache: {cache_path}")
+        else:
+            self.ui.info("No build cache file to delete.")
+
     def discover_examples(self) -> list[Path]:
         d = Path("examples")
         return (
