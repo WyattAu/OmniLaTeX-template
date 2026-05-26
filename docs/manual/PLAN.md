@@ -175,7 +175,7 @@ A comprehensive reference manual covering every functionality of modern LaTeX th
 B0_APPENDIX_COMMANDS.md — Quick-reference: every OmniLaTeX command alphabetically
 B1_APPENDIX_OPTIONS.md   — Quick-reference: every class option
 B2_APPENDIX_DOCTYPES.md  — Quick-reference: all 27 doctypes with aliases
-B3_APPENDIX_MODULES.md   — Quick-reference: all 27 lib modules
+B3_APPENDIX_MODULES.md   — Quick-reference: all 31 lib modules
 B4_APPENDIX_SIUNITS.md   — Quick-reference: all custom SI units and qualifiers
 ```
 

@@ -101,7 +101,7 @@ User writes:  \documentclass[doctype=thesis,institution=tuhh,language=german]{om
 | `build.py` | Build orchestrator — compile, test, watch, doctor |
 | `.latexmkrc` | latexmk config — compilation flags, SDE support, multi-pass |
 | `specs/option_schema.toml` | Formal schema of all 10 options and 46 aliases |
-| `specs/module_contracts/*.toml` | Interface contracts for 21 core modules |
+| `specs/module_contracts/*.toml` | Interface contracts for 31 core modules |
 
 ---
 

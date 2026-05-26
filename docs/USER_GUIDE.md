@@ -25,7 +25,7 @@ Compile: `latexmk -lualatex main.tex` or `python build.py build-root`
 
 ## Document Types
 
-OmniLaTeX provides 26 document type profiles across 3 KOMA-Script base classes.
+OmniLaTeX provides 27 document type profiles across 3 KOMA-Script base classes.
 Switch with `\documentclass[doctype=<type>]{omnilatex}`.
 
 ### scrbook (book-class, chapters, twoside)
@@ -446,6 +446,11 @@ OmniLaTeX ships 21 institution configurations. Enable with
 | EPFL | `epfl` | EPFL Red |
 | Imperial | `imperial` | Imperial Blue, Crimson |
 | TU Delft | `tudelft` | TU Delft Cyan, Dark Blue |
+| Aalto University | `aalto` | Blue/Red |
+| Chalmers University of Technology | `chalmers` | Blue/Light Blue |
+| Karlsruhe Institute of Technology | `kit` | Green/Black |
+| NTNU | `ntnu` | Dark Blue |
+| University of Toronto | `uoft` | Navy/Blue |
 | Generic | `generic` | User-defined (template for new institutions) |
 
 Add a new institution:
@@ -514,7 +519,7 @@ The primary build tool. Run from the repository root.
 # Building
 python build.py build-root               # Build root main.tex
 python build.py build-example thesis     # Build one example
-python build.py build-examples           # Build all 46 examples
+python build.py build-examples           # Build all 48 examples
 python build.py build-examples -j 8      # Parallel build (8 jobs)
 python build.py build-examples --force   # Force rebuild (ignore cache)
 

@@ -12,7 +12,7 @@ Built on LuaTeX (LuaHBTeX 1.21.0) + KOMA-Script + TeX Live 2025. Compile with `l
 | **Test coverage** | 815 tests (structural, property-based, visual regression, integration, edge cases) | 0 |
 | **Reproducible builds** | Byte-for-byte deterministic | No |
 | **Formal verification** | Lean 4 proofs (16 proof modules, 198 theorems proven, 0 sorry) | No |
-| **CI platforms** | 12 GitHub Actions workflows + 4 other platforms | 0-1 |
+| **CI platforms** | 14 GitHub Actions workflows + 4 other platforms | 0-1 |
 | **Font fallbacks** | Graceful degradation with warnings | Crash or silent substitution |
 | **Institution configs** | 21 pluggable (`config/institutions/`) | Hardcoded |
 | **Languages** | 25 full translations via polyglossia | 0-2 |
@@ -39,7 +39,7 @@ python build.py build-example minimal-starter
 ## Features
 
 - **55+ doctype aliases** resolving to 27 document profiles across 3 KOMA-Script base classes
-- **28 modular `.sty` packages** with formal interface contracts
+- **31 modular `.sty` packages** with formal interface contracts
 - **Lazy module loading** — only load what you need (`enablemath`, `enabletikz`, `enablecode`, ...)
 - **Modern font stack** — Libertinus Serif + Math, Monaspace Neon, Atkinson Hyperlegible Next (with graceful fallback)
 - **Reproducible builds** — `SOURCE_DATE_EPOCH` support, byte-for-byte deterministic PDFs
@@ -128,6 +128,9 @@ OmniLaTeX supports 18 languages with full OmniLaTeX translations and 25 via poly
 | `memo` | memo | Internal memorandum |
 | `invoice` | invoice | Invoice document |
 | `recipe` | recipe | Recipe document |
+| `lecture-notes` | lecture-notes | Lecture notes with theorem environments |
+| `patent` | patent | Patent specification document |
+| `syllabus` | syllabus | Course syllabus with schedule and grading policy |
 
 ```bash
 python build.py build-example <name>
@@ -154,7 +157,7 @@ Missing optional fonts trigger a `\ClassWarning` and degrade gracefully. Run `bu
 
 ### CTAN (recommended)
 
-OmniLaTeX is available on CTAN. Install via your TeX distribution's package manager:
+OmniLaTeX has been submitted to CTAN (pending review). Once accepted, install via your TeX distribution's package manager:
 
 ```bash
 tlmgr install omnilatex
@@ -218,7 +221,7 @@ See [User Guide](docs/USER_GUIDE.md#build-system) for all commands and options.
 
 ### GitHub Actions
 
- 12 workflows using digest-pinned Docker images for reproducibility:
+ 14 workflows using digest-pinned Docker images for reproducibility:
 
 | Workflow | Purpose |
 |----------|---------|
@@ -233,6 +236,10 @@ See [User Guide](docs/USER_GUIDE.md#build-system) for all commands and options.
 | `integration-matrix.yml` | Cross-version compatibility matrix |
 | `visual-regression.yml` | PDF visual regression (build, diff, regenerate) |
 | `performance-regression.yml` | Build time regression detection (20% threshold) |
+| `build-examples.yml` | Build all examples and collect PDF artifacts |
+| `docs.yml` | Build and deploy MkDocs documentation to GitHub Pages |
+| `release.yml` | Auto-publish GitHub Release on semver tag push |
+| `sbom-tracking.yml` | Weekly SBOM generation and vulnerability tracking |
 
 ### Other Platforms
 

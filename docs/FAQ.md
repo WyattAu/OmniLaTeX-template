@@ -30,7 +30,7 @@ Requirements:
 - TeX Live 2025 or later
 - Packages: `collection-fontsextra`, `collection-mathscience`, `collection-latexextra`,
   `collection-luatex`, `collection-langother` (for CJK/RTL)
-- Python 3.9+ with `pygments` for minted support
+- Python 3.10+ with `pygments` for minted support
 - Biber for biblatex
 
 ```bash
@@ -87,6 +87,7 @@ The class enforces this with `\RequireLuaTeX`. XeLaTeX and pdfLaTeX will fail.
 **"Fatal error occurred, no output PDF file produced"**
 
 Check the log file for the specific error. Common causes:
+
 - Missing fonts: install optional fonts or accept the fallback (Latin Modern).
 - Missing Pygments: `pip install pygments` (required by minted).
 - Missing `--shell-escape`: the `.latexmkrc` sets this automatically; if calling
@@ -95,7 +96,7 @@ Check the log file for the specific error. Common causes:
 **"Font 'Monaspace Neon' not found"**
 
 This is a warning, not a fatal error. OmniLaTeX falls back to Latin Modern Mono.
-To install: download from https://github.com/chriskapp/neon-monospace and place
+To install: download from <https://github.com/chriskapp/neon-monospace> and place
 the OTF files in `~/.local/share/fonts/`, then run `luaotfload-tool --update`.
 
 **"Module 'omnilatex-xxx' not found"**
@@ -496,6 +497,7 @@ bash scripts/make-overleaf-zip.sh thesis
 ```
 
 Known Overleaf limitations:
+
 - Some optional fonts (Monaspace Neon, Atkinson Hyperlegible Next) may not be
   available; OmniLaTeX falls back gracefully.
 - `--shell-escape` is enabled by default on Overleaf, so minted works.

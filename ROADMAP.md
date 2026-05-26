@@ -15,13 +15,13 @@ Current version: **v2.0.0**
 | Metric | Value |
 |--------|-------|
 | Releases | 28 (v1.0.0--v2.0.0) |
-| `.sty` modules | 28 |
-| Document types | 26 (55+ aliases) across 3 KOMA-Script base classes |
-| Examples | 46 |
+| `.sty` modules | 31 |
+| Document types | 27 (55+ aliases) across 3 KOMA-Script base classes |
+| Examples | 48 |
 | Institution configs | 21 |
 | Languages | 18 with full OmniLaTeX translations + 25 via polyglossia |
 | Translation keys | 846 total (47 keys x 18 languages) |
-| CI workflows | 12 GitHub Actions + 4 other platforms |
+| CI workflows | 14 GitHub Actions + 4 other platforms |
 | Tests | 442 fast tests + 16 institution tests + slow tests |
 | Lean 4 proofs | 198 theorems, 16 modules, 0 sorry |
 | Color themes | 6 presets + dark/light toggle |

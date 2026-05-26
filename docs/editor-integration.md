@@ -173,7 +173,7 @@ AUCTeX is included in most Emacs distributions. Add to `~/.emacs.d/init.el`:
 ### OmniLaTeX-Specific Completion
 
 All OmniLaTeX commands use the `omnilatex@` prefix (internal) or are
-documented in `docs/api_reference.md`. Key user-facing commands:
+documented in `docs/API_REFERENCE.md`. Key user-facing commands:
 
 | Command | Description |
 |---------|-------------|

@@ -29,7 +29,7 @@ The zip **must** contain:
 |------|-------------|
 | `omnilatex/omnilatex.cls` | Main document class |
 | `omnilatex/lib/` | Module library (31 modules across 9 subdirectories) |
-| `omnilatex/config/document-types/` | 26 document type `.sty` files |
+| `omnilatex/config/document-types/` | 27 document type `.sty` files |
 | `omnilatex/config/document-settings.sty` | Global settings |
 | `omnilatex/bib/bibliography.bib` | Default bibliography |
 | `omnilatex/LICENSE` | Apache License 2.0 |
@@ -52,7 +52,7 @@ docker run -it --rm -v $(pwd):/workspace ghcr.io/wyattau/omnilatex-docker:latest
 python build.py build-examples
 ```
 
-All 46 examples should compile without errors. Alternatively, run the CI pipeline which exercises the full build matrix.
+All 48 examples should compile without errors. Alternatively, run the CI pipeline which exercises the full build matrix.
 
 ## 3. Submission Process
 

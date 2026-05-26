@@ -59,6 +59,9 @@ markdown_extensions:
 
 nav:
 - Home: index.md
+- PDF Gallery: gallery-app.html
+- Template Picker: gallery.html
+- Build Verification: verify.html
 - User Guide: USER_GUIDE.md
 - Migration Guide: MIGRATION_GUIDE.md
 - FAQ: FAQ.md
@@ -80,7 +83,7 @@ nav:
 - Manual Parts III-XI: manual/PARTS_III_THROUGH_XI.md
 
 extra:
-  version: 2.0.0
+  version: 2.1.0
 
 validation:
   absolute_links: warn

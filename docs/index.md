@@ -43,6 +43,14 @@ python build.py build-example minimal-starter
 - **815 pytest tests** -- structural, property-based, visual regression, edge cases
 - **Deterministic builds** -- byte-for-byte reproducible PDFs via `SOURCE_DATE_EPOCH`
 
+## Web Tools
+
+| Tool | Description |
+|------|-------------|
+| [PDF Gallery](gallery-app.html) | Browse all 48 example PDFs with category filtering and lightbox viewer |
+| [Template Picker](gallery.html) | Interactive template, language, and institution selector |
+| [Build Verification](verify.html) | Verify PDF build provenance against Git commit history |
+
 ## License
 
 Apache 2.0
