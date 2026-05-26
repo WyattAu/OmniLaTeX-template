@@ -10,8 +10,14 @@ import pytest
 
 try:
     import pymupdf as fitz
+
+    HAS_PYMUPDF = True
 except ImportError:
-    pytest.skip("pymupdf (fitz) not installed", allow_module_level=True)
+    HAS_PYMUPDF = False
+
+requires_pymupdf = pytest.mark.skipif(
+    not HAS_PYMUPDF, reason="pymupdf (fitz) not installed"
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
@@ -33,6 +39,7 @@ def example_pdfs(requires_build_dir):
     return pdfs
 
 
+@requires_pymupdf
 @pytest.mark.slow
 def test_all_pdfs_are_valid(example_pdfs):
     for pdf_path in example_pdfs:
@@ -46,6 +53,7 @@ def test_all_pdfs_are_valid(example_pdfs):
             doc.close()
 
 
+@requires_pymupdf
 @pytest.mark.slow
 def test_pdf_page_counts_reasonable(example_pdfs):
     # manual.pdf is a full user manual (~240 pages); other examples should be concise.
@@ -119,6 +127,7 @@ EXAMPLES: dict[str, int | None] = {
 }
 
 
+@requires_pymupdf
 @pytest.mark.slow
 @pytest.mark.parametrize(
     "name,expected_pages", list(EXAMPLES.items()), ids=list(EXAMPLES.keys())
@@ -139,6 +148,7 @@ def test_example_page_count(requires_build_dir, name, expected_pages):
         doc.close()
 
 
+@requires_pymupdf
 @pytest.mark.slow
 def test_pdf_metadata_consistent():
     root_pdf = PROJECT_ROOT / "main.pdf"

@@ -20,8 +20,36 @@ from tests.constants import DOCTYPE_TO_CLASS
 try:
     from hypothesis import HealthCheck, given, settings
     from hypothesis.strategies import sampled_from
+
+    HAS_HYPOTHESIS = True
 except ImportError:
-    pytest.skip("hypothesis not installed", allow_module_level=True)
+    HAS_HYPOTHESIS = False
+
+    def given(**kwargs):
+        def decorator(f):
+            return f
+
+        return decorator
+
+    class _DummySettings:
+        def __init__(self, **kwargs):
+            pass
+
+        def __call__(self, f):
+            return f
+
+    settings = _DummySettings
+
+    def sampled_from(items):
+        return items
+
+    class HealthCheck:
+        too_slow = None
+
+
+_hypothesis_skip = pytest.mark.skipif(
+    not HAS_HYPOTHESIS, reason="hypothesis not installed"
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
@@ -177,6 +205,7 @@ class TestDoctypeCompilation:
         assert success, f"Failed: {doctype}/{language}\nLog tail: {log}"
 
 
+@_hypothesis_skip
 class TestPropertyBasedFuzzing:
     """Fuzz test with hypothesis."""
 
@@ -295,6 +324,7 @@ class TestStructuralProperties:
                 seen[pair] = 1
         return dupes
 
+    @_hypothesis_skip
     @given(doctype=sampled_from(list(DOCTYPE_TO_CLASS.keys())))
     @settings(max_examples=50, deadline=None)
     def test_doctype_maps_to_valid_koma_class(self, doctype):
@@ -315,6 +345,7 @@ class TestStructuralProperties:
                 koma_class in self.VALID_KOMA_CLASSES
             ), f"Doctype '{name}' maps to invalid KOMA class '{koma_class}'"
 
+    @_hypothesis_skip
     @given(institution=sampled_from(list(_get_institution_names(None) or ["generic"])))
     @settings(max_examples=20, deadline=None)
     def test_institution_has_valid_providespackage(self, institution):
@@ -348,6 +379,7 @@ class TestStructuralProperties:
             v == values[0] for v in values
         ), f"Translation key counts are not equal across languages: {counts}"
 
+    @_hypothesis_skip
     @given(example=sampled_from(list(_get_example_doctypes(None).keys()) or ["thesis"]))
     @settings(max_examples=30, deadline=None)
     def test_example_doctype_is_registered(self, example):
@@ -378,6 +410,7 @@ class TestStructuralProperties:
                     f"{pkg_path.relative_to(PROJECT_ROOT)} not found"
                 )
 
+    @_hypothesis_skip
     @given(pkg=sampled_from(list(_get_require_packages(None))))
     @settings(max_examples=50, deadline=None)
     def test_each_module_exists(self, pkg):
@@ -408,6 +441,7 @@ class TestStructuralProperties:
         dupes = self._get_translation_key_dupes()
         assert len(dupes) == 0, f"Duplicate translation keys found: {dupes}"
 
+    @_hypothesis_skip
     @given(doctype=sampled_from(CANONICAL_DOCTYPES))
     @settings(max_examples=50, deadline=None)
     def test_doctype_sty_file_exists(self, doctype):
@@ -813,6 +847,7 @@ class TestFileStructureIntegrity:
             sty_files = list(subdir.glob("*.sty"))
             assert len(sty_files) > 0, f"lib/{subdir.name}/ has no .sty files"
 
+    @_hypothesis_skip
     @given(doctype=sampled_from(ALL_DOCTYPE_NAMES))
     @settings(max_examples=50, deadline=None)
     def test_doctype_sty_is_self_contained(self, doctype):
