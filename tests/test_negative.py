@@ -6,10 +6,12 @@ import subprocess
 import tempfile
 from pathlib import Path
 
+import pytest
+
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
-def compile_tex(tex_content: str, timeout: int = 600) -> tuple:
+def compile_tex(tex_content: str, timeout: int = 120) -> tuple:
     """Compile and return (success, log_content).
 
     Success is determined by PDF existence, not latexmk return code,
@@ -46,6 +48,7 @@ def compile_tex(tex_content: str, timeout: int = 600) -> tuple:
 
 
 class TestUnknownDoctype:
+    @pytest.mark.slow
     def test_unknown_doctype_produces_warning(self):
         """Unknown doctypes should produce a ClassWarning, not crash."""
         tex = r"""\documentclass[doctype=nonexistent]{omnilatex}
@@ -54,9 +57,13 @@ class TestUnknownDoctype:
         # Should still compile (falls back to book) but may produce a warning
         # Current behavior: silent fallback. Future: should warn.
         assert success, f"Should compile with fallback. Log: {log[-500:]}"
+        assert (
+            "classwarning" in log.lower() or "unknown" in log.lower()
+        ), f"Should produce warning. Log: {log[-500:]}"
 
 
 class TestMissingResources:
+    @pytest.mark.slow
     def test_missing_institution_warns(self):
         """Missing institution should produce a ClassWarning."""
         tex = r"""\documentclass[institution=nonexistent]{omnilatex}
@@ -73,6 +80,7 @@ class TestMissingResources:
 
 
 class TestEdgeCases:
+    @pytest.mark.slow
     def test_empty_document(self):
         """Empty document should not cause a fatal crash."""
         tex = r"""\documentclass{omnilatex}
@@ -86,6 +94,7 @@ class TestEdgeCases:
         assert "memory access" not in log_lower
         assert "panic" not in log_lower
 
+    @pytest.mark.slow
     def test_minimal_content(self):
         tex = r"""\documentclass{omnilatex}
 \begin{document}Hello world.\end{document}"""
@@ -94,6 +103,7 @@ class TestEdgeCases:
 
 
 class TestInvalidOptions:
+    @pytest.mark.slow
     def test_invalid_keyval_option(self):
         """Invalid keyval should be passed through to base class."""
         tex = r"""\documentclass[invalidoption]{omnilatex}
@@ -103,11 +113,12 @@ class TestInvalidOptions:
         log_lower = log.lower()
         assert (
             not success
-            or "unknown" in log_lower
+            or "unknown key" in log_lower
+            or "unknown option" in log_lower
             or "warning" in log_lower
-            or "option" in log_lower
         ), f"Unknown option should produce a warning or fail. Log: {log[-500:]}"
 
+    @pytest.mark.slow
     def test_a5_option(self):
         """The a5 void option should compile."""
         tex = r"""\documentclass[a5]{omnilatex}

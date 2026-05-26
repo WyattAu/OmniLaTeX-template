@@ -122,15 +122,15 @@ class TestScaffoldInstitution:
         import shutil
         import tempfile
 
-        with tempfile.TemporaryDirectory():
+        with tempfile.TemporaryDirectory() as tmpdir:
             result = subprocess.run(
                 ["python3", str(BUILD_SCRIPT), "scaffold-institution", "test-univ"],
                 capture_output=True,
                 text=True,
                 timeout=30,
-                cwd=PROJECT_ROOT,
+                cwd=tmpdir,
             )
-            target = PROJECT_ROOT / "config" / "institutions" / "test-univ"
+            target = Path(tmpdir) / "config" / "institutions" / "test-univ"
             if target.exists():
                 shutil.rmtree(target)
             assert result.returncode == 0

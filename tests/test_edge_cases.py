@@ -35,7 +35,7 @@ def _compile_tex(content: str, options: str = "", timeout: int = 600) -> tuple:
             f"\\documentclass[{options}]{{omnilatex}}\n{content}\n\\end{{document}}\n",
             encoding="utf-8",
         )
-        subprocess.run(
+        proc = subprocess.run(
             [
                 "lualatex",
                 "-interaction=nonstopmode",
@@ -52,7 +52,7 @@ def _compile_tex(content: str, options: str = "", timeout: int = 600) -> tuple:
             timeout=timeout,
         )
         pdf_path = Path(tmpdir) / "test.pdf"
-        return pdf_path.exists(), pdf_path.exists()
+        return (proc.returncode == 0, pdf_path.exists())
 
 
 def test_empty_document():

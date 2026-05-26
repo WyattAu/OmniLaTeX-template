@@ -160,7 +160,9 @@ KOMA layout should be skipped.
         success, log = _compile_tex(tex)
         assert success, f"Beamer KOMA skip test failed.\nLog tail: {log[-500:]}"
         # Should NOT have scrlayer-scrpage errors
-        assert "scrlayer-scrpage" not in log or "beamer" in log
+        assert (
+            "scrlayer-scrpage" not in log
+        ), "scrlayer-scrpage should not be loaded in beamer mode"
 
     @pytest.mark.slow
     @pytest.mark.timeout(180)
