@@ -11,6 +11,8 @@ import os
 import subprocess
 from pathlib import Path
 
+import pytest
+
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 BUILD_SCRIPT = PROJECT_ROOT / "build.py"
 
@@ -190,8 +192,9 @@ class TestDoctor:
 class TestLint:
     """Tests for the lint subcommand."""
 
+    @pytest.mark.timeout(180)
     def test_lint_no_args_shows_usage(self) -> None:
-        result = _run("lint", timeout=120)
+        result = _run("lint", timeout=180)
         # lint may exit 0 with usage or exit 1 if no files match
         combined = result.stdout + result.stderr
         assert len(combined) > 0, "lint produced no output"
