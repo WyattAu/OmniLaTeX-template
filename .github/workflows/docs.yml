@@ -9,6 +9,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read
 
 concurrency:
   group: pages-deploy
@@ -47,6 +48,30 @@ jobs:
           cp pages/.nojekyll site/.nojekyll 2>/dev/null || true
           sed -i 's|href="index\.html"|href="gallery-app.html"|g' site/gallery-app.html site/gallery.html site/verify.html
         fi
+
+    - name: Download PDFs from build-examples workflow
+      continue-on-error: true
+      run: |
+        RUN_ID=$(gh run list -w "Build Examples" -b main --status success -L 1 --json databaseId -q '.[0].databaseId') || true
+        if [ -n "$RUN_ID" ]; then
+          mkdir -p site/pdfs
+          gh run download "$RUN_ID" -D /tmp/pdf-artifacts || true
+          find /tmp/pdf-artifacts -name '*.pdf' -exec cp {} site/pdfs/ \;
+          rm -rf /tmp/pdf-artifacts
+          echo "Downloaded $(ls site/pdfs/*.pdf 2>/dev/null | wc -l) PDFs"
+        else
+          echo "No successful build-examples run found, skipping PDF download"
+        fi
+
+    - name: Create Cloudflare _headers file
+      run: |
+        cat > site/_headers << 'EOF'
+        /*
+          Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' api.github.com; frame-ancestors 'none'
+          X-Content-Type-Options: nosniff
+          X-Frame-Options: DENY
+          Referrer-Policy: strict-origin-when-cross-origin
+        EOF
 
     # v3
     - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
