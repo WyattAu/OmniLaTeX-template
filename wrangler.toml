@@ -8,6 +8,7 @@
 # Or via Forgejo Actions (see .github/workflows/cloudflare-pages.yml)
 
 name = "omnilatex-docs"
+account_id = "26966ba2f4b3a12cb750cd615c8d0bcf"
 compatibility_date = "2024-01-01"
 
 # Cloudflare Pages does not use [build] from wrangler.toml.

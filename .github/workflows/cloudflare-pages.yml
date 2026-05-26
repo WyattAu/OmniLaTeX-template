@@ -4,9 +4,13 @@ name: Deploy Docs (Cloudflare Pages)
 # Use this workflow for Forgejo-hosted repositories.
 # For GitHub-hosted repos, use docs.yml (GitHub Pages) instead.
 #
-# Required secrets:
-#   CLOUDFLARE_API_TOKEN  — Cloudflare API token with Pages edit permission
+# Required secrets (GitHub Actions):
+#   CLOUDFLARE_API_TOKEN  — API token with Pages edit permission
 #   CLOUDFLARE_ACCOUNT_ID — Cloudflare account ID
+#   CLOUDFLARE_ZONE_ID    — Cloudflare zone ID
+#
+# For Forgejo/local: create a .env file (gitignored) with the same variables.
+# See .env.example.cloudflare for the template.
 
 on:
   push:
@@ -75,7 +79,14 @@ jobs:
       env:
         CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
       run: |
+        # GitHub Actions: secrets are injected via env above.
+        # Forgejo/local: source .env (gitignored) if secrets are empty.
+        if [ -z "$CLOUDFLARE_API_TOKEN" ] && [ -f .env ]; then
+          set -a; source .env; set +a
+        fi
+        : "${CLOUDFLARE_API_TOKEN:?'CLOUDFLARE_API_TOKEN is required'}"
         npx wrangler@latest pages deploy site/ \
           --project-name=omnilatex-docs \
           --commit-dirty=true
