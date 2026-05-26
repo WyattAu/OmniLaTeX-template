@@ -52,10 +52,10 @@ jobs:
       run: |
         test -f build/examples/article.pdf && echo "✅ PDF generated" || (echo "❌ PDF not found" && exit 1)
 
-  windows:
+  windows-experimental:
     runs-on: windows-latest
     timeout-minutes: 30
-    continue-on-error: true  # Docker Desktop not available on windows-2025
+    continue-on-error: true  # Known limitation: Docker Desktop not available on windows-2025
     steps:
     - name: Checkout repository
         # v4
@@ -90,7 +90,7 @@ jobs:
   report:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [linux, windows]
+    needs: [linux, windows-experimental]
     if: always()
     steps:
     - name: Cross-platform summary
@@ -100,4 +100,4 @@ jobs:
         echo "| Platform | Status |" >> $GITHUB_STEP_SUMMARY
         echo "|----------|--------|" >> $GITHUB_STEP_SUMMARY
         echo "| Linux    | ${{ needs.linux.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
-        echo "| Windows  | ${{ needs.windows.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Windows  | ${{ needs.windows-experimental.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY

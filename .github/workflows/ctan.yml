@@ -100,27 +100,3 @@ jobs:
         name: omnilatex-ctan-zip
         path: omnilatex.zip
         retention-days: 90
-
-  release:
-    needs: ctan-zip
-    if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: write
-    steps:
-    - name: Checkout repository
-      # v4
-      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
-
-    - name: Download CTAN zip
-      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-      with:
-        name: omnilatex-ctan-zip
-
-    - name: Create GitHub Release
-      # v2
-      uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65
-      with:
-        files: omnilatex.zip
-        generate_release_notes: true

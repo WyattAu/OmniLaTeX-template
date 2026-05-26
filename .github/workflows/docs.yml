@@ -45,6 +45,7 @@ jobs:
           done
           # Copy .nojekyll for GitHub Pages
           cp pages/.nojekyll site/.nojekyll 2>/dev/null || true
+          sed -i 's|href="index\.html"|href="gallery-app.html"|g' site/gallery-app.html site/gallery.html site/verify.html
         fi
 
     # v3
