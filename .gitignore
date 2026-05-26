@@ -483,6 +483,7 @@ ctan/
 specs/proofs/.lake/
 specs/proofs/lake-manifest.json
 specs/proofs/build/
+specs/proofs/.timing_baseline
 *.ltjruby
 omnilatex.zip
 omnilatex-overleaf.zip

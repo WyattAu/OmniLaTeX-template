@@ -36,10 +36,50 @@ jobs:
 
     - name: Build Lean 4 proofs
       run: |
+        START_TIME=$(date +%s%N)
         nix develop --command bash -c "
           cd specs/proofs
           lake build
         "
+        END_TIME=$(date +%s%N)
+        ELAPSED_NS=$(( END_TIME - START_TIME ))
+        ELAPSED_SEC=$(( ELAPSED_NS / 1000000000 ))
+        ELAPSED_REM=$(( (ELAPSED_NS % 1000000000) / 1000000 ))
+        printf -v LAKE_BUILD_SECONDS '%d.%03d' "$ELAPSED_SEC" "$ELAPSED_REM"
+        echo "LAKE_BUILD_SECONDS=${LAKE_BUILD_SECONDS}" >> $GITHUB_ENV
+        echo "::notice::lake build completed in ${LAKE_BUILD_SECONDS}s"
+
+    - name: Check proof timing regression
+      run: |
+        BASELINE_FILE="specs/proofs/.timing_baseline"
+        CURRENT="${LAKE_BUILD_SECONDS}"
+        TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M:%S UTC')
+
+        if [ ! -f "$BASELINE_FILE" ]; then
+          echo "# Lean 4 Proof Timing Baseline (seconds)" > "$BASELINE_FILE"
+          echo "# Last updated: ${TIMESTAMP}" >> "$BASELINE_FILE"
+          echo "${CURRENT}" >> "$BASELINE_FILE"
+          echo "::notice::Created timing baseline: ${CURRENT}s"
+          exit 0
+        fi
+
+        BASELINE=$(sed -n '/^[0-9]/p' "$BASELINE_FILE" | head -1)
+        THRESHOLD=$(echo "$BASELINE * 1.2" | bc -l)
+        REGRESSION=$(echo "$CURRENT >= $THRESHOLD" | bc -l)
+
+        echo "Baseline: ${BASELINE}s | Current: ${CURRENT}s | Threshold (120%): ${THRESHOLD}s"
+
+        if [ "$REGRESSION" -eq 1 ] 2>/dev/null; then
+          echo "::warning::Proof verification regression detected: ${CURRENT}s vs ${BASELINE}s baseline (>=20% slower)"
+          echo "## :warning: Timing Regression" >> $GITHUB_STEP_SUMMARY
+          echo "Proof verification took **${CURRENT}s** vs ${BASELINE}s baseline (>=20% slower)" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "No timing regression detected."
+        fi
+
+        echo "# Lean 4 Proof Timing Baseline (seconds)" > "$BASELINE_FILE"
+        echo "# Last updated: ${TIMESTAMP}" >> "$BASELINE_FILE"
+        echo "${CURRENT}" >> "$BASELINE_FILE"
 
     - name: Verify proof status
       if: always()
