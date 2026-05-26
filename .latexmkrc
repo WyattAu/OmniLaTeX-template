@@ -113,9 +113,16 @@ if ($build_mode eq 'prod') {
     $max_repeat = 6;  # Allow enough passes for bibliography/glossary churn
 }
 
-# --shell-escape option (execution of code outside of latex) is required for the
-#'svg' package.
-# It converts raw SVG files to the PDF+PDF_TEX combo using InkScape.
+# --shell-escape option (execution of code outside of latex) is required ONLY for:
+#   1. The 'minted' package (code highlighting via pygmentize) — used by
+#      omnilatex-listings.sty
+#   2. The 'svg' package (SVG-to-PDF conversion via Inkscape) — used by
+#      omnilatex-graphics.sty
+# All other modules work without shell-escape.
+#
+# By default, shell-escape is ENABLED for convenience (most examples use minted).
+# To disable (more secure), set OMNILATEX_SHELL_ESCAPE=0 in the environment.
+# To force-enable, set OMNILATEX_SHELL_ESCAPE=1.
 #
 # SyncTeX allows to jump between source (code) and output (PDF) in IDEs with support
 # (many have it). A value of `1` is enabled (gzipped), `-1` is enabled but uncompressed,
@@ -130,7 +137,7 @@ if ($build_mode eq 'prod') {
 # no need to specify these each. This allows to simply change `$pdf_mode` to get a
 # different engine. Check if this works with `latexmk --commands`.
 # The options are:
-# --shell-escape: enable system commands
+# --shell-escape: enable system commands (conditional, see above)
 # --synctex=0: enable synctex (see man synctex)
 # --file-line-error: Writes out the concrete file line in which the error occured
 #
@@ -139,7 +146,26 @@ if ($build_mode eq 'prod') {
 # errors (undefined references, incomplete aux files). Halting on the first error
 # in an intermediate pass prevents the final pass from ever running.
 # latexmk already detects errors from the last pass and reports them.
-set_tex_cmds("--shell-escape --synctex=0 --file-line-error %O %S");
+
+# Determine whether shell-escape is needed.
+# Default: enabled (1) for backwards compatibility.
+# Set OMNILATEX_SHELL_ESCAPE=0 to disable for improved security.
+my $shell_escape = 1;
+if (exists $ENV{'OMNILATEX_SHELL_ESCAPE'}) {
+    if ($ENV{'OMNILATEX_SHELL_ESCAPE'} eq '0' || $ENV{'OMNILATEX_SHELL_ESCAPE'} eq 'no') {
+        $shell_escape = 0;
+    } elsif ($ENV{'OMNILATEX_SHELL_ESCAPE'} eq '1' || $ENV{'OMNILATEX_SHELL_ESCAPE'} eq 'yes') {
+        $shell_escape = 1;
+    }
+}
+
+my $shell_escape_flag = $shell_escape ? '--shell-escape' : '';
+if ($shell_escape) {
+    print "[latexmkrc] shell-escape ENABLED (minted/svg support). Set OMNILATEX_SHELL_ESCAPE=0 to disable.\n";
+} else {
+    print "[latexmkrc] shell-escape DISABLED. Minted/SVG will not work. Set OMNILATEX_SHELL_ESCAPE=1 to enable.\n";
+}
+set_tex_cmds("$shell_escape_flag --synctex=0 --file-line-error %O %S");
 
 # Handle extra cnf-line options from OMNILATEX_CNF_LINES env var
 if (exists $ENV{'OMNILATEX_CNF_LINES'} && $ENV{'OMNILATEX_CNF_LINES'} ne '') {
