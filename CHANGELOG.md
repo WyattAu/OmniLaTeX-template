@@ -5,6 +5,10 @@ All notable changes to this project will be documented in per-version files.
 The format is based on [Keep a Changelog](https://keepachangelog.com).
 This project adheres to [Semantic versioning](https://semver.org).
 
+## [v2.2.0] - 2026-05-26
+
+See [CHANGELOG/v2.2.0.md](CHANGELOG/v2.2.0.md).
+
 ## [v2.1.0] - 2026-05-24
 
 See [CHANGELOG/v2.1.0.md](CHANGELOG/v2.1.0.md).
