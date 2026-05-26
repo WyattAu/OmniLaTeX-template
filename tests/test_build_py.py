@@ -11,8 +11,6 @@ import os
 import subprocess
 from pathlib import Path
 
-import pytest
-
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 BUILD_SCRIPT = PROJECT_ROOT / "build.py"
 
@@ -80,10 +78,6 @@ class TestListExamples:
         result = _run("list-examples")
         assert "example" in result.stdout.lower()
 
-    @pytest.mark.xfail(
-        reason="--format json is not yet implemented in build.py list-examples",
-        strict=True,
-    )
     def test_list_examples_json_format(self) -> None:
         """list-examples --format json should return valid JSON."""
         result = _run("list-examples", "--format", "json")
@@ -145,10 +139,6 @@ class TestInit:
         combined = result.stdout + result.stderr
         assert "Usage" in combined or "usage" in combined
 
-    @pytest.mark.xfail(
-        reason="init creates directory; needs cleanup in CI",
-        strict=False,
-    )
     def test_init_creates_project(self) -> None:
         import shutil
         import tempfile

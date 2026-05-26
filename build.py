@@ -393,11 +393,26 @@ class BuildTasks:
             else []
         )
 
-    def list_examples(self, _: object | None = None) -> None:
-        self.ui.header("Available Examples")
-        for ex in self.discover_examples():
-            print(f"  {self.ui.bold}{ex.name}{self.ui.end}")
-        self.ui.success(f"Found {len(self.discover_examples())} example(s).")
+    def list_examples(
+        self,
+        _: object | None = None,
+        *,
+        output_format: str = "text",
+    ) -> None:
+        examples = self.discover_examples()
+        if output_format == "json":
+            import json
+
+            data = [
+                {"name": ex.name, "path": str(ex)}
+                for ex in sorted(examples, key=lambda e: e.name)
+            ]
+            print(json.dumps(data, indent=2))
+        else:
+            self.ui.header("Available Examples")
+            for ex in examples:
+                print(f"  {self.ui.bold}{ex.name}{self.ui.end}")
+            self.ui.success(f"Found {len(examples)} example(s).")
 
     def _compile_example_worker(self, example_name: str) -> tuple[str, bool, list[str]]:
         """
@@ -2761,6 +2776,7 @@ def main() -> None:
     diff_subparser = None
     init_subparser = None
     export_subparser = None
+    list_examples_subparser = None
     for name, (handler, help_text, takes_files) in commands.items():
         sub = subparsers.add_parser(name, help=help_text)
         sub.set_defaults(handler=handler)
@@ -2772,6 +2788,8 @@ def main() -> None:
             init_subparser = sub
         if name == "export":
             export_subparser = sub
+        if name == "list-examples":
+            list_examples_subparser = sub
     if diff_subparser is not None:
         diff_subparser.add_argument(
             "--regenerate-references",
@@ -2821,6 +2839,15 @@ def main() -> None:
             choices=["html", "epub", "docx"],
             help="Output format (default: html)",
         )
+    if list_examples_subparser is not None:
+        list_examples_subparser.add_argument(
+            "--format", "-f",
+            dest="list_format",
+            type=str,
+            default="text",
+            choices=["text", "json"],
+            help="Output format (default: text)",
+        )
 
     args = parser.parse_args()
 
@@ -2853,6 +2880,12 @@ def main() -> None:
                 institution=getattr(args, "institution", None),
                 language=getattr(args, "language", None),
                 thesis=getattr(args, "thesis", False),
+            )
+        elif args.command == "list-examples":
+            args.handler(
+                tasks,
+                getattr(args, "files", None),
+                output_format=getattr(args, "list_format", "text"),
             )
         elif args.command == "diff":
             args.handler(
