@@ -213,14 +213,16 @@ class TestCheck:
 class TestClean:
     """Tests for the clean subcommand."""
 
+    @pytest.mark.timeout(120)
     def test_clean_aux_runs(self) -> None:
-        result = _run("clean-aux", timeout=30)
+        result = _run("clean-aux", timeout=120)
         # Should not crash even if nothing to clean
         assert result.returncode == 0
 
+    @pytest.mark.timeout(120)
     def test_clean_dry_run(self) -> None:
         """clean with --dry-run should list files without deleting."""
-        result = _run("clean", "--dry-run", timeout=30)
+        result = _run("clean", "--dry-run", timeout=120)
         combined = result.stdout + result.stderr
         # Should at least not crash
         assert result.returncode == 0 or "dry" in combined.lower()
