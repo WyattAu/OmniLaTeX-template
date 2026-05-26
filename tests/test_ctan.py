@@ -1,5 +1,6 @@
 import pathlib
 import shutil
+import subprocess
 import zipfile
 
 import pytest
@@ -100,7 +101,28 @@ def _build_overleaf_zip_with_python(example_name, output_path):
 def ctan_zip_path(tmp_path_factory):
     tmp = tmp_path_factory.mktemp("ctan_zip")
     zip_path = tmp / "omnilatex.zip"
-    _build_ctan_zip_with_python(zip_path)
+    if _zip_available() and CTAN_SCRIPT.exists():
+        # Use the real shell script (single source of truth)
+        subprocess.run(
+            ["bash", str(CTAN_SCRIPT)],
+            check=True,
+            cwd=str(REPO_ROOT),
+            timeout=120,
+        )
+        produced = REPO_ROOT / "omnilatex.zip"
+        if produced.exists():
+            shutil.copy2(produced, zip_path)
+            produced.unlink()
+            # Clean up ctan/ directory if created
+            ctan_dir = REPO_ROOT / "ctan"
+            if ctan_dir.is_dir():
+                for f in ctan_dir.glob("*.zip"):
+                    f.unlink()
+        else:
+            _build_ctan_zip_with_python(zip_path)
+    else:
+        # Fallback: Python reimplementation (no zip binary)
+        _build_ctan_zip_with_python(zip_path)
     yield zip_path
 
 
