@@ -370,6 +370,11 @@ class _BuildCore:
                 all_logs.append(f"[DEBUG] Destination PDF: {dest_pdf}")
                 try:
                     shutil.copy(src_pdf, dest_pdf)
+                    # Preserve .log file for content validation tests
+                    src_log = example_dir / "main.log"
+                    if src_log.exists():
+                        dest_log = build_examples_dir / f"{example_name}.log"
+                        shutil.copy(src_log, dest_log)
                     all_logs.append(f"[DEBUG] Copy operation completed")
                     if dest_pdf.exists():
                         all_logs.append(
