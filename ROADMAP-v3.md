@@ -1,14 +1,14 @@
 # OmniLaTeX Roadmap v3.0
 
-**Date:** 2026-05-26 | **Current:** v2.1.0 | **Target:** v4.0.0 | **License:** Apache 2.0
+**Date:** 2026-05-26 | **Current:** v2.2.0 | **Target:** v4.0.0 | **License:** Apache 2.0
 
 ---
 
-## Current Status (v2.1.0)
+## Current Status (v2.2.0)
 
 | Metric | Value |
 |--------|-------|
-| Version | v2.1.0 (2026-05-24) |
+| Version | v2.2.0 (2026-05-26) |
 | Document types | 27 (55+ aliases), 3 KOMA-Script base classes + Beamer |
 | `.sty` modules | 31 across 9 subdirectories (`lib/`) |
 | Examples | 48 templates (all compile on TeX Live 2025+) |
@@ -611,34 +611,34 @@ PDF/UA-1 support exists (`omnilatex-accessibility.sty`). Expand to full complian
 | 10 | No CSP headers on web assets | P2 | 4h | 3.6 | **DONE** (22e98b7) |
 | 11 | PDF Gallery non-functional (no PDFs uploaded) | P1 | 8h | 3.4 | **DONE** (22e98b7) |
 | 12 | No parallel example building | P2 | 8h | 2.2 | **ALREADY EXISTS** |
-| 13 | CI workflows have redundant setup | P2 | 8h | 2.4 | Partial (SHA-pinned, no composite actions) |
-| 14 | Build cache is per-file I/O | P3 | 6h | 2.3 | Open |
+| 13 | CI workflows have redundant setup | P2 | 8h | 2.4 | **DONE** (composite actions: setup-python, setup-texlive, read-docker-digest) |
+| 14 | Build cache is per-file I/O | P3 | 6h | 2.3 | **DONE** — `_shared_build_cache` dict loaded/saved once per batch; single JSON file |
 
 ---
 
 ## Metrics Targets
 
-| Metric | v2.1.0 (Current) | v2.2.0 Target | v2.3.0 Target | v3.0.0 Target | v4.0.0 Target |
-|--------|-------------------|---------------|---------------|---------------|---------------|
-| Document types | 27 | 27 | 27 | 30+ | 40+ |
-| `.sty` modules | 31 | 31 | 31 | 35+ | 45+ |
-| Examples | 48 | 48 | 48 | 60+ | 80+ |
-| Institutions | 21 | 21 | 25+ | 35+ | 50+ |
-| Languages | 25+ | 25+ | 30+ | 40+ | 50+ |
-| Tests (fast) | 771 | 771 | 800+ | 1200+ | 2000+ |
-| Test coverage (critical paths) | >95% | >95% | >97% | >99% | >99.5% |
-| Lean 4 theorems | 198 | 198 | 250+ | 300+ | 400+ |
-| Build time (all examples, 1 thread) | ~8 min | ~8 min | ~6 min | ~5 min | ~4 min |
-| Build time (all examples, parallel) | N/A | N/A | ~2 min | ~1.5 min | ~1 min |
-| CI success rate | ~95% | >97% | >98% | >99% | >99.5% |
-| CI PR feedback time | ~15-20 min | ~15 min | ~10 min | <8 min | <5 min |
-| Documentation pages | 17+ | 17+ | 20+ | 40+ | 60+ |
-| `build.py` lines | 2879 | 14 | 14 | 14 | 14 |
-| Version hardcoded locations | 70+ | 0 | 0 | 0 | 0 |
-| PDF Gallery examples with PDFs | 0 | 48 | 48 | 48 | 60+ |
-| Package manager distributions | 1 (Docker) | 1 | 1 | 4+ | 6+ |
-| Citation styles | 15 | 15 | 15 | 20+ | 25+ |
-| CSP enforced | No | Yes | Yes | Yes | Yes |
+| Metric | v2.2.0 (Current) | v2.3.0 Target | v3.0.0 Target | v4.0.0 Target |
+|--------|-------------------|---------------|---------------|---------------|
+| Document types | 27 | 27 | 30+ | 40+ |
+| `.sty` modules | 31 | 31 | 35+ | 45+ |
+| Examples | 48 | 48 | 60+ | 80+ |
+| Institutions | 21 | 25+ | 35+ | 50+ |
+| Languages | 25+ | 30+ | 40+ | 50+ |
+| Tests (fast) | 771 | 800+ | 1200+ | 2000+ |
+| Test coverage (critical paths) | >95% | >97% | >99% | >99.5% |
+| Lean 4 theorems | 198 | 250+ | 300+ | 400+ |
+| Build time (all examples, 1 thread) | ~8 min | ~6 min | ~5 min | ~4 min |
+| Build time (all examples, parallel) | ~2 min | ~2 min | ~1.5 min | ~1 min |
+| CI success rate | >97% | >98% | >99% | >99.5% |
+| CI PR feedback time | ~15 min | ~10 min | <8 min | <5 min |
+| Documentation pages | 19+ | 20+ | 40+ | 60+ |
+| `build.py` lines | 14 | 14 | 14 | 14 |
+| Version hardcoded locations | 0 | 0 | 0 | 0 |
+| PDF Gallery examples with PDFs | 48 | 48 | 48 | 60+ |
+| Package manager distributions | 1 (Docker) | 1 | 4+ | 6+ |
+| Citation styles | 15 | 15 | 20+ | 25+ |
+| CSP enforced | Yes | Yes | Yes | Yes |
 
 ---
 
