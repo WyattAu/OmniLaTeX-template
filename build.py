@@ -118,14 +118,17 @@ def _compute_ssim_windowed(
     kh, kw = kernel.shape
     ph, pw = kh // 2, kw // 2
 
-    def _conv2d(a, k):
-        padded = np.pad(a, ((ph, ph), (pw, pw)), mode="constant")
-        rows, cols = a.shape
-        out = np.zeros((rows, cols), dtype=np.float64)
-        for r in range(rows):
-            for c in range(cols):
-                out[r, c] = np.sum(padded[r : r + kh, c : c + kw] * k)
-        return out
+    try:
+        from scipy.signal import fftconvolve as _scipy_fftconvolve
+
+        def _conv2d(a, k):
+            return _scipy_fftconvolve(a, k, mode="same")
+    except ImportError:
+
+        def _conv2d(a, k):
+            padded = np.pad(a, ((ph, ph), (pw, pw)), mode="constant")
+            windows = np.lib.stride_tricks.sliding_window_view(padded, (kh, kw))
+            return np.einsum("ijkl,kl->ij", windows, k)
 
     mu1 = _conv2d(arr1, kernel)
     mu2 = _conv2d(arr2, kernel)
