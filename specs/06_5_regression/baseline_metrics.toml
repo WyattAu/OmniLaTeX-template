@@ -1,0 +1,37 @@
+# Performance Regression Baseline
+# Generated: 2026-05-26
+# Version: v2.1.0
+
+[build]
+single_example_avg_seconds = 15.0
+all_examples_48_jobs1_seconds = 480.0
+all_examples_48_jobs4_seconds = 140.0
+root_build_seconds = 30.0
+
+[tests]
+fast_suite_seconds = 5.0
+fast_suite_count = 770
+full_suite_seconds = 180.0
+
+[lean4]
+proof_verification_seconds = 5.0
+theorem_count = 198
+sorry_count = 0
+
+[documentation]
+mkdocs_build_seconds = 30.0
+site_size_mb = 50.0
+
+[docker]
+image_size_mb = 2800.0
+pull_seconds = 120.0
+
+[ssim]
+single_comparison_seconds = 0.5
+full_visual_regression_seconds = 30.0
+
+[cache]
+hit_rate_percent = 97.0
+cache_size_bytes = 8634
+cached_examples = 47
+total_examples = 48
