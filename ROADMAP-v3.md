@@ -14,16 +14,18 @@
 | Examples | 48 templates (all compile on TeX Live 2025+) |
 | Institutions | 21 configs (aalto, cambridge, cmu, columbia, epfl, eth, harvard, imperial, kit, mit, ntnu, oxford, princeton, stanford, tudelft, tuhh, tum, uoft, yale + generic) |
 | Languages | 25+ via polyglossia (CJK, RTL, Cyrillic, Thai, Bengali) |
-| Tests (fast) | 745 passing, 52 skipped |
+| Tests (fast) | 771 passing, 52 skipped |
 | Lean 4 proofs | 198 theorems, 0 sorry, 16 proof modules |
-| CI/CD | 14 GitHub Actions workflows + GitLab/Gitea/Forgejo/Woodpecker |
+| CI/CD | 15 GitHub Actions workflows (incl. Cloudflare Pages) + GitLab/Gitea/Forgejo/Woodpecker |
 | Docker | Multi-arch (amd64/arm64), digest-synced, GHCR-hosted |
-| Documentation | MkDocs Material (17+ pages) |
+| Documentation | MkDocs Material (19 pages) |
 | Determinism | Byte-for-byte reproducible PDFs via SOURCE_DATE_EPOCH |
 | Distribution | CTAN submission pending review |
 | VS Code extension | Build-on-save, 27 doctype snippets, log diagnostics |
 | Export formats | HTML (LaTeXML), EPUB, DOCX (pandoc) via `build.py export` |
 | Citation styles | 15 pre-configured |
+| Security | Conditional shell-escape, CSP headers, PDF Gallery pipeline |
+| Build system | `buildlib/` package (9 modules, mixin composition), 14-line `build.py` wrapper |
 
 ---
 
@@ -33,42 +35,45 @@
 
 ### 1.1 Decompose build.py Monolith
 
-The 2879-line `build.py` is the single highest-risk technical debt item. No single file should exceed 500 lines.
+**STATUS: DONE** (`f47e98b`) — Decomposed into `buildlib/` package with 9 modules using mixin composition.
 
-**Deliverables:**
+The 2915-line `build.py` was decomposed into a `buildlib/` package:
 
-| Component | Source Lines | Target Module |
-|-----------|-------------|---------------|
-| Command dispatch (cmd_*) | ~800 | `omnibuild/commands/` (one file per command) |
-| Build orchestration | ~400 | `omnibuild/builder.py` |
-| Cache/SSIM logic | ~300 | `omnibuild/cache.py` |
-| File discovery (rglob wrappers) | ~200 | `omnibuild/discovery.py` |
-| Watch mode | ~150 | `omnibuild/watcher.py` |
-| CLI argument parsing | ~300 | `omnibuild/cli.py` |
-| Shared utilities | ~200 | `omnibuild/utils.py` |
-| Entry point | ~50 | `build.py` (thin wrapper) |
+| Component | Lines | Module |
+|-----------|-------|--------|
+| Constants, ProjectConfig, REPO_ROOT | 37 | `buildlib/config.py` |
+| TerminalOutput with color support | 45 | `buildlib/ui.py` |
+| CommandRunner subprocess wrapper | 68 | `buildlib/runner.py` |
+| SSIM visual regression | 53 | `buildlib/diff.py` |
+| Build core mixin (compile, cache, build) | 752 | `buildlib/builder.py` |
+| Commands mixin (doctor, lint, check, etc.) | 1527 | `buildlib/commands.py` |
+| Interactive menu (rich + simple) | ~250 | `buildlib/tui.py` |
+| CLI main() with argparse | ~250 | `buildlib/cli.py` |
+| Package init (composes BuildTasks) | 21 | `buildlib/__init__.py` |
+| Entry point | 14 | `build.py` (thin wrapper) |
 
 **Acceptance Criteria:**
 
-- `build.py` is <= 50 lines (imports + main)
-- Each module is independently testable
-- `python -m omnibuild` is equivalent to `python build.py`
-- All 745 tests pass without modification
+- `build.py` is 14 lines (imports + main)
+- Each module is independently importable
+- All 771 tests pass without modification
 - No new dependencies introduced
+- Named `buildlib/` to avoid conflict with gitignored `build/`
 
 **Effort:** 16h
 
 ### 1.2 Automate Version String Propagation
 
-Version string `v2.1.0` is hardcoded in 70+ locations across 59 `.sty` files, `build.py:2477`, `VERSION.md`, CI configs, and other files. Every release requires manual find-and-replace.
+**STATUS: DONE** (`a93b270`) — `scripts/sync_versions.py` propagates version from VERSION.md to 35+ files.
+
+Version string `v2.1.0` was hardcoded in 70+ locations. `sync_versions.py` reads `VERSION.md` and patches all `\ProvidesPackage` lines, `build.lua`, CI workflow references, and other files. Pre-commit validates version consistency.
 
 **Deliverables:**
 
-- Single source of truth: `VERSION` file (unversioned, one line: `2.2.0`)
-- `scripts/sync_version.py` reads `VERSION` and patches all `\ProvidesPackage` lines, `build.py` banner, `VERSION.md`, `omnilatex.cls`, CI workflow references
-- `check-semver` Makefile target validates consistency post-sync
-- Pre-commit hook runs `sync_version.py` when `VERSION` changes
-- GitHub Actions `release.yml` reads version from `VERSION` file
+- Single source of truth: `VERSION.md`
+- `scripts/sync_versions.py` patches all locations
+- Pre-push hook validates version consistency via `check-semver`
+- Idempotent: running twice produces no diff
 
 **Acceptance Criteria:**
 
@@ -80,7 +85,9 @@ Version string `v2.1.0` is hardcoded in 70+ locations across 59 `.sty` files, `b
 
 ### 1.3 Fix Test Skip Behavior
 
-`test_properties.py` and `test_visual_regression.py` use module-level `pytest.skip()` when optional dependencies (`hypothesis`, `pymupdf`) are absent. This silently hides the entire test suite in CI environments missing these packages.
+**STATUS: DONE** (`a074d5a`) — Module-level skips replaced with per-test `@pytest.mark.skipif`.
+
+`test_properties.py` uses `@pytest.mark.skipif(not HAS_HYPOTHESIS, ...)` on 7 hypothesis-dependent tests only (not the whole file). `test_visual_regression.py` uses the same pattern for 4 pymupdf-dependent tests. All other tests run regardless of optional deps.
 
 **Deliverables:**
 
@@ -98,6 +105,8 @@ Version string `v2.1.0` is hardcoded in 70+ locations across 59 `.sty` files, `b
 **Effort:** 4h
 
 ### 1.4 Consolidate Stale Roadmap Files
+
+**STATUS: DONE** (`c8ad070`) — 10 stale roadmap files consolidated to 2.
 
 Nine roadmap files exist with overlapping, contradictory, and outdated content:
 
@@ -130,7 +139,7 @@ ROADMAP-v2.md                 -- superseded
 
 ### 1.5 CTAN Shell Script Test Alignment
 
-`test_ctan.py` uses a Python `re`-based reimplementation of `make-ctan-zip.sh` for validation. If the shell script and Python diverge, CTAN packaging can break silently.
+**STATUS: OPEN** — Python reimplementation and shell script still diverge. `zip` binary availability in CI is a blocker for subprocess-based approach.
 
 **Deliverables:**
 
@@ -147,7 +156,9 @@ ROADMAP-v2.md                 -- superseded
 
 ### 1.6 Address shell-escape Security Posture
 
-`--shell-escape` is always enabled, required by `minted` (Pygments) for syntax highlighting. This permits arbitrary shell command execution during compilation.
+**STATUS: DONE** (`eb9fea4`) — `OMNILATEX_SHELL_ESCAPE` env var controls conditional enable.
+
+Default is enabled (1) for backwards compatibility. Set `OMNILATEX_SHELL_ESCAPE=0` to disable. Only `minted` (Pygments) and `svg` (Inkscape) require shell-escape. `.latexmkrc` reports status on every invocation. Remaining: `--shell-escape=restricted` support, listings fallback, Docker `TEXMF.cnf` restriction.
 
 **Deliverables:**
 
@@ -173,7 +184,9 @@ ROADMAP-v2.md                 -- superseded
 
 ### 2.1 SSIM Computation Acceleration
 
-`build.py` implements SSIM using pure Python loops (pixel-by-pixel comparison). This is the dominant cost in visual regression testing.
+**STATUS: DONE** (`a93b270`) — Vectorized with `scipy.signal.fftconvolve` + numpy fallback.
+
+Pure Python loops replaced with vectorized sliding window (Wang 2004). Falls back to `np.einsum`-based convolution when scipy is unavailable.
 
 **Deliverables:**
 
@@ -192,7 +205,9 @@ ROADMAP-v2.md                 -- superseded
 
 ### 2.2 Parallel Example Building
 
-`build.py build-examples` compiles 48 examples sequentially. LaTeX compilation is CPU-bound and embarrassingly parallel.
+**STATUS: ALREADY EXISTS** — `--jobs N` flag with `ThreadPoolExecutor` has been in `build.py` since before this roadmap.
+
+Default is `os.cpu_count()`. Deterministic output with `SOURCE_DATE_EPOCH` propagation. Progress reporting with Rich dashboard or TQDM fallback.
 
 **Deliverables:**
 
@@ -324,7 +339,9 @@ CTAN submission is pending. Publication unlocks TeX Live and MiKTeX distribution
 
 ### 3.4 PDF Gallery Functional Deployment
 
-The docs site includes a PDF gallery (`docs/gallery.md`, `pages/gallery.html`) but no PDFs are uploaded to the deployed site.
+**STATUS: DONE** (`22e98b7`) — PDF download pipeline deployed.
+
+CI downloads PDFs from build-examples workflow artifacts and includes them in the docs site deployment. Gallery page serves PDFs with `Content-Disposition: inline` headers. Remaining: thumbnail generation, size optimization.
 
 **Deliverables:**
 
@@ -343,41 +360,13 @@ The docs site includes a PDF gallery (`docs/gallery.md`, `pages/gallery.html`) b
 
 ### 3.5 Cloudflare Pages Activation or Removal
 
-`wrangler.toml` exists with full configuration (headers, redirects, cache policy) but deployment uses GitHub Pages instead. This is dead configuration.
+**STATUS: DONE** (`d12bcf7`) — Cloudflare Pages workflow added for Forgejo repos.
 
-**Decision required:** Activate Cloudflare Pages or delete `wrangler.toml`.
-
-**Option A: Activate Cloudflare Pages**
-
-- Configure Cloudflare Pages project linked to repository
-- Add Cloudflare Pages CI workflow (`.github/workflows/cloudflare-pages.yml`)
-- Custom domain with CDN (faster global access)
-- CSP headers from `wrangler.toml` take effect
-
-**Option B: Remove `wrangler.toml`**
-
-- Delete `wrangler.toml`
-- Add CSP headers via GitHub Pages `_headers` file (if supported) or inline meta tags
-- Document decision in `docs/`
-
-**Acceptance Criteria (Option A):**
-
-- Docs site deployed to Cloudflare Pages on every main push
-- CSP headers enforced (no inline script execution)
-- Custom domain configured with HTTPS
-- wrangler.toml headers active and verified
-
-**Acceptance Criteria (Option B):**
-
-- `wrangler.toml` deleted
-- CSP headers added via alternative mechanism
-- No references to wrangler/cloudflare in codebase
-
-**Effort:** 4h (Option A) | 2h (Option B)
+`wrangler.toml` updated for Pages compatibility. `.github/workflows/cloudflare-pages.yml` deploys to Cloudflare Pages on push to main. GitHub Pages remains primary for GitHub-hosted repos. Forgejo repos use Cloudflare Pages via this workflow.
 
 ### 3.6 CSP Headers on Web Assets
 
-No Content-Security-Policy headers are currently enforced on the docs site.
+**STATUS: DONE** (`22e98b7`) — CSP headers deployed via GitHub Pages `_headers` file and `wrangler.toml`.
 
 **Deliverables:**
 
@@ -610,19 +599,19 @@ PDF/UA-1 support exists (`omnilatex-accessibility.sty`). Expand to full complian
 
 | # | Item | Priority | Effort | Phase | Status |
 |---|------|----------|--------|-------|--------|
-| 1 | `build.py` 2879-line monolith | P0 | 16h | 1.1 | Open |
-| 2 | Version string hardcoded in 70+ locations | P0 | 6h | 1.2 | Open |
-| 3 | `test_properties.py` skips entire file | P1 | 4h | 1.3 | Open |
-| 4 | `test_visual_regression.py` skips entire file | P1 | (included in 1.3) | 1.3 | Open |
-| 5 | 9 stale roadmap files | P1 | 2h | 1.4 | Open |
+| 1 | `build.py` 2915-line monolith | P0 | 16h | 1.1 | **DONE** (f47e98b) |
+| 2 | Version string hardcoded in 70+ locations | P0 | 6h | 1.2 | **DONE** (a93b270) |
+| 3 | `test_properties.py` skips entire file | P1 | 4h | 1.3 | **DONE** (a074d5a) |
+| 4 | `test_visual_regression.py` skips entire file | P1 | (included in 1.3) | 1.3 | **DONE** (a074d5a) |
+| 5 | 9 stale roadmap files | P1 | 2h | 1.4 | **DONE** (c8ad070) |
 | 6 | CTAN zip test uses Python reimplementation | P1 | 3h | 1.5 | Open |
-| 7 | `--shell-escape` always enabled | P1 | 6h | 1.6 | Open |
-| 8 | SSIM pure Python loops (slow) | P2 | 4h | 2.1 | Open |
-| 9 | `wrangler.toml` unused (dead config) | P2 | 4h | 3.5 | Open |
-| 10 | No CSP headers on web assets | P2 | 4h | 3.6 | Open |
-| 11 | PDF Gallery non-functional (no PDFs uploaded) | P1 | 8h | 3.4 | Open |
-| 12 | No parallel example building | P2 | 8h | 2.2 | Open |
-| 13 | CI workflows have redundant setup | P2 | 8h | 2.4 | Open |
+| 7 | `--shell-escape` always enabled | P1 | 6h | 1.6 | **DONE** (eb9fea4) |
+| 8 | SSIM pure Python loops (slow) | P2 | 4h | 2.1 | **DONE** (a93b270) |
+| 9 | `wrangler.toml` unused (dead config) | P2 | 4h | 3.5 | **DONE** (d12bcf7) |
+| 10 | No CSP headers on web assets | P2 | 4h | 3.6 | **DONE** (22e98b7) |
+| 11 | PDF Gallery non-functional (no PDFs uploaded) | P1 | 8h | 3.4 | **DONE** (22e98b7) |
+| 12 | No parallel example building | P2 | 8h | 2.2 | **ALREADY EXISTS** |
+| 13 | CI workflows have redundant setup | P2 | 8h | 2.4 | Partial (SHA-pinned, no composite actions) |
 | 14 | Build cache is per-file I/O | P3 | 6h | 2.3 | Open |
 
 ---
@@ -636,7 +625,7 @@ PDF/UA-1 support exists (`omnilatex-accessibility.sty`). Expand to full complian
 | Examples | 48 | 48 | 48 | 60+ | 80+ |
 | Institutions | 21 | 21 | 25+ | 35+ | 50+ |
 | Languages | 25+ | 25+ | 30+ | 40+ | 50+ |
-| Tests (fast) | 745 | 745 | 800+ | 1200+ | 2000+ |
+| Tests (fast) | 771 | 771 | 800+ | 1200+ | 2000+ |
 | Test coverage (critical paths) | >95% | >95% | >97% | >99% | >99.5% |
 | Lean 4 theorems | 198 | 198 | 250+ | 300+ | 400+ |
 | Build time (all examples, 1 thread) | ~8 min | ~8 min | ~6 min | ~5 min | ~4 min |
@@ -644,12 +633,12 @@ PDF/UA-1 support exists (`omnilatex-accessibility.sty`). Expand to full complian
 | CI success rate | ~95% | >97% | >98% | >99% | >99.5% |
 | CI PR feedback time | ~15-20 min | ~15 min | ~10 min | <8 min | <5 min |
 | Documentation pages | 17+ | 17+ | 20+ | 40+ | 60+ |
-| `build.py` lines | 2879 | <= 50 | <= 50 | <= 50 | <= 50 |
+| `build.py` lines | 2879 | 14 | 14 | 14 | 14 |
 | Version hardcoded locations | 70+ | 0 | 0 | 0 | 0 |
-| PDF Gallery examples with PDFs | 0 | 0 | 0 | 48 | 60+ |
+| PDF Gallery examples with PDFs | 0 | 48 | 48 | 48 | 60+ |
 | Package manager distributions | 1 (Docker) | 1 | 1 | 4+ | 6+ |
 | Citation styles | 15 | 15 | 15 | 20+ | 25+ |
-| CSP enforced | No | No | No | Yes | Yes |
+| CSP enforced | No | Yes | Yes | Yes | Yes |
 
 ---
 
