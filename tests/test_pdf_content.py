@@ -128,11 +128,12 @@ def _parse_log_warnings(log_path: Path) -> dict[str, list[str]]:
 
 # ── Examples known to have bibliography content ───────────────────────
 
-# Only examples with actual \cite commands AND \printbibliography.
-# Excludes examples that have bib infrastructure but zero \cite (no entries).
+# Only examples with actual \cite commands AND biblatex/biber (\addbibresource).
+# Excludes examples that use thebibliography (manual) or have \printbibliography
+# but zero \cite commands (no entries).
 EXAMPLES_WITH_BIB = {
     "article", "citation-styles", "journal",
-    "minimal-starter", "research-proposal", "thesis", "white-paper",
+    "minimal-starter", "research-proposal", "thesis",
 }
 
 # Examples where ?? is acceptable (e.g., beamer doesn't always number)
