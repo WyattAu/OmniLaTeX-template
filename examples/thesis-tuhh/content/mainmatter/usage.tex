@@ -192,17 +192,17 @@ Consider a simplified, manual example chain:
   \item You compile the file \emph{once}, \iecfeg{e.g.}\ using \texttt{lualatex}.
   \item A \texttt{test.aux} file (and probably others, \iecfeg{e.g.}\ \texttt{.toc}) will have been generated, as well as the \abb{portable_document_format} file itself.
 
-        The \abb{portable_document_format} has literal \textbf{??} markers where there should be references.
+        The \abb{portable_document_format} has literal \verb|??| markers where there should be references.
         This is because to resolve those references, and print \iecfeg{e.g.}\ the correct page number, \LaTeX{} needs to look into the \texttt{.aux} file.
         But that file was just generated and was not available yet for the first compilation run.
-  \item Hence, you compile again.
+   \item Hence, you compile again.
 
-        The \textbf{??} markers are now replaced by their properly spelled\-/out reference.
-        However, what if, hypothetically, one of these \textbf{??} substitutions now reads \emph{very super long reference to page 37 in the document}.
+        The \verb|??| markers are now replaced by their properly spelled\-/out reference.
+        However, what if, hypothetically, one of these \verb|??| substitutions now reads \emph{very super long reference to page 37 in the document}.
         It is so long that subsequent content has shifted again.
         That content is now on different pages.
         This triggered another change in the auxiliary files.
-  \item \label{item:last_compilation} You compile \emph{again}, the third time.
+   \item \label{item:last_compilation} You compile \emph{again}, the third time.
         Things have settled, no changes happened this time anymore.
         You are done.
 \end{enumerate}
@@ -211,10 +211,10 @@ Consider a simplified, manual example chain:
 However, it would compile \emph{an additional} time after \cref{item:last_compilation}, to make sure or because it cannot really be certain (just talking from experience here, not knowledge).
 So while you gain deterministic, automated builds, they will take much longer.
 
-What if you do not care if there are \textbf{??} markers left, undefined entries, shifted pages and so forth, maybe because you are only drafting things up?
+What if you do not care if there are \verb|??| markers left, undefined entries, shifted pages and so forth, maybe because you are only drafting things up?
 You can simply compile yourself once, manually, \iecfeg{e.g.}\ using \texttt{lualatex}.
 This will speed things up by a long shot, but is considered advanced usage.
-It does, as opposed to \texttt{latexmk}, not \enquote{just work} anymore, and beginners might wonder what those \textbf{??} are.
+It does, as opposed to \texttt{latexmk}, not \enquote{just work} anymore, and beginners might wonder what those \verb|??| are.
 Now that you know, you may handle them.
 
 \paragraph{Faster (\emph{incomplete}) compilation}
