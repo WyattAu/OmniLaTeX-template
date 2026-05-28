@@ -18,6 +18,7 @@ from buildlib.config import (
     FORCE_REBUILD_FLAG,
     INTERACTION_NONSTOP,
     LATEXMK_COMMAND,
+    LATEXMK_FORCE_CONTINUE,
     MAIN_TEX_FILENAME,
     MINTED_CACHE_SUBDIR,
     ProjectConfig,
@@ -300,7 +301,7 @@ class _BuildCore:
 
             # --- Start: EXACT reproduction of original script's core logic ---
             cmd = [LATEXMK_COMMAND]
-            latexmk_flags: list[str] = [INTERACTION_NONSTOP]
+            latexmk_flags: list[str] = [INTERACTION_NONSTOP, LATEXMK_FORCE_CONTINUE]
             if os.environ.get("OMNILATEX_FORCE_REBUILD") == "1":
                 latexmk_flags.append(FORCE_REBUILD_FLAG)
 

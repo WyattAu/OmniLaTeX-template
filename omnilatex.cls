@@ -375,6 +375,7 @@
 % Bibliography module uses KOMA-specific features; skip for beamer
 \ifomnilatex@beamer\else
     \RequirePackage{lib/references/omnilatex-biblio}
+    \RequirePackage{lib/references/omnilatex-citations}
 \fi
 
 % Plugin system (always available)

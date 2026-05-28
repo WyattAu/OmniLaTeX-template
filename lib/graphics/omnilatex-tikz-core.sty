@@ -12,7 +12,10 @@
 % Core TikZ and PGFPlots Packages
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\RequirePackage[{2021-05-15}]{pgfplots}% Also loads Tikz; v1.18+ for compat setting
+% pgfplots 1.18+ required for compat settings.
+% Date constraint removed for TeX Live 2025 compatibility.
+% pgfplots 1.18.2 ships with TeX Live 2025.
+\RequirePackage{pgfplots}% Also loads Tikz; v1.18+ for compat setting
 
 % For advanced table calcs, e.g. 'y expr' to mathematically process input data:
 \RequirePackage{pgfplotstable}

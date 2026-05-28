@@ -231,6 +231,19 @@ if (exists $ENV{'OMNILATEX_SKIP_BIB2GLS'} && $ENV{'OMNILATEX_SKIP_BIB2GLS'} eq '
 # glstex: generated from glossaries-extra
 push @generated_exts, 'loe', 'lol', 'lor', 'run.xml', 'glg', 'glstex';
 
+# Tell latexmk to rerun when ocgx2 reports unresolved OCG references.
+# ocgx2 emits: "Package ocgx2 Warning: Rerun to get OCG references right!"
+# Without this, latexmk may stop before OCG links are resolved.
+if ($] >= 5.018) {
+    $warn_search_re = qr{
+        Rerun\sto\sget\scross-references\sright
+        | Label\(s\)\smay\shave\schanged
+        | Rerun\sto\sget\sOCG\sreferences\sright
+        | Please\s\(re\)run\sBiber
+        | Rerun\sto\sget\s.*right
+    }x;
+}
+
 # Also delete the *.glstex files from package glossaries-extra. Problem is,
 # that that package generates files of the form "basename-digit.glstex" if
 # multiple glossaries are present. Latexmk looks for "basename.glstex" and so

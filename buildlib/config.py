@@ -13,6 +13,10 @@ MAIN_TEX_FILENAME = "main.tex"
 LATEXMK_COMMAND = "latexmk"
 INTERACTION_NONSTOP = "-interaction=nonstopmode"
 FORCE_REBUILD_FLAG = "-g"
+# Force latexmk to continue processing despite intermediate-pass errors.
+# Without this, latexmk stops on first-pass undefined refs/missing TOC errors,
+# preventing subsequent passes that would resolve them.
+LATEXMK_FORCE_CONTINUE = "-f"
 MINTED_CACHE_SUBDIR = "_minted"
 SVG_INKSCAPE_CACHE = "svg-inkscape"
 BUILD_EXAMPLES_SUBDIR = "examples"

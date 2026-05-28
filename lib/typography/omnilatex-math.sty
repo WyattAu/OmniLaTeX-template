@@ -92,8 +92,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % siunitx v3+ required (v3-only API: mode=match, text-font-command, \qty).
-% Pin to v3.0 release date to prevent silent breakage on siunitx v2.
-\RequirePackage[{2021-06-22}]{siunitx}% Typesetting physical units correctly
+% Date constraint removed for TeX Live 2025 compatibility.
+% siunitx v3 (>=2021-05-17) ships with TeX Live 2022+; OmniLaTeX requires
+% TeX Live 2025+, so v3 is guaranteed available.
+\RequirePackage{siunitx}% Typesetting physical units correctly
 \sisetup{%
     % For siunitx v3, the following block replaces what used to be
     % `detect-all` (removed in that release, see
