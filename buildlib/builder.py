@@ -316,7 +316,10 @@ class _BuildCore:
             # Use absolute paths to avoid thread-unsafe os.chdir().
             # The runner.run() call already sets cwd=example_dir.
             if self.force:
-                self.runner.run([LATEXMK_COMMAND, "-C"], cwd=example_dir)
+                self.runner.run(
+                    [LATEXMK_COMMAND, "-C", "-r", str(root_latexmkrc)],
+                    cwd=example_dir,
+                )
 
             for cache_dir in (
                 Path(MINTED_CACHE_SUBDIR),

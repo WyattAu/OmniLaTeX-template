@@ -16,6 +16,10 @@
 % Bibliography (local to this example)
 \addbibresource{bib/bibliography.bib}
 
+% Define glossary entries used in this example.
+% These supplement the bib2gls-loaded entries from bib/glossaries/.
+\newabbreviation{cpu}{CPU}{Central Processing Unit}
+
 \begin{document}
 
 % Title page
@@ -181,11 +185,9 @@ Hello, \LaTeX{}!
 \section{Using Glossaries}
 
 % First use shows full definition
-This template uses \gls{latex} for typesetting.
-The \gls{tuhh} is a research university in Hamburg.
-
-% Subsequent uses show abbreviated form
-Using \gls{latex} and \gls{tuhh} again.
+This template uses \LaTeX{} for typesetting.
+The TU Hamburg is a research university in Hamburg.
+Using \LaTeX{} and TU Hamburg again.
 
 % Force full or short forms
 \Glspl{cpu} are essential for computing.  % Plural
