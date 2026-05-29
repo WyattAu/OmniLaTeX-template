@@ -138,7 +138,8 @@ EXAMPLES_WITH_BIB = {
 
 # Examples where ?? is acceptable (e.g., beamer doesn't always number)
 EXAMPLES_ALLOW_UNRESOLVED = {
-    "manual",  # Pre-existing: glossary conflicts, counter overflow, 28+ cross-refs
+    # All cross-references now resolve. Keep this set as an escape hatch
+    # for any future examples that intentionally use ?? in prose.
 }
 
 # Equation-heavy examples to check numbering on
