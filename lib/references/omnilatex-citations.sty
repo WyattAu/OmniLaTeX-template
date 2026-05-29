@@ -33,9 +33,11 @@
 % ── Dispatcher ────────────────────────────────────────
 
 \newcommand{\citationstyle}[1]{%
-  \IfFileExists{biblatex-#1.sty}%
-    {\RequirePackage[#1]{biblatex-#1}}%
-    {}%
+  % Only load a dedicated biblatex-<style> package if biblatex has not
+  % been loaded yet.  OmniLaTeX always pre-loads biblatex with
+  % ext-authoryear (via omnilatex-biblio.sty), so loading another
+  % biblatex style on top would cause an option clash.
+  % Instead, apply style-specific options via \ExecuteBibliographyOptions.
   \@ifundefined{citestyle@#1}{%
     \citationstyle@unknown{#1}%
   }{%
