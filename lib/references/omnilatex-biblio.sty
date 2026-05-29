@@ -28,6 +28,10 @@
     % https://tex.stackexchange.com/a/211631/120853
     % Do not use hyperref for this
     backref,
+    % ext-authoryear sets giveninits=true which conflicts with uniquename=full.
+    % Preemptively set uniquename=init to suppress the biblatex warning:
+    % "<namepart>inits' conflicts with 'uniquename=full'"
+    uniquename=init,
     % url=false,% Still prints URL for @online, but nowhere else
     % doi=false,%
     % isbn=false,%
