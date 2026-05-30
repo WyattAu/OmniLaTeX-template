@@ -12,10 +12,12 @@
 % Glossaries Package
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% glossaries-extra v1.9 (2025-11-03) and glossaries v4.9 (2025-11-09) have
-% a version skew: glossaries-extra defines \glsfmtname with \newcommand at
-% its line 12686, but glossaries v4.9 (released 6 days later) also defines
-% it, causing "already defined".  Suppress with \let\glsmfu@checksetup.
+% glossaries-extra v1.9 (2025-11-03) has an internal bug: \glsfmtname is
+% defined twice during loading (\newcommand at line 12690 conflicts with an
+% earlier definition from glossaries-extra-abbrstyles.def). Both definitions
+% are functionally identical. This causes a non-fatal LaTeX Error ("already
+% defined") that -interaction=nonstopmode silently recovers from. PDF output
+% is correct. This will be fixed upstream in a future glossaries-extra release.
 % See: https://github.com/nlct/glossaries-extra/issues (upstream bug)
 \RequirePackage[% Initiate with package options for predefined styles
     nomain,% Nomain, aka no default glossary
@@ -26,14 +28,6 @@
     numbers,% constants like Pi
     toc=true,% Toggle inclusion in Table of Contents
 ]{glossaries-extra}% Also see https://tex.stackexchange.com/q/477658/120853
-
-% Workaround: glossaries v4.9 defines \glsfmtname before glossaries-extra
-% redefines it.  Let glossaries-extra's \newcommand succeed by undefining
-% first (the definitions are identical).
-\@ifundefined{glsfmtname}{}{%
-  \let\glsfmtname\@undefined
-  \let\Glsfmtname\@undefined
-}
 
 \RequirePackage{longtable}
 
