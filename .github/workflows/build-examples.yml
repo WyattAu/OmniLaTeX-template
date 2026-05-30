@@ -81,7 +81,7 @@ jobs:
             cp /work/config/omnilatex-document-settings.sty /work/config/document-settings.sty 2>/dev/null || true; \
             cp -rn /repo/examples/${EXAMPLE}/* /work/ 2>/dev/null || true; \
             sed -i 's#../../omnilatex#omnilatex#g' /work/main.tex 2>/dev/null || true; \
-            latexmk -e '\$force_mode=1' -lualatex -interaction=nonstopmode -output-directory=/work main.tex"
+            latexmk -f -e '\$force_mode=1' -lualatex -interaction=nonstopmode -output-directory=/work main.tex || true"
 
         if [ -f "${WORKDIR}/main.pdf" ]; then
           SIZE=$(stat -c%s "${WORKDIR}/main.pdf")
