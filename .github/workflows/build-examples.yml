@@ -33,11 +33,8 @@ jobs:
       id: list
       run: |
         EXAMPLES=$(ls -d examples/*/main.tex 2>/dev/null | sed 's|examples/||;s|/main.tex||' | jq -R -s -c 'split("\n") | map(select(length > 0))')
-        # Add root document as a special example
-        ROOT=$(jq -n --argjson arr "$EXAMPLES" '$arr + ["main"]' | jq -c '.')
-        echo "examples=$ROOT" >> "$GITHUB_OUTPUT"
+        echo "examples=$EXAMPLES" >> "$GITHUB_OUTPUT"
         COUNT=$(echo "$ROOT" | jq 'length')
-        echo "Discovered ${COUNT} examples (including root)"
 
     outputs:
       examples: ${{ steps.list.outputs.examples }}
@@ -72,12 +69,6 @@ jobs:
         mkdir -p "${WORKDIR}"
 
         if [ "${EXAMPLE}" = "main" ]; then
-          # Root document: copy from repo root
-          COPY_CMD="cp /repo/main.tex /work/ 2>/dev/null || true"
-        else
-          # Examples: copy from examples/ subdirectory
-          COPY_CMD="cp -rn /repo/examples/${EXAMPLE}/* /work/ 2>/dev/null || true"
-        fi
 
         docker run --rm \
           -v "$GITHUB_WORKSPACE:/repo" \
