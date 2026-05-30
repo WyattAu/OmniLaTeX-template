@@ -81,7 +81,7 @@ jobs:
             cp /work/config/omnilatex-document-settings.sty /work/config/document-settings.sty 2>/dev/null || true; \
             cp /repo/examples/${EXAMPLE}/* /work/; \
             sed -i 's#../../omnilatex#omnilatex#g' /work/main.tex 2>/dev/null || true; \
-            latexmk -lualatex -interaction=nonstopmode -output-directory=/work main.tex"
+            latexmk -lualatex -interaction=scrollmode -output-directory=/work main.tex"
 
         if [ -f "${WORKDIR}/main.pdf" ]; then
           cp "${WORKDIR}/main.pdf" "/tmp/${EXAMPLE}.pdf"
