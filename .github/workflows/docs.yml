@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Build Examples"]
+    types: [completed]
 
 permissions:
   contents: read
@@ -47,11 +50,13 @@ jobs:
 
     - name: Download PDFs from build-examples workflow
       continue-on-error: true
+      env:
+        GH_TOKEN: ${{ github.token }}
       run: |
-        RUN_ID=$(gh run list -w "Build Examples" -b main --status success -L 1 --json databaseId -q '.[0].databaseId') || true
+        RUN_ID=$(gh run list -w "Build Examples" -b main --status success -L 1 --json databaseId -q '.[0].databaseId' 2>/dev/null) || true
         if [ -n "$RUN_ID" ]; then
           mkdir -p site/pdfs
-          gh run download "$RUN_ID" -D /tmp/pdf-artifacts || true
+          gh run download "$RUN_ID" -D /tmp/pdf-artifacts 2>/dev/null || true
           find /tmp/pdf-artifacts -name '*.pdf' -exec cp {} site/pdfs/ \;
           rm -rf /tmp/pdf-artifacts
           echo "Downloaded $(ls site/pdfs/*.pdf 2>/dev/null | wc -l) PDFs"
