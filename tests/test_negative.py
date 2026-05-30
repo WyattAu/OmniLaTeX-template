@@ -21,7 +21,7 @@ def compile_tex(tex_content: str, timeout: int = 120) -> tuple:
     with tempfile.TemporaryDirectory() as tmpdir:
         tex_file = Path(tmpdir) / "test.tex"
         tex_file.write_text(tex_content)
-        for rel in ["config/document-settings.sty", "bib/bibliography.bib"]:
+        for rel in ["config/omnilatex-document-settings.sty", "bib/bibliography.bib"]:
             src = PROJECT_ROOT / rel
             if src.exists():
                 dst = Path(tmpdir) / rel

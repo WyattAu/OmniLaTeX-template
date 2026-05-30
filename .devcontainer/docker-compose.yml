@@ -14,7 +14,7 @@ services:
     # Mount the entire project directory into the container's workspace.
     # Using :cached improves performance on macOS
     volumes:
-      - ..:/workspace:cached
+    - ..:/workspace:cached
 
     # CRITICAL FIX: Override the image's ENTRYPOINT.
     # We replace the default `latexmk` executable with a long-running
@@ -29,12 +29,12 @@ services:
     # Set environment variables
     environment:
       # Signal that we are inside the container
-      - IS_OMNILATEX_CONTAINER=true
+    - IS_OMNILATEX_CONTAINER=true
       # Default to dev mode for faster local development
-      - BUILD_MODE=dev
+    - BUILD_MODE=dev
       # Optimize Python
-      - PYTHONUNBUFFERED=1
-      - PYTHONDONTWRITEBYTECODE=1
+    - PYTHONUNBUFFERED=1
+    - PYTHONDONTWRITEBYTECODE=1
 
     # Working directory
     working_dir: /workspace

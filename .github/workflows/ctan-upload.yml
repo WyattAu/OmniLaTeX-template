@@ -44,20 +44,17 @@ jobs:
       id: version
       run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
-    - name: Generate changelog
+    - name: Generate changelog (human-readable announcement)
       id: changelog
       run: |
-        CURRENT="${GITHUB_REF_NAME}"
-        PREV=$(git tag --sort=-version:refname | grep -v "^${CURRENT}$" | head -1 || true)
-        if [ -n "$PREV" ]; then
-          LOG=$(git log --oneline "${PREV}..${CURRENT}")
-        else
-          LOG=$(git log --oneline -20)
-        fi
-        # Escape for multiline output
+        CHANGELOG="OmniLaTeX v${GITHUB_REF_NAME#v}: A modular KOMA-Script document class for LuaLaTeX.
+        Supports multiple document types (thesis, article, CV, presentation, poster, letter,
+        and more), institutional configurations, and multi-language output via polyglossia.
+        CI-tested on TeX Live. Docker and Nix reproducible builds available.
+        See https://github.com/WyattAu/OmniLaTeX-template for full documentation."
         {
           echo "changelog<<EOF"
-          echo "${LOG:-Release ${CURRENT}}"
+          echo "$CHANGELOG"
           echo "EOF"
         } >> "$GITHUB_OUTPUT"
 

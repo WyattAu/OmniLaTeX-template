@@ -29,8 +29,8 @@ def _build_ctan_zip_with_python(output_path):
 
     (pkg_dir / "config" / "document-types").mkdir(parents=True, exist_ok=True)
     shutil.copy2(
-        REPO_ROOT / "config" / "document-settings.sty",
-        pkg_dir / "config" / "document-settings.sty",
+        REPO_ROOT / "config" / "omnilatex-document-settings.sty",
+        pkg_dir / "config" / "omnilatex-document-settings.sty",
     )
     if (REPO_ROOT / "config" / "document-types").is_dir():
         for item in (REPO_ROOT / "config" / "document-types").iterdir():
@@ -72,9 +72,9 @@ def _build_overleaf_zip_with_python(example_name, output_path):
     shutil.copytree(
         REPO_ROOT / "config" / "document-types", pkg_dir / "config" / "document-types"
     )
-    if (REPO_ROOT / "config" / "document-settings.sty").is_file():
+    if (REPO_ROOT / "config" / "omnilatex-document-settings.sty").is_file():
         shutil.copy2(
-            REPO_ROOT / "config" / "document-settings.sty",
+            REPO_ROOT / "config" / "omnilatex-document-settings.sty",
             pkg_dir / "config" / "document-settings.sty",
         )
     if (REPO_ROOT / "bib").is_dir():
@@ -163,8 +163,8 @@ class TestCTANZip:
         with zipfile.ZipFile(str(ctan_zip_path)) as zf:
             names = zf.namelist()
         assert any(
-            "document-settings.sty" in n for n in names
-        ), "omnilatex.zip missing document-settings.sty"
+            "omnilatex-document-settings.sty" in n for n in names
+        ), "omnilatex.zip missing omnilatex-document-settings.sty"
 
     def test_zip_contains_bib(self, ctan_zip_path):
         with zipfile.ZipFile(str(ctan_zip_path)) as zf:

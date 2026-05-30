@@ -49,37 +49,20 @@ EQUATION_LABEL_RE = re.compile(r"\((\d+)\)")
 
 # ── LaTeX log warning patterns ────────────────────────────────────────
 
-LOG_UNDEFINED_CITE = re.compile(
-    r"Citation [`']([^']+)' on page \d+ undefined"
-)
-LOG_UNDEFINED_REF = re.compile(
-    r"Reference [`']([^']+)' on page \d+ undefined"
-)
-LOG_MULTIPLY_DEFINED = re.compile(
-    r"Label [`']([^']+)' multiply defined"
-)
-LOG_RERUN_CROSSREF = re.compile(
-    r"Rerun to get .*right"
-)
-LOG_RERUN_BIBLATEX = re.compile(
-    r"Please rerun LaTeX.*biblatex"
-)
-LOG_ERROR = re.compile(
-    r"^!", re.MULTILINE
-)
-LOG_MISSING_PACKAGE = re.compile(
-    r"File `([^']+)' not found"
-)
+LOG_UNDEFINED_CITE = re.compile(r"Citation [`']([^']+)' on page \d+ undefined")
+LOG_UNDEFINED_REF = re.compile(r"Reference [`']([^']+)' on page \d+ undefined")
+LOG_MULTIPLY_DEFINED = re.compile(r"Label [`']([^']+)' multiply defined")
+LOG_RERUN_CROSSREF = re.compile(r"Rerun to get .*right")
+LOG_RERUN_BIBLATEX = re.compile(r"Please rerun LaTeX.*biblatex")
+LOG_ERROR = re.compile(r"^!", re.MULTILINE)
+LOG_MISSING_PACKAGE = re.compile(r"File `([^']+)' not found")
 
 
 def _get_example_pdfs() -> list[tuple[str, Path]]:
     """Return list of (name, pdf_path) for all built example PDFs."""
     if not EXAMPLES_DIR.is_dir():
         return []
-    return sorted(
-        (p.stem, p)
-        for p in EXAMPLES_DIR.glob("*.pdf")
-    )
+    return sorted((p.stem, p) for p in EXAMPLES_DIR.glob("*.pdf"))
 
 
 def _extract_text(pdf_path: Path) -> str:
@@ -118,9 +101,7 @@ def _parse_log_warnings(log_path: Path) -> dict[str, list[str]]:
         "rerun_crossref": LOG_RERUN_CROSSREF.findall(log_text),
         "rerun_biblatex": LOG_RERUN_BIBLATEX.findall(log_text),
         "errors": [
-            line.strip()
-            for line in log_text.splitlines()
-            if LOG_ERROR.match(line)
+            line.strip() for line in log_text.splitlines() if LOG_ERROR.match(line)
         ],
         "missing_packages": LOG_MISSING_PACKAGE.findall(log_text),
     }
@@ -132,8 +113,12 @@ def _parse_log_warnings(log_path: Path) -> dict[str, list[str]]:
 # Excludes examples that use thebibliography (manual) or have \printbibliography
 # but zero \cite commands (no entries).
 EXAMPLES_WITH_BIB = {
-    "article", "citation-styles", "journal",
-    "minimal-starter", "research-proposal", "thesis",
+    "article",
+    "citation-styles",
+    "journal",
+    "minimal-starter",
+    "research-proposal",
+    "thesis",
 }
 
 # Examples where ?? is acceptable (e.g., beamer doesn't always number)
@@ -187,9 +172,7 @@ class TestPDFCrossReferences:
         [(n, p) for n, p in _get_example_pdfs() if n in EXAMPLES_WITH_BIB],
         ids=[n for n, _ in _get_example_pdfs() if n in EXAMPLES_WITH_BIB],
     )
-    def test_no_unresolved_citations(
-        self, name: str, pdf_path: Path
-    ) -> None:
+    def test_no_unresolved_citations(self, name: str, pdf_path: Path) -> None:
         """Cited documents should not have bare [?] citation markers."""
         text = _extract_text(pdf_path)
 
@@ -212,9 +195,7 @@ class TestPDFBibliography:
         [(n, p) for n, p in _get_example_pdfs() if n in EXAMPLES_WITH_BIB],
         ids=[n for n, _ in _get_example_pdfs() if n in EXAMPLES_WITH_BIB],
     )
-    def test_bibliography_section_present(
-        self, name: str, pdf_path: Path
-    ) -> None:
+    def test_bibliography_section_present(self, name: str, pdf_path: Path) -> None:
         """Documents with .bib files should have a bibliography/references section."""
         text = _extract_text(pdf_path)
         text_lower = text.lower()
@@ -232,18 +213,16 @@ class TestPDFBibliography:
                 "références",
             ]
         )
-        assert has_bib_section, (
-            f"{name}: expected a bibliography/references section but found none"
-        )
+        assert (
+            has_bib_section
+        ), f"{name}: expected a bibliography/references section but found none"
 
     @pytest.mark.parametrize(
         "name,pdf_path",
         [(n, p) for n, p in _get_example_pdfs() if n in EXAMPLES_WITH_BIB],
         ids=[n for n, _ in _get_example_pdfs() if n in EXAMPLES_WITH_BIB],
     )
-    def test_bibliography_has_entries(
-        self, name: str, pdf_path: Path
-    ) -> None:
+    def test_bibliography_has_entries(self, name: str, pdf_path: Path) -> None:
         """Bibliography section should contain at least one entry."""
         text = _extract_text(pdf_path)
         text_lower = text.lower()
@@ -283,9 +262,7 @@ class TestPDFEquations:
         [(n, p) for n, p in _get_example_pdfs() if n in EQUATION_EXAMPLES],
         ids=[n for n, _ in _get_example_pdfs() if n in EQUATION_EXAMPLES],
     )
-    def test_equation_numbering_sequential(
-        self, name: str, pdf_path: Path
-    ) -> None:
+    def test_equation_numbering_sequential(self, name: str, pdf_path: Path) -> None:
         """Equation numbers should be sequential (1, 2, 3, ...) with no gaps."""
         text = _extract_text(pdf_path)
 
@@ -370,9 +347,9 @@ class TestLaTeXLogWarnings:
 
         warnings = _parse_log_warnings(log_path)
         undef = warnings.get("undefined_citations", [])
-        assert not undef, (
-            f"{name}: {len(undef)} undefined citations in log: {undef[:10]}"
-        )
+        assert (
+            not undef
+        ), f"{name}: {len(undef)} undefined citations in log: {undef[:10]}"
 
     @pytest.mark.parametrize(
         "name",
@@ -387,9 +364,9 @@ class TestLaTeXLogWarnings:
 
         warnings = _parse_log_warnings(log_path)
         undef = warnings.get("undefined_references", [])
-        assert not undef, (
-            f"{name}: {len(undef)} undefined references in log: {undef[:10]}"
-        )
+        assert (
+            not undef
+        ), f"{name}: {len(undef)} undefined references in log: {undef[:10]}"
 
     @pytest.mark.parametrize(
         "name",
@@ -422,9 +399,7 @@ class TestLaTeXLogWarnings:
 
         warnings = _parse_log_warnings(log_path)
         multi = warnings.get("multiply_defined_labels", [])
-        assert not multi, (
-            f"{name}: {len(multi)} multiply-defined labels: {multi[:10]}"
-        )
+        assert not multi, f"{name}: {len(multi)} multiply-defined labels: {multi[:10]}"
 
     @pytest.mark.parametrize(
         "name",
@@ -441,7 +416,8 @@ class TestLaTeXLogWarnings:
         errors = warnings.get("errors", [])
         # Filter out known non-error "!" lines
         real_errors = [
-            e for e in errors
+            e
+            for e in errors
             if not any(
                 skip in e
                 for skip in [
@@ -454,8 +430,7 @@ class TestLaTeXLogWarnings:
             )
         ]
         assert not real_errors, (
-            f"{name}: {len(real_errors)} LaTeX errors in log: "
-            f"{real_errors[:5]}"
+            f"{name}: {len(real_errors)} LaTeX errors in log: " f"{real_errors[:5]}"
         )
 
 
@@ -469,9 +444,7 @@ class TestPDFStructuralIntegrity:
         _get_example_pdfs(),
         ids=[n for n, _ in _get_example_pdfs()],
     )
-    def test_pdf_has_nonblank_pages(
-        self, name: str, pdf_path: Path
-    ) -> None:
+    def test_pdf_has_nonblank_pages(self, name: str, pdf_path: Path) -> None:
         """Every page should have extractable text (not blank/white pages)."""
         doc = fitz.open(str(pdf_path))
         blank_pages: list[int] = []
@@ -482,18 +455,16 @@ class TestPDFStructuralIntegrity:
         doc.close()
 
         # Allow up to 1 blank page (some doctypes have intentional blanks)
-        assert len(blank_pages) <= 1, (
-            f"{name}: {len(blank_pages)} blank pages: {blank_pages}"
-        )
+        assert (
+            len(blank_pages) <= 1
+        ), f"{name}: {len(blank_pages)} blank pages: {blank_pages}"
 
     @pytest.mark.parametrize(
         "name,pdf_path",
         [(n, p) for n, p in _get_example_pdfs() if n in EXAMPLES_WITH_BIB],
         ids=[n for n, _ in _get_example_pdfs() if n in EXAMPLES_WITH_BIB],
     )
-    def test_citation_keys_rendered(
-        self, name: str, pdf_path: Path
-    ) -> None:
+    def test_citation_keys_rendered(self, name: str, pdf_path: Path) -> None:
         """Citations in text should render as keys or author-year, not raw code."""
         text = _extract_text(pdf_path)
 
@@ -520,12 +491,12 @@ class TestPDFStructuralIntegrity:
 
         # Raw \ref{} or \eqref{} should never appear in rendered text body
         raw_ref = re.findall(r"\\(?:eqref|autoref)\{[^}]+\}", text)
-        assert not raw_ref, (
-            f"{name}: raw LaTeX ref commands found in PDF: {raw_ref[:5]}"
-        )
+        assert (
+            not raw_ref
+        ), f"{name}: raw LaTeX ref commands found in PDF: {raw_ref[:5]}"
 
         # Raw \ref{} or \eqref{} should never appear
         raw_ref = re.findall(r"\\(?:ref|eqref|autoref|cref)\{[^}]+\}", text)
-        assert not raw_ref, (
-            f"{name}: raw LaTeX ref commands found in PDF: {raw_ref[:5]}"
-        )
+        assert (
+            not raw_ref
+        ), f"{name}: raw LaTeX ref commands found in PDF: {raw_ref[:5]}"

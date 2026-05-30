@@ -32,14 +32,14 @@ set -euo pipefail
 # ── Configuration ──────────────────────────────────────────────────────────
 CTAN_BASE="https://ctan.org"
 PKG_NAME="omnilatex"
-CTAN_PATH="macros/latex/contrib/omnilatex"
+CTAN_PATH="macros/luatex/latex/omnilatex"
 LICENSE="apache2"
-HOMEPAGE="https://github.com/WyattAu/OmniLaTeX-template"
+HOMEPAGE=""  # Omitted per CTAN guidance: redundant with REPOSITORY
 BUG_TRACKER="https://github.com/WyattAu/OmniLaTeX-template/issues"
 REPOSITORY="https://github.com/WyattAu/OmniLaTeX-template"
 SUPPORT_URL="https://github.com/WyattAu/OmniLaTeX-template/discussions"
-SUMMARY="Comprehensive KOMA-Script LaTeX template with 26 document types, 21 institutions, and 18 languages"
-DESCRIPTION="OmniLaTeX is a comprehensive KOMA-Script-based LaTeX template providing 26 document types (thesis, dissertation, presentation, CV, white paper, invoice, recipe, and more), 21 institutional configurations, and support for 18 languages with full i18n. It uses a modular architecture with a single class file delegating to specialized modules for fonts, colors, floats, tables, and document types. Designed for both novice and advanced users with sensible defaults and extensive customization. All document types are CI-tested."
+SUMMARY="Modular KOMA-Script document class with institutional support and multi-language output"
+DESCRIPTION="OmniLaTeX is a modular KOMA-Script-based LaTeX document class supporting multiple document types (thesis, article, CV, presentation, poster, letter, and more), institutional configurations, and multi-language output via polyglossia. It uses a single class file delegating to specialized modules for fonts, colors, floats, tables, and document types. Designed for both novice and advanced users with sensible defaults and extensive customization. Requires LuaLaTeX."
 USER_AGENT="OmniLaTeX-CTAN-Uploader/1.0 (github.com/WyattAu/OmniLaTeX-template)"
 
 # ── Parse arguments ────────────────────────────────────────────────────────
@@ -49,7 +49,7 @@ ZIP_PATH=""
 EMAIL="${CTAN_EMAIL:-}"
 AUTHOR="${CTAN_AUTHOR:-Wyatt Au}"
 CHANGELOG=""
-ADMIN_NOTE="Uploaded automatically via OmniLaTeX CTAN upload script"
+ADMIN_NOTE="Manual upload via OmniLaTeX CTAN upload script v1.0"
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -215,16 +215,17 @@ fi
 
 # 2d. Validate URLs are reachable
 declare -A URL_CHECKS=(
-    ["homepage"]="$HOMEPAGE"
     ["repository"]="$REPOSITORY"
     ["bugs"]="$BUG_TRACKER"
     ["support"]="$SUPPORT_URL"
 )
 for URL_LABEL in "${!URL_CHECKS[@]}"; do
     URL_VAL="${URL_CHECKS[$URL_LABEL]}"
-    URL_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL_VAL" 2>/dev/null || echo "000")
-    if [[ "$URL_STATUS" != "200" ]]; then
-        warn "  ${URL_LABEL} URL returned HTTP ${URL_STATUS}: ${URL_VAL}"
+    if [ -n "$URL_VAL" ]; then
+        URL_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL_VAL" 2>/dev/null || echo "000")
+        if [[ "$URL_STATUS" != "200" ]]; then
+            warn "  ${URL_LABEL} URL returned HTTP ${URL_STATUS}: ${URL_VAL}"
+        fi
     fi
 done
 info "  URL reachability: checked"
@@ -277,7 +278,6 @@ RESPONSE=$(curl -s -w "\n__HTTP_CODE__%{http_code}" \
     -F "licenses=${LICENSE}" \
     -F "announcement=${CHANGELOG}" \
     -F "note=${ADMIN_NOTE}" \
-    -F "home=${HOMEPAGE}" \
     -F "bugs=${BUG_TRACKER}" \
     -F "repository=${REPOSITORY}" \
     -F "support=${SUPPORT_URL}" \

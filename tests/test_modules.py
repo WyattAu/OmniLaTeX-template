@@ -183,10 +183,10 @@ class TestModuleFileIntegrity:
 
 class TestConfigFileValidation:
     def test_document_settings_exists(self, repo_root):
-        assert (repo_root / "config" / "document-settings.sty").is_file()
+        assert (repo_root / "config" / "omnilatex-document-settings.sty").is_file()
 
     def test_document_settings_has_override_commands(self, repo_root):
-        text = _read(repo_root / "config" / "document-settings.sty")
+        text = _read(repo_root / "config" / "omnilatex-document-settings.sty")
         for cmd in DOCUMENT_SETTINGS_COMMANDS:
             assert cmd in text, f"document-settings.sty missing {cmd}"
 

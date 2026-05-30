@@ -16,6 +16,7 @@ Run the build script to create a new institution from the generic template:
     python build.py scaffold-institution <institution-name>
 
 This creates `config/institutions/<institution-name>/` with:
+
 - `<institution-name>.sty` -- the configuration file
 - `assets/logos/<institution-name>/` -- directory for logo files
 
@@ -35,6 +36,7 @@ Required fields:
 ### 3. Add Logo Files
 
 Place logo files in `assets/logos/<institution-name>/`:
+
 - `logo.pdf` -- vector logo for PDF output
 - `logo.png` -- raster logo for HTML preview (optional)
 

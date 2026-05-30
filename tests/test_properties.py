@@ -826,8 +826,8 @@ class TestFileStructureIntegrity:
                     )
 
     def test_config_document_settings_sty_exists(self):
-        settings = PROJECT_ROOT / "config" / "document-settings.sty"
-        assert settings.is_file(), "config/document-settings.sty not found"
+        settings = PROJECT_ROOT / "config" / "omnilatex-document-settings.sty"
+        assert settings.is_file(), "config/omnilatex-document-settings.sty not found"
 
     def test_lib_subdirectories_nonempty(self):
         lib_dir = PROJECT_ROOT / "lib"

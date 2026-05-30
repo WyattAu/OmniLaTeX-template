@@ -20,7 +20,7 @@ cp -r "$REPO_ROOT/lib" "$TDS_DIR/tex/latex/$PKG_NAME/lib"
 
 mkdir -p "$TDS_DIR/tex/latex/$PKG_NAME/config/document-types"
 mkdir -p "$TDS_DIR/tex/latex/$PKG_NAME/config/institutions"
-cp "$REPO_ROOT/config/document-settings.sty" "$TDS_DIR/tex/latex/$PKG_NAME/config/"
+cp "$REPO_ROOT/config/omnilatex-document-settings.sty" "$TDS_DIR/tex/latex/$PKG_NAME/config/"
 cp -r "$REPO_ROOT/config/document-types/." "$TDS_DIR/tex/latex/$PKG_NAME/config/document-types/"
 cp -r "$REPO_ROOT/config/institutions/." "$TDS_DIR/tex/latex/$PKG_NAME/config/institutions/"
 
@@ -49,18 +49,48 @@ find "$TDS_DIR" -name "*.aux" -o -name "*.log" -o -name "*.pdf" \
 mkdir -p "$REPO_ROOT/ctan"
 (cd "$TDS_DIR" && zip -r "$REPO_ROOT/ctan/${PKG_NAME}.tds.zip" .)
 
-# ── Build CTAN package zip ───────────────────────────────────────────────────
+# ── Build CTAN package zip (TDS + flat tree) ──────────────────────────────────
+CTAN_PKG="$CTAN_DIR/$PKG_NAME"
+mkdir -p "$CTAN_PKG"
+
+# Flat tree: all installable files under omnilatex/
+cp "$REPO_ROOT/omnilatex.cls" "$CTAN_PKG/"
+cp -r "$REPO_ROOT/lib" "$CTAN_PKG/lib"
+
+mkdir -p "$CTAN_PKG/config/document-types"
+mkdir -p "$CTAN_PKG/config/institutions"
+cp "$REPO_ROOT/config/omnilatex-document-settings.sty" "$CTAN_PKG/config/"
+cp -r "$REPO_ROOT/config/document-types/." "$CTAN_PKG/config/document-types/"
+cp -r "$REPO_ROOT/config/institutions/." "$CTAN_PKG/config/institutions/"
+
+mkdir -p "$CTAN_PKG/bib"
+if [ -f "$REPO_ROOT/bib/bibliography.bib" ]; then
+    cp "$REPO_ROOT/bib/bibliography.bib" "$CTAN_PKG/bib/"
+fi
+
+# README + LICENSE at top level inside CTAN zip (not inside omnilatex/)
 cp "$REPO_ROOT/CTAN_README.txt" "$CTAN_DIR/README"
 cp "$REPO_ROOT/LICENSE" "$CTAN_DIR/"
 
-CTAN_FILES="README LICENSE ${PKG_NAME}.tds.zip"
-if [ -f "$TDS_DIR/doc/latex/$PKG_NAME/${PKG_NAME}.pdf" ]; then
-    cp "$TDS_DIR/doc/latex/$PKG_NAME/${PKG_NAME}.pdf" "$CTAN_DIR/"
-    CTAN_FILES="$CTAN_FILES ${PKG_NAME}.pdf"
-fi
-
+# TDS zip goes alongside the flat tree
 TDS_ZIP="$REPO_ROOT/ctan/${PKG_NAME}.tds.zip"
 cp "$TDS_ZIP" "$CTAN_DIR/"
+
+# Documentation PDF
+DOC_PDF=""
+if [ -f "$TDS_DIR/doc/latex/$PKG_NAME/${PKG_NAME}.pdf" ]; then
+    cp "$TDS_DIR/doc/latex/$PKG_NAME/${PKG_NAME}.pdf" "$CTAN_DIR/"
+    DOC_PDF="${PKG_NAME}.pdf"
+fi
+
+# Clean build artifacts from flat tree
+find "$CTAN_PKG" -name "*.aux" -o -name "*.log" -o -name "*.pdf" \
+    -o -name "*.fdb_*" -o -name "*.fls" -o -name "*.synctex.gz" \
+    -o -name "__pycache__" -o -name ".git" -type d \
+    -exec rm -rf {} + 2>/dev/null || true
+
+CTAN_FILES="README LICENSE $PKG_NAME ${PKG_NAME}.tds.zip"
+[ -n "$DOC_PDF" ] && CTAN_FILES="$CTAN_FILES $DOC_PDF"
 (cd "$CTAN_DIR" && zip -r "$REPO_ROOT/ctan/${PKG_NAME}.zip" $CTAN_FILES)
 
 # ── Also build simple flat zip (for non-TDS distribution) ────────────────────
@@ -70,7 +100,7 @@ cp -r "$REPO_ROOT/lib" "$PKG_DIR/lib"
 
 mkdir -p "$PKG_DIR/config/document-types"
 mkdir -p "$PKG_DIR/config/institutions"
-cp "$REPO_ROOT/config/document-settings.sty" "$PKG_DIR/config/"
+cp "$REPO_ROOT/config/omnilatex-document-settings.sty" "$PKG_DIR/config/"
 cp -r "$REPO_ROOT/config/document-types/." "$PKG_DIR/config/document-types/"
 cp -r "$REPO_ROOT/config/institutions/." "$PKG_DIR/config/institutions/"
 

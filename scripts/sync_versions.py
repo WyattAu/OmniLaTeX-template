@@ -138,8 +138,8 @@ def sync(dry_run: bool) -> int:
     for sty in _file_paths("config/document-types/*.sty"):
         changed |= _update_file(sty, sty_pat, rf"\g<1>{date_str} v{semver}", dry_run)
 
-    # --- config/document-settings.sty ---
-    settings = ROOT / "config" / "document-settings.sty"
+    # --- config/omnilatex-document-settings.sty ---
+    settings = ROOT / "config" / "omnilatex-document-settings.sty"
     if settings.exists():
         changed |= _update_file(
             settings, sty_pat, rf"\g<1>{date_str} v{semver}", dry_run

@@ -33,7 +33,7 @@ mkdir -p "$PKG_DIR/lua"
 cp -r "$REPO_ROOT/lua/." "$PKG_DIR/lua/"
 
 mkdir -p "$PKG_DIR/config/document-types"
-cp "$REPO_ROOT/config/document-settings.sty" "$PKG_DIR/config/" 2>/dev/null || true
+cp "$REPO_ROOT/config/omnilatex-document-settings.sty" "$PKG_DIR/config/document-settings.sty" 2>/dev/null || true
 cp -r "$REPO_ROOT/config/document-types/." "$PKG_DIR/config/document-types/"
 
 mkdir -p "$PKG_DIR/bib"

@@ -5,9 +5,12 @@ permissions:
 
 on:
   push:
-    branches: [main]
     tags: [v*]
   workflow_dispatch:
+
+# NOTE: Intentionally does NOT run on push to main.
+# Per CTAN team guidance: automated uploads/validations should not
+# fire automatically. Human intervention required before submission.
 
 concurrency:
   group: ctan-${{ github.ref }}

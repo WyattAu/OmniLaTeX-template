@@ -82,6 +82,7 @@ latexmk -lualatex main.tex
 ```
 
 Verify:
+
 - All UI strings render in the target language
 - No `translations` warnings about missing keys
 - Hyphenation patterns load correctly
@@ -237,6 +238,7 @@ latexmk -lualatex -interaction=nonstopmode main.tex
 ```
 
 Check the log for:
+
 - `Package translations Warning` -- indicates missing translation keys
 - `fontspec Warning` -- font substitution (expected for CJK/RTL if fonts are missing)
 - `Polyglossia` errors -- unsupported language or missing hyphenation patterns
@@ -254,6 +256,7 @@ The count must be 47 (or 42 if excluding the 5 CJK-incompatible keys noted above
 ### Visual verification
 
 Compile the full document and check:
+
 1. Title page labels (Supervisor, Examiner, etc.)
 2. Table of contents heading and list names
 3. Glossary section headers
