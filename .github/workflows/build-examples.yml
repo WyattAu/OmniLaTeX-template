@@ -79,9 +79,9 @@ jobs:
           bash -c "\
             cp -r /repo/omnilatex.cls /repo/lib /repo/config /work/ 2>/dev/null || true; \
             cp /work/config/omnilatex-document-settings.sty /work/config/document-settings.sty 2>/dev/null || true; \
-            cp /repo/examples/${EXAMPLE}/* /work/; \
+            cp -r /repo/examples/${EXAMPLE}/* /work/; \
             sed -i 's#../../omnilatex#omnilatex#g' /work/main.tex 2>/dev/null || true; \
-            latexmk -lualatex -interaction=batchmode -output-directory=/work main.tex"
+            latexmk -e '\$force_mode=1' -lualatex -interaction=nonstopmode -output-directory=/work main.tex"
 
         if [ -f "${WORKDIR}/main.pdf" ]; then
           SIZE=$(stat -c%s "${WORKDIR}/main.pdf")
