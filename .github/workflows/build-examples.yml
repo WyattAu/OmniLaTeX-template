@@ -79,7 +79,7 @@ jobs:
           bash -c "\
             cp -r /repo/omnilatex.cls /repo/lib /repo/config /work/ 2>/dev/null || true; \
             cp /work/config/omnilatex-document-settings.sty /work/config/document-settings.sty 2>/dev/null || true; \
-            cp -r /repo/examples/${EXAMPLE}/* /work/; \
+            cp -rn /repo/examples/${EXAMPLE}/* /work/ 2>/dev/null || true; \
             sed -i 's#../../omnilatex#omnilatex#g' /work/main.tex 2>/dev/null || true; \
             latexmk -e '\$force_mode=1' -lualatex -interaction=nonstopmode -output-directory=/work main.tex"
 
