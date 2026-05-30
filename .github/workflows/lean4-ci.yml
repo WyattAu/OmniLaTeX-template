@@ -127,9 +127,9 @@ jobs:
 
     - name: Check for sorry in proofs
       run: |
-        if grep -rq 'sorry' specs/proofs/; then
+        if grep -rq 'sorry' specs/proofs/ --include='*.lean'; then
           echo "::error::Proofs contain 'sorry' — unproven theorems block merge"
-          grep -rn 'sorry' specs/proofs/ | head -20
+          grep -rn 'sorry' specs/proofs/ --include='*.lean' | head -20
           exit 1
         fi
         echo "No sorry found — all proofs are complete"
