@@ -1,20 +1,10 @@
 name: Deploy Docs (Cloudflare Pages)
 
 # Deploy documentation to Cloudflare Pages.
-# Use this workflow for Forgejo-hosted repositories.
-# For GitHub-hosted repos, use docs.yml (GitHub Pages) instead.
-#
-# Required secrets (GitHub Actions):
-#   CLOUDFLARE_API_TOKEN  — API token with Pages edit permission
-#   CLOUDFLARE_ACCOUNT_ID — Cloudflare account ID
-#   CLOUDFLARE_ZONE_ID    — Cloudflare zone ID
-#
-# For Forgejo/local: create a .env file (gitignored) with the same variables.
-# See .env.example.cloudflare for the template.
+# For Forgejo-hosted repositories only. GitHub repos use docs.yml (GitHub Pages).
+# Manually triggered via workflow_dispatch on Forgejo.
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:

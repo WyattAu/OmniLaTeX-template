@@ -34,22 +34,25 @@ jobs:
       # v8
       uses: DeterminateSystems/magic-nix-cache-action@87b14cf437d03d37989d87f0fa5ce4f5dc1a330b
 
+    - name: Install Lean 4 (elan)
+      run: |
+        curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain $(cat specs/proofs/lean-toolchain)
+        echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
     - name: Cache Lake build artifacts
       # v4
       uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
       with:
         path: specs/proofs/.lake
-        key: lake-${{ runner.os }}-${{ hashFiles('specs/proofs/lakefile.lean', 'specs/proofs/lean-toolchain') }}
+        key: lake-${{ runner.os }}-${{ hashFiles('specs/proofs/lakefile.toml', 'specs/proofs/lean-toolchain') }}
         restore-keys: |
           lake-${{ runner.os }}-
 
     - name: Build Lean 4 proofs
       run: |
         START_TIME=$(date +%s%N)
-        nix develop --command bash -c "
-          cd specs/proofs
-          lake build
-        "
+        cd specs/proofs
+        lake build
         END_TIME=$(date +%s%N)
         ELAPSED_NS=$(( END_TIME - START_TIME ))
         ELAPSED_SEC=$(( ELAPSED_NS / 1000000000 ))
