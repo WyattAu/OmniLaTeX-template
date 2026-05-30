@@ -147,6 +147,21 @@ class _BuildCore:
         self._source_files_cache: dict[str, list[Path]] = {}
         self._shared_build_cache: dict | None = None
 
+    @property
+    def version(self) -> str:
+        version_file = REPO_ROOT / "VERSION.md"
+        if version_file.exists():
+            import re as _re
+            text = version_file.read_text(encoding="utf-8")
+            m = _re.search(r"(\d+\.\d+\.\d+)", text)
+            if m:
+                return m.group(1)
+        return "0.0.0"
+
+    @property
+    def source_files(self) -> list[Path]:
+        return self._get_source_files(REPO_ROOT)
+
     @staticmethod
     def _hash_for_paths(paths: list[Path]) -> str:
         h = hashlib.sha256()

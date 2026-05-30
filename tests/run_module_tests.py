@@ -16,7 +16,6 @@ import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, List
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 MODULE_TESTS_ROOT = REPO_ROOT / "tests" / "module_tests"
@@ -40,17 +39,17 @@ LATEXMK_CLEAN = [
 
 @dataclass
 class ModeExpectation:
-    markers: Iterable[str]
+    markers: list[str]
 
 
 @dataclass
 class ModuleTest:
     name: str
     path: Path
-    modes: Dict[str, ModeExpectation]
+    modes: dict[str, ModeExpectation]
 
 
-TEST_MATRIX: List[ModuleTest] = [
+TEST_MATRIX: list[ModuleTest] = [
     ModuleTest(
         name="core-base",
         path=MODULE_TESTS_ROOT / "core-base",
@@ -151,7 +150,7 @@ TEST_MATRIX: List[ModuleTest] = [
 
 
 def run_latexmk(
-    cmd: List[str], cwd: Path, env: Dict[str, str]
+    cmd: list[str], cwd: Path, env: dict[str, str]
 ) -> subprocess.CompletedProcess:
     """Run latexmk and raise a rich error if it fails."""
     print(
@@ -177,7 +176,7 @@ def run_latexmk(
     return result
 
 
-def ensure_markers(log_path: Path, markers: Iterable[str]) -> None:
+def ensure_markers(log_path: Path, markers: list[str]) -> None:
     log_text = log_path.read_text(encoding="utf-8", errors="ignore")
     missing = [marker for marker in markers if marker not in log_text]
     if missing:
@@ -186,7 +185,7 @@ def ensure_markers(log_path: Path, markers: Iterable[str]) -> None:
         )
 
 
-def run_module_test(module: ModuleTest) -> Dict[str, str]:
+def run_module_test(module: ModuleTest) -> dict[str, str]:
     results = {}
     for mode, expectation in module.modes.items():
         env = os.environ.copy()

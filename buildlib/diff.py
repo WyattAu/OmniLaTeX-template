@@ -7,6 +7,8 @@ def _compute_ssim_windowed(
     arr1: "np.ndarray", arr2: "np.ndarray", window_size: int = 7
 ) -> float:
     """Sliding-window SSIM (Wang et al. 2004). Returns mean SSIM index."""
+    import numpy as np
+
     C1, C2 = (0.01 * 255) ** 2, (0.03 * 255) ** 2
 
     h, w = arr1.shape

@@ -5,13 +5,6 @@ from pathlib import Path
 
 from buildlib.builder import RICH_AVAILABLE
 
-try:
-    from rich.console import Console
-    from rich.table import Table as RichTable
-    from rich.panel import Panel
-    from rich.text import Text as RichText
-except ImportError:
-    pass
 
 
 def interactive_menu(tasks, commands: dict[str, tuple]) -> None:
@@ -90,8 +83,8 @@ def _rich_menu(tasks, commands: dict[str, tuple], menu_sections: list[tuple[str,
         console.print()
         title = RichText("OmniLaTeX Build System", style="bold cyan")
         subtitle = RichText(
-            f"v2.1.0  •  {len(tasks.discover_examples())} examples  •  "
-            f"{len([f for f in Path('.').rglob('*.sty')])} modules",
+            f"v{tasks.version}  •  {len(tasks.discover_examples())} examples  •  "
+            f"{len(tasks.source_files)} modules",
             style="dim",
         )
         console.print(

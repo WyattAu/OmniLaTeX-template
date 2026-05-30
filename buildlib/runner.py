@@ -64,6 +64,9 @@ class CommandRunner:
         except OSError as e:
             return -1, [f"OS error running {cmd_args[0]}: {e}"]
         except subprocess.TimeoutExpired:
-            process.kill()
+            try:
+                process.kill()
+            except OSError:
+                pass
             process.wait()
             return -1, [f"Command timed out after {timeout or self.DEFAULT_TIMEOUT}s: {cmd_args[0]}"]
