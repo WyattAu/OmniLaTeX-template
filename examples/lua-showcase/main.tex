@@ -10,6 +10,7 @@
 ]{../../omnilatex}
 
 \RequirePackage{config/document-settings}
+\usepackage{luacode}
 
 \begin{document}
 
@@ -24,10 +25,10 @@
 The \texttt{\textbackslash directlua} command executes Lua code and prints the
 result of \texttt{tex.print()} calls directly into the document.
 
-2 + 2 = \directlua{tex.print(2 + 2)}
+2 + 2 = \luaexec{tex.print(2 + 2)}
 
 Lua can access the current date and time:
-\directlua{
+\luaexec{
     local t = os.date("*t")
     tex.print(string.format(
         "Year: \%d, Month: \%d, Day: \%d",
@@ -42,14 +43,14 @@ Lua can access the current date and time:
 Define reusable Lua functions in a \texttt{\textbackslash directlua} block, then
 call them later.
 
-\directlua{
+\luaexec{
     function greet(name)
         tex.print("Hello, " .. name .. "! Welcome to LuaLaTeX.")
     end
 }
 
-\directlua{greet("World")}
-\directlua{greet("OmniLaTeX User")}
+\luaexec{greet("World")}
+\luaexec{greet("OmniLaTeX User")}
 
 % ==================================================================
 \section{Table Manipulation}
@@ -59,7 +60,7 @@ Lua tables are powerful data structures.  Here we create a table of programming
 languages, sort it, and typeset it as an itemized list.
 
 \begin{itemize}
-\directlua{
+\luaexec{
     local langs = {"Lua", "Python", "Haskell", "Rust", "Go"}
     table.sort(langs)
     for i, lang in ipairs(langs) do
@@ -72,7 +73,7 @@ languages, sort it, and typeset it as an itemized list.
 
 A word-count table built from a sentence:
 
-\directlua{
+\luaexec{
     local sentence = "the quick brown fox jumps over the lazy dog"
     local counts = {}
     for word in sentence:gmatch("\%S+") do
@@ -95,7 +96,7 @@ A word-count table built from a sentence:
 
 Lua's pattern-matching library is ideal for text transformations.
 
-\directlua{
+\luaexec{
     local s = "hello_world_example"
     local title = s:gsub("_", " "):gsub("(%a)([\%w]*)", function(first, rest)
         return first:upper() .. rest:lower()
@@ -107,7 +108,7 @@ Lua's pattern-matching library is ideal for text transformations.
 
 Extracting all numbers from a string:
 
-\directlua{
+\luaexec{
     local data = "version 3.14 has 42 improvements and 7 bug fixes"
     local nums = {}
     for n in data:gmatch("\%d+\.?\%d*") do
@@ -122,7 +123,7 @@ Extracting all numbers from a string:
 
 Compute the first 12 Fibonacci numbers using a Lua function:
 
-\directlua{
+\luaexec{
     function fib(n)
         if n <= 1 then return n end
         local a, b = 0, 1
@@ -136,9 +137,9 @@ Compute the first 12 Fibonacci numbers using a Lua function:
 \toprule
 $n$     & 1 & 2 & 3 & 4 & 5 & 6 \\
 \midrule
-$F(n)$  & \directlua{tex.print(fib(1))} & \directlua{tex.print(fib(2))} &
-          \directlua{tex.print(fib(3))} & \directlua{tex.print(fib(4))} &
-          \directlua{tex.print(fib(5))} & \directlua{tex.print(fib(6))} \\
+$F(n)$  & \luaexec{tex.print(fib(1))} & \luaexec{tex.print(fib(2))} &
+          \luaexec{tex.print(fib(3))} & \luaexec{tex.print(fib(4))} &
+          \luaexec{tex.print(fib(5))} & \luaexec{tex.print(fib(6))} \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -150,9 +151,9 @@ $F(n)$  & \directlua{tex.print(fib(1))} & \directlua{tex.print(fib(2))} &
 \toprule
 $n$     & 7 & 8 & 9 & 10 & 11 & 12 \\
 \midrule
-$F(n)$  & \directlua{tex.print(fib(7))} & \directlua{tex.print(fib(8))} &
-          \directlua{tex.print(fib(9))} & \directlua{tex.print(fib(10))} &
-          \directlua{tex.print(fib(11))} & \directlua{tex.print(fib(12))} \\
+$F(n)$  & \luaexec{tex.print(fib(7))} & \luaexec{tex.print(fib(8))} &
+          \luaexec{tex.print(fib(9))} & \luaexec{tex.print(fib(10))} &
+          \luaexec{tex.print(fib(11))} & \luaexec{tex.print(fib(12))} \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -163,7 +164,7 @@ $F(n)$  & \directlua{tex.print(fib(7))} & \directlua{tex.print(fib(8))} &
 
 Define LaTeX commands whose implementations live entirely in Lua.
 
-\directlua{
+\luaexec{
     function smartdate(format_str)
         local t = os.date("*t")
         local months = {
@@ -180,13 +181,13 @@ Define LaTeX commands whose implementations live entirely in Lua.
     end
 }
 
-\newcommand{\smartdate}[1]{\directlua{smartdate("#1")}}
+\newcommand{\smartdate}[1]{\luaexec{smartdate("#1")}}
 
 Long date: \smartdate{long} \quad ISO date: \smartdate{iso}
 
 \medskip
 
-\newcommand{\luasum}[1]{\directlua{%
+\newcommand{\luasum}[1]{\luaexec{%
     local sum = 0
     for v in #1:gmatch("-?\%d+\.?\%d*") do sum = sum + tonumber(v) end
     tex.print(sum)
@@ -202,7 +203,7 @@ Long date: \smartdate{long} \quad ISO date: \smartdate{iso}
 A genuinely useful pattern --- parse CSV data with Lua and render it as a
 \LaTeX{} table with automatic alignment detection.
 
-\directlua{
+\luaexec{
     local csv = [[
 Name,Role,Experience
 Alice,Engineer,5
@@ -251,7 +252,7 @@ Eve,Analyst,2
 
 Pass data from \LaTeX{} into Lua and back:
 
-\directlua{
+\luaexec{
     local texdata = {}
     function texdata.add(key, value)
         texdata[key] = value
@@ -261,8 +262,8 @@ Pass data from \LaTeX{} into Lua and back:
     end
 }
 
-\newcommand{\storedata}[2]{\directlua{texdata.add("#1", "#2")}}
-\newcommand{\retrieve}[1]{\directlua{tex.print(texdata.get("#1"))}}
+\newcommand{\storedata}[2]{\luaexec{texdata.add("#1", "#2")}}
+\newcommand{\retrieve}[1]{\luaexec{tex.print(texdata.get("#1"))}}
 
 \storedata{project}{OmniLaTeX}
 \storedata{version}{1.0}

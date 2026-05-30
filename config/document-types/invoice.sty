@@ -15,7 +15,7 @@
 
 % Invoice item command: \invoiceitem{description}{quantity}{unitprice}
 \newcommand{\invoiceitem}[3]{%
-  #1 & #2 & $#3.00 & $\numexpr#2*#3\relax.00 \\[-0.3em]%
+  #1 & #2 & #3.00 & \numexpr#2*#3\relax.00 \\[-0.3em]%
   \hline
 }
 
