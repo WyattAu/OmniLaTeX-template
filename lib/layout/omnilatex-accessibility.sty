@@ -16,10 +16,12 @@
 \RequirePackage{tagpdf}
 \RequirePackage{pdfcomment}
 
-% Configure tagpdf for accessibility
-\tagpdfsetup{
-  activate=all,
-  interwordspace=true,
+% Configure tagpdf for accessibility (deferred until \begin{document})
+\AtBeginDocument{%
+  \tagpdfsetup{%
+    activate=all,
+    interwordspace=true,
+  }%
 }
 
 \PackageInfo{omnilatex-accessibility}{PDF tagging activated (PDF/UA-1)}%

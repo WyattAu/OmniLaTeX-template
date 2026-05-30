@@ -93,7 +93,7 @@
   %% Patch block environments to apply stored bg colors
   %% Only on TL2025+ where KOMA's \setkomacolor was removed
   \RequirePackage{tcolorbox}
-  \tcbuselibrary{skins}
+  \AddToHook{begindocument/end}{\tcbuselibrary{skins}}
   \makeatletter
   \let\omnilatex@orig@block\block
   \let\omnilatex@orig@endblock\endblock
@@ -159,7 +159,7 @@
     \endtcolorbox
   }
   \makeatother
- }{}% end \@ifundefined{setkomacolor}
+}{}% end \@ifundefined{setkomacolor}
 
 \makeatletter
 
