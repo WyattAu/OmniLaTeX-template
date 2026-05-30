@@ -4,6 +4,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Verify that a PDF was built from the latest commit of the OmniLaTeX-template repository.">
+  <meta property="og:title" content="OmniLaTeX - PDF Verification">
+  <meta property="og:description" content="Verify PDF build provenance against repository commits.">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://api.github.com" crossorigin>
   <title id="page-title">OmniLaTeX PDF Verification</title>
   <link rel="stylesheet" href="style.css">
   <style>
@@ -262,15 +267,16 @@
 </head>
 
 <body>
+<a class="skip-link" href="#main-content">Skip to content</a>
 
 <nav aria-label="Main navigation" style="display:flex;justify-content:center;gap:8px;padding:16px 24px;background:#161B22;border-bottom:1px solid #30363D;position:sticky;top:0;z-index:100">
   <a href="index.html" style="padding:6px 16px;border-radius:20px;font-size:.875rem;font-weight:500;color:#8B949E;text-decoration:none;transition:all .15s">PDF Gallery</a>
   <a href="gallery.html" style="padding:6px 16px;border-radius:20px;font-size:.875rem;font-weight:500;color:#8B949E;text-decoration:none;transition:all .15s">Template Gallery</a>
   <a href="verify.html" style="padding:6px 16px;border-radius:20px;font-size:.875rem;font-weight:500;background:#1F407A;color:#fff;text-decoration:none;transition:all .15s">Verify Builds</a>
-  <a href="https://github.com/WyattAu/OmniLaTeX-template" target="_blank" style="padding:6px 16px;border-radius:20px;font-size:.875rem;font-weight:500;color:#8B949E;text-decoration:none;transition:all .15s">GitHub</a>
+  <a href="https://github.com/WyattAu/OmniLaTeX-template" target="_blank" rel="noopener noreferrer" style="padding:6px 16px;border-radius:20px;font-size:.875rem;font-weight:500;color:#8B949E;text-decoration:none;transition:all .15s">GitHub</a>
 </nav>
 
-  <main>
+  <main id="main-content">
     <h1 id="page-heading">Verify OmniLaTeX Build Provenance</h1>
     <p id="intro-text">
       This tool confirms whether the PDF you are reading was generated from the latest commit of

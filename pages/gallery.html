@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Pick a LaTeX template, configure language and institution, and generate a ready-to-compile document.">
+<meta property="og:title" content="OmniLaTeX - Template Gallery">
+<meta property="og:description" content="LaTeX template picker with live preview.">
+<meta property="og:type" content="website">
 <title>OmniLaTeX — Template Gallery</title>
 <link rel="stylesheet" href="style.css">
 <style>
@@ -148,6 +152,7 @@ section{padding:64px 0}
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to content</a>
 
 <header>
   <div class="logo">OmniLaTeX</div>
@@ -164,7 +169,7 @@ section{padding:64px 0}
   <a href="https://github.com/WyattAu/OmniLaTeX-template" target="_blank" rel="noopener noreferrer">GitHub</a>
 </nav>
 
-<main>
+<main id="main-content">
 <section id="profiles">
   <div class="container">
     <h2 class="section-title">
@@ -356,6 +361,15 @@ function showToast(msg) {
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
 }
+
+grid.addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    const card = e.target.closest('.card');
+    if (!card) return;
+    card.click();
+  }
+});
 
 grid.addEventListener('click', e => {
   const card = e.target.closest('.card');
