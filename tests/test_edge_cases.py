@@ -80,6 +80,7 @@ def test_only_floats():
     assert success and has_pdf
 
 
+@pytest.mark.timeout(120)
 def test_long_caption():
     """Very long caption (>500 characters)."""
     long_text = "x" * 600
@@ -93,6 +94,7 @@ def test_long_caption():
     assert success and has_pdf
 
 
+@pytest.mark.timeout(120)
 def test_deeply_nested_lists():
     """Deeply nested list environments (10 levels)."""
     nested = "\\begin{document}\n"
