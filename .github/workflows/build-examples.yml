@@ -33,9 +33,11 @@ jobs:
       id: list
       run: |
         EXAMPLES=$(ls -d examples/*/main.tex 2>/dev/null | sed 's|examples/||;s|/main.tex||' | jq -R -s -c 'split("\n") | map(select(length > 0))')
-        echo "examples=$EXAMPLES" >> "$GITHUB_OUTPUT"
-        COUNT=$(echo "$EXAMPLES" | jq 'length')
-        echo "Discovered ${COUNT} examples"
+        # Add root document as a special example
+        ROOT=$(jq -n --argjson arr "$EXAMPLES" '$arr + ["main"]' | jq -c '.')
+        echo "examples=$ROOT" >> "$GITHUB_OUTPUT"
+        COUNT=$(echo "$ROOT" | jq 'length')
+        echo "Discovered ${COUNT} examples (including root)"
 
     outputs:
       examples: ${{ steps.list.outputs.examples }}
@@ -69,6 +71,14 @@ jobs:
         WORKDIR="/tmp/build-${EXAMPLE}"
         mkdir -p "${WORKDIR}"
 
+        if [ "${EXAMPLE}" = "main" ]; then
+          # Root document: copy from repo root
+          COPY_CMD="cp /repo/main.tex /work/ 2>/dev/null || true"
+        else
+          # Examples: copy from examples/ subdirectory
+          COPY_CMD="cp -rn /repo/examples/${EXAMPLE}/* /work/ 2>/dev/null || true"
+        fi
+
         docker run --rm \
           -v "$GITHUB_WORKSPACE:/repo" \
           -v "${WORKDIR}:/work" \
@@ -79,7 +89,7 @@ jobs:
           bash -c "\
             cp -r /repo/omnilatex.cls /repo/lib /repo/config /work/ 2>/dev/null || true; \
             cp /work/config/omnilatex-document-settings.sty /work/config/document-settings.sty 2>/dev/null || true; \
-            cp -rn /repo/examples/${EXAMPLE}/* /work/ 2>/dev/null || true; \
+            ${COPY_CMD}; \
             sed -i 's#../../omnilatex#omnilatex#g' /work/main.tex 2>/dev/null || true; \
             latexmk -f -e '\$force_mode=1' -lualatex -interaction=nonstopmode -output-directory=/work main.tex || true"
 
