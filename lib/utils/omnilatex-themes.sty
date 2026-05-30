@@ -31,6 +31,10 @@
 %% patches \usekomafont to apply them, since KOMA no longer does.
 %% Ensure block environments exist before the conditional block tries
 %% to save/patch them (TL2025+ KOMA removed them along with \setkomacolor).
+%% Shim \provideenvironment for older LaTeX kernels that lack it.
+\providecommand{\provideenvironment}[3]{%
+  \@ifundefined{#1}{\newenvironment{#1}{#2}{#3}}{}%
+}
 \provideenvironment{block}[1]{\par\textbf{#1}\par}{\par}%
 \provideenvironment{alertblock}[1]{\par\textbf{#1}\par}{\par}%
 \provideenvironment{exampleblock}[1]{\par\textbf{#1}\par}{\par}%
