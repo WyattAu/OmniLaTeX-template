@@ -34,7 +34,8 @@ jobs:
       run: |
         EXAMPLES=$(ls -d examples/*/main.tex 2>/dev/null | sed 's|examples/||;s|/main.tex||' | jq -R -s -c 'split("\n") | map(select(length > 0))')
         echo "examples=$EXAMPLES" >> "$GITHUB_OUTPUT"
-        COUNT=$(echo "$ROOT" | jq 'length')
+        COUNT=$(echo "$EXAMPLES" | jq 'length')
+        echo "Discovered ${COUNT} examples"
 
     outputs:
       examples: ${{ steps.list.outputs.examples }}
@@ -68,8 +69,6 @@ jobs:
         WORKDIR="/tmp/build-${EXAMPLE}"
         mkdir -p "${WORKDIR}"
 
-        if [ "${EXAMPLE}" = "main" ]; then
-
         docker run --rm \
           -v "$GITHUB_WORKSPACE:/repo" \
           -v "${WORKDIR}:/work" \
@@ -80,7 +79,7 @@ jobs:
           bash -c "\
             cp -r /repo/omnilatex.cls /repo/lib /repo/config /work/ 2>/dev/null || true; \
             cp /work/config/omnilatex-document-settings.sty /work/config/document-settings.sty 2>/dev/null || true; \
-            ${COPY_CMD}; \
+            cp -rn /repo/examples/${EXAMPLE}/* /work/ 2>/dev/null || true; \
             sed -i 's#../../omnilatex#omnilatex#g' /work/main.tex 2>/dev/null || true; \
             latexmk -f -e '\$force_mode=1' -lualatex -interaction=nonstopmode -output-directory=/work main.tex || true"
 
