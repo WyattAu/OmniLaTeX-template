@@ -40,14 +40,9 @@
 \provideenvironment{exampleblock}[1]{\par\textbf{#1}\par}{\par}%
 \@ifundefined{setkomacolor}{%
   %% \omnilatex@clr@helper{element}{key=value}
-  %% Parses a single key=value pair using \StrBefore/\StrBehind (xstring).
+  %% Parses a single key=value pair without xstring to avoid expansion issues.
   \newcommand{\omnilatex@clr@helper}[2]{%
-    \StrBefore{#2}{=}{\omnilatex@clr@k}%
-    \StrBehind{#2}{=}{\omnilatex@clr@v}%
-    %% Trim leading space from value
-    \IfBeginWith{\omnilatex@clr@v}{ }{%
-      \StrGobbleLeft{\omnilatex@clr@v}{1}[\omnilatex@clr@v]%
-    }{}%
+    \omnilatex@clr@split#2\@nil
     \ifdefstring{\omnilatex@clr@k}{fg}{%
       \expandafter\edef\csname omnilatex@clr@#1@fg\endcsname{\omnilatex@clr@v}%
     }{%
@@ -56,18 +51,33 @@
       }{}%
     }%
   }
+  %% Split helper: strips leading space then splits on =.
+  %% Input: " key=value\@nil" or "key=value\@nil" -> k=key, v=value
+  \def\omnilatex@clr@split{\futurelet\omnilatex@clr@next\omnilatex@clr@split@a}
+  \def\omnilatex@clr@split@a{%
+    \ifx\omnilatex@clr@next\@sptoken
+      \expandafter\omnilatex@clr@split@space
+    \else
+      \expandafter\omnilatex@clr@split@b
+    \fi
+  }
+  \expandafter\def\expandafter\omnilatex@clr@split@space\@sptoken{%
+    \omnilatex@clr@split@b
+  }
+  \def\omnilatex@clr@split@b#1=#2\@nil{%
+    \def\omnilatex@clr@k{#1}%
+    \def\omnilatex@clr@v{#2}%
+  }
   %% \omnilatex@setkomacolor@shim{element}{fg=color} or {bg=color, fg=color}
   %% Handles single pair (no comma) and two pairs (one comma).
   %% KOMA only ever uses fg, bg so we need at most 2 pairs.
   \newcommand{\omnilatex@setkomacolor@shim}[2]{%
     \IfSubStr{#2}{,}{%
-      %% Two pairs: split on comma
-      \StrBefore{#2}{,}{\omnilatex@clr@paira}%
-      \StrBehind{#2}{,}{\omnilatex@clr@pairb}%
-      \omnilatex@clr@helper{#1}{\omnilatex@clr@paira}%
-      \omnilatex@clr@helper{#1}{\omnilatex@clr@pairb}%
+      %% Use latex kernel \@for loop to split on comma
+      \@for\omnilatex@clr@item:=#2\do{%
+        \omnilatex@clr@helper{#1}{\omnilatex@clr@item}%
+      }%
     }{%
-      %% Single pair
       \omnilatex@clr@helper{#1}{#2}%
     }%
   }
