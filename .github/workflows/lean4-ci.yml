@@ -89,6 +89,7 @@ jobs:
         echo "# Lean 4 Proof Timing Baseline (seconds)" > "$BASELINE_FILE"
         echo "# Last updated: ${TIMESTAMP}" >> "$BASELINE_FILE"
         echo "${CURRENT}" >> "$BASELINE_FILE"
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     - name: Verify proof status
       if: always()
@@ -115,6 +116,7 @@ jobs:
   proof-gate:
     needs: verify
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: github.event_name == 'pull_request'
     steps:
     - name: Checkout repository

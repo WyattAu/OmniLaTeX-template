@@ -87,6 +87,6 @@ jobs:
           set -a; source .env; set +a
         fi
         : "${CLOUDFLARE_API_TOKEN:?'CLOUDFLARE_API_TOKEN is required'}"
-        npx wrangler@latest pages deploy site/ \
+        npx wrangler@3.99.0 pages deploy site/ \
           --project-name=omnilatex-docs \
           --commit-dirty=true

@@ -12,6 +12,7 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     container:
       image: ${{ env.DOCKER_IMAGE }}
 
@@ -31,6 +32,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     container:
       image: ${{ env.DOCKER_IMAGE }}
 
@@ -64,6 +66,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: build
     container:
       image: ${{ env.DOCKER_IMAGE }}
