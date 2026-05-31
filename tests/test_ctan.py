@@ -43,10 +43,20 @@ def _build_ctan_zip_with_python(output_path):
         shutil.copy2(
             REPO_ROOT / "bib" / "bibliography.bib", pkg_dir / "bib" / "bibliography.bib"
         )
-    for name in ("README.md", "LICENSE", "CHANGELOG.md", "VERSION.md"):
+    for name in ("README.md", "LICENSE"):
         src = REPO_ROOT / name
         if src.is_file():
             shutil.copy2(src, pkg_dir / name)
+
+    # Documentation: PDF + source
+    (pkg_dir / "doc").mkdir(parents=True, exist_ok=True)
+    for docfile in ("doc/omnilatex.pdf", "main.pdf"):
+        src = REPO_ROOT / docfile
+        if src.is_file():
+            shutil.copy2(src, pkg_dir / "doc" / "omnilatex.pdf")
+            break
+    if (REPO_ROOT / "main.tex").is_file():
+        shutil.copy2(REPO_ROOT / "main.tex", pkg_dir / "doc" / "omnilatex.tex")
 
     with zipfile.ZipFile(str(output_path), "w", zipfile.ZIP_DEFLATED) as zf:
         for file_path in sorted(pkg_dir.rglob("*")):
