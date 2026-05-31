@@ -1,6 +1,6 @@
 # OmniLaTeX Roadmap
 
-Current version: **v2.2.0**
+Current version: **v2.2.3**
 
 See [ROADMAP-v3.md](ROADMAP-v3.md) for the comprehensive, phase-by-phase technical roadmap.
 
@@ -16,13 +16,13 @@ See [ROADMAP-v3.md](ROADMAP-v3.md) for the comprehensive, phase-by-phase technic
 
 | Metric | Value |
 |--------|-------|
-| Releases | 32 (v1.0.0--v2.2.0) |
+| Releases | 33 (v1.0.0--v2.2.3) |
 | `.sty` modules | 31 across 9 subdirectories |
 | Document types | 27 (55+ aliases) across 3 KOMA-Script base classes + Beamer |
 | Examples | 48 templates (all compile on TeX Live 2025+) |
 | Institution configs | 21 pluggable configs |
 | Languages | 25+ via polyglossia (CJK, RTL, Cyrillic) |
-| Tests (fast) | 775 passing, 52 skipped, 293 deselected |
+| Tests (fast) | 774 passing, 52 skipped, 293 deselected |
 | Lean 4 proofs | 198 theorems, 16 modules, 0 sorry |
 | CI/CD | 15 GitHub Actions + 4 other platforms |
 | Docker | Multi-arch (amd64/arm64), digest-synced, GHCR-hosted |
