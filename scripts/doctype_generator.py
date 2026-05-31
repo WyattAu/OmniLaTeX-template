@@ -41,7 +41,7 @@ from pathlib import Path
 
 
 TEMPLATE = r"""%\NeedsTeXFormat{{LaTeX2e}}
-\ProvidesPackage{{config/document-types/{name}}}[2026/05/31 v2.2.2 {description}]
+\ProvidesPackage{{config/document-types/{name}}}[2026/05/31 v2.2.3 {description}]
 
 % Generated from doctype DSL: {name}
 % Base class: {base_class}
