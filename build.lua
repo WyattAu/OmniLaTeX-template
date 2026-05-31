@@ -11,7 +11,6 @@ sourcefiles = {
     "lib/**/*.sty",
     "config/**/*.sty",
     "lua/*.lua",
-    "*.latexmkrc",
 }
 
 installfiles = {

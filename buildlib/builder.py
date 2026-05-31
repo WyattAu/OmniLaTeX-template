@@ -21,9 +21,9 @@ from buildlib.config import (
     LATEXMK_FORCE_CONTINUE,
     MAIN_TEX_FILENAME,
     MINTED_CACHE_SUBDIR,
-    ProjectConfig,
     REPO_ROOT,
     SVG_INKSCAPE_CACHE,
+    ProjectConfig,
 )
 from buildlib.runner import CommandRunner
 from buildlib.ui import TerminalOutput
@@ -35,11 +35,11 @@ try:
     from rich.live import Live
     from rich.panel import Panel
     from rich.progress import (
-        Progress,
         BarColumn,
+        MofNCompleteColumn,
+        Progress,
         TextColumn,
         TimeElapsedColumn,
-        MofNCompleteColumn,
     )
     from rich.text import Text
 
@@ -56,7 +56,10 @@ except ImportError:
         def __init__(self, iterable, desc="", total=None):
             self.iterable = iterable
             self.desc = desc
-            self.total = total or len(iterable)
+            try:
+                self.total = total or len(iterable)
+            except TypeError:
+                self.total = total  # generators/iterators don't support len()
             self.current = 0
 
         def __iter__(self):
@@ -152,6 +155,7 @@ class _BuildCore:
         version_file = REPO_ROOT / "VERSION.md"
         if version_file.exists():
             import re as _re
+
             text = version_file.read_text(encoding="utf-8")
             m = _re.search(r"(\d+\.\d+\.\d+)", text)
             if m:
@@ -218,11 +222,7 @@ class _BuildCore:
         total_examples = len(self.discover_examples())
         cached_examples = len(entries)
         file_size = cache_path.stat().st_size
-        mtimes = [
-            (k, v["build_time"])
-            for k, v in entries.items()
-            if "build_time" in v
-        ]
+        mtimes = [(k, v["build_time"]) for k, v in entries.items() if "build_time" in v]
         mtimes.sort(key=lambda x: x[1])
         self.ui.info(f"Cached entries:    {cached_examples}")
         self.ui.info(f"Cache file size:   {file_size:,} bytes")
@@ -340,9 +340,7 @@ class _BuildCore:
                 Path(MINTED_CACHE_SUBDIR),
                 Path(SVG_INKSCAPE_CACHE),
             ):
-                (example_dir / cache_dir).mkdir(
-                    parents=True, exist_ok=True
-                )
+                (example_dir / cache_dir).mkdir(parents=True, exist_ok=True)
 
             minted_cache_dir = example_dir / MINTED_CACHE_SUBDIR
             minted_cache_dir.mkdir(parents=True, exist_ok=True)
@@ -368,13 +366,9 @@ class _BuildCore:
             # avoid race conditions in concurrent builds
             repo_root = REPO_ROOT
             build_examples_dir = (
-                repo_root / self.config.build_dir
-                / BUILD_EXAMPLES_SUBDIR
+                repo_root / self.config.build_dir / BUILD_EXAMPLES_SUBDIR
             )
-            all_logs.append(
-                f"[DEBUG] Build examples dir: "
-                f"{build_examples_dir}"
-            )
+            all_logs.append(f"[DEBUG] Build examples dir: " f"{build_examples_dir}")
             build_examples_dir.mkdir(parents=True, exist_ok=True)
 
             # THE SOLE CRITERION FOR SUCCESS: Does the PDF exist?
@@ -382,8 +376,7 @@ class _BuildCore:
             all_logs.append(f"[DEBUG] Checking for PDF at: {src_pdf}")
             if src_pdf.exists():
                 all_logs.append(
-                    "[DEBUG] PDF exists, size: "
-                    f"{src_pdf.stat().st_size} bytes"
+                    "[DEBUG] PDF exists, size: " f"{src_pdf.stat().st_size} bytes"
                 )
                 dest_pdf = build_examples_dir / f"{example_name}.pdf"
                 all_logs.append(f"[DEBUG] Destination PDF: {dest_pdf}")
@@ -394,7 +387,7 @@ class _BuildCore:
                     if src_log.exists():
                         dest_log = build_examples_dir / f"{example_name}.log"
                         shutil.copy(src_log, dest_log)
-                    all_logs.append(f"[DEBUG] Copy operation completed")
+                    all_logs.append("[DEBUG] Copy operation completed")
                     if dest_pdf.exists():
                         all_logs.append(
                             "[DEBUG] Destination PDF "
@@ -402,7 +395,7 @@ class _BuildCore:
                             f"{dest_pdf.stat().st_size} bytes"
                         )
                         all_logs.append(
-                            f"[green]✓ PDF found and copied to build directory.[/green]"
+                            "[green]PDF found and copied to build directory.[/green]"
                         )
                     else:
                         all_logs.append(
@@ -495,9 +488,7 @@ class _BuildCore:
 
         layout = Layout()
         layout.split(
-            Layout(
-                overall_progress, size=3
-            ),
+            Layout(overall_progress, size=3),
             Layout(
                 Panel(
                     Text(""),
@@ -534,24 +525,15 @@ class _BuildCore:
             lines = []
             for name, t0 in active_jobs.items():
                 elapsed = time.perf_counter() - t0
-                lines.append(
-                    f"[cyan]⠋ {name}[/cyan]"
-                    f"  [dim]{elapsed:.1f}s[/dim]"
-                )
-            active_jobs_text.plain = (
-                "\n".join(lines)
-                if lines
-                else "[dim]—[/dim]"
-            )
+                lines.append(f"[cyan]⠋ {name}[/cyan]" f"  [dim]{elapsed:.1f}s[/dim]")
+            active_jobs_text.plain = "\n".join(lines) if lines else "[dim]—[/dim]"
 
         results = []
         with Live(layout, console=console, screen=True, refresh_per_second=10):
             with ThreadPoolExecutor(max_workers=self.jobs) as executor:
                 futures = {}
                 for name in example_names:
-                    future = executor.submit(
-                        self._compile_example_worker, name
-                    )
+                    future = executor.submit(self._compile_example_worker, name)
                     futures[future] = name
                     with active_lock:
                         active_jobs[name] = time.perf_counter()
@@ -567,17 +549,14 @@ class _BuildCore:
                     except Exception as exc:
                         results.append(False)
                         log_lines.append(
-                            f"[b red]FATAL ERROR: "
-                            f"{name}: {exc}[/b red]"
+                            f"[b red]FATAL ERROR: " f"{name}: {exc}[/b red]"
                         )
                     finally:
                         with active_lock:
                             active_jobs.pop(name, None)
                             _refresh_active()
                             log_panel_text.plain = "\n".join(log_lines)
-                        overall_progress.update(
-                            overall_task, advance=1
-                        )
+                        overall_progress.update(overall_task, advance=1)
         self.ui.header(
             "Build Summary: "
             f"{sum(1 for r in results if r)}"
@@ -605,10 +584,7 @@ class _BuildCore:
                             if success
                             else self.ui.red + "✗ Failed"
                         )
-                        self.ui.info(
-                            f"Finished: {name} "
-                            f"({status}{self.ui.end})"
-                        )
+                        self.ui.info(f"Finished: {name} " f"({status}{self.ui.end})")
                         if self.runner.verbose or not success:
                             self.ui.debug(f"--- Logs for {name} ---")
                             for line in logs:
@@ -661,14 +637,18 @@ class _BuildCore:
                     ),
                 },
             }
-            metrics_path.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
+            metrics_path.write_text(
+                json.dumps(summary, indent=2) + "\n", encoding="utf-8"
+            )
             self.ui.success(f"Timing metrics written to {metrics_path}")
 
             history_dir = self.config.build_dir / "metrics_history"
             history_dir.mkdir(parents=True, exist_ok=True)
             timestamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
             history_path = history_dir / f"metrics_{timestamp}.json"
-            history_path.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
+            history_path.write_text(
+                json.dumps(summary, indent=2) + "\n", encoding="utf-8"
+            )
             self.ui.success(f"Metrics history written to {history_path}")
 
     # --- ALL ORIGINAL COMMANDS ---
