@@ -1,4 +1,5 @@
-"""Command mixin for BuildTasks — watch, preflight, test, diff, scaffold, init, doctor, check, lint, export."""
+"""Command mixin for BuildTasks --- watch, preflight, test, diff,
+scaffold, init, doctor, check, lint, export."""
 
 from __future__ import annotations
 
@@ -163,7 +164,7 @@ class _Commands:
         path = shutil.which(tool)
         if path:
             return (desc, True, f"Found at {path}")
-        note = f"Not found" + ("" if not required else " (required)")
+        note = "Not found" + ("" if not required else " (required)")
         return (desc, not required, note)
 
     def _get_texlive_version(self) -> int | None:
@@ -702,7 +703,7 @@ class _Commands:
         self.ui.success(f"Scaffolded institution: {name}")
         self.ui.info(f"  Config: {dst / f'{name}.sty'}")
         self.ui.info(f"  Assets: {dst / 'assets' / 'logos' / name}")
-        self.ui.info(f"  Next: customize the .sty file, add your logo, update colors")
+        self.ui.info("  Next: customize the .sty file, add your logo, update colors")
         self.ui.info(
             f"  Usage: \\documentclass[doctype=thesis,institution={name}]{{omnilatex}}"
         )
@@ -786,10 +787,9 @@ class _Commands:
                 "%",
                 "% In lib/language/omnilatex-i18n.sty:",
                 "%",
-                f"% 1. Add '{lang}' to the \\setotherlanguages list (line ~36):",
-                f"%    \\setotherlanguages'{{'german,english,french,spanish,simplifiedchinese,japanese,"
-                + lang
-                + "'}}'",
+                f"% 1. Add '{lang}' to the" "\\setotherlanguages list (line ~36):",
+                "%    \\setotherlanguages'{{'german,english,"
+                "french,spanish,simplifiedchinese,japanese," + lang + "'}}'",
                 "%",
                 "% 2. For each key above, add the \\DeclareTranslation line after the",
                 "%    existing translations for that key (after the spanish entry).",
@@ -807,14 +807,14 @@ class _Commands:
         self.ui.success(f"Language guide created: {guide_path}")
         self.ui.info(f"  Language: {lang}")
         self.ui.info(f"  Translation keys: {len(keys)}")
-        self.ui.info(f"  Next steps:")
+        self.ui.info("  Next steps:")
         self.ui.info(
             f"    1. Edit {guide_path.name} and fill in all '???' translations"
         )
         self.ui.info(
             f"    2. Add '{lang}' to \\setotherlanguages in lib/language/omnilatex-i18n.sty"
         )
-        self.ui.info(f"    3. Copy \\DeclareTranslation lines into the i18n module")
+        self.ui.info("    3. Copy \\DeclareTranslation lines into the i18n module")
         self.ui.info(f"    4. Test with \\documentclass[language={lang}]{{omnilatex}}")
 
     # -- init ---------------------------------------------------------------
@@ -982,7 +982,7 @@ class _Commands:
 
         self.ui.success(f"Initialized project: {project_name}")
         self.ui.info(f"  Location: {dst}")
-        self.ui.info(f"  Template: minimal-starter")
+        self.ui.info("  Template: minimal-starter")
         if doctype:
             self.ui.info(f"  Doctype: {doctype}")
         if institution:
@@ -990,17 +990,17 @@ class _Commands:
         if language:
             self.ui.info(f"  Language: {language}")
         if thesis:
-            self.ui.info(f"  Structure: thesis (chapters, bib, figures)")
-        self.ui.info(f"  Next steps:")
+            self.ui.info("  Structure: thesis (chapters, bib, figures)")
+        self.ui.info("  Next steps:")
         self.ui.info(f"    1. cd {project_name}")
         if thesis:
-            self.ui.info(f"    2. Edit chapters/ with your thesis content")
-            self.ui.info(f"    3. Add references to bib/bibliography.bib")
-            self.ui.info(f"    4. latexmk -lualatex main.tex")
+            self.ui.info("    2. Edit chapters/ with your thesis content")
+            self.ui.info("    3. Add references to bib/bibliography.bib")
+            self.ui.info("    4. latexmk -lualatex main.tex")
         else:
-            self.ui.info(f"    2. Edit main.tex to set your title, author, and content")
-            self.ui.info(f"    3. python build.py build-root    (from repo root)")
-            self.ui.info(f"       or latexmk -lualatex main.tex  (standalone)")
+            self.ui.info("    2. Edit main.tex to set your title, author, and content")
+            self.ui.info("    3. python build.py build-root    (from repo root)")
+            self.ui.info("       or latexmk -lualatex main.tex  (standalone)")
 
     # -- thesis structure helper --------------------------------------------
 
@@ -1090,7 +1090,8 @@ class _Commands:
         (dst / "README.md").write_text(
             f"# {project_name}\n"
             "\n"
-            "A thesis project built with [OmniLaTeX](https://github.com/WyattAu/OmniLaTeX-template).\n"
+            "A thesis project built with"
+            " [OmniLaTeX](https://github.com/WyattAu/OmniLaTeX-template).\n"
             "\n"
             "## Structure\n"
             "\n"
@@ -1359,7 +1360,8 @@ class _Commands:
         total_cites = sum(len(v) for v in cites.values())
 
         self.ui.info(
-            f"Labels: {total_labels}  |  References: {total_refs}  |  Citations: {total_cites}  |  Bib entries: {len(bib_keys)}"
+            f"Labels: {total_labels}  |  References: {total_refs}  |  "
+            f"Citations: {total_cites}  |  Bib entries: {len(bib_keys)}"
         )
 
         has_errors = False
@@ -1425,7 +1427,10 @@ class _Commands:
             return 1
 
         self.ui.info(
-            f"Scanning {len(tex_files)} file(s) with {'chktex' if has_chktex else ''}{' and ' if has_chktex and has_lacheck else ''}{'lacheck' if has_lacheck else ''}"
+            f"Scanning {len(tex_files)} file(s) with"
+            f"{'chktex' if has_chktex else ''}"
+            f"{' and ' if has_chktex and has_lacheck else ''}"
+            f"{'lacheck' if has_lacheck else ''}"
         )
 
         total_errors = 0
@@ -1550,7 +1555,7 @@ class _Commands:
 
         elif output_format in ("epub", "docx"):
             if not shutil.which("pandoc"):
-                self.ui.error(f"pandoc not found. Install: apt-get install pandoc")
+                self.ui.error("pandoc not found. Install: apt-get install pandoc")
                 return
 
             out_file = output_dir / f"{stem}.{output_format}"
