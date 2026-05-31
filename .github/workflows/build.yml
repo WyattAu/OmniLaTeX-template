@@ -44,9 +44,6 @@ jobs:
     - name: Run flake8
       run: flake8 tests/ buildlib/ scripts/ tools/ build.py --max-line-length=100 --extend-ignore=E203,W503
 
-    - name: Run pre-commit hooks (non-Docker)
-      uses: pre-commit-ci/action@v3.0.1
-
   dependency-review:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'

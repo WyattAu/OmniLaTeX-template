@@ -65,7 +65,8 @@
 
 %% Theme selection
 \expandafter\ifx\csname omnilatex@beamertheme\endcsname\relax\else
-  \IfStrEqCase{\omnilatex@beamertheme}{%
+  \edef\omnilatex@beamertheme@exp{\omnilatex@beamertheme}%
+  \IfStrEqCase{\omnilatex@beamertheme@exp}{%
     {metropolis}{\usetheme{metropolis}}%
     {Madrid}{\usetheme{Madrid}}%
     {Warsaw}{\usetheme{Warsaw}}%
