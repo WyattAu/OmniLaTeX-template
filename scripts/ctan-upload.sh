@@ -113,7 +113,11 @@ if [[ ! -s "$ZIP_PATH" ]]; then
 fi
 
 if [[ -z "$EMAIL" ]]; then
-    fail "CTAN_EMAIL not set. Use --email or set CTAN_EMAIL env var." 1
+    if [[ "$DRY_RUN" = "true" ]]; then
+        info "DRY RUN: no email required (skipping upload validation)"
+    else
+        fail "CTAN_EMAIL not set. Use --email or set CTAN_EMAIL env var." 1
+    fi
 fi
 
 # Validate version format (semver-like: X.Y or X.Y.Z)

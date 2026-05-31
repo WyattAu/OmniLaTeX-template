@@ -64,10 +64,6 @@ jobs:
         CTAN_EMAIL: ${{ secrets.CTAN_EMAIL }}
         CTAN_AUTHOR: ${{ secrets.CTAN_AUTHOR }}
       run: |
-        if [ -z "$CTAN_EMAIL" ]; then
-          echo "::error::CTAN_EMAIL secret is not set"
-          exit 1
-        fi
         bash scripts/ctan-upload.sh \
           "${{ steps.version.outputs.version }}" \
           ctan/omnilatex.zip \
