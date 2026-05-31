@@ -75,6 +75,7 @@
   }%
 \else
   %% Chinese/Korean: plain fontspec font families for polyglossia
+  \ifomnilatex@cjkfonts@applied\else
   \IfFontExistsTF{\cjkmainfont}{%
     \newfontfamily\cjkmainfamily{\cjkmainfont}[Script=CJK]%
   }{%
@@ -90,11 +91,14 @@
   \IfFontExistsTF{\cjkmonofont}{%
     \newfontfamily\cjkmonofamily{\cjkmonofont}[Script=CJK]%
   }{}%
-\fi
+\fi % end \ifomnilatex@cjkfonts@applied
+\fi % end \ifomnilatex@use@luatexja
 }
 
 % Apply defaults on first load
+\newif\ifomnilatex@cjkfonts@applied
 \omnilatex@apply@cjkfonts
+\omnilatex@cjkfonts@appliedtrue
 
 % ── Polyglossia CJK Font Fallback ──────────────────────────────────────────
 % polyglossia uses the document's default font families (set by fontspec),
@@ -117,9 +121,11 @@
 % jacharrange controls which Unicode ranges are treated as CJK characters.
 % Default: all ranges enabled.  Range 2 = CJK compatibility, often disabled
 % to prevent spurious CJK treatment of punctuation in mixed scripts.
+\ifomnilatex@use@luatexja
 \AtBeginDocument{%
   \ltjsetparameter{jacharrange={-2}}%
 }%
+\fi
 
 % adjacent to CJK characters, affecting boundary spacing rules.
 
@@ -132,14 +138,18 @@
 
 % xkanjiskip: extra glue inserted between a CJK character and a non-CJK character.
 % Setting this to \cjklatinspacing provides consistent CJK–Latin separation.
+\ifomnilatex@use@luatexja
 \AtBeginDocument{%
   \ltjsetparameter{xkanjiskip=\cjklatinspacing plus 0.125em minus 0.125em}%
 }%
+\fi
 
 % Allow users to adjust spacing at any point
 \newcommand{\setCJKLatinSpacing}[1]{%
   \setlength{\cjklatinspacing}{#1}%
-  \ltjsetparameter{xkanjiskip=\cjklatinspacing plus 0.125em minus 0.125em}%
+  \ifomnilatex@use@luatexja
+    \ltjsetparameter{xkanjiskip=\cjklatinspacing plus 0.125em minus 0.125em}%
+  \fi
 }
 
 % ── Punctuation Handling ────────────────────────────────────────────────────
