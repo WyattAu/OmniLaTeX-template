@@ -70,6 +70,34 @@
 % Apply defaults on first load
 \omnilatex@apply@cjkfonts
 
+% ── Polyglossia CJK Font Fallback ──────────────────────────────────────────
+% polyglossia uses the document's default font families (set by fontspec),
+% NOT the luatexja-specific \setmainjfont/\setsansjfont. When polyglossia
+% switches to a CJK language, it tries to use the Latin sans-serif font
+% (e.g., Atkinson Hyperlegible Next) which lacks CJK glyphs, causing the
+% error: "The current main sans serif font does not contain the CJK script!"
+%
+% Fix: register Noto CJK fonts as fallback for ALL document font families
+% via luaotfload's fallback mechanism. When any font is missing a CJK glyph,
+% luaotfload transparently substitutes from the CJK fallback chain.
+\IfFontExistsTF{Noto Sans CJK SC}{%
+  \AtBeginDocument{%
+    \directlua{
+      luaotfload.add_fallback("omnilatexCJKFallback", {
+        "NotoSerifCJKSC:mode=harf;script=hani;",
+        "NotoSansCJKSC:mode=harf;script=hani;",
+        "NotoSansMonoCJKSC:mode=harf;script=hani;",
+      })
+    }
+    \addfontfeature{RawFeature={fallback=omnilatexCJKFallback}}
+  }
+  \ClassInfo{omnilatex-cjk}{CJK font fallback registered for polyglossia}%
+}{%
+  \ClassWarning{omnilatex-cjk}{%
+    Noto CJK fonts not found — CJK text may render as tofu\MessageBreak
+    in polyglossia contexts. Install fonts-noto-cjk package.\MessageBreak}%
+}
+
 % ── Line Breaking ───────────────────────────────────────────────────────────
 % LuaTeX-ja handles CJK line breaking natively — line breaks are allowed at
 % every inter-character boundary, and no extra space is inserted between
