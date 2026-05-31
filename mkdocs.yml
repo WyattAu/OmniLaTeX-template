@@ -83,7 +83,7 @@ nav:
 - Manual Parts III-XI: manual/PARTS_III_THROUGH_XI.md
 
 extra:
-  version: 2.2.0
+  version: 2.2.1
 
 validation:
   absolute_links: warn
