@@ -5,6 +5,10 @@ All notable changes to this project will be documented in per-version files.
 The format is based on [Keep a Changelog](https://keepachangelog.com).
 This project adheres to [Semantic versioning](https://semver.org).
 
+## [v2.2.3] - 2026-05-31
+
+See [CHANGELOG/v2.2.3.md](CHANGELOG/v2.2.3.md).
+
 ## [v2.2.0] - 2026-05-26
 
 See [CHANGELOG/v2.2.0.md](CHANGELOG/v2.2.0.md).
@@ -14,32 +18,6 @@ See [CHANGELOG/v2.2.0.md](CHANGELOG/v2.2.0.md).
 See [CHANGELOG/v2.1.0.md](CHANGELOG/v2.1.0.md).
 
 ## [Unreleased]
-
-### Fixed
-
-- **Tests**: Fixed 15 failing slow tests (test_edge_cases.py, test_unicode.py) by switching
-  from `latexmk` to `lualatex` for single-pass compilation. The `latexmk` return code
-  was non-zero due to the biber/biblatex cycle even when PDF was generated successfully.
-- **Tests**: Fixed `visual_regression.py` wrong PDF path (used subdirectory structure
-  `build/examples/{name}/main.pdf` but `build.py` outputs flat `build/examples/{name}.pdf`).
-- **Code quality**: Added timeout to `CommandRunner.run()` (default 3600s) and `cmd_test`
-  subprocess calls to prevent indefinite CI hangs.
-- **Code quality**: Added `encoding="utf-8"` to all `write_text`/`read_text` calls in `build.py`.
-- **Code quality**: Narrowed broad `except Exception` blocks to specific exception types
-  across `build.py` (12 occurrences).
-- **Code quality**: Added `FileNotFoundError` handling for `inotifywait` fallback in watch mode.
-- **CI/CD**: Fixed SBOM upload: replaced incorrect `github/codeql-action/upload-sarif`
-  (expects SARIF format) with `anchore/sbom-action` `upload-sbom: true` (uses Dependency
-  Snapshot API for SPDX JSON).
-- **CI/CD**: Raised coverage threshold from 60% to 80%.
-- **CI/CD**: Removed `continue-on-error: true` from edge case test step (tests now pass).
-- **CI/CD**: Added `timeout-minutes: 10` to changelog job.
-- **CI/CD**: Added top-level `permissions: contents: read` to `docker-ci.yml`.
-- **CI/CD**: Removed dead git commit step in `visual-regression.yml` (handled by
-  `create-pull-request` action).
-- **CI/CD**: Fixed pre-commit config invalid `timeout` keys (unsupported by pre-commit).
-- **Documentation**: Fixed stale dates in ROADMAP-v2.md, ROADMAP-DETAILED.md,
-  ROADMAP-PRODUCTION.md to match VERSION.md (2026-05-17).
 
 ## Version History
 
