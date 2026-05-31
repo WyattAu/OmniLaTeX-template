@@ -18,7 +18,8 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: https://code.forgejo.org/actions/checkout@v4
+      # v4
+      uses: https://code.forgejo.org/actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       with:
         fetch-depth: 0
 
@@ -37,7 +38,8 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: https://code.forgejo.org/actions/checkout@v4
+      # v4
+      uses: https://code.forgejo.org/actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
       with:
         fetch-depth: 0
 
@@ -49,13 +51,15 @@ jobs:
         python3 build.py --mode prod build-all
 
     - name: Upload root PDF
-      uses: https://code.forgejo.org/actions/upload-artifact@v4
+      # v4
+      uses: https://code.forgejo.org/actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: PDF-Root
         path: main.pdf
 
     - name: Upload example PDFs
-      uses: https://code.forgejo.org/actions/upload-artifact@v4
+      # v4
+      uses: https://code.forgejo.org/actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
       with:
         name: PDF-Examples
         path: build/examples/*.pdf
@@ -71,17 +75,20 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: https://code.forgejo.org/actions/checkout@v4
+      # v4
+      uses: https://code.forgejo.org/actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
     - name: Download root PDF
-      uses: https://code.forgejo.org/actions/download-artifact@v4
+      # v4
+      uses: https://code.forgejo.org/actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
       with:
         name: PDF-Root
         path: .
 
 
     - name: Download example PDFs
-      uses: https://code.forgejo.org/actions/download-artifact@v4
+      # v4
+      uses: https://code.forgejo.org/actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
       with:
         name: PDF-Examples
         path: build/examples
@@ -91,4 +98,5 @@ jobs:
         IS_OMNILATEX_CONTAINER: 'true'
         CI: 'true'
       run: |
-        python3 build.py --mode prod test
+        pip install -q pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout hypothesis
+        python3 -m pytest tests/test_modules.py tests/test_ctan.py tests/test_properties.py tests/test_config.py tests/test_institutions.py tests/test_negative.py tests/test_build_py.py --tb=short -q --timeout=60 -m "not slow"

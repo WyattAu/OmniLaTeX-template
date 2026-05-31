@@ -54,27 +54,10 @@ jobs:
       run: |
         test -f build/examples/article.pdf && echo "✅ PDF generated" || (echo "❌ PDF not found" && exit 1)
 
-  windows-experimental:
-    runs-on: windows-latest
-    timeout-minutes: 5
-    continue-on-error: true  # GitHub Windows runners cannot run Linux Docker containers
-    steps:
-    - name: Checkout repository
-        # v4
-      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
-      with:
-        fetch-depth: 1
-
-    - name: Skip (Docker Linux containers not available on Windows)
-      shell: bash
-      run: |
-        echo "::notice::Skipping Docker build on Windows — GitHub Windows runners cannot run Linux containers."
-        echo "::notice::Use WSL2 locally or the Linux job for cross-platform verification."
-
   report:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [linux, windows-experimental]
+    needs: [linux]
     if: always()
     steps:
     - name: Cross-platform summary
@@ -83,5 +66,5 @@ jobs:
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "| Platform | Status |" >> $GITHUB_STEP_SUMMARY
         echo "|----------|--------|" >> $GITHUB_STEP_SUMMARY
-        echo "| Linux    | ${{ needs.linux.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
-        echo "| Windows  | ${{ needs.windows-experimental.result == 'success' && '✅' || '❌' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Linux    | ${{ needs.linux.result == 'success' && 'OK' || 'FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Windows  | N/A (Docker Linux containers unavailable on GH Windows runners) |" >> $GITHUB_STEP_SUMMARY

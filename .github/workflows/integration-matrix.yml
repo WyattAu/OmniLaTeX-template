@@ -4,7 +4,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: integration-matrix
+  group: integration-matrix-${{ github.ref }}
   cancel-in-progress: false
 
 # Docker image digest is sourced from .env.docker at runtime.
@@ -15,6 +15,7 @@ on:
     branches: [main, master]
     paths:
     - lib/language/**
+    - lua/**
     - omnilatex.cls
     - config/document-types/**
   pull_request:

@@ -5,7 +5,7 @@ on:
     branches: [main]
   workflow_dispatch:
   workflow_run:
-    workflows: ["Build Examples"]
+    workflows: [Build Examples]
     types: [completed]
 
 permissions:
@@ -15,7 +15,7 @@ permissions:
   actions: read
 
 concurrency:
-  group: pages-deploy
+  group: pages-deploy-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:

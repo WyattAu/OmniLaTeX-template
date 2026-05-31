@@ -4,7 +4,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: build-examples
+  group: build-examples-${{ github.ref }}
   cancel-in-progress: false
 
 on:

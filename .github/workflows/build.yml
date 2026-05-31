@@ -21,6 +21,32 @@ on:
   workflow_dispatch:
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+    - name: Checkout repository
+      # v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+
+    - name: Set up Python
+      uses: ./.github/actions/setup-python
+
+    - name: Install linting tools
+      run: pip install -q black isort flake8
+
+    - name: Run black --check
+      run: black --check tests/ buildlib/ scripts/ tools/ build.py
+
+    - name: Run isort --check
+      run: isort --check --profile black tests/ buildlib/ scripts/ tools/ build.py
+
+    - name: Run flake8
+      run: flake8 tests/ buildlib/ scripts/ tools/ build.py --max-line-length=100 --extend-ignore=E203,W503
+
+    - name: Run pre-commit hooks (non-Docker)
+      uses: pre-commit-ci/action@v3.0.1
+
   dependency-review:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
@@ -301,7 +327,7 @@ jobs:
           --user root \
           -e CI=true \
           "${{ steps.digest.outputs.image }}" \
-           bash -c "pip install -q pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout hypothesis pytest-cov && pytest tests/test_modules.py tests/test_ctan.py tests/test_properties.py tests/test_visual_regression.py -v --tb=short --timeout=60 -m 'not slow' --junitxml=test-results.xml --cov=tests --cov=build.py --cov-report=term-missing --cov-report=xml"
+          bash -c "pip install -q pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout hypothesis pytest-cov && pytest tests/test_modules.py tests/test_ctan.py tests/test_properties.py tests/test_config.py tests/test_institutions.py tests/test_build_py.py tests/test_visual_regression.py tests/test_beamer_regression.py -v --tb=short --timeout=60 -m 'not slow' --junitxml=test-results.xml --cov=tests --cov=build.py --cov-report=term-missing --cov-report=xml"
 
     - name: Run edge case tests (slow)
       run: |

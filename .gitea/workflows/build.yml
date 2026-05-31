@@ -23,12 +23,12 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Run lint
+    - name: Run lint (preflight)
       env:
         IS_OMNILATEX_CONTAINER: 'true'
         CI: 'true'
       run: |
-        python3 -m black --check tests/*.py && python3 -m isort --check-only tests/*.py
+        python3 build.py --mode prod lint
 
   build:
     runs-on: ubuntu-latest
@@ -98,4 +98,4 @@ jobs:
         CI: 'true'
       run: |
         pip install -q pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout hypothesis
-        python3 -m pytest tests/test_modules.py tests/test_ctan.py tests/test_properties.py tests/test_negative.py --tb=short -q
+        python3 -m pytest tests/test_modules.py tests/test_ctan.py tests/test_properties.py tests/test_config.py tests/test_institutions.py tests/test_negative.py tests/test_build_py.py --tb=short -q --timeout=60 -m "not slow"
