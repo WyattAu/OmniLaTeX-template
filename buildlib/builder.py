@@ -154,10 +154,8 @@ class _BuildCore:
     def version(self) -> str:
         version_file = REPO_ROOT / "VERSION.md"
         if version_file.exists():
-            import re as _re
-
             text = version_file.read_text(encoding="utf-8")
-            m = _re.search(r"(\d+\.\d+\.\d+)", text)
+            m = re.search(r"(\d+\.\d+\.\d+)", text)
             if m:
                 return m.group(1)
         return "0.0.0"
@@ -180,7 +178,11 @@ class _BuildCore:
             try:
                 return json.loads(cache_path.read_text(encoding="utf-8"))
             except (json.JSONDecodeError, OSError):
-                pass
+                import logging
+
+                logging.getLogger("omnilatex").debug(
+                    "Failed to load build cache", exc_info=True
+                )
         return {}
 
     def _save_build_cache(self, cache: dict) -> None:
@@ -264,8 +266,6 @@ class _BuildCore:
     ) -> None:
         examples = self.discover_examples()
         if output_format == "json":
-            import json
-
             data = [
                 {"name": ex.name, "path": str(ex)}
                 for ex in sorted(examples, key=lambda e: e.name)
@@ -467,7 +467,11 @@ class _BuildCore:
                         package_info = parse_log_for_package_times(log_content)
                         timing_record["package_timing"] = package_info
                     except (OSError, UnicodeDecodeError, KeyError):
-                        pass
+                        import logging
+
+                        logging.getLogger("omnilatex").debug(
+                            "Failed to parse build timing from log", exc_info=True
+                        )
                 with self._timings_lock:
                     self.timings_data.append(timing_record)
 

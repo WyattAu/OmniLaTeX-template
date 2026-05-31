@@ -84,8 +84,8 @@ class _Commands:
         ui.info("Watching for changes... (Ctrl+C to stop)")
 
         try:
-            from watchdog.observers import Observer
             from watchdog.events import FileSystemEventHandler
+            from watchdog.observers import Observer
 
             class RebuildHandler(FileSystemEventHandler):
                 def __init__(self, runner, extensions, files):
@@ -157,7 +157,9 @@ class _Commands:
 
     # -- environment checks -------------------------------------------------
 
-    def _check_tool(self, tool: str, desc: str, required: bool = True) -> tuple[str, bool, str]:
+    def _check_tool(
+        self, tool: str, desc: str, required: bool = True
+    ) -> tuple[str, bool, str]:
         path = shutil.which(tool)
         if path:
             return (desc, True, f"Found at {path}")
@@ -174,7 +176,11 @@ class _Commands:
                 if m:
                     return int(m.group(1))
         except (subprocess.TimeoutExpired, OSError, ValueError):
-            pass
+            import logging
+
+            logging.getLogger("omnilatex").debug(
+                "Failed to detect TeX Live version", exc_info=True
+            )
         return None
 
     def _check_latex_package(self, pkg: str) -> bool:
@@ -308,7 +314,9 @@ class _Commands:
         try:
             result = subprocess.run(
                 ["git", "rev-parse", "--verify", ref],
-                capture_output=True, text=True, timeout=5,
+                capture_output=True,
+                text=True,
+                timeout=5,
             )
             return result.returncode == 0
         except (subprocess.TimeoutExpired, OSError):
@@ -334,14 +342,19 @@ class _Commands:
             self._run_latexdiff(tex_a, tex_b, output)
         else:
             if not latexdiff_path:
-                self.ui.warning("latexdiff not available; falling back to basic comparison")
+                self.ui.warning(
+                    "latexdiff not available; falling back to basic comparison"
+                )
             else:
-                self.ui.warning("Could not locate .tex sources for both PDFs; falling back to basic comparison")
+                self.ui.warning(
+                    "Could not locate .tex sources for both PDFs; falling back to basic comparison"
+                )
             self._basic_pdf_compare(a, b)
 
     def _diff_git_refs(self, ref_a: str, ref_b: str, output: str = None):
         self.ui.header(f"Git Diff: {ref_a} vs {ref_b}")
         import tempfile
+
         tmpdir = Path(tempfile.mkdtemp(prefix="omnilatex-diff-"))
         try:
             old_tex = tmpdir / "old.tex"
@@ -349,10 +362,14 @@ class _Commands:
             for ref, dest in [(ref_a, old_tex), (ref_b, new_tex)]:
                 result = subprocess.run(
                     ["git", "show", f"{ref}:{MAIN_TEX_FILENAME}"],
-                    capture_output=True, text=True, timeout=10,
+                    capture_output=True,
+                    text=True,
+                    timeout=10,
                 )
                 if result.returncode != 0:
-                    self.ui.error(f"Could not extract {MAIN_TEX_FILENAME} from ref '{ref}'")
+                    self.ui.error(
+                        f"Could not extract {MAIN_TEX_FILENAME} from ref '{ref}'"
+                    )
                     self.ui.info(f"  git error: {result.stderr.strip()}")
                     return
                 dest.write_text(result.stdout, encoding="utf-8")
@@ -364,7 +381,9 @@ class _Commands:
                 self.ui.warning("latexdiff not available; showing textual diff")
                 result = subprocess.run(
                     ["diff", "-u", str(old_tex), str(new_tex)],
-                    capture_output=True, text=True, timeout=10,
+                    capture_output=True,
+                    text=True,
+                    timeout=10,
                 )
                 if result.stdout:
                     print(result.stdout)
@@ -375,15 +394,20 @@ class _Commands:
         finally:
             shutil.rmtree(tmpdir, ignore_errors=True)
 
-    def _run_latexdiff(self, tex_a: Path, tex_b: Path, output: str = None, cwd: Path = None):
+    def _run_latexdiff(
+        self, tex_a: Path, tex_b: Path, output: str = None, cwd: Path = None
+    ):
         import tempfile
+
         work_dir = cwd or Path(tempfile.mkdtemp(prefix="omnilatex-diff-"))
         cleanup = cwd is None
         try:
             diff_tex = work_dir / "diff.tex"
             result = subprocess.run(
                 ["latexdiff", str(tex_a.resolve()), str(tex_b.resolve())],
-                capture_output=True, text=True, timeout=30,
+                capture_output=True,
+                text=True,
+                timeout=30,
                 cwd=work_dir,
             )
             if result.returncode != 0:
@@ -402,8 +426,11 @@ class _Commands:
             cmd.append(diff_tex.name)
             result = subprocess.run(
                 cmd,
-                capture_output=True, text=True, timeout=120,
-                cwd=work_dir, env={**os.environ, **extra_env},
+                capture_output=True,
+                text=True,
+                timeout=120,
+                cwd=work_dir,
+                env={**os.environ, **extra_env},
             )
             diff_pdf = work_dir / "diff.pdf"
             if diff_pdf.exists():
@@ -426,6 +453,7 @@ class _Commands:
         self.ui.info(f"  {Path(b).name}: {size_b:,} bytes")
         try:
             import fitz
+
             doc_a = fitz.open(a)
             doc_b = fitz.open(b)
             if doc_a.page_count != doc_b.page_count:
@@ -449,7 +477,9 @@ class _Commands:
 
     # -- cmd_diff -----------------------------------------------------------
 
-    def cmd_diff(self, files: list[str], regenerate_references: bool = False, output: str = None):
+    def cmd_diff(
+        self, files: list[str], regenerate_references: bool = False, output: str = None
+    ):
         """Compare PDFs, git refs, or example references.
 
         Modes:
@@ -496,8 +526,8 @@ class _Commands:
             return
 
         try:
-            from PIL import Image
             import numpy as np
+            from PIL import Image
 
             _has_ssim = True
         except ImportError:
@@ -554,7 +584,9 @@ class _Commands:
                                 "RGB", [ref_pix.width, ref_pix.height], ref_pix.samples
                             )
                             test_img = Image.frombytes(
-                                "RGB", [test_pix.width, test_pix.height], test_pix.samples
+                                "RGB",
+                                [test_pix.width, test_pix.height],
+                                test_pix.samples,
                             )
 
                             arr1 = np.array(ref_img.convert("L"), dtype=np.float64)
@@ -585,7 +617,7 @@ class _Commands:
                     )
 
             # Byte-level fallback (no SSIM deps available)
-            import hashlib
+            # Import hashlib at module level (line 5)
 
             ref_hash = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
             test_hash = hashlib.sha256(ref_path.read_bytes()).hexdigest()[:16]
@@ -614,7 +646,7 @@ class _Commands:
             return
 
         name = files[0]
-        if not re.match(r'^[a-zA-Z0-9_-]+$', name):
+        if not re.match(r"^[a-zA-Z0-9_-]+$", name):
             self.ui.error(
                 f"Invalid institution name '{name}'. "
                 "Use only alphanumeric characters, hyphens, and underscores."
@@ -626,7 +658,9 @@ class _Commands:
 
         # Verify resolved path stays within expected directory
         if not dst.resolve().is_relative_to(repo_root / "config" / "institutions"):
-            self.ui.error(f"Institution name '{name}' resolves outside institutions directory")
+            self.ui.error(
+                f"Institution name '{name}' resolves outside institutions directory"
+            )
             return
 
         if not src.exists():
@@ -697,7 +731,14 @@ class _Commands:
         # Extract all translation keys from the i18n file
 
         content = i18n_file.read_text(encoding="utf-8")
-        keys = sorted(set(re.findall(r"\\DeclareTranslation\{(?:english|german|french|spanish)\}\{(\w+)\}", content)))
+        keys = sorted(
+            set(
+                re.findall(
+                    r"\\DeclareTranslation\{(?:english|german|french|spanish)\}\{(\w+)\}",
+                    content,
+                )
+            )
+        )
 
         if not keys:
             self.ui.error("No translation keys found in i18n module")
@@ -706,7 +747,9 @@ class _Commands:
         # Check if language already exists
         escaped_lang = re.escape(lang)
         if re.search(r"\\DeclareTranslation\{" + escaped_lang + r"\}", content):
-            self.ui.warning(f"Language '{lang}' already has translations in the i18n module")
+            self.ui.warning(
+                f"Language '{lang}' already has translations in the i18n module"
+            )
             self.ui.info("Proceeding anyway to generate a fresh guide.")
 
         # Generate guide file
@@ -736,23 +779,27 @@ class _Commands:
             lines.append(f"% TODO: Translate '{key}' to {lang}")
             lines.append(f"\\DeclareTranslation{{{lang}}}{{{key}}}{{???}}")
 
-        lines.extend([
-            "",
-            "% === Integration Instructions ===",
-            "%",
-            "% In lib/language/omnilatex-i18n.sty:",
-            "%",
-            f"% 1. Add '{lang}' to the \\setotherlanguages list (line ~36):",
-            f"%    \\setotherlanguages'{{'german,english,french,spanish,simplifiedchinese,japanese," + lang + "'}}'",
-            "%",
-            "% 2. For each key above, add the \\DeclareTranslation line after the",
-            "%    existing translations for that key (after the spanish entry).",
-            "%",
-            f"% 3. If the 'translations' package doesn't support '{lang}':",
-            "%    - Polyglossia will still handle standard captions (TOC, figures, tables)",
-            "%    - OmniLaTeX-specific translations will work when language={lang} is active",
-            "%    - See CONTRIBUTING.md for details on CJK language support",
-        ])
+        lines.extend(
+            [
+                "",
+                "% === Integration Instructions ===",
+                "%",
+                "% In lib/language/omnilatex-i18n.sty:",
+                "%",
+                f"% 1. Add '{lang}' to the \\setotherlanguages list (line ~36):",
+                f"%    \\setotherlanguages'{{'german,english,french,spanish,simplifiedchinese,japanese,"
+                + lang
+                + "'}}'",
+                "%",
+                "% 2. For each key above, add the \\DeclareTranslation line after the",
+                "%    existing translations for that key (after the spanish entry).",
+                "%",
+                f"% 3. If the 'translations' package doesn't support '{lang}':",
+                "%    - Polyglossia will still handle standard captions (TOC, figures, tables)",
+                "%    - OmniLaTeX-specific translations will work when language={lang} is active",
+                "%    - See CONTRIBUTING.md for details on CJK language support",
+            ]
+        )
 
         guide_path.parent.mkdir(parents=True, exist_ok=True)
         guide_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -761,8 +808,12 @@ class _Commands:
         self.ui.info(f"  Language: {lang}")
         self.ui.info(f"  Translation keys: {len(keys)}")
         self.ui.info(f"  Next steps:")
-        self.ui.info(f"    1. Edit {guide_path.name} and fill in all '???' translations")
-        self.ui.info(f"    2. Add '{lang}' to \\setotherlanguages in lib/language/omnilatex-i18n.sty")
+        self.ui.info(
+            f"    1. Edit {guide_path.name} and fill in all '???' translations"
+        )
+        self.ui.info(
+            f"    2. Add '{lang}' to \\setotherlanguages in lib/language/omnilatex-i18n.sty"
+        )
         self.ui.info(f"    3. Copy \\DeclareTranslation lines into the i18n module")
         self.ui.info(f"    4. Test with \\documentclass[language={lang}]{{omnilatex}}")
 
@@ -788,14 +839,16 @@ class _Commands:
             self.ui.info("  --doctype TYPE      Set document type (default: book)")
             self.ui.info("  --institution NAME  Set institution (default: none)")
             self.ui.info("  --language LANG     Set language (default: english)")
-            self.ui.info("  --thesis            Shortcut for --doctype thesis with full thesis structure")
+            self.ui.info(
+                "  --thesis            Shortcut for --doctype thesis with full thesis structure"
+            )
             return
 
         if thesis and doctype is None:
             doctype = "thesis"
 
         project_name = files[0]
-        if not re.match(r'^[a-zA-Z0-9_-]+$', project_name):
+        if not re.match(r"^[a-zA-Z0-9_-]+$", project_name):
             self.ui.error(
                 f"Invalid project name '{project_name}'. "
                 "Use only alphanumeric characters, hyphens, and underscores."
@@ -807,7 +860,9 @@ class _Commands:
 
         # Verify resolved path stays within current directory
         if not dst.resolve().is_relative_to(Path.cwd()):
-            self.ui.error(f"Project name '{project_name}' resolves outside current directory")
+            self.ui.error(
+                f"Project name '{project_name}' resolves outside current directory"
+            )
             return
 
         if not src.exists():
@@ -921,7 +976,9 @@ class _Commands:
                 main_tex.write_text(content, encoding="utf-8")
 
         if thesis:
-            self._create_thesis_structure(dst, project_name, doctype, institution, language)
+            self._create_thesis_structure(
+                dst, project_name, doctype, institution, language
+            )
 
         self.ui.success(f"Initialized project: {project_name}")
         self.ui.info(f"  Location: {dst}")
@@ -948,28 +1005,21 @@ class _Commands:
     # -- thesis structure helper --------------------------------------------
 
     def _create_thesis_structure(
-        self, dst: Path, project_name: str, doctype: str, institution: str, language: str,
+        self,
+        dst: Path,
+        project_name: str,
+        doctype: str,
+        institution: str,
+        language: str,
     ):
         chapters_dir = dst / "chapters"
         chapters_dir.mkdir(parents=True, exist_ok=True)
 
         chapter_templates = {
-            "introduction.tex": (
-                "\\chapter{Introduction}\n"
-                "\n"
-            ),
-            "methodology.tex": (
-                "\\chapter{Methodology}\n"
-                "\n"
-            ),
-            "results.tex": (
-                "\\chapter{Results}\n"
-                "\n"
-            ),
-            "conclusion.tex": (
-                "\\chapter{Conclusion}\n"
-                "\n"
-            ),
+            "introduction.tex": ("\\chapter{Introduction}\n" "\n"),
+            "methodology.tex": ("\\chapter{Methodology}\n" "\n"),
+            "results.tex": ("\\chapter{Results}\n" "\n"),
+            "conclusion.tex": ("\\chapter{Conclusion}\n" "\n"),
         }
         for filename, content in chapter_templates.items():
             (chapters_dir / filename).write_text(content, encoding="utf-8")
@@ -1066,7 +1116,7 @@ class _Commands:
 
     # -- doctor -------------------------------------------------------------
 
-    def cmd_doctor(self, files: list[str] | None = None) -> None:
+    def cmd_doctor(self, _: list[str] | None = None) -> None:
         """Run comprehensive health diagnostics."""
         import platform as _platform
 
@@ -1129,7 +1179,11 @@ class _Commands:
             if result.returncode == 0:
                 fc_list_output = result.stdout.lower()
         except (subprocess.TimeoutExpired, OSError):
-            pass
+            import logging
+
+            logging.getLogger("omnilatex").debug(
+                "fc-list font detection failed", exc_info=True
+            )
 
         lualatex_check_done = False
 
@@ -1141,8 +1195,8 @@ class _Commands:
 
             if found is None and not lualatex_check_done:
                 try:
-                    import tempfile
                     import os
+                    import tempfile
 
                     tex_content = (
                         "\\RequirePackage{fontspec}\n"
@@ -1189,9 +1243,7 @@ class _Commands:
                     lualatex_check_done = True
 
             if found is not None and font_name not in font_results:
-                note = (
-                    "Found" if found else "Not found (fallback font will be used)"
-                )
+                note = "Found" if found else "Not found (fallback font will be used)"
                 font_results[font_name] = (found, note)
 
             if font_name not in font_results:
@@ -1235,20 +1287,21 @@ class _Commands:
             return 1
 
         tex_files = sorted(
-            f for f in scan_dir.rglob("*.tex")
-            if self.config.build_dir not in f.parents
-            and "_minted" not in str(f)
+            f
+            for f in scan_dir.rglob("*.tex")
+            if self.config.build_dir not in f.parents and "_minted" not in str(f)
         )
         bib_files = sorted(
-            f for f in scan_dir.rglob("*.bib")
-            if self.config.build_dir not in f.parents
+            f for f in scan_dir.rglob("*.bib") if self.config.build_dir not in f.parents
         )
 
         if not tex_files:
             self.ui.warning(f"No .tex files found in {scan_dir}")
             return 0
 
-        self.ui.info(f"Scanning {len(tex_files)} .tex file(s), {len(bib_files)} .bib file(s)")
+        self.ui.info(
+            f"Scanning {len(tex_files)} .tex file(s), {len(bib_files)} .bib file(s)"
+        )
 
         _LABEL_RE = re.compile(r"\\label\{([^}]+)\}")
         _REF_RE = re.compile(r"\\(?:ref|eqref|autoref|cref|Cref|pageref)\{([^}]+)\}")
@@ -1305,7 +1358,9 @@ class _Commands:
         total_refs = sum(len(v) for v in refs.values())
         total_cites = sum(len(v) for v in cites.values())
 
-        self.ui.info(f"Labels: {total_labels}  |  References: {total_refs}  |  Citations: {total_cites}  |  Bib entries: {len(bib_keys)}")
+        self.ui.info(
+            f"Labels: {total_labels}  |  References: {total_refs}  |  Citations: {total_cites}  |  Bib entries: {len(bib_keys)}"
+        )
 
         has_errors = False
 
@@ -1334,7 +1389,9 @@ class _Commands:
         elif not has_errors:
             self.ui.success("No errors found (unused labels are informational only).")
         else:
-            self.ui.error("Cross-reference check failed: undefined references or citations found.")
+            self.ui.error(
+                "Cross-reference check failed: undefined references or citations found."
+            )
 
         return 1 if has_errors else 0
 
@@ -1350,9 +1407,9 @@ class _Commands:
             tex_files = [Path(f) for f in files if Path(f).exists()]
         else:
             tex_files = sorted(
-                f for f in repo_root.rglob("*.tex")
-                if self.config.build_dir not in f.parents
-                and "_minted" not in str(f)
+                f
+                for f in repo_root.rglob("*.tex")
+                if self.config.build_dir not in f.parents and "_minted" not in str(f)
             )
 
         if not tex_files:
@@ -1367,7 +1424,9 @@ class _Commands:
             self.ui.info("  Install with: tlmgr install chktex lacheck")
             return 1
 
-        self.ui.info(f"Scanning {len(tex_files)} file(s) with {'chktex' if has_chktex else ''}{' and ' if has_chktex and has_lacheck else ''}{'lacheck' if has_lacheck else ''}")
+        self.ui.info(
+            f"Scanning {len(tex_files)} file(s) with {'chktex' if has_chktex else ''}{' and ' if has_chktex and has_lacheck else ''}{'lacheck' if has_lacheck else ''}"
+        )
 
         total_errors = 0
         total_warnings = 0
@@ -1383,7 +1442,9 @@ class _Commands:
                 try:
                     result = subprocess.run(
                         ["chktex", "-q", "-f", "%f:%l:%c:%n:%m%n", str(tex_file)],
-                        capture_output=True, text=True, timeout=30,
+                        capture_output=True,
+                        text=True,
+                        timeout=30,
                     )
                     if result.stdout.strip():
                         self.ui.info(f"[chktex] {rel}:")
@@ -1400,7 +1461,9 @@ class _Commands:
                 try:
                     result = subprocess.run(
                         ["lacheck", str(tex_file)],
-                        capture_output=True, text=True, timeout=30,
+                        capture_output=True,
+                        text=True,
+                        timeout=30,
                     )
                     if result.stdout.strip():
                         self.ui.info(f"[lacheck] {rel}:")
@@ -1431,7 +1494,6 @@ class _Commands:
 
         Requires: latexml (for HTML), pandoc (for EPUB/DOCX)
         """
-        import subprocess
 
         self.ui.header(f"Export to {output_format.upper()}")
 
@@ -1461,19 +1523,25 @@ class _Commands:
             html_file = output_dir / f"{stem}.html"
             self.ui.info(f"Converting {source.name} -> {html_file}")
 
-            rc, _ = self.runner.run([
-                "latexml",
-                "--dest=" + str(output_dir / f"{stem}.xml"),
-                str(source),
-            ], cwd=source.parent)
+            rc, _ = self.runner.run(
+                [
+                    "latexml",
+                    "--dest=" + str(output_dir / f"{stem}.xml"),
+                    str(source),
+                ],
+                cwd=source.parent,
+            )
 
             if rc == 0:
-                rc, _ = self.runner.run([
-                    "latexmlpost",
-                    "--dest=" + str(html_file),
-                    "--format=html",
-                    str(output_dir / f"{stem}.xml"),
-                ], cwd=source.parent)
+                rc, _ = self.runner.run(
+                    [
+                        "latexmlpost",
+                        "--dest=" + str(html_file),
+                        "--format=html",
+                        str(output_dir / f"{stem}.xml"),
+                    ],
+                    cwd=source.parent,
+                )
 
             if rc == 0 and html_file.exists():
                 self.ui.success(f"HTML exported: {html_file}")
@@ -1492,18 +1560,24 @@ class _Commands:
             html_file = output_dir / f"{stem}.html"
 
             if shutil.which("latexml"):
-                rc, _ = self.runner.run([
-                    "latexml",
-                    f"--dest={xml_file}",
-                    str(source),
-                ], cwd=source.parent)
+                rc, _ = self.runner.run(
+                    [
+                        "latexml",
+                        f"--dest={xml_file}",
+                        str(source),
+                    ],
+                    cwd=source.parent,
+                )
                 if rc == 0:
-                    rc, _ = self.runner.run([
-                        "latexmlpost",
-                        f"--dest={html_file}",
-                        "--format=html",
-                        str(xml_file),
-                    ], cwd=source.parent)
+                    rc, _ = self.runner.run(
+                        [
+                            "latexmlpost",
+                            f"--dest={html_file}",
+                            "--format=html",
+                            str(xml_file),
+                        ],
+                        cwd=source.parent,
+                    )
 
             if html_file.exists():
                 pandoc_from = "html"
@@ -1512,13 +1586,17 @@ class _Commands:
                 pandoc_from = "latex"
                 pandoc_input = str(source)
 
-            rc, _ = self.runner.run([
-                "pandoc",
-                f"--from={pandoc_from}",
-                f"--to={output_format}",
-                "-o", str(out_file),
-                pandoc_input,
-            ], cwd=source.parent)
+            rc, _ = self.runner.run(
+                [
+                    "pandoc",
+                    f"--from={pandoc_from}",
+                    f"--to={output_format}",
+                    "-o",
+                    str(out_file),
+                    pandoc_input,
+                ],
+                cwd=source.parent,
+            )
 
             if rc == 0 and out_file.exists():
                 self.ui.success(f"{output_format.upper()} exported: {out_file}")

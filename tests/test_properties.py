@@ -222,6 +222,35 @@ class TestPropertyBasedFuzzing:
         assert success
 
 
+def _get_inst_names() -> list[str]:
+    """Module-level helper for Hypothesis decorators (class not yet defined)."""
+    inst_dir = PROJECT_ROOT / "config" / "institutions"
+    if not inst_dir.is_dir():
+        return []
+    return sorted(
+        d.name for d in inst_dir.iterdir() if d.is_dir() and d.name != "README.md"
+    )
+
+
+def _get_ex_dts() -> dict[str, str]:
+    """Module-level helper for Hypothesis decorators (class not yet defined)."""
+    examples_dir = PROJECT_ROOT / "examples"
+    result = {}
+    if not examples_dir.is_dir():
+        return result
+    for ex_dir in examples_dir.iterdir():
+        main_tex = ex_dir / "main.tex"
+        if main_tex.is_file():
+            content = main_tex.read_text(encoding="utf-8", errors="replace")
+            m = re.search(r"doctype=([a-zA-Z-]+)", content)
+            if m:
+                doctype = m.group(1)
+                doctype = _DOCTYPE_ALIAS_MAP.get(doctype, doctype)
+                if doctype is not None:
+                    result[ex_dir.name] = doctype
+    return result
+
+
 class TestStructuralProperties:
     """Static structural property tests for OmniLaTeX configuration."""
 
@@ -269,31 +298,14 @@ class TestStructuralProperties:
             names.append(stem)
         return sorted(names)
 
-    def _get_institution_names(self) -> list[str]:
-        inst_dir = PROJECT_ROOT / "config" / "institutions"
-        if not inst_dir.is_dir():
-            return []
-        return sorted(
-            d.name for d in inst_dir.iterdir() if d.is_dir() and d.name != "README.md"
-        )
+    @staticmethod
+    def _get_institution_names() -> list[str]:
+        return _get_inst_names()
 
-    def _get_example_doctypes(self) -> dict[str, str]:
-        examples_dir = PROJECT_ROOT / "examples"
-        result = {}
-        if not examples_dir.is_dir():
-            return result
-        for ex_dir in examples_dir.iterdir():
-            main_tex = ex_dir / "main.tex"
-            if main_tex.is_file():
-                content = main_tex.read_text(encoding="utf-8", errors="replace")
-                m = re.search(r"doctype=([a-zA-Z-]+)", content)
-                if m:
-                    doctype = m.group(1)
-                    # Normalize aliases to canonical doctype names
-                    doctype = _DOCTYPE_ALIAS_MAP.get(doctype, doctype)
-                    if doctype is not None:
-                        result[ex_dir.name] = doctype
-        return result
+    @staticmethod
+    @staticmethod
+    def _get_example_doctypes() -> dict[str, str]:
+        return _get_ex_dts()
 
     def _get_require_packages(self) -> list[str]:
         cls_file = PROJECT_ROOT / "omnilatex.cls"
@@ -353,7 +365,7 @@ class TestStructuralProperties:
             ), f"Doctype '{name}' maps to invalid KOMA class '{koma_class}'"
 
     @_hypothesis_skip
-    @given(institution=sampled_from(list(_get_institution_names(None) or ["generic"])))
+    @given(institution=sampled_from(list(_get_inst_names() or ["generic"])))
     @settings(max_examples=20, deadline=None)
     def test_institution_has_valid_providespackage(self, institution):
         inst_dir = PROJECT_ROOT / "config" / "institutions" / institution
@@ -387,7 +399,7 @@ class TestStructuralProperties:
         ), f"Translation key counts are not equal across languages: {counts}"
 
     @_hypothesis_skip
-    @given(example=sampled_from(list(_get_example_doctypes(None).keys()) or ["thesis"]))
+    @given(example=sampled_from(list(_get_ex_dts().keys()) or ["thesis"]))
     @settings(max_examples=30, deadline=None)
     def test_example_doctype_is_registered(self, example):
         example_doctypes = self._get_example_doctypes()

@@ -12,9 +12,24 @@
 doctype
 language
 institution
-color-mode
-link-style
-code-style
+font
+citations
+color
+titlestyle
+loadGlossaries
+todonotes
+censoring
+enablefonts
+enablegraphics
+enablemath
+enabletikz
+enableengineering
+enablecode
+enabletables
+beameraspectratio
+beamernavigationsymbols
+beamertheme
+a5
 
 # ── Document Configuration ──────────────────────────
 documenttype
@@ -28,7 +43,7 @@ documentlinespacing
 documentparspacing
 documentitemspacing
 idnumber
-secondexamniner
+secondexaminer
 supervisor
 
 # ── Metadata ─────────────────────────────────────────
