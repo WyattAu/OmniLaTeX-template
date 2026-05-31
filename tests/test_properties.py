@@ -732,12 +732,6 @@ class TestDocumentTypeConfigs:
             f"ALL_DOCTYPE_NAMES count ({len(ALL_DOCTYPE_NAMES)})"
         )
 
-    def test_doctype_count_is_27(self):
-        sty_files = self._get_doctype_sty_files()
-        assert (
-            len(sty_files) == 27
-        ), f"Expected 27 doctype .sty files, found {len(sty_files)}"
-
     def test_all_doctype_names_have_sty_file(self):
         sty_names = {p.stem for p in self._get_doctype_sty_files()}
         for name in ALL_DOCTYPE_NAMES:

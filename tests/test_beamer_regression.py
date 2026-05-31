@@ -214,7 +214,7 @@ class TestExaminerBackwardCompat:
     """Verify examniner->examiner backward-compat aliases work."""
 
     def test_examiner_aliases_in_document_module(self):
-        """\\firstexaminer should be defined as alias for \\firstexaminer."""
+        """\\firstexamniner (typo variant) backward-compat alias in omnilatex-document.sty."""
         sty_path = PROJECT_ROOT / "lib" / "layout" / "omnilatex-document.sty"
         content = sty_path.read_text(encoding="utf-8")
         # Verify backward-compat aliases exist
