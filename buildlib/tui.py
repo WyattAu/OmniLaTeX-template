@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 import time
-from pathlib import Path
 
 from buildlib.builder import RICH_AVAILABLE
-
 
 
 def interactive_menu(tasks, commands: dict[str, tuple]) -> None:
@@ -69,11 +67,16 @@ def interactive_menu(tasks, commands: dict[str, tuple]) -> None:
         _simple_menu(tasks, commands, menu_sections, flat_commands)
 
 
-def _rich_menu(tasks, commands: dict[str, tuple], menu_sections: list[tuple[str, list[tuple[str, str]]]], flat_commands: dict[str, tuple[str, str, bool]]) -> None:
+def _rich_menu(
+    tasks,
+    commands: dict[str, tuple],
+    menu_sections: list[tuple[str, list[tuple[str, str]]]],
+    flat_commands: dict[str, tuple[str, str, bool]],
+) -> None:
     """Render the interactive menu using rich."""
     from rich.console import Console
-    from rich.table import Table as RichTable
     from rich.panel import Panel
+    from rich.table import Table as RichTable
     from rich.text import Text as RichText
 
     console = Console()
@@ -159,7 +162,7 @@ def _rich_menu(tasks, commands: dict[str, tuple], menu_sections: list[tuple[str,
             if cmd_name == "build-example":
                 examples = [e.name for e in tasks.discover_examples()]
                 console.print(
-                    f"  [dim]Available: {', '.join(examples[:10])}{'...' if len(examples) > 10 else ''}[/dim]"
+                    f"  [dim]Available: {', '.join(examples[:10])}{'...' if len(examples) > 10 else ''}[/dim]"  # noqa: E501
                 )
             try:
                 arg = input(f"  {cmd_name} > ").strip()
@@ -186,7 +189,12 @@ def _rich_menu(tasks, commands: dict[str, tuple], menu_sections: list[tuple[str,
             return
 
 
-def _simple_menu(tasks, commands: dict[str, tuple], menu_sections: list[tuple[str, list[tuple[str, str]]]], flat_commands: dict[str, tuple[str, str, bool]]) -> None:
+def _simple_menu(
+    tasks,
+    commands: dict[str, tuple],
+    menu_sections: list[tuple[str, list[tuple[str, str]]]],
+    flat_commands: dict[str, tuple[str, str, bool]],
+) -> None:
     """Render the interactive menu using plain terminal output."""
     ui = tasks.ui
 

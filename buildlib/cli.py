@@ -6,9 +6,9 @@ import sys
 
 from buildlib import BuildTasks
 from buildlib.config import ProjectConfig
-from buildlib.ui import TerminalOutput
 from buildlib.runner import CommandRunner
 from buildlib.tui import interactive_menu
+from buildlib.ui import TerminalOutput
 
 
 def main() -> None:
@@ -67,7 +67,11 @@ def main() -> None:
         "clean-aux": (BuildTasks.clean_aux, "Clean aux files.", False),
         "clean-pdf": (BuildTasks.clean_pdf, "Clean all PDFs.", False),
         "preflight": (BuildTasks.preflight, "Run preflight checks.", False),
-        "check": (BuildTasks.cmd_check, "Cross-reference integrity check on .tex files.", True),
+        "check": (
+            BuildTasks.cmd_check,
+            "Cross-reference integrity check on .tex files.",
+            True,
+        ),
         "lint": (BuildTasks.cmd_lint, "Lint .tex files with chktex/lacheck.", True),
         "list-examples": (BuildTasks.list_examples, "List all examples.", False),
         "build-example": (
@@ -82,7 +86,11 @@ def main() -> None:
         ),
         "clean-example": (BuildTasks.clean_example, "Clean specific example(s).", True),
         "clean-examples": (BuildTasks.clean_aux, "Clean all examples.", False),
-        "cache-stats": (BuildTasks.cmd_cache_stats, "Show build cache statistics.", False),
+        "cache-stats": (
+            BuildTasks.cmd_cache_stats,
+            "Show build cache statistics.",
+            False,
+        ),
         "cache-clear": (BuildTasks.cmd_cache_clear, "Delete build cache.", False),
         "test": (BuildTasks.run_tests, "Run test suite.", True),
         "watch": (BuildTasks.cmd_watch, "Watch files for changes and rebuild.", True),
@@ -112,7 +120,9 @@ def main() -> None:
             True,
         ),
         "export": (
-            lambda tasks, files: tasks.cmd_export(files, output_format=getattr(args, "export_format", "html")),
+            lambda tasks, files: tasks.cmd_export(
+                files, output_format=getattr(args, "export_format", "html")
+            ),
             "Export LaTeX to HTML, EPUB, or DOCX",
             True,
         ),
@@ -143,7 +153,8 @@ def main() -> None:
             help="Copy built PDFs to tests/references/ as new baselines instead of comparing.",
         )
         diff_subparser.add_argument(
-            "--output", "-o",
+            "--output",
+            "-o",
             type=str,
             default=None,
             metavar="PATH",
@@ -176,7 +187,8 @@ def main() -> None:
         )
     if export_subparser is not None:
         export_subparser.add_argument(
-            "--format", "-f",
+            "--format",
+            "-f",
             dest="export_format",
             type=str,
             default="html",
@@ -185,7 +197,8 @@ def main() -> None:
         )
     if list_examples_subparser is not None:
         list_examples_subparser.add_argument(
-            "--format", "-f",
+            "--format",
+            "-f",
             dest="list_format",
             type=str,
             default="text",

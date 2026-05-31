@@ -9,6 +9,7 @@ Usage (normally invoked through VS Code tasks):
 
 The script expects to be run from the repository root or receives --root.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -48,7 +49,9 @@ def parse_selection(selection: str, names: List[str]) -> List[str]:
         try:
             index = int(token)
         except ValueError:
-            raise ValueError(f"Invalid index '{token}'. Please enter numbers like '1,3,4'.")
+            raise ValueError(
+                f"Invalid index '{token}'. Please enter numbers like '1,3,4'."
+            )
         if index < 1 or index > len(names):
             raise ValueError(f"Index '{index}' out of range (1..{len(names)}).")
         chosen.append(names[index - 1])
@@ -66,19 +69,36 @@ def run_builds(root: str, mode: str, selections: List[str]) -> None:
     if not selections:
         print("No examples selected. Nothing to build.")
         return
-    base_cmd = [sys.executable, os.path.join(root, "build.py"), "--mode", mode, "build-example"]
+    base_cmd = [
+        sys.executable,
+        os.path.join(root, "build.py"),
+        "--mode",
+        mode,
+        "build-example",
+    ]
     for name in selections:
         print(f"\n=== Building example: {name} ===")
         completed = subprocess.run(base_cmd + [name], cwd=root)
         if completed.returncode != 0:
-            print(f"[ERROR] Example '{name}' failed with exit code {completed.returncode}.")
+            print(
+                f"[ERROR] Example '{name}' failed with exit code {completed.returncode}."
+            )
             sys.exit(completed.returncode)
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Build selected OmniLaTeX examples.")
-    parser.add_argument("--mode", default="dev", choices=["dev", "prod"], help="Build mode passed to build.py")
-    parser.add_argument("--root", default=os.getcwd(), help="Repository root (defaults to current working directory)")
+    parser.add_argument(
+        "--mode",
+        default="dev",
+        choices=["dev", "prod"],
+        help="Build mode passed to build.py",
+    )
+    parser.add_argument(
+        "--root",
+        default=os.getcwd(),
+        help="Repository root (defaults to current working directory)",
+    )
     args = parser.parse_args()
 
     root = os.path.abspath(args.root)
@@ -87,7 +107,9 @@ def main() -> None:
         print("No examples with main.tex found under 'examples/'.")
         sys.exit(1)
 
-    print("Select examples to build. Enter indices separated by commas, or '*' for all.")
+    print(
+        "Select examples to build. Enter indices separated by commas, or '*' for all."
+    )
     for idx, name in enumerate(examples, start=1):
         print(f"  [{idx}] {name}")
 

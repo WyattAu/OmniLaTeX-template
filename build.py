@@ -6,6 +6,7 @@ import sys
 
 def main() -> int:
     from buildlib import main as _main
+
     return _main() or 0
 
 

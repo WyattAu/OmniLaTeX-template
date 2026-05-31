@@ -2,12 +2,18 @@
 
 from __future__ import annotations
 
+try:
+    import numpy as np
+except ImportError:
+    np = None  # type: ignore[assignment]
+
 
 def _compute_ssim_windowed(
     arr1: "np.ndarray", arr2: "np.ndarray", window_size: int = 7
 ) -> float:
     """Sliding-window SSIM (Wang et al. 2004). Returns mean SSIM index."""
-    import numpy as np
+    if np is None:
+        return 0.0
 
     C1, C2 = (0.01 * 255) ** 2, (0.03 * 255) ** 2
 
@@ -33,6 +39,7 @@ def _compute_ssim_windowed(
 
         def _conv2d(a, k):
             return _scipy_fftconvolve(a, k, mode="same")
+
     except ImportError:
 
         def _conv2d(a, k):

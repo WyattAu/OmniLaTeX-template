@@ -2,6 +2,7 @@
 """Validate that all CI configs reference the same Docker image digest."""
 
 from __future__ import annotations
+
 import re
 import sys
 from pathlib import Path

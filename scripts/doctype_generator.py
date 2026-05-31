@@ -39,7 +39,6 @@ import sys
 import tomllib
 from pathlib import Path
 
-
 TEMPLATE = r"""%\NeedsTeXFormat{{LaTeX2e}}
 \ProvidesPackage{{config/document-types/{name}}}[2026/05/31 v2.2.3 {description}]
 
@@ -70,7 +69,9 @@ def generate_geometry_block(name: str, geo: dict) -> str:
         key = f"margin_{side}"
         if key in geo:
             lines.append(f"\\newlength{{\\omnilatex@{name}@margin{side}}}")
-            lines.append(f"\\setlength{{\\omnilatex@{name}@margin{side}}}{{{geo[key]}}}")
+            lines.append(
+                f"\\setlength{{\\omnilatex@{name}@margin{side}}}{{{geo[key]}}}"
+            )
     return "\n".join(lines) if lines else "% No geometry overrides"
 
 
@@ -133,10 +134,19 @@ def generate_doctype(toml_path: Path) -> str:
 
 def main():
     import argparse
-    parser = argparse.ArgumentParser(description="Generate OmniLaTeX doctypes from TOML DSL")
-    parser.add_argument("input", nargs="+", type=Path, help="TOML doctype definition file(s)")
-    parser.add_argument("--output-dir", "-o", type=Path, default=Path("config/document-types"))
-    parser.add_argument("--dry-run", action="store_true", help="Print generated .sty to stdout")
+
+    parser = argparse.ArgumentParser(
+        description="Generate OmniLaTeX doctypes from TOML DSL"
+    )
+    parser.add_argument(
+        "input", nargs="+", type=Path, help="TOML doctype definition file(s)"
+    )
+    parser.add_argument(
+        "--output-dir", "-o", type=Path, default=Path("config/document-types")
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Print generated .sty to stdout"
+    )
     args = parser.parse_args()
 
     for toml_path in args.input:

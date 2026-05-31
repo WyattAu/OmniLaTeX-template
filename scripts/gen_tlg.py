@@ -4,10 +4,10 @@
 This mimics l3build's normalize_log function from l3build-check.lua.
 """
 
-import re
-import subprocess
 import os
+import re
 import shutil
+import subprocess
 import tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

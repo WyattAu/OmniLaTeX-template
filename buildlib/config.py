@@ -31,12 +31,7 @@ class ProjectConfig:
     cnf_lines: list[str] = None
 
     def is_ci(self) -> bool:
-        return any(
-            os.environ.get(var)
-            for var in ["CI", "GITHUB_ACTIONS", "GITLAB_CI"]
-        )
+        return any(os.environ.get(var) for var in ["CI", "GITHUB_ACTIONS", "GITLAB_CI"])
 
     def verbose_enabled(self) -> bool:
-        return os.environ.get(
-            "OMNILATEX_VERBOSE", "0"
-        ).lower() in {"1", "true", "yes"}
+        return os.environ.get("OMNILATEX_VERBOSE", "0").lower() in {"1", "true", "yes"}

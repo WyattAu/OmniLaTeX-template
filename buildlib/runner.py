@@ -12,6 +12,7 @@ from buildlib.ui import TerminalOutput
 
 class CommandRunner:
     """Default timeout for all subprocess invocations (seconds)."""
+
     DEFAULT_TIMEOUT = 3600  # 1 hour
 
     def __init__(self, ui: TerminalOutput, build_mode: str, verbose: bool):
@@ -29,10 +30,7 @@ class CommandRunner:
         """Executes a command, streams output, and returns
         (exit_code, logs). Does NOT raise on failure."""
         if self.verbose:
-            self.ui.debug(
-                f"RUN in '{cwd or Path.cwd()}': "
-                f"{' '.join(cmd_args)}"
-            )
+            self.ui.debug(f"RUN in '{cwd or Path.cwd()}': " f"{' '.join(cmd_args)}")
         env = os.environ.copy()
         env["BUILD_MODE"] = self.build_mode
         if extra_env:
@@ -69,4 +67,6 @@ class CommandRunner:
             except OSError:
                 pass
             process.wait()
-            return -1, [f"Command timed out after {timeout or self.DEFAULT_TIMEOUT}s: {cmd_args[0]}"]
+            return -1, [
+                f"Command timed out after {timeout or self.DEFAULT_TIMEOUT}s: {cmd_args[0]}"
+            ]

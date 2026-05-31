@@ -8,6 +8,7 @@ optional short captions, caption widths, placements, and manual caption usage.
 It is intentionally conservative and only processes the `content/` tree, which
 is the portion built by `main.tex` in the root document.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -99,7 +100,7 @@ def parse_options(option_string: str) -> FloatOptions:
 
 
 def find_matching_end(text: str, env: str, start_pos: int) -> int:
-    token = f"\\end{{{env}}}"
+    token = "\\end{{{env}}}"
     idx = start_pos
     while True:
         idx = text.find(token, idx)
@@ -115,21 +116,21 @@ def build_caption_lines(opts: FloatOptions, base_env: str, indent: str) -> str:
     lines: List[str] = []
     if opts.caption_width:
         width = strip_braces(opts.caption_width)
-        lines.append(f"{indent}\\captionsetup{{width={width}}}")
+        lines.append("{indent}\\captionsetup{{width={width}}}")
     if opts.caption:
         caption_content = strip_braces(opts.caption)
-        caption_cmd = f"\\caption"
+        caption_cmd = "\\caption"
         if opts.short_caption:
             short = strip_braces(opts.short_caption)
-            caption_cmd += f"[{short}]"
-        caption_cmd += f"{{{caption_content}}}"
-        lines.append(f"{indent}{caption_cmd}")
+            caption_cmd += "[{short}]"
+        caption_cmd += "{{{caption_content}}}"
+        lines.append("{indent}{caption_cmd}")
     if opts.label:
         label = strip_braces(opts.label)
-        lines.append(f"{indent}\\label{{{label}}}")
+        lines.append("{indent}\\label{{{label}}}")
     if opts.footnote:
         footnote = strip_braces(opts.footnote)
-        lines.append(f"{indent}\\caption*{{{footnote}}}")
+        lines.append("{indent}\\caption*{{{footnote}}}")
     if not lines:
         return ""
     return "\n".join(lines) + "\n"
@@ -139,21 +140,21 @@ def build_manual_caption_commands(opts: FloatOptions, base_env: str) -> List[str
     commands: List[str] = []
     if opts.caption_width:
         width = strip_braces(opts.caption_width)
-        commands.append(f"\\captionsetup{{width={width}}}")
+        commands.append("\\captionsetup{{width={width}}}")
     if opts.caption:
         caption_content = strip_braces(opts.caption)
-        caption_cmd = f"\\captionof{{{base_env}}}"
+        caption_cmd = "\\captionof{{{base_env}}}"
         if opts.short_caption:
             short = strip_braces(opts.short_caption)
-            caption_cmd += f"[{short}]"
-        caption_cmd += f"{{{caption_content}}}"
+            caption_cmd += "[{short}]"
+        caption_cmd += "{{{caption_content}}}"
         commands.append(caption_cmd)
     if opts.label:
         label = strip_braces(opts.label)
-        commands.append(f"\\label{{{label}}}")
+        commands.append("\\label{{{label}}}")
     if opts.footnote:
         footnote = strip_braces(opts.footnote)
-        commands.append(f"\\caption*{{{footnote}}}")
+        commands.append("\\caption*{{{footnote}}}")
     return commands
 
 
@@ -175,7 +176,7 @@ def replace_manual_caption(body: str, commands: List[str]) -> str:
 def convert_environment(text: str, env: str) -> str:
     result = []
     idx = 0
-    begin_token = f"\\begin{{{env}}}"
+    begin_token = "\\begin{{{env}}}"
     base_env = "figure" if env == "omnlfigure" else "table"
 
     while True:
@@ -218,12 +219,12 @@ def convert_environment(text: str, env: str) -> str:
             result.append(text[start:])
             break
         body = text[body_start:end]
-        closing_token = f"\\end{{{env}}}"
+        closing_token = "\\end{{{env}}}"
         end_pos = end + len(closing_token)
 
         # Prepare new environment
         placement = strip_braces(opts.placement) if opts.placement else "tbp"
-        placement_arg = f"[{placement}]" if placement else ""
+        placement_arg = "[{placement}]" if placement else ""
 
         align_cmd = None
         if opts.align:
@@ -235,7 +236,9 @@ def convert_environment(text: str, env: str) -> str:
             elif align_key == "right":
                 align_cmd = "\\raggedleft"
 
-        caption_pos = (strip_braces(opts.caption_position) if opts.caption_position else "bottom").lower()
+        caption_pos = (
+            strip_braces(opts.caption_position) if opts.caption_position else "bottom"
+        ).lower()
 
         body_processed = body
         caption_before = ""
@@ -254,7 +257,7 @@ def convert_environment(text: str, env: str) -> str:
         # Ensure manual placeholder is removed if still present
         body_processed = body_processed.replace("\\omnlFloatCaption", "")
 
-        new_block = indent + f"\\begin{{{base_env}}}{placement_arg}\n"
+        new_block = indent + "\\begin{{{base_env}}}{placement_arg}\n"
         if align_cmd:
             new_block += indent + "    " + align_cmd + "\n"
         if caption_before:
@@ -267,7 +270,7 @@ def convert_environment(text: str, env: str) -> str:
             if not new_block.endswith("\n"):
                 new_block += "\n"
             new_block += caption_after
-        new_block += indent + f"\\end{{{base_env}}}"
+        new_block += indent + "\\end{{{base_env}}}"
 
         result.append(new_block)
         idx = end_pos
@@ -284,8 +287,15 @@ def process_file(path: pathlib.Path) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Convert OmniLaTeX floats to native LaTeX")
-    parser.add_argument("paths", nargs="*", default=[str(CONTENT_DIR)], help="Paths to process (default: content/)")
+    parser = argparse.ArgumentParser(
+        description="Convert OmniLaTeX floats to native LaTeX"
+    )
+    parser.add_argument(
+        "paths",
+        nargs="*",
+        default=[str(CONTENT_DIR)],
+        help="Paths to process (default: content/)",
+    )
     args = parser.parse_args()
 
     for target in args.paths:

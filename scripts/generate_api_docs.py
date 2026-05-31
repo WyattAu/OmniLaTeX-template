@@ -40,7 +40,9 @@ def generate_markdown(contracts: list[dict]) -> str:
         mod = c.get("module", {})
         name = mod.get("name", "unknown")
         exports = c.get("exports", [])
-        lines.append(f"| [{name}](#{name.replace('-', '')}) | `{mod.get('file', '')}` | {mod.get('version', '')} | {len(exports)} |")
+        lines.append(
+            f"| [{name}](#{name.replace('-', '')}) | `{mod.get('file', '')}` | {mod.get('version', '')} | {len(exports)} |"  # noqa: E501
+        )
     lines.append("")
 
     lines.append("## Detailed Reference")
@@ -85,7 +87,9 @@ def generate_markdown(contracts: list[dict]) -> str:
             lines.append("| Name | Type | Signature | Description |")
             lines.append("|------|------|-----------|-------------|")
             for exp in exports:
-                lines.append(f"| `{exp.get('name', '')}` | {exp.get('type', '')} | `{exp.get('signature', '')}` | {exp.get('description', '')} |")
+                lines.append(
+                    f"| `{exp.get('name', '')}` | {exp.get('type', '')} | `{exp.get('signature', '')}` | {exp.get('description', '')} |"  # noqa: E501
+                )
             lines.append("")
 
         lines.append("---")

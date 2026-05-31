@@ -1,0 +1,4 @@
+[flake8]
+per-file-ignores =
+    tools/convert_omnl_floats.py: F841
+    scripts/benchmark_examples.py: F841

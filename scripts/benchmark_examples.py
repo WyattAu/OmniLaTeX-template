@@ -32,11 +32,31 @@ def clean_example(example_name: str, repo_root: Path):
     example_dir = repo_root / "examples" / example_name
 
     patterns = [
-        "*.aux", "*.log", "*.out", "*.toc", "*.pdf", "*.fls",
-        "*.fdb_latexmk", "*.synctex*", "*.bbl", "*.bcf", "*.blg",
-        "*.run.xml", "*-blx.*", "*SAVE-ERROR", "*.glg", "*.glo",
-        "*.gls", "*.acn", "*.acr", "*.glstex", "*.syi", "*.syg",
-        "*.bak0", "_minted*", "*.indent.log",
+        "*.aux",
+        "*.log",
+        "*.out",
+        "*.toc",
+        "*.pd",
+        "*.fls",
+        "*.fdb_latexmk",
+        "*.synctex*",
+        "*.bbl",
+        "*.bc",
+        "*.blg",
+        "*.run.xml",
+        "*-blx.*",
+        "*SAVE-ERROR",
+        "*.glg",
+        "*.glo",
+        "*.gls",
+        "*.acn",
+        "*.acr",
+        "*.glstex",
+        "*.syi",
+        "*.syg",
+        "*.bak0",
+        "_minted*",
+        "*.indent.log",
     ]
     for p in patterns:
         for f in example_dir.glob(p):
@@ -47,7 +67,7 @@ def clean_example(example_name: str, repo_root: Path):
         shutil.rmtree(build_dir)
 
     # Also clean the build output
-    build_pdf = repo_root / "build" / "examples" / f"{example_name}.pdf"
+    build_pdf = repo_root / "build" / "examples" / "{example_name}.pdf"
     if build_pdf.exists():
         build_pdf.unlink()
 
@@ -58,8 +78,8 @@ def run_single_build(
     is_cold: bool,
 ) -> dict:
     """Run a single build via build.py and return timing info."""
-    example_dir = repo_root / "examples" / example_name
-    pdf_path = repo_root / "build" / "examples" / f"{example_name}.pdf"
+    _example_dir = repo_root / "examples" / example_name
+    pdf_path = repo_root / "build" / "examples" / "{example_name}.pdf"
 
     if is_cold:
         clean_example(example_name, repo_root)
@@ -95,7 +115,12 @@ def benchmark_example(
     for _ in range(cold_runs):
         r = run_single_build(example_name, repo_root, is_cold=True)
         if not r["success"]:
-            return {"name": example_name, "error": "Build failed", "cold": [], "incremental": []}
+            return {
+                "name": example_name,
+                "error": "Build failed",
+                "cold": [],
+                "incremental": [],
+            }
         cold_times.append(r["elapsed_s"])
 
     incremental_times = []
@@ -123,7 +148,7 @@ def results_to_toml(results: list[dict], metadata: dict) -> str:
         "",
         "[metadata]",
         f'generated = "{metadata["date"]}"',
-        f'engine = "lualatex"',
+        'engine = "lualatex"',
         f'platform = "{metadata["platform"]}"',
         f'python_version = "{metadata["python"]}"',
         f'cold_runs = {metadata["cold_runs"]}',
@@ -135,7 +160,7 @@ def results_to_toml(results: list[dict], metadata: dict) -> str:
 
     for r in results:
         if r.get("error"):
-            lines.append(f"# {r['name']}: SKIPPED — {r['error']}")
+            lines.append("# {r['name']}: SKIPPED — {r['error']}")
             continue
 
         cold = r["cold"]
@@ -156,17 +181,17 @@ def results_to_toml(results: list[dict], metadata: dict) -> str:
         incs = stats(inc)
 
         lines.append("")
-        lines.append(f"[baselines.{r['name']}]")
-        lines.append(f"cold_mean = {cs['mean']}")
-        lines.append(f"cold_median = {cs['median']}")
-        lines.append(f"cold_min = {cs['min']}")
-        lines.append(f"cold_max = {cs['max']}")
-        lines.append(f"cold_stdev = {cs['stdev']}")
-        lines.append(f"incremental_mean = {incs['mean']}")
-        lines.append(f"incremental_median = {incs['median']}")
-        lines.append(f"incremental_min = {incs['min']}")
-        lines.append(f"incremental_max = {incs['max']}")
-        lines.append(f"incremental_stdev = {incs['stdev']}")
+        lines.append("[baselines.{r['name']}]")
+        lines.append("cold_mean = {cs['mean']}")
+        lines.append("cold_median = {cs['median']}")
+        lines.append("cold_min = {cs['min']}")
+        lines.append("cold_max = {cs['max']}")
+        lines.append("cold_stdev = {cs['stdev']}")
+        lines.append("incremental_mean = {incs['mean']}")
+        lines.append("incremental_median = {incs['median']}")
+        lines.append("incremental_min = {incs['min']}")
+        lines.append("incremental_max = {incs['max']}")
+        lines.append("incremental_stdev = {incs['stdev']}")
 
     # Summary
     successful = [r for r in results if not r.get("error")]
@@ -175,26 +200,34 @@ def results_to_toml(results: list[dict], metadata: dict) -> str:
         inc_means = [mean(r["incremental"]) for r in successful if r["incremental"]]
         lines.append("")
         lines.append("[summary]")
-        lines.append(f"total_examples = {len(successful)}")
+        lines.append("total_examples = {len(successful)}")
         if cold_means:
-            lines.append(f"cold_mean_all = {round(mean(cold_means), 3)}")
-            lines.append(f"cold_median_all = {round(median(cold_means), 3)}")
-            lines.append(f"cold_fastest = {round(min(cold_means), 3)}")
-            lines.append(f"cold_slowest = {round(max(cold_means), 3)}")
-            lines.append(f"examples_under_15s_cold = {sum(1 for m in cold_means if m < 15.0)}")
+            lines.append("cold_mean_all = {round(mean(cold_means), 3)}")
+            lines.append("cold_median_all = {round(median(cold_means), 3)}")
+            lines.append("cold_fastest = {round(min(cold_means), 3)}")
+            lines.append("cold_slowest = {round(max(cold_means), 3)}")
+            lines.append(
+                "examples_under_15s_cold = {sum(1 for m in cold_means if m < 15.0)}"
+            )
         if inc_means:
-            lines.append(f"incremental_mean_all = {round(mean(inc_means), 3)}")
-            lines.append(f"incremental_median_all = {round(median(inc_means), 3)}")
+            lines.append("incremental_mean_all = {round(mean(inc_means), 3)}")
+            lines.append("incremental_median_all = {round(median(inc_means), 3)}")
 
     return "\n".join(lines) + "\n"
 
 
 def main():
     parser = argparse.ArgumentParser(description="Benchmark OmniLaTeX examples")
-    parser.add_argument("--cold-runs", type=int, default=1, help="Cold build runs (default: 1)")
-    parser.add_argument("--inc-runs", type=int, default=2, help="Incremental build runs (default: 2)")
+    parser.add_argument(
+        "--cold-runs", type=int, default=1, help="Cold build runs (default: 1)"
+    )
+    parser.add_argument(
+        "--inc-runs", type=int, default=2, help="Incremental build runs (default: 2)"
+    )
     parser.add_argument("--output", type=str, default=None, help="Output TOML file")
-    parser.add_argument("--filter", type=str, default=None, help="Only benchmark matching names")
+    parser.add_argument(
+        "--filter", type=str, default=None, help="Only benchmark matching names"
+    )
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parent.parent
@@ -202,22 +235,31 @@ def main():
     if args.filter:
         examples = [e for e in examples if args.filter in e]
 
-    print(f"Benchmarking {len(examples)} examples (cold={args.cold_runs}, inc={args.inc_runs})...",
-          file=sys.stderr)
+    print(
+        "Benchmarking {len(examples)} examples (cold={args.cold_runs}, inc={args.inc_runs})...",
+        file=sys.stderr,
+    )
 
     results = []
     for i, name in enumerate(examples, 1):
-        print(f"  [{i}/{len(examples)}] {name}...", file=sys.stderr, end=" ", flush=True)
+        print(
+            "  [{i}/{len(examples)}] {name}...", file=sys.stderr, end=" ", flush=True
+        )
         result = benchmark_example(name, repo_root, args.cold_runs, args.inc_runs)
         if result.get("error"):
-            print(f"SKIPPED ({result['error']})", file=sys.stderr)
+            print("SKIPPED ({result['error']})", file=sys.stderr)
         else:
-            cold_str = f"{mean(result['cold']):.2f}s" if result["cold"] else "N/A"
-            inc_str = f"{mean(result['incremental']):.2f}s" if result["incremental"] else "N/A"
-            print(f"cold={cold_str}, inc={inc_str}", file=sys.stderr)
+            cold_str = "{mean(result['cold']):.2f}s" if result["cold"] else "N/A"
+            inc_str = (
+                "{mean(result['incremental']):.2f}s"
+                if result["incremental"]
+                else "N/A"
+            )
+            print("cold={cold_str}, inc={inc_str}", file=sys.stderr)
         results.append(result)
 
     import platform
+
     metadata = {
         "date": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
         "platform": platform.platform(),
@@ -230,7 +272,7 @@ def main():
 
     if args.output:
         Path(args.output).write_text(toml, encoding="utf-8")
-        print(f"\nResults written to {args.output}", file=sys.stderr)
+        print("\nResults written to {args.output}", file=sys.stderr)
     else:
         print(toml)
 
