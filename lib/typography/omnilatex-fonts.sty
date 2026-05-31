@@ -96,6 +96,20 @@
 
 % ── Default Font Loading ─────────────────────────────────────────────────────
 
+% Register CJK font fallback for polyglossia. Must be done BEFORE
+% \setmainfont/\setsansfont so the fallback is available when fonts load.
+\IfFontExistsTF{Noto Sans CJK SC}{%
+  \directlua{
+    luaotfload.add_fallback("omnilatexCJKFallback", {
+      "NotoSerifCJKSC:mode=harf;script=hani;",
+      "NotoSansCJKSC:mode=harf;script=hani;",
+      "NotoSansMonoCJKSC:mode=harf;script=hani;",
+    })
+  }
+}{}
+% Apply the fallback to all default font families
+\defaultfontfeatures{RawFeature={fallback=omnilatexCJKFallback}}
+
 % Main font: Libertinus Serif (replacing TeX Gyre Pagella)
 \setmainfont[
     Numbers=Lowercase,% Hanging/OldStyle numbers through Lowercase numbers

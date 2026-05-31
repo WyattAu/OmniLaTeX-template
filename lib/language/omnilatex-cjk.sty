@@ -19,15 +19,21 @@
 \RequirePackage{xstring}
 
 % ── Core CJK Engine ─────────────────────────────────────────────────────────
-% luatexja provides the fundamental CJK typesetting layer for LuaLaTeX.
-% luatexja-fontspec bridges fontspec (Latin fonts) with CJK font selection.
+% luatexja provides Japanese typesetting (line breaking, ruby, vertical text).
+% For Chinese and Korean, plain fontspec + polyglossia with CJK fonts suffices
+% — luatexja's Japanese-specific features are not needed and actively conflict
+% with polyglossia's font selection for non-Japanese CJK scripts.
 %
 % Note: The kpse.find_file workaround for ScriptExtensions.txt is loaded
 % by omnilatex.cls BEFORE this package, so we do not duplicate it here.
 
-\RequirePackage{luatexja}
-\RequirePackage{luatexja-fontspec}
-\RequirePackage{luatexja-ruby}
+\newif\ifomnilatex@use@luatexja
+\IfStrEq{\omnilatex@language}{japanese}{\omnilatex@use@luatexjatrue}{}
+\ifomnilatex@use@luatexja
+  \RequirePackage{luatexja}
+  \RequirePackage{luatexja-fontspec}
+  \RequirePackage{luatexja-ruby}
+\fi
 
 % ── Font Configuration ──────────────────────────────────────────────────────
 % Default CJK font family. Noto CJK fonts are bundled with TeX Live and cover
@@ -43,10 +49,12 @@
 \newcommand{\setCJKMonoFont}[1]{\renewcommand{\cjkmonofont}{#1}\omnilatex@apply@cjkfonts}
 
 % Apply CJK fonts with graceful fallback via \IfFontExistsTF (fontspec).
-% If the requested font is not installed, emit a ClassWarning and fall back
-% to the luatexja defaults (Haranoaji fonts in modern TeX Live).
+% For Japanese: use luatexja's \setmainjfont/\setsansjfont.
+% For Chinese/Korean: use fontspec's \newfontfamily so polyglossia can use them.
 
 \newcommand{\omnilatex@apply@cjkfonts}{%
+\ifomnilatex@use@luatexja
+  %% Japanese: luatexja-specific font commands
   \IfFontExistsTF{\cjkmainfont}{%
     \setmainjfont[BoldFont={\cjkmainfont},BoldFeatures={FakeBold=2}]{\cjkmainfont}%
   }{%
@@ -65,6 +73,24 @@
     \ClassWarning{omnilatex-cjk}{%
       CJK mono font '\cjkmonofont' not found, using default\MessageBreak}%
   }%
+\else
+  %% Chinese/Korean: plain fontspec font families for polyglossia
+  \IfFontExistsTF{\cjkmainfont}{%
+    \newfontfamily\cjkmainfamily{\cjkmainfont}[Script=CJK]%
+  }{%
+    \ClassWarning{omnilatex-cjk}{%
+      CJK main font '\cjkmainfont' not found — CJK text may render as tofu\MessageBreak}%
+  }%
+  \IfFontExistsTF{\cjksansfont}{%
+    \newfontfamily\cjksansfamily{\cjksansfont}[Script=CJK]%
+  }{%
+    \ClassWarning{omnilatex-cjk}{%
+      CJK sans font '\cjksansfont' not found\MessageBreak}%
+  }%
+  \IfFontExistsTF{\cjkmonofont}{%
+    \newfontfamily\cjkmonofamily{\cjkmonofont}[Script=CJK]%
+  }{}%
+\fi
 }
 
 % Apply defaults on first load
@@ -80,23 +106,8 @@
 % Fix: register Noto CJK fonts as fallback for ALL document font families
 % via luaotfload's fallback mechanism. When any font is missing a CJK glyph,
 % luaotfload transparently substitutes from the CJK fallback chain.
-\IfFontExistsTF{Noto Sans CJK SC}{%
-  \AtBeginDocument{%
-    \directlua{
-      luaotfload.add_fallback("omnilatexCJKFallback", {
-        "NotoSerifCJKSC:mode=harf;script=hani;",
-        "NotoSansCJKSC:mode=harf;script=hani;",
-        "NotoSansMonoCJKSC:mode=harf;script=hani;",
-      })
-    }
-    \addfontfeature{RawFeature={fallback=omnilatexCJKFallback}}
-  }
-  \ClassInfo{omnilatex-cjk}{CJK font fallback registered for polyglossia}%
-}{%
-  \ClassWarning{omnilatex-cjk}{%
-    Noto CJK fonts not found — CJK text may render as tofu\MessageBreak
-    in polyglossia contexts. Install fonts-noto-cjk package.\MessageBreak}%
-}
+% CJK font fallback is registered in omnilatex-fonts.sty BEFORE fonts load.
+% No additional configuration needed here — luaotfload handles it transparently.
 
 % ── Line Breaking ───────────────────────────────────────────────────────────
 % LuaTeX-ja handles CJK line breaking natively — line breaks are allowed at
