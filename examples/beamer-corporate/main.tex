@@ -1,76 +1,240 @@
 % OmniLaTeX Corporate Beamer Presentation
 % Compile with: latexmk -lualatex main.tex
+%
+% Demonstrates: corporate branding, progress indicators,
+% split slides, block variants, and timeline visualization.
 
-\documentclass[doctype=beamer]{omnilatex}
+\documentclass[
+  doctype=beamer,
+  beameraspectratio=169,
+  beamertheme=Berlin,
+  beamercolortheme=beaver,
+  institution=generic,
+]{omnilatex}
 
-\title{Quarterly Business Review}
-\subtitle{Q2 2026}
-\author{Business Team}
-\date{\today}
+\title[Q2 2026 Review]{Q2 2026 Product Review\\and Strategic Outlook}
+\subtitle{Engineering Division}
+\author[A. Rivera]{Alex Rivera\\VP of Engineering}
+\date{July 15, 2026}
+\institute{OmniCorp}
+
+% ── Progress bar on each slide ──────────────────────
+\useoutertheme{progressbar}
+\setbeamertemplate{footline}[frame number]
 
 \begin{document}
 
-\begin{frame}
+%% ════════════════════════════════════════════════════
+\begin{frame}[plain]
   \titlepage
 \end{frame}
 
+%% ════════════════════════════════════════════════════
 \begin{frame}{Agenda}
-  \begin{enumerate}
-    \item Financial Overview
-    \item Product Updates
-    \item Strategic Initiatives
-    \item Q3 Roadmap
-  \end{enumerate}
+  \tableofcontents[hideallsubsections]
 \end{frame}
 
-\section{Financial Overview}\label{sec:financial-overview}
+%% ────────────────────────────────────────────────────
+\section{Q2 Highlights}
+%% ────────────────────────────────────────────────────
 
-\begin{frame}{Revenue}
+\begin{frame}{Q2 by the Numbers}
   \begin{columns}[T]
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-        \item Q2 revenue: \$12.4M (+15\% QoQ)
-        \item Annual run rate: \$48M
-        \item Gross margin: 72\%
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \begin{table}[htbp]
-        \centering
-        \begin{tabular}{lr}
-          \hline
-          Metric & Value \\
-          \hline
-          ARR & \$48M \\
-          NRR & 112\% \\
-          LTV/CAC & 3.2x \\
-          \hline
-        \end{tabular}
-      \end{table}
-    \end{column}
+    \column{0.32\textwidth}
+    \centering
+    {\huge 99.97\%}\\[0.3em]
+    \textbf{Uptime}\\[0.3em]
+    {\small\color{gray}Target: 99.95\%}
+
+    \column{0.32\textwidth}
+    \centering
+    {\huge +23\%}\\[0.3em]
+    \textbf{Revenue}\\[0.3em]
+    {\small\color{gray}YoY growth}
+
+    \column{0.32\textwidth}
+    \centering
+    {\huge 4.2/5}\\[0.3em]
+    \textbf{CSAT}\\[0.3em]
+    {\small\color{gray}Customer satisfaction}
   \end{columns}
+
+  \vspace{1em}
+  \begin{exampleblock}{Key Achievement}
+    Zero P0 incidents for 94 consecutive days. Postmortem process reduced mean-time-to-resolve by 60\%.
+  \end{exampleblock}
 \end{frame}
 
-\begin{frame}{Product Highlights}
-  \begin{block}{New Features}
-    \begin{itemize}
-      \item Real-time collaboration engine
-      \item AI-powered code review
-      \item Mobile app v2.0
-    \end{itemize}
-  \end{block}
+\begin{frame}{Feature Shipments}
+  \begin{table}
+    \centering
+    \caption{Shipped Features by Team}
+    \begin{tabular}{l c c c}
+      \hline
+      Team             & Planned & Shipped & On Time \\
+      \hline
+      Platform         & 12  & 14  & \checkmark \\
+      Data \& Analytics & 8  & 7   & \checkmark \\
+      Frontend         & 10  & 11  & \checkmark \\
+      Security         & 5   & 5   & \checkmark \\
+      \hline
+      \textbf{Total}   & \textbf{35} & \textbf{37} & \\
+      \hline
+    \end{tabular}
+  \end{table}
 
-  \begin{alertblock}{Known Issues}
-    Onboarding funnel drop-off at step 3 is under investigation.
+  \begin{alertblock}{Slipped}
+    Real-time dashboard v2 delayed to Q3 due to upstream API migration. Mitigation: feature-flag gated release for early adopters.
   \end{alertblock}
 \end{frame}
 
-\begin{frame}{Q3 Roadmap}
-  \begin{enumerate}
-    \item Enterprise tier launch (July)
-    \item International expansion (August)
-    \item API marketplace (September)
-  \end{enumerate}
+%% ────────────────────────────────────────────────────
+\section{Technical Deep Dive}
+%% ────────────────────────────────────────────────────
+
+\begin{frame}{Migration to OmniCloud v3}
+  \begin{columns}[T]
+    \column{0.55\textwidth}
+    \textbf{Architecture Changes}
+    \begin{itemize}
+      \item Monolith $\rightarrow$ 12 microservices
+      \item PostgreSQL $\rightarrow$ CockroachDB (multi-region)
+      \item REST $\rightarrow$ gRPC for internal services
+      \item CI/CD: 45 min $\rightarrow$ 12 min (incremental builds)
+    \end{itemize}
+
+    \column{0.45\textwidth}
+    \textbf{Performance Impact}
+    \begin{table}
+      \begin{tabular}{l c c}
+        \hline
+        Metric    & Before & After \\
+        \hline
+        p50       & 120ms  & 45ms \\
+        p99       & 850ms  & 200ms \\
+        Throughput& 8k/s  & 22k/s \\
+        \hline
+      \end{tabular}
+    \end{table}
+  \end{columns}
+
+  \vspace{1em}
+  \begin{block}{Migration Strategy}
+    Strangler Fig pattern: 12 weeks dual-write, 4 weeks read-migration, 2 weeks cutover. Zero-downtime deployment verified.
+  \end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Deployment Pipeline}
+  \begin{block}{GitOps Workflow}
+    \begin{semiverbatim}
+main branch
+  |-- CI: lint, test, build docker image
+  |-- CD: deploy to staging (auto)
+  |-- 15 min smoke test
+  |-- Manual approval gate
+  |-- CD: canary deploy to 5\% production
+  |-- 30 min monitoring window
+  |-- CD: rolling deploy to 100\%
+    \end{semiverbatim}
+  \end{block}
+
+  \begin{itemize}
+    \item All infrastructure defined in Terraform (version controlled)
+    \item Secrets managed via HashiCorp Vault (no .env files)
+    \item Observability: Prometheus + Grafana + OpenTelemetry traces
+  \end{itemize}
+\end{frame}
+
+%% ────────────────────────────────────────────────────
+\section{Q3 Roadmap}
+%% ────────────────────────────────────────────────────
+
+\begin{frame}{Q3 Priorities}
+  \begin{columns}[T]
+    \column{0.32\textwidth}
+    \begin{block}{P0: Critical}
+      \begin{enumerate}
+        \item SOC 2 Type II audit
+        \item GDPR data residency
+        \item Real-time dashboard v2
+      \end{enumerate}
+    \end{block}
+
+    \column{0.32\textwidth}
+    \begin{block}{P1: High}
+      \begin{enumerate}
+        \item API rate limiting
+        \item Webhook retry queue
+        \item Audit log export
+      \end{enumerate}
+    \end{block}
+
+    \column{0.32\textwidth}
+    \begin{block}{P2: Medium}
+      \begin{enumerate}
+        \item Dark mode UI
+        \item CLI tool v1
+        \item Swagger docs
+      \end{enumerate}
+    \end{block}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Team Growth}
+  \begin{center}
+  \begin{tikzpicture}[scale=1.2]
+    \draw[->,thick] (0,0) -- (6,0) node[right] {Quarter};
+    \draw[->,thick] (0,0) -- (0,4) node[above] {Headcount};
+
+    \draw[blue,thick] (0,0.5) -- (1.5,1.2) -- (3,1.0) -- (4.5,2.2) -- (5.5,3.5);
+    \fill[blue] (0,0.5) circle (2pt) node[below left] {Q4'25 (8)};
+    \fill[blue] (1.5,1.2) circle (2pt) node[above] {Q1'26 (10)};
+    \fill[blue] (3,1.0) circle (2pt) node[below] {Q2 (11)};
+    \fill[blue] (4.5,2.2) circle (2pt) node[above] {Q3 target (16)};
+    \fill[blue] (5.5,3.5) circle (2pt) node[above] {Q4 target (22)};
+  \end{tikzpicture}
+  \end{center}
+
+  \begin{itemize}
+    \item Q3 hiring: 3 backend, 2 frontend, 1 SRE (6 openings)
+    \item Engineering budget increased 30\% YoY
+  \end{itemize}
+\end{frame}
+
+%% ────────────────────────────────────────────────────
+\section{Risks and Dependencies}
+%% ────────────────────────────────────────────────────
+
+\begin{frame}{Risk Register}
+  \begin{table}
+    \centering
+    \begin{tabular}{l c c l}
+      \hline
+      Risk & Prob. & Impact & Mitigation \\
+      \hline
+      Cloud provider outage & Low & High & Multi-region failover \\
+      Key hire delay & Med & Med & Contractor pipeline active \\
+      API deprecation (v1) & High & Med & Migration complete by Q3 \\
+      Budget cut & Low & High & Reserve fund, scope trimming plan \\
+      \hline
+    \end{tabular}
+  \end{table}
+
+  \vspace{1em}
+  \begin{block}{External Dependencies}
+    \begin{itemize}
+      \item \textbf{Payment provider API v4} --- Migration deadline: August 2026 (vendor-mandated)
+      \item \textbf{GDPR compliance review} --- External auditor engaged, report expected July 30
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+%% ════════════════════════════════════════════════════
+\begin{frame}[plain,c]
+  \vspace{1.5cm}
+  {\huge Thank You}\\[0.8cm]
+  {\large Questions \& Discussion}\\[1.5cm]
+  {\footnotesize alex.rivera@omnicorp.com}
 \end{frame}
 
 \end{document}

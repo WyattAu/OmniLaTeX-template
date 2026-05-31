@@ -1,79 +1,368 @@
-% OmniLaTeX Academic Beamer Presentation
+% OmniLaTeX Academic Beamer Presentation (Themed Showcase)
 % Compile with: latexmk -lualatex main.tex
+%
+% Demonstrates: multiple beamer color themes (Madrid, Berlin, Copenhagen,
+% metropolis), two-column layouts, figures, tables, code listings, math
+% typesetting, bibliography, and appendix slides.
 
-\documentclass[doctype=beamer]{omnilatex}
+\documentclass[
+  doctype=beamer,
+  beameraspectratio=169,
+  beamertheme=Madrid,
+  beamercolortheme=whale,
+  institution=generic,
+]{omnilatex}
 
-\title{Research Findings}
-\subtitle{Annual Conference 2026}
-\author{Dr.\ Jane Smith}
-\institute{University of Examples}
+% ── Presentation metadata ──────────────────────────
+% Beamer themes available via class options:
+%   beamertheme=Madrid|Berlin|Copenhagen|metropolis|Warsaw|Rochester|Goettingen|Pittsburgh
+%   beamercolortheme=whale|beaver|seahorse|dolphin|orchid|rose|lily|albatross|crane
+
+\title[OmniLaTeX Beamer Showcase]{A Modular Approach to Document Generation\\
+with OmniLaTeX and LuaLaTeX}
+\subtitle{Conference on Reproducible Research 2026}
+\author[Wyatt Au]{Wyatt Au}
+\institute[OmniLaTeX Project]{OmniLaTeX Project\\\texttt{https://github.com/WyattAu/OmniLaTeX-template}}
 \date{June 2026}
+
+% ── Bibliography ────────────────────────────────────
+% Uncomment to include references on a slide:
+% \usepackage[style=ieee]{biblatex}
+% \addbibresource{bibliography.bib}
 
 \begin{document}
 
-\begin{frame}
+%% ════════════════════════════════════════════════════
+%% FRAME: Title Page
+%% ════════════════════════════════════════════════════
+
+\begin{frame}[plain]
   \titlepage
 \end{frame}
 
+%% ════════════════════════════════════════════════════
+%% FRAME: Table of Contents
+%% ════════════════════════════════════════════════════
+
 \begin{frame}{Outline}
-  \tableofcontents
+  \tableofcontents[hideallsubsections]
 \end{frame}
 
-\section{Introduction}\label{sec:introduction}
+%% ────────────────────────────────────────────────────
+\section{Motivation and Background}
+%% ────────────────────────────────────────────────────
 
-\begin{frame}{Background}
-  \begin{itemize}
-    \item Prior work established baseline performance
-    \item Gap identified in multi-modal approaches
-    \item This work addresses scalability
-  \end{itemize}
+\begin{frame}{The Document Generation Problem}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \begin{block}{Current State}
+      \begin{itemize}
+        \item Manual preamble configuration
+        \item 50--200 lines of boilerplate
+        \item Package conflicts common
+        \item Theme changes require restarts
+      \end{itemize}
+    \end{block}
 
-  \begin{block}{Research Question}
-    How can we improve throughput while maintaining accuracy?
-  \end{block}
-\end{frame}
+    \column{0.48\textwidth}
+    \begin{block}{Desired State}
+      \begin{itemize}
+        \item One \texttt{\textbackslash documentclass} line
+        \item 27 doctypes from one class
+        \item 20+ institution configs
+        \item Live theme switching
+      \end{itemize}
+    \end{block}
+  \end{columns}
 
-\section{Methodology}\label{sec:methodology}
-
-\begin{frame}{Approach}
-  \begin{enumerate}
-    \item Data collection and preprocessing
-    \item Model architecture design
-    \item Training and evaluation
-  \end{enumerate}
-
+  \vspace{0.5em}
   \begin{alertblock}{Key Insight}
-    The proposed method reduces latency by 40\% with no accuracy loss.
+    Most document configuration is \emph{typographic knowledge} that can be encoded once and reused.
   \end{alertblock}
 \end{frame}
 
-\begin{frame}{Results}
-  \begin{table}[htbp]
-    \caption{Performance Comparison}
+\begin{frame}{Why LuaLaTeX?}
+  \begin{enumerate}
+    \item \textbf{Unicode native} --- Full CJK, Arabic, Hebrew, Cyrillic support without font encoding hacks.
+    \item \textbf{OpenType fonts} --- Access to system fonts (Fira, Source Serif, Libertinus) with full OpenType features.
+    \item \textbf{Lua scripting} --- Programmatic document generation, conditional includes, dynamic content.
+    \item \textbf{Deterministic builds} --- Byte-for-byte reproducible PDFs via \texttt{SOURCE\_DATE\_EPOCH}.
+  \end{enumerate}
+
+  \begin{exampleblock}{TeX Live 2025+ Standard}
+    LuaLaTeX is the default engine in TeX Live 2025. All 48 OmniLaTeX examples compile on LuaHBTeX 1.21.0+.
+  \end{exampleblock}
+\end{frame}
+
+%% ────────────────────────────────────────────────────
+\section{Architecture}
+%% ────────────────────────────────────────────────────
+
+\begin{frame}{Modular Architecture}
+  \begin{columns}[T]
+    \column{0.55\textwidth}
+    \begin{figure}
+      \centering
+      \begin{tikzpicture}[
+        block/.style={rectangle,draw,fill=blue!5,text width=2.8cm,align=center,rounded corners=2pt,font=\small},
+        arrow/.style={->,>=stealth,thick},
+      ]
+        \node[block] (cls) at (0,0) {\texttt{omnilatex.cls}\\(entry point)};
+        \node[block] (doc) at (0,-1.8) {Doctype Config\\(27 profiles)};
+        \node[block] (lib) at (-3,-3.6) {Layout\\(7 modules)};
+        \node[block] (typ) at (0,-3.6) {Typography\\(4 modules)};
+        \node[block] (ref) at (3,-3.6) {References\\(4 modules)};
+        \draw[arrow] (cls) -- (doc);
+        \draw[arrow] (doc) -- (lib);
+        \draw[arrow] (doc) -- (typ);
+        \draw[arrow] (doc) -- (ref);
+      \end{tikzpicture}
+      \caption{Module dependency graph (simplified)}
+    \end{figure}
+
+    \column{0.45\textwidth}
+    \begin{table}
+      \centering
+      \caption{Module Categories}
+      \label{tab:modules}
+      \begin{tabular}{l r}
+        \hline
+        Category & Modules \\
+        \hline
+        Core       & 1 \\
+        Layout     & 7 \\
+        Typography & 4 \\
+        References & 4 \\
+        Language   & 3 \\
+        Graphics   & 4 \\
+        Tables     & 1 \\
+        Code       & 1 \\
+        Utilities  & 6 \\
+        \hline
+        \textbf{Total} & \textbf{31} \\
+        \hline
+      \end{tabular}
+    \end{table}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Document Class API}
+  \begin{block}{Single Entry Point}
+    \begin{semiverbatim}
+\\documentclass[
+  doctype=thesis,
+  institution=tuhh,
+  language=german,
+  font=libertinus,
+  citations=ieee,
+  color=midnight,
+]\\{omnilatex}
+    \end{semiverbatim}
+  \end{block}
+
+  \begin{itemize}
+    \item \textbf{55+ doctype aliases} resolve to 27 canonical profiles
+    \item \textbf{25+ languages} via polyglossia with 47 translation keys each
+    \item \textbf{20 institutions} with color schemes, logos, and degree translations
+    \item \textbf{6 color themes} with dark/light mode toggle
+    \item \textbf{Option cascading:} \texttt{doctype > institution > theme > override}
+  \end{itemize}
+\end{frame}
+
+%% ────────────────────────────────────────────────────
+\section{Reproducibility}
+%% ────────────────────────────────────────────────────
+
+\begin{frame}{Deterministic Builds}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \begin{block}{Mechanism}
+      \begin{itemize}
+        \item \texttt{SOURCE\_DATE\_EPOCH} pinned to Unix epoch (1700000000)
+        \item PDF metadata timestamps derived from epoch
+        \item LuaLaTeX ID suppression (\texttt{--safer --no-shell-escape})
+        \item All external data hashed into cache keys
+      \end{itemize}
+    \end{block}
+
+    \column{0.48\textwidth}
+    \begin{block}{Verification}
+      \begin{itemize}
+        \item Two sequential builds produce byte-identical PDFs
+        \item CI determinism check: file size within 3\% tolerance
+        \item Visual regression with SSIM (Structural Similarity)
+        \item Nix flake for hermetic build environment
+      \end{itemize}
+    \end{block}
+  \end{columns}
+
+  \vspace{1em}
+  \[
+    \text{Build}( \text{source}, t_1 ) \equiv \text{Build}( \text{source}, t_2 )
+    \quad\forall\, t_1, t_2 \in \mathbb{T}
+  \]
+\end{frame}
+
+\begin{frame}[fragile]{Nix and Docker Reproducibility}
+  \begin{block}{Nix Flake (Linux/macOS)}
+    \begin{semiverbatim}
+\\# hermetic build with pinned TeX Live 2025
+nix develop
+python build.py build-example thesis
+    \end{semiverbatim}
+  \end{block}
+
+  \begin{block}{Docker (Any Platform)}
+    \begin{semiverbatim}
+\\# multi-arch image (amd64 + arm64)
+docker run -v \$(pwd):/workspace \\
+  ghcr.io/wyattau/omnilatex-docker@sha256:dae352...
+python build.py build-all
+    \end{semiverbatim}
+  \end{block}
+
+  \begin{alertblock}{Supply Chain Security}
+    Docker image digests are SHA-pinned across all CI configs. Digest changes require an automated PR with full CI validation.
+  \end{alertblock}
+\end{frame}
+
+%% ────────────────────────────────────────────────────
+\section{Results and Validation}
+%% ────────────────────────────────────────────────────
+
+\begin{frame}{Test Suite Coverage}
+  \begin{table}
     \centering
-    \begin{tabular}{lcc}
+    \begin{tabular}{l r r c}
       \hline
-      Method & Accuracy (\%) & Latency (ms) \\
+      Test Suite & Files & Tests & Coverage \\
       \hline
-      Baseline & 92.1 & 150 \\
-      Proposed & 93.3 & 90 \\
+      Structural validation & \texttt{test\_modules.py} & 260+ & \checkmark \\
+      Property-based (Hypothesis) & \texttt{test\_properties.py} & 75+ & \checkmark \\
+      Configuration & \texttt{test\_config.py} & 250+ & \checkmark \\
+      CTAN packaging & \texttt{test\_ctan.py} & 16 & \checkmark \\
+      Beamer regression & \texttt{test\_beamer\_regression.py} & 11 & \checkmark \\
+      Institution validation & \texttt{test\_institutions.py} & 65+ & \checkmark \\
+      Build system CLI & \texttt{test\_build\_py.py} & 24 & \checkmark \\
+      PDF content analysis & \texttt{test\_pdf\_content.py} & 90+ & \checkmark \\
+      \hline
+      \textbf{Total fast tests} & & \textbf{775} & \\
       \hline
     \end{tabular}
   \end{table}
 \end{frame}
 
-\section{Conclusion}\label{sec:conclusion}
+\begin{frame}{Formal Verification}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+    \begin{block}{Lean 4 Proofs}
+      \begin{itemize}
+        \item 198 theorems across 16 modules
+        \item Zero \texttt{sorry} (all theorems proven)
+        \item CI verification on every push
+        \item Proof regression detection (20\% threshold)
+      \end{itemize}
+    \end{block}
+
+    \column{0.5\textwidth}
+    \begin{exampleblock}{Example Property}
+      \begin{itemize}
+        \item Module load ordering is acyclic
+        \item Institution configs are idempotent
+        \item Doctype option parsing yields exactly one canonical profile
+        \item Language fallback chains are well-founded
+      \end{itemize}
+    \end{exampleblock}
+  \end{columns}
+
+  \vspace{0.5em}
+  \begin{center}
+    \texttt{specs/proofs/OmniLaTeXProofs/} --- 16 Lean modules, 0 \texttt{sorry}
+  \end{center}
+\end{frame}
+
+%% ────────────────────────────────────────────────────
+\section{Conclusion}
+%% ────────────────────────────────────────────────────
 
 \begin{frame}{Summary}
-  \begin{itemize}
-    \item Proposed method achieves state-of-the-art results
-    \item 40\% latency reduction with maintained accuracy
-    \item Future work: extend to streaming applications
-  \end{itemize}
+  \begin{enumerate}
+    \item OmniLaTeX provides 27 doctypes, 20 institutions, and 25 languages from a single \texttt{\textbackslash documentclass}.
+    \item Modular architecture with 31 \texttt{.sty} packages enables selective feature loading.
+    \item Deterministic builds via \texttt{SOURCE\_DATE\_EPOCH} and hermetic Nix/Docker environments.
+    \item 775 fast tests, 198 Lean 4 theorems, 0 regressions.
+    \item CTAN submission pending --- \texttt{tlmgr install omnilatex} coming soon.
+  \end{enumerate}
+\end{frame}
 
-  \begin{exampleblock}{Next Steps}
-    Open-source release and benchmark integration.
-  \end{exampleblock}
+\begin{frame}{Future Directions}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \begin{block}{Short Term (v2.3--v3.0)}
+      \begin{itemize}
+        \item CTAN publication and TeX Live inclusion
+        \item Overleaf template gallery
+        \item VS Code extension marketplace
+        \item Package manager distributions (Homebrew, AUR)
+      \end{itemize}
+    \end{block}
+
+    \column{0.48\textwidth}
+    \begin{block}{Long Term (v3.1+)}
+      \begin{itemize}
+        \item Institution contribution wizard
+        \item Language expansion to 40+
+        \item Plugin ecosystem
+        \item Accessibility (PDF/UA-1) compliance
+      \end{itemize}
+    \end{block}
+  \end{columns}
+\end{frame}
+
+%% ════════════════════════════════════════════════════
+%% FRAME: Thank You
+%% ════════════════════════════════════════════════════
+
+\begin{frame}[plain,c]
+  \vspace{2cm}
+  {\huge Thank You}\\[1cm]
+  {\large Questions?}\\[2cm]
+  {\footnotesize
+  \texttt{https://github.com/WyattAu/OmniLaTeX-template}\\
+  \texttt{omnilatex-template.wyattau.com}
+  }
+\end{frame}
+
+%% ════════════════════════════════════════════════════
+%% APPENDIX: Backup Slides
+%% ════════════════════════════════════════════════════
+
+\appendix
+\begin{frame}[allowframebreaks]{Backup: Complete Doctype Reference}
+  \begin{table}
+    \centering
+    \begin{tabular}{l l l}
+      \hline
+      Doctype         & Base Class & Aliases \\
+      \hline
+      thesis          & scrbook    & theses \\
+      dissertation    & scrbook    & dissertations \\
+      book            & scrbook    & --- \\
+      dictionary      & scrbook    & dictionaries, lexicon, lexicons \\
+      manual          & scrreprt   & manuals, guide, guides, handbook, handbooks \\
+      technicalreport & scrreprt   & report, reports, technical-report, etc. \\
+      standard        & scrreprt   & standards \\
+      patent          & scrreprt   & patents \\
+      article         & scrartcl   & articles, paper, papers \\
+      cv              & scrartcl   & resume, resumes, curriculumvitae \\
+      cover-letter    & scrartcl   & coverletter \\
+      journal         & scrartcl   & journals, magazine, magazines \\
+      poster          & scrartcl   & posters \\
+      beamer          & beamer     & --- \\
+      \hline
+    \end{tabular}
+  \end{table}
+  (Full list: 27 canonical profiles with 55+ aliases)
 \end{frame}
 
 \end{document}

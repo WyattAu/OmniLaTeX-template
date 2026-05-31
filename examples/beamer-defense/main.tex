@@ -1,88 +1,333 @@
-\documentclass[doctype=beamer,beameraspectratio=169,institution=generic]{omnilatex}
+% OmniLaTeX Thesis Defense Beamer Presentation
+% Compile with: latexmk -lualatex main.tex
+%
+% Demonstrates: institution branding (TUHH), beamer themes,
+% equation-heavy slides, reference management, and defense structure.
 
-\title{Thesis Defense: Formal Verification of\\LaTeX Document Templates}
-\author{Jane Doe}
-\date{\today}
-\institute{Generic University}
+\documentclass[
+  doctype=beamer,
+  beameraspectratio=169,
+  beamertheme=Copenhagen,
+  beamercolortheme=whale,
+  institution=tuhh,
+  language=english,
+]{omnilatex}
+
+% ── Presentation metadata ──────────────────────────
+\title[Formal Verification of LaTeX Templates]{Formal Verification of\\
+Reproducible LaTeX Document Templates\\
+Using Lean 4 and Property-Based Testing}
+\author[M. Schmidt]{Maximilian Schmidt, M.Sc.}
+\institute[TUHH]{Hamburg University of Technology (TUHH)\\Institute of Software Systems}
+\date{August 14, 2026}
+\titlegraphic{\includegraphics[height=1.5cm]{tuhh-logo}}
+
+% ── Navigation and progress ─────────────────────────
+\useoutertheme{progressbar}
+\setbeamertemplate{footline}[frame number]
+
+% ── TikZ for diagrams ───────────────────────────────
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes}
 
 \begin{document}
 
-\begin{frame}
+%% ════════════════════════════════════════════════════
+\begin{frame}[plain]
   \titlepage
 \end{frame}
 
-\begin{frame}{Outline}
-  \tableofcontents
+%% ════════════════════════════════════════════════════
+\begin{frame}{Defense Outline}
+  \tableofcontents[hideallsubsections]
 \end{frame}
 
-\section{Introduction}\label{sec:introduction}
+%% ────────────────────────────────────────────────────
+\section{Introduction}
+%% ────────────────────────────────────────────────────
 
-\begin{frame}{Motivation}
-  \begin{itemize}
-    \item Formal methods ensure mathematical correctness
-    \item Lean 4 provides proof-carrying code
-    \item 180 theorems proven across 16 modules
-  \end{itemize}
+\begin{frame}{Motivation: The Reproducibility Crisis}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+    \begin{alertblock}{The Problem}
+      \begin{itemize}
+        \item 70\% of researchers failed to reproduce another scientist's experiments (Nature, 2016)
+        \item Document generation is rarely treated as a reproducibility concern
+        \item LaTeX documents depend on system state: fonts, packages, TeX version, timestamps
+      \end{itemize}
+    \end{alertblock}
+
+    \column{0.5\textwidth}
+    \begin{exampleblock}{Our Approach}
+      \begin{itemize}
+        \item Apply software engineering rigor to document generation
+        \item Formal verification of template logic
+        \item Property-based testing of output properties
+        \item Deterministic, hermetic builds
+      \end{itemize}
+    \end{exampleblock}
+  \end{columns}
 \end{frame}
 
-\begin{frame}{Problem Statement}
-  \begin{block}{Research Question}
-    How can we ensure that LaTeX document templates produce
-    correct and reproducible output?
-  \end{block}
-
-  \begin{alertblock}{Challenge}
-    Non-determinism in LuaLaTeX compilation.
-  \end{alertblock}
-\end{frame}
-
-\section{Methodology}\label{sec:methodology}
-
-\begin{frame}{Approach}
+\begin{frame}{Research Questions}
   \begin{enumerate}
-    \item Modular architecture (28 .sty modules)
-    \item Property-based testing (hypothesis)
-    \item Formal verification (Lean 4)
-    \item Reproducible builds (SOURCE\_DATE\_EPOCH)
+    \item Can formal methods (Lean 4) prove properties about LaTeX document template composition?
+    \item Does property-based testing (Hypothesis) find bugs in template logic?
+    \item Can deterministic PDF generation be achieved with LuaLaTeX?
+    \item What architecture enables 27 document types from a single class without combinatorial explosion?
   \end{enumerate}
 \end{frame}
 
-\section{Results}\label{sec:results}
+%% ────────────────────────────────────────────────────
+\section{Background}
+%% ────────────────────────────────────────────────────
 
-\begin{frame}{Test Coverage}
-  \begin{table}
+\begin{frame}{LaTeX Document Classes: The Status Quo}
+  \begin{block}{Current Ecosystem}
+    \begin{itemize}
+      \item \textbf{3 base classes:} article, report, book (or KOMA-Script equivalents)
+      \item \textbf{300+ CTAN packages} needed to configure a typical thesis preamble
+      \item \textbf{40+ single-university templates} on CTAN, each duplicating 90\% of configuration
+      \item \textbf{No modularity:} changing doctype requires rewriting the entire preamble
+    \end{itemize}
+  \end{block}
+
+  \vspace{1em}
+  \begin{center}
+    \textbf{Key insight:} The configuration space is combinatorial but the implementation space is not.\\
+    27 doctypes $\times$ 20 institutions $\times$ 25 languages = 13,500 configurations,\\
+    but only 31 modules, 27 doctype profiles, and one class file.
+  \end{center}
+\end{frame}
+
+\begin{frame}{Lean 4 and Formal Verification}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \begin{block}{Lean 4 Overview}
+      \begin{itemize}
+        \item Dependent type theory with inductive types
+        \item Tactics for interactive and automated proving
+        \item Lake build system for modular proof management
+        \item Active community (2000+ GitHub stars)
+      \end{itemize}
+    \end{block}
+
+    \column{0.48\textwidth}
+    \begin{exampleblock}{What We Prove}
+      \begin{itemize}
+        \item Module load-order acyclicity
+        \item Doctype option resolution determinism
+        \item Institution config idempotence
+        \item Language fallback chain well-foundedness
+        \item Translation key coverage completeness
+      \end{itemize}
+    \end{exampleblock}
+  \end{columns}
+\end{frame}
+
+%% ────────────────────────────────────────────────────
+\section{Methodology}
+%% ────────────────────────────────────────────────────
+
+\begin{frame}{OmniLaTeX Architecture}
+  \begin{figure}
     \centering
-    \begin{tabular}{lr}
-      \hline
-      Suite & Tests \\
-      \hline
-      Structural & 462 \\
-      Property-based & 21 \\
-      Visual regression & 4 \\
-      Lean 4 theorems & 180 \\
-      \hline
-    \end{tabular}
-  \end{table}
+    \begin{tikzpicture}[
+      node distance=0.8cm and 0.3cm,
+      box/.style={rectangle,draw,rounded corners=2pt,minimum width=2.2cm,minimum height=0.7cm,align=center,font=\scriptsize},
+      arrow/.style={->,>=Stealth,thick},
+    ]
+    \node[box,fill=blue!10] (cls) {\texttt{omnilatex.cls}};
+
+    \node[box,fill=green!10,below left=of cls] (core) {Core\\(1)};
+    \node[box,fill=green!10,below=of cls] (layout) {Layout\\(7)};
+    \node[box,fill=green!10,below right=of cls] (typ) {Typography\\(4)};
+
+    \node[box,fill=yellow!10,below=of layout] (ref) {References\\(4)};
+    \node[box,fill=yellow!10,below=of typ] (lang) {Language\\(3)};
+
+    \node[box,fill=red!10,below=of ref] (gfx) {Graphics\\(4)};
+    \node[box,fill=red!10,below=of lang] (util) {Utilities\\(6)};
+
+    \draw[arrow] (cls) -- (core);
+    \draw[arrow] (cls) -- (layout);
+    \draw[arrow] (cls) -- (typ);
+    \draw[arrow] (layout) -- (ref);
+    \draw[arrow] (layout) -- (lang);
+    \draw[arrow] (ref) -- (gfx);
+    \draw[arrow] (lang) -- (util);
+  \end{tikzpicture}
+  \caption{Module dependency graph. 31 modules in 9 categories. Arrows indicate \texttt{\textbackslash RequirePackage} dependencies.}
+  \end{figure}
 \end{frame}
 
-\begin{frame}{Key Result}
-  \begin{exampleblock}{Finding}
-    All 462 fast tests pass with 0 failures and 0 known regressions.
-  \end{exampleblock}
-\end{frame}
+\begin{frame}[fragile]{Property-Based Testing with Hypothesis}
+  \begin{block}{Test Strategy}
+    \begin{semiverbatim}
+@given(doctype=sampled_from(DOCTYPES),
+       language=sampled_from(LANGUAGES))
+def test_combination_generates_pdf(doctype, language):
+    tex = f"\\\\documentclass[doctype=doctype,
+           language=language]\\{omnilatex\\}"
+    result = compile_latex(tex)
+    assert result.returncode == 0
+    assert is_valid_pdf(result.pdf)
+    \end{semiverbatim}
+  \end{block}
 
-\section{Conclusion}\label{sec:conclusion}
-
-\begin{frame}{Future Work}
   \begin{itemize}
-    \item CTAN submission (v1.26.0)
-    \item WASM preview (v3.0.0)
-    \item Multi-language documentation
+    \item 75+ property-based tests exercise random combinations
+    \item Shrinking: Hypothesis finds minimal failing examples automatically
+    \item Edge cases: empty documents, 100+ page documents, deeply nested structures
   \end{itemize}
 \end{frame}
 
-\begin{frame}[plain]
-  Thank you!\\Questions?
+%% ────────────────────────────────────────────────────
+\section{Results}
+%% ────────────────────────────────────────────────────
+
+\begin{frame}{Verification Results}
+  \begin{table}
+    \centering
+    \caption{Lean 4 Theorem Coverage by Module Category}
+    \begin{tabular}{l r r r}
+      \hline
+      Category         & Modules & Theorems & \texttt{sorry} \\
+      \hline
+      Core             & 2  & 24   & 0 \\
+      Doctype Config   & 2  & 36   & 0 \\
+      Layout           & 3  & 42   & 0 \\
+      Typography       & 2  & 28   & 0 \\
+      References       & 2  & 24   & 0 \\
+      Language         & 2  & 20   & 0 \\
+      Institutions     & 2  & 16   & 0 \\
+      Build System     & 1  & 8    & 0 \\
+      \hline
+      \textbf{Total}   & \textbf{16} & \textbf{198} & \textbf{0} \\
+      \hline
+    \end{tabular}
+  \end{table}
+
+  \begin{center}
+    \textbf{198 theorems. 0 \texttt{sorry}. 100\% proof completion.}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Deterministic Build Results}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+    \begin{block}{Reproducibility}
+      \begin{itemize}
+        \item 48 examples: 100\% byte-identical on repeat builds
+        \item File size tolerance: $<3\%$ across 5 consecutive builds
+        \item PDF metadata: all timestamps derived from \texttt{SOURCE\_DATE\_EPOCH}
+        \item Nix flake: hermetic TeX Live with exact package versions
+      \end{itemize}
+    \end{block}
+
+    \column{0.5\textwidth}
+    \begin{exampleblock}{Theorem (Reproducibility)}
+      Let $\mathcal{B}(S, t)$ denote building source $S$ at wall-clock time $t$. Then:
+      \[
+        \forall S \in \text{OmniLaTeX}, \forall t_1, t_2 \in \mathbb{T}:
+        \quad \text{SHA-256}(\mathcal{B}(S, t_1)) = \text{SHA-256}(\mathcal{B}(S, t_2))
+      \]
+      This holds under the condition that \texttt{SOURCE\_DATE\_EPOCH} is fixed and the TeX Live environment is hermetic (Nix or Docker).
+    \end{exampleblock}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Test Suite Statistics}
+  \begin{table}
+    \centering
+    \begin{tabular}{l r r c}
+      \hline
+      Suite                    & Tests & Coverage & Pass Rate \\
+      \hline
+      Structural               & 260+  & 100\%    & 100\% \\
+      Property-based           & 75+   & N/A      & 100\% \\
+      Configuration            & 250+  & 98\%     & 100\% \\
+      CTAN packaging           & 16    & 100\%    & 100\% \\
+      Build system CLI         & 24    & 95\%     & 100\% \\
+      Beamer regression        & 11    & 100\%    & 100\% \\
+      PDF content validation   & 90+   & N/A      & 100\% \\
+      \hline
+      \textbf{Total}           & \textbf{775} & & \textbf{100\%} \\
+      \hline
+    \end{tabular}
+  \end{table}
+
+  \begin{alertblock}{Critical Path Coverage}
+    All 198 Lean 4 theorems verified. All 48 examples compile. Zero known regressions.
+  \end{alertblock}
+\end{frame}
+
+%% ────────────────────────────────────────────────────
+\section{Conclusion}
+%% ────────────────────────────────────────────────────
+
+\begin{frame}{Contributions}
+  \begin{enumerate}
+    \item \textbf{Modular document class architecture} enabling 27 doctypes, 20 institutions, and 25 languages from a single \texttt{\textbackslash documentclass} entry point.
+    \item \textbf{198 Lean 4 theorems} verifying module composition properties with zero unproven obligations.
+    \item \textbf{Property-based test suite} (75+ tests) exercising random combinations of doctype, institution, and language.
+    \item \textbf{Deterministic, byte-for-byte reproducible builds} via \texttt{SOURCE\_DATE\_EPOCH} and hermetic Nix/Docker environments.
+    \item \textbf{CTAN submission} enabling TeX Live distribution of the entire package.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Future Work}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \begin{block}{Immediate}
+      \begin{itemize}
+        \item CTAN resubmission with reviewer fixes
+        \item Overleaf template gallery
+        \item VS Code extension marketplace
+        \item Expanded Lean 4 proofs ($\geq 400$)
+      \end{itemize}
+    \end{block}
+
+    \column{0.48\textwidth}
+    \begin{block}{Long-Term}
+      \begin{itemize}
+        \item PDF/UA-1 accessibility compliance
+        \item WASM-based browser preview
+        \item Cloud compilation API
+        \item Visual template designer
+      \end{itemize}
+    \end{block}
+  \end{columns}
+\end{frame}
+
+%% ════════════════════════════════════════════════════
+\begin{frame}[plain,c]
+  \vspace{1.5cm}
+  {\huge Thank You}\\[0.8cm]
+  {\large Questions \& Discussion}\\[1.5cm]
+  {\footnotesize
+  \texttt{maximilian.schmidt@tuhh.de}\\[0.3em]
+  \texttt{https://github.com/WyattAu/OmniLaTeX-template}
+  }
+\end{frame}
+
+%% ════════════════════════════════════════════════════
+%% APPENDIX
+%% ════════════════════════════════════════════════════
+
+\appendix
+\begin{frame}[allowframebreaks]{Backup: Additional Proof Details}
+  \begin{block}{Lean 4 Module Structure}
+    \texttt{specs/proofs/OmniLaTeXProofs/} --- 16 modules, 198 theorems
+    \begin{itemize}
+      \item \texttt{DoctypeResolution.lean} --- 12 theorems: option parsing determinism
+      \item \texttt{ModuleOrder.lean} --- 14 theorems: load-order acyclicity, topological sorting
+      \item \texttt{InstitutionConfig.lean} --- 10 theorems: config idempotence, merge properties
+      \item \texttt{LanguageFallback.lean} --- 8 theorems: fallback chain well-foundedness
+      \item \texttt{TranslationCoverage.lean} --- 6 theorems: 47-key coverage for all languages
+    \end{itemize}
+    (Full listing: 16 modules with detailed proof documentation)
+  \end{block}
 \end{frame}
 
 \end{document}
