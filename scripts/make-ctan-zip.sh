@@ -39,11 +39,13 @@ elif [ -f "$REPO_ROOT/doc/omnilatex.pdf" ]; then
     cp "$REPO_ROOT/doc/omnilatex.pdf" "$TDS_DIR/doc/latex/$PKG_NAME/${PKG_NAME}.pdf"
 fi
 
-# ── Clean build artifacts from TDS ───────────────────────────────────────────
-find "$TDS_DIR" -name "*.aux" -o -name "*.log" -o -name "*.pdf" \
-    -o -name "*.fdb_*" -o -name "*.fls" -o -name "*.synctex.gz" \
-    -o -name "__pycache__" -o -name ".git" -type d \
-    -exec rm -rf {} + 2>/dev/null || true
+# ── Clean build artifacts from TDS (preserve doc/ directory) ──────────────────
+find "$TDS_DIR" -path "*/doc/*" -prune -o \
+    \( -name "*.aux" -o -name "*.log" -o -name "*.pdf" \
+       -o -name "*.fdb_*" -o -name "*.fls" -o -name "*.synctex.gz" \
+       -o -name "__pycache__" \) \
+    -exec rm -f {} + 2>/dev/null || true
+find "$TDS_DIR" -name ".git" -type d -exec rm -rf {} + 2>/dev/null || true
 
 # ── Build TDS zip ────────────────────────────────────────────────────────────
 mkdir -p "$REPO_ROOT/ctan"
