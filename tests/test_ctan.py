@@ -38,6 +38,18 @@ def _build_ctan_zip_with_python(output_path):
                 shutil.copy2(
                     str(item), pkg_dir / "config" / "document-types" / item.name
                 )
+
+    # Institutions: copy real institutions, skip test fixtures
+    institutions_root = REPO_ROOT / "config" / "institutions"
+    if institutions_root.is_dir():
+        (pkg_dir / "config" / "institutions").mkdir(parents=True, exist_ok=True)
+        for item in institutions_root.iterdir():
+            if item.is_dir() and item.name not in ("test-univ", "generic"):
+                shutil.copytree(
+                    str(item),
+                    pkg_dir / "config" / "institutions" / item.name,
+                )
+
     (pkg_dir / "bib").mkdir(parents=True, exist_ok=True)
     if (REPO_ROOT / "bib" / "bibliography.bib").is_file():
         shutil.copy2(
@@ -48,7 +60,7 @@ def _build_ctan_zip_with_python(output_path):
         if src.is_file():
             shutil.copy2(src, pkg_dir / name)
 
-    # Documentation: PDF + source
+    # Documentation: PDF + source inside omnilatex/doc/
     (pkg_dir / "doc").mkdir(parents=True, exist_ok=True)
     for docfile in ("doc/omnilatex.pdf", "main.pdf"):
         src = REPO_ROOT / docfile
@@ -119,15 +131,10 @@ def ctan_zip_path(tmp_path_factory):
             cwd=str(REPO_ROOT),
             timeout=120,
         )
-        produced = REPO_ROOT / "omnilatex.zip"
+        # Script outputs to ctan/omnilatex.zip
+        produced = REPO_ROOT / "ctan" / "omnilatex.zip"
         if produced.exists():
             shutil.copy2(produced, zip_path)
-            produced.unlink()
-            # Clean up ctan/ directory if created
-            ctan_dir = REPO_ROOT / "ctan"
-            if ctan_dir.is_dir():
-                for f in ctan_dir.glob("*.zip"):
-                    f.unlink()
         else:
             _build_ctan_zip_with_python(zip_path)
     else:
@@ -205,13 +212,23 @@ class TestCTANZip:
             len(example_files) == 0
         ), f"omnilatex.zip should not contain examples/ but found: {example_files[:5]}"
 
-    def test_zip_omits_institutions(self, ctan_zip_path):
+    def test_zip_contains_institutions(self, ctan_zip_path):
+        with zipfile.ZipFile(str(ctan_zip_path)) as zf:
+            names = zf.namelist()
+        inst_files = [n for n in names if "/institutions/" in n and n.endswith(".sty")]
+        assert (
+            len(inst_files) >= 20
+        ), f"omnilatex.zip should contain >=20 institution .sty files, found {len(inst_files)}"
+
+    def test_zip_omits_test_institutions(self, ctan_zip_path):
         with zipfile.ZipFile(str(ctan_zip_path)) as zf:
             names = zf.namelist()
         inst_files = [n for n in names if "/institutions/" in n]
-        assert (
-            len(inst_files) == 0
-        ), f"omnilatex.zip should not contain institutions/ but found: {inst_files[:5]}"
+        for forbidden in ["test-univ", "generic"]:
+            forbidden_files = [n for n in inst_files if forbidden in n]
+            assert (
+                len(forbidden_files) == 0
+            ), f"omnilatex.zip should not contain {forbidden}: {forbidden_files}"
 
 
 class TestOverleafZip:
