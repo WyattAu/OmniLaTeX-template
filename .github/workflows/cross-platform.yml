@@ -69,17 +69,20 @@ jobs:
         IS_OMNILATEX_CONTAINER: 'true'
         CI: 'true'
       run: |
-        DOCKER_IMAGE=$(grep '^DOCKER_IMAGE=' .env.docker | cut -d= -f2)
-        if [ -z "$DOCKER_IMAGE" ]; then
-          echo "::error::.env.docker missing or DOCKER_IMAGE not set"
+        DOCKER_TAG=$(grep '^DOCKER_IMAGE_VERSION=' .env.docker | cut -d= -f2)
+        if [ -z "$DOCKER_TAG" ]; then
+          echo "::error::.env.docker missing or DOCKER_IMAGE_VERSION not set"
           exit 1
         fi
+        # Windows Docker: use multi-arch tag instead of architecture-specific digest
+        IMAGE="ghcr.io/wyattau/omnilatex-docker:${DOCKER_TAG}"
         docker run --rm --entrypoint "" \
+          --platform linux/amd64 \
           -v "$GITHUB_WORKSPACE:/workspace" \
           -w /workspace \
           -e IS_OMNILATEX_CONTAINER=true \
           -e CI=true \
-          "$DOCKER_IMAGE" \
+          "$IMAGE" \
           python3 build.py --mode prod build-example article
 
     - name: Verify PDF
