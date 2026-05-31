@@ -242,18 +242,14 @@ def main():
 
     results = []
     for i, name in enumerate(examples, 1):
-        print(
-            "  [{i}/{len(examples)}] {name}...", file=sys.stderr, end=" ", flush=True
-        )
+        print("  [{i}/{len(examples)}] {name}...", file=sys.stderr, end=" ", flush=True)
         result = benchmark_example(name, repo_root, args.cold_runs, args.inc_runs)
         if result.get("error"):
             print("SKIPPED ({result['error']})", file=sys.stderr)
         else:
             cold_str = "{mean(result['cold']):.2f}s" if result["cold"] else "N/A"
             inc_str = (
-                "{mean(result['incremental']):.2f}s"
-                if result["incremental"]
-                else "N/A"
+                "{mean(result['incremental']):.2f}s" if result["incremental"] else "N/A"
             )
             print("cold={cold_str}, inc={inc_str}", file=sys.stderr)
         results.append(result)
