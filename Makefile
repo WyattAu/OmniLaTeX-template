@@ -16,14 +16,16 @@ test-slow:
 test-lean:
 	cd $(PROOF_DIR) && $(LAKE) build
 
+LINT_TARGETS := tests/ buildlib/ scripts/ tools/ build.py
+
 lint:
-	black --check tests/*.py
-	isort --check --profile black tests/*.py
-	flake8 tests/*.py --max-line-length=100 --extend-ignore=E203,W503
+	black --check $(LINT_TARGETS)
+	isort --check --profile black $(LINT_TARGETS)
+	flake8 $(LINT_TARGETS) --max-line-length=100 --extend-ignore=E203,W503
 
 format:
-	black tests/*.py
-	isort --profile black tests/*.py
+	black $(LINT_TARGETS)
+	isort --profile black $(LINT_TARGETS)
 
 clean:
 	find . -name "*.aux" -delete
