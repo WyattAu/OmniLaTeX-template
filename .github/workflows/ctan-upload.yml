@@ -20,7 +20,7 @@ jobs:
       changelog: ${{ steps.changelog.outputs.changelog }}
     steps:
       # v4
-    - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
         fetch-tags: true
@@ -85,7 +85,7 @@ jobs:
     timeout-minutes: 10
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      uses: actions/checkout@v6
 
     - name: Install dependencies
       run: sudo apt-get update -qq && sudo apt-get install -y -qq unzip

@@ -27,7 +27,7 @@ jobs:
     steps:
     - name: Checkout repository
       # v4
-      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      uses: actions/checkout@v6
 
     - name: Set up Python
       uses: ./.github/actions/setup-python
@@ -63,7 +63,7 @@ jobs:
     steps:
     - name: Checkout repository
       # v4
-      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      uses: actions/checkout@v6
       with:
         fetch-depth: 1
 
@@ -147,7 +147,7 @@ jobs:
     steps:
     - name: Checkout repository
       # v4
-      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      uses: actions/checkout@v6
       with:
         fetch-depth: 1
 
@@ -200,7 +200,7 @@ jobs:
     steps:
     - name: Checkout repository
       # v4
-      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      uses: actions/checkout@v6
       with:
         fetch-depth: 1
 
@@ -293,7 +293,7 @@ jobs:
     steps:
     - name: Checkout repository
       # v4
-      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      uses: actions/checkout@v6
 
     - name: Read Docker image digest
       id: digest
@@ -374,7 +374,7 @@ jobs:
     steps:
     - name: Checkout repository
       # v4
-      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      uses: actions/checkout@v6
       with:
         fetch-depth: 0
 

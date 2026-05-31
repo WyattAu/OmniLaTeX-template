@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-    - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+    - uses: actions/checkout@v6
 
     - name: Generate SBOM and scan for vulnerabilities
       uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610
@@ -44,7 +44,7 @@ jobs:
 
     - name: Create issue on critical findings
       if: failure()
-      uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c379a5d4a
+      uses: actions/github-script@v7
       with:
         script: |
           const title = 'SBOM: Critical vulnerabilities detected';
