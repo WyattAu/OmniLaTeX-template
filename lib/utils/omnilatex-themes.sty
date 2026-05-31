@@ -374,7 +374,7 @@
 
 
 %% ── Theme Application ─────────────────────────────
-%% \usetheme{name} applies a complete color theme.
+%% \omnilatexusetheme{name} applies a complete color theme.
 %%
 %% If the name contains "-dark" (e.g., "monochrome-dark"), dark mode
 %% is enabled automatically and the suffix is stripped to find the
@@ -384,8 +384,11 @@
 %% have a separate -dark variant; the base palette is already dark.
 %% For these themes, \lightmode has no effect (they stay dark).
 %% For default/monochrome/sepia, a -dark variant can be requested.
+%%
+%% \usetheme is also provided via \providecommand for KOMA documents
+%% (does not overwrite beamer's \usetheme in beamer mode).
 
-\newcommand{\usetheme}[1]{%
+\newcommand{\omnilatexusetheme}[1]{%
     \def\@theme@base{#1}%
     %% Handle -dark suffix
     \IfSubStr{\@theme@base}{-dark}{%
@@ -396,17 +399,18 @@
     %% Wire all colors into document elements
     \applytheme@colors
 }
+\providecommand{\usetheme}[1]{\omnilatexusetheme{#1}}
 
 %% ── Dark/Light Mode Toggle ────────────────────────
 
 \newcommand{\darkmode}{%
     \darkmodetrue
-    \usetheme{\omnilatex@currenttheme-dark}%
+    \omnilatexusetheme{\omnilatex@currenttheme-dark}%
 }
 
 \newcommand{\lightmode}{%
     \darkmodefalse
-    \usetheme{\omnilatex@currenttheme}%
+    \omnilatexusetheme{\omnilatex@currenttheme}%
 }
 
 %% ── Custom Color Override ─────────────────────────
@@ -458,6 +462,6 @@
 %% ── Initialize ────────────────────────────────────
 %% Apply the theme requested via the package option (default).
 
-\usetheme{\omnilatex@theme}
+\omnilatexusetheme{\omnilatex@theme}
 
 \endinput
