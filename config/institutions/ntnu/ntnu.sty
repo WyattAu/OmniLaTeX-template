@@ -1,41 +1,26 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Norwegian University of Science and Technology (NTNU) Configuration
+% Norwegian University of Science and Technology Configuration
 %
 % Official brand colors and identity.
 % Usage: \documentclass[doctype=thesis,institution=ntnu]{omnilatex}
 %
-% Brand guidelines: https://www.ntnu.edu/profile/visual-identity
+% Brand guidelines: https://www.ntnu.edu
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \NeedsTeXFormat{LaTeX2e}[2024-01-01]
-\ProvidesPackage{config/institutions/ntnu/ntnu}[2026/05/17 Norwegian University of Science and Technology Configuration]
+\ProvidesPackage{config/institutions/ntnu/ntnu}[2026/05/17 NTNU Configuration]
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Color Palette (Official NTNU Corporate Design)
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Primary: NTNU Dark Blue
 \definecolor{ntnuPrimary}{HTML}{1D3F5C}
-\n% Standard OmniLaTeX color alias for theme integration
+
+% Standard OmniLaTeX theme integration alias
 \colorlet{universityprimary}{ntnuPrimary}
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Logo
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\instLogo}{}
+% Logo: Place in assets/logos/ntnu/logo.{pdf,png,jpg}
+% \DeclareTranslation{english}{LogoInstitution}{%
+%     \includegraphics[height=1.5cm]{assets/logos/ntnu/logo}%
+% }
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Institution Link
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\instURL}{https://www.ntnu.edu}
-
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Apply Colors to Document Elements
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% \colorlet{colorTitleBack}{ntnuPrimary}
-% \colorlet{colorSection}{ntnuPrimary}
-% \colorlet{colorLink}{ntnuPrimary}
-% \colorlet{colorTableRule}{ntnuPrimary}
-% \colorlet{colorFooter}{ntnuPrimary}
+\DeclareTranslation{english}{LinkInstitution}{https://www.ntnu.edu}
 
 \endinput

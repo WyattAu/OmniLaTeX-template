@@ -4,41 +4,26 @@
 % Official brand colors and identity.
 % Usage: \documentclass[doctype=thesis,institution=uoft]{omnilatex}
 %
-% Brand guidelines: https://www.utoronto.ca/brand/
+% Brand guidelines: https://www.utoronto.ca
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \NeedsTeXFormat{LaTeX2e}[2024-01-01]
 \ProvidesPackage{config/institutions/uoft/uoft}[2026/05/17 University of Toronto Configuration]
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Color Palette (Official U of T Corporate Design)
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Primary: U of T Navy
 \definecolor{uoftPrimary}{HTML}{00204E}
 % Secondary: U of T Blue
 \definecolor{uoftSecondary}{HTML}{6FB2D2}
-\n% Standard OmniLaTeX color aliases for theme integration
+
+% Standard OmniLaTeX theme integration aliases
 \colorlet{universityprimary}{uoftPrimary}
 \colorlet{universitysecondary}{uoftSecondary}
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Logo
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\instLogo}{}
+% Logo: Place in assets/logos/uoft/logo.{pdf,png,jpg}
+% \DeclareTranslation{english}{LogoInstitution}{%
+%     \includegraphics[height=1.5cm]{assets/logos/uoft/logo}%
+% }
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Institution Link
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\instURL}{https://www.utoronto.ca}
-
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Apply Colors to Document Elements
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% \colorlet{colorTitleBack}{uoftPrimary}
-% \colorlet{colorSection}{uoftPrimary}
-% \colorlet{colorLink}{uoftSecondary}
-% \colorlet{colorTableRule}{uoftPrimary}
-% \colorlet{colorFooter}{uoftSecondary}
+\DeclareTranslation{english}{LinkInstitution}{https://www.utoronto.ca}
 
 \endinput

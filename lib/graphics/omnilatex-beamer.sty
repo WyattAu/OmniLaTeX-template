@@ -8,6 +8,7 @@
 \ProvidesPackage{lib/graphics/omnilatex-beamer}[2026/05/31 v2.2.3 OmniLaTeX Beamer integration]
 
 \RequirePackage{lib/utils/omnilatex-colors}
+\RequirePackage{xstring}
 \RequirePackage{lib/typography/omnilatex-fonts}
 
 %% KOMA-Script compatibility stubs for Beamer mode.
@@ -64,17 +65,19 @@
 
 %% Theme selection
 \expandafter\ifx\csname omnilatex@beamertheme\endcsname\relax\else
-  \ifdefstring{\omnilatex@beamertheme}{metropolis}{%
-    \usetheme{metropolis}%
-  }{%
-    \ifdefstring{\omnilatex@beamertheme}{Madrid}{%
-      \usetheme{Madrid}%
-    }{%
-      \ifdefstring{\omnilatex@beamertheme}{Warsaw}{%
-        \usetheme{Warsaw}%
-      }{}%
-    }%
-  }%
+  \IfStrEqCase{\omnilatex@beamertheme}{%
+    {metropolis}{\usetheme{metropolis}}%
+    {Madrid}{\usetheme{Madrid}}%
+    {Warsaw}{\usetheme{Warsaw}}%
+    {Berlin}{\usetheme{Berlin}}%
+    {Copenhagen}{\usetheme{Copenhagen}}%
+    {Singapore}{\usetheme{Singapore}}%
+    {Goettingen}{\usetheme{Goettingen}}%
+    {Rochester}{\usetheme{Rochester}}%
+    {Pittsburgh}{\usetheme{Pittsburgh}}%
+    {Berkeley}{\usetheme{Berkeley}}%
+    {PaloAlto}{\usetheme{PaloAlto}}%
+  }[]%
 \fi
 
 \endinput

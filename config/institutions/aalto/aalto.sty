@@ -10,35 +10,20 @@
 \NeedsTeXFormat{LaTeX2e}[2024-01-01]
 \ProvidesPackage{config/institutions/aalto/aalto}[2026/05/17 Aalto University Configuration]
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Color Palette (Official Aalto Corporate Design)
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Primary: Aalto Black
 \definecolor{aaltoPrimary}{HTML}{000000}
 % Secondary: Aalto Red
 \definecolor{aaltoSecondary}{HTML}{E6001F}
-\n% Standard OmniLaTeX color aliases for theme integration
+
+% Standard OmniLaTeX theme integration aliases
 \colorlet{universityprimary}{aaltoPrimary}
 \colorlet{universitysecondary}{aaltoSecondary}
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Logo
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\instLogo}{}
+% Logo: Place in assets/logos/aalto/logo.{pdf,png,jpg}
+% \DeclareTranslation{english}{LogoInstitution}{%
+%     \includegraphics[height=1.5cm]{assets/logos/aalto/logo}%
+% }
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Institution Link
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\instURL}{https://www.aalto.fi}
-
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Apply Colors to Document Elements
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% \colorlet{colorTitleBack}{aaltoPrimary}
-% \colorlet{colorSection}{aaltoPrimary}
-% \colorlet{colorLink}{aaltoSecondary}
-% \colorlet{colorTableRule}{aaltoPrimary}
-% \colorlet{colorFooter}{aaltoSecondary}
+\DeclareTranslation{english}{LinkInstitution}{https://www.aalto.fi}
 
 \endinput

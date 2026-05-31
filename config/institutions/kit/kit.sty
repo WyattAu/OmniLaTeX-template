@@ -1,44 +1,29 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Karlsruhe Institute of Technology (KIT) Configuration
+% Karlsruhe Institute of Technology Configuration
 %
 % Official brand colors and identity.
 % Usage: \documentclass[doctype=thesis,institution=kit]{omnilatex}
 %
-% Brand guidelines: https://www.kit.edu/kit/english/corporate_design.php
+% Brand guidelines: https://www.intranet.kit.edu/corporate_design.php
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \NeedsTeXFormat{LaTeX2e}[2024-01-01]
-\ProvidesPackage{config/institutions/kit/kit}[2026/05/17 Karlsruhe Institute of Technology Configuration]
+\ProvidesPackage{config/institutions/kit/kit}[2026/05/17 KIT Configuration]
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Color Palette (Official KIT Corporate Design)
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Primary: KIT Green
 \definecolor{kitPrimary}{HTML}{009682}
 % Secondary: KIT Black
 \definecolor{kitSecondary}{HTML}{000000}
-\n% Standard OmniLaTeX color aliases for theme integration
+
+% Standard OmniLaTeX theme integration aliases
 \colorlet{universityprimary}{kitPrimary}
 \colorlet{universitysecondary}{kitSecondary}
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Logo
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\instLogo}{}
+% Logo: Place in assets/logos/kit/logo.{pdf,png,jpg}
+% \DeclareTranslation{english}{LogoInstitution}{%
+%     \includegraphics[height=1.5cm]{assets/logos/kit/logo}%
+% }
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Institution Link
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\instURL}{https://www.kit.edu}
-
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Apply Colors to Document Elements
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% \colorlet{colorTitleBack}{kitPrimary}
-% \colorlet{colorSection}{kitPrimary}
-% \colorlet{colorLink}{kitSecondary}
-% \colorlet{colorTableRule}{kitPrimary}
-% \colorlet{colorFooter}{kitSecondary}
+\DeclareTranslation{english}{LinkInstitution}{https://www.kit.edu}
 
 \endinput

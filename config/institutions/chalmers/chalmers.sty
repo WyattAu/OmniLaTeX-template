@@ -4,41 +4,26 @@
 % Official brand colors and identity.
 % Usage: \documentclass[doctype=thesis,institution=chalmers]{omnilatex}
 %
-% Brand guidelines: https://www.chalmers.se/en/about-chalmers/visual-identity
+% Brand guidelines: https://www.chalmers.se/en/about-chalmers/profile-and-identity/
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \NeedsTeXFormat{LaTeX2e}[2024-01-01]
-\ProvidesPackage{config/institutions/chalmers/chalmers}[2026/05/17 Chalmers University of Technology Configuration]
+\ProvidesPackage{config/institutions/chalmers/chalmers}[2026/05/17 Chalmers University Configuration]
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Color Palette (Official Chalmers Corporate Design)
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Primary: Chalmers Blue
 \definecolor{chalmersPrimary}{HTML}{003366}
 % Secondary: Chalmers Light Blue
 \definecolor{chalmersSecondary}{HTML}{00A5CF}
-\n% Standard OmniLaTeX color aliases for theme integration
+
+% Standard OmniLaTeX theme integration aliases
 \colorlet{universityprimary}{chalmersPrimary}
 \colorlet{universitysecondary}{chalmersSecondary}
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Logo
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\instLogo}{}
+% Logo: Place in assets/logos/chalmers/logo.{pdf,png,jpg}
+% \DeclareTranslation{english}{LogoInstitution}{%
+%     \includegraphics[height=1.5cm]{assets/logos/chalmers/logo}%
+% }
 
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Institution Link
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\instURL}{https://www.chalmers.se}
-
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Apply Colors to Document Elements
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% \colorlet{colorTitleBack}{chalmersPrimary}
-% \colorlet{colorSection}{chalmersPrimary}
-% \colorlet{colorLink}{chalmersSecondary}
-% \colorlet{colorTableRule}{chalmersPrimary}
-% \colorlet{colorFooter}{chalmersSecondary}
+\DeclareTranslation{english}{LinkInstitution}{https://www.chalmers.se}
 
 \endinput
