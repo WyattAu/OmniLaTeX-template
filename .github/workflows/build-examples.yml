@@ -81,7 +81,11 @@ jobs:
             cp /work/config/omnilatex-document-settings.sty /work/config/document-settings.sty 2>/dev/null || true; \
             cp -rn /repo/examples/${EXAMPLE}/* /work/ 2>/dev/null || true; \
             sed -i 's#../../omnilatex#omnilatex#g' /work/main.tex 2>/dev/null || true; \
-            latexmk -f -e '\$force_mode=1' -lualatex -interaction=nonstopmode -output-directory=/work main.tex || true"
+            latexmk -f -e '\$force_mode=1' -lualatex -interaction=nonstopmode -output-directory=/work main.tex 2>/dev/null || true; \
+            if [ -f /work/main.aux ] && grep -q 'glsxtr@resource' /work/main.aux 2>/dev/null; then \
+              bib2gls -d /work main 2>/dev/null || true; \
+              latexmk -f -e '\$force_mode=1' -lualatex -interaction=nonstopmode -output-directory=/work main.tex 2>/dev/null || true; \
+            fi"
 
         if [ -f "${WORKDIR}/main.pdf" ]; then
           SIZE=$(stat -c%s "${WORKDIR}/main.pdf")
