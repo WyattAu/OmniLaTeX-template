@@ -75,7 +75,6 @@ jobs:
           exit 1
         fi
         docker run --rm --entrypoint "" \
-          --platform ${{ env.DOCKER_PLATFORM }} \
           -v "$GITHUB_WORKSPACE:/workspace" \
           -w /workspace \
           -e IS_OMNILATEX_CONTAINER=true \
