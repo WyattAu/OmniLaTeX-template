@@ -110,7 +110,8 @@
 % Fix: register Noto CJK fonts as fallback for ALL document font families
 % via luaotfload's fallback mechanism. When any font is missing a CJK glyph,
 % luaotfload transparently substitutes from the CJK fallback chain.
-% CJK font fallback is registered in omnilatex-fonts.sty BEFORE fonts load.
+% CJK font fallback is pre-registered in omnilatex-fonts.sty BEFORE font loading.
+% \defaultfontfeatures applies it conditionally if Noto CJK is installed.
 % No additional configuration needed here — luaotfload handles it transparently.
 
 % ── Line Breaking ───────────────────────────────────────────────────────────
