@@ -222,7 +222,7 @@
 % Workaround: luaotfload-multiscript.lua calls kpse.find_file('ScriptExtensions.txt')
 % which returns nil in Nix/TL2025, then calls os.exit(-1). Patch kpse.find_file
 % to return a dummy temp file when the real file is missing.
-\directlua{dofile(kpse.find_file("lib/utils/luaotfload-workaround.lua") or "lib/utils/luaotfload-workaround.lua")}%
+\directlua{dofile(kpse.find_file("lib/utils/omnilatex-luaotfload-workaround.lua") or "lib/utils/omnilatex-luaotfload-workaround.lua")}%
 
 % Pre-define script fonts for polyglossia (TL2025 checks main font).
 % Without these, polyglossia errors with --halt-on-error.
@@ -382,10 +382,10 @@
 \RequirePackage{lib/utils/omnilatex-plugin}
 
 \def\@doctypefile{}
-\edef\@doctypecandidate{config/document-types/\omnilatex@doctypeprofile}
+\edef\@doctypecandidate{config/document-types/omnilatex-\omnilatex@doctypeprofile}
 \IfFileExists{\@doctypecandidate.sty}{\edef\@doctypefile{\@doctypecandidate}}{%
-    \IfFileExists{config/document-types/\omnilatex@doctypeprofile/\omnilatex@doctypeprofile.sty}{%
-        \edef\@doctypefile{config/document-types/\omnilatex@doctypeprofile/\omnilatex@doctypeprofile}%
+    \IfFileExists{config/document-types/\omnilatex@doctypeprofile/omnilatex-\omnilatex@doctypeprofile.sty}{%
+        \edef\@doctypefile{config/document-types/\omnilatex@doctypeprofile/omnilatex-\omnilatex@doctypeprofile}%
     }{}
 }
 \ifx\@doctypefile\@empty\else\RequirePackage{\@doctypefile}\fi

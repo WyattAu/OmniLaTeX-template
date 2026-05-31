@@ -260,7 +260,14 @@ class TestStructuralProperties:
         dt_dir = PROJECT_ROOT / "config" / "document-types"
         if not dt_dir.is_dir():
             return []
-        return sorted(p.stem for p in dt_dir.glob("*.sty"))
+        prefix = "omnilatex-"
+        names = []
+        for p in dt_dir.glob("*.sty"):
+            stem = p.stem
+            if stem.startswith(prefix):
+                stem = stem[len(prefix) :]
+            names.append(stem)
+        return sorted(names)
 
     def _get_institution_names(self) -> list[str]:
         inst_dir = PROJECT_ROOT / "config" / "institutions"
@@ -445,7 +452,9 @@ class TestStructuralProperties:
     @given(doctype=sampled_from(CANONICAL_DOCTYPES))
     @settings(max_examples=50, deadline=None)
     def test_doctype_sty_file_exists(self, doctype):
-        sty_path = PROJECT_ROOT / "config" / "document-types" / f"{doctype}.sty"
+        sty_path = (
+            PROJECT_ROOT / "config" / "document-types" / f"omnilatex-{doctype}.sty"
+        )
         assert sty_path.is_file(), f"Doctype config not found: {sty_path}"
 
 
@@ -704,7 +713,7 @@ class TestDocumentTypeConfigs:
             content = sty_file.read_text(encoding="utf-8", errors="replace")
             # Beamer skips biblatex entirely (incompatible with beamer's
             # built-in hyperref), so citation style is not required.
-            if sty_file.stem == "beamer":
+            if sty_file.stem.endswith("beamer"):
                 continue
             assert (
                 "\\citationstyle" in content
@@ -733,7 +742,13 @@ class TestDocumentTypeConfigs:
         )
 
     def test_all_doctype_names_have_sty_file(self):
-        sty_names = {p.stem for p in self._get_doctype_sty_files()}
+        prefix = "omnilatex-"
+        sty_names = set()
+        for p in self._get_doctype_sty_files():
+            stem = p.stem
+            if stem.startswith(prefix):
+                stem = stem[len(prefix) :]
+            sty_names.add(stem)
         for name in ALL_DOCTYPE_NAMES:
             assert (
                 name in sty_names
@@ -835,7 +850,9 @@ class TestFileStructureIntegrity:
     @given(doctype=sampled_from(ALL_DOCTYPE_NAMES))
     @settings(max_examples=50, deadline=None)
     def test_doctype_sty_is_self_contained(self, doctype):
-        sty_path = PROJECT_ROOT / "config" / "document-types" / f"{doctype}.sty"
+        sty_path = (
+            PROJECT_ROOT / "config" / "document-types" / f"omnilatex-{doctype}.sty"
+        )
         assert sty_path.is_file(), f"Missing {sty_path}"
         content = sty_path.read_text(encoding="utf-8", errors="replace")
         assert "\\NeedsTeXFormat" in content

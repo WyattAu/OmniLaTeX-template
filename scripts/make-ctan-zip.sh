@@ -46,10 +46,22 @@ for dir in "$REPO_ROOT/config/institutions/"*/; do
     esac
 done
 
-# Bibliography
-mkdir -p "$CTAN_PKG/bib"
+# Bibliography (sample -- not runtime, placed under doc/)
+mkdir -p "$CTAN_PKG/doc/bib"
 if [ -f "$REPO_ROOT/bib/bibliography.bib" ]; then
-    cp "$REPO_ROOT/bib/bibliography.bib" "$CTAN_PKG/bib/"
+    cp "$REPO_ROOT/bib/bibliography.bib" "$CTAN_PKG/doc/bib/"
+fi
+
+# Documentation: PDF + source inside omnilatex/doc/
+mkdir -p "$CTAN_PKG/doc"
+if [ -f "$REPO_ROOT/doc/omnilatex.pdf" ]; then
+    cp "$REPO_ROOT/doc/omnilatex.pdf" "$CTAN_PKG/doc/omnilatex-doc.pdf"
+elif [ -f "$REPO_ROOT/main.pdf" ]; then
+    cp "$REPO_ROOT/main.pdf" "$CTAN_PKG/doc/omnilatex-doc.pdf"
+fi
+# Include the ACTUAL documentation source (self-contained omnilatex.tex)
+if [ -f "$REPO_ROOT/doc/omnilatex.tex" ]; then
+    cp "$REPO_ROOT/doc/omnilatex.tex" "$CTAN_PKG/doc/omnilatex.tex"
 fi
 
 # Documentation: PDF + source inside omnilatex/doc/ (CTAN requirements #2, #3)
@@ -79,9 +91,13 @@ mkdir -p "$REPO_ROOT/ctan"
 # ── Summary ──────────────────────────────────────────────────────────────────
 echo ""
 echo "=== CTAN Package Zip ==="
-unzip -l "$REPO_ROOT/ctan/${PKG_NAME}.zip"
+unzip -l "$REPO_ROOT/ctan/${PKG_NAME}.zip" | head -40
+echo "..."
 echo ""
 echo "CTAN zip written to: ctan/${PKG_NAME}.zip"
-echo "Structure: omnilatex/{README.md,LICENSE,omnilatex.cls,lib/,config/,bib/,doc/}"
-echo "  Institutions: $(ls "$CTAN_PKG/config/institutions/" | wc -l) real institutions (no test-univ, no generic)"
-echo "  Document types: $(ls "$CTAN_PKG/config/document-types/"*.sty | wc -l)"
+echo "Structure: omnilatex/{README.md,LICENSE,omnilatex.cls,lib/,config/}"
+echo "  config/document-types/omnilatex-*.sty (27 files, prefixed per CTAN reviewer)"
+echo "  config/institutions/ (20 real institutions, excludes test-univ and generic)"
+echo "  doc/omnilatex-doc.pdf (documentation PDF)"
+echo "  doc/omnilatex.tex (self-contained source for doc PDF)"
+echo "  doc/bib/bibliography.bib (sample bibliography, not runtime)"

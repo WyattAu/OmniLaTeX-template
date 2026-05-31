@@ -155,15 +155,27 @@ Missing optional fonts trigger a `\ClassWarning` and degrade gracefully. Run `bu
 - Python 3.10+ (for `build.py` and test suite)
 - Git
 
-### CTAN (recommended)
+### CTAN (submitted, pending review)
 
-OmniLaTeX has been submitted to CTAN (pending review). Once accepted, install via your TeX distribution's package manager:
+OmniLaTeX has been submitted to CTAN. Once CTAN listing is complete:
+
+1. **Manual install:** Download from `https://ctan.org/pkg/omnilatex`, extract into your project or `~/texmf/`.
+2. **tlmgr install:** Available after TeX Live maintainers include the package in the distribution
+   (CTAN acceptance is not equivalent to TeX Live inclusion -- this may take until the next TeX Live release cycle).
 
 ```bash
+# Manual install from CTAN (works immediately after CTAN listing)
+wget https://mirrors.ctan.org/macros/latex/contrib/omnilatex.zip
+unzip omnilatex.zip -d ~/texmf/tex/latex/
+texhash
+```
+
+```bash
+# tlmgr install (requires TeX Live inclusion, may lag CTAN listing)
 tlmgr install omnilatex
 ```
 
-After installation, place the document-types and configuration in your project (see [Quick Start](#quick-start)).
+After installation, use `\documentclass[doctype=thesis]{omnilatex}` in any `.tex` file.
 
 ### Nix
 

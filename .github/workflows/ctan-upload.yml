@@ -38,7 +38,7 @@ jobs:
         unzip -l ctan/omnilatex.zip | grep -q 'omnilatex\.cls'   || { echo "::error::omnilatex.cls missing"; exit 1; }
         unzip -l ctan/omnilatex.zip | grep -qiE '(README\.md)'    || { echo "::warning::README.md missing"; }
         unzip -l ctan/omnilatex.zip | grep -qiE '(LICENSE)'       || { echo "::warning::LICENSE missing"; }
-        unzip -l ctan/omnilatex.zip | grep -q 'doc/omnilatex\.pdf' || { echo "::error::doc/omnilatex.pdf missing"; exit 1; }
+        unzip -l ctan/omnilatex.zip | grep -q 'doc/omnilatex-doc\.pdf' || { echo "::error::doc/omnilatex-doc.pdf missing"; exit 1; }
         echo "CTAN zip validated"
 
     - name: Extract version

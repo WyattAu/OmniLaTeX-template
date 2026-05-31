@@ -28,5 +28,5 @@ if ok then
     for _, f in ipairs(_tmp_files) do
       os.remove(f)
     end
-  end, "luaotfload-workaround cleanup")
+  end, "omnilatex-luaotfload-workaround cleanup")
 end

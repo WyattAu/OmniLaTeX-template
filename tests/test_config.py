@@ -84,8 +84,8 @@ class TestDocumentTypes:
         ],
     )
     def test_canonical_doctype_exists(self, doctype):
-        sty = self.DOCTYPE_DIR / f"{doctype}.sty"
-        assert sty.is_file(), f"Missing doctype config: {doctype}.sty"
+        sty = self.DOCTYPE_DIR / f"omnilatex-{doctype}.sty"
+        assert sty.is_file(), f"Missing doctype config: omnilatex-{doctype}.sty"
 
     @pytest.mark.parametrize(
         "doctype",
@@ -98,7 +98,7 @@ class TestDocumentTypes:
         ],
     )
     def test_doctype_has_providespackage(self, doctype):
-        sty = (self.DOCTYPE_DIR / f"{doctype}.sty").read_text()
+        sty = (self.DOCTYPE_DIR / f"omnilatex-{doctype}.sty").read_text()
         assert (
             "\\ProvidesPackage" in sty or "\\ProvidesFile" in sty
         ), f"{doctype}.sty missing ProvidesPackage"
@@ -114,7 +114,7 @@ class TestDocumentTypes:
         ],
     )
     def test_doctype_has_provides_date(self, doctype):
-        sty = (self.DOCTYPE_DIR / f"{doctype}.sty").read_text()
+        sty = (self.DOCTYPE_DIR / f"omnilatex-{doctype}.sty").read_text()
         assert "\\ProvidesPackage" in sty, f"{doctype}.sty missing ProvidesPackage"
         # ProvidesPackage should include a date
         assert re.search(
@@ -137,7 +137,7 @@ class TestDocumentTypes:
         ],
     )
     def test_doctype_has_citationstyle(self, doctype):
-        sty = (self.DOCTYPE_DIR / f"{doctype}.sty").read_text()
+        sty = (self.DOCTYPE_DIR / f"omnilatex-{doctype}.sty").read_text()
         assert "\\citationstyle" in sty, f"{doctype}.sty missing \\citationstyle"
 
 

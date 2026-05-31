@@ -50,10 +50,11 @@ def _build_ctan_zip_with_python(output_path):
                     pkg_dir / "config" / "institutions" / item.name,
                 )
 
-    (pkg_dir / "bib").mkdir(parents=True, exist_ok=True)
+    (pkg_dir / "doc" / "bib").mkdir(parents=True, exist_ok=True)
     if (REPO_ROOT / "bib" / "bibliography.bib").is_file():
         shutil.copy2(
-            REPO_ROOT / "bib" / "bibliography.bib", pkg_dir / "bib" / "bibliography.bib"
+            REPO_ROOT / "bib" / "bibliography.bib",
+            pkg_dir / "doc" / "bib" / "bibliography.bib",
         )
     for name in ("README.md", "LICENSE"):
         src = REPO_ROOT / name
@@ -65,10 +66,13 @@ def _build_ctan_zip_with_python(output_path):
     for docfile in ("doc/omnilatex.pdf", "main.pdf"):
         src = REPO_ROOT / docfile
         if src.is_file():
-            shutil.copy2(src, pkg_dir / "doc" / "omnilatex.pdf")
+            shutil.copy2(src, pkg_dir / "doc" / "omnilatex-doc.pdf")
             break
-    if (REPO_ROOT / "main.tex").is_file():
-        shutil.copy2(REPO_ROOT / "main.tex", pkg_dir / "doc" / "omnilatex.tex")
+    if (REPO_ROOT / "doc" / "omnilatex.tex").is_file():
+        shutil.copy2(
+            REPO_ROOT / "doc" / "omnilatex.tex",
+            pkg_dir / "doc" / "omnilatex.tex",
+        )
 
     with zipfile.ZipFile(str(output_path), "w", zipfile.ZIP_DEFLATED) as zf:
         for file_path in sorted(pkg_dir.rglob("*")):

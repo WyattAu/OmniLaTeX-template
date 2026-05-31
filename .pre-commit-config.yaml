@@ -31,6 +31,7 @@ repos:
     - --emph=a posteriori
   - id: csquotes
   - id: ensure-labels-for-sections
+    exclude: ^(content/|examples/|overleaf/|config/)
   - id: no-space-in-cite
   - id: tilde-cite
     exclude: ^content/        # May have different citation styles
