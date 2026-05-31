@@ -2,45 +2,55 @@
 :root{
   --primary:#1F407A;--primary-light:#2A5599;--primary-dark:#152C56;
   --accent:#4A90D9;--accent-light:#6BA8F0;
-  --bg:#0D1117;--bg-card:#161B22;--bg-surface:#21262D;--bg-elevated:#30363D;
-  --text:#E6EDF3;--text-secondary:#8B949E;  --text-muted:#8B949E;
-  --border:#30363D;--border-light:#3D444D;
-  --success:#3FB950;--radius:12px;--radius-sm:8px;
+  --bg:#0A0E13;--bg-card:#12171E;--bg-surface:#1A1F27;--bg-elevated:#282D35;
+  --text:#E6EDF3;--text-secondary:#8B949E;--text-muted:#6E7681;
+  --border:#21262D;--border-light:#3D444D;
+  --success:#3FB950;--radius:2px;--radius-sm:2px;
+  --depth-1:0 1px 2px rgba(0,0,0,.3);
+  --depth-2:0 4px 12px rgba(0,0,0,.4);
+  --depth-3:0 8px 24px rgba(0,0,0,.5);
+  --brutal-border:2px solid var(--border);
+  --font-display:'Georgia','Times New Roman',serif;
+  --font-body:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+  --font-mono:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
+  --space-xs:4px;--space-sm:8px;--space-md:16px;--space-lg:24px;--space-xl:48px;
 }
 html{scroll-behavior:smooth}
 body{
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
-  background:var(--bg);color:var(--text);line-height:1.6;
-  -webkit-font-smoothing:antialiased;
+  font-family:var(--font-body);background:var(--bg);color:var(--text);
+  line-height:1.6;-webkit-font-smoothing:antialiased;
 }
 a{color:var(--accent-light);text-decoration:none;transition:color .15s}
 a:hover{color:#fff}
 header{
-  background:linear-gradient(180deg,var(--primary-dark) 0%,var(--bg) 100%);
-  border-bottom:1px solid var(--border);
-  padding:48px 24px 40px;text-align:center;
+  background:var(--bg);border-bottom:var(--brutal-border);
+  padding:56px 24px 44px;text-align:center;
 }
 header .logo{
-  font-size:2.25rem;font-weight:700;letter-spacing:-.5px;
-  background:linear-gradient(135deg,var(--accent-light),#fff);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;margin-bottom:8px;
+  font-family:var(--font-display);font-size:3rem;font-weight:900;
+  letter-spacing:-2px;text-transform:uppercase;
+  color:var(--text);margin-bottom:12px;
 }
+header .logo span{color:var(--accent-light);font-weight:200}
 nav{
-  display:flex;justify-content:center;gap:8px;padding:16px 24px;
-  background:var(--bg-card);border-bottom:1px solid var(--border);
+  display:flex;justify-content:center;gap:var(--space-sm);padding:var(--space-md) var(--space-lg);
+  background:var(--bg-card);border-bottom:var(--brutal-border);
   position:sticky;top:0;z-index:100;
 }
 nav a{
-  padding:6px 16px;border-radius:20px;font-size:.875rem;font-weight:500;
-  color:var(--text-secondary);transition:all .15s;
+  padding:6px 18px;font-size:.8rem;font-weight:700;
+  color:var(--text-secondary);text-transform:uppercase;letter-spacing:.08em;
+  transition:all .15s;border:1px solid transparent;
 }
-nav a:hover,nav a.active{background:var(--primary);color:#fff}
+nav a:hover,nav a.active{
+  background:var(--text);color:var(--bg);border-color:var(--text);
+}
 footer{
-  border-top:1px solid var(--border);padding:32px 24px;
-  text-align:center;color:var(--text-muted);font-size:.82rem;
+  border-top:var(--brutal-border);padding:var(--space-xl) var(--space-lg);
+  text-align:center;color:var(--text-muted);font-size:.75rem;
+  text-transform:uppercase;letter-spacing:.06em;
 }
 footer a{color:var(--text-secondary)}
-.skip-link{position:absolute;top:-100px;left:0;background:var(--primary);color:#fff;padding:8px 16px;z-index:9999;transition:top .2s}
+.skip-link{position:absolute;top:-100px;left:0;background:var(--text);color:var(--bg);padding:8px 16px;z-index:9999;font-weight:700;transition:top .2s}
 .skip-link:focus{top:0}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}

@@ -10,30 +10,29 @@
 <title>OmniLaTeX — Template Gallery</title>
 <link rel="stylesheet" href="style.css">
 <style>
-header .tagline{color:var(--text-secondary);font-size:1.05rem;max-width:520px;margin:0 auto}
+header .tagline{color:var(--text-muted);font-size:1rem;max-width:520px;margin:0 auto;font-family:var(--font-mono)}
 
-.container{max-width:1120px;margin:0 auto;padding:0 24px}
-section{padding:64px 0}
+.container{max-width:1120px;margin:0 auto;padding:0 var(--space-lg)}
+section{padding:var(--space-xl) 0}
 .section-title{
-  font-size:1.5rem;font-weight:600;margin-bottom:8px;
-  display:flex;align-items:center;gap:10px;
+  font-size:1.3rem;font-weight:900;margin-bottom:8px;
+  display:flex;align-items:center;gap:10px;text-transform:uppercase;letter-spacing:.04em;
 }
-.section-desc{color:var(--text-secondary);margin-bottom:32px;max-width:600px}
+.section-desc{color:var(--text-muted);margin-bottom:var(--space-lg);max-width:600px;font-family:var(--font-mono);font-size:.85rem}
 
 .filters{
-  display:flex;flex-wrap:wrap;gap:16px;margin-bottom:36px;
-  padding:20px 24px;background:var(--bg-card);
-  border:1px solid var(--border);border-radius:var(--radius);
+  display:flex;flex-wrap:wrap;gap:var(--space-md);margin-bottom:36px;
+  padding:var(--space-lg);background:var(--bg-card);
+  border:var(--brutal-border);
 }
 .filter-group{display:flex;flex-direction:column;gap:6px;flex:1;min-width:180px}
 .filter-group label{
-  font-size:.75rem;font-weight:600;text-transform:uppercase;
-  letter-spacing:.06em;color:var(--text-muted);
+  font-size:.7rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--text-muted);
 }
 .filter-group select{
   appearance:none;background:var(--bg-surface);color:var(--text);
-  border:1px solid var(--border);border-radius:var(--radius-sm);
-  padding:10px 36px 10px 14px;font-size:.9rem;
+  border:var(--brutal-border);padding:10px 36px 10px 14px;font-size:.9rem;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238B949E'%3E%3Cpath d='M6 8L1 3h10z'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 12px center;
   cursor:pointer;transition:border-color .15s;
@@ -42,46 +41,44 @@ section{padding:64px 0}
 .filter-group select option{background:var(--bg-surface);color:var(--text)}
 
 .grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:var(--space-md);
 }
 .card{
-  background:var(--bg-card);border:1px solid var(--border);
-  border-radius:var(--radius);padding:24px 20px;cursor:pointer;
-  transition:all .2s;position:relative;overflow:hidden;
+  background:var(--bg-card);border:var(--brutal-border);
+  padding:var(--space-lg) var(--space-md);cursor:pointer;
+  transition:all .15s;position:relative;overflow:hidden;
 }
 .card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:var(--accent);opacity:0;transition:opacity .2s;
+  content:'';position:absolute;top:0;left:0;width:3px;bottom:0;
+  background:var(--accent);opacity:0;transition:opacity .15s;
 }
-.card:hover{border-color:var(--border-light);transform:translateY(-2px);
-  box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.card:hover{border-color:var(--border-light);transform:translateY(-2px);box-shadow:var(--depth-2)}
 .card:hover::before{opacity:1}
 .card.selected{border-color:var(--accent);background:var(--bg-surface)}
 .card.selected::before{opacity:1}
 .card .card-icon{
-  width:44px;height:44px;border-radius:10px;display:flex;
+  width:44px;height:44px;display:flex;
   align-items:center;justify-content:center;font-size:1.4rem;
   background:var(--bg-surface);margin-bottom:14px;
-  border:1px solid var(--border);transition:all .2s;
+  border:var(--brutal-border);transition:all .15s;
+  font-weight:900;font-family:var(--font-mono);color:var(--accent-light);
 }
-.card.selected .card-icon{background:var(--primary);border-color:var(--primary-light)}
-.card .card-name{font-weight:600;font-size:.95rem;margin-bottom:4px}
-.card .card-desc{font-size:.8rem;color:var(--text-secondary);line-height:1.5}
+.card.selected .card-icon{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.card .card-name{font-weight:800;font-size:.92rem;margin-bottom:4px;text-transform:uppercase;letter-spacing:.02em}
+.card .card-desc{font-size:.78rem;color:var(--text-muted);line-height:1.4}
 .card .card-class{
-  margin-top:10px;font-size:.7rem;color:var(--text-muted);
-  font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
-  background:var(--bg);padding:4px 8px;border-radius:4px;display:inline-block;
+  margin-top:10px;font-size:.68rem;color:var(--text-muted);
+  font-family:var(--font-mono);
+  background:var(--bg);padding:4px 8px;display:inline-block;
+  border:1px solid var(--border);
 }
 
 .preview-section{
-  background:var(--bg-card);border:1px solid var(--border);
-  border-radius:var(--radius);padding:32px;
+  background:var(--bg-card);border:var(--brutal-border);padding:var(--space-lg);
 }
 .code-block{
-  background:var(--bg);border:1px solid var(--border);
-  border-radius:var(--radius-sm);padding:20px 24px;
-  font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;
-  font-size:.88rem;line-height:1.8;overflow-x:auto;
+  background:var(--bg);border:var(--brutal-border);padding:20px var(--space-lg);
+  font-family:var(--font-mono);font-size:.88rem;line-height:1.8;overflow-x:auto;
   color:#79C0FF;position:relative;
 }
 .code-block .kw{color:#FF7B72}
@@ -89,65 +86,62 @@ section{padding:64px 0}
 .code-block .val{color:#7EE787}
 .code-block .cm{color:#6E7681;font-style:italic}
 .code-actions{
-  display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;
+  display:flex;gap:var(--space-sm);margin-top:var(--space-md);flex-wrap:wrap;
 }
 .btn{
   display:inline-flex;align-items:center;gap:8px;
-  padding:10px 20px;border-radius:var(--radius-sm);
-  font-size:.875rem;font-weight:600;border:none;cursor:pointer;
-  transition:all .15s;font-family:inherit;
+  padding:10px 20px;font-size:.875rem;font-weight:800;border:none;cursor:pointer;
+  transition:all .15s;font-family:inherit;text-transform:uppercase;letter-spacing:.04em;
 }
 .btn-primary{
-  background:linear-gradient(135deg,var(--primary),var(--primary-light));
-  color:#fff;
+  background:var(--text);color:var(--bg);
 }
-.btn-primary:hover{filter:brightness(1.15);transform:translateY(-1px)}
-.btn-secondary{background:var(--bg-surface);color:var(--text);border:1px solid var(--border)}
+.btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn-secondary{background:var(--bg-surface);color:var(--text);border:var(--brutal-border)}
 .btn-secondary:hover{border-color:var(--accent);color:var(--accent-light)}
-.btn-copy{padding:8px 14px;font-size:.8rem}
+.btn-copy{padding:8px 14px;font-size:.78rem}
 
 .quickstart{
   display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:16px;margin-top:24px;
+  gap:var(--space-md);margin-top:var(--space-lg);
 }
 .step{
-  background:var(--bg-card);border:1px solid var(--border);
-  border-radius:var(--radius);padding:24px;
+  background:var(--bg-card);border:var(--brutal-border);padding:var(--space-lg);
 }
 .step-num{
-  width:32px;height:32px;border-radius:50%;
-  background:var(--primary);color:#fff;
+  width:32px;height:32px;
+  background:var(--text);color:var(--bg);
   display:flex;align-items:center;justify-content:center;
-  font-size:.85rem;font-weight:700;margin-bottom:12px;
+  font-size:.85rem;font-weight:900;margin-bottom:12px;
+  font-family:var(--font-mono);
 }
-.step h3{font-size:.95rem;margin-bottom:6px}
-.step p{font-size:.82rem;color:var(--text-secondary);line-height:1.6}
+.step h3{font-size:.92rem;margin-bottom:6px;font-weight:800;text-transform:uppercase;letter-spacing:.02em}
+.step p{font-size:.8rem;color:var(--text-muted);line-height:1.5}
 .step code{
-  background:var(--bg);padding:2px 6px;border-radius:4px;
-  font-family:'SFMono-Regular',Consolas,monospace;font-size:.8rem;
-  color:#79C0FF;
+  background:var(--bg);padding:2px 6px;font-family:var(--font-mono);font-size:.78rem;
+  color:#79C0FF;border:1px solid var(--border);
 }
 
 .toast{
   position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(100px);
-  background:var(--success);color:#fff;padding:14px 28px;border-radius:var(--radius-sm);
-  font-size:.9rem;font-weight:500;z-index:999;opacity:0;
+  background:var(--text);color:var(--bg);padding:14px 28px;
+  font-size:.85rem;font-weight:700;z-index:999;opacity:0;
   transition:all .35s cubic-bezier(.4,0,.2,1);
-  box-shadow:0 8px 32px rgba(0,0,0,.4);pointer-events:none;
+  box-shadow:var(--depth-3);pointer-events:none;text-transform:uppercase;letter-spacing:.04em;
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 @media(max-width:640px){
-  header{padding:32px 16px 28px}
-  header .logo{font-size:1.75rem}
-  .container{padding:0 16px}
-  section{padding:40px 0}
-  .filters{flex-direction:column;gap:12px}
-  .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+  header{padding:32px var(--space-md) 28px}
+  header .logo{font-size:2rem}
+  .container{padding:0 var(--space-md)}
+  section{padding:32px 0}
+  .filters{flex-direction:column;gap:var(--space-sm)}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:var(--space-sm)}
   .card{padding:18px 14px}
-  .preview-section{padding:20px 16px}
-  nav{gap:4px;padding:12px 16px}
-  nav a{padding:6px 12px;font-size:.8rem}
+  .preview-section{padding:var(--space-md)}
+  nav{gap:4px;padding:var(--space-md)}
+  nav a{padding:6px 12px;font-size:.72rem}
 }
 </style>
 </head>
@@ -155,8 +149,8 @@ section{padding:64px 0}
 <a class="skip-link" href="#main-content">Skip to content</a>
 
 <header>
-  <div class="logo">OmniLaTeX</div>
-  <p class="tagline">Pick a template. Choose your options. Start writing. Professional LaTeX documents made simple.</p>
+  <div class="logo">OMNI<span>LATEX</span></div>
+  <p class="tagline">Pick a template. Configure options. Start writing.</p>
 </header>
 
 <nav aria-label="Main navigation">

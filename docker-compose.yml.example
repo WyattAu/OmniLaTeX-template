@@ -2,8 +2,6 @@
 #
 # Defines the services for the development container.
 
-version: '3.8'
-
 services:
   # The primary service for our development environment.
   app:
