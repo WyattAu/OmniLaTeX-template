@@ -434,29 +434,39 @@
 }
 
 %% ── Heading Color Injection ───────────────────────
-%% Inject \color{omnilatex@*} into KOMA's sectioning font
-%% specifications via \addtokomafont.  Because \color{}
-%% resolves its argument at render time (not definition
-%% time), changing \colorlet{omnilatex@heading}{new}
-%% mid-document immediately changes heading colors.
-%% This replaces \setkomacolor{sectioning}{...} which
-%% is preamble-only on TL2024 and removed on TL2025+.
+%% Patch KOMA's section/chapter format commands to apply
+%% theme heading color directly.  Because \color{} resolves
+%% its argument at render time, \colorlet{omnilatex@heading}
+%% changes mid-document immediately change heading colors.
 %%
-%% Wrapped in \AddToHook{begindocument/end} because
-%% \addtokomafont requires the KOMA document class to
-%% be loaded first.
+%% \addtokomafont alone is insufficient: KOMA may override
+%% font-spec colors with its own internal color mechanism.
+%% Wrapping the entire heading line in a \color group
+%% guarantees the theme color takes precedence.
 
 \AddToHook{begindocument/end}{%
-    \addtokomafont{chapter}{\color{omnilatex@heading}}%
-    \addtokomafont{section}{\color{omnilatex@heading}}%
-    \addtokomafont{subsection}{\color{omnilatex@heading}}%
-    \addtokomafont{subsubsection}{\color{omnilatex@heading}}%
-    \addtokomafont{title}{\color{omnilatex@heading}}%
+    %% --- section / subsection / subsubsection ---
+    \let\omnilatex@orig@slf\sectionlinesformat
+    \renewcommand{\sectionlinesformat}[4]{%
+        \bgroup\color{omnilatex@heading}%
+        \omnilatex@orig@slf{##1}{##2}{##3}{##4}%
+        \egroup
+    }%
+    %% --- chapter ---
+    \@ifundefined{chapterlinesformat}{}{%
+        \let\omnilatex@orig@clf\chapterlinesformat
+        \renewcommand{\chapterlinesformat}[3]{%
+            \bgroup\color{omnilatex@heading}%
+            \omnilatex@orig@clf{##1}{##2}{##3}%
+            \egroup
+        }%
+    }%
+    %% --- caption ---
     \addtokomafont{caption}{\color{omnilatex@fg}}%
     \addtokomafont{captionlabel}{\color{omnilatex@accent}}%
+    %% --- footnotes ---
     \addtokomafont{footnote}{\color{omnilatex@footernote}}%
     \addtokomafont{footnotelabel}{\color{omnilatex@accent}}%
-    \addtokomafont{sectionentry}{\color{omnilatex@heading}}%
 }
 
 %% ── Initialize ────────────────────────────────────
