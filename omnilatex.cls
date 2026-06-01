@@ -215,6 +215,13 @@
     \RequirePackage{lib/layout/omnilatex-boxes}
     \RequirePackage{lib/layout/omnilatex-document}
 \fi
+% Doctype-specific modules are loaded conditionally after core layouts.
+\IfStrEq{\omnilatex@doctype}{presentation}{%
+  \RequirePackage{lib/layout/omnilatex-presentation}%
+}{}%
+\IfStrEq{\omnilatex@doctype}{poster}{%
+  \RequirePackage{lib/layout/omnilatex-presentation}%
+}{}%
 % Beamer loads its own hyperref; skip our hyperref module to avoid option clash
 \ifomnilatex@beamer\else
     \RequirePackage{lib/references/omnilatex-hyperref}
