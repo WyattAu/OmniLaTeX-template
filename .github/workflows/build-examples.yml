@@ -80,6 +80,10 @@ jobs:
             cp -r /repo/omnilatex.cls /repo/lib /repo/config /work/ 2>/dev/null || true; \
             cp /work/config/omnilatex-document-settings.sty /work/config/document-settings.sty 2>/dev/null || true; \
             cp -rn /repo/examples/${EXAMPLE}/* /work/ 2>/dev/null || true; \
+            # Pre-converted SVG PDFs live in svg-inkscape/ subdirectories.
+            # The svg package looks for _svg-raw.pdf beside the .svg file.
+            # Copy them up one level so the package can find them without Inkscape.
+            find /work -path '*/svg-inkscape/*_svg-raw.pdf' -exec sh -c 'f="{}"; d="$(dirname "$(dirname "$f")")"; cp "$f" "$d/"' \; 2>/dev/null || true; \
             sed -i 's#../../omnilatex#omnilatex#g' /work/main.tex 2>/dev/null || true; \
             latexmk -f -e '\$force_mode=1' -lualatex -interaction=nonstopmode -output-directory=/work main.tex 2>/dev/null || true; \
             if [ -f /work/main.aux ] && grep -q 'glsxtr@resource' /work/main.aux 2>/dev/null; then \

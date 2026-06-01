@@ -364,7 +364,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         fonts-noto-core \
         fonts-noto-extra \
     && rm -rf /var/lib/apt/lists/* \
-    && fc-cache -f -v
+    && fc-cache -f -v \
+    && mkdir -p /usr/local/texlive/texmf-local/fonts \
+    && ln -sf /usr/share/fonts/noto-cjk /usr/local/texlive/texmf-local/fonts/truetype/noto-cjk \
+    && ln -sf /usr/share/fonts/noto /usr/local/texlive/texmf-local/fonts/truetype/noto \
+    && ln -sf /usr/share/fonts/truetype /usr/local/texlive/texmf-local/fonts/truetype/system \
+    && luaotfload-tool --update --force
 
 # Give back control to own user files; might be root-owned from previous copying processes
 # Make our class file available for the entire latex/TeXLive installation, see also
