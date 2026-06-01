@@ -35,9 +35,11 @@
 \providecommand{\provideenvironment}[3]{%
   \@ifundefined{#1}{\newenvironment{#1}{#2}{#3}}{}%
 }
-\provideenvironment{block}[1]{\par\textbf{#1}\par}{\par}%
-\provideenvironment{alertblock}[1]{\par\textbf{#1}\par}{\par}%
-\provideenvironment{exampleblock}[1]{\par\textbf{#1}\par}{\par}%
+
+%% Block environments are deferred to \AddToHook{begindocument/end}
+%% because \provideenvironment may call \newenvironment outside
+%% \begin{document}, which leaks tokens (e.g. `] 1`) into the PDF
+%% on LuaTeX+TL2025+.
 \@ifundefined{setkomacolor}{%
   %% \omnilatex@clr@helper{element}{key=value}
   %% Parses a single key=value pair without xstring to avoid expansion issues.
@@ -96,6 +98,9 @@
 %% the preamble.  Only the \renewenvironment calls go in the
 %% begindocument hook (they need the original environments
 %% to be defined first, which happens during \begin{document}).
+%% Note: \provideenvironment must NOT be used in the preamble
+%% because \newenvironment leaks tokens (e.g. `] 1`) into the
+%% PDF on LuaTeX+TL2025+ when called before \begin{document}.
 
 \newif\if@omnilatex@blocks@patched
 \@omnilatex@blocks@patchedfalse
@@ -111,6 +116,23 @@
 \newcommand{\omnilatex@get@block@fg}[2]{%
   \@ifundefined{omnilatex@clr@#1@fg}{#2}{\csname omnilatex@clr@#1@fg\endcsname}%
 }
+
+%% Block environments: KOMA defines them on TL2024
+%% but removed them on TL2025+.  On TL2024 the environments
+%% already exist.  On TL2025+ we create a minimal fallback
+%% using \newenvironment (safe in preamble, unlike the hook
+%% where \newenvironment leaks).  The \renewenvironment in
+%% the hook below upgrades them to full tcolorbox blocks.
+
+\@ifundefined{block}{%
+  \newenvironment{block}[1]{\par}{\par}%
+}{}%
+\@ifundefined{alertblock}{%
+  \newenvironment{alertblock}[1]{\par}{\par}%
+}{}%
+\@ifundefined{exampleblock}{%
+  \newenvironment{exampleblock}[1]{\par}{\par}%
+}{}%
 
 \AddToHook{begindocument/end}{%
   \if@omnilatex@blocks@patched\else
