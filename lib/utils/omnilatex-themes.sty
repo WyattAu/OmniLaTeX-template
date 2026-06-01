@@ -41,49 +41,14 @@
 %% \begin{document}, which leaks tokens (e.g. `] 1`) into the PDF
 %% on LuaTeX+TL2025+.
 \@ifundefined{setkomacolor}{%
-  %% \omnilatex@clr@helper{element}{key=value}
-  %% Parses a single key=value pair without xstring to avoid expansion issues.
-  \newcommand{\omnilatex@clr@helper}[2]{%
-    \omnilatex@clr@split#2\@nil
-    \ifdefstring{\omnilatex@clr@k}{fg}{%
-      \expandafter\edef\csname omnilatex@clr@#1@fg\endcsname{\omnilatex@clr@v}%
-    }{%
-      \ifdefstring{\omnilatex@clr@k}{bg}{%
-        \expandafter\edef\csname omnilatex@clr@#1@bg\endcsname{\omnilatex@clr@v}%
-      }{}%
-    }%
-  }
-  %% Split helper: strips leading space then splits on =.
-  %% Input: " key=value\@nil" or "key=value\@nil" -> k=key, v=value
-  \def\omnilatex@clr@split{\futurelet\omnilatex@clr@next\omnilatex@clr@split@a}
-  \def\omnilatex@clr@split@a{%
-    \ifx\omnilatex@clr@next\@sptoken
-      \expandafter\omnilatex@clr@split@space
-    \else
-      \expandafter\omnilatex@clr@split@b
-    \fi
-  }
-  \expandafter\def\expandafter\omnilatex@clr@split@space\@sptoken{%
-    \omnilatex@clr@split@b
-  }
-  \def\omnilatex@clr@split@b#1=#2\@nil{%
-    \def\omnilatex@clr@k{#1}%
-    \def\omnilatex@clr@v{#2}%
-  }
-  %% \omnilatex@setkomacolor@shim{element}{fg=color} or {bg=color, fg=color}
-  %% Handles single pair (no comma) and two pairs (one comma).
-  %% KOMA only ever uses fg, bg so we need at most 2 pairs.
-  \newcommand{\omnilatex@setkomacolor@shim}[2]{%
-    \IfSubStr{#2}{,}{%
-      %% Use latex kernel \@for loop to split on comma
-      \@for\omnilatex@clr@item:=#2\do{%
-        \omnilatex@clr@helper{#1}{\omnilatex@clr@item}%
-      }%
-    }{%
-      \omnilatex@clr@helper{#1}{#2}%
-    }%
-  }
-  \let\setkomacolor\omnilatex@setkomacolor@shim
+  %% TL2025+: KOMA removed \setkomacolor entirely.
+  %% Provide a simple no-op: \setkomacolor{elem}{opt} does nothing.
+  %% The colors formerly set by \setkomacolor are now applied via
+  %% direct mechanisms: \sectionlinesformat (headings), \hypersetup
+  %% (links), \pagecolor/\color (background/text), and tcolorbox
+  %% defaults (blocks).  No shim needed — KOMA's internal color
+  %% reader was removed alongside \setkomacolor.
+  \let\setkomacolor\@gobbletwo
 }{}% end \@ifundefined{setkomacolor}
 
 %% ── Block environments: always tcolorbox ────────────
