@@ -139,9 +139,20 @@
 
 % xkanjiskip: extra glue inserted between a CJK character and a non-CJK character.
 % Setting this to \cjklatinspacing provides consistent CJK–Latin separation.
+%
+% NOTE: \ltjsetparameter{xkanjiskip=...} leaks its glue value
+% ("plus 0.125em minus 0.125em") into the PDF via LuaTeX's tex.print
+% on certain luatexja versions.  We work around this by setting
+% xkanjiskip directly as a Lua glue_spec node, which does not leak.
 \ifomnilatex@use@luatexja
 \AtBeginDocument{%
-  \ltjsetparameter{xkanjiskip=\cjklatinspacing plus 0.125em minus 0.125em}%
+  \directlua{
+    local g = node.new("glue_spec")
+    g.width  = tex.sp("\the\cjklatinspacing")
+    g.stretch = tex.sp("0.125em")
+    g.shrink  = tex.sp("0.125em")
+    luatexja.parameter.xkanjiskip = g
+  }%
 }%
 \fi
 
@@ -149,7 +160,13 @@
 \newcommand{\setCJKLatinSpacing}[1]{%
   \setlength{\cjklatinspacing}{#1}%
   \ifomnilatex@use@luatexja
-    \ltjsetparameter{xkanjiskip=\cjklatinspacing plus 0.125em minus 0.125em}%
+    \directlua{
+      local g = node.new("glue_spec")
+      g.width  = tex.sp("\the\cjklatinspacing")
+      g.stretch = tex.sp("0.125em")
+      g.shrink  = tex.sp("0.125em")
+      luatexja.parameter.xkanjiskip = g
+    }%
   \fi
 }
 

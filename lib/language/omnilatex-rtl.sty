@@ -203,7 +203,9 @@
   \omnilatex@apply@hebrewfonts%
   \omnilatex@setup@rtl@math%
   \omnilatex@setup@rtl@lists%
-  \AtBeginDocument{\rlap{\hebrewfont א}}%
+  %% Font warm-up: typeset one character in a zero-height box
+  %% to preload the Hebrew font without leaking visible text.
+  \AtBeginDocument{\setbox0=\hbox{\hebrewfont א}}%
 }
 
 \newcommand{\omnilatex@setup@persian}{%
