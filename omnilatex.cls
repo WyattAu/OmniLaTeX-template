@@ -327,11 +327,20 @@
       \newfontfamily\hebrewfont[Script=Hebrew,BoldFont=David CLM,BoldFeatures={FakeBold=2}]{David CLM}%
       \newfontfamily\hebrewfontfamily[Script=Hebrew,BoldFont=David CLM,BoldFeatures={FakeBold=2}]{David CLM}%
       \newfontfamily\hebrewfontsf[Script=Hebrew,BoldFont=David CLM,BoldFeatures={FakeBold=2}]{David CLM}%
+      \setsansfont[Script=Hebrew,BoldFont=David CLM,BoldFeatures={FakeBold=2}]{David CLM}%
     }{%
       \IfFontExistsTF{Frank Ruehl CLM}{%
         \newfontfamily\hebrewfont[Script=Hebrew,BoldFont=Frank Ruehl CLM,BoldFeatures={FakeBold=2}]{Frank Ruehl CLM}%
         \newfontfamily\hebrewfontfamily[Script=Hebrew,BoldFont=Frank Ruehl CLM,BoldFeatures={FakeBold=2}]{Frank Ruehl CLM}%
         \newfontfamily\hebrewfontsf[Script=Hebrew,BoldFont=Frank Ruehl CLM,BoldFeatures={FakeBold=2}]{Frank Ruehl CLM}%
+        \setsansfont[Script=Hebrew,BoldFont=Frank Ruehl CLM,BoldFeatures={FakeBold=2}]{Frank Ruehl CLM}%
+      }{%
+        \IfFontExistsTF{Noto Sans Hebrew}{%
+          \newfontfamily\hebrewfont[Script=Hebrew,BoldFont=Noto Sans Hebrew,BoldFeatures={FakeBold=2}]{Noto Sans Hebrew}%
+          \newfontfamily\hebrewfontfamily[Script=Hebrew,BoldFont=Noto Sans Hebrew,BoldFeatures={FakeBold=2}]{Noto Sans Hebrew}%
+          \newfontfamily\hebrewfontsf[Script=Hebrew,BoldFont=Noto Sans Hebrew,BoldFeatures={FakeBold=2}]{Noto Sans Hebrew}%
+          \setsansfont[Script=Hebrew,BoldFont=Noto Sans Hebrew,BoldFeatures={FakeBold=2}]{Noto Sans Hebrew}%
+        }{}%
       }{}%
     }%
   }{}%
