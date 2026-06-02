@@ -166,7 +166,7 @@
     { TUHH } { }
 }
 {
-    \ClassInfo{omnilatex}{Unknown~titlestyle~'\omnilatex@titlestyle'.~
+    \ClassWarning{omnilatex}{Unknown~titlestyle~'\omnilatex@titlestyle'.~
         Using~default~title~page~layout.}
 }
 \ExplSyntaxOff
