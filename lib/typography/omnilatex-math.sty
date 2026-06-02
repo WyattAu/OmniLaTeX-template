@@ -433,3 +433,21 @@
 }%
 
 \endinput
+
+% Graceful degradation stubs when enablemath=false.
+% These prevent "Undefined control sequence" when math macros
+% are referenced but the math module is not loaded.  The stubs
+% render the argument as-is without math formatting.
+\@ifundefined{mean}{%
+  \newcommand*{\mean}[1]{#1}%
+  \newcommand*{\logmean}[1]{#1}%
+  \newcommand*{\abs}[1]{#1}%
+  \newcommand*{\norm}[1]{#1}%
+  \newcommand*{\inner}[2]{#1#2}%
+  \newcommand*{\vect}[1]{#1}%
+  \newcommand*{\deriv}[2][]{#2}%
+  \newcommand*{\fracderiv}[2]{#1#2}%
+  \newcommand*{\grad}[1]{#1}%
+  \newcommand*{\divg}[1]{#1}%
+  \newcommand*{\curl}[1]{#1}%
+}{}
