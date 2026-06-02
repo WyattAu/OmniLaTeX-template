@@ -1,14 +1,16 @@
-% Document settings for multi-language example
-% This configuration shows how to properly set up multilingual documents
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-settings}[2026/06/02 v2.3.1 multi-language example]
 
-% Set up font coverage for all languages
-\setmainfont[
-    Numbers=Lowercase,
-    Scale=MatchLowercase,
-]{Libertinus Serif}
+\title{Multi-Language Showcase}
+\subtitle{Demonstrating Polyglossia Integration}
+\author{OmniLaTeX Contributors}
+\date{\today}
 
-% Ensure proper character coverage for international fonts
-\RequirePackage{fontspec}
-\RequirePackage{unicode-math}
+\documenttype{Report}
+\hypersetup{
+  pdftitle={Multi-Language Showcase},
+  pdfauthor={OmniLaTeX Contributors},
+  pdfsubject={Multi-language typesetting with polyglossia}
+}
 
 \endinput
