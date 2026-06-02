@@ -81,14 +81,12 @@ collection-langchinese 1
 collection-langcjk 1
 collection-langcyrillic 1
 collection-langczechslovak 0
-collection-langfrench 0
-collection-langgreek 1
-collection-langitalian 0
-collection-langjapanese 1
-collection-langkorean 1
-collection-langother 0
-collection-langpolish 0
-collection-langportuguese 0
+collection-langfrench 1
+collection-langitalian 1
+collection-langpolish 1
+collection-langspanish 1
+collection-langczechslovak 1
+collection-langportuguese 1
 collection-langspanish 0
 
 

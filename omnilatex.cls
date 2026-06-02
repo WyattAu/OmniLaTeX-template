@@ -402,6 +402,10 @@
 \ifomnilatex@enabletables
     \RequirePackage{lib/tables/omnilatex-tables}
 \fi
+% Ensure csquotes is loaded after fvextra (loaded by omnilatex-tables).
+% omnilatex-typesetting loads csquotes early; re-require here to
+% satisfy the load-order warning ("csquotes should be loaded after fvextra").
+\RequirePackage{csquotes}
 \ifomnilatex@loadGlossaries
     \RequirePackage{lib/references/omnilatex-glossary}
 \fi
