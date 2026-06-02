@@ -437,9 +437,18 @@
     \addtokomafont{subsubsection}{\color{omnilatex@heading}}%
     \addtokomafont{paragraph}{\color{omnilatex@heading}}%
     \addtokomafont{subparagraph}{\color{omnilatex@heading}}%
-    \addtokomafont{chapter}{\color{omnilatex@heading}}%
-    \addtokomafont{part}{\color{omnilatex@heading}}%
-    \addtokomafont{partnumber}{\color{omnilatex@heading}}%
+    %% chapter/part only exist in scrbook/scrreprt (not scrartcl)
+    \Ifstr{\@baseclass}{scrbook}{%
+      \addtokomafont{chapter}{\color{omnilatex@heading}}%
+      \addtokomafont{part}{\color{omnilatex@heading}}%
+      \addtokomafont{partnumber}{\color{omnilatex@heading}}%
+    }{%
+      \Ifstr{\@baseclass}{scrreprt}{%
+        \addtokomafont{chapter}{\color{omnilatex@heading}}%
+        \addtokomafont{part}{\color{omnilatex@heading}}%
+        \addtokomafont{partnumber}{\color{omnilatex@heading}}%
+      }{}%
+    }%
     %% --- page headers/footers ---
     \addtokomafont{pagehead}{\color{omnilatex@heading}}%
     \addtokomafont{pagefoot}{\color{omnilatex@heading}}%
