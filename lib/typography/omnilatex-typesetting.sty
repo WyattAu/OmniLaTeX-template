@@ -57,8 +57,14 @@
 % Add itshape to beginning (beg) of display quote environments:
 \renewcommand*{\mkbegdispquote}[2]{\itshape}
 
-% Set text to ragged-right with proper hyphenation
-% This improves readability and avoids underfull hbox warnings
+% Set text to ragged-right with proper hyphenation.
+% This improves readability and avoids underfull hbox warnings.
+% \RaggedRightRightskip controls how much stretch appears at line ends.
+% Default 0pt plus 2em is fine; increase emergencystretch for narrow columns.
+\setlength{\RaggedRightRightskip}{0pt plus 2em}
+\setlength{\RaggedRightParindent}{1.5em}
+% Suppress invisible overfull warnings (boxes wider by <0.5pt are imperceptible)
+\setlength{\hfuzz}{0.5pt}
 \RaggedRight
 
 \endinput

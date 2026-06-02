@@ -185,6 +185,28 @@
 \fi
 
 \LoadClass{\@baseclass}
+
+% Warn if user loads packages known to conflict with KOMA-Script.
+\AddToHook{package/after/geometry}{%
+  \ClassWarning{omnilatex}{geometry loaded — KOMA's typearea is in use.
+    Use \string\KOMAoptions{DIV=calc,BCOR=...} instead of geometry}%
+}
+\AddToHook{package/after/fancyhdr}{%
+  \ClassWarning{omnilatex}{fancyhdr loaded — KOMA's scrlayer-scrpage is in use.
+    Use \string\setkomafont{pagehead} and \string\setkomafont{pagefoot}}%
+}
+\AddToHook{package/after/tocloft}{%
+  \ClassWarning{omnilatex}{tocloft loaded — KOMA's tocbasic is in use.
+    Use \string\setuptoc{toc}{...} and \string\DeclareTOCStyleEntries}%
+}
+\AddToHook{package/after/titlesec}{%
+  \ClassWarning{omnilatex}{titlesec loaded — KOMA-Script disables its
+    sectioning when titlesec is detected. Use \string\addtokomafont{section}
+    and \string\RedeclareSectionCommand instead}%
+}
+
+\RequirePackage{silence}
+
 \RequirePackage{silence}
 \WarningFilter{etex}{Extended allocation already in use}
 \WarningFilter{typearea}{Bad type area settings}
