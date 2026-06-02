@@ -185,6 +185,9 @@
 \fi
 
 \LoadClass{\@baseclass}
+% Extend register allocation to prevent "Counter too large" errors
+% in large documents with glossaries. On LuaTeX this is a no-op.
+\RequirePackage{etex}
 
 % Load Beamer integration module when doctype=beamer
 \ifomnilatex@beamer
