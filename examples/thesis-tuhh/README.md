@@ -112,7 +112,7 @@ In `main.tex`, you can modify the `\documentclass` options:
     titlestyle=TUHH,         % TUHH-specific title page
     BCOR=5mm,                % Binding correction for printing
     censoring=true,          % Enable \censor{} commands
-    loadGlossaries,          % Enable glossaries
+    loadGlossaries=true,          % Enable glossaries
     todonotes,               % Enable \todo{} commands
 ]{../../omnilatex}
 ```

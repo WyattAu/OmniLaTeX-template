@@ -11,14 +11,14 @@ Options are passed as comma-separated entries in square brackets before the
 class name:
 
 \begin{minted}{latex}
-\documentclass[doctype=article, language=german, loadGlossaries]{omnilatex}
+\documentclass[doctype=article, language=german, loadGlossaries=true]{omnilatex}
 \end{minted}
 
 Two syntactic forms are supported:
 
 \begin{itemize}
     \item \textbf{Boolean flags} -- standalone keywords that enable a
-          feature.  Example: \textsf{loadGlossaries},
+          feature.  Example: \textsf{loadGlossaries=true},
           \textsf{todonotes}, \textsf{a5}.
     \item \textbf{Key-value pairs} -- written as
           \texttt{key=value}.  Example: \textsf{language=english},
@@ -74,7 +74,7 @@ Table~\ref{tab:class-options} lists all 15 class options.
             bool & false &
             Enable \texttt{\textbackslash censored} command &
             \ref{ch:censoring} \\[3pt]
-        \textsf{loadGlossaries} &
+        \textsf{loadGlossaries=true} &
             bool & false &
             Load \ctanpackage{glossaries-extra} integration &
             \ref{ch:glossaries} \\[3pt]
@@ -194,7 +194,7 @@ redacted drafts.
 \documentclass[censoring]{omnilatex}
 \end{minted}
 
-\subsubsection{\textsf{loadGlossaries}}
+\subsubsection{\textsf{loadGlossaries=true}}
 
 Loads the \ctanpackage{glossaries-extra} integration module
 (\texttt{lib/references/omnilatex-glossary.sty}), enabling
@@ -202,7 +202,7 @@ Loads the \ctanpackage{glossaries-extra} integration module
 and \texttt{\textbackslash printglossaries}.
 
 \begin{minted}{latex}
-\documentclass[loadGlossaries]{omnilatex}
+\documentclass[loadGlossaries=true]{omnilatex}
 \end{minted}
 
 \subsubsection{\textsf{todonotes}}
@@ -303,7 +303,7 @@ Internally passes \texttt{paper=a5} to \ctanpackage{typearea} and adds
 \section{Common Combinations}
 
 \begin{description}
-    \item[Academic thesis] \mintinline{latex}{doctype=thesis, loadGlossaries,
+    \item[Academic thesis] \mintinline{latex}{doctype=thesis, loadGlossaries=true,
         todonotes} -- Full thesis profile with glossary and annotation
         support for draft review.
 
@@ -312,7 +312,7 @@ Internally passes \texttt{paper=a5} to \ctanpackage{typearea} and adds
         \textsf{titlepage=true} and \textsf{parskip=half}.
 
     \item[German report] \mintinline{latex}{doctype=report,
-        language=german, loadGlossaries} -- Report layout with German
+        language=german, loadGlossaries=true} -- Report layout with German
         localisation and glossary integration.
 
     \item[Minimal draft] \mintinline{latex}{doctype=article,
@@ -324,6 +324,6 @@ Internally passes \texttt{paper=a5} to \ctanpackage{typearea} and adds
         with full TikZ and engineering drawing support.
 
     \item[TUHH thesis] \mintinline{latex}{doctype=thesis,
-        institution=tuhh, titlestyle=tuhh, loadGlossaries} --
+        institution=tuhh, titlestyle=tuhh, loadGlossaries=true} --
         Institution-branded thesis with TUHH title page and glossary.
 \end{description}

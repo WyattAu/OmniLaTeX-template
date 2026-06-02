@@ -204,7 +204,7 @@ In `main.tex`, you can modify options:
     language=english,     % or german
     institution=none,     % or tuhh for TUHH branding
     oneside,             % or twoside for printing
-    loadGlossaries,      % enable glossaries
+    loadGlossaries=true,      % enable glossaries
     % todonotes,         % enable TODO notes
     % censoring=true,    % enable \censor{} commands
 ]{../../omnilatex}
