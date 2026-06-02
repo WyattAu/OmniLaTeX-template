@@ -41,13 +41,6 @@
 %% \begin{document}, which leaks tokens (e.g. `] 1`) into the PDF
 %% on LuaTeX+TL2025+.
 \@ifundefined{setkomacolor}{%
-  %% TL2025+: KOMA removed \setkomacolor entirely.
-  %% Provide a simple no-op: \setkomacolor{elem}{opt} does nothing.
-  %% The colors formerly set by \setkomacolor are now applied via
-  %% direct mechanisms: \sectionlinesformat (headings), \hypersetup
-  %% (links), \pagecolor/\color (background/text), and tcolorbox
-  %% defaults (blocks).  No shim needed — KOMA's internal color
-  %% reader was removed alongside \setkomacolor.
   \let\setkomacolor\@gobbletwo
 }{}% end \@ifundefined{setkomacolor}
 
@@ -102,7 +95,7 @@
 \AddToHook{begindocument/end}{%
   \if@omnilatex@blocks@patched\else
     \@omnilatex@blocks@patchedtrue
-    \renewenvironment{block}[1]{%
+    \renewenvironment{block}{%
       \tcolorbox[
         enhanced,
         colback=\omnilatex@get@block@bg{block body}{white},
@@ -119,7 +112,7 @@
     }{%
       \endtcolorbox
     }
-    \renewenvironment{alertblock}[1]{%
+    \renewenvironment{alertblock}{%
       \tcolorbox[
         enhanced,
         colback=\omnilatex@get@block@bg{block body alerted}{red!5},
@@ -136,7 +129,7 @@
     }{%
       \endtcolorbox
     }
-    \renewenvironment{exampleblock}[1]{%
+    \renewenvironment{exampleblock}{%
       \tcolorbox[
         enhanced,
         colback=\omnilatex@get@block@bg{block body example}{green!5},
@@ -324,18 +317,19 @@
 \newcommand{\applytheme@colors}{%
     \pagecolor{omnilatex@bg}%
     \color{omnilatex@fg}%
-    \setkomacolor{titlepage}{bg=omnilatex@bg, fg=omnilatex@fg}%
-    \setkomacolor{rule}{fg=omnilatex@rule}%
-    \setkomacolor{head}{fg=omnilatex@footernote}%
-    \setkomacolor{foot}{fg=omnilatex@footernote}%
-    \setkomacolor{toc}{fg=omnilatex@fg}%
-    \setkomacolor{toc line}{fg=omnilatex@rule}%
-    \setkomacolor{block title}{fg=white, bg=omnilatex@blockframe}%
-    \setkomacolor{block body}{bg=omnilatex@blockbg}%
-    \setkomacolor{block title alerted}{fg=white, bg=red!70!black}%
-    \setkomacolor{block body alerted}{bg=red!5}%
-    \setkomacolor{block title example}{fg=white, bg=green!50!black}%
-    \setkomacolor{block body example}{bg=green!5}%
+    %% Block color macros: set directly instead of via \setkomacolor
+    %% (KOMA removed it in TL2025+).  These are read by
+    %% \omnilatex@get@block@fg/bg in the block \renewenvironment.
+    \expandafter\gdef\csname omnilatex@clr@block title@fg\endcsname{white}%
+    \expandafter\gdef\csname omnilatex@clr@block title@bg\endcsname{omnilatex@blockframe}%
+    \expandafter\gdef\csname omnilatex@clr@block body@bg\endcsname{omnilatex@blockbg}%
+    \expandafter\gdef\csname omnilatex@clr@block title alerted@fg\endcsname{white}%
+    \expandafter\gdef\csname omnilatex@clr@block title alerted@bg\endcsname{red!70!black}%
+    \expandafter\gdef\csname omnilatex@clr@block body alerted@bg\endcsname{red!5}%
+    \expandafter\gdef\csname omnilatex@clr@block title example@fg\endcsname{white}%
+    \expandafter\gdef\csname omnilatex@clr@block title example@bg\endcsname{green!50!black}%
+    \expandafter\gdef\csname omnilatex@clr@block body example@bg\endcsname{green!5}%
+    %% Links and page elements
     \hypersetup{%
         colorlinks=true,
         linkcolor=omnilatex@link,
@@ -349,7 +343,7 @@
         \colorlet{omnilatex@accent}{universityprimary}%
         \colorlet{omnilatex@blockframe}{universityprimary}%
         \colorlet{omnilatex@link}{universityprimary}%
-        \setkomacolor{block title}{fg=white, bg=omnilatex@blockframe}%
+        \expandafter\gdef\csname omnilatex@clr@block title@bg\endcsname{omnilatex@blockframe}%
         \hypersetup{%
             linkcolor=omnilatex@link,
             urlcolor=omnilatex@link,
@@ -424,31 +418,31 @@
 %% Patch KOMA's section/chapter format commands to apply
 %% theme heading color directly.  Because \color{} resolves
 %% its argument at render time, \colorlet{omnilatex@heading}
-%% changes mid-document immediately change heading colors.
+%% mid-document changes immediately change heading colors.
 %%
-%% \addtokomafont alone is insufficient: KOMA may override
-%% font-spec colors with its own internal color mechanism.
-%% Wrapping the entire heading line in a \color group
-%% guarantees the theme color takes precedence.
+%% We use \addtokomafont for each heading level rather than
+%% patching \sectionlinesformat (which breaks KOMA's internal
+%% argument handling for subsections/subsubsections, causing
+%% them to show "234" instead of proper numbers).
+%%
+%% \addtokomafont appends a \color command to KOMA's font
+%% definitions, which resolves \omnilatex@heading dynamically
+%% at render time via \colorlet — so mid-document theme
+%% switches take effect immediately.
 
 \AddToHook{begindocument/end}{%
-    %% --- section / subsection / subsubsection ---
-    \let\omnilatex@orig@slf\sectionlinesformat
-    \renewcommand{\sectionlinesformat}[4]{%
-        \bgroup\color{omnilatex@heading}%
-        \omnilatex@orig@slf{##1}{##2}{##3}{##4}%
-        \egroup
-    }%
-    %% --- chapter ---
-    \@ifundefined{chapterlinesformat}{}{%
-        \let\omnilatex@orig@clf\chapterlinesformat
-        \renewcommand{\chapterlinesformat}[3]{%
-            \bgroup\color{omnilatex@heading}%
-            \omnilatex@orig@clf{##1}{##2}{##3}%
-            \egroup
-        }%
-    }%
-    %% --- caption ---
+    %% --- headings: add color to each level's font ---
+    \addtokomafont{section}{\color{omnilatex@heading}}%
+    \addtokomafont{subsection}{\color{omnilatex@heading}}%
+    \addtokomafont{subsubsection}{\color{omnilatex@heading}}%
+    \addtokomafont{paragraph}{\color{omnilatex@heading}}%
+    \addtokomafont{subparagraph}{\color{omnilatex@heading}}%
+    \addtokomafont{chapter}{\color{omnilatex@heading}}%
+    \addtokomafont{part}{\color{omnilatex@heading}}%
+    \addtokomafont{partnumber}{\color{omnilatex@heading}}%
+    %% --- page headers/footers ---
+    \addtokomafont{pagehead}{\color{omnilatex@heading}}%
+    \addtokomafont{pagefoot}{\color{omnilatex@heading}}%
     \addtokomafont{caption}{\color{omnilatex@fg}}%
     \addtokomafont{captionlabel}{\color{omnilatex@accent}}%
     %% --- footnotes ---
