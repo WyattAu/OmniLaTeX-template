@@ -1,0 +1,76 @@
+% OmniLaTeX Plugin Demo
+% Demonstrates the plugin loading system
+
+\documentclass[
+    language=english,
+    doctype=article,
+    institution=none,
+]{../../omnilatex}
+
+% Register and load a plugin
+% Plugins are .sty files placed in config/plugins/
+% \RegisterPlugin{my-formatting}
+% \LoadPlugins
+
+\title{Plugin System Demo}
+\author{OmniLaTeX}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Plugin Architecture}
+
+OmniLaTeX's plugin system (\texttt{lib/utils/omnilatex-plugin.sty})
+allows users to extend the class with custom formatting without
+modifying core modules.
+
+\subsection{Registering a Plugin}
+
+\begin{verbatim}
+\RegisterPlugin{my-formatting}
+\RegisterPlugin{watermark}
+\LoadPlugins
+\end{verbatim}
+
+Each plugin is a \texttt{.sty} file in \texttt{config/plugins/} that
+receives the class options via \texttt{kvoptions}.
+
+\subsection{Plugin API}
+
+Plugins have access to:
+\begin{itemize}
+  \item All class macros and options
+  \item \texttt{\textbackslash omnilatex@language} for language detection
+  \item \texttt{\textbackslash omnilatex@doctype} for doctype detection
+  \item \texttt{\textbackslash omnilatex@institution} for institution awareness
+\end{itemize}
+
+\subsection{Creating a Plugin}
+
+\begin{verbatim}
+% config/plugins/my-formatting.sty
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/plugins/my-formatting}[...]
+
+\RequirePackage{kvoptions}
+\DeclareStringOption[blue]{accentcolor}
+\ProcessKeyvalOptions*
+
+\colorlet{myaccent}{\myformatting@accentcolor}
+\addtokomafont{section}{\color{myaccent}}
+
+\endinput
+\end{verbatim}
+
+\section{Built-in Plugin Hooks}
+
+The class provides these hooks for plugin use:
+
+\begin{itemize}
+  \item \texttt{begindocument/end} — After \texttt{\textbackslash begin\{document\}}
+  \item \texttt{cmd/omnilatexusetheme/before} — Before theme application
+  \item \texttt{cmd/maketitle/before} — Before title page rendering
+\end{itemize}
+
+\end{document}

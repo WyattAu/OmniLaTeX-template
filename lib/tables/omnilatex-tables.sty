@@ -63,3 +63,12 @@
 \renewcommand*{\arraystretch}{1.3}
 
 \endinput
+
+% Graceful degradation when enabletables=false.
+\@ifundefined{tblr}{%
+  \newenvironment{tblr}[1][]{\begin{center}\begin{tabular}{l}}{\end{tabular}\end{center}}%
+  \newcommand{\toprule}{}%
+  \newcommand{\midrule}{}%
+  \newcommand{\bottomrule}{}%
+  \newcommand{\cmidrule}[1][]{}%
+}{}

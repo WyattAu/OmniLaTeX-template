@@ -124,3 +124,15 @@
 }%
 
 \endinput
+
+% Graceful degradation when enabletikz=false.
+% These prevent "Undefined control sequence" when tikz commands
+% are referenced but the graphics module is not loaded.
+\@ifundefined{tikzpicture}{%
+  \newenvironment{tikzpicture}[1][]{\begin{center}}{\end{center}}%
+  \newcommand{\draw}[1][]{}%
+  \newcommand{\node}[1][]{}%
+  \newcommand{\fill}[1][]{}%
+  \newcommand{\path}[1][]{}%
+  \newcommand{\coordinate}[1][]{}%
+}{}

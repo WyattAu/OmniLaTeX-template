@@ -1,0 +1,20 @@
+name: Reusable Docker Setup
+on:
+  workflow_call:
+    outputs:
+      image:
+        description: Docker image reference
+        value: ${{ jobs.setup.outputs.image }}
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      image: ${{ steps.read.outputs.image }}
+    steps:
+    - uses: actions/checkout@v6
+    - id: read
+      uses: ./.github/actions/read-docker-digest
+    - name: Pull Docker image
+      run: docker pull ${{ steps.read.outputs.image }}
