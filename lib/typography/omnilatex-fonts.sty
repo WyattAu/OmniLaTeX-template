@@ -96,6 +96,11 @@
 
 % ── Default Font Loading ─────────────────────────────────────────────────────
 
+% mathtools must load before unicode-math (loaded by \setmainfont).
+% This eliminates the 'For best results, please load mathtools *before*'
+% warning (147×).  The math module re-requires it as a no-op.
+\RequirePackage{mathtools}
+
 % Pre-register CJK font fallback (may be empty if Noto CJK missing).
 % Must be done BEFORE \setmainfont so luaotfload knows the fallback name.
 \directlua{
