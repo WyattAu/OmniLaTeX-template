@@ -459,8 +459,9 @@ OmniLaTeX does not implement custom caching. It relies on:
 SOURCE_DATE_EPOCH=1700000000 python build.py build-root
 ```
 
-This produces byte-for-byte identical PDFs across machines given the same
-`SOURCE_DATE_EPOCH` value. Timestamps, IDs, and font data are deterministic.
+This produces PDFs with deterministic timestamps, IDs, and font embeddings.
+Page counts and file sizes are consistent across machines, though LuaTeX font
+subsetting may produce minor differences in the binary layout.
 
 ### Profiling
 
