@@ -187,6 +187,7 @@
 \LoadClass{\@baseclass}
 \RequirePackage{silence}
 \WarningFilter{etex}{Extended allocation already in use}
+\WarningFilter{typearea}{Bad type area settings}
 \RequirePackage{etex}
 % LuaTeX: suppress non-fatal "Counter too large" errors.
 % These come from bib2gls .glstex files in large documents
@@ -421,10 +422,10 @@
 \RequirePackage{lib/utils/omnilatex-plugin}
 
 \def\@doctypefile{}
-\edef\@doctypecandidate{config/document-types/omnilatex-\omnilatex@doctypeprofile}
+\edef\@doctypecandidate{config/document-types/omnilatex-doctype-\omnilatex@doctypeprofile}
 \IfFileExists{\@doctypecandidate.sty}{\edef\@doctypefile{\@doctypecandidate}}{%
-    \IfFileExists{config/document-types/\omnilatex@doctypeprofile/omnilatex-\omnilatex@doctypeprofile.sty}{%
-        \edef\@doctypefile{config/document-types/\omnilatex@doctypeprofile/omnilatex-\omnilatex@doctypeprofile}%
+    \IfFileExists{config/document-types/\omnilatex@doctypeprofile/omnilatex-doctype-\omnilatex@doctypeprofile.sty}{%
+        \edef\@doctypefile{config/document-types/\omnilatex@doctypeprofile/omnilatex-doctype-\omnilatex@doctypeprofile}%
     }{}
 }
 \ifx\@doctypefile\@empty\else\RequirePackage{\@doctypefile}\fi

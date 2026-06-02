@@ -69,17 +69,10 @@ if [ -f "$REPO_ROOT/doc/omnilatex.tex" ]; then
     cp "$REPO_ROOT/doc/omnilatex.tex" "$CTAN_PKG/doc/omnilatex.tex"
 fi
 
-# Documentation: PDF + source inside omnilatex/doc/ (CTAN requirements #2, #3)
-mkdir -p "$CTAN_PKG/doc"
-if [ -f "$REPO_ROOT/examples/manual/main.pdf" ]; then
-    cp "$REPO_ROOT/examples/manual/main.pdf" "$CTAN_PKG/doc/omnilatex.pdf"
-elif [ -f "$REPO_ROOT/doc/omnilatex.pdf" ]; then
-    cp "$REPO_ROOT/doc/omnilatex.pdf" "$CTAN_PKG/doc/omnilatex.pdf"
-elif [ -f "$REPO_ROOT/main.pdf" ]; then
-    cp "$REPO_ROOT/main.pdf" "$CTAN_PKG/doc/omnilatex.pdf"
-fi
-# Include PDF source for open source compliance (CTAN requirement #3)
-if [ -f "$REPO_ROOT/main.tex" ]; then
+# Include the self-contained doc source (CTAN requirement for open source compliance)
+if [ -f "$REPO_ROOT/doc/omnilatex.tex" ]; then
+    cp "$REPO_ROOT/doc/omnilatex.tex" "$CTAN_PKG/doc/omnilatex.tex"
+elif [ -f "$REPO_ROOT/main.tex" ]; then
     cp "$REPO_ROOT/main.tex" "$CTAN_PKG/doc/omnilatex.tex"
 fi
 

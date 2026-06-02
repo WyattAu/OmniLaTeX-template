@@ -1,23 +1,6 @@
 # OmniLaTeX
 
-A modular, engineering-grade LaTeX document class for academic and professional documents. 55+ doctype aliases, 31 modules, 48 example templates, a 238-page reference manual, byte-for-byte reproducible builds, and formal Lean 4 verification.
-
-Built on LuaTeX (LuaHBTeX 1.21.0) + KOMA-Script + TeX Live 2025. Compile with `latexmk -lualatex` or `build.py`.
-
-## Why OmniLaTeX
-
-| | OmniLaTeX | Typical template |
-|---|---|---|
-| **Document types** | 55+ aliases (thesis, CV, patent, journal, ...) | 1–3 |
-| **Test coverage** | 815 tests (structural, property-based, visual regression, integration, edge cases) | 0 |
-| **Reproducible builds** | Byte-for-byte deterministic | No |
-| **Formal verification** | Lean 4 proofs (16 proof modules, 198 theorems proven, 0 sorry) | No |
-| **CI platforms** | 14 GitHub Actions workflows + 4 other platforms | 0-1 |
-| **Font fallbacks** | Graceful degradation with warnings | Crash or silent substitution |
-| **Institution configs** | 21 pluggable (`config/institutions/`) | Hardcoded |
-| **Languages** | 25 full translations via polyglossia | 0-2 |
-| **Citation styles** | 9 (IEEE, ACM, APA, Chicago, Nature, Science, Harvard, Vancouver, MLA) | 0–1 |
-| **Color themes** | 6 + dark/light toggle (default, midnight, forest, rose, monochrome, sepia) | 0 |
+A modular document class for LuaLaTeX, built on KOMA-Script. Supports 27 document types (thesis, article, CV, letter, presentation, poster, exam, book, and more), 20 institution configurations, 18 languages (including CJK and RTL), and reproducible builds via Docker or Nix.
 
 ## Quick Start
 
@@ -27,353 +10,95 @@ cd OmniLaTeX-template
 python build.py build-example minimal-starter
 ```
 
-PDF output: `build/examples/minimal-starter.pdf`
+The PDF appears in `build/examples/minimal-starter.pdf`.
 
-Or use Docker (no local TeX Live needed):
-
-```bash
-docker run -it --rm -v $(pwd):/workspace ghcr.io/wyattau/omnilatex-docker:latest
-python build.py build-example minimal-starter
-```
-
-## Features
-
-- **55+ doctype aliases** resolving to 27 document profiles across 3 KOMA-Script base classes
-- **31 modular `.sty` packages** with formal interface contracts
-- **Lazy module loading** — only load what you need (`enablemath`, `enabletikz`, `enablecode`, ...)
-- **Modern font stack** — Libertinus Serif + Math, Monaspace Neon, Atkinson Hyperlegible Next (with graceful fallback)
-- **Reproducible builds** — `SOURCE_DATE_EPOCH` support, byte-for-byte deterministic PDFs
-- **Multi-language** — 25 languages via polyglossia; CJK and RTL support auto-loaded per language
-- **Institution branding** — 21 pluggable configs in `config/institutions/` (ETH Zürich, TUHH, TUM, MIT, Stanford, Cambridge, TU Delft, Oxford, Princeton, Yale, CMU, EPFL, Imperial, Columbia, Harvard, Aalto, Chalmers, KIT, NTNU, U of Toronto, generic)
-- **Citation styles** — 9 pre-configured styles via `\citationstyle{}` (IEEE, ACM, APA, Chicago, Nature, Science, Harvard, Vancouver, MLA)
-- **Color themes** — 6 themes with dark/light toggle: default, midnight, forest, rose, monochrome, sepia
-- **Accessibility** — PDF/UA-1 tagged PDF output via tagpdf
-- **CJK support** — automatic CJK font selection for Chinese, Japanese, Korean with Haranoaji/Noto fallback
-- **RTL support** — automatic bidirectional text for Arabic and Hebrew
-- **Code listings** — syntax highlighting via minted with cached compilation
-- **Engineering diagrams** — 1,000+ lines of TikZ shapes: thermodynamics, P&ID, flowcharts
-- **Formal verification** — Lean 4 proofs (16 proof modules, 198 theorems proven, 0 sorry)
-- **Build automation** — `build.py` with watch mode, concurrent builds, timing metrics, and health diagnostics
-
-## Document Types
-
-27 document type profiles across 3 KOMA-Script base classes. Switch with `\documentclass[doctype=<type>]{omnilatex}`.
-
-| Base Class | Document Types |
-|-----------|---------------|
-| scrbook | thesis, dissertation, book, dictionary |
-| scrreprt | manual, technicalreport, standard, patent, research-proposal |
-| scrartcl | article, cv, letter, poster, presentation, and 11 more |
-
-See [User Guide](docs/USER_GUIDE.md#document-types) for the full table with descriptions.
-
-All options: `language`, `doctype`, `titlestyle`, `institution`, `censoring`, `loadGlossaries`, `todonotes`, `enablefonts`, `enablegraphics`, `enablemath`, `enabletikz`, `enableengineering`, `enablecode`, `enabletables`.
-
-## Languages
-
-OmniLaTeX supports 18 languages with full OmniLaTeX translations and 25 via polyglossia:
-
-**Languages with full translations:** English, German, French, Spanish, Portuguese, Italian, Dutch, Polish, Czech, Greek, Turkish, Russian, Vietnamese, Hindi, Swedish, Finnish, Danish, Norwegian
-
-**Other languages (available via Polyglossia):** Chinese (Simplified + Traditional), Japanese, Korean, Arabic, Hebrew, Persian, Catalan, Brazilian Portuguese, Romanian, Ukrainian, Slovak, Slovenian, Serbian, Croatian, Bulgarian, Mongolian
-
-## Examples
-
-48 ready-to-use templates in `examples/` (47 compile on TeX Live 2026; `thesis-tuhh` requires TUHH assets):
-
-| Example | Doctype | Description |
-|---------|---------|-------------|
-| `minimal-starter` | thesis | Minimal starter demonstrating all major features |
-| `minimal-custom` | thesis | Minimal template showing customization options |
-| `thesis` | thesis | Generic thesis template |
-| `thesis-tuhh` | thesis | TUHH-specific thesis with institutional branding |
-| `thesis-spacing` | thesis | Thesis with custom line spacing |
-| `dissertation` | dissertation | Dissertation document |
-| `article` | article | Standard article format |
-| `article-color` | article | Article with color configuration |
-| `inline-paper` | inlinepaper | Inline research paper |
-| `journal` | journal | Journal / magazine article |
-| `book` | book | Book-length document |
-| `cv` | cv | Curriculum vitae template |
-| `cv-twopage` | cv | Two-page CV variant |
-| `cover-letter` | cover-letter | Cover letter template |
-| `cover-letter-formal` | cover-letter | Formal cover letter variant |
-| `manual` | manual | Manual / handbook document |
-| `technical-report` | technical-report | Technical report format |
-| `standard` | standard | Standards document |
-| `dictionary` | dictionary | Dictionary / lexicon |
-| `multi-language` | article | Multilingual document (English/German) |
-| `poster` | poster | Conference poster (A1 landscape) |
-| `presentation` | presentation | Presentation slides (KOMA-based) |
-| `beamer-minimal` | presentation | Minimal Beamer presentation |
-| `beamer-native` | presentation | Beamer with native OmniLaTeX integration |
-| `beamer-corporate` | presentation | Corporate Beamer presentation |
-| `beamer-academic` | presentation | Academic Beamer presentation |
-| `beamer-defense` | presentation | Thesis defense presentation |
-| `letter` | letter | Formal letter |
-| `accessibility-test` | article | Tagged PDF (PDF/UA-1) via tagpdf |
-| `cjk-chinese` | article | Chinese document with CJK fonts |
-| `cjk-japanese` | article | Japanese document with CJK fonts |
-| `cjk-korean` | article | Korean document with CJK fonts |
-| `rtl-arabic` | article | Arabic document with RTL support |
-| `rtl-hebrew` | article | Hebrew document with RTL support |
-| `citation-styles` | article | Demonstrates all 9 citation styles |
-| `color-themes` | article | Demonstrates all 6 color themes + dark/light toggle |
-| `lua-showcase` | article | Lua extension showcase |
-| `white-paper` | white-paper | White paper document |
-| `exam` | exam | Examination paper |
-| `homework` | homework | Homework assignment |
-| `research-proposal` | research-proposal | Research proposal |
-| `handout` | handout | Class handout |
-| `memo` | memo | Internal memorandum |
-| `invoice` | invoice | Invoice document |
-| `recipe` | recipe | Recipe document |
-| `lecture-notes` | lecture-notes | Lecture notes with theorem environments |
-| `patent` | patent | Patent specification document |
-| `syllabus` | syllabus | Course syllabus with schedule and grading policy |
-
-```bash
-python build.py build-example <name>
-python build.py build-examples   # build all
-```
-
-## Font System
-
-| Font | Role | Required? |
-|------|------|-----------|
-| **Libertinus Serif** + **Math** | Main text + mathematics | Yes — bundled with TeX Live |
-| **Monaspace Neon** | Monospace / code listings | Optional — falls back to Latin Modern Mono |
-| **Atkinson Hyperlegible Next** | Sans-serif elements | Optional — falls back to Libertinus Sans |
-
-Missing optional fonts trigger a `\ClassWarning` and degrade gracefully. Run `build.py doctor` to check font availability. See `assets/fonts/README.md` for manual installation instructions.
-
-## Installation
-
-### Prerequisites
-
-- TeX Live 2025+ with LuaLaTeX (`tlmgr install scheme-medium`)
-- Python 3.10+ (for `build.py` and test suite)
-- Git
-
-### CTAN (submitted, pending review)
-
-OmniLaTeX has been submitted to CTAN. Once CTAN listing is complete:
-
-1. **Manual install:** Download from `https://ctan.org/pkg/omnilatex`, extract into your project or `~/texmf/`.
-2. **tlmgr install:** Available after TeX Live maintainers include the package in the distribution
-   (CTAN acceptance is not equivalent to TeX Live inclusion -- this may take until the next TeX Live release cycle).
-
-```bash
-# Manual install from CTAN (works immediately after CTAN listing)
-wget https://mirrors.ctan.org/macros/latex/contrib/omnilatex.zip
-unzip omnilatex.zip -d ~/texmf/tex/latex/
-texhash
-```
-
-```bash
-# tlmgr install (requires TeX Live inclusion, may lag CTAN listing)
-tlmgr install omnilatex
-```
-
-After installation, use `\documentclass[doctype=thesis]{omnilatex}` in any `.tex` file.
-
-### Nix
-
-```bash
-git clone https://github.com/WyattAu/OmniLaTeX-template.git
-cd OmniLaTeX-template
-nix develop    # or: direnv allow
-python build.py build-example minimal-starter
-```
-
-### Docker
-
-A pre-built multi-arch image (linux/amd64, linux/arm64) with TeX Live 2025, fonts, and all tools. Built with BuildKit and digest-pinned in CI:
+Or use Docker if you do not have TeX Live installed:
 
 ```bash
 docker run -it --rm -v $(pwd):/workspace ghcr.io/wyattau/omnilatex-docker:latest
 python build.py build-example minimal-starter
 ```
 
-For development, use `docker-compose.yml.example` or `devcontainer.json.example` (VS Code). The Docker image is built automatically via [`.github/workflows/docker-ci.yml`](.github/workflows/docker-ci.yml) on every push to `main` and on version tags. Image digests are synchronized to CI workflows automatically via [`.github/workflows/docker-digest-sync.yml`](.github/workflows/docker-digest-sync.yml).
+## Usage
 
-### Local TeX Live
+```latex
+\documentclass[
+    language=english,
+    doctype=article,
+    institution=none,
+]{omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+\maketitle
+\section{Introduction}
+...
+\end{document}
+```
+
+Pick a `doctype` from the list below and an `institution` from `config/institutions/`. Full documentation at `doc/omnilatex-doc.pdf` (254 pages).
+
+### Document Types
+
+`article`, `book`, `thesis`, `dissertation`, `manual`, `report`, `journal`, `letter`, `cv`, `presentation`, `poster`, `exam`, `homework`, `lecture-notes`, `syllabus`, `handout`, `memo`, `cover-letter`, `invoice`, `recipe`, `patent`, `standard`, `white-paper`, `dictionary`, `research-proposal`, `inlinepaper`, `technical-report`.
+
+### Institutions
+
+20 pre-configured institutions in `config/institutions/`: Aalto, Chalmers, Columbia, Harvard, KIT, NTNU, TU Dresden, TUHH, and others. Each provides colors, logos, and translation strings. Copy an existing config to create your own.
+
+### Languages
+
+English, German, French, Spanish, Italian, Portuguese, Russian, Dutch, Polish, Czech, Greek, Turkish, Swedish, Finnish, Danish, Norwegian, Chinese (simplified/traditional), Japanese, Korean, Arabic, Persian, Hebrew, Vietnamese, Hindi, Thai, Bengali.
+
+## Requirements
+
+- **LuaTeX** (LuaHBTeX 1.17+). Part of TeX Live 2024 or newer.
+- Python 3.10+ for the build system (`build.py`).
+- GNU Make for the test suite.
+
+All LaTeX dependencies are bundled in TeX Live or installed automatically by the Docker image.
+
+## Building
 
 ```bash
-tlmgr install luatex latexmk collection-latex collection-bibtexextra \
-  collection-mathscience collection-plots fontspec libertinus polyglossia
-python build.py build-example minimal-starter
+python build.py build                           # build all examples
+python build.py build-example thesis           # build one example
+python build.py build-example minimal-starter  # build one example
+python build.py build-manual                   # build the 254-page reference manual
 ```
 
-### VS Code
-
-The project includes a Dev Container configuration. Open in VS Code with the Dev Containers extension — TeX Live, Python, and all tools are pre-installed. A dedicated [OmniLaTeX VS Code extension](extensions/vscode-omnilatex/) provides doctype picker, institution switcher, and build commands.
-
-### Overleaf
-
-1. Generate a project zip locally: `bash scripts/make-overleaf-zip.sh thesis`
-2. Upload to Overleaf: **Menu → New Project → Upload Project**
-3. Set compiler to **LuaLaTeX**: **Menu → Compiler → LuaLaTeX**
-4. Recompile
-
-See [Overleaf Guide](docs/OVERLEAF.md) for details.
-
-## Build Script
-
-```bash
-python build.py build-example thesis    # Build a single example
-python build.py build-examples          # Build all examples
-python build.py test                    # Run test suite
-python build.py doctor                  # Environment health check
-```
-
-See [User Guide](docs/USER_GUIDE.md#build-system) for all commands and options.
-
-## CI/CD Integration
-
-### GitHub Actions
-
- 14 workflows using digest-pinned Docker images for reproducibility:
-
-| Workflow | Purpose |
-|----------|---------|
-| `build.yml` | Build all examples and run test suite |
-| `cross-platform.yml` | Test across multiple platforms |
-| `docker-ci.yml` | Build and push Docker image (multi-arch) |
-| `docker-digest-sync.yml` | Sync image digests to CI workflows |
-| `lean4-ci.yml` | Compile and verify Lean 4 proofs |
-| `ctan.yml` | CTAN validation and auto-upload on release |
-| `ctan-release.yml` | Auto-publish GitHub Release + CTAN zip on tag push |
-| `ctan-upload.yml` | Automated CTAN submission with pre-flight validation |
-| `integration-matrix.yml` | Cross-version compatibility matrix |
-| `visual-regression.yml` | PDF visual regression (build, diff, regenerate) |
-| `performance-regression.yml` | Build time regression detection (20% threshold) |
-| `build-examples.yml` | Build all examples and collect PDF artifacts |
-| `docs.yml` | Build and deploy MkDocs documentation to GitHub Pages |
-| `release.yml` | Auto-publish GitHub Release on semver tag push |
-| `sbom-tracking.yml` | Weekly SBOM generation and vulnerability tracking |
-
-### Other Platforms
-
-| Platform | Config |
-|----------|--------|
-| GitLab CI | `.gitlab/ci/pipeline.yml` |
-| Gitea | `.gitea/workflows/build.yml` |
-| Forgejo | `.forgejo/workflows/build.yml` |
-| Woodpecker | `.woodpecker/workflows/pipeline.yml` |
-
-### Environment Variables
-
-- `CI_COMMIT_SHA` / `GITHUB_SHA` — Commit hash (embedded in PDF metadata)
-- `CI_COMMIT_REF_NAME` / `GITHUB_REF_NAME` — Branch name
-- `CI_PROJECT_PATH` / `GITHUB_REPOSITORY` — Repository slug
-- `SOURCE_DATE_EPOCH` — Unix timestamp for reproducible builds
-
-### Pages Deployment
-
-Set the public base URL for PDF verification:
-
-- GitHub Pages: automatic
-- Other: set `OMNILATEX_VERIFICATION_BASE_URL`, `CF_PAGES_URL`, or `PAGES_URL`
-
-## PDF Verification
-
-Commit SHA verification embeds a verification link in each PDF. Access at `pages/verify.html`.
-
-## Configuration
-
-Customize documents through configuration files:
-
-```
-config/
-├── document-settings.sty        # Global settings
-├── document-types/
-│   ├── thesis.sty               # Thesis profile
-│   ├── article.sty              # Article profile
-│   └── ...                      # 27 document type profiles
-└── institutions/
-    ├── eth/                     # ETH Zürich branding
-    ├── tuhh/                    # TUHH branding
-    ├── tum/                     # TU Munich branding
-    ├── mit/                     # MIT branding
-    ├── stanford/                # Stanford branding
-    ├── cambridge/               # Cambridge branding
-    ├── tudelft/                 # TU Delft branding
-    ├── oxford/                  # Oxford branding
-    ├── princeton/               # Princeton branding
-    ├── yale/                    # Yale branding
-    ├── cmu/                     # CMU branding
-    ├── epfl/                    # EPFL branding
-    ├── imperial/                # Imperial College London branding
-    ├── columbia/                # Columbia University branding
-    ├── harvard/                 # Harvard University branding
-    ├── aalto/                    # Aalto University branding
-    ├── chalmers/                 # Chalmers University of Technology branding
-    ├── kit/                      # KIT branding
-    ├── ntnu/                     # NTNU branding
-    ├── uoft/                     # University of Toronto branding
-    ├── generic/                 # Customizable template
-    └── README.md                # How to add your institution
-```
-
-## Project Structure
-
-```
-├── omnilatex.cls                # Main document class (412 lines)
-├── build.py                     # Build automation
-├── build.lua                    # l3build configuration
-├── .latexmkrc                   # LaTeX compilation settings
-├── flake.nix                    # Nix flake (devShell + checks)
-├── config/                      # Document type and institution configs
-├── lib/                         # 31 modules across 9 subdirectories
-│   ├── core/                    # Build modes, utilities
-│   ├── layout/                  # Page layout, floats, KOMA-Script, accessibility
-│   ├── typography/              # Fonts, math, typesetting, lists
-│   ├── references/              # Bibliography, glossary, hyperref, citations
-│   ├── language/                # Internationalization (polyglossia, CJK, RTL)
-│   ├── graphics/                # Images, SVG, TikZ
-│   ├── code/                    # Code listings (minted)
-│   ├── tables/                  # Table formatting
-│   └── utils/                   # Colors, themes, TODO notes, censoring
-├── lua/                         # Lua scripts (git metadata)
-├── examples/                    # 48 example templates
-├── specs/                       # Formal specifications and Lean 4 proofs
-├── tests/                       # Test suite (l3build + pytest + visual regression)
-├── docs/                        # API reference (auto-generated)
-└── pages/                       # Web assets (verification page)
-```
+Use `python build.py --help` for all options.
 
 ## Testing
 
-| Suite | Tool | Coverage |
-|-------|------|----------|
-| Module unit tests | l3build | 47 l3build tests (21 module + 27 doctype) |
-| Property-based tests | hypothesis + pytest | 92 doctype × language combinations |
-| Unicode stress tests | pytest | 10 scripts (CJK, RTL, emoji, combining) |
-| Edge case tests | pytest | Empty, large, nested documents |
-| Negative tests | pytest | Invalid inputs, missing resources |
-| Visual regression | SSIM comparison | PDF layout comparison |
-| Module smoke tests | Python | 10 build-mode combinations |
-| Reproducibility | Nix check | Byte-for-byte deterministic builds |
-
 ```bash
-python build.py test              # Run all tests
-python build.py test --verbose    # Verbose output
+python -m pytest tests/                         # full suite (815 tests)
+python -m pytest tests/test_modules.py          # structural tests only
+python -m pytest tests/test_ctan.py             # CTAN package validation
+```
+
+## Repository Structure
+
+```
+├── omnilatex.cls              # class file
+├── lib/                       # 31 modules (layout, typography, graphics, language, etc.)
+├── config/
+│   ├── document-types/        # doctype profile files (one per document type)
+│   └── institutions/          # institution configurations
+├── examples/                  # 48 example documents
+├── doc/                       # reference manual (254 pages)
+├── bib/                       # sample bibliography
+├── scripts/                   # build and CI scripts
+├── docker/                    # Docker image definition
+├── tests/                     # test suite
+└── build.py                   # build system entry point
 ```
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for:
-
-- Adding institution configs, languages, and doctypes
-- Development setup (Docker, Nix, local TeX Live)
-- PR checklist and code style conventions
+Bug reports and pull requests are welcome. Run the test suite before submitting a PR. The CI pipeline must pass (lint → build → test → determinism → performance).
 
 ## License
 
-Apache License 2.0 — see [LICENSE](LICENSE).
-
-## Acknowledgments
-
-- Originally forked from the [TUHH LaTeX Template](https://collaborating.tuhh.de/m21/public/theses/itt-latex-template)
-- Built with KOMA-Script, LaTeX3/expl3, polyglossia, minted, biblatex, TikZ, and the TeX Live ecosystem
+Apache 2.0. See `LICENSE` for details.
