@@ -185,6 +185,8 @@
 \fi
 
 \LoadClass{\@baseclass}
+\RequirePackage{silence}
+\WarningFilter{etex}{Extended allocation already in use}
 \RequirePackage{etex}
 % LuaTeX: suppress non-fatal "Counter too large" errors.
 % These come from bib2gls .glstex files in large documents
