@@ -3,7 +3,7 @@
 
 OmniLaTeX provides first-class support for Chinese, Japanese, and Korean (CJK)
 scripts through \pkg{luatexja} and the Noto CJK font family.  When you select
-a CJK language (e.g.\ \texttt{language=chinese-simplified}), OmniLaTeX
+a CJK language (e.g.\ \texttt{language=simplifiedchinese}), OmniLaTeX
 automatically configures the appropriate fonts and script settings so you can
 mix CJK and Latin text seamlessly.
 
@@ -19,7 +19,7 @@ families, loaded through \pkg{luatexja}'s font mechanism.
 \end{verbatim}
 
 OmniLaTeX calls \verb|\setCJKScript{sc}| internally whenever
-\texttt{language=chinese-simplified} is detected, which tells \pkg{luatexja}
+\texttt{language=simplifiedchinese} is detected, which tells \pkg{luatexja}
 to activate the Simplified Chinese OpenType script features (GB-standard
 glyphs, punctuation rules, and proportional spacing).
 
@@ -38,7 +38,7 @@ To compile a Simplified Chinese document:
 
 \begin{verbatim}
 \documentclass{omnilatex}
-\usepackage[language=chinese-simplified]{omnilatex-lang}
+\usepackage[language=simplifiedchinese]{omnilatex-lang}
 \begin{document}
   \chapter{中文标题}
   这是一段简体中文示例。

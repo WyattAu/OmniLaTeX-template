@@ -282,7 +282,7 @@ Use the standard build commands:
 # Via Docker
 docker run --rm --entrypoint "" \
     -v "$PWD:/workspace" \
-    ghcr.io/wyattau/omnilatex:latest \
+    ghcr.io/wyattau/omnilatex-docker:latest \
     python3 build.py --mode prod --force build-example presentation
 
 # Via Nix
