@@ -53,8 +53,13 @@ if [ -f "$REPO_ROOT/bib/bibliography.bib" ]; then
 fi
 
 # Documentation: PDF + source inside omnilatex/doc/
+# Prefer the full manual PDF (examples/manual/main.pdf) over the
+# auto-generated sample (doc/omnilatex.pdf).  The manual is ~250 pages
+# covering all features; the sample is just a short extract.
 mkdir -p "$CTAN_PKG/doc"
-if [ -f "$REPO_ROOT/doc/omnilatex.pdf" ]; then
+if [ -f "$REPO_ROOT/examples/manual/main.pdf" ]; then
+    cp "$REPO_ROOT/examples/manual/main.pdf" "$CTAN_PKG/doc/omnilatex-doc.pdf"
+elif [ -f "$REPO_ROOT/doc/omnilatex.pdf" ]; then
     cp "$REPO_ROOT/doc/omnilatex.pdf" "$CTAN_PKG/doc/omnilatex-doc.pdf"
 elif [ -f "$REPO_ROOT/main.pdf" ]; then
     cp "$REPO_ROOT/main.pdf" "$CTAN_PKG/doc/omnilatex-doc.pdf"
@@ -66,7 +71,9 @@ fi
 
 # Documentation: PDF + source inside omnilatex/doc/ (CTAN requirements #2, #3)
 mkdir -p "$CTAN_PKG/doc"
-if [ -f "$REPO_ROOT/doc/omnilatex.pdf" ]; then
+if [ -f "$REPO_ROOT/examples/manual/main.pdf" ]; then
+    cp "$REPO_ROOT/examples/manual/main.pdf" "$CTAN_PKG/doc/omnilatex.pdf"
+elif [ -f "$REPO_ROOT/doc/omnilatex.pdf" ]; then
     cp "$REPO_ROOT/doc/omnilatex.pdf" "$CTAN_PKG/doc/omnilatex.pdf"
 elif [ -f "$REPO_ROOT/main.pdf" ]; then
     cp "$REPO_ROOT/main.pdf" "$CTAN_PKG/doc/omnilatex.pdf"
