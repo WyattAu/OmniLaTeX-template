@@ -19,6 +19,14 @@
 % defined") that -interaction=nonstopmode silently recovers from. PDF output
 % is correct. This will be fixed upstream in a future glossaries-extra release.
 % See: https://github.com/nlct/glossaries-extra/issues (upstream bug)
+%
+% Workaround: \let conflicting commands to \relax (undefined) before
+% (re)loading glossaries-extra, so \newcommand inside the package does not
+% trigger the "already defined" error on subsequent latexmk passes.
+% \let to \relax makes \@ifundefined return true, allowing re-definition.
+\let\gls\relax
+\let\glsdisp\relax
+\let\glsfmtname\relax
 \RequirePackage[% Initiate with package options for predefined styles
     nomain,% Nomain, aka no default glossary
     record,% Record usages of commands to auxiliary files for bib2gls
