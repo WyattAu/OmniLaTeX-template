@@ -188,6 +188,25 @@
 % Extend register allocation to prevent "Counter too large" errors
 % in large documents with glossaries. On LuaTeX this is a no-op.
 \RequirePackage{etex}
+% LuaTeX: suppress non-fatal "Counter too large" errors from bib2gls
+% when .glstex auxiliary files set entry counters beyond 32-bit limits
+% during multi-pass builds in large documents (254+ pages).
+\ifluatex
+  \directlua{
+    local function counter_guard()
+      local msg = status.lasterrorstring or ""
+      if string.find(msg, "Counter too large") then
+        texio.write("log", "OmniLaTeX: suppressed Counter too large")
+        return true  -- prevent error display
+      end
+      return false
+    end
+    if luatexbase and luatexbase.add_to_callback then
+      luatexbase.add_to_callback("show_error_hook", counter_guard,
+        "omnilatex_counter_guard")
+    end
+  }
+\fi
 
 % Load Beamer integration module when doctype=beamer
 \ifomnilatex@beamer
