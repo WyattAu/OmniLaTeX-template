@@ -18,6 +18,7 @@ on:
       - '.dockerignore'
       - 'texmf/**'
       - 'config/fonts/**'
+  workflow_dispatch:
 
 concurrency:
   group: docker-ci-${{ github.ref }}
