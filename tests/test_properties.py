@@ -289,7 +289,7 @@ class TestStructuralProperties:
         dt_dir = PROJECT_ROOT / "config" / "document-types"
         if not dt_dir.is_dir():
             return []
-        prefix = "omnilatex-"
+        prefix = "omnilatex-doctype-"
         names = []
         for p in dt_dir.glob("*.sty"):
             stem = p.stem
@@ -757,7 +757,7 @@ class TestDocumentTypeConfigs:
         )
 
     def test_all_doctype_names_have_sty_file(self):
-        prefix = "omnilatex-"
+        prefix = "omnilatex-doctype-"
         sty_names = set()
         for p in self._get_doctype_sty_files():
             stem = p.stem

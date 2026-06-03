@@ -314,7 +314,7 @@ class TestCrossReferenceConsistency:
                     missing.append(ref)
         assert (
             not missing
-        ), f"config/document-types/omnilatex-doctype-{doctype}.sty references missing lib files: {missing}"
+        ), f"omnilatex-doctype-{doctype}.sty refs missing lib files: {missing}"
 
 
 class TestCTANPackage:

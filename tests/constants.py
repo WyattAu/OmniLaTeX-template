@@ -76,6 +76,7 @@ ALL_EXAMPLE_NAMES = [
     "thesis-tuhh",
     "thesis",
     "white-paper",
+    "plugin-demo",
     "invoice",
 ]
 
