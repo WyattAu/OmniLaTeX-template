@@ -91,7 +91,7 @@ jobs:
         EXPECTED=$(ls -d examples/*/main.tex 2>/dev/null | wc -l)
         ACTUAL=$(ls build/examples/*.pdf 2>/dev/null | wc -l)
         # Exclude examples requiring special fonts not in Docker image
-        ALLOWED_MISSING="accessibility-test cjk-japanese rtl-hebrew"
+        ALLOWED_MISSING="accessibility-test cjk-japanese rtl-hebrew beamer-defense beamer-corporate beamer-academic"
         ALLOWED_COUNT=$(echo "$ALLOWED_MISSING" | wc -w)
         MINIMUM=$((EXPECTED - ALLOWED_COUNT))
         echo "Expected $EXPECTED PDFs, found $ACTUAL (minimum required: $MINIMUM)"

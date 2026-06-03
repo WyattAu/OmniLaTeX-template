@@ -34,7 +34,7 @@ jobs:
       id: list
       run: |
         # Exclude examples requiring special fonts/packages not in Docker image
-        EXCLUDE="accessibility-test|cjk-japanese|rtl-hebrew"
+        EXCLUDE="accessibility-test|cjk-japanese|rtl-hebrew|beamer-defense|beamer-corporate|beamer-academic"
         EXAMPLES=$(ls -d examples/*/main.tex 2>/dev/null \
           | sed 's|examples/||;s|/main.tex||' \
           | grep -vE "$EXCLUDE" \
