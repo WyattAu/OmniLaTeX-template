@@ -465,7 +465,10 @@ class TestStructuralProperties:
     @settings(max_examples=50, deadline=None)
     def test_doctype_sty_file_exists(self, doctype):
         sty_path = (
-            PROJECT_ROOT / "config" / "document-types" / f"omnilatex-doctype-{doctype}.sty"
+            PROJECT_ROOT
+            / "config"
+            / "document-types"
+            / f"omnilatex-doctype-{doctype}.sty"
         )
         assert sty_path.is_file(), f"Doctype config not found: {sty_path}"
 
@@ -863,7 +866,10 @@ class TestFileStructureIntegrity:
     @settings(max_examples=50, deadline=None)
     def test_doctype_sty_is_self_contained(self, doctype):
         sty_path = (
-            PROJECT_ROOT / "config" / "document-types" / f"omnilatex-doctype-{doctype}.sty"
+            PROJECT_ROOT
+            / "config"
+            / "document-types"
+            / f"omnilatex-doctype-{doctype}.sty"
         )
         assert sty_path.is_file(), f"Missing {sty_path}"
         content = sty_path.read_text(encoding="utf-8", errors="replace")

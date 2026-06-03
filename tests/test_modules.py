@@ -151,18 +151,26 @@ class TestModuleFileIntegrity:
 
     @pytest.mark.parametrize("doctype", ALL_DOCTYPE_NAMES)
     def test_doctype_sty_files_exist(self, repo_root, doctype):
-        path = repo_root / "config" / "document-types" / f"omnilatex-doctype-{doctype}.sty"
-        assert path.is_file(), f"config/document-types/omnilatex-doctype-{doctype}.sty missing"
+        path = (
+            repo_root / "config" / "document-types" / f"omnilatex-doctype-{doctype}.sty"
+        )
+        assert (
+            path.is_file()
+        ), f"config/document-types/omnilatex-doctype-{doctype}.sty missing"
 
     @pytest.mark.parametrize("doctype", ALL_DOCTYPE_NAMES)
     def test_doctype_sty_has_needs_tex_format(self, repo_root, doctype):
-        path = repo_root / "config" / "document-types" / f"omnilatex-doctype-{doctype}.sty"
+        path = (
+            repo_root / "config" / "document-types" / f"omnilatex-doctype-{doctype}.sty"
+        )
         text = _read(path)
         assert r"\NeedsTeXFormat" in text, f"{doctype}.sty missing \\NeedsTeXFormat"
 
     @pytest.mark.parametrize("doctype", ALL_DOCTYPE_NAMES)
     def test_doctype_sty_has_provides_file(self, repo_root, doctype):
-        path = repo_root / "config" / "document-types" / f"omnilatex-doctype-{doctype}.sty"
+        path = (
+            repo_root / "config" / "document-types" / f"omnilatex-doctype-{doctype}.sty"
+        )
         text = _read(path)
         assert (
             r"\ProvidesPackage" in text or r"\ProvidesFile" in text
@@ -268,7 +276,9 @@ class TestCrossReferenceConsistency:
         if doctype is None:
             pytest.skip(f"examples/{example}/main.tex has no doctype= option")
         doctype = _resolve_doctype_alias(doctype)
-        sty = repo_root / "config" / "document-types" / f"omnilatex-doctype-{doctype}.sty"
+        sty = (
+            repo_root / "config" / "document-types" / f"omnilatex-doctype-{doctype}.sty"
+        )
         assert sty.is_file(), (
             f"examples/{example} references doctype='{doctype}' "
             f"but config/document-types/omnilatex-doctype-{doctype}.sty missing"
@@ -290,7 +300,9 @@ class TestCrossReferenceConsistency:
 
     @pytest.mark.parametrize("doctype", ALL_DOCTYPE_NAMES)
     def test_doctype_lib_references_exist(self, repo_root, doctype):
-        sty_path = repo_root / "config" / "document-types" / f"omnilatex-doctype-{doctype}.sty"
+        sty_path = (
+            repo_root / "config" / "document-types" / f"omnilatex-doctype-{doctype}.sty"
+        )
         text = _read(sty_path)
         lib_refs = re.findall(r"\\(?:RequirePackage|input)\{((?:lib/)[^}]+)\}", text)
         missing = []

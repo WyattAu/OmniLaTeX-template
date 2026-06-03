@@ -10,7 +10,6 @@ on:
       - '.dockerignore'
       - 'texmf/**'
       - 'config/fonts/**'
-      - '.github/workflows/docker-ci.yml'
   pull_request:
     branches: [main]
     paths:
@@ -19,7 +18,6 @@ on:
       - '.dockerignore'
       - 'texmf/**'
       - 'config/fonts/**'
-      - '.github/workflows/docker-ci.yml'
 
 concurrency:
   group: docker-ci-${{ github.ref }}
