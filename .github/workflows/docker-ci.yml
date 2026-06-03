@@ -50,7 +50,7 @@ jobs:
     - name: Set lowercase Image name
       id: set-image-name
       run: |
-        echo "IMAGE_NAME=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+        echo "IMAGE_NAME=wyattau/omnilatex-docker" >> $GITHUB_ENV
     - name: Set up Docker Buildx
       id: buildx
       # v3
