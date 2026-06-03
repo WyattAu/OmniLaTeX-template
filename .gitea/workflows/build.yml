@@ -1,7 +1,7 @@
 name: Build LaTeX Document
 
 env:
-  DOCKER_IMAGE: ghcr.io/wyattau/omnilatex-template@sha256:2232eba03979e0cf637ffafab5bc04c56a3449918b7372ee5260e4a815e8a576  # See .env.docker
+  DOCKER_IMAGE: ghcr.io/wyattau/omnilatex-template@sha256:be08b1f8592dbe84d34493ea659af9b0fe34d783ac74723448761b5be0b898cc  # See .env.docker
 
 on:
   push:
