@@ -10,11 +10,15 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      packages: read
     outputs:
       image: ${{ steps.read.outputs.image }}
     steps:
     - uses: actions/checkout@v6
     - id: read
       uses: ./.github/actions/read-docker-digest
+    - name: Login to GitHub Container Registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
     - name: Pull Docker image
       run: docker pull ${{ steps.read.outputs.image }}
