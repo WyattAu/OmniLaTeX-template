@@ -52,11 +52,11 @@ jobs:
           white-paper recipe
         )
         for sty in "${EXPECTED_STY[@]}"; do
-          if ! unzip -l ctan/omnilatex.zip | grep -q "document-types/omnilatex-${sty}\.sty$"; then
-            echo "::error::document-types/omnilatex-${sty}.sty not found in zip"
+          if ! unzip -l ctan/omnilatex.zip | grep -q "document-types/omnilatex-doctype-${sty}\.sty$"; then
+            echo "::error::document-types/omnilatex-doctype-${sty}.sty not found in zip"
             ERRORS=$((ERRORS + 1))
           else
-            echo "  [OK] document-types/omnilatex-${sty}.sty found"
+            echo "  [OK] document-types/omnilatex-doctype-${sty}.sty found"
           fi
         done
 
