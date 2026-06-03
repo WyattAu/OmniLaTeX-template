@@ -4,8 +4,22 @@ on:
   push:
     branches: [main]
     tags: [v*]
+    paths:
+      - 'Dockerfile'
+      - 'docker/**'
+      - '.dockerignore'
+      - 'texmf/**'
+      - 'config/fonts/**'
+      - '.github/workflows/docker-ci.yml'
   pull_request:
     branches: [main]
+    paths:
+      - 'Dockerfile'
+      - 'docker/**'
+      - '.dockerignore'
+      - 'texmf/**'
+      - 'config/fonts/**'
+      - '.github/workflows/docker-ci.yml'
 
 concurrency:
   group: docker-ci-${{ github.ref }}

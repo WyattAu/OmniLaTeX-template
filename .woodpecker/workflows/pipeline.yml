@@ -3,7 +3,7 @@
 # so each job references the same image directly.
 pipeline:
   lint:
-    image: ghcr.io/wyattau/omnilatex-docker@sha256:c786cdab072096917a94f0cc99a14a9d086a8f2b2813e619656563c5bf974b66
+    image: ghcr.io/wyattau/omnilatex-template@sha256:2232eba03979e0cf637ffafab5bc04c56a3449918b7372ee5260e4a815e8a576
     time_limit: 30m
     environment:
     - IS_OMNILATEX_CONTAINER=true
@@ -14,7 +14,7 @@ pipeline:
       event: [push, pull_request, tag]
 
   build:
-    image: ghcr.io/wyattau/omnilatex-docker@sha256:c786cdab072096917a94f0cc99a14a9d086a8f2b2813e619656563c5bf974b66
+    image: ghcr.io/wyattau/omnilatex-template@sha256:2232eba03979e0cf637ffafab5bc04c56a3449918b7372ee5260e4a815e8a576
     time_limit: 30m
     environment:
     - IS_OMNILATEX_CONTAINER=true
@@ -27,7 +27,7 @@ pipeline:
     - lint
 
   test:
-    image: ghcr.io/wyattau/omnilatex-docker@sha256:c786cdab072096917a94f0cc99a14a9d086a8f2b2813e619656563c5bf974b66
+    image: ghcr.io/wyattau/omnilatex-template@sha256:2232eba03979e0cf637ffafab5bc04c56a3449918b7372ee5260e4a815e8a576
     time_limit: 30m
     environment:
     - IS_OMNILATEX_CONTAINER=true
