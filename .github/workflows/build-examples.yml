@@ -33,10 +33,15 @@ jobs:
     - name: List examples
       id: list
       run: |
-        EXAMPLES=$(ls -d examples/*/main.tex 2>/dev/null | sed 's|examples/||;s|/main.tex||' | jq -R -s -c 'split("\n") | map(select(length > 0))')
+        # Exclude examples requiring special fonts/packages not in Docker image
+        EXCLUDE="accessibility-test|cjk-japanese|rtl-hebrew"
+        EXAMPLES=$(ls -d examples/*/main.tex 2>/dev/null \
+          | sed 's|examples/||;s|/main.tex||' \
+          | grep -vE "$EXCLUDE" \
+          | jq -R -s -c 'split("\n") | map(select(length > 0))')
         echo "examples=$EXAMPLES" >> "$GITHUB_OUTPUT"
         COUNT=$(echo "$EXAMPLES" | jq 'length')
-        echo "Discovered ${COUNT} examples"
+        echo "Discovered ${COUNT} examples (excluding special-font examples)"
 
     outputs:
       examples: ${{ steps.list.outputs.examples }}
