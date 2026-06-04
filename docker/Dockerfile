@@ -363,7 +363,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         fonts-noto-cjk \
         fonts-noto-core \
         fonts-noto-extra \
-        fonts-culmus \
     && rm -rf /var/lib/apt/lists/* \
     && fc-cache -f -v \
     && mkdir -p /usr/local/texlive/texmf-local/fonts/truetype \
@@ -371,6 +370,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && ln -sf /usr/share/fonts/noto /usr/local/texlive/texmf-local/fonts/truetype/noto \
     && ln -sf /usr/share/fonts/truetype /usr/local/texlive/texmf-local/fonts/truetype/system \
     && luaotfload-tool --update --force
+
+# Install Hebrew CLM fonts (David CLM, Frank Ruehl CLM) for RTL support
+RUN apt-get update && apt-get install -y --no-install-recommends fonts-culmus \
+    && rm -rf /var/lib/apt/lists/* \
+    && fc-cache -f -v
 
 # Give back control to own user files; might be root-owned from previous copying processes
 # Make our class file available for the entire latex/TeXLive installation, see also
