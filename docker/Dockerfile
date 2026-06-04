@@ -372,8 +372,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && luaotfload-tool --update --force
 
 # Install Hebrew CLM fonts (David CLM, Frank Ruehl CLM) for RTL support
-RUN apt-get update && apt-get install -y --no-install-recommends fonts-culmus \
-    && rm -rf /var/lib/apt/lists/* \
+RUN --mount=type=cache,target=/var/cache/apt,id=apt-cache-${TARGETARCH}-fonts,sharing=locked \
+    rm -f /var/lib/apt/lists/lock && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends culmus && \
+    rm -rf /var/lib/apt/lists/* \
     && fc-cache -f -v
 
 # Give back control to own user files; might be root-owned from previous copying processes
