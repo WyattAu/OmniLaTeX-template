@@ -376,8 +376,11 @@ RUN --mount=type=cache,target=/var/cache/apt,id=apt-cache-${TARGETARCH}-fonts,sh
     rm -f /var/lib/apt/lists/lock && \
     apt-get update && \
     apt-get install -y --no-install-recommends culmus && \
+    mkdir -p /usr/local/texlive/texmf-local/fonts/truetype/culmus && \
+    ln -sf /usr/share/fonts/truetype/culmus/*.ttf /usr/local/texlive/texmf-local/fonts/truetype/culmus/ && \
     rm -rf /var/lib/apt/lists/* \
-    && fc-cache -f -v
+    && fc-cache -f -v \
+    && luaotfload-tool --update --force
 
 # Give back control to own user files; might be root-owned from previous copying processes
 # Make our class file available for the entire latex/TeXLive installation, see also
