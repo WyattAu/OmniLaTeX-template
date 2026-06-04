@@ -84,6 +84,7 @@ jobs:
           "${{ steps.digest.outputs.image }}" \
           bash -c "\
             cp -r /repo/omnilatex.cls /repo/lib /repo/config /repo/bib /work/ 2>/dev/null || true; \
+            cp /repo/.latexmkrc /work/ 2>/dev/null || true; \
             cp /work/config/omnilatex-document-settings.sty /work/config/document-settings.sty 2>/dev/null || true; \
             cp -rn /repo/examples/${EXAMPLE}/* /work/ 2>/dev/null || true; \
             # CI has no .git directory; generate dummy git metadata to silence warning
@@ -93,10 +94,10 @@ jobs:
             # Copy them up one level so the package can find them without Inkscape.
             find /work -path '*/svg-inkscape/*_svg-raw.pdf' -exec sh -c 'f="{}"; d="$(dirname "$(dirname "$f")")"; cp "$f" "$d/"' \; 2>/dev/null || true; \
             sed -i 's#../../omnilatex#omnilatex#g' /work/main.tex 2>/dev/null || true; \
-              latexmk -f -e '\$force_mode=1' -lualatex='lualatex --shell-escape %O %S' -interaction=nonstopmode -output-directory=/work main.tex 2>/dev/null || true; \
+              latexmk -f -interaction=nonstopmode -output-directory=/work main.tex 2>/dev/null || true; \
             if [ -f /work/main.aux ] && grep -q 'glsxtr@resource' /work/main.aux 2>/dev/null; then \
               bib2gls -d /work main 2>/dev/null || true; \
-            latexmk -f -e '\$force_mode=1' -lualatex='lualatex --shell-escape %O %S' -interaction=nonstopmode -output-directory=/work main.tex 2>/dev/null || true; \
+              latexmk -f -interaction=nonstopmode -output-directory=/work main.tex 2>/dev/null || true; \
             fi"
 
         if [ -f "${WORKDIR}/main.pdf" ]; then

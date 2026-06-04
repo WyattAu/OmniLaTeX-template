@@ -80,6 +80,7 @@ collection-langarabic 1
 collection-langchinese 1
 collection-langcjk 1
 collection-langcyrillic 1
+collection-langjapanese 1
 collection-langczechslovak 0
 collection-langfrench 1
 collection-langitalian 1

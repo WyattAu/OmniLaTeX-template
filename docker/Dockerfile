@@ -363,6 +363,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         fonts-noto-cjk \
         fonts-noto-core \
         fonts-noto-extra \
+        fonts-culmus \
     && rm -rf /var/lib/apt/lists/* \
     && fc-cache -f -v \
     && mkdir -p /usr/local/texlive/texmf-local/fonts/truetype \

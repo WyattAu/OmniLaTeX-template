@@ -141,25 +141,33 @@
 }
 
 % ── Font Application: Hebrew ────────────────────────────────────────────────
-% Set up Hebrew script fonts with graceful fallback. Falls back to Frank Ruehl
-% CLM if the requested font is not available.
+% Set up Hebrew script fonts with graceful fallback chain:
+% David CLM → Frank Ruehl CLM → Noto Sans Hebrew
 
 \newcommand{\omnilatex@apply@hebrewfonts}{%
   \@ifundefined{hebrewfontfamily}{%
     \IfFontExistsTF{\omnilatex@hebrewfont@default}{%
       \IfFontExistsTF{\omnilatex@hebrewfont@bold@default}{%
         \newfontfamily\hebrewfontfamily[Script=Hebrew,
-          BoldFont=\omnilatex@hebrewfont@bold@default]{\omnilatex@hebrewfont@default}%
+          BoldFont=\omnilatex@hebrewfont@bold@default}{\omnilatex@hebrewfont@default}%
       }{%
         \newfontfamily\hebrewfontfamily[Script=Hebrew,
           BoldFont=\omnilatex@hebrewfont@default,
           BoldFeatures={FakeBold=2}]{\omnilatex@hebrewfont@default}%
       }%
     }{%
-      \ClassWarning{omnilatex-rtl}{%
-        Hebrew font '\omnilatex@hebrewfont@default' not found,
-        using Frank Ruehl CLM\MessageBreak}%
-      \newfontfamily\hebrewfontfamily[Script=Hebrew]{Frank Ruehl CLM}%
+      \IfFontExistsTF{Frank Ruehl CLM}{%
+        \ClassWarning{omnilatex-rtl}{%
+          Hebrew font '\omnilatex@hebrewfont@default' not found,
+          using Frank Ruehl CLM\MessageBreak}%
+        \newfontfamily\hebrewfontfamily[Script=Hebrew]{Frank Ruehl CLM}%
+      }{%
+        \ClassWarning{omnilatex-rtl}{%
+          Hebrew fonts '\omnilatex@hebrewfont@default' and
+          Frank Ruehl CLM not found,
+          using Noto Sans Hebrew\MessageBreak}%
+        \newfontfamily\hebrewfontfamily[Script=Hebrew]{Noto Sans Hebrew}%
+      }%
     }%
   }{}%
 }
