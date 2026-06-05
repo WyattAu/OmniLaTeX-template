@@ -33,8 +33,9 @@ jobs:
     - name: List examples
       id: list
       run: |
-        # Exclude examples requiring special fonts/packages not in Docker image
-        EXCLUDE="accessibility-test|cjk-japanese|rtl-hebrew|beamer-defense|beamer-corporate|beamer-academic"
+        # All 49 examples should now build with the current Docker image
+        # (CJK/Hebrew fonts, beamer themes, accessibility-tagged PDFs all supported)
+        EXCLUDE=""
         EXAMPLES=$(ls -d examples/*/main.tex 2>/dev/null \
           | sed 's|examples/||;s|/main.tex||' \
           | grep -vE "$EXCLUDE" \
