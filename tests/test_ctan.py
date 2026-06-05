@@ -129,11 +129,14 @@ def ctan_zip_path(tmp_path_factory):
     zip_path = tmp / "omnilatex.zip"
     if _zip_available() and CTAN_SCRIPT.exists():
         # Use the real shell script (single source of truth)
+        # Capture output to avoid SIGPIPE (exit 141) when script uses
+        # set -o pipefail and the pipe buffer fills in subprocess context.
         subprocess.run(
             ["bash", str(CTAN_SCRIPT)],
             check=True,
             cwd=str(REPO_ROOT),
             timeout=120,
+            capture_output=True,
         )
         # Script outputs to ctan/omnilatex.zip
         produced = REPO_ROOT / "ctan" / "omnilatex.zip"
