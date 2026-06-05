@@ -28,11 +28,11 @@ jobs:
 
     - name: Install Nix
       # v16
-      uses: DeterminateSystems/nix-installer-action@e50d5f73bfe71c2dd0aa4218de8f4afa59f8f81d
+      uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25
 
     - name: Setup Nix cache
       # v8
-      uses: DeterminateSystems/magic-nix-cache-action@87b14cf437d03d37989d87f0fa5ce4f5dc1a330b
+      uses: DeterminateSystems/magic-nix-cache-action@908b263ff629f4cc17666315b7fd3ec127c6244d
 
     - name: Install Lean 4 (elan)
       run: |
@@ -41,7 +41,7 @@ jobs:
 
     - name: Cache Lake build artifacts
       # v4
-      uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
+      uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
       with:
         path: specs/proofs/.lake
         key: lake-${{ runner.os }}-${{ hashFiles('specs/proofs/lakefile.toml', 'specs/proofs/lean-toolchain') }}

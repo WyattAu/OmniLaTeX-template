@@ -61,18 +61,17 @@ jobs:
         driver-opts: |
           image=moby/buildkit:v0.29.0
           network=host
-        install: true
         buildkitd-config-inline: |
           [worker.oci]
             max-parallelism = 4
     - name: Set up QEMU
       # v3
-      uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130
+      uses: docker/setup-qemu-action@06116385d9baf250c9f4dcb4858b16962ea869c3
       if: env.PLATFORMS != 'linux/amd64'
 
     - name: Login to GitHub Container Registry
       # v3
-      uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9
+      uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
       with:
         registry: ${{ env.REGISTRY }}
         username: ${{ github.repository_owner }}
@@ -81,7 +80,7 @@ jobs:
     - name: Extract Docker metadata
       id: meta
       # v5
-      uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051
+      uses: docker/metadata-action@80c7e94dd9b9319bd5eb7a0e0fe9291e23a2a2e9
       with:
         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
         tags: |
