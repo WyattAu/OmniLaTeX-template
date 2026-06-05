@@ -76,7 +76,7 @@ pdfdisplaydoctitle,% https://tex.stackexchange.com/a/435434/120853
     tikz,%
 ]{ocgx2}
 
-% In order to translate, polyglossia wraps things into \text<language>, e.g.
+% In order to translate, polyglossia wraps things into \text<language>, e.g.,
 % \textenglish. If this is part of a PDF string, like when we do
 % \addchap{\glossaryname}, LaTeX/hyperref will complain that \textenglish is not a
 % PDF string and is dropped.
@@ -90,7 +90,7 @@ pdfdisplaydoctitle,% https://tex.stackexchange.com/a/435434/120853
 %  https://tex.stackexchange.com/a/430557/120853).
 % In that process, \omnilatex@language is expanded to the value it was given in the
 % document options through kvoptions.
-% Now, \csname finishes and presents a token \text<language>, e.g. \textenglish.
+% Now, \csname finishes and presents a token \text<language>, e.g., \textenglish.
 % LaTeX starts over; \expandafter is now gone, so it reads \let\text<language> ...
 % In this case, ... is \relax, removing the macro definition.
 % It will no longer occur in PDF commands.

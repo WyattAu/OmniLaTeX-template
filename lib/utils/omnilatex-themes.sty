@@ -38,7 +38,7 @@
 
 %% Block environments are deferred to \AddToHook{begindocument/end}
 %% because \provideenvironment may call \newenvironment outside
-%% \begin{document}, which leaks tokens (e.g. `] 1`) into the PDF
+%% \begin{document}, which leaks tokens (e.g., `] 1`) into the PDF
 %% on LuaTeX+TL2025+.
 \@ifundefined{setkomacolor}{%
   \let\setkomacolor\@gobbletwo
@@ -57,7 +57,7 @@
 %% begindocument hook (they need the original environments
 %% to be defined first, which happens during \begin{document}).
 %% Note: \provideenvironment must NOT be used in the preamble
-%% because \newenvironment leaks tokens (e.g. `] 1`) into the
+%% because \newenvironment leaks tokens (e.g., `] 1`) into the
 %% PDF on LuaTeX+TL2025+ when called before \begin{document}.
 
 \newif\if@omnilatex@blocks@patched

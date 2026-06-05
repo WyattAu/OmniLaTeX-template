@@ -89,7 +89,7 @@ arrowlabel/.style={ % Style for labels along arrows
         rounded corners,
     },
 arrowlabel/.default={0.5}, % Default for position: middle
-wall/.style={ % For all walls, e.g. in crosssections of pipes, ...
+wall/.style={ % For all walls, e.g., in crosssections of pipes, ...
         draw,
         thick,
         fill=#1,
@@ -189,7 +189,7 @@ radiator/.pic={
             line join=round,
             line cap=round,% End of lines
             fill=g5,
-            pic actions,% Whatever is used in \pic[<drawing options>], e.g. dashed, is propagated to this drawing
+            pic actions,% Whatever is used in \pic[<drawing options>], e.g., dashed, is propagated to this drawing
         },
 }
 % Base measurements. Default unit is centimeter
@@ -324,7 +324,7 @@ boiler/.pic={
             boilercylinder,
             minimum width=4em,
             minimum height=6em,
-            pic actions,% Whatever is used in \pic[<drawing options>], e.g. dashed, is propagated to this drawing
+            pic actions,% Whatever is used in \pic[<drawing options>], e.g., dashed, is propagated to this drawing
         ] () {\ctrw{\tikzpictext}};% Empty coordinate is important for namespace stuff
     },
 equalizing tank/.style={
@@ -337,7 +337,7 @@ equalizing tank/.style={
         minimum width=#1,
     },
 equalizing tank/.default={1.5em},
-pipe/.style={% (Water) pipes between devices. For a pipe without arrow line end, call it as e.g. \draw[pipe, -]
+pipe/.style={% (Water) pipes between devices. For a pipe without arrow line end, call it as e.g., \draw[pipe, -]
 line width=#1,
 double=MediumFluid,
 double distance={1*#1},
@@ -742,7 +742,7 @@ level indicator/.default={0.25em}
         \pgfmathsetmacro{\heatsymbolextension}{0.3}% How far out the 'legs' extend out of the rectangle as a fraction of the overall node's height
         \pgfmathsetmacro{\heatsymbolwidth}{0.7}% The inner drawing's width as a fraction of the node's overall width
         \pgfmathsetmacro{\heatsymbolheight}{0.8}% How high the inner drawing reaches as a fraction of the node's overall height (at 1, it touches the upper rectangle border)
-        \pgfmathsetmacro{\heatsymbolindentation}{0.3}% How 'indented' the triangle is, i.e. the vertical distance between the inner drawings highest point and the triangle's down-pointing 'tip'
+        \pgfmathsetmacro{\heatsymbolindentation}{0.3}% How 'indented' the triangle is, i.e., the vertical distance between the inner drawings highest point and the triangle's down-pointing 'tip'
 
         \pgfpathmoveto{\pgfpoint{\pgf@xa + (1 - \heatsymbolwidth)/2*(\pgf@xb - \pgf@xa)}{\pgf@ya - \heatsymbolextension*(\pgf@yb - \pgf@ya)}}% Bottom left corner
         \pgfpathlineto{\pgfpoint{\pgf@xa + (1 - \heatsymbolwidth)/2*(\pgf@xb - \pgf@xa)}{\pgf@ya + \heatsymbolheight*(\pgf@yb - \pgf@ya)}}% Straight line up

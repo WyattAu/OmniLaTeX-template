@@ -23,19 +23,24 @@ repos:
   rev: v1.5.0
   hooks:
   - id: american-eg-ie
+    exclude: ^(examples/|content/|overleaf/|lib/layout/omnilatex-document\.sty)
   - id: cleveref-capitalization
+    exclude: ^(examples/|content/|overleaf/)
   - id: consistent-spelling
     args:
     - --emph=et al.
     - --emph=a priori
     - --emph=a posteriori
+    exclude: ^(examples/|content/|overleaf/|doc/)
   - id: csquotes
+    exclude: ^(examples/|content/|overleaf/|doc/)
   - id: ensure-labels-for-sections
-    exclude: ^(content/|examples/|overleaf/|config/)
+    exclude: ^(content/|examples/|overleaf/|config/|doc/|tests/|lib/)
   - id: no-space-in-cite
   - id: tilde-cite
-    exclude: ^content/        # May have different citation styles
+    exclude: ^(examples/|content/|overleaf/|doc/|tests/|lib/)
   - id: unique-labels
+    exclude: ^(examples/|content/|overleaf/|doc/|tests/|lib/)
 
   # Python code formatting (for all project Python files)
 - repo: https://github.com/psf/black

@@ -248,7 +248,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Introduce new commands that alias \gls commands and allow modifiers
-% You then use e.g. \sym{velocity} to access \gls{sym.velocity} etc.
+% You then use e.g., \sym{velocity} to access \gls{sym.velocity} etc.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \glsxtrnewgls{\symprefix}{\sym}% \sym{XYZ} is like \gls{sym.XYZ}
 \glsxtrnewgls{\subprefix}{\sub}
@@ -260,7 +260,7 @@
 % We cannot alias the commands introduced by `\glsaddkey` the same way:
 % \glsxtrnewgls only works on \gls{<prefix>.<key>} to alias the <prefix> away
 % into its own command. However, for a command like \glsspecific{}, it does not work.
-% We can therefore do \sym{volume}, but have to do \glsspecific{sym.volume}, i.e.
+% We can therefore do \sym{volume}, but have to do \glsspecific{sym.volume}, i.e.,
 % specify the prefix manually.
 % A short-cut command is therefore enabled by the following commands.
 \newcommand*{\symspec}[2][]{\glsspecific[#1]{\symprefix#2}}
@@ -326,7 +326,7 @@
 
 \RequirePackage{glossary-mcols} % Multi-column styles used for Subscripts
 
-% Long, elaborate base style, providing e.g. 'long3col' for the abbreviations etc.:
+% Long, elaborate base style, providing e.g., 'long3col' for the abbreviations etc.:
 % (loaded earlier in the glossary configuration block)
 
 \newcommand*{\glshdrfont}[1]{\textbf{#1}} % Font for gls table heads
