@@ -60,6 +60,7 @@ ALL_EXAMPLE_NAMES = [
     "manual",
     "memo",
     "minimal-custom",
+    "music",
     "minimal-starter",
     "multi-language",
     "patent",
