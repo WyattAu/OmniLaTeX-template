@@ -91,7 +91,8 @@ mkdir -p "$REPO_ROOT/ctan"
 # ── Summary ──────────────────────────────────────────────────────────────────
 echo ""
 echo "=== CTAN Package Zip ==="
-unzip -l "$REPO_ROOT/ctan/${PKG_NAME}.zip" | head -40
+# Disable pipefail for this pipe: head closes early, causing unzip to get SIGPIPE
+(set +o pipefail; unzip -l "$REPO_ROOT/ctan/${PKG_NAME}.zip" | head -40)
 echo "..."
 echo ""
 echo "CTAN zip written to: ctan/${PKG_NAME}.zip"
