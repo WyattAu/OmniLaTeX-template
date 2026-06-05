@@ -1,0 +1,62 @@
+% OmniLaTeX Music Example
+% Demonstrates music typesetting using musixtex (from TeX Live collection-music)
+
+%!TEX TS-program = lualatex
+
+\documentclass[
+    doctype=article,
+    institution=none,
+]{omnilatex}
+
+\usepackage{musixtex}
+
+\begin{document}
+
+\section{Music Typesetting with MusiX\TeX}
+
+This example demonstrates music typesetting using the \texttt{musixtex}
+package, which requires \texttt{collection-music} from the \TeX\ Live
+distribution.
+
+\subsection{Simple Melody: Twinkle Twinkle Little Star}
+
+\begin{music}
+  \parindent10\parstart
+  \setstaffs1{1}
+  \setclef1\bass
+  \generalmeter{\meterfrac{4}{4}}
+  \startpiece
+  \notes\qa c\qa c\qa g\qa g\enotes
+  \notes\qa a\qa a\hskip g\enotes
+  \bar
+  \notes\qa g\qu f\qu f\qu e\qu e\enotes
+  \notes\qa d\hskip c\enotes
+  \bar
+  \notes\qa g\qa g\qu f\qu f\qu e\qu e\enotes
+  \notes\qa d\hskip\enotes
+  \bar
+  \notes\qa g\qa g\qu f\qu f\qu e\qu e\enotes
+  \notes\qa d\hskip c\enotes
+  \bar
+  \notes\qa c\qa c\qa g\qa g\enotes
+  \notes\qa a\qa a\hskip g\enotes
+  \bar
+  \notes\qa g\qu f\qu f\qu e\qu e\enotes
+  \notes\qa d\hskip c\enotes
+  \endpiece
+\end{music}
+
+\subsection{Chord Symbol Example}
+
+\begin{music}
+  \parindent10\parstart
+  \setstaffs1{1}
+  \startpiece
+  \Notes\qa C\qa E\qa G\enotes\bar
+  \Notes\qa F\qa A\qa C\enotes\bar
+  \Notes\qa G\qa B\qa D\enotes\bar
+  \Notes\qa C\qa E\qa G\enotes
+  \endpiece
+\end{music}
+
+\end{document}
