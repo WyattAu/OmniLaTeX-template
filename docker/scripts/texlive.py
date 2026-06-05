@@ -34,7 +34,14 @@ def append_cache_buster(url: str, token: str) -> str:
     return f"{url}{'&' if '?' in url else '?'}ts={token}"
 
 
-def download_installer(version: str, archive_name: str, mirror: str, archive_mirror: str, cache_buster: str, output: Optional[Path]) -> None:
+def download_installer(
+    version: str,
+    archive_name: str,
+    mirror: str,
+    archive_mirror: str,
+    cache_buster: str,
+    output: Optional[Path],
+) -> None:
     output_path = output or Path(archive_name)
     if version == "latest":
         base = mirror.rstrip("/")
@@ -53,7 +60,9 @@ def download_installer(version: str, archive_name: str, mirror: str, archive_mir
         fallback_base = mirror.rstrip("/")
         fallback_url = f"{fallback_base}/{version}/tlnet-final/{archive_name}"
         fallback_url = append_cache_buster(fallback_url, cache_buster)
-        logging.warning("Archive mirror failed, trying regular mirror: %s", fallback_url)
+        logging.warning(
+            "Archive mirror failed, trying regular mirror: %s", fallback_url
+        )
         try:
             with urlopen(fallback_url) as response, output_path.open("wb") as target:
                 shutil.copyfileobj(response, target)
@@ -64,7 +73,14 @@ def download_installer(version: str, archive_name: str, mirror: str, archive_mir
     logging.info("Downloaded installer to %s", output_path)
 
 
-def run_subprocess(args: Iterable[str], *, cwd: Optional[Path] = None, check: bool = True, env: Optional[dict[str, str]] = None, suppress_output: bool = False) -> subprocess.CompletedProcess[str]:
+def run_subprocess(
+    args: Iterable[str],
+    *,
+    cwd: Optional[Path] = None,
+    check: bool = True,
+    env: Optional[dict[str, str]] = None,
+    suppress_output: bool = False,
+) -> subprocess.CompletedProcess[str]:
     stdout = subprocess.PIPE if suppress_output else None
     stderr = subprocess.PIPE if suppress_output else None
     try:
@@ -133,7 +149,9 @@ def bin_dir_from_tlmgr() -> Optional[Path]:
     env = os.environ.copy()
     env.setdefault("PATH", "/usr/local/bin:/usr/bin:/bin")
     try:
-        result = run_subprocess(["tlmgr", "conf", "texmf"], check=True, suppress_output=True, env=env)
+        result = run_subprocess(
+            ["tlmgr", "conf", "texmf"], check=True, suppress_output=True, env=env
+        )
     except SystemExit:
         return None
 
@@ -185,7 +203,9 @@ def symlink_binaries(bin_dir: Path, destination: Path) -> bool:
     return success
 
 
-def run_install(version: str, profile: str, mirror: str, archive_mirror: str, workdir: Path) -> None:
+def run_install(
+    version: str, profile: str, mirror: str, archive_mirror: str, workdir: Path
+) -> None:
     installer = locate_install_tl(workdir)
     args = ["perl", str(installer), f"--profile={profile}"]
     if version == "latest":
@@ -216,7 +236,9 @@ def run_install(version: str, profile: str, mirror: str, archive_mirror: str, wo
     if tlmgr_path_add(bin_dir) and check_path():
         return
 
-    logging.warning("tlmgr path add failed; creating manual symlinks in %s", SYMLINK_DESTINATION)
+    logging.warning(
+        "tlmgr path add failed; creating manual symlinks in %s", SYMLINK_DESTINATION
+    )
     if symlink_binaries(bin_dir, SYMLINK_DESTINATION) and check_path():
         return
 
@@ -226,8 +248,12 @@ def run_install(version: str, profile: str, mirror: str, archive_mirror: str, wo
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="TeXLive installer helper")
-    parser.add_argument("command", choices=["get-installer", "install"], help="Operation to perform")
-    parser.add_argument("version", help="TeXLive version to install; use 'latest' for current release")
+    parser.add_argument(
+        "command", choices=["get-installer", "install"], help="Operation to perform"
+    )
+    parser.add_argument(
+        "version", help="TeXLive version to install; use 'latest' for current release"
+    )
     parser.add_argument(
         "--mirror",
         default=os.environ.get("TL_MIRROR", DEFAULT_MIRROR),
@@ -285,7 +311,9 @@ def main(argv: list[str]) -> int:
         return 0
 
     if args.command == "install":
-        run_install(args.version, args.profile, args.mirror, args.archive_mirror, workdir)
+        run_install(
+            args.version, args.profile, args.mirror, args.archive_mirror, workdir
+        )
         return 0
 
     logging.error("Unknown command: %s", args.command)

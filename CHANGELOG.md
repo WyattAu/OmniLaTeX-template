@@ -3,6 +3,7 @@
 ## v2.3.0 (2026-06-01)
 
 ### Fixed
+
 - **Text leaks**: Eliminated `] 1 ] 1` tokens from `\provideenvironment`, glue leaks from `\ltjsetparameter{xkanjiskip}`, and Hebrew alef font warmup leak in PDF output
 - **Presentation module**: Auto-load `omnilatex-presentation.sty` when `doctype=presentation` (was never loaded, causing 117 undefined environment errors)
 - **setkomacolor shim**: Replaced broken `\futurelet`/`\@for` parser with clean `\@gobbletwo` no-op (KOMA removed both the writer and reader in TL2025+)
@@ -13,6 +14,7 @@
 - **Missing `\endinput`**: Added to 15 example `.sty` files
 
 ### Changed
+
 - CI: `actions/checkout` upgraded to v6 (Node.js 24 support)
 - CI: `build-examples.yml` SVG path fix
 - Docker: UTF-8 locale, font cache updates, `luaotfload-tool --update`

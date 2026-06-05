@@ -7,6 +7,7 @@ To use OmniLaTeX on Overleaf:
 3. Use TeX Live 2025 or later.
 
 Example `main.tex`:
+
 ```latex
 \documentclass[
     language=english,
@@ -21,6 +22,7 @@ Hello, OmniLaTeX!
 ## Quick Start (Overleaf)
 
 Upload these files:
+
 - `omnilatex.cls`
 - `lib/` (entire directory)
 - `config/` (entire directory)

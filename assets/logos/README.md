@@ -35,6 +35,7 @@ restrictions. Users must obtain logos from their institution's brand portal.
 
 If you have permission to redistribute your institution's logo, please open a pull
 request. Include:
+
 - The logo file(s) in SVG format
 - Written permission from the institution's communications office, OR
 - A link to the institution's public brand portal with download terms

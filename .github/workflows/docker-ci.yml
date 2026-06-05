@@ -5,19 +5,19 @@ on:
     branches: [main]
     tags: [v*]
     paths:
-      - 'Dockerfile'
-      - 'docker/**'
-      - '.dockerignore'
-      - 'texmf/**'
-      - 'config/fonts/**'
+    - Dockerfile
+    - docker/**
+    - .dockerignore
+    - texmf/**
+    - config/fonts/**
   pull_request:
     branches: [main]
     paths:
-      - 'Dockerfile'
-      - 'docker/**'
-      - '.dockerignore'
-      - 'texmf/**'
-      - 'config/fonts/**'
+    - Dockerfile
+    - docker/**
+    - .dockerignore
+    - texmf/**
+    - config/fonts/**
   workflow_dispatch:
 
 concurrency:
