@@ -33,16 +33,18 @@ jobs:
     - name: List examples
       id: list
       run: |
-        # All 49 examples should now build with the current Docker image
+        # All 50 examples should now build with the current Docker image
         # (CJK/Hebrew fonts, beamer themes, accessibility-tagged PDFs all supported)
-        EXCLUDE=""
+        # EXCLUDE pattern: must be non-empty (grep -vE "" matches everything).
+        # Use a pattern that never matches any valid example name.
+        EXCLUDE='^$NO_EXAMPLES_MATCH_THIS$'
         EXAMPLES=$(ls -d examples/*/main.tex 2>/dev/null \
           | sed 's|examples/||;s|/main.tex||' \
           | grep -vE "$EXCLUDE" \
           | jq -R -s -c 'split("\n") | map(select(length > 0))')
         echo "examples=$EXAMPLES" >> "$GITHUB_OUTPUT"
         COUNT=$(echo "$EXAMPLES" | jq 'length')
-        echo "Discovered ${COUNT} examples (excluding special-font examples)"
+        echo "Discovered ${COUNT} examples (no exclusions)"
 
     outputs:
       examples: ${{ steps.list.outputs.examples }}
