@@ -5,12 +5,12 @@ runs:
   steps:
   - name: Cache TeX Live
     id: cache-texlive
-    uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e26e4    # v4
+    uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae    # v5.0.5
     with:
       path: /usr/local/texlive
-      key: texlive-2025-${{ runner.os }}-v1
+      key: texlive-2026-${{ runner.os }}-v1
       restore-keys: |
-        texlive-2025-${{ runner.os }}-
+        texlive-2026-${{ runner.os }}-
   - name: Install TeX Live
     if: steps.cache-texlive.outputs.cache-hit != 'true'
     run: |
@@ -24,7 +24,7 @@ runs:
       rm -rf install-tl-*
     shell: bash
   - name: Add TeX Live to PATH
-    run: echo "/usr/local/texlive/2025/bin/x86_64-linux" >> $GITHUB_PATH
+      run: echo "/usr/local/texlive/2026/bin/x86_64-linux" >> $GITHUB_PATH
     shell: bash
   - name: Verify TeX Live
     run: lualatex --version | head -1
