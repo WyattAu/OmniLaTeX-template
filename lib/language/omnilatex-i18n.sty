@@ -44,54 +44,14 @@
 % We use the translations package for this, which is a bit more powerful than
 % the provided commands by KOMAscript \providecaptionname<language> commands.
 
-% Register languages not natively supported by the translations package.
-% The translations package (v1.12) only has built-in dictionaries for
-% English, German, French, Spanish, Italian, Portuguese, Dutch, etc.
-% CJK, Arabic, Hebrew, Hindi, Thai, Bengali, Vietnamese, Greek, Polish,
-% Czech, Russian, Swedish, Finnish, Danish, Norsk, Turkish are NOT supported
-% by translations, so we must register their dictionaries explicitly.
-% Without this, \DeclareTranslation for these languages throws:
+% Register Chinese language variants not natively supported by the
+% translations package.  The translations package (v2.0) predefines
+% most languages we use, but simplifiedchinese and traditionalchinese
+% are missing.  Without registration, \DeclareTranslation for these
+% languages throws:
 %   ! Package translations Error: Unknown language `simplifiedchinese'.
-\makeatletter
-\@ifundefined{dict@translations@simplifiedchinese}%
-  {\newcommand{\dict@translations@simplifiedchinese}{}}{}%
-\@ifundefined{dict@translations@traditionalchinese}%
-  {\newcommand{\dict@translations@traditionalchinese}{}}{}%
-\@ifundefined{dict@translations@japanese}%
-  {\newcommand{\dict@translations@japanese}{}}{}%
-\@ifundefined{dict@translations@korean}%
-  {\newcommand{\dict@translations@korean}{}}{}%
-\@ifundefined{dict@translations@arabic}%
-  {\newcommand{\dict@translations@arabic}{}}{}%
-\@ifundefined{dict@translations@hebrew}%
-  {\newcommand{\dict@translations@hebrew}{}}{}%
-\@ifundefined{dict@translations@hindi}%
-  {\newcommand{\dict@translations@hindi}{}}{}%
-\@ifundefined{dict@translations@thai}%
-  {\newcommand{\dict@translations@thai}{}}{}%
-\@ifundefined{dict@translations@bengali}%
-  {\newcommand{\dict@translations@bengali}{}}{}%
-\@ifundefined{dict@translations@vietnamese}%
-  {\newcommand{\dict@translations@vietnamese}{}}{}%
-\@ifundefined{dict@translations@greek}%
-  {\newcommand{\dict@translations@greek}{}}{}%
-\@ifundefined{dict@translations@polish}%
-  {\newcommand{\dict@translations@polish}{}}{}%
-\@ifundefined{dict@translations@czech}%
-  {\newcommand{\dict@translations@czech}{}}{}%
-\@ifundefined{dict@translations@russian}%
-  {\newcommand{\dict@translations@russian}{}}{}%
-\@ifundefined{dict@translations@swedish}%
-  {\newcommand{\dict@translations@swedish}{}}{}%
-\@ifundefined{dict@translations@finnish}%
-  {\newcommand{\dict@translations@finnish}{}}{}%
-\@ifundefined{dict@translations@danish}%
-  {\newcommand{\dict@translations@danish}{}}{}%
-\@ifundefined{dict@translations@norsk}%
-  {\newcommand{\dict@translations@norsk}{}}{}%
-\@ifundefined{dict@translations@turkish}%
-  {\newcommand{\dict@translations@turkish}{}}{}%
-\makeatother
+\DeclareLanguage{simplifiedchinese}
+\DeclareLanguage{traditionalchinese}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Generic Translations (not institution-specific)
