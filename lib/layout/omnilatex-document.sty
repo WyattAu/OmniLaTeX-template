@@ -124,7 +124,11 @@
                 \ifdefstring{\@documentcolormode}{color}{%
                     \hypersetup{allcolors=darklink}%
                 }{%
-                    \ClassWarning{omnilatex}{Unknown color mode '\@documentcolormode'}%
+                    \ifdefstring{\@documentcolormode}{bw}{%
+                        \hypersetup{colorlinks=false}%
+                    }{%
+                        \ClassWarning{omnilatex}{Unknown color mode '\@documentcolormode'}%
+                    }%
                 }%
             }%
         }%
@@ -172,7 +176,9 @@
     \ifx\@documentlinkstyle\@empty\else
         \ifdefstring{\@documentlinkstyle}{color}{\hypersetup{colorlinks=true}}{%
             \ifdefstring{\@documentlinkstyle}{plain}{\hypersetup{colorlinks=false}}{%
-                \ClassWarning{omnilatex}{Unknown link style '\@documentlinkstyle'}%
+                \ifdefstring{\@documentlinkstyle}{black}{\hypersetup{colorlinks=true,linkcolor=black,urlcolor=black,citecolor=black}}{%
+                    \ClassWarning{omnilatex}{Unknown link style '\@documentlinkstyle'}%
+                }%
             }%
         }%
     \fi
