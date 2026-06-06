@@ -46,7 +46,7 @@ Cache-Control = "public, max-age=86400"
 for = "/*.html"
 [headers.values]
 Cache-Control = "public, max-age=3600"
-Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' api.github.com; frame-ancestors 'none'"
+Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' api.github.com; frame-ancestors 'none'"
 
 [[headers]]
 for = "/pdfs/*"

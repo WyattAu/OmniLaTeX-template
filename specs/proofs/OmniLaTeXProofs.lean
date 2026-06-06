@@ -17,3 +17,6 @@ import OmniLaTeXProofs.DoctypePageGeometry
 import OmniLaTeXProofs.SecondaryLanguageCompleteness
 import OmniLaTeXProofs.CrossReferenceConsistency
 import OmniLaTeXProofs.BeamerProperties
+import OmniLaTeXProofs.BuildCache
+import OmniLaTeXProofs.BuildHash
+import OmniLaTeXProofs.CommandRunnerTimeout
