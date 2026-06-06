@@ -1,0 +1,57 @@
+# Auto-merge Dependabot PRs
+#
+# Automatically enables auto-merge for dependabot PRs once all checks pass.
+# Uses squash merge to keep a clean git history.
+#
+# Requirements:
+#   - Repository must have "Allow auto-merge" enabled in Settings > General
+#   - Branch protection rules must require status checks (otherwise auto-merge
+#     merges immediately without waiting for CI)
+#
+# Safety:
+#   - Only merges patch and minor version bumps (not major)
+#   - Only merges PRs authored by dependabot[bot]
+#   - Requires all status checks to pass before merging
+
+name: Auto-merge Dependabot
+
+on:
+  pull_request:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+    steps:
+    - name: Fetch Dependabot metadata
+      id: metadata
+      uses: dependabot/fetch-metadata@v2
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Enable auto-merge for patch and minor updates
+      if: >-
+        steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
+        steps.metadata.outputs.update-type == 'version-update:semver-minor'
+      run: gh pr merge --auto --squash "$PR_URL"
+      env:
+        PR_URL: ${{ github.event.pull_request.html_url }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Comment on major version updates
+      if: steps.metadata.outputs.update-type == 'version-update:semver-major'
+      run: |
+        gh pr comment "$PR_URL" --body \
+          "> **Major version bump detected.** This PR requires manual review before merging.
+          >
+          > Dependency: \`${{ steps.metadata.outputs.dependency-names }}\`
+          > Update type: \`${{ steps.metadata.outputs.update-type }}\`
+          >
+          > Please review the changelog and breaking changes before approving."
+      env:
+        PR_URL: ${{ github.event.pull_request.html_url }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

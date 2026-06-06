@@ -86,7 +86,7 @@ python -m pytest tests/test_ctan.py             # CTAN package validation
 ├── config/
 │   ├── document-types/        # doctype profile files (one per document type)
 │   └── institutions/          # institution configurations
-├── examples/                  # 48 example documents
+├── examples/                  # 50 example documents
 ├── doc/                       # reference manual (254 pages)
 ├── bib/                       # sample bibliography
 ├── scripts/                   # build and CI scripts

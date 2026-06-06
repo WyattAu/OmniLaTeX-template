@@ -5,8 +5,8 @@
 ### Build Performance
 
 - `single_example_avg_seconds` — average time to build a single LaTeX example
-- `all_examples_48_jobs1_seconds` — full build of all 48 examples with 1 job
-- `all_examples_48_jobs4_seconds` — full build of all 48 examples with 4 jobs
+- `all_examples_48_jobs1_seconds` — full build of all 50 examples with 1 job
+- `all_examples_48_jobs4_seconds` — full build of all 50 examples with 4 jobs
 - `root_build_seconds` — root project build time
 
 ### Test Suite Performance

@@ -218,7 +218,7 @@ def test_combination_generates_pdf(doctype, language):
     \column{0.5\textwidth}
     \begin{block}{Reproducibility}
       \begin{itemize}
-        \item 48 examples: 100\% byte-identical on repeat builds
+        \item 50 examples: 100\% byte-identical on repeat builds
         \item File size tolerance: $<3\%$ across 5 consecutive builds
         \item PDF metadata: all timestamps derived from \texttt{SOURCE\_DATE\_EPOCH}
         \item Nix flake: hermetic TeX Live with exact package versions
@@ -258,7 +258,7 @@ def test_combination_generates_pdf(doctype, language):
   \end{table}
 
   \begin{alertblock}{Critical Path Coverage}
-    All 198 Lean 4 theorems verified. All 48 examples compile. Zero known regressions.
+    All 198 Lean 4 theorems verified. All 50 examples compile. Zero known regressions.
   \end{alertblock}
 \end{frame}
 

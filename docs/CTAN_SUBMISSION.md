@@ -52,7 +52,7 @@ docker run -it --rm -v $(pwd):/workspace ghcr.io/wyattau/omnilatex-docker:latest
 python build.py build-examples
 ```
 
-All 48 examples should compile without errors. Alternatively, run the CI pipeline which exercises the full build matrix.
+All 50 examples should compile without errors. Alternatively, run the CI pipeline which exercises the full build matrix.
 
 ## 3. Submission Process
 
