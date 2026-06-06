@@ -62,9 +62,8 @@
 
 \renewcommand*{\arraystretch}{1.3}
 
-\endinput
-
 % Graceful degradation when enabletables=false.
+% NOTE: These MUST precede \endinput to be reachable.
 \@ifundefined{tblr}{%
   \newenvironment{tblr}[1][]{\begin{center}\begin{tabular}{l}}{\end{tabular}\end{center}}%
   \newcommand{\toprule}{}%
@@ -72,3 +71,5 @@
   \newcommand{\bottomrule}{}%
   \newcommand{\cmidrule}[1][]{}%
 }{}
+
+\endinput

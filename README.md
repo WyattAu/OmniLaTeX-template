@@ -1,6 +1,6 @@
 # OmniLaTeX
 
-A modular document class for LuaLaTeX, built on KOMA-Script. Supports 27 document types (thesis, article, CV, letter, presentation, poster, exam, book, and more), 20 institution configurations, 18 languages (including CJK and RTL), and reproducible builds via Docker or Nix.
+A modular document class for LuaLaTeX, built on KOMA-Script. Supports 27 document types (thesis, article, CV, letter, presentation, poster, exam, book, and more), 21 institution configurations, 25 languages (including CJK and RTL), and reproducible builds via Docker or Nix.
 
 ## Quick Start
 
@@ -45,7 +45,7 @@ Pick a `doctype` from the list below and an `institution` from `config/instituti
 
 ### Institutions
 
-20 pre-configured institutions in `config/institutions/`: Aalto, Chalmers, Columbia, Harvard, KIT, NTNU, TU Dresden, TUHH, and others. Each provides colors, logos, and translation strings. Copy an existing config to create your own.
+20 pre-configured institutions in `config/institutions/`: Aalto, Chalmers, Columbia, Harvard, KIT, NTNU, TUHH, TUM, ETH, MIT, Stanford, Cambridge, Oxford, Yale, Princeton, EPFL, CMU, Imperial, TU Delft, Generic. Each provides colors, logos, and translation strings. Copy an existing config to create your own.
 
 ### Languages
 
@@ -73,7 +73,7 @@ Use `python build.py --help` for all options.
 ## Testing
 
 ```bash
-python -m pytest tests/                         # fast suite (878 tests, no compilation)
+python -m pytest tests/                         # fast suite (939 tests, no compilation)
 python -m pytest tests/test_modules.py          # structural tests only
 python -m pytest tests/test_ctan.py             # CTAN package validation
 ```

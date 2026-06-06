@@ -74,7 +74,7 @@ jobs:
         except ImportError:
             import tomli as tomllib
 
-        THRESHOLD = 2.5  # 250% regression threshold (CI runners are ~2-3x slower than local baselines)
+        THRESHOLD = 1.0  # 100% regression threshold (CI runners are ~2-3x slower than local baselines)
 
         with open('build/metrics.json') as f:
             metrics = json.load(f)

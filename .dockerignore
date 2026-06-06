@@ -1,0 +1,64 @@
+# Docker build context exclusions
+# Reduces build context size and prevents leaking secrets/artifacts
+
+# Version control
+.git/
+.gitignore
+.gitattributes
+
+# Build artifacts
+build/
+result/
+*.log
+tmp*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.hypothesis/
+.coverage
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# CI/CD (not needed in image)
+.github/
+.forgejo/
+.gitea/
+.gitlab/
+.woodpecker/
+
+# Documentation (not needed in build image)
+docs/
+pages/
+*.md
+!README.md
+
+# Test infrastructure
+tests/
+testfiles/
+.specs/
+
+# Development
+.devcontainer/
+.direnv/
+.env
+.env.*
+!.env.example.*
+
+# Distribution (not needed in build image)
+ctan/
+overleaf/
+distribution/
+omnilatex-overleaf.zip
+
+# Temporary files
+*.tmp
+*.bak
+*.orig

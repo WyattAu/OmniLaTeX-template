@@ -9,7 +9,7 @@ docker run -it --rm -v $(pwd):/workspace ghcr.io/wyattau/omnilatex-docker:latest
 python build.py build-example thesis
 ```
 
-The Docker image includes TeX Live 2025, Pygments, and a pre-warmed `luaotfload`
+The Docker image includes TeX Live 2026, Pygments, and a pre-warmed `luaotfload`
 font cache. No local TeX installation required.
 
 ### Nix

@@ -32,9 +32,13 @@ local function get_frozen_date()
 end
 
 local function get_cmd_stdout(cmd)
-    -- See: https://stackoverflow.com/a/326715/11477374
-    local fh = assert(io.popen(cmd))
-    local first_line = assert(fh:read())
+    -- Use pcall for graceful fallback if command fails.
+    -- Avoids hard Lua error that would halt compilation.
+    local ok, fh = pcall(io.popen, cmd)
+    if not ok or not fh then
+        return nil
+    end
+    local first_line = fh:read()
     fh:close()
     return first_line
 end

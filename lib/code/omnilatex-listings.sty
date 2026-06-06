@@ -83,9 +83,8 @@
         }%
 }%
 
-\endinput
-
 % Graceful degradation when enablecode=false.
+% NOTE: These MUST precede \endinput to be reachable.
 \@ifundefined{minted}{%
   \newenvironment{minted}[2][]{\begin{verbatim}}{\end{verbatim}}%
   \newcommand{\mintinline}[3][]{\texttt{#3}}%
@@ -93,3 +92,5 @@
   \newcommand{\inputminted}[3][]{}%
   \newenvironment{mintedlisting}[2][]{}{}%
 }{}
+
+\endinput

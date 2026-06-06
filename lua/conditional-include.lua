@@ -158,8 +158,7 @@ local function cmd_flaglist()
     end
 end
 
-local ok2, luatexbase2 = pcall(require, "luatexbase")
-if ok2 then
+if ok then
     luatexbase.new_command("flaglist", {}, cmd_flaglist)
 else
     token.set_macro("flaglist", function()

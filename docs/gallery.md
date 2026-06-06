@@ -2,6 +2,8 @@
 
 Visual showcase of OmniLaTeX example templates.
 
+**Note:** PDF links below require building examples first (`python build.py build-examples`). For live previews, use the [PDF Gallery](index.html) web application.
+
 ## Quick Start
 
 Build any example with:

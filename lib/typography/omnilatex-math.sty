@@ -432,12 +432,11 @@
     ]{#1}{#2}{\degreeCelsius}%
 }%
 
-\endinput
-
 % Graceful degradation stubs when enablemath=false.
 % These prevent "Undefined control sequence" when math macros
 % are referenced but the math module is not loaded.  The stubs
 % render the argument as-is without math formatting.
+% NOTE: These MUST precede \endinput to be reachable.
 \@ifundefined{mean}{%
   \newcommand*{\mean}[1]{#1}%
   \newcommand*{\logmean}[1]{#1}%
@@ -451,3 +450,5 @@
   \newcommand*{\divg}[1]{#1}%
   \newcommand*{\curl}[1]{#1}%
 }{}
+
+\endinput

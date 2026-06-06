@@ -206,8 +206,6 @@
 }
 
 \RequirePackage{silence}
-
-\RequirePackage{silence}
 \WarningFilter{etex}{Extended allocation already in use}
 \WarningFilter{typearea}{Bad type area settings}
 \RequirePackage{etex}
