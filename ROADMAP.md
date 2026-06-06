@@ -16,24 +16,24 @@
 | Examples | 50 | +2 |
 | Institutions | 21 | -- |
 | Languages | 25+ | -- |
-| Python tests (fast) | 942 | +171 |
+| Python tests (fast) | 939 | +168 |
 | l3build test files | 94 | -- |
-| Lean 4 theorems | 222 | +24 |
+| Lean 4 theorems | 223 | +25 |
 | buildlib coverage | 50% | +50% (from 0%) |
 | CI platforms | 5 | -- |
-| Documentation pages | 19+ | -- |
+| Documentation pages | 25+ | -- |
 
-### Audit Results Summary
+### Audit Results Summary (v2.4.0 Post-Audit)
 
 | Area | Status | Key Findings |
 |------|--------|--------------|
-| Testing | PASS | 942 fast tests, all passing. 162 buildlib unit tests total. |
-| Code Quality | PASS | black/isort/flake8 clean. Runner timeout bug fixed. |
-| Formal Verification | PASS | 222 Lean 4 theorems compile successfully (3 new modules). |
+| Testing | PASS | 939 fast tests, all passing. 162 buildlib unit tests total. |
+| Code Quality | PASS | black/isort/flake8 clean. Dead code after \endinput fixed in 4 modules. |
+| Formal Verification | PASS | 223 Lean 4 theorems compile successfully (zero sorry). |
 | CI/CD Security | FIXED | 3 critical + 3 high issues resolved (secret leakage, injection, permissions). |
 | UI/UX Accessibility | FIXED | ARIA semantics, label associations, prefers-reduced-motion, focus trapping, print styles. |
-| Documentation | PASS | No emojis, professional tone, test count updated. |
-| Deployment | PASS | GitHub Pages live, all routes return 200. |
+| Documentation | FIXED | Stale stats updated, version drift corrected, redundant ROADMAP archived. |
+| Deployment | PASS | GitHub Pages live at omnilatex-template.wyattau.com, all routes return 200. |
 | Security Headers | FIXED | HSTS, Permissions-Policy, global security headers added. |
 | Build Cache | FIXED | Eviction policy (LRU + TTL) implemented. |
 | CTAN Alignment | FIXED | Python test aligned with shell script. |
@@ -42,6 +42,12 @@
 | Package Managers | FIXED | Nix flake, Homebrew formula, AUR PKGBUILD created. |
 | Plugin System | FIXED | Manifest specification, sandbox, registry, example plugin. |
 | Language Expansion | FIXED | Scaffolding for 40+ languages with contribution guide. |
+| HTML Structure | FIXED | Missing CSS style tags in 3 HTML pages (CSS was not parsed by browsers). |
+| LaTeX Dead Code | FIXED | Graceful degradation stubs moved before \endinput in 4 modules. |
+| Error Handling | FIXED | git-metadata.lua: pcall replaces hard assert for graceful fallback. |
+| CI/CD Alignment | FIXED | Forgejo/Gitea test suites aligned with GitHub Actions. |
+| Performance Threshold | FIXED | Regression threshold tightened from 250% to 100%. |
+| Docker Build | FIXED | .dockerignore created to reduce build context. |
 
 ---
 
@@ -177,6 +183,14 @@
 | 28 | check_semver.py f-string bug | Medium | FIXED |
 | 29 | No lightbox focus trapping | Medium | FIXED |
 | 30 | No print stylesheets | Low | FIXED |
+| 31 | Missing CSS style tags in HTML pages | High | FIXED |
+| 32 | Dead code after \endinput in 4 modules | High | FIXED |
+| 33 | Hard assert in git-metadata.lua | Medium | FIXED |
+| 34 | Redundant luatexbase fetch in conditional-include | Low | FIXED |
+| 35 | Duplicate RequirePackage{silence} | Low | FIXED |
+| 36 | Missing .dockerignore | Medium | FIXED |
+| 37 | CI test suite inconsistency (Forgejo/Gitea) | Medium | FIXED |
+| 38 | Performance regression threshold too generous | Medium | FIXED |
 
 ---
 
@@ -216,8 +230,8 @@
 - flake8 linting: PASS
 - markdownlint: PASS
 - YAML validation: PASS
-- Fast pytest suite (878 tests): PASS
-- Lean 4 proofs (198 theorems): PASS
+- Fast pytest suite (862 tests): PASS
+- Lean 4 proofs (223 theorems): PASS
 - LaTeX TODO check: PASS
 
 ### Pre-Push
@@ -236,6 +250,6 @@
 - Language integration matrix (11 languages): PASS
 - Lean 4 proof verification: PASS
 - Visual regression (SSIM): PASS
-- Performance regression (< 250% threshold): PASS
+- Performance regression (< 100% threshold): PASS
 - Docker image build and push: PASS
 - Documentation deployment: PASS
