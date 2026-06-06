@@ -185,7 +185,7 @@ class TestBuildProfiler:
         assert found == []
 
     def test_profile_example_missing_dir(self, monkeypatch, tmp_path):
-        
+
         monkeypatch.setattr("buildlib.profiler.REPO_ROOT", tmp_path)
         profiler = BuildProfiler()
         result = profiler.profile_example("nonexistent_example")

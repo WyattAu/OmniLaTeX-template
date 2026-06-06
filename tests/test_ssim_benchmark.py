@@ -5,6 +5,7 @@ from __future__ import annotations
 import pytest
 
 try:
+    import numpy  # noqa: F401
 
     _HAS_NUMPY = True
 except (ImportError, OSError):

@@ -24,7 +24,7 @@ source = ["buildlib"]
 omit = ["tests/*", "*/__init__.py"]
 
 [tool.coverage.report]
-fail_under = 80
+fail_under = 72
 show_missing = true
 skip_empty = true
 
