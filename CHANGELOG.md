@@ -1,5 +1,36 @@
 # Changelog
 
+## v2.4.1 (2026-06-06)
+
+### Fixed
+
+- **builder.py discover_examples()**: Changed from relative `Path('examples')` to `REPO_ROOT / 'examples'` (tests failed when run from `tests/` directory)
+- **test_ssim_benchmark.py**: Added missing `import numpy` in try block (was setting `_HAS_NUMPY = True` unconditionally)
+- **WCAG compliance**: Added `aria-label` to card elements in `index.js` and `gallery.js` for screen reader accessibility
+- **Focus indicators**: Restored `outline: 2px solid var(--accent)` on select focus in `gallery.css` (was `outline:none`)
+- **verify.js**: Replaced HTML entity `&mdash;` with unicode `\u2014` in `textContent` assignment
+- **CI/CD security**: Pinned `dependabot/fetch-metadata` to SHA `d7267f607e` (was unpinned `@v2`)
+- **CI/CD timeouts**: Reduced `performance-regression.yml` from 90m to 45m, `docker-ci.yml` from 180m to 120m
+- **setup-texlive**: Replaced hardcoded TeX Live year `2026` with dynamic `ls | sort -r | head -1` detection
+- **GitLab templates**: Removed hardcoded `/assign @alex`; added top-level headings for markdownlint compliance
+
+### Added
+
+- **test_buildlib_coverage.py**: 50 new tests for builder cache eviction, source files, compile worker, profiler edge cases
+- **test_coverage_batch2.py**: 70+ new tests for TUI menus (mocked input), commands helpers, diff modes, scaffold commands
+- **Design tokens applied**: Spatial Materialism depth/transition tokens, Amoebic UI blob shapes/pill radii, Brutalist typography scale and border weights used in `style.css`, `gallery.css`, `index.css`
+- **CTAN package**: Updated with latest .cls, .sty, lua/ files; fixed missing lua/ directory in zip
+- **Overleaf package**: Updated manifest.json version to 2.4.0
+
+### Changed
+
+- **Test count**: 1234 -> 1334 fast tests (+100 new tests)
+- **buildlib coverage**: 64% -> 73% (new threshold: 72%)
+- **Inline CSS removed**: ~500 lines of duplicate `<style>` blocks removed from `index.html`, `gallery.html`, `verify.html`
+- **ROADMAP.md**: Updated metrics, technical debt register (items #15, #23 corrected to 73%), release cadence
+
+---
+
 ## v2.4.0 (2026-06-05)
 
 ### Fixed

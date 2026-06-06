@@ -1,5 +1,5 @@
-OmniLaTeX — Universal LaTeX Template System
-============================================
+OmniLaTeX v2.4.0 — Universal LaTeX Template System
+====================================================
 
 A modular LaTeX document class supporting multiple document types
 with consistent branding, multi-language support, and reproducible

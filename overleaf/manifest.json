@@ -6,6 +6,6 @@
   "categories": ["Academic", "Thesis", "Report", "Article", "CV", "Presentation", "Poster"],
   "tags": ["latex", "latex-class", "koma-script", "lualatex", "omnilatex", "thesis", "academic", "template", "cjk", "citation-styles", "color-themes", "accessibility", "institution-configs", "overleaf"],
   "compiler": "LuaLaTeX",
-  "version": "1.4.0",
+  "version": "2.4.0",
   "repository": "https://github.com/WyattAu/OmniLaTeX-template"
 }

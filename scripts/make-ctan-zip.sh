@@ -28,8 +28,12 @@ cp "$REPO_ROOT/LICENSE" "$CTAN_PKG/"
 # Class file
 cp "$REPO_ROOT/omnilatex.cls" "$CTAN_PKG/"
 
-# Modules (all 31 .sty files in lib/)
+# Modules (all .sty files in lib/ + lua/ helpers)
 cp -r "$REPO_ROOT/lib" "$CTAN_PKG/lib"
+
+# Lua modules (required by lib/utils, lib/core, lib/language)
+mkdir -p "$CTAN_PKG/lua"
+cp -r "$REPO_ROOT/lua/." "$CTAN_PKG/lua/"
 
 # Config: document settings + document types
 mkdir -p "$CTAN_PKG/config/document-types"
@@ -96,7 +100,7 @@ echo "=== CTAN Package Zip ==="
 echo "..."
 echo ""
 echo "CTAN zip written to: ctan/${PKG_NAME}.zip"
-echo "Structure: omnilatex/{README.md,LICENSE,omnilatex.cls,lib/,config/}"
+echo "Structure: omnilatex/{README.md,LICENSE,omnilatex.cls,lib/,lua/,config/}"
 echo "  config/document-types/omnilatex-doctype-*.sty (27 files)"
 echo "  config/institutions/ (20 real institutions, excludes test-univ and generic)"
 echo "  doc/omnilatex-doc.pdf (documentation PDF)"

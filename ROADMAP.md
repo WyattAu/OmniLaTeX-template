@@ -16,7 +16,7 @@
 | Examples | 50 | +2 |
 | Institutions | 21 | -- |
 | Languages | 25+ | -- |
-| Python tests (fast) | 1334 | +563 |
+| Python tests (fast) | 1333 | +562 |
 | l3build test files | 94 | -- |
 | Lean 4 theorems | 301 | +104 |
 | buildlib coverage | 73% | +73% (from 0%) |
@@ -156,7 +156,7 @@
 | 12 | No parallel building | Medium | DONE |
 | 13 | CI redundant setup | Medium | DONE |
 | 14 | Per-file build cache I/O | Medium | DONE |
-| 15 | buildlib 0% test coverage | High | FIXED (23%) |
+| 15 | buildlib 0% test coverage | High | FIXED (73%) |
 | 16 | CommandRunner timeout bug | High | FIXED |
 | 17 | CI secret leakage via echo | Critical | FIXED |
 | 18 | CI script injection via matrix | Critical | FIXED |
@@ -164,7 +164,7 @@
 | 20 | UI missing ARIA semantics | High | FIXED |
 | 21 | Broken gallery-app.html link | High | FIXED |
 | 22 | No prefers-reduced-motion | Medium | FIXED |
-| 23 | buildlib coverage < 60% | Medium | PARTIAL (50%) |
+| 23 | buildlib coverage < 60% | Medium | FIXED (73%) |
 | 24 | Inline CSS in HTML pages | Medium | FIXED |
 | 25 | CSP unsafe-inline | High | FIXED |
 | 26 | No favicon on HTML pages | Medium | FIXED |
@@ -219,7 +219,8 @@
 
 | Version | Target Date | Focus | Status |
 |---------|-------------|-------|--------|
-| v2.4.0 | 2026-06-06 | Audit fixes, buildlib tests | RELEASED |
+| v2.4.1 | 2026-06-06 | Audit: tests, CI/CD, UI/UX, design tokens, packages | RELEASED |
+| v2.4.0 | 2026-06-05 | Audit fixes, buildlib tests | RELEASED |
 | v2.5.0 | 2026-07-18 | Performance optimization | PLANNED |
 | v3.0.0 | 2026-09-12 | Distribution (CTAN live) | PLANNED |
 | v3.1.0 | 2026-11-07 | Ecosystem expansion | PLANNED |
@@ -236,7 +237,7 @@
 - flake8 linting: PASS
 - markdownlint: PASS
 - YAML validation: PASS
-- Fast pytest suite (1334 tests): PASS
+- Fast pytest suite (1333 tests): PASS
 - Lean 4 proofs (301 theorems): PASS
 - LaTeX TODO check: PASS
 
