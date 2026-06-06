@@ -185,7 +185,38 @@ class _BuildCore:
                 )
         return {}
 
+    def _evict_cache(
+        self, cache: dict, max_entries: int = 100, max_age_days: int = 90
+    ) -> dict:
+        """Evict stale cache entries: TTL first, then LRU count cap."""
+        import datetime
+
+        now = datetime.datetime.now(datetime.timezone.utc)
+        cutoff = now - datetime.timedelta(days=max_age_days)
+        cutoff_str = cutoff.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+        # Phase 1: Remove expired entries
+        to_remove = [
+            k
+            for k, v in cache.items()
+            if k.startswith("examples/") and v.get("build_time", "") < cutoff_str
+        ]
+        for key in to_remove:
+            del cache[key]
+
+        # Phase 2: Cap entry count by LRU (oldest build_time first)
+        entries = {k: v for k, v in cache.items() if k.startswith("examples/")}
+        if len(entries) > max_entries:
+            sorted_keys = sorted(
+                entries.keys(), key=lambda k: entries[k].get("build_time", "")
+            )
+            for key in sorted_keys[: len(entries) - max_entries]:
+                del cache[key]
+
+        return cache
+
     def _save_build_cache(self, cache: dict) -> None:
+        cache = self._evict_cache(cache)
         cache_path = self.config.build_dir / "build_cache.json"
         cache_path.parent.mkdir(parents=True, exist_ok=True)
         cache_path.write_text(

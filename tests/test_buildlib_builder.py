@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import threading
+import time
 
 import pytest
 
@@ -137,7 +138,12 @@ class TestBuildCore:
     def test_cache_load_save_cycle(self, build_core, tmp_path):
         build_core.config.build_dir = tmp_path / "build"
         (tmp_path / "build").mkdir(parents=True)
-        cache = {"examples/test": {"source_hash": "abc123", "build_time": "2024-01-01"}}
+        cache = {
+            "examples/test": {
+                "source_hash": "abc123",
+                "build_time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            }
+        }
         build_core._save_build_cache(cache)
         loaded = build_core._load_build_cache()
         assert loaded["examples/test"]["source_hash"] == "abc123"
