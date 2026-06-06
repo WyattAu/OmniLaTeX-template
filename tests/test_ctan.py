@@ -44,7 +44,11 @@ def _build_ctan_zip_with_python(output_path):
     if institutions_root.is_dir():
         (pkg_dir / "config" / "institutions").mkdir(parents=True, exist_ok=True)
         for item in institutions_root.iterdir():
-            if item.is_dir() and item.name not in ("test-univ", "generic"):
+            if item.is_dir() and item.name not in (
+                "test-univ",
+                "generic",
+                "test-nonexistent",
+            ):
                 shutil.copytree(
                     str(item),
                     pkg_dir / "config" / "institutions" / item.name,
@@ -63,16 +67,16 @@ def _build_ctan_zip_with_python(output_path):
 
     # Documentation: PDF + source inside omnilatex/doc/
     (pkg_dir / "doc").mkdir(parents=True, exist_ok=True)
-    for docfile in ("doc/omnilatex.pdf", "main.pdf"):
+    for docfile in ("examples/manual/main.pdf", "doc/omnilatex.pdf", "main.pdf"):
         src = REPO_ROOT / docfile
         if src.is_file():
             shutil.copy2(src, pkg_dir / "doc" / "omnilatex-doc.pdf")
             break
-    if (REPO_ROOT / "doc" / "omnilatex.tex").is_file():
-        shutil.copy2(
-            REPO_ROOT / "doc" / "omnilatex.tex",
-            pkg_dir / "doc" / "omnilatex.tex",
-        )
+    src_tex = REPO_ROOT / "doc" / "omnilatex.tex"
+    if not src_tex.is_file():
+        src_tex = REPO_ROOT / "main.tex"
+    if src_tex.is_file():
+        shutil.copy2(str(src_tex), pkg_dir / "doc" / "omnilatex.tex")
 
     with zipfile.ZipFile(str(output_path), "w", zipfile.ZIP_DEFLATED) as zf:
         for file_path in sorted(pkg_dir.rglob("*")):
@@ -231,7 +235,7 @@ class TestCTANZip:
         with zipfile.ZipFile(str(ctan_zip_path)) as zf:
             names = zf.namelist()
         inst_files = [n for n in names if "/institutions/" in n]
-        for forbidden in ["test-univ", "generic"]:
+        for forbidden in ["test-univ", "generic", "test-nonexistent"]:
             forbidden_files = [n for n in inst_files if forbidden in n]
             assert (
                 len(forbidden_files) == 0

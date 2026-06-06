@@ -41,7 +41,7 @@ mkdir -p "$CTAN_PKG/config/institutions"
 for dir in "$REPO_ROOT/config/institutions/"*/; do
     inst_name="$(basename "$dir")"
     case "$inst_name" in
-        test-univ|generic) continue ;;  # Exclude test fixtures (CTAN requirement #5)
+        test-univ|generic|test-nonexistent) continue ;;  # Exclude test fixtures (CTAN requirement #5)
         *) cp -r "$dir" "$CTAN_PKG/config/institutions/$inst_name" ;;
     esac
 done
