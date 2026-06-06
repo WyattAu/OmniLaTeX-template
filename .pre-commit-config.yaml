@@ -95,8 +95,8 @@ repos:
     pass_filenames: true
 
   - id: run-pytest-fast
-    name: Run fast pytest suite (structural + property + config, no compilation)
-    entry: pytest tests/test_modules.py tests/test_ctan.py tests/test_properties.py tests/test_institutions.py tests/test_config.py -v --timeout=30 -m "not slow" --tb=short -q
+    name: Run fast pytest suite (structural + property + config + buildlib, no compilation)
+    entry: pytest tests/test_modules.py tests/test_ctan.py tests/test_properties.py tests/test_institutions.py tests/test_config.py tests/test_buildlib_config.py tests/test_buildlib_ui.py tests/test_buildlib_runner.py tests/test_buildlib_diff.py tests/test_buildlib_builder.py tests/test_buildlib_cli.py -v --timeout=30 -m "not slow" --tb=short -q
     language: system
     pass_filenames: false
     always_run: true
