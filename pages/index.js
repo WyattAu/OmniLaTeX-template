@@ -110,7 +110,7 @@ function renderGrid() {
   docGrid.innerHTML = docs.map(d => {
     const isFeatured = d.cat === 'featured';
     const isLoaded = loadedCards.has(d.id);
-    return `<div class="card card-loading${isFeatured?' featured':''}" data-id="${d.id}" data-file="${d.file}" role="button" tabindex="0">
+    return `<div class="card card-loading${isFeatured?' featured':''}" data-id="${d.id}" data-file="${d.file}" role="button" tabindex="0" aria-label="${d.name}: ${d.desc}">
       <div class="card-preview">${isLoaded ? '' : placeholderSVG()}</div>
       <div class="card-info">
         <div class="card-name">${d.name}</div>

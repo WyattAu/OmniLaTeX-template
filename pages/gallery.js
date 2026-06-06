@@ -43,7 +43,7 @@ const codeOut = document.getElementById('code-output');
 
 function renderCards() {
   grid.innerHTML = PROFILES.map(p => `
-    <div class="card${p.id===selected?' selected':''}" data-id="${p.id}" role="button" tabindex="0">
+    <div class="card${p.id===selected?' selected':''}" data-id="${p.id}" role="button" tabindex="0" aria-label="${p.name}: ${p.desc}">
       <div class="card-icon">${p.icon}</div>
       <div class="card-name">${p.name}</div>
       <div class="card-desc">${p.desc}</div>

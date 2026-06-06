@@ -79,7 +79,7 @@
       }
 
       const authorName = commitData.commit?.author?.name ?? "Unknown";
-      const authorEmail = commitData.commit?.author?.email ?? "&mdash;";
+      const authorEmail = commitData.commit?.author?.email ?? "\u2014";
       const authorDate = commitData.commit?.author?.date ?? commitData.commit?.committer?.date ?? "";
       showDetails({
         sha: commitData.sha,
