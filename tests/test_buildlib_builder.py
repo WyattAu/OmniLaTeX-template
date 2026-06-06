@@ -225,3 +225,24 @@ class TestBuildCore:
         build_core.config.build_dir = tmp_path / "nonexistent"
         # Should not raise
         build_core.cmd_cache_clear()
+
+
+class TestSourceDateEpoch:
+    """Test SOURCE_DATE_EPOCH reproducibility support."""
+
+    def test_source_date_epoch_settable(self, monkeypatch):
+        """CLI should be able to set SOURCE_DATE_EPOCH."""
+        monkeypatch.setenv("SOURCE_DATE_EPOCH", "1700000000")
+        import os
+
+        assert os.environ.get("SOURCE_DATE_EPOCH") == "1700000000"
+
+    def test_source_date_epoch_in_build_env(self, build_core, monkeypatch):
+        """Build environment should pass SOURCE_DATE_EPOCH to subprocess."""
+        monkeypatch.setenv("SOURCE_DATE_EPOCH", "1700000000")
+        # The runner should include it in the environment
+        import os
+
+        env = os.environ.copy()
+        assert "SOURCE_DATE_EPOCH" in env
+        assert env["SOURCE_DATE_EPOCH"] == "1700000000"

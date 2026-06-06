@@ -43,31 +43,31 @@ def main() -> int:
     if len(unique_versions) > 1:
         for name, ver in versions.items():
             if ver and ver != version_md_ver:
-                errors.append("{name}: version {ver} != VERSION.md {version_md_ver}")
+                errors.append(f"{name}: version {ver} != VERSION.md {version_md_ver}")
 
     # 4. Check CHANGELOG entry exists
     if version_md_ver:
-        changelog_entry = PROJECT_ROOT / "CHANGELOG" / "v{version_md_ver}.md"
+        changelog_entry = PROJECT_ROOT / "CHANGELOG" / f"v{version_md_ver}.md"
         if not changelog_entry.is_file():
-            errors.append("CHANGELOG/v{version_md_ver}.md: missing")
+            errors.append(f"CHANGELOG/v{version_md_ver}.md: missing")
 
     # 5. Check CHANGELOG index references latest version
     changelog_index = PROJECT_ROOT / "CHANGELOG.md"
     if changelog_index.is_file() and version_md_ver:
         index_text = changelog_index.read_text(encoding="utf-8")
-        if "v{version_md_ver}" not in index_text:
-            errors.append("CHANGELOG.md: does not reference v{version_md_ver}")
+        if f"v{version_md_ver}" not in index_text:
+            errors.append(f"CHANGELOG.md: does not reference v{version_md_ver}")
 
     if errors:
         print("FAIL: SemVer consistency errors:")
         for e in errors:
-            print("  {e}")
+            print(f"  {e}")
         return 1
 
-    print("PASS: Version {version_md_ver} consistent across all files")
+    print(f"PASS: Version {version_md_ver} consistent across all files")
     for name, ver in versions.items():
         if ver:
-            print("  {name}: v{ver}")
+            print(f"  {name}: v{ver}")
     return 0
 
 
