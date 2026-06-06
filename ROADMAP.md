@@ -16,10 +16,10 @@
 | Examples | 50 | +2 |
 | Institutions | 21 | -- |
 | Languages | 25+ | -- |
-| Python tests (fast) | 1234 | +463 |
+| Python tests (fast) | 1334 | +563 |
 | l3build test files | 94 | -- |
 | Lean 4 theorems | 301 | +104 |
-| buildlib coverage | 65% | +65% (from 0%) |
+| buildlib coverage | 73% | +73% (from 0%) |
 | CI platforms | 5 | -- |
 | Documentation pages | 25+ | -- |
 
@@ -27,27 +27,14 @@
 
 | Area | Status | Key Findings |
 |------|--------|--------------|
-| Testing | PASS | 939 fast tests, all passing. 162 buildlib unit tests total. |
-| Code Quality | PASS | black/isort/flake8 clean. Dead code after \endinput fixed in 4 modules. |
-| Formal Verification | PASS | 223 Lean 4 theorems compile successfully (zero sorry). |
-| CI/CD Security | FIXED | 3 critical + 3 high issues resolved (secret leakage, injection, permissions). |
-| UI/UX Accessibility | FIXED | ARIA semantics, label associations, prefers-reduced-motion, focus trapping, print styles. |
-| Documentation | FIXED | Stale stats updated, version drift corrected, redundant ROADMAP archived. |
-| Deployment | PASS | GitHub Pages live at omnilatex-template.wyattau.com, all routes return 200. |
-| Security Headers | FIXED | HSTS, Permissions-Policy, global security headers added. |
-| Build Cache | FIXED | Eviction policy (LRU + TTL) implemented. |
-| CTAN Alignment | FIXED | Python test aligned with shell script. |
-| Design Language | FIXED | Spatial Materialism, Amoebic UI, Brutalism CSS tokens. |
-| CSP Security | FIXED | Eliminated unsafe-inline (scripts and styles now external). |
-| Package Managers | FIXED | Nix flake, Homebrew formula, AUR PKGBUILD created. |
-| Plugin System | FIXED | Manifest specification, sandbox, registry, example plugin. |
-| Language Expansion | FIXED | Scaffolding for 40+ languages with contribution guide. |
-| HTML Structure | FIXED | Missing CSS style tags in 3 HTML pages (CSS was not parsed by browsers). |
-| LaTeX Dead Code | FIXED | Graceful degradation stubs moved before \endinput in 4 modules. |
-| Error Handling | FIXED | git-metadata.lua: pcall replaces hard assert for graceful fallback. |
-| CI/CD Alignment | FIXED | Forgejo/Gitea test suites aligned with GitHub Actions. |
-| Performance Threshold | FIXED | Regression threshold tightened from 250% to 100%. |
-| Docker Build | FIXED | .dockerignore created to reduce build context. |
+| Testing | PASS | 1334 fast tests passing, 89 skipped (numpy/rich unavailable). buildlib coverage 73%. |
+| Code Quality | PASS | black/isort/flake8 clean. builder.py discover_examples path bug fixed. |
+| Formal Verification | PASS | 301 Lean 4 theorems compile successfully (zero sorry). |
+| CI/CD Security | FIXED | dependabot/fetch-metadata SHA-pinned, TeX Live year dynamic, timeouts reduced. |
+| UI/UX Accessibility | FIXED | Card aria-labels added, select focus ring restored, inline CSS removed from 3 pages. |
+| CI/CD Performance | FIXED | Performance regression timeout 90m -> 45m, Docker CI 180m -> 120m. |
+| GitLab Templates | FIXED | Removed hardcoded /assign @alex from issue templates. |
+| Coverage Threshold | SET | 72% threshold for fast suite (numpy/rich env-dependent modules excluded). |
 
 ---
 
@@ -193,12 +180,23 @@
 | 36 | Missing .dockerignore | Medium | FIXED |
 | 37 | CI test suite inconsistency (Forgejo/Gitea) | Medium | FIXED |
 | 38 | Performance regression threshold too generous | Medium | FIXED |
-| 39 | buildlib commands.py low coverage | High | FIXED (65%) |
+| 39 | buildlib commands.py low coverage | High | FIXED (80%) |
 | 40 | No plugin manager/validation | Medium | FIXED |
 | 41 | Lean 4 proofs below 300 | Medium | FIXED (301) |
 | 42 | No automated accessibility testing | Medium | FIXED |
 | 43 | No LaTeX compilation profiler | Low | FIXED |
 | 44 | No SSIM benchmark suite | Low | FIXED |
+| 45 | builder.py discover_examples relative path bug | High | FIXED |
+| 46 | test_ssim_benchmark.py missing numpy import in try block | Medium | FIXED |
+| 47 | dependabot/fetch-metadata unpinned action | Moderate | FIXED |
+| 48 | performance-regression.yml 90m timeout | Medium | FIXED (45m) |
+| 49 | docker-ci.yml 180m timeout | Low | FIXED (120m) |
+| 50 | setup-texlive hardcoded year 2026 | Medium | FIXED |
+| 51 | GitLab templates hardcoded /assign @alex | Low | FIXED |
+| 52 | Gallery select focus outline:none a11y violation | High | FIXED |
+| 53 | Card elements missing accessible names | High | FIXED |
+| 54 | verify.js &mdash; HTML entity in textContent | Medium | FIXED |
+| 55 | Duplicate inline CSS in 3 HTML pages (~500 lines) | Medium | FIXED |
 
 ---
 
@@ -238,7 +236,7 @@
 - flake8 linting: PASS
 - markdownlint: PASS
 - YAML validation: PASS
-- Fast pytest suite (1234 tests): PASS
+- Fast pytest suite (1334 tests): PASS
 - Lean 4 proofs (301 theorems): PASS
 - LaTeX TODO check: PASS
 

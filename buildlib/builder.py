@@ -276,7 +276,7 @@ class _BuildCore:
             self.ui.info("No build cache file to delete.")
 
     def discover_examples(self) -> list[Path]:
-        d = Path("examples")
+        d = REPO_ROOT / "examples"
         return (
             sorted(
                 [
