@@ -1,0 +1,50 @@
+%% omnilatex-plugin-example.sty
+%% Example plugin demonstrating the OmniLaTeX plugin system
+%%
+%% This plugin provides:
+%% - A custom command \examplecommand
+%% - Section formatting hooks
+%% - A demo environment
+%%
+%% Usage:
+%%   \useplugin{example}
+%%   \examplecommand
+%%   \begin{demoenvironment}
+%%     Content here
+%%   \end{demoenvironment}
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{omnilatex-plugin-example}[2026/06/06 v1.0.0 Example OmniLaTeX Plugin]
+
+%% ── Plugin Identity ────────────────────────────────────
+\newcommand{\omnilatex@plugin@name}{example}
+\newcommand{\omnilatex@plugin@version}{1.0.0}
+
+%% ── Custom Commands ────────────────────────────────────
+
+% \examplecommand — Prints a demo message
+\newcommand{\examplecommand}{%
+  \textbf{[Example Plugin]} This is a command from the example plugin.%
+}
+
+% \exampleversion — Prints the plugin version
+\newcommand{\exampleversion}{%
+  \texttt{omnilatex-plugin-example v\omnilatex@plugin@version}%
+}
+
+%% ── Demo Environment ───────────────────────────────────
+\newenvironment{demoenvironment}{%
+  \par\addvspace{\baselineskip}%
+  \noindent\textbf{Demo Environment:}\par\nopagebreak
+  \begin{quote}\itshape
+}{%
+  \end{quote}%
+  \par\addvspace{\baselineskip}%
+}
+
+%% ── Hooks ──────────────────────────────────────────────
+
+% Log plugin loading
+\ClassInfo{omnilatex}{Loaded example plugin v\omnilatex@plugin@version}
+
+\endinput

@@ -1,0 +1,66 @@
+# Maintainer: Wyatt Au <wyattau@users.noreply.github.com>
+pkgname=omnilatex
+pkgver=2.4.0
+pkgrel=1
+pkgdesc="Modular LaTeX document class with 27 doctypes, 25 languages, 21 institutions"
+arch=('any')
+url="https://github.com/WyattAu/OmniLaTeX-template"
+license=('Apache-2.0')
+depends=('texlive-core' 'texlive-latexextra' 'texlive-luatex' 'texlive-fontsrecommended'
+         'texlive-bibtexextra' 'texlive-langgreek' 'texlive-langcyrillic'
+         'texlive-langarabic' 'texlive-langhebrew' 'texlive-langchinese'
+         'texlive-langjapanese' 'texlive-langkorean' 'python')
+makedepends=('git')
+provides=('omnilatex')
+conflicts=('omnilatex-git')
+source=("${url}/archive/refs/tags/v${pkgver}.tar.gz")
+sha256sums=('SKIP')
+
+package() {
+    cd "${srcdir}/OmniLaTeX-template-${pkgver}"
+
+    # Install to texmf-local
+    install -dm755 "${pkgdir}/usr/share/texmf/tex/latex/omnilatex"
+
+    # Core files
+    install -Dm644 omnilatex.cls "${pkgdir}/usr/share/texmf/tex/latex/omnilatex/"
+    install -Dm644 omnilatex.cwl "${pkgdir}/usr/share/texmf/tex/latex/omnilatex/"
+
+    # Modules
+    cp -r lib "${pkgdir}/usr/share/texmf/tex/latex/omnilatex/"
+
+    # Configuration
+    cp -r config "${pkgdir}/usr/share/texmf/tex/latex/omnilatex/"
+
+    # Lua extensions
+    cp -r lua "${pkgdir}/usr/share/texmf/tex/latex/omnilatex/"
+
+    # Assets
+    cp -r assets "${pkgdir}/usr/share/texmf/tex/latex/omnilatex/"
+
+    # Bibliography
+    cp -r bib "${pkgdir}/usr/share/texmf/tex/latex/omnilatex/"
+
+    # latexmkrc
+    install -Dm644 .latexmkrc "${pkgdir}/usr/share/texmf/tex/latex/omnilatex/"
+
+    # Build system
+    install -Dm755 build.py "${pkgdir}/usr/bin/omnilatex-build"
+
+    # Documentation
+    install -dm755 "${pkgdir}/usr/share/doc/omnilatex"
+    install -Dm644 README.md "${pkgdir}/usr/share/doc/omnilatex/"
+    install -Dm644 LICENSE "${pkgdir}/usr/share/doc/omnilatex/"
+    install -Dm644 CHANGELOG.md "${pkgdir}/usr/share/doc/omnilatex/"
+    install -Dm644 VERSION.md "${pkgdir}/usr/share/doc/omnilatex/"
+    if [ -f doc/omnilatex.pdf ]; then
+        install -Dm644 doc/omnilatex.pdf "${pkgdir}/usr/share/doc/omnilatex/"
+    fi
+
+    # Examples
+    install -dm755 "${pkgdir}/usr/share/omnilatex/examples"
+    cp -r examples/* "${pkgdir}/usr/share/omnilatex/examples/"
+
+    # Update texhash
+    texhash -q
+}
