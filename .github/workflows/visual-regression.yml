@@ -71,7 +71,7 @@ jobs:
           -e IS_OMNILATEX_CONTAINER=true \
           -e CI=true \
           "${{ steps.digest.outputs.image }}" \
-          python3 build.py --mode prod --force build-examples
+          python3 build.py --mode prod build-examples
 
     - name: Upload built PDFs
         # v4

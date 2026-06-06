@@ -73,8 +73,10 @@ jobs:
 
     - name: Build example
       id: build-step
+      env:
+        EXAMPLE: ${{ matrix.example }}
+        IMAGE: ${{ steps.digest.outputs.image }}
       run: |
-        EXAMPLE="${{ matrix.example }}"
         WORKDIR="/tmp/build-${EXAMPLE}"
         mkdir -p "${WORKDIR}"
 
@@ -84,7 +86,7 @@ jobs:
           -w /work \
           --user root \
           --entrypoint "" \
-          "${{ steps.digest.outputs.image }}" \
+          "${IMAGE}" \
           bash -c "\
             cp -r /repo/omnilatex.cls /repo/lib /repo/config /repo/bib /work/ 2>/dev/null || true; \
             cp /repo/.latexmkrc /work/ 2>/dev/null || true; \

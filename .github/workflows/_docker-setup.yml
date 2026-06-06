@@ -19,6 +19,11 @@ jobs:
     - id: read
       uses: ./.github/actions/read-docker-digest
     - name: Login to GitHub Container Registry
-      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        ACTOR: ${{ github.actor }}
+      run: echo "${GITHUB_TOKEN}" | docker login ghcr.io -u "${ACTOR}" --password-stdin
     - name: Pull Docker image
-      run: docker pull ${{ steps.read.outputs.image }}
+      env:
+        IMAGE: ${{ steps.read.outputs.image }}
+      run: docker pull "${IMAGE}"
