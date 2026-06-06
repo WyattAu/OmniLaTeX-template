@@ -47,7 +47,7 @@ python build.py build-example minimal-starter
 
 | Tool | Description |
 |------|-------------|
-| [PDF Gallery](gallery-app.html) | Browse all 48 example PDFs with category filtering and lightbox viewer |
+| [PDF Gallery](index.html) | Browse all 48 example PDFs with category filtering and lightbox viewer |
 | [Template Picker](gallery.html) | Interactive template, language, and institution selector |
 | [Build Verification](verify.html) | Verify PDF build provenance against Git commit history |
 

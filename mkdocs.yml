@@ -59,7 +59,7 @@ markdown_extensions:
 
 nav:
 - Home: index.md
-- PDF Gallery: gallery-app.html
+- PDF Gallery: index.html
 - Template Picker: gallery.html
 - Build Verification: verify.html
 - User Guide: USER_GUIDE.md

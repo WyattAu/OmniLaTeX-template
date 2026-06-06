@@ -155,7 +155,7 @@ section{padding:var(--space-xl) 0}
 
 <nav aria-label="Main navigation">
   <a href="index.html">PDF Gallery</a>
-  <a href="gallery.html" class="active">Template Gallery</a>
+  <a href="gallery.html" class="active" aria-current="page">Template Gallery</a>
   <a href="verify.html">Verify Builds</a>
   <a href="#profiles">Templates</a>
   <a href="#preview">Preview</a>
@@ -174,7 +174,7 @@ section{padding:var(--space-xl) 0}
 
     <div class="filters">
       <div class="filter-group">
-        <label>Language</label>
+        <label for="lang">Language</label>
         <select id="lang">
           <option value="english">English</option>
           <option value="german">German</option>
@@ -191,7 +191,7 @@ section{padding:var(--space-xl) 0}
         </select>
       </div>
       <div class="filter-group">
-        <label>Institution</label>
+        <label for="inst">Institution</label>
         <select id="inst">
           <option value="none">None (generic)</option>
           <option value="tuhh">TUHH</option>

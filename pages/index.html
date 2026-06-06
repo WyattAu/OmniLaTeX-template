@@ -137,7 +137,7 @@ section{padding:var(--space-xl) 0}
 
 <nav aria-label="Main navigation">
   <a href="gallery.html">Template Picker</a>
-  <a href="index.html" class="active">PDF Gallery</a>
+  <a href="index.html" class="active" aria-current="page">PDF Gallery</a>
   <a href="verify.html">Verify Builds</a>
   <a href="https://github.com/WyattAu/OmniLaTeX-template" target="_blank" rel="noopener noreferrer">GitHub</a>
 </nav>
@@ -145,8 +145,8 @@ section{padding:var(--space-xl) 0}
 <main id="main-content">
 <section>
   <div class="container">
-    <div class="cat-tabs" id="cat-tabs"></div>
-    <div class="grid" id="doc-grid"></div>
+    <div class="cat-tabs" id="cat-tabs" role="tablist" aria-label="Document categories"></div>
+    <div class="grid" id="doc-grid" role="tabpanel" aria-label="Documents" aria-live="polite"></div>
   </div>
 </section>
 </main>
@@ -159,7 +159,7 @@ section{padding:var(--space-xl) 0}
   </p>
 </footer>
 
-<div class="lightbox" id="lightbox">
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="PDF preview" hidden>
   <div class="lightbox-header">
     <span class="lightbox-title" id="lb-title"></span>
     <button class="lightbox-close" id="lb-close" aria-label="Close">&times;</button>
@@ -245,7 +245,7 @@ let activeCat = 'all';
 
 function renderTabs() {
   catTabs.innerHTML = CATS.map(c =>
-    `<button class="cat-tab${c.id===activeCat?' active':''}" data-cat="${c.id}">${c.label}</button>`
+    `<button class="cat-tab${c.id===activeCat?' active':''}" data-cat="${c.id}" role="tab" aria-selected="${c.id===activeCat}" aria-controls="doc-grid" id="tab-${c.id}">${c.label}</button>`
   ).join('');
 }
 
