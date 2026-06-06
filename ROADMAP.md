@@ -16,10 +16,10 @@
 | Examples | 50 | +2 |
 | Institutions | 21 | -- |
 | Languages | 25+ | -- |
-| Python tests (fast) | 936 | +165 |
+| Python tests (fast) | 942 | +171 |
 | l3build test files | 94 | -- |
-| Lean 4 theorems | 198 | -- |
-| buildlib coverage | 47% | +47% (from 0%) |
+| Lean 4 theorems | 222 | +24 |
+| buildlib coverage | 50% | +50% (from 0%) |
 | CI platforms | 5 | -- |
 | Documentation pages | 19+ | -- |
 
@@ -27,9 +27,9 @@
 
 | Area | Status | Key Findings |
 |------|--------|--------------|
-| Testing | PASS | 936 fast tests, all passing. 156 buildlib unit tests total. |
+| Testing | PASS | 942 fast tests, all passing. 162 buildlib unit tests total. |
 | Code Quality | PASS | black/isort/flake8 clean. Runner timeout bug fixed. |
-| Formal Verification | PASS | 198 Lean 4 theorems compile successfully. |
+| Formal Verification | PASS | 222 Lean 4 theorems compile successfully (3 new modules). |
 | CI/CD Security | FIXED | 3 critical + 3 high issues resolved (secret leakage, injection, permissions). |
 | UI/UX Accessibility | FIXED | ARIA semantics, label associations, prefers-reduced-motion, focus trapping, print styles. |
 | Documentation | PASS | No emojis, professional tone, test count updated. |
@@ -38,6 +38,7 @@
 | Build Cache | FIXED | Eviction policy (LRU + TTL) implemented. |
 | CTAN Alignment | FIXED | Python test aligned with shell script. |
 | Design Language | FIXED | Spatial Materialism, Amoebic UI, Brutalism CSS tokens. |
+| CSP Security | FIXED | Eliminated unsafe-inline (scripts and styles now external). |
 
 ---
 
@@ -50,12 +51,12 @@
 - [x] Fix test skip behavior (per-test skipif)
 - [x] Consolidate roadmap files
 - [x] Shell-escape security (OMNILATEX_SHELL_ESCAPE env var)
-- [x] Add buildlib unit tests (0% -> 47% coverage)
+- [x] Add buildlib unit tests (0% -> 50% coverage)
 - [x] Fix CommandRunner timeout bug (readline blocking)
 - [x] Fix CI/CD security issues (secret leakage, injection, permissions)
 - [x] Fix UI/UX accessibility (ARIA, labels, prefers-reduced-motion)
 - [x] Fix broken gallery-app.html reference
-- [x] Increase buildlib coverage to 47% (commands.py, tui.py)
+- [x] Increase buildlib coverage to 50% (commands.py, tui.py)
 - [x] Add property-based tests for build cache hash determinism
 - [x] Add integration tests for scaffold-institution and scaffold-language
 - [x] Fix SemVer consistency check in pre-push hook (f-string bug)
@@ -63,7 +64,7 @@
 
 ### Open
 
-- [ ] Increase buildlib coverage to 60%+ (tui.py, remaining commands.py)
+- [ ] Increase buildlib coverage to 60%+ (remaining commands.py)
 
 ---
 
@@ -83,7 +84,6 @@
 
 - [ ] Profile and optimize LaTeX compilation for large documents
 - [ ] Benchmark and optimize SSIM comparison for 50-example builds
-- [ ] Measure and document CI pipeline timing baselines
 
 ---
 
@@ -103,8 +103,6 @@
 - [ ] Overleaf Template Gallery submission (top templates)
 - [ ] Package manager distribution (Nix flake app, Homebrew formula, AUR package)
 - [ ] Docker image multi-arch builds (amd64 + arm64, already configured)
-- [ ] SBOM generation automation (spdx format)
-- [ ] Move inline CSP scripts to external files (eliminate unsafe-inline)
 
 ---
 
@@ -123,7 +121,6 @@
 ### Target
 
 - [ ] Plugin system expansion (manifest, registry, sandbox)
-- [ ] Institution contribution pipeline (scaffold, wizard, CI validation)
 - [ ] VS Code extension marketplace (Open VSX, VS Code Marketplace)
 - [ ] Language expansion to 40+ languages
 - [ ] Interactive documentation site (template picker, live preview)
@@ -137,11 +134,8 @@
 - [ ] Cloud compilation API (REST API for PDF generation)
 - [ ] Collaborative editing support (LSP server, live preview)
 - [ ] Visual template designer (React/Svelte SPA)
-- [ ] Formal verification expansion (400+ theorems)
+- [ ] Formal verification expansion (300+ theorems)
 - [ ] Full accessibility compliance (PDF/UA-1, WCAG 2.1 AA)
-- [ ] Implement Spatial Materialism design language (textures, depth transitions)
-- [ ] Implement Amoebic UI elements (blob shapes, organic grids)
-- [ ] Implement Brutalism typography scale (dramatic size contrast)
 
 ---
 
@@ -170,9 +164,9 @@
 | 20 | UI missing ARIA semantics | High | FIXED |
 | 21 | Broken gallery-app.html link | High | FIXED |
 | 22 | No prefers-reduced-motion | Medium | FIXED |
-| 23 | buildlib coverage < 50% | Medium | PARTIAL (47%) |
+| 23 | buildlib coverage < 60% | Medium | PARTIAL (50%) |
 | 24 | Inline CSS in HTML pages | Medium | FIXED |
-| 25 | CSP unsafe-inline | High | OPEN |
+| 25 | CSP unsafe-inline | High | FIXED |
 | 26 | No favicon on HTML pages | Medium | FIXED |
 | 27 | No og:image on HTML pages | Medium | FIXED |
 | 28 | check_semver.py f-string bug | Medium | FIXED |
