@@ -35,6 +35,9 @@
 | Documentation | PASS | No emojis, professional tone, test count updated. |
 | Deployment | PASS | GitHub Pages live, all routes return 200. |
 | Security Headers | FIXED | HSTS, Permissions-Policy, global security headers added. |
+| Build Cache | FIXED | Eviction policy (LRU + TTL) implemented. |
+| CTAN Alignment | FIXED | Python test aligned with shell script. |
+| Design Language | FIXED | Spatial Materialism, Amoebic UI, Brutalism CSS tokens. |
 
 ---
 
@@ -56,10 +59,10 @@
 - [x] Add property-based tests for build cache hash determinism
 - [x] Add integration tests for scaffold-institution and scaffold-language
 - [x] Fix SemVer consistency check in pre-push hook (f-string bug)
+- [x] Fix CTAN zip test divergence (PDF priority, test-nonexistent exclusion)
 
 ### Open
 
-- [ ] CTAN zip test vs. shell script alignment
 - [ ] Increase buildlib coverage to 60%+ (tui.py, remaining commands.py)
 
 ---
@@ -74,10 +77,10 @@
 - [x] CI pipeline optimization (composite actions)
 - [x] Lean 4 proof .lake caching (already configured in CI)
 - [x] Add --source-date-epoch reproducibility validation to test suite
+- [x] Build cache eviction policy (LRU + TTL, 90 days, 100 entries max)
 
 ### Target
 
-- [ ] Build cache size monitoring and eviction policy
 - [ ] Profile and optimize LaTeX compilation for large documents
 - [ ] Benchmark and optimize SSIM comparison for 50-example builds
 - [ ] Measure and document CI pipeline timing baselines
@@ -113,6 +116,9 @@
 - [x] Add @media print stylesheets to HTML pages
 - [x] Extract inline CSS from HTML pages into external stylesheets
 - [x] Add theme-color meta tags to all pages
+- [x] Extract inline JavaScript from HTML pages to external files
+- [x] Add ARIA tablist semantics to gallery.html template cards
+- [x] Add design language CSS tokens (Spatial Materialism, Amoebic UI, Brutalism)
 
 ### Target
 
@@ -121,7 +127,6 @@
 - [ ] VS Code extension marketplace (Open VSX, VS Code Marketplace)
 - [ ] Language expansion to 40+ languages
 - [ ] Interactive documentation site (template picker, live preview)
-- [ ] Add missing ARIA semantics to gallery.html (tablist for template cards)
 
 ---
 
@@ -148,7 +153,7 @@
 | 2 | Version hardcoded in 70+ locations | High | DONE |
 | 3-4 | Test file-level skips | High | DONE |
 | 5 | 9 stale roadmap files | Medium | DONE |
-| 6 | CTAN zip test divergence | Medium | OPEN |
+| 6 | CTAN zip test divergence | Medium | FIXED |
 | 7 | --shell-escape always enabled | High | DONE |
 | 8 | SSIM pure Python loops | Medium | DONE |
 | 9 | wrangler.toml unused | Low | DONE |
