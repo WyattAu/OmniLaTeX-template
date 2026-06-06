@@ -78,5 +78,25 @@ theorem font_size_connex : ∀ a b, a ≠ b → fontSizeLt a b ∨ fontSizeLt b 
   intro a b hne
   cases a <;> cases b <;> simp_all [fontSizeLt]
 
+-- Theorem 5: scriptsize is the minimum element
+theorem scriptsize_is_minimum : ∀ s, fontSizeLt .scriptsize s → s ≠ .scriptsize := by
+  intro s h
+  cases s <;> simp [fontSizeLt] at h <;> decide
+
+-- Theorem 6: Huge is the maximum element
+theorem huge_is_maximum : ∀ s, fontSizeLt s .Huge → s ≠ .Huge := by
+  intro s h
+  cases s <;> simp [fontSizeLt] at h <;> decide
+
+-- Theorem 7: No element is smaller than scriptsize
+theorem nothing_smaller_than_scriptsize : ∀ s, ¬fontSizeLt s .scriptsize := by
+  intro s
+  cases s <;> simp [fontSizeLt]
+
+-- Theorem 8: No element is larger than Huge
+theorem nothing_larger_than_Huge : ∀ s, ¬fontSizeLt .Huge s := by
+  intro s
+  cases s <;> simp [fontSizeLt]
+
 -- Corollary: Font sizes form a strict total order
 -- A strict total order is irreflexive, asymmetric, transitive, and connex

@@ -20,3 +20,7 @@ import OmniLaTeXProofs.BeamerProperties
 import OmniLaTeXProofs.BuildCache
 import OmniLaTeXProofs.BuildHash
 import OmniLaTeXProofs.CommandRunnerTimeout
+import OmniLaTeXProofs.TypographicConstraints
+import OmniLaTeXProofs.OutputFormats
+import OmniLaTeXProofs.LaTeXPackageDependencies
+import OmniLaTeXProofs.DocumentClassHierarchy

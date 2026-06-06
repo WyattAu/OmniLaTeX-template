@@ -1,0 +1,78 @@
+%% omnilatex-plugin-watermark.sty
+%% Watermark support for OmniLaTeX
+%%
+%% Provides:
+%%   \watermark{text}            - Add a centered watermark to every page
+%%   \setWatermarkColor{color}   - Change watermark color
+%%   \setWatermarkSize{size}     - Change watermark font size
+%%   \clearWatermark             - Remove watermark
+%%
+%% Demonstrates the OmniLaTeX hook system by hooking into
+%% the before/after document lifecycle.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{omnilatex-plugin-watermark}[2026/06/06 v1.0.0 Watermark OmniLaTeX Plugin]
+
+%% ── Plugin Identity ────────────────────────────────────
+\newcommand{\omnilatex@plugin@name}{watermark}
+\newcommand{\omnilatex@plugin@version}{1.0.0}
+
+%% ── Internal state ─────────────────────────────────────
+\RequirePackage{xcolor}
+\RequirePackage{graphicx}
+
+\newcommand{\omnilatex@wm@text}{}
+\newcommand{\omnilatex@wm@color}{gray!20}
+\newcommand{\omnilatex@wm@size}{\fontsize{60}{72}\selectfont}
+\newif\ifomnilatex@wm@active
+\omnilatex@wm@activefalse
+
+%% ── Public API ─────────────────────────────────────────
+
+% \watermark{text} — enable watermark with the given text
+\newcommand{\watermark}[1]{%
+  \def\omnilatex@wm@text{#1}%
+  \omnilatex@wm@activetrue
+  \AtBeginShipout{\omnilatex@wm@render}%
+}
+
+% \setWatermarkColor{color}
+\newcommand{\setWatermarkColor}[1]{%
+  \def\omnilatex@wm@color{#1}%
+}
+
+% \setWatermarkSize{size-command}
+\newcommand{\setWatermarkSize}[1]{%
+  \def\omnilatex@wm@size{#1}%
+}
+
+% \clearWatermark — remove watermark
+\newcommand{\clearWatermark}{%
+  \omnilatex@wm@activefalse
+  \def\omnilatex@wm@text{}%
+}
+
+%% ── Internal render command ────────────────────────────
+\newcommand{\omnilatex@wm@render}{%
+  \ifomnilatex@wm@active
+    \begingroup
+      \color@begingroup
+        \definecolor{omnilatex@wm@tempcolor}{named}{\omnilatex@wm@color}%
+        \color{omnilatex@wm@tempcolor}%
+        \makeatletter
+        \ifx\omnilatex@wm@text\@empty\else
+          \llap{%
+            \omnilatex@wm@size
+            \omnilatex@wm@text
+          }%
+        \fi
+        \makeatother
+      \color@endgroup
+    \endgroup
+  \fi
+}
+
+%% ── Hooks: log plugin loading ──────────────────────────
+\ClassInfo{omnilatex}{Loaded watermark plugin v\omnilatex@plugin@version}
+
+\endinput

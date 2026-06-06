@@ -45,3 +45,43 @@ theorem float_bottom_placement :
     p.sectionNum ≤ f.sectionBoundary + 1 := by
   intro p f h_wf h_mem
   exact h_wf f h_mem
+
+-- A trivial float always satisfies well-formedness on an empty page
+def emptyPage : Page := { sectionNum := 0, floats := [] }
+
+theorem empty_page_wellformed : Page.WellFormed emptyPage := by
+  intro f hf
+  simp [emptyPage] at hf
+
+-- Well-formedness is preserved by adding floats within the same section
+theorem wellformed_extend_same_section :
+  ∀ (p : Page) (f : LaTeXFloat),
+    Page.WellFormed p →
+    p.sectionNum ≥ f.sectionBoundary →
+    Page.WellFormed { p with floats := p.floats ++ [f]} := by
+  intro p f h_wf h_bound g hg
+  simp [List.mem_append] at hg
+  cases hg with
+  | inl h => exact h_wf g h
+  | inr h =>
+    simp at h
+    subst h
+    exact h_bound
+
+-- Float section boundary cannot exceed page section by more than 1 under WellFormedBounded
+theorem bounded_deferral :
+  ∀ (p : Page) (f : LaTeXFloat),
+    Page.WellFormedBounded p →
+    f ∈ p.floats →
+    f.sectionBoundary ≤ p.sectionNum + 1 := by
+  intro p f h_wf h_mem
+  have := h_wf f h_mem
+  omega
+
+-- Well-formedness implies non-negative section boundary for page
+theorem wellformed_section_nonneg :
+  ∀ (p : Page),
+    Page.WellFormed p →
+    (∀ f ∈ p.floats, f.sectionBoundary ≥ 0) := by
+  intro p h_wf f hf
+  omega

@@ -2,3 +2,10 @@
 per-file-ignores =
     tools/convert_omnl_floats.py: F841
     scripts/benchmark_examples.py: F841
+    tests/test_buildlib_commands_extended.py: F841,F401
+    tests/test_accessibility.py: F841,F401,F541
+    tests/test_plugin_manager.py: F401
+    tests/test_profiler.py: F401
+    tests/test_ssim_benchmark.py: F401
+    buildlib/accessibility_checker.py: F841
+    buildlib/profiler.py: F841

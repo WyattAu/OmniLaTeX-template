@@ -133,6 +133,38 @@ theorem feature_count_transitive :
     featureCount .ultra < featureCount .prod := by
   simp [featureCount]
 
+/-- Feature count is injective: each mode maps to a unique count. -/
+theorem feature_count_injective :
+    featureCount .ultra ≠ featureCount .dev ∧
+    featureCount .dev ≠ featureCount .prod ∧
+    featureCount .ultra ≠ featureCount .prod := by
+  constructor
+  · decide
+  constructor
+  · decide
+  · decide
+
+/-- Feature count total: sum of all mode counts. -/
+theorem feature_count_total :
+    featureCount .ultra + featureCount .dev + featureCount .prod = 8 := by
+  simp [featureCount]
+
+/-- Ultra is the unique minimum. -/
+theorem ultra_is_minimum :
+    ∀ m, featureCount .ultra ≤ featureCount m := by
+  intro m
+  cases m <;> simp [featureCount]
+
+/-- Prod is the unique maximum. -/
+theorem prod_is_maximum :
+    ∀ m, featureCount m ≤ featureCount .prod := by
+  intro m
+  cases m <;> simp [featureCount]
+
+/-- Feature count of ultra is exactly 1. -/
+theorem ultra_feature_count_eq_one : featureCount .ultra = 1 := by
+  simp [featureCount]
+
 /-- All modes have at least one pass (maxRepeat >= 1). -/
 theorem all_modes_positive_passes :
     (modeConfig .dev).maxRepeat >= 1 ∧

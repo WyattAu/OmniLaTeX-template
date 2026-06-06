@@ -1,0 +1,28 @@
+[plugin]
+name = "watermark"
+version = "1.0.0"
+description = "Provides a \\watermark{text} command to add watermarks to documents"
+author = "Wyatt Au"
+license = "Apache-2.0"
+homepage = "https://github.com/WyattAu/OmniLaTeX-template"
+
+[plugin.requirements]
+omnilatex = ">=2.4.0"
+texlive = ">=2024"
+engine = "lualatex"
+python = false
+
+[plugin.dependencies]
+# No dependencies
+
+[plugin.conflicts]
+# No conflicts
+
+[plugin.files]
+main = "omnilatex-plugin-watermark.sty"
+docs = ["README.md"]
+
+[plugin.security]
+shell_escape = false
+file_write = false
+network = false

@@ -33,4 +33,24 @@ theorem eviction_consistent : maxEntries > 0 ∧ maxAgeDays > 0 := by
   · simp [maxEntries]
   · simp [maxAgeDays]
 
+-- Theorem 6: Max entries is divisible by 10
+theorem max_entries_divisible_by_10 : maxEntries % 10 = 0 := by
+  simp [maxEntries]
+
+-- Theorem 7: Max age is divisible by 30
+theorem max_age_divisible_by_30 : maxAgeDays % 30 = 0 := by
+  simp [maxAgeDays]
+
+-- Theorem 8: Max entries is even
+theorem max_entries_even : maxEntries % 2 = 0 := by
+  simp [maxEntries]
+
+-- Theorem 9: Max age is divisible by 15
+theorem max_age_divisible_by_15 : maxAgeDays % 15 = 0 := by
+  simp [maxAgeDays]
+
+-- Theorem 10: Max entries is at least 50
+theorem max_entries_at_least_50 : maxEntries ≥ 50 := by
+  simp [maxEntries]
+
 end BuildCache

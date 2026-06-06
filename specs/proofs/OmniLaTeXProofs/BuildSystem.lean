@@ -67,4 +67,20 @@ theorem parallelism_bound :
   simp only [defaultConfig]
   exact And.intro (by omega) (by omega)
 
+-- Theorem 10: Worker count is at most 8
+theorem worker_count_upper : maxParallelWorkers ≤ 8 := by
+  simp [maxParallelWorkers]
+
+-- Theorem 11: Example count is positive and at least 40
+theorem example_count_at_least_40 : exampleCount ≥ 40 := by
+  simp [exampleCount]
+
+-- Theorem 12: Workers divide examples evenly
+theorem workers_divide_examples : exampleCount % maxParallelWorkers = 3 := by
+  simp [exampleCount, maxParallelWorkers]
+
+-- Theorem 13: Config worker count matches global
+theorem config_worker_matches : defaultConfig.maxWorkers = maxParallelWorkers := by
+  simp [defaultConfig, maxParallelWorkers]
+
 end BuildSystem

@@ -58,4 +58,33 @@ theorem mode_strictness_order :
   intro m
   cases m <;> simp [buildConfigFor]
 
+-- Theorem 6: All three modes are distinct
+theorem modes_distinct :
+  BuildMode.dev ≠ BuildMode.prod ∧ BuildMode.prod ≠ BuildMode.ultra ∧ BuildMode.dev ≠ BuildMode.ultra := by
+  constructor
+  · decide
+  constructor
+  · decide
+  · decide
+
+-- Theorem 7: Exactly three modes exist
+theorem mode_count_three :
+  [BuildMode.dev, BuildMode.prod, BuildMode.ultra].length = 3 := by
+  rfl
+
+-- Theorem 8: Dev mode does not validate datamodel
+theorem dev_no_validate :
+  (buildConfigFor .dev).validateDatamodel = false := by
+  simp [buildConfigFor]
+
+-- Theorem 9: Ultra mode does not validate datamodel
+theorem ultra_no_validate :
+  (buildConfigFor .ultra).validateDatamodel = false := by
+  simp [buildConfigFor]
+
+-- Theorem 10: Dev mode runs bib2gls
+theorem dev_runs_bib2gls :
+  (buildConfigFor .dev).runBib2gls = true := by
+  simp [buildConfigFor]
+
 end BuildModes
