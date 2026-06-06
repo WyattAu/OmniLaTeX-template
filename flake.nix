@@ -17,10 +17,11 @@
             packages = [
               pkgs.texlive.combined.scheme-full
               (pkgs.python3.withPackages (ps: [ ps.pygments ]))
-              pkgs.latexmk
-              pkgs.biber
-              pkgs.bib2gls
             ];
+
+            env = {
+              SOURCE_DATE_EPOCH = "1700000000";
+            };
 
             shellHook = ''
               echo "OmniLaTeX dev shell ready"
@@ -31,8 +32,6 @@
               echo "  python build.py build-example minimal-starter"
               echo "  python build.py --help"
             '';
-
-            SOURCE_DATE_EPOCH = "1700000000";
           };
         }
       );
@@ -49,13 +48,7 @@
             pname = "omnilatex";
             version = "2.4.0";
             src = self;
-            buildPhase = ''
-              # Validate structure
-              test -f omnilatex.cls
-              test -d lib
-              test -d config
-              test -d examples
-            '';
+            dontBuild = true;
             installPhase = ''
               mkdir -p $out/share/texmf/tex/latex/omnilatex
               cp -r . $out/share/texmf/tex/latex/omnilatex/
@@ -68,19 +61,30 @@
             };
           };
 
-          # Build app (compiles minimal-starter)
+          default = self.packages.${system}.omnilatex;
+        }
+      );
+
+      # Build applications
+      apps = forAllSystems (system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          tex = pkgs.texlive.combined.scheme-full;
+          pyenv = pkgs.python3.withPackages (ps: [ ps.pygments ]);
+        in {
+          # Build minimal-starter example
           default = {
             type = "app";
             program = "${pkgs.writeShellScript "omnilatex-build" ''
               set -euo pipefail
 
-              export PATH="${pkgs.lib.makeBinPath [ tex pyenv pkgs.coreutils pkgs.latexmk ]}"
+              export PATH="${pkgs.lib.makeBinPath [ tex pyenv pkgs.coreutils ]}"
               export SOURCE_DATE_EPOCH=''${SOURCE_DATE_EPOCH:-1700000000}
               export HOME=$(mktemp -d)
 
               src="${self}"
               tmpdir=$(mktemp -d)
-              trap 'rm -rf "$tmpdir"' EXIT
+              trap 'rm -rf "$tmpdir" 2>/dev/null; true' EXIT
 
               mkdir -p "$tmpdir/repo/examples/minimal-starter"
               cp -r "$src/examples/minimal-starter/"* "$tmpdir/repo/examples/minimal-starter/"
@@ -93,7 +97,7 @@
               cd "$tmpdir/repo/examples/minimal-starter"
               latexmk -lualatex -interaction=nonstopmode main.tex
 
-              outdir="''${1:-''${PWD}}"
+              outdir="''${1:-.}"
               cp main.pdf "$outdir/omnilatex-minimal.pdf"
               echo "PDF: $outdir/omnilatex-minimal.pdf"
             ''}";
@@ -105,7 +109,7 @@
             program = "${pkgs.writeShellScript "omnilatex-build-all" ''
               set -euo pipefail
 
-              export PATH="${pkgs.lib.makeBinPath [ tex pyenv pkgs.coreutils pkgs.latexmk ]}"
+              export PATH="${pkgs.lib.makeBinPath [ tex pyenv pkgs.coreutils ]}"
               export SOURCE_DATE_EPOCH=''${SOURCE_DATE_EPOCH:-1700000000}
               export HOME=$(mktemp -d)
 
@@ -119,23 +123,21 @@
 
       # Overlay for adding to other Nix configurations
       overlays.default = final: prev: {
-        omnilatex = final.callPackage ({ stdenv, texlive, python3, ... }:
-          stdenv.mkDerivation {
-            pname = "omnilatex";
-            version = "2.4.0";
-            src = self;
-            buildPhase = "true";
-            installPhase = ''
-              mkdir -p $out/share/texmf/tex/latex/omnilatex
-              cp -r . $out/share/texmf/tex/latex/omnilatex/
-            '';
-            meta = with final.lib; {
-              description = "Modular LaTeX document class";
-              homepage = "https://github.com/WyattAu/OmniLaTeX-template";
-              license = licenses.asl20;
-            };
-          }
-        ) {};
+        omnilatex = final.stdenv.mkDerivation {
+          pname = "omnilatex";
+          version = "2.4.0";
+          src = self;
+          dontBuild = true;
+          installPhase = ''
+            mkdir -p $out/share/texmf/tex/latex/omnilatex
+            cp -r . $out/share/texmf/tex/latex/omnilatex/
+          '';
+          meta = with final.lib; {
+            description = "Modular LaTeX document class";
+            homepage = "https://github.com/WyattAu/OmniLaTeX-template";
+            license = licenses.asl20;
+          };
+        };
       };
     };
 }

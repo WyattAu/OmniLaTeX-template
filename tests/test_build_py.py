@@ -171,10 +171,10 @@ class TestDoctor:
         assert len(combined) > 0, "doctor produced no output"
 
     def test_doctor_checks_core_tools(self) -> None:
-        """doctor should report on lualatex and latexmk."""
+        """doctor should report on luatex and latexmk."""
         result = _run("doctor", timeout=60)
         combined = result.stdout + result.stderr
-        assert "lualatex" in combined.lower(), "doctor should mention lualatex"
+        assert "luatex" in combined.lower(), "doctor should mention luatex"
         assert "latexmk" in combined.lower(), "doctor should mention latexmk"
 
     def test_doctor_reports_environment(self) -> None:
