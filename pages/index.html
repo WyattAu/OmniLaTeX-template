@@ -4,12 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Browse 48 professionally crafted OmniLaTeX document templates with PDF previews.">
+<meta name="theme-color" content="#0A0E13">
 <meta property="og:title" content="OmniLaTeX - Document Gallery">
 <meta property="og:description" content="48 professionally crafted LaTeX document templates.">
 <meta property="og:type" content="website">
+<meta property="og:image" content="https://wyattau.github.io/OmniLaTeX-template/assets/og-image.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>">
 <title>OmniLaTeX — Document Gallery</title>
 <link rel="stylesheet" href="style.css">
-<style>
+<link rel="stylesheet" href="index.css">
 header .tagline{color:var(--text-muted);font-size:1rem;max-width:520px;margin:0 auto;font-family:var(--font-mono)}
 
 .container{max-width:1200px;margin:0 auto;padding:0 var(--space-lg)}
@@ -125,7 +128,6 @@ section{padding:var(--space-xl) 0}
 @media(max-width:480px){
   .grid{grid-template-columns:1fr}
 }
-</style>
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -337,21 +339,31 @@ docGrid.addEventListener('keydown', e => {
   }
 });
 
+let lastFocusedElement = null;
+
 docGrid.addEventListener('click', e => {
   const card = e.target.closest('.card');
   if (!card) return;
   const doc = DOCS.find(d => d.id === card.dataset.id);
   if (!doc) return;
+  lastFocusedElement = card;
   lbTitle.textContent = doc.name + ' \u2014 ' + doc.desc;
   lbIframe.src = doc.file;
   lightbox.classList.add('open');
+  lightbox.removeAttribute('hidden');
   document.body.style.overflow = 'hidden';
+  lbClose.focus();
 });
 
 function closeLightbox() {
   lightbox.classList.remove('open');
+  lightbox.setAttribute('hidden', '');
   document.body.style.overflow = '';
   setTimeout(() => { lbIframe.src = ''; }, 200);
+  if (lastFocusedElement) {
+    lastFocusedElement.focus();
+    lastFocusedElement = null;
+  }
 }
 
 lbClose.addEventListener('click', closeLightbox);
@@ -359,7 +371,24 @@ lightbox.addEventListener('click', e => {
   if (e.target === lightbox || e.target.classList.contains('lightbox-body')) closeLightbox();
 });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+  if (e.key === 'Escape' && lightbox.classList.contains('open')) {
+    closeLightbox();
+    return;
+  }
+  // Focus trap: keep Tab within the lightbox when open
+  if (e.key === 'Tab' && lightbox.classList.contains('open')) {
+    const focusable = lightbox.querySelectorAll('button, [href], [tabindex]:not([tabindex="-1"])');
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
 });
 
 renderTabs();

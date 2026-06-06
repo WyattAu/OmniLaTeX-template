@@ -5,13 +5,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Verify that a PDF was built from the latest commit of the OmniLaTeX-template repository.">
+  <meta name="theme-color" content="#0A0E13">
   <meta property="og:title" content="OmniLaTeX - PDF Verification">
   <meta property="og:description" content="Verify PDF build provenance against repository commits.">
   <meta property="og:type" content="website">
+  <meta property="og:image" content="https://wyattau.github.io/OmniLaTeX-template/assets/og-image.png">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>">
   <link rel="preconnect" href="https://api.github.com" crossorigin>
   <title id="page-title">OmniLaTeX PDF Verification</title>
   <link rel="stylesheet" href="style.css">
-  <style>
+  <link rel="stylesheet" href="verify.css">
     :root {
       color-scheme: light dark;
       --bg: linear-gradient(135deg, #0f1419 0%, #1a1f26 100%);
@@ -263,7 +266,6 @@
         transform: translateY(0);
       }
     }
-  </style>
 </head>
 
 <body>

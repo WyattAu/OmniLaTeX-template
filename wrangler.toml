@@ -17,6 +17,16 @@ compatibility_date = "2024-01-01"
 #   Build command: pip install -r docs/requirements.txt && mkdocs build
 #   Output directory: site
 
+# Global security headers applied to all routes
+[[headers]]
+for = "/*"
+[headers.values]
+X-Content-Type-Options = "nosniff"
+X-Frame-Options = "DENY"
+Referrer-Policy = "strict-origin-when-cross-origin"
+Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+Permissions-Policy = "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+
 [[headers]]
 for = "/assets/*"
 [headers.values]
@@ -36,10 +46,6 @@ Cache-Control = "public, max-age=86400"
 for = "/*.html"
 [headers.values]
 Cache-Control = "public, max-age=3600"
-X-Content-Type-Options = "nosniff"
-X-Frame-Options = "DENY"
-X-XSS-Protection = "1; mode=block"
-Referrer-Policy = "strict-origin-when-cross-origin"
 Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' api.github.com; frame-ancestors 'none'"
 
 [[headers]]

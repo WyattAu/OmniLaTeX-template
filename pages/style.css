@@ -64,3 +64,14 @@ footer a{color:var(--text-secondary)}
     scroll-behavior:auto !important;
   }
 }
+
+/* Print styles */
+@media print{
+  body{background:#fff;color:#000}
+  header,nav,footer,.lightbox,.skip-link{display:none !important}
+  a{color:#000;text-decoration:underline}
+  a[href]::after{content:" (" attr(href) ")";font-size:.8em}
+  a[href^="#"]::after,a[href^="javascript:"]::after{content:""}
+  pre{border:1px solid #ccc;page-break-inside:avoid}
+  img{max-width:100% !important;page-break-inside:avoid}
+}
