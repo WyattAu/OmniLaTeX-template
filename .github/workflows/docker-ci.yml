@@ -36,7 +36,7 @@ permissions:
 jobs:
   build-push:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 120
     permissions:
       contents: read
       id-token: write

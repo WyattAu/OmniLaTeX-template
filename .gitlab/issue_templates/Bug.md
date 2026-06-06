@@ -1,3 +1,5 @@
+# Bug Report
+
 ## Summary
 
 <!-- Summarize the bug encountered concisely. -->
@@ -24,4 +26,3 @@ as it's tough to read otherwise. -->
 <!-- If you can, link to the line of code that might be responsible for the problem. -->
 
 /label ~"bug"
-/assign @alex

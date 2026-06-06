@@ -24,7 +24,9 @@ runs:
       rm -rf install-tl-*
     shell: bash
   - name: Add TeX Live to PATH
-    run: echo "/usr/local/texlive/2026/bin/x86_64-linux" >> $GITHUB_PATH
+    run: |
+      TEXLIVE_YEAR=$(ls /usr/local/texlive/ | sort -r | head -1)
+      echo "/usr/local/texlive/${TEXLIVE_YEAR}/bin/x86_64-linux" >> $GITHUB_PATH
     shell: bash
   - name: Verify TeX Live
     run: lualatex --version | head -1
