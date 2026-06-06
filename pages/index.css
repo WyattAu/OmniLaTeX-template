@@ -25,12 +25,14 @@ section{padding:var(--space-xl) 0}
 .card{
   background:var(--bg-card);border:var(--brutal-border);
   overflow:hidden;cursor:pointer;transition:all .15s;position:relative;
+  border-radius:var(--amoebic-soft);
 }
 .card::before{
   content:'';position:absolute;top:0;left:0;width:3px;bottom:0;
   background:var(--accent);opacity:0;transition:opacity .15s;z-index:2;
 }
-.card:hover{border-color:var(--border-light);transform:translateY(-2px);box-shadow:var(--depth-2)}
+.card:hover{border-color:var(--border-light);transform:translateY(-2px);box-shadow:var(--depth-2);transition:transform 0.2s var(--amoebic-ease-fluid), box-shadow 0.3s cubic-bezier(0.4,0,0.2,1)}
+.card:active{transform:translateY(1px);box-shadow:var(--sm-depth-1)}
 .card:hover::before{opacity:1}
 .card.featured{grid-column:1/-1}
 .card.featured .card-preview{height:320px}
