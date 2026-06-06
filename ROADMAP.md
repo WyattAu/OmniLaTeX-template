@@ -16,10 +16,10 @@
 | Examples | 50 | +2 |
 | Institutions | 21 | -- |
 | Languages | 25+ | -- |
-| Python tests (fast) | 878 | +107 |
+| Python tests (fast) | 936 | +165 |
 | l3build test files | 94 | -- |
 | Lean 4 theorems | 198 | -- |
-| buildlib coverage | 23% | +23% (from 0%) |
+| buildlib coverage | 47% | +47% (from 0%) |
 | CI platforms | 5 | -- |
 | Documentation pages | 19+ | -- |
 
@@ -27,13 +27,14 @@
 
 | Area | Status | Key Findings |
 |------|--------|--------------|
-| Testing | PASS | 878 fast tests, all passing. 90 new buildlib unit tests added. |
+| Testing | PASS | 936 fast tests, all passing. 156 buildlib unit tests total. |
 | Code Quality | PASS | black/isort/flake8 clean. Runner timeout bug fixed. |
 | Formal Verification | PASS | 198 Lean 4 theorems compile successfully. |
 | CI/CD Security | FIXED | 3 critical + 3 high issues resolved (secret leakage, injection, permissions). |
-| UI/UX Accessibility | FIXED | ARIA semantics, label associations, prefers-reduced-motion added. |
+| UI/UX Accessibility | FIXED | ARIA semantics, label associations, prefers-reduced-motion, focus trapping, print styles. |
 | Documentation | PASS | No emojis, professional tone, test count updated. |
 | Deployment | PASS | GitHub Pages live, all routes return 200. |
+| Security Headers | FIXED | HSTS, Permissions-Policy, global security headers added. |
 
 ---
 
@@ -46,19 +47,20 @@
 - [x] Fix test skip behavior (per-test skipif)
 - [x] Consolidate roadmap files
 - [x] Shell-escape security (OMNILATEX_SHELL_ESCAPE env var)
-- [x] Add buildlib unit tests (0% -> 23% coverage)
+- [x] Add buildlib unit tests (0% -> 47% coverage)
 - [x] Fix CommandRunner timeout bug (readline blocking)
 - [x] Fix CI/CD security issues (secret leakage, injection, permissions)
 - [x] Fix UI/UX accessibility (ARIA, labels, prefers-reduced-motion)
 - [x] Fix broken gallery-app.html reference
+- [x] Increase buildlib coverage to 47% (commands.py, tui.py)
+- [x] Add property-based tests for build cache hash determinism
+- [x] Add integration tests for scaffold-institution and scaffold-language
+- [x] Fix SemVer consistency check in pre-push hook (f-string bug)
 
 ### Open
 
-- [ ] Increase buildlib coverage to 50% (commands.py, tui.py)
 - [ ] CTAN zip test vs. shell script alignment
-- [ ] Add property-based tests for build cache hash determinism
-- [ ] Add integration tests for scaffold-institution and scaffold-language
-- [ ] Fix SemVer consistency check in pre-push hook
+- [ ] Increase buildlib coverage to 60%+ (tui.py, remaining commands.py)
 
 ---
 
@@ -70,14 +72,14 @@
 - [x] Parallel building (--jobs N with ThreadPoolExecutor)
 - [x] Build cache improvements (single JSON file)
 - [x] CI pipeline optimization (composite actions)
+- [x] Lean 4 proof .lake caching (already configured in CI)
+- [x] Add --source-date-epoch reproducibility validation to test suite
 
 ### Target
 
-- [ ] Lean 4 proof performance tracking and .lake caching
 - [ ] Build cache size monitoring and eviction policy
 - [ ] Profile and optimize LaTeX compilation for large documents
 - [ ] Benchmark and optimize SSIM comparison for 50-example builds
-- [ ] Add --source-date-epoch reproducibility validation to test suite
 - [ ] Measure and document CI pipeline timing baselines
 
 ---
@@ -89,6 +91,8 @@
 - [x] PDF Gallery (CI builds PDFs, gallery serves them)
 - [x] Cloudflare Pages deployment (wrangler.toml configured)
 - [x] CSP headers on HTML pages
+- [x] Add HSTS and Permissions-Policy headers to wrangler.toml
+- [x] Add favicon and og:image to all HTML pages
 
 ### Target
 
@@ -97,13 +101,18 @@
 - [ ] Package manager distribution (Nix flake app, Homebrew formula, AUR package)
 - [ ] Docker image multi-arch builds (amd64 + arm64, already configured)
 - [ ] SBOM generation automation (spdx format)
-- [ ] Add HSTS and Permissions-Policy headers to wrangler.toml
 - [ ] Move inline CSP scripts to external files (eliminate unsafe-inline)
-- [ ] Add favicon and og:image to all HTML pages
 
 ---
 
 ## Phase 4: Ecosystem (v3.1.0) -- 6-8 weeks
+
+### Completed
+
+- [x] Lightbox focus trapping and focus restoration
+- [x] Add @media print stylesheets to HTML pages
+- [x] Extract inline CSS from HTML pages into external stylesheets
+- [x] Add theme-color meta tags to all pages
 
 ### Target
 
@@ -113,10 +122,6 @@
 - [ ] Language expansion to 40+ languages
 - [ ] Interactive documentation site (template picker, live preview)
 - [ ] Add missing ARIA semantics to gallery.html (tablist for template cards)
-- [ ] Add lightbox focus trapping and focus restoration
-- [ ] Add og:image and theme-color meta tags to all pages
-- [ ] Add @media print stylesheets to HTML pages
-- [ ] Extract inline CSS from HTML pages into external stylesheets
 
 ---
 
@@ -160,11 +165,14 @@
 | 20 | UI missing ARIA semantics | High | FIXED |
 | 21 | Broken gallery-app.html link | High | FIXED |
 | 22 | No prefers-reduced-motion | Medium | FIXED |
-| 23 | buildlib coverage < 50% | Medium | OPEN |
-| 24 | Inline CSS in HTML pages | Medium | OPEN |
+| 23 | buildlib coverage < 50% | Medium | PARTIAL (47%) |
+| 24 | Inline CSS in HTML pages | Medium | FIXED |
 | 25 | CSP unsafe-inline | High | OPEN |
-| 26 | No favicon on HTML pages | Medium | OPEN |
-| 27 | No og:image on HTML pages | Medium | OPEN |
+| 26 | No favicon on HTML pages | Medium | FIXED |
+| 27 | No og:image on HTML pages | Medium | FIXED |
+| 28 | check_semver.py f-string bug | Medium | FIXED |
+| 29 | No lightbox focus trapping | Medium | FIXED |
+| 30 | No print stylesheets | Low | FIXED |
 
 ---
 
