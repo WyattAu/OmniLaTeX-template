@@ -39,6 +39,9 @@
 | CTAN Alignment | FIXED | Python test aligned with shell script. |
 | Design Language | FIXED | Spatial Materialism, Amoebic UI, Brutalism CSS tokens. |
 | CSP Security | FIXED | Eliminated unsafe-inline (scripts and styles now external). |
+| Package Managers | FIXED | Nix flake, Homebrew formula, AUR PKGBUILD created. |
+| Plugin System | FIXED | Manifest specification, sandbox, registry, example plugin. |
+| Language Expansion | FIXED | Scaffolding for 40+ languages with contribution guide. |
 
 ---
 
@@ -101,8 +104,8 @@
 
 - [ ] CTAN publication (pending reviewer approval)
 - [ ] Overleaf Template Gallery submission (top templates)
-- [ ] Package manager distribution (Nix flake app, Homebrew formula, AUR package)
-- [ ] Docker image multi-arch builds (amd64 + arm64, already configured)
+- [x] Package manager distribution (Nix flake app, Homebrew formula, AUR package)
+- [x] Docker image multi-arch builds (amd64 + arm64, already configured)
 
 ---
 
@@ -117,12 +120,14 @@
 - [x] Extract inline JavaScript from HTML pages to external files
 - [x] Add ARIA tablist semantics to gallery.html template cards
 - [x] Add design language CSS tokens (Spatial Materialism, Amoebic UI, Brutalism)
+- [x] Plugin system specification and sandbox (manifest.toml, registry)
+- [x] VS Code extension marketplace preparation guide
+- [x] Language expansion scaffolding (40+ languages target)
 
 ### Target
 
 - [ ] Plugin system expansion (manifest, registry, sandbox)
 - [ ] VS Code extension marketplace (Open VSX, VS Code Marketplace)
-- [ ] Language expansion to 40+ languages
 - [ ] Interactive documentation site (template picker, live preview)
 
 ---
