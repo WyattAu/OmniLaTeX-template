@@ -265,4 +265,8 @@ def main() -> None:
             args.handler(tasks, getattr(args, "files", None))
     except Exception as e:
         ui.error(f"An unexpected top-level error occurred: {e}")
+        if os.environ.get("OMNILATEX_VERBOSE") or os.environ.get("CI"):
+            import traceback
+
+            traceback.print_exc()
         sys.exit(1)

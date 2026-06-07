@@ -1196,7 +1196,6 @@ class _Commands:
 
             if found is None and not lualatex_check_done:
                 try:
-                    import os
                     import tempfile
 
                     tex_content = (
@@ -1210,18 +1209,18 @@ class _Commands:
                             tex_content += f"\\checkfont{{{fn}}}\n"
                     tex_content += "\\stop\n"
 
-                    with tempfile.NamedTemporaryFile(
-                        mode="w", suffix=".tex", delete=False
-                    ) as tmp:
-                        tmp.write(tex_content)
-                        tmp_path = tmp.name
+                    with tempfile.TemporaryDirectory(
+                        prefix="omnilatex-doctor-"
+                    ) as tmpdir:
+                        tmp_path = Path(tmpdir) / "check.tex"
+                        tmp_path.write_text(tex_content, encoding="utf-8")
 
-                    try:
                         result = subprocess.run(
-                            ["lualatex", "--interaction=nonstopmode", tmp_path],
+                            ["lualatex", "--interaction=nonstopmode", str(tmp_path)],
                             capture_output=True,
                             text=True,
                             timeout=30,
+                            cwd=tmpdir,
                         )
                         output = result.stdout + result.stderr
                         for fn in font_names:
@@ -1236,8 +1235,6 @@ class _Commands:
                                         False,
                                         "Not found (fallback font will be used)",
                                     )
-                    finally:
-                        os.unlink(tmp_path)
 
                     lualatex_check_done = True
                 except (OSError, subprocess.SubprocessError):

@@ -170,7 +170,11 @@ class BuildProfiler:
                 profile.package_count = info.get("package_count", 0)
                 profile.total_time_s = info.get("total_time_s")
             except Exception:
-                pass
+                import logging
+
+                logging.getLogger("omnilatex").debug(
+                    "Failed to parse build timing from log", exc_info=True
+                )
 
         return profile
 
