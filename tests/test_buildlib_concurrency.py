@@ -5,12 +5,12 @@ from __future__ import annotations
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
 from buildlib.builder import _BuildCore
-from buildlib.config import REPO_ROOT, ProjectConfig
+from buildlib.config import ProjectConfig
 from buildlib.runner import CommandRunner
 from buildlib.ui import TerminalOutput
 
@@ -75,7 +75,10 @@ class TestCacheThreadSafety:
             except Exception as e:
                 errors.append(e)
 
-        threads = [threading.Thread(target=write_cache, args=(f"ex{i}",)) for i in range(10)]
+        threads = [
+            threading.Thread(target=write_cache, args=(f"ex{i}",))
+            for i in range(10)
+        ]
         for t in threads:
             t.start()
         for t in threads:
