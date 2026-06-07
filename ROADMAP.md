@@ -16,12 +16,13 @@
 | Examples | 50 | -- |
 | Institutions | 21 | -- |
 | Languages | 25+ | -- |
-| Python tests (fast) | 1365 | +19 |
+| Python tests (fast) | 1391 | +46 |
 | l3build test files | 94 | -- |
 | Lean 4 theorems | 304 | +3 |
-| buildlib coverage | 72% | -1% (refactored code paths) |
+| buildlib coverage | 75% | +3% |
 | CI platforms | 5 | -- |
 | Documentation pages | 25+ | -- |
+| Class options | 15 | +3 (enablelayout, enablebibliography, enablehyperref) |
 
 ### Audit Results Summary (v2.5.0 Post-Audit)
 
@@ -39,6 +40,9 @@
 | CI/CD Hardening | FIXED | Path filters on build.yml/lean4-ci.yml, permissions on Forgejo/Gitea. |
 | WCAG Accessibility | FIXED | role=tablist->listbox, aria-live regions, 44px touch targets. |
 | Formal Verification | PASS | 29 Lean4 modules (3 new: BuildCacheAtomicity, ExceptionSafety, CleanupPathCorrectness). |
+| Lazy Module Loading | ADDED | enablelayout, enablebibliography, enablehyperref options + minimal mode. Graceful degradation stubs. |
+| Design Tokens | FIXED | verify.css now uses Spatial Materialism, Amoebic UI, and Brutalism tokens. prefers-reduced-motion added. |
+| Buildlib Coverage | IMPROVED | 72% -> 75%. preflight_test.py 0% -> 100%. New builder.py tests for worker paths. |
 
 ---
 
