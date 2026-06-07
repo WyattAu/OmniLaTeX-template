@@ -142,6 +142,16 @@ class _BuildCore:
         timings: bool = False,
         force: bool = False,
     ):
+        """Initialize the build core.
+
+        Args:
+            config: Project configuration (build directory, CNF lines).
+            runner: Command executor for subprocess calls.
+            ui: Terminal output handler.
+            jobs: Maximum concurrent build workers.
+            timings: Record per-example build metrics.
+            force: Ignore cache and rebuild from scratch.
+        """
         self.config, self.runner, self.ui, self.jobs = config, runner, ui, jobs
         self.timings = timings
         self.force = force
@@ -167,6 +177,7 @@ class _BuildCore:
 
     @staticmethod
     def _hash_for_paths(paths: list[Path]) -> str:
+        """Compute SHA-256 hash of all file contents, sorted by path."""
         h = hashlib.sha256()
         for p in sorted(paths):
             if p.exists():
@@ -221,6 +232,7 @@ class _BuildCore:
         )
 
     def _load_build_cache(self) -> dict:
+        """Load the build cache from disk. Returns empty dict on missing/corrupt file."""
         cache_path = self.config.build_dir / "build_cache.json"
         if cache_path.exists():
             try:
@@ -264,6 +276,7 @@ class _BuildCore:
         return cache
 
     def _save_build_cache(self, cache: dict) -> None:
+        """Save the build cache to disk, evicting stale entries first."""
         cache = self._evict_cache(cache)
         cache_path = self.config.build_dir / "build_cache.json"
         cache_path.parent.mkdir(parents=True, exist_ok=True)
@@ -273,6 +286,7 @@ class _BuildCore:
         )
 
     def _get_source_files(self, repo_root: Path) -> list[Path]:
+        """Find all .sty and .cls files, excluding non-source directories."""
         key = str(repo_root)
         if key not in self._source_files_cache:
             # Exclude known non-source directories to avoid scanning .git/, node_modules/, etc.
@@ -289,6 +303,7 @@ class _BuildCore:
         return self._source_files_cache[key]
 
     def _collect_source_files(self, example_name: str) -> list[Path]:
+        """Collect all source files relevant to an example (tex, bib, sty, cls)."""
         repo_root = REPO_ROOT
         example_dir = repo_root / "examples" / example_name
         files: list[Path] = []
@@ -332,6 +347,7 @@ class _BuildCore:
             self.ui.info("No build cache file to delete.")
 
     def discover_examples(self) -> list[Path]:
+        """Find all example directories containing a main.tex file."""
         d = REPO_ROOT / "examples"
         return (
             sorted(
@@ -693,6 +709,11 @@ class _BuildCore:
         )
 
     def build_examples(self, files: list[str] | None = None):
+        """Build all or specified examples concurrently.
+
+        Args:
+            files: Optional list of example names to build. If None, builds all.
+        """
         self.ui.header(f"Building examples (up to {self.jobs} in parallel)")
         all_names = [e.name for e in self.discover_examples()]
         names = all_names if not files else [n for n in files if n in all_names]
@@ -747,13 +768,16 @@ class _BuildCore:
 
     # --- ALL ORIGINAL COMMANDS ---
     def build_example(self, files: list[str]):
+        """Build specific example(s). Delegates to build_examples."""
         self.build_examples(files)
 
     def build_all(self, _: object | None = None) -> None:
+        """Build root document and all examples."""
         self.build_root()
         self.build_examples()
 
     def build_root(self, _: object | None = None) -> None:
+        """Build the root document (main.tex)."""
         self.ui.header("Building Root")
         pdf_path = Path(MAIN_TEX_FILENAME).with_suffix(".pdf")
 
@@ -846,17 +870,20 @@ class _BuildCore:
         return exit_code, logs
 
     def clean_all(self, _: object | None = None) -> None:
+        """Full cleanup: remove auxiliary files and build directory."""
         self.ui.header("Full cleanup")
         self.clean_aux()
         shutil.rmtree(self.config.build_dir, ignore_errors=True)
         self.ui.success("Full cleanup finished.")
 
     def clean_aux(self, _: object | None = None) -> None:
+        """Clean auxiliary files from all examples."""
         self.ui.header("Cleaning auxiliary files")
         self.runner.run([LATEXMK_COMMAND, "-C"])
         self.clean_example([e.name for e in self.discover_examples()])
 
     def clean_example(self, files: list[str]):
+        """Clean auxiliary files from specific examples."""
         if files:
             self.ui.info(f"Cleaning {len(files)} example(s)")
             for name in files:
@@ -868,6 +895,7 @@ class _BuildCore:
                     self.ui.warning(f"Could not clean example {name}")
 
     def clean_pdf(self, _: object | None = None) -> None:
+        """Remove all generated PDFs from build and examples directories."""
         self.ui.header("Cleaning PDF files")
         count = 0
         # Scope glob to build/ and examples/ to avoid scanning .git/, node_modules/

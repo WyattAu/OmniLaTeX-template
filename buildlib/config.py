@@ -35,11 +35,20 @@ except ImportError:
 
 @dataclass
 class ProjectConfig:
+    """Build system configuration.
+
+    Attributes:
+        build_dir: Output directory for built artifacts.
+        cnf_lines: Optional TeX CNF lines to pass via environment.
+    """
+
     build_dir: Path = Path("build")
     cnf_lines: list[str] | None = None
 
     def is_ci(self) -> bool:
+        """Return True if running in a CI environment."""
         return any(os.environ.get(var) for var in ["CI", "GITHUB_ACTIONS", "GITLAB_CI"])
 
     def verbose_enabled(self) -> bool:
+        """Return True if verbose logging is enabled via environment."""
         return os.environ.get("OMNILATEX_VERBOSE", "0").lower() in {"1", "true", "yes"}

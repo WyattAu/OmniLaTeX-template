@@ -32,6 +32,7 @@ python build.py build-example minimal-starter
 | Nix | `nix develop` |
 | CTAN | `tlmgr install omnilatex` (pending) |
 | Local | TeX Live 2025+ with LuaLaTeX |
+| Overleaf | [Open in Overleaf](https://www.overleaf.com/latex/templates/omnilatex/cndqjfkdnrfn) |
 
 ## Features
 

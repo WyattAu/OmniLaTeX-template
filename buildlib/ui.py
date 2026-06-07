@@ -6,6 +6,14 @@ import sys
 
 
 class TerminalOutput:
+    """Terminal output handler with color and Unicode fallback support.
+
+    Args:
+        use_color: Enable ANSI color codes (default: auto-detect TTY).
+        use_unicode: Use Unicode symbols (checkmark, warning, cross).
+            Falls back to ASCII ([OK], [WARN], [ERR]) when False.
+    """
+
     def __init__(
         self,
         use_color: bool = sys.stdout.isatty(),
