@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+
 import pytest
 
 from buildlib.runner import CommandRunner
@@ -41,12 +43,13 @@ class TestCommandRunner:
         assert any("Command not found" in line for line in logs)
 
     def test_run_permission_denied(self, runner, tmp_path):
+        if os.getuid() == 0:
+            pytest.skip("Cannot test permission denied when running as root")
         script = tmp_path / "noperm.sh"
         script.write_text("#!/bin/bash\necho hi")
         script.chmod(0o000)
         exit_code, logs = runner.run([str(script)])
-        # Should be -1 (permission denied) or 0 if running as root
-        assert exit_code in (-1, 0)
+        assert exit_code == -1
 
     def test_run_with_cwd(self, runner, tmp_path):
         exit_code, logs = runner.run(["pwd"], cwd=tmp_path)

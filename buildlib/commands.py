@@ -333,7 +333,7 @@ class _Commands:
             return tex
         return None
 
-    def _diff_two_pdfs(self, a: str, b: str, output: str = None):
+    def _diff_two_pdfs(self, a: str, b: str, output: str | None = None):
         self.ui.header(f"Diff: {Path(a).name} vs {Path(b).name}")
         latexdiff_path = shutil.which("latexdiff")
         tex_a = self._find_tex_for_pdf(a)
@@ -396,7 +396,7 @@ class _Commands:
             shutil.rmtree(tmpdir, ignore_errors=True)
 
     def _run_latexdiff(
-        self, tex_a: Path, tex_b: Path, output: str = None, cwd: Path = None
+        self, tex_a: Path, tex_b: Path, output: str | None = None, cwd: Path | None = None
     ):
         import tempfile
 
@@ -479,7 +479,7 @@ class _Commands:
     # -- cmd_diff -----------------------------------------------------------
 
     def cmd_diff(
-        self, files: list[str], regenerate_references: bool = False, output: str = None
+        self, files: list[str], regenerate_references: bool = False, output: str | None = None
     ):
         """Compare PDFs, git refs, or example references.
 

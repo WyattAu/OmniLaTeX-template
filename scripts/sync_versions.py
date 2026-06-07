@@ -29,23 +29,6 @@ DATE_SEMVER_RE = re.compile(r"\d{4}/\d{2}/\d{2} v\d+\.\d+\.\d+")
 BARE_SEMVER_RE = re.compile(r"\d+\.\d+\.\d+")
 
 
-def _read_canonical() -> tuple[str, str]:
-    """Return (semver, date_str) from VERSION.md."""
-    text = VERSION_FILE.read_text(encoding="utf-8")
-    m_ver = SEMVER_RE.search(text)
-    if not m_ver:
-        sys.exit(f"ERROR: no version found in {VERSION_FILE}")
-    semver = m_ver.group(1)
-    m_date = re.search(r"(\d{4}-\d{2}-\d{2})", text)
-    if not m_date:
-        today = date.today()
-        date_str = f"{today.year:04d}/{today.month:02d}/{today.day:02d}"
-    else:
-        parts = m_date.group(1).split("-")
-        date_str = f"{parts[0]}/{parts[1]}/{parts[2]}"
-    return semver, date_str
-
-
 def _file_paths(pattern: str) -> list[Path]:
     return sorted(ROOT.glob(pattern))
 

@@ -33,7 +33,7 @@ jobs:
       uses: ./.github/actions/setup-python
 
     - name: Install linting tools
-      run: pip install -q black isort flake8
+      run: pip install -q black isort flake8 bandit
 
     - name: Run black --check
       run: black --check tests/ buildlib/ scripts/ tools/ build.py
@@ -43,6 +43,9 @@ jobs:
 
     - name: Run flake8
       run: flake8 tests/ buildlib/ scripts/ tools/ build.py --max-line-length=100 --extend-ignore=E203,W503
+
+    - name: Run bandit security scan
+      run: bandit -r buildlib/ -c pyproject.toml -q 2>/dev/null || bandit -r buildlib/ -q --skip B101
 
   dependency-review:
     runs-on: ubuntu-latest
