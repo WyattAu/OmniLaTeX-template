@@ -84,8 +84,13 @@ _TOTAL_TIME_RE = re.compile(r"([0-9.]+)\s+seconds?")
 
 
 def parse_log_for_package_times(log_content: str) -> dict[str, dict]:
-    """Parse LaTeX log content for per-package information and timing data."""
+    """Parse LaTeX log content for per-package information and timing data.
+
+    Single-pass implementation: iterates log lines once, extracting package
+    info, luc cache entries, and total build time in a single loop.
+    """
     packages: dict[str, dict] = {}
+    total_time = None
     for line in log_content.splitlines():
         m = _PACKAGE_RE.match(line.strip())
         if m:
@@ -95,18 +100,17 @@ def parse_log_for_package_times(log_content: str) -> dict[str, dict]:
                 "date": date_str,
                 "info": rest.strip(),
             }
-        m = _LOAD_LUC_RE.search(line)
-        if m:
-            luc_path = Path(m.group(1))
-            luc_name = luc_path.stem
-            if luc_name not in packages:
-                packages[luc_name] = {
-                    "name": luc_name,
-                    "source": "luc_cache",
-                    "path": str(luc_path),
-                }
-    total_time = None
-    for line in log_content.splitlines():
+        else:
+            m = _LOAD_LUC_RE.search(line)
+            if m:
+                luc_path = Path(m.group(1))
+                luc_name = luc_path.stem
+                if luc_name not in packages:
+                    packages[luc_name] = {
+                        "name": luc_name,
+                        "source": "luc_cache",
+                        "path": str(luc_path),
+                    }
         m = _TOTAL_TIME_RE.search(line)
         if m and "seconds" in line.lower():
             val = float(m.group(1))
@@ -169,6 +173,53 @@ class _BuildCore:
                 h.update(p.read_bytes())
         return h.hexdigest()
 
+    @staticmethod
+    def _get_mtimes(paths: list[Path]) -> dict[str, float]:
+        """Get modification times for all paths. Used for fast cache checks."""
+        mtimes: dict[str, float] = {}
+        for p in paths:
+            if p.exists():
+                mtimes[str(p)] = p.stat().st_mtime
+        return mtimes
+
+    def _cache_hit(self, example_name: str, source_files: list[Path]) -> bool:
+        """Check if cached build is still valid using mtime fast-path.
+
+        Returns True if the cache entry exists, all source file mtimes match
+        the cached mtimes, and the output PDF exists. This avoids reading
+        every file to compute the full SHA-256 hash when nothing changed.
+        """
+        with self._cache_lock:
+            if self._shared_build_cache is not None:
+                cache = self._shared_build_cache
+            else:
+                cache = self._load_build_cache()
+            cached = cache.get(f"examples/{example_name}")
+
+        if not cached:
+            return False
+
+        # Fast path: check mtimes first (stat-only, no file reads)
+        cached_mtimes = cached.get("mtimes")
+        if cached_mtimes:
+            current_mtimes = self._get_mtimes(source_files)
+            if current_mtimes == cached_mtimes:
+                # mtimes match - check PDF exists
+                dest_pdf = (
+                    REPO_ROOT / self.config.build_dir / BUILD_EXAMPLES_SUBDIR
+                ) / f"{example_name}.pdf"
+                return dest_pdf.exists()
+
+        # Slow path: full hash comparison
+        source_hash = self._hash_for_paths(source_files)
+        dest_pdf = (
+            REPO_ROOT / self.config.build_dir / BUILD_EXAMPLES_SUBDIR
+        ) / f"{example_name}.pdf"
+        return (
+            cached.get("source_hash") == source_hash
+            and dest_pdf.exists()
+        )
+
     def _load_build_cache(self) -> dict:
         cache_path = self.config.build_dir / "build_cache.json"
         if cache_path.exists():
@@ -224,8 +275,16 @@ class _BuildCore:
     def _get_source_files(self, repo_root: Path) -> list[Path]:
         key = str(repo_root)
         if key not in self._source_files_cache:
-            sty_files = list(repo_root.rglob("*.sty"))
-            cls_files = list(repo_root.rglob("*.cls"))
+            # Exclude known non-source directories to avoid scanning .git/, node_modules/, etc.
+            exclude = {".git", "node_modules", "build", ".venv", ".direnv", "__pycache__", ".nix"}
+            sty_files = [
+                p for p in repo_root.rglob("*.sty")
+                if not any(d in exclude for d in p.parts)
+            ]
+            cls_files = [
+                p for p in repo_root.rglob("*.cls")
+                if not any(d in exclude for d in p.parts)
+            ]
             self._source_files_cache[key] = sty_files + cls_files
         return self._source_files_cache[key]
 
@@ -320,21 +379,7 @@ class _BuildCore:
 
             if not self.force:
                 source_files = self._collect_source_files(example_name)
-                source_hash = self._hash_for_paths(source_files)
-                with self._cache_lock:
-                    if self._shared_build_cache is not None:
-                        cache = self._shared_build_cache
-                    else:
-                        cache = self._load_build_cache()
-                    cached = cache.get(f"examples/{example_name}")
-                dest_pdf = (
-                    repo_root / self.config.build_dir / BUILD_EXAMPLES_SUBDIR
-                ) / f"{example_name}.pdf"
-                if (
-                    cached
-                    and cached.get("source_hash") == source_hash
-                    and dest_pdf.exists()
-                ):
+                if self._cache_hit(example_name, source_files):
                     all_logs.append(
                         "[green]✓ Cache hit for "
                         f"{example_name}, skipping build.[/green]"
@@ -449,6 +494,7 @@ class _BuildCore:
                         cache = self._load_build_cache()
                     cache[f"examples/{example_name}"] = {
                         "source_hash": source_hash,
+                        "mtimes": self._get_mtimes(source_files),
                         "pdf_size": dest_pdf.stat().st_size,
                         "build_time": time.strftime(
                             "%Y-%m-%dT%H:%M:%SZ", time.gmtime()
@@ -809,10 +855,15 @@ class _BuildCore:
     def clean_pdf(self, _: object | None = None) -> None:
         self.ui.header("Cleaning PDF files")
         count = 0
-        for pdf in Path(".").rglob("*.pdf"):
-            if self.config.build_dir in pdf.parents or "examples" in [
-                d.name for d in pdf.parents
-            ]:
+        # Scope glob to build/ and examples/ to avoid scanning .git/, node_modules/
+        build_examples = self.config.build_dir / "examples"
+        if build_examples.is_dir():
+            for pdf in build_examples.glob("*.pdf"):
+                pdf.unlink(missing_ok=True)
+                count += 1
+        examples_dir = REPO_ROOT / "examples"
+        if examples_dir.is_dir():
+            for pdf in examples_dir.rglob("*.pdf"):
                 pdf.unlink(missing_ok=True)
                 count += 1
         self.ui.success(f"Removed {count} PDF(s).")

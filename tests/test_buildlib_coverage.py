@@ -666,20 +666,20 @@ class TestCleanMethods:
         assert "Could not clean" in captured.out
 
     def test_clean_pdf_removes_matching(self, build_core, tmp_path, monkeypatch):
-        """clean_pdf should remove PDFs in build dir and examples."""
+        """clean_pdf should remove PDFs in build/examples and examples/."""
         monkeypatch.chdir(tmp_path)
-        build_dir = tmp_path / "build"
-        build_dir.mkdir()
-        (build_dir / "test.pdf").write_bytes(b"%PDF")
+        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        build_examples_dir = tmp_path / "build" / "examples"
+        build_examples_dir.mkdir(parents=True)
+        (build_examples_dir / "test.pdf").write_bytes(b"%PDF")
         examples_dir = tmp_path / "examples" / "ex1"
         examples_dir.mkdir(parents=True)
         (examples_dir / "main.pdf").write_bytes(b"%PDF")
         # Non-matching PDF (should not be removed)
         (tmp_path / "other.pdf").write_bytes(b"%PDF")
-        # Use relative path for build_dir to match Path(".").rglob behavior
-        build_core.config.build_dir = Path("build")
+        build_core.config.build_dir = tmp_path / "build"
         build_core.clean_pdf()
-        assert not (build_dir / "test.pdf").exists()
+        assert not (build_examples_dir / "test.pdf").exists()
         assert not (examples_dir / "main.pdf").exists()
         assert (tmp_path / "other.pdf").exists()
 
