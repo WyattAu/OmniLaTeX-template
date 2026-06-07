@@ -5,15 +5,7 @@ Composes mixin classes into the final BuildTasks class.
 
 from __future__ import annotations
 
-from buildlib.builder import _BuildCore  # noqa: F401
-from buildlib.commands import _Commands  # noqa: F401
-
-
-class BuildTasks(_BuildCore, _Commands):
-    """Combined build tasks with core build logic and CLI commands."""
-
-    pass
-
+from buildlib.tasks import BuildTasks  # noqa: F401
 
 # Re-export public API for convenience
 from buildlib.cli import main  # noqa: F401, E402
@@ -24,6 +16,7 @@ from buildlib.config import (  # noqa: F401, E402
     LATEXMK_COMMAND,
     MAIN_TEX_FILENAME,
     MINTED_CACHE_SUBDIR,
+    RICH_AVAILABLE,
     SVG_INKSCAPE_CACHE,
     ProjectConfig,
 )

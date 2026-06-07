@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import time
 
-from buildlib.builder import RICH_AVAILABLE
+from buildlib.config import RICH_AVAILABLE
 
 
 def interactive_menu(tasks, commands: dict[str, tuple]) -> None:

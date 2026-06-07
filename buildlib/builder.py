@@ -21,6 +21,7 @@ from buildlib.config import (
     LATEXMK_FORCE_CONTINUE,
     MAIN_TEX_FILENAME,
     MINTED_CACHE_SUBDIR,
+    RICH_AVAILABLE,
     REPO_ROOT,
     SVG_INKSCAPE_CACHE,
     ProjectConfig,
@@ -28,8 +29,8 @@ from buildlib.config import (
 from buildlib.runner import CommandRunner
 from buildlib.ui import TerminalOutput
 
-# --- Rich library integration ---
-try:
+# --- Rich library integration (conditional on RICH_AVAILABLE) ---
+if RICH_AVAILABLE:
     from rich.console import Console
     from rich.layout import Layout
     from rich.live import Live
@@ -42,10 +43,6 @@ try:
         TimeElapsedColumn,
     )
     from rich.text import Text
-
-    RICH_AVAILABLE = True
-except ImportError:
-    RICH_AVAILABLE = False
 
 # --- TQDM fallback ---
 try:

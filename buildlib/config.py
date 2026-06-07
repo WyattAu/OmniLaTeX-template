@@ -24,6 +24,14 @@ BUILD_EXAMPLES_SUBDIR = "examples"
 # Repository root directory (two levels up from this file: buildlib/ -> repo root)
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
+# --- Rich library availability ---
+try:
+    import rich  # noqa: F401
+
+    RICH_AVAILABLE = True
+except ImportError:
+    RICH_AVAILABLE = False
+
 
 @dataclass
 class ProjectConfig:
