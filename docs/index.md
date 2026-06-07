@@ -40,7 +40,7 @@ python build.py build-example minimal-starter
 - **25 full translations** -- EN, DE, FR, ES, PT, IT, NL, PL, CZ, EL, TR, RU, VI, HI, SV, FI, DA, NO, and more
 - **25 polyglossia languages** -- full script support including CJK, Arabic, Hebrew, Cyrillic
 - **223 Lean 4 theorems** -- formal verification of module properties
-- **939 pytest tests** -- structural, property-based, visual regression, edge cases
+- **1346 pytest tests** -- structural, property-based, visual regression, edge cases
 - **Deterministic builds** -- byte-for-byte reproducible PDFs via `SOURCE_DATE_EPOCH`
 
 ## Web Tools

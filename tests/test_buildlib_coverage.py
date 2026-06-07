@@ -9,6 +9,7 @@ from __future__ import annotations
 import datetime
 import json
 import time
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -620,3 +621,148 @@ class TestWorkerCacheHit:
 
         name, success, logs = build_core._compile_example_worker(example_name)
         assert success is True
+
+
+# ===================================================================
+# builder.py -- clean_all, clean_example, clean_pdf
+# ===================================================================
+
+
+class TestCleanMethods:
+    """Test cleanup methods in _BuildCore."""
+
+    def test_clean_all(self, build_core, tmp_path, monkeypatch):
+        """clean_all should remove build dir and clean aux files."""
+        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        build_core.config.build_dir = tmp_path / "build"
+        build_core.config.build_dir.mkdir(parents=True)
+        (build_core.config.build_dir / "test.pdf").write_bytes(b"%PDF")
+        with patch.object(build_core.runner, "run", return_value=(0, [])):
+            build_core.clean_all()
+        assert not build_core.config.build_dir.exists()
+
+    def test_clean_example_empty_list(self, build_core):
+        """clean_example with empty list should not call runner."""
+        with patch.object(build_core.runner, "run") as mock_run:
+            build_core.clean_example([])
+        mock_run.assert_not_called()
+
+    def test_clean_example_with_files(self, build_core, tmp_path, monkeypatch):
+        """clean_example should call latexmk -c for each file."""
+        monkeypatch.chdir(tmp_path)
+        (tmp_path / "examples" / "test-ex").mkdir(parents=True)
+        with patch.object(build_core.runner, "run", return_value=(0, [])) as mock_run:
+            build_core.clean_example(["test-ex"])
+        mock_run.assert_called_once()
+
+    def test_clean_example_os_error(self, build_core, tmp_path, monkeypatch, capsys):
+        """clean_example should catch OSError and continue."""
+        monkeypatch.chdir(tmp_path)
+        with patch.object(
+            build_core.runner, "run", side_effect=OSError("permission denied")
+        ):
+            build_core.clean_example(["test-ex"])
+        captured = capsys.readouterr()
+        assert "Could not clean" in captured.out
+
+    def test_clean_pdf_removes_matching(self, build_core, tmp_path, monkeypatch):
+        """clean_pdf should remove PDFs in build dir and examples."""
+        monkeypatch.chdir(tmp_path)
+        build_dir = tmp_path / "build"
+        build_dir.mkdir()
+        (build_dir / "test.pdf").write_bytes(b"%PDF")
+        examples_dir = tmp_path / "examples" / "ex1"
+        examples_dir.mkdir(parents=True)
+        (examples_dir / "main.pdf").write_bytes(b"%PDF")
+        # Non-matching PDF (should not be removed)
+        (tmp_path / "other.pdf").write_bytes(b"%PDF")
+        # Use relative path for build_dir to match Path(".").rglob behavior
+        build_core.config.build_dir = Path("build")
+        build_core.clean_pdf()
+        assert not (build_dir / "test.pdf").exists()
+        assert not (examples_dir / "main.pdf").exists()
+        assert (tmp_path / "other.pdf").exists()
+
+
+# ===================================================================
+# builder.py -- build_all, build_example
+# ===================================================================
+
+
+class TestBuildAllAndExample:
+    def test_build_example_delegates(self, build_core):
+        """build_example should delegate to build_examples."""
+        with patch.object(build_core, "build_examples") as mock:
+            build_core.build_example(["thesis"])
+        mock.assert_called_once_with(["thesis"])
+
+    def test_build_all_calls_root_and_examples(self, build_core):
+        """build_all should call build_root then build_examples."""
+        with (
+            patch.object(build_core, "build_root") as mock_root,
+            patch.object(build_core, "build_examples") as mock_examples,
+        ):
+            build_core.build_all()
+        mock_root.assert_called_once()
+        mock_examples.assert_called_once()
+
+
+# ===================================================================
+# builder.py -- preflight and run_tests delegates
+# ===================================================================
+
+
+class TestPreflightAndRunTests:
+    def test_preflight_delegates(self, build_core):
+        """preflight should call cmd_preflight if available."""
+        # cmd_preflight is on _Commands mixin, not _BuildCore directly.
+        # But build_core.preflight() calls self.cmd_preflight().
+        # Mock it at the instance level using MagicMock.
+        build_core.cmd_preflight = MagicMock()
+        build_core.preflight()
+        build_core.cmd_preflight.assert_called_once()
+
+    def test_run_tests_delegates(self, build_core):
+        """run_tests should call cmd_test if available."""
+        build_core.cmd_test = MagicMock()
+        build_core.run_tests()
+        build_core.cmd_test.assert_called_once()
+
+
+# ===================================================================
+# builder.py -- TqdmFallback
+# ===================================================================
+
+
+class TestTqdmFallback:
+    """Test the TqdmFallback progress bar class."""
+
+    def test_with_list(self, capsys):
+        from buildlib.builder import TqdmFallback
+
+        items = [1, 2, 3]
+        result = list(TqdmFallback(items, desc="Test"))
+        assert result == [1, 2, 3]
+
+    def test_with_generator(self, capsys):
+        from buildlib.builder import TqdmFallback
+
+        def gen():
+            yield "a"
+            yield "b"
+
+        result = list(TqdmFallback(gen(), desc="Gen", total=2))
+        assert result == ["a", "b"]
+
+    def test_progress_output(self, capsys):
+        from buildlib.builder import TqdmFallback
+
+        list(TqdmFallback([1, 2], desc="Prog"))
+        captured = capsys.readouterr()
+        assert "Prog:" in captured.out
+
+    def test_zero_total(self, capsys):
+        from buildlib.builder import TqdmFallback
+
+        result = list(TqdmFallback([], desc="Empty"))
+        assert result == []

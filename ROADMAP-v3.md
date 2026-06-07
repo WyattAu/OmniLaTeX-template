@@ -2,7 +2,7 @@
 
 > **This file is archived.** The active roadmap is [`ROADMAP.md`](ROADMAP.md).
 
-This document contains the detailed v3 planning breakdown that has been consolidated into the active roadmap..0
+This document contains the detailed v3 planning breakdown that has been consolidated into the active roadmap.
 
 **Date:** 2026-05-26 | **Current:** v2.2.0 | **Target:** v4.0.0 | **License:** Apache 2.0
 
