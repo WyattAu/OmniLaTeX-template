@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from buildlib.commands import _Commands
+from buildlib.commands.commands import _Commands
 from buildlib.config import REPO_ROOT, ProjectConfig
 from buildlib.runner import CommandRunner
 from buildlib.ui import TerminalOutput
@@ -75,7 +75,7 @@ class TestCmdPreflight:
 
 class TestCmdTest:
     def test_cmd_test_returns_int(self, commands):
-        with patch("buildlib.commands.subprocess.run") as mock_run:
+        with patch("buildlib.commands.commands.subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
             result = commands.cmd_test()
             assert isinstance(result, int)
@@ -205,7 +205,7 @@ class TestCmdCheck:
 
 class TestCmdLint:
     def test_cmd_lint_returns_int(self, commands):
-        with patch("buildlib.commands.subprocess.run") as mock_run:
+        with patch("buildlib.commands.commands.subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
             result = commands.cmd_lint()
             assert isinstance(result, int)

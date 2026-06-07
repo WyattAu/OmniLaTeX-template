@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from buildlib.builder import _BuildCore
-from buildlib.commands import _Commands
+from buildlib.commands.commands import _Commands
 
 
 class BuildTasks(_BuildCore, _Commands):

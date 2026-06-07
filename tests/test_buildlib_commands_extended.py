@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, mock_open, patch
 
 import pytest
 
-from buildlib.commands import _Commands
+from buildlib.commands.commands import _Commands
 from buildlib.config import REPO_ROOT, ProjectConfig
 from buildlib.runner import CommandRunner
 from buildlib.ui import TerminalOutput
@@ -46,7 +46,7 @@ class TestCmdExport:
     def test_html_no_latexml(self, commands, capsys, tmp_path):
         src = tmp_path / "main.tex"
         src.write_text("\\documentclass{article}\n\\begin{document}\\end{document}\n")
-        with patch("buildlib.commands.shutil.which", return_value=None):
+        with patch("buildlib.commands.commands.shutil.which", return_value=None):
             commands.cmd_export([str(src)], output_format="html")
         captured = capsys.readouterr()
         assert "latexml not found" in captured.err
@@ -54,7 +54,7 @@ class TestCmdExport:
     def test_epub_no_pandoc(self, commands, capsys, tmp_path):
         src = tmp_path / "main.tex"
         src.write_text("\\documentclass{article}\n\\begin{document}\\end{document}\n")
-        with patch("buildlib.commands.shutil.which", return_value=None):
+        with patch("buildlib.commands.commands.shutil.which", return_value=None):
             commands.cmd_export([str(src)], output_format="epub")
         captured = capsys.readouterr()
         assert "pandoc not found" in captured.err
@@ -62,7 +62,7 @@ class TestCmdExport:
     def test_docx_no_pandoc(self, commands, capsys, tmp_path):
         src = tmp_path / "main.tex"
         src.write_text("\\documentclass{article}\n\\begin{document}\\end{document}\n")
-        with patch("buildlib.commands.shutil.which", return_value=None):
+        with patch("buildlib.commands.commands.shutil.which", return_value=None):
             commands.cmd_export([str(src)], output_format="docx")
         captured = capsys.readouterr()
         assert "pandoc not found" in captured.err
@@ -83,8 +83,8 @@ class TestCmdExport:
                 html_file.write_text("<html></html>")
             return (0, [])
 
-        with patch("buildlib.commands.REPO_ROOT", monkeypatch_root):
-            with patch("buildlib.commands.shutil.which", side_effect=fake_which):
+        with patch("buildlib.config.REPO_ROOT", monkeypatch_root):
+            with patch("buildlib.commands.commands.shutil.which", side_effect=fake_which):
                 with patch.object(commands.runner, "run", side_effect=make_html):
                     commands.cmd_export([str(src)], output_format="html")
         captured = capsys.readouterr()
@@ -97,7 +97,7 @@ class TestCmdExport:
         def fake_which(name):
             return f"/usr/bin/{name}"
 
-        with patch("buildlib.commands.shutil.which", side_effect=fake_which):
+        with patch("buildlib.commands.commands.shutil.which", side_effect=fake_which):
             with patch.object(
                 commands.runner,
                 "run",
@@ -125,8 +125,8 @@ class TestCmdExport:
                 epub_file.write_bytes(b"%EPUB")
             return (0, [])
 
-        with patch("buildlib.commands.REPO_ROOT", monkeypatch_root):
-            with patch("buildlib.commands.shutil.which", side_effect=fake_which):
+        with patch("buildlib.config.REPO_ROOT", monkeypatch_root):
+            with patch("buildlib.commands.commands.shutil.which", side_effect=fake_which):
                 with patch.object(commands.runner, "run", side_effect=make_epub):
                     commands.cmd_export([str(src)], output_format="epub")
         captured = capsys.readouterr()
@@ -141,7 +141,7 @@ class TestCmdExport:
                 return "/usr/bin/pandoc"
             return None
 
-        with patch("buildlib.commands.shutil.which", side_effect=fake_which):
+        with patch("buildlib.commands.commands.shutil.which", side_effect=fake_which):
             with patch.object(commands.runner, "run", return_value=(1, [])):
                 commands.cmd_export([str(src)], output_format="epub")
         captured = capsys.readouterr()
@@ -159,7 +159,7 @@ class TestCmdExport:
                 return "/usr/bin/latexml"
             return None
 
-        with patch("buildlib.commands.shutil.which", side_effect=fake_which):
+        with patch("buildlib.commands.commands.shutil.which", side_effect=fake_which):
             with patch.object(commands.runner, "run", return_value=(1, [])):
                 commands.cmd_export([str(src)], output_format="epub")
         captured = capsys.readouterr()
@@ -168,10 +168,10 @@ class TestCmdExport:
 
     def test_default_source_main_tex(self, commands, capsys, tmp_path, monkeypatch):
         """No files arg -> defaults to repo root main.tex."""
-        monkeypatch.setattr("buildlib.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
         main = tmp_path / "main.tex"
         main.write_text("\\documentclass{article}\n")
-        with patch("buildlib.commands.shutil.which", return_value=None):
+        with patch("buildlib.commands.commands.shutil.which", return_value=None):
             commands.cmd_export([], output_format="html")
         captured = capsys.readouterr()
         assert "latexml not found" in captured.err
@@ -182,7 +182,7 @@ class TestCmdExport:
 # ---------------------------------------------------------------------------
 class TestCmdLint:
     def test_no_tex_files(self, commands, capsys, tmp_path, monkeypatch):
-        monkeypatch.setattr("buildlib.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
         result = commands.cmd_lint()
         captured = capsys.readouterr()
         assert "No .tex files" in captured.out
@@ -191,8 +191,8 @@ class TestCmdLint:
     def test_no_linters(self, commands, capsys, tmp_path, monkeypatch):
         tex = tmp_path / "test.tex"
         tex.write_text("\\documentclass{article}\n")
-        monkeypatch.setattr("buildlib.commands.REPO_ROOT", tmp_path)
-        with patch("buildlib.commands.shutil.which", return_value=None):
+        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        with patch("buildlib.commands.commands.shutil.which", return_value=None):
             result = commands.cmd_lint([str(tex)])
         captured = capsys.readouterr()
         assert "Neither chktex nor lacheck" in captured.err
@@ -201,7 +201,7 @@ class TestCmdLint:
     def test_chktex_errors_counted(self, commands, capsys, tmp_path, monkeypatch):
         tex = tmp_path / "test.tex"
         tex.write_text("\\documentclass{article}\n")
-        monkeypatch.setattr("buildlib.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
 
         # Use "Error 1" format which matches regex r"Error\s+\d+"
         chktex_out = (
@@ -211,8 +211,8 @@ class TestCmdLint:
         def fake_which(name):
             return "/usr/bin/chktex" if name == "chktex" else None
 
-        with patch("buildlib.commands.shutil.which", side_effect=fake_which):
-            with patch("buildlib.commands.subprocess.run") as mock_run:
+        with patch("buildlib.commands.commands.shutil.which", side_effect=fake_which):
+            with patch("buildlib.commands.commands.subprocess.run") as mock_run:
                 mock_run.return_value = MagicMock(
                     returncode=0, stdout=chktex_out, stderr=""
                 )
@@ -224,13 +224,13 @@ class TestCmdLint:
     def test_chktex_no_output(self, commands, capsys, tmp_path, monkeypatch):
         tex = tmp_path / "test.tex"
         tex.write_text("\\documentclass{article}\n")
-        monkeypatch.setattr("buildlib.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
 
         def fake_which(name):
             return "/usr/bin/chktex" if name == "chktex" else None
 
-        with patch("buildlib.commands.shutil.which", side_effect=fake_which):
-            with patch("buildlib.commands.subprocess.run") as mock_run:
+        with patch("buildlib.commands.commands.shutil.which", side_effect=fake_which):
+            with patch("buildlib.commands.commands.subprocess.run") as mock_run:
                 mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
                 result = commands.cmd_lint([str(tex)])
         captured = capsys.readouterr()
@@ -240,15 +240,15 @@ class TestCmdLint:
     def test_chktex_only_warnings(self, commands, capsys, tmp_path, monkeypatch):
         tex = tmp_path / "test.tex"
         tex.write_text("\\documentclass{article}\n")
-        monkeypatch.setattr("buildlib.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
 
         chktex_out = "test.tex:1:1:1:Warning message\n"
 
         def fake_which(name):
             return "/usr/bin/chktex" if name == "chktex" else None
 
-        with patch("buildlib.commands.shutil.which", side_effect=fake_which):
-            with patch("buildlib.commands.subprocess.run") as mock_run:
+        with patch("buildlib.commands.commands.shutil.which", side_effect=fake_which):
+            with patch("buildlib.commands.commands.subprocess.run") as mock_run:
                 mock_run.return_value = MagicMock(
                     returncode=0, stdout=chktex_out, stderr=""
                 )
@@ -260,13 +260,13 @@ class TestCmdLint:
     def test_chktex_timeout(self, commands, capsys, tmp_path, monkeypatch):
         tex = tmp_path / "test.tex"
         tex.write_text("\\documentclass{article}\n")
-        monkeypatch.setattr("buildlib.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
 
         def fake_which(name):
             return "/usr/bin/chktex" if name == "chktex" else None
 
-        with patch("buildlib.commands.shutil.which", side_effect=fake_which):
-            with patch("buildlib.commands.subprocess.run") as mock_run:
+        with patch("buildlib.commands.commands.shutil.which", side_effect=fake_which):
+            with patch("buildlib.commands.commands.subprocess.run") as mock_run:
                 mock_run.side_effect = subprocess.TimeoutExpired("chktex", 30)
                 result = commands.cmd_lint([str(tex)])
         captured = capsys.readouterr()
@@ -275,15 +275,15 @@ class TestCmdLint:
     def test_lacheck_output(self, commands, capsys, tmp_path, monkeypatch):
         tex = tmp_path / "test.tex"
         tex.write_text("\\documentclass{article}\n")
-        monkeypatch.setattr("buildlib.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
 
         lacheck_out = "lacheck output line\n"
 
         def fake_which(name):
             return "/usr/bin/lacheck" if name == "lacheck" else None
 
-        with patch("buildlib.commands.shutil.which", side_effect=fake_which):
-            with patch("buildlib.commands.subprocess.run") as mock_run:
+        with patch("buildlib.commands.commands.shutil.which", side_effect=fake_which):
+            with patch("buildlib.commands.commands.subprocess.run") as mock_run:
                 mock_run.return_value = MagicMock(
                     returncode=0, stdout=lacheck_out, stderr=""
                 )
@@ -294,13 +294,13 @@ class TestCmdLint:
     def test_lacheck_timeout(self, commands, capsys, tmp_path, monkeypatch):
         tex = tmp_path / "test.tex"
         tex.write_text("\\documentclass{article}\n")
-        monkeypatch.setattr("buildlib.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
 
         def fake_which(name):
             return "/usr/bin/lacheck" if name == "lacheck" else None
 
-        with patch("buildlib.commands.shutil.which", side_effect=fake_which):
-            with patch("buildlib.commands.subprocess.run") as mock_run:
+        with patch("buildlib.commands.commands.shutil.which", side_effect=fake_which):
+            with patch("buildlib.commands.commands.subprocess.run") as mock_run:
                 mock_run.side_effect = subprocess.TimeoutExpired("lacheck", 30)
                 result = commands.cmd_lint([str(tex)])
         captured = capsys.readouterr()
@@ -309,28 +309,28 @@ class TestCmdLint:
     def test_both_linters(self, commands, capsys, tmp_path, monkeypatch):
         tex = tmp_path / "test.tex"
         tex.write_text("\\documentclass{article}\n")
-        monkeypatch.setattr("buildlib.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
 
         def fake_which(name):
             if name in ("chktex", "lacheck"):
                 return f"/usr/bin/{name}"
             return None
 
-        with patch("buildlib.commands.shutil.which", side_effect=fake_which):
-            with patch("buildlib.commands.subprocess.run") as mock_run:
+        with patch("buildlib.commands.commands.shutil.which", side_effect=fake_which):
+            with patch("buildlib.commands.commands.subprocess.run") as mock_run:
                 mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
                 result = commands.cmd_lint([str(tex)])
         captured = capsys.readouterr()
         assert "chktex" in captured.out or "Scanning" in captured.out
 
     def test_nonexistent_file_in_list(self, commands, capsys, tmp_path, monkeypatch):
-        monkeypatch.setattr("buildlib.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
 
         def fake_which(name):
             return "/usr/bin/chktex" if name == "chktex" else None
 
-        with patch("buildlib.commands.shutil.which", side_effect=fake_which):
-            with patch("buildlib.commands.subprocess.run") as mock_run:
+        with patch("buildlib.commands.commands.shutil.which", side_effect=fake_which):
+            with patch("buildlib.commands.commands.subprocess.run") as mock_run:
                 mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
                 result = commands.cmd_lint([str(tmp_path / "nonexistent.tex")])
         assert result == 0
@@ -341,7 +341,7 @@ class TestCmdLint:
 # ---------------------------------------------------------------------------
 class TestCmdTest:
     def test_all_pass(self, commands, capsys):
-        with patch("buildlib.commands.subprocess.run") as mock_run:
+        with patch("buildlib.commands.commands.subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
             result = commands.cmd_test()
             assert result == 0
@@ -356,7 +356,7 @@ class TestCmdTest:
                 return MagicMock(returncode=1, stdout="l3build error", stderr="")
             return MagicMock(returncode=0, stdout="", stderr="")
 
-        with patch("buildlib.commands.subprocess.run", side_effect=fake_run):
+        with patch("buildlib.commands.commands.subprocess.run", side_effect=fake_run):
             result = commands.cmd_test()
             assert result == 1
 
@@ -370,12 +370,12 @@ class TestCmdTest:
                 return MagicMock(returncode=1, stdout="pytest FAILED", stderr="")
             return MagicMock(returncode=0, stdout="", stderr="")
 
-        with patch("buildlib.commands.subprocess.run", side_effect=fake_run):
+        with patch("buildlib.commands.commands.subprocess.run", side_effect=fake_run):
             result = commands.cmd_test()
             assert result == 1
 
     def test_both_fail(self, commands, capsys):
-        with patch("buildlib.commands.subprocess.run") as mock_run:
+        with patch("buildlib.commands.commands.subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=1, stdout="failure", stderr="")
             result = commands.cmd_test()
             assert result == 1
@@ -503,7 +503,7 @@ class TestGetTexliveVersion:
         mock_result = MagicMock()
         mock_result.stdout = "TeX Live 2024\n"
         mock_result.returncode = 0
-        with patch("buildlib.commands.subprocess.run", return_value=mock_result):
+        with patch("buildlib.commands.commands.subprocess.run", return_value=mock_result):
             result = commands._get_texlive_version()
             assert result == 2024
 
@@ -511,7 +511,7 @@ class TestGetTexliveVersion:
         mock_result = MagicMock()
         mock_result.stdout = "Some random output\n"
         mock_result.returncode = 0
-        with patch("buildlib.commands.subprocess.run", return_value=mock_result):
+        with patch("buildlib.commands.commands.subprocess.run", return_value=mock_result):
             result = commands._get_texlive_version()
             assert result is None
 
@@ -519,7 +519,7 @@ class TestGetTexliveVersion:
         mock_result = MagicMock()
         mock_result.stdout = ""
         mock_result.returncode = 0
-        with patch("buildlib.commands.subprocess.run", return_value=mock_result):
+        with patch("buildlib.commands.commands.subprocess.run", return_value=mock_result):
             result = commands._get_texlive_version()
             assert result is None
 
@@ -527,20 +527,20 @@ class TestGetTexliveVersion:
         mock_result = MagicMock()
         mock_result.stdout = None
         mock_result.returncode = 0
-        with patch("buildlib.commands.subprocess.run", return_value=mock_result):
+        with patch("buildlib.commands.commands.subprocess.run", return_value=mock_result):
             result = commands._get_texlive_version()
             assert result is None
 
     def test_timeout(self, commands):
         with patch(
-            "buildlib.commands.subprocess.run",
+            "buildlib.commands.commands.subprocess.run",
             side_effect=subprocess.TimeoutExpired("tex", 5),
         ):
             result = commands._get_texlive_version()
             assert result is None
 
     def test_os_error(self, commands):
-        with patch("buildlib.commands.subprocess.run", side_effect=OSError("no tex")):
+        with patch("buildlib.commands.commands.subprocess.run", side_effect=OSError("no tex")):
             result = commands._get_texlive_version()
             assert result is None
 
@@ -550,7 +550,7 @@ class TestGetTexliveVersion:
             "TeX Live YYYY\n"  # YYYY won't match \d{4} as int? No, it will match regex
         )
         mock_result.returncode = 0
-        with patch("buildlib.commands.subprocess.run", return_value=mock_result):
+        with patch("buildlib.commands.commands.subprocess.run", return_value=mock_result):
             result = commands._get_texlive_version()
             # The regex needs \d{4} so "YYYY" won't match
             assert result is None
@@ -761,7 +761,7 @@ class TestCmdInitEdges:
 
     def test_template_not_found(self, commands, capsys, tmp_path, monkeypatch):
         monkeypatch.chdir(tmp_path)
-        monkeypatch.setattr("buildlib.commands.REPO_ROOT", tmp_path / "empty")
+        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path / "empty")
         (tmp_path / "empty").mkdir()
         commands.cmd_init(["test-proj"])
         captured = capsys.readouterr()
@@ -796,7 +796,7 @@ class TestDiffTwoPdfs:
         b = tmp_path / "b.pdf"
         a.write_bytes(b"PDF-A")
         b.write_bytes(b"PDF-B")
-        with patch("buildlib.commands.shutil.which", return_value=None):
+        with patch("buildlib.commands.commands.shutil.which", return_value=None):
             with patch.object(commands, "_find_tex_for_pdf", return_value=None):
                 with patch.object(commands, "_basic_pdf_compare") as mock_cmp:
                     commands._diff_two_pdfs(str(a), str(b))
@@ -813,7 +813,7 @@ class TestDiffTwoPdfs:
                 return "/usr/bin/latexdiff"
             return None
 
-        with patch("buildlib.commands.shutil.which", side_effect=fake_which):
+        with patch("buildlib.commands.commands.shutil.which", side_effect=fake_which):
             with patch.object(commands, "_find_tex_for_pdf", return_value=None):
                 with patch.object(commands, "_basic_pdf_compare") as mock_cmp:
                     commands._diff_two_pdfs(str(a), str(b))
@@ -830,7 +830,7 @@ class TestDiffTwoPdfs:
                 return "/usr/bin/latexdiff"
             return None
 
-        with patch("buildlib.commands.shutil.which", side_effect=fake_which):
+        with patch("buildlib.commands.commands.shutil.which", side_effect=fake_which):
             with patch.object(
                 commands, "_find_tex_for_pdf", return_value=Path("fake.tex")
             ):
@@ -846,7 +846,7 @@ class TestDiffTwoPdfs:
 # ---------------------------------------------------------------------------
 class TestDiffGitRefs:
     def test_git_show_fails(self, commands, capsys):
-        with patch("buildlib.commands.subprocess.run") as mock_run:
+        with patch("buildlib.commands.commands.subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(
                 returncode=1, stdout="", stderr="fatal: not a tree object"
             )
@@ -876,9 +876,9 @@ class TestDiffGitRefs:
                 return "/usr/bin/latexdiff"
             return None
 
-        with patch("buildlib.commands.subprocess.run", side_effect=fake_run):
-            with patch("buildlib.commands.shutil.which", side_effect=fake_which):
-                with patch("buildlib.commands.Path.cwd", return_value=Path(".")):
+        with patch("buildlib.commands.commands.subprocess.run", side_effect=fake_run):
+            with patch("buildlib.commands.commands.shutil.which", side_effect=fake_which):
+                with patch("buildlib.commands.commands.Path.cwd", return_value=Path(".")):
                     commands._diff_git_refs("ref_a", "ref_b")
 
     def test_latexdiff_unavailable_fallback(self, commands, capsys):
@@ -889,8 +889,8 @@ class TestDiffGitRefs:
                 return MagicMock(returncode=1, stdout="-old\n+new\n", stderr="")
             return MagicMock(returncode=0, stdout="", stderr="")
 
-        with patch("buildlib.commands.subprocess.run", side_effect=fake_run):
-            with patch("buildlib.commands.shutil.which", return_value=None):
+        with patch("buildlib.commands.commands.subprocess.run", side_effect=fake_run):
+            with patch("buildlib.commands.commands.shutil.which", return_value=None):
                 commands._diff_git_refs("ref_a", "ref_b")
         captured = capsys.readouterr()
         assert "textual diff" in captured.out
@@ -903,8 +903,8 @@ class TestDiffGitRefs:
                 return MagicMock(returncode=0, stdout="", stderr="")
             return MagicMock(returncode=0, stdout="", stderr="")
 
-        with patch("buildlib.commands.subprocess.run", side_effect=fake_run):
-            with patch("buildlib.commands.shutil.which", return_value=None):
+        with patch("buildlib.commands.commands.subprocess.run", side_effect=fake_run):
+            with patch("buildlib.commands.commands.shutil.which", return_value=None):
                 commands._diff_git_refs("ref_a", "ref_b")
         captured = capsys.readouterr()
         assert "identical" in captured.out.lower()
@@ -915,7 +915,7 @@ class TestDiffGitRefs:
 # ---------------------------------------------------------------------------
 class TestCheckAllLatexPackages:
     def test_exception_returns_all_false(self, commands):
-        with patch("buildlib.commands.subprocess.run", side_effect=OSError("fail")):
+        with patch("buildlib.commands.commands.subprocess.run", side_effect=OSError("fail")):
             result = commands._check_all_latex_packages(["fontspec", "hyperref"])
         assert all(v is False for v in result.values())
 
@@ -923,7 +923,7 @@ class TestCheckAllLatexPackages:
         mock_result = MagicMock()
         mock_result.returncode = 1
         mock_result.stdout = "/path/to/fontspec.sty\n"
-        with patch("buildlib.commands.subprocess.run", return_value=mock_result):
+        with patch("buildlib.commands.commands.subprocess.run", return_value=mock_result):
             result = commands._check_all_latex_packages(["fontspec", "hyperref"])
         assert result["fontspec"] is True
         assert result["hyperref"] is False
@@ -932,7 +932,7 @@ class TestCheckAllLatexPackages:
         mock_result = MagicMock()
         mock_result.returncode = 0
         mock_result.stdout = "/path/to/fontspec.sty\n/path/to/hyperref.sty\n"
-        with patch("buildlib.commands.subprocess.run", return_value=mock_result):
+        with patch("buildlib.commands.commands.subprocess.run", return_value=mock_result):
             result = commands._check_all_latex_packages(["fontspec", "hyperref"])
         assert result["fontspec"] is True
         assert result["hyperref"] is True
@@ -944,14 +944,14 @@ class TestCheckAllLatexPackages:
 class TestCheckLatexPackage:
     def test_timeout(self, commands):
         with patch(
-            "buildlib.commands.subprocess.run",
+            "buildlib.commands.commands.subprocess.run",
             side_effect=subprocess.TimeoutExpired("kpsewhich", 5),
         ):
             result = commands._check_latex_package("fontspec")
         assert result is False
 
     def test_os_error(self, commands):
-        with patch("buildlib.commands.subprocess.run", side_effect=OSError("fail")):
+        with patch("buildlib.commands.commands.subprocess.run", side_effect=OSError("fail")):
             result = commands._check_latex_package("fontspec")
         assert result is False
 
@@ -959,7 +959,7 @@ class TestCheckLatexPackage:
         mock_result = MagicMock()
         mock_result.returncode = 0
         mock_result.stdout = "/path/to/fontspec.sty\n"
-        with patch("buildlib.commands.subprocess.run", return_value=mock_result):
+        with patch("buildlib.commands.commands.subprocess.run", return_value=mock_result):
             result = commands._check_latex_package("fontspec")
         assert result is True
 
@@ -967,7 +967,7 @@ class TestCheckLatexPackage:
         mock_result = MagicMock()
         mock_result.returncode = 1
         mock_result.stdout = ""
-        with patch("buildlib.commands.subprocess.run", return_value=mock_result):
+        with patch("buildlib.commands.commands.subprocess.run", return_value=mock_result):
             result = commands._check_latex_package("nonexistent")
         assert result is False
 
@@ -977,13 +977,13 @@ class TestCheckLatexPackage:
 # ---------------------------------------------------------------------------
 class TestIsGitRef:
     def test_exception(self, commands):
-        with patch("buildlib.commands.subprocess.run", side_effect=OSError("fail")):
+        with patch("buildlib.commands.commands.subprocess.run", side_effect=OSError("fail")):
             result = commands._is_git_ref("HEAD")
         assert result is False
 
     def test_timeout(self, commands):
         with patch(
-            "buildlib.commands.subprocess.run",
+            "buildlib.commands.commands.subprocess.run",
             side_effect=subprocess.TimeoutExpired("git", 5),
         ):
             result = commands._is_git_ref("HEAD")
@@ -1014,7 +1014,7 @@ class TestFindTexForPdf:
 # ---------------------------------------------------------------------------
 class TestCmdDiffExtended:
     def test_regenerate_references(self, commands, capsys, tmp_path, monkeypatch):
-        monkeypatch.setattr("buildlib.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
         ref_dir = tmp_path / "tests" / "references"
         ref_dir.mkdir(parents=True)
         build_dir = tmp_path / "build"
@@ -1055,13 +1055,13 @@ class TestCmdDiffExtended:
 # ---------------------------------------------------------------------------
 class TestCmdScaffoldInstitutionExtended:
     def test_path_traversal(self, commands, capsys, tmp_path, monkeypatch):
-        monkeypatch.setattr("buildlib.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
         commands.cmd_scaffold_institution(["../../../etc/passwd"])
         captured = capsys.readouterr()
         assert "Invalid" in captured.err
 
     def test_generic_not_found(self, commands, capsys, tmp_path, monkeypatch):
-        monkeypatch.setattr("buildlib.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         commands.cmd_scaffold_institution(["newinst"])
         captured = capsys.readouterr()
         assert "Generic template not found" in captured.err
@@ -1096,7 +1096,7 @@ class TestCmdPreflightExtended:
             "forest": True,
         }
 
-        with patch("buildlib.commands.shutil.which", side_effect=fake_which):
+        with patch("buildlib.commands.commands.shutil.which", side_effect=fake_which):
             with patch.object(commands, "_get_texlive_version", return_value=2024):
                 with patch.object(
                     commands, "_check_all_latex_packages", return_value=all_pkgs
@@ -1122,7 +1122,7 @@ class TestCmdPreflightExtended:
             "forest": False,
         }
 
-        with patch("buildlib.commands.shutil.which", side_effect=fake_which):
+        with patch("buildlib.commands.commands.shutil.which", side_effect=fake_which):
             with patch.object(commands, "_get_texlive_version", return_value=None):
                 with patch.object(
                     commands, "_check_all_latex_packages", return_value=all_pkgs

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from buildlib.commands import _Commands
+from buildlib.commands.commands import _Commands
 from buildlib.runner import CommandRunner
 from buildlib.ui import TerminalOutput
 
