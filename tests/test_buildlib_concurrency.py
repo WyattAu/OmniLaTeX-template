@@ -118,6 +118,7 @@ class TestConcurrentWorkerExecution:
     def test_workers_do_not_interfere(self, build_core, tmp_path, monkeypatch):
         """Multiple workers for different examples should not interfere."""
         monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
         (tmp_path / "examples").mkdir()
         build_core._shared_build_cache = {}
 
@@ -145,6 +146,7 @@ class TestConcurrentWorkerExecution:
     def test_cache_hit_during_concurrent_builds(self, build_core, tmp_path, monkeypatch):
         """Cache hits should work correctly during concurrent builds."""
         monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
         examples_dir = tmp_path / "examples"
         examples_dir.mkdir()
 
