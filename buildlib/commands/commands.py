@@ -12,19 +12,22 @@ import sys
 import time
 from pathlib import Path
 
+from buildlib.commands.check_lint import CheckLintMixin
+from buildlib.commands.doctor import DoctorMixin
 from buildlib.commands.export import ExportMixin
 from buildlib.commands.scaffold import ScaffoldMixin
+from buildlib.commands.watch import WatchMixin
+import buildlib.config as _cfg
 from buildlib.config import (
     BUILD_EXAMPLES_SUBDIR,
     INTERACTION_NONSTOP,
     LATEXMK_COMMAND,
     MAIN_TEX_FILENAME,
-    REPO_ROOT,
 )
 from buildlib.diff import _compute_ssim_windowed
 
 
-class _Commands(ScaffoldMixin, ExportMixin):
+class _Commands(ScaffoldMixin, ExportMixin, WatchMixin, DoctorMixin, CheckLintMixin):
     # -- class-level constants used by cmd_init -----------------------------
 
     VALID_DOCTYPES = [
@@ -78,85 +81,6 @@ class _Commands(ScaffoldMixin, ExportMixin):
     ]
 
     # -- watch --------------------------------------------------------------
-
-    def cmd_watch(self, files: list[str]):
-        """Watch source files for changes and rebuild."""
-        watch_dirs = [Path(".")]
-        extensions = {".tex", ".sty", ".cls", ".bib", ".lua", ".toml"}
-        ui = self.ui
-        ui.info("Watching for changes... (Ctrl+C to stop)")
-
-        try:
-            from watchdog.events import FileSystemEventHandler
-            from watchdog.observers import Observer
-
-            class RebuildHandler(FileSystemEventHandler):
-                def __init__(self, runner, extensions, files):
-                    self.runner = runner
-                    self.extensions = extensions
-                    self.files = files
-                    self._last_rebuild = 0
-
-                def on_modified(self, event):
-                    path = Path(event.src_path)
-                    if path.suffix in self.extensions:
-                        import time as _time
-
-                        now = _time.time()
-                        if now - self._last_rebuild < 1.0:
-                            return
-                        self._last_rebuild = now
-                        self.runner.ui.info(f"\nChange detected: {path}")
-                        self.runner._rebuild_affected(path, self.files)
-
-            handler = RebuildHandler(self, extensions, files)
-            observer = Observer()
-            for d in watch_dirs:
-                observer.schedule(handler, str(d), recursive=True)
-            observer.start()
-            try:
-                while True:
-                    time.sleep(1)
-            except KeyboardInterrupt:
-                observer.stop()
-            observer.join()
-
-        except ImportError:
-            ui.info("watchdog not installed, using inotifywait fallback")
-            cmd = [
-                "inotifywait",
-                "-r",
-                "-e",
-                "modify,create,delete",
-                "--format",
-                "%w%f",
-            ]
-            for d in watch_dirs:
-                cmd.append(str(d))
-            try:
-                process = subprocess.Popen(cmd, stdout=subprocess.PIPE, text=True)
-                if process.stdout is None:
-                    ui.error("inotifywait stdout is None, cannot watch")
-                    return
-                for line in process.stdout:
-                    path = Path(line.strip())
-                    if path.suffix in extensions:
-                        ui.info(f"\nChange detected: {path}")
-                        self._rebuild_affected(path, files)
-            except FileNotFoundError:
-                ui.error(
-                    "Neither watchdog nor inotifywait found. "
-                    "Install one to use watch mode: pip install watchdog"
-                )
-            except KeyboardInterrupt:
-                process.terminate()
-
-    def _rebuild_affected(self, changed_path: Path, files: list[str]):
-        """Rebuild documents affected by a changed file."""
-        if files:
-            self.build_example(files)
-        else:
-            self.build_examples([])
 
     # -- environment checks -------------------------------------------------
 
@@ -276,7 +200,7 @@ class _Commands(ScaffoldMixin, ExportMixin):
         """Run test suite (l3build + pytest)."""
         results = []
         self.ui.info("Running l3build check...")
-        project_root = REPO_ROOT
+        project_root = _cfg.REPO_ROOT
         result = subprocess.run(
             ["l3build", "check"],
             capture_output=True,
@@ -418,7 +342,7 @@ class _Commands(ScaffoldMixin, ExportMixin):
                 return
             diff_tex.write_text(result.stdout, encoding="utf-8")
             self.ui.info("Compiling diff PDF...")
-            repo_root = REPO_ROOT
+            repo_root = _cfg.REPO_ROOT
             extra_env = {
                 "TEXINPUTS": os.pathsep.join([".", str(repo_root), ""]),
             }
@@ -504,9 +428,9 @@ class _Commands(ScaffoldMixin, ExportMixin):
 
         self.ui.header("Visual Regression Diff")
 
-        ref_dir = REPO_ROOT / "tests" / "references"
+        ref_dir = _cfg.REPO_ROOT / "tests" / "references"
         build_dir = self.config.build_dir / BUILD_EXAMPLES_SUBDIR
-        repo_root = REPO_ROOT
+        repo_root = _cfg.REPO_ROOT
 
         if not files:
             self.ui.warning("No examples specified.")
@@ -672,7 +596,7 @@ class _Commands(ScaffoldMixin, ExportMixin):
                 "Use only alphanumeric characters, hyphens, and underscores."
             )
             return
-        repo_root = REPO_ROOT
+        repo_root = _cfg.REPO_ROOT
         src = repo_root / "examples" / "minimal-starter"
         dst = Path.cwd() / project_name
 
@@ -860,7 +784,7 @@ class _Commands(ScaffoldMixin, ExportMixin):
         figures_dir.mkdir(parents=True, exist_ok=True)
         (figures_dir / ".gitkeep").touch()
 
-        repo_root = REPO_ROOT
+        repo_root = _cfg.REPO_ROOT
         latexmkrc_src = repo_root / ".latexmkrc"
         latexmkrc_dst = dst / ".latexmkrc"
         if latexmkrc_src.exists():
@@ -932,377 +856,3 @@ class _Commands(ScaffoldMixin, ExportMixin):
             "```\n",
             encoding="utf-8",
         )
-
-    # -- doctor -------------------------------------------------------------
-
-    def cmd_doctor(self, _: list[str] | None = None) -> None:
-        """Run comprehensive health diagnostics."""
-        import platform as _platform
-
-        self.ui.info("OmniLaTeX Doctor \u2014 Environment Health Check")
-        self.ui.info("=" * 50)
-
-        self.ui.info(f"Platform: {_platform.system()} {_platform.release()}")
-        self.ui.info(f"Python: {sys.version}")
-        self.ui.info(f"Architecture: {_platform.machine()}")
-
-        checks = []
-
-        for tool, desc in [
-            ("lualatex", "LuaTeX engine"),
-            ("latexmk", "Build orchestrator"),
-            ("biber", "Bibliography processor"),
-            ("bib2gls", "Glossary processor"),
-            ("inkscape", "SVG converter"),
-            ("git", "Version control"),
-            ("pygmentize", "Code highlighting (Pygments)"),
-        ]:
-            path = shutil.which(tool)
-            if path:
-                try:
-                    result = subprocess.run(
-                        [tool, "--version"], capture_output=True, text=True, timeout=5
-                    )
-                    version = (result.stdout or result.stderr).split("\n")[0].strip()
-                    checks.append((desc, True, f"{path}\n  {version}"))
-                except (subprocess.TimeoutExpired, OSError, ValueError):
-                    checks.append((desc, True, f"{path}"))
-            else:
-                remediation = {
-                    "lualatex": "Install TeX Live: https://tug.org/texlive/",
-                    "latexmk": "Install latexmk (usually bundled with TeX Live)",
-                    "biber": "Install biber (usually bundled with TeX Live)",
-                    "bib2gls": "Install bib2gls: tlmgr install bib2gls",
-                    "inkscape": "Install Inkscape: https://inkscape.org/",
-                    "git": "Install git: https://git-scm.com/",
-                    "pygmentize": "pip install Pygments",
-                }
-                checks.append((desc, False, remediation.get(tool, "Install the tool")))
-
-        font_names = [
-            "Monaspace Neon",
-            "Atkinson Hyperlegible Next",
-            "Libertinus Serif",
-        ]
-
-        font_results: dict[str, tuple[bool, str]] = {}
-
-        fc_list_output = ""
-        try:
-            result = subprocess.run(
-                ["fc-list", ":family"],
-                capture_output=True,
-                text=True,
-                timeout=10,
-            )
-            if result.returncode == 0:
-                fc_list_output = result.stdout.lower()
-        except (subprocess.TimeoutExpired, OSError):
-            import logging
-
-            logging.getLogger("omnilatex").debug(
-                "fc-list font detection failed", exc_info=True
-            )
-
-        lualatex_check_done = False
-
-        for font_name in font_names:
-            found = None
-
-            if font_name.lower() in fc_list_output:
-                found = True
-
-            if found is None and not lualatex_check_done:
-                try:
-                    import tempfile
-
-                    tex_content = (
-                        "\\RequirePackage{fontspec}\n"
-                        "\\newcommand{\\checkfont}[1]{"
-                        "\\IfFontExistsTF{#1}{\\typeout{FONTFOUND:#1}}"
-                        "{\\typeout{FONTMISSING:#1}}}\n"
-                    )
-                    for fn in font_names:
-                        if fn not in font_results:
-                            tex_content += f"\\checkfont{{{fn}}}\n"
-                    tex_content += "\\stop\n"
-
-                    with tempfile.TemporaryDirectory(
-                        prefix="omnilatex-doctor-"
-                    ) as tmpdir:
-                        tmp_path = Path(tmpdir) / "check.tex"
-                        tmp_path.write_text(tex_content, encoding="utf-8")
-
-                        result = subprocess.run(
-                            ["lualatex", "--interaction=nonstopmode", str(tmp_path)],
-                            capture_output=True,
-                            text=True,
-                            timeout=30,
-                            cwd=tmpdir,
-                        )
-                        output = result.stdout + result.stderr
-                        for fn in font_names:
-                            if fn not in font_results:
-                                if f"FONTFOUND:{fn}" in output:
-                                    font_results[fn] = (
-                                        True,
-                                        "Found (via LuaLaTeX)",
-                                    )
-                                else:
-                                    font_results[fn] = (
-                                        False,
-                                        "Not found (fallback font will be used)",
-                                    )
-
-                    lualatex_check_done = True
-                except (OSError, subprocess.SubprocessError):
-                    lualatex_check_done = True
-
-            if found is not None and font_name not in font_results:
-                note = "Found" if found else "Not found (fallback font will be used)"
-                font_results[font_name] = (found, note)
-
-            if font_name not in font_results:
-                font_results[font_name] = (
-                    False,
-                    "Could not check (font tools unavailable)",
-                )
-
-        for font_name in font_names:
-            ok, note = font_results[font_name]
-            checks.append((f"Font: {font_name}", ok, note))
-
-        for name, ok, detail in checks:
-            status = "PASS" if ok else "FAIL"
-            self.ui.info(f"\n[{status}] {name}")
-            self.ui.info(f"  {detail}")
-
-        passed = sum(1 for _, ok, _ in checks if ok)
-        total = len(checks)
-        self.ui.info(f"\n{'=' * 50}")
-        self.ui.info(f"Result: {passed}/{total} checks passed")
-
-        failed = [(n, d) for n, ok, d in checks if not ok]
-        if failed:
-            self.ui.info("\nRemediation steps:")
-            for name, detail in failed:
-                self.ui.info(f"  \u2022 {name}: {detail}")
-
-    # -- check --------------------------------------------------------------
-
-    def cmd_check(self, files: list[str] | None = None) -> int:
-        """Cross-reference integrity check on LaTeX files."""
-        from collections import defaultdict
-
-        self.ui.header("Cross-Reference Integrity Check")
-
-        scan_dir = Path(files[0]) if files and files else Path.cwd()
-
-        if not scan_dir.is_dir():
-            self.ui.error(f"Not a directory: {scan_dir}")
-            return 1
-
-        tex_files = sorted(
-            f
-            for f in scan_dir.rglob("*.tex")
-            if self.config.build_dir not in f.parents and "_minted" not in str(f)
-        )
-        bib_files = sorted(
-            f for f in scan_dir.rglob("*.bib") if self.config.build_dir not in f.parents
-        )
-
-        if not tex_files:
-            self.ui.warning(f"No .tex files found in {scan_dir}")
-            return 0
-
-        self.ui.info(
-            f"Scanning {len(tex_files)} .tex file(s), {len(bib_files)} .bib file(s)"
-        )
-
-        _LABEL_RE = re.compile(r"\\label\{([^}]+)\}")
-        _REF_RE = re.compile(r"\\(?:ref|eqref|autoref|cref|Cref|pageref)\{([^}]+)\}")
-        _CITE_RE = re.compile(r"\\(?:cite|nocite)\{([^}]+)\}")
-        _BIB_ENTRY_RE = re.compile(r"@\w+\{([^,\s]+),")
-
-        labels: dict[str, list[str]] = defaultdict(list)
-        refs: dict[str, list[str]] = defaultdict(list)
-        cites: dict[str, list[str]] = defaultdict(list)
-        bib_keys: set[str] = set()
-
-        for tex in tex_files:
-            try:
-                content = tex.read_text(encoding="utf-8", errors="replace")
-            except OSError as exc:
-                self.ui.warning(f"Cannot read {tex}: {exc}")
-                continue
-
-            rel = tex.relative_to(scan_dir) if tex.is_relative_to(scan_dir) else tex
-
-            for m in _LABEL_RE.finditer(content):
-                labels[m.group(1)].append(str(rel))
-
-            for m in _REF_RE.finditer(content):
-                for key in m.group(1).split(","):
-                    key = key.strip()
-                    if key:
-                        refs[key].append(str(rel))
-
-            for m in _CITE_RE.finditer(content):
-                for key in m.group(1).split(","):
-                    key = key.strip()
-                    if key:
-                        cites[key].append(str(rel))
-
-        for bib in bib_files:
-            try:
-                content = bib.read_text(encoding="utf-8", errors="replace")
-            except OSError as exc:
-                self.ui.warning(f"Cannot read {bib}: {exc}")
-                continue
-            for m in _BIB_ENTRY_RE.finditer(content):
-                bib_keys.add(m.group(1))
-
-        label_set = set(labels.keys())
-        ref_set = set(refs.keys())
-        cite_set = set(cites.keys())
-
-        undefined_refs = sorted(ref_set - label_set)
-        unused_labels = sorted(label_set - ref_set)
-        undefined_cites = sorted(cite_set - bib_keys)
-
-        total_labels = len(label_set)
-        total_refs = sum(len(v) for v in refs.values())
-        total_cites = sum(len(v) for v in cites.values())
-
-        self.ui.info(
-            f"Labels: {total_labels}  |  References: {total_refs}  |  "
-            f"Citations: {total_cites}  |  Bib entries: {len(bib_keys)}"
-        )
-
-        has_errors = False
-
-        if undefined_refs:
-            has_errors = True
-            self.ui.warning(f"Undefined references ({len(undefined_refs)}):")
-            for key in undefined_refs:
-                locs = refs[key]
-                self.ui.warning(f"  \\ref{{{key}}} referenced in: {', '.join(locs)}")
-
-        if unused_labels:
-            self.ui.info(f"Unused labels ({len(unused_labels)}):")
-            for key in unused_labels:
-                locs = labels[key]
-                self.ui.info(f"  \\label{{{key}}} defined in: {', '.join(locs)}")
-
-        if undefined_cites:
-            has_errors = True
-            self.ui.warning(f"Undefined citations ({len(undefined_cites)}):")
-            for key in undefined_cites:
-                locs = cites[key]
-                self.ui.warning(f"  \\cite{{{key}}} referenced in: {', '.join(locs)}")
-
-        if not undefined_refs and not unused_labels and not undefined_cites:
-            self.ui.success("All cross-references and citations are valid.")
-        elif not has_errors:
-            self.ui.success("No errors found (unused labels are informational only).")
-        else:
-            self.ui.error(
-                "Cross-reference check failed: undefined references or citations found."
-            )
-
-        return 1 if has_errors else 0
-
-    # -- lint ---------------------------------------------------------------
-
-    def cmd_lint(self, files: list[str] | None = None) -> int:
-        """Lint .tex files with chktex and lacheck."""
-        self.ui.header("Linting .tex files")
-
-        repo_root = REPO_ROOT
-
-        if files:
-            tex_files = [Path(f) for f in files if Path(f).exists()]
-        else:
-            tex_files = sorted(
-                f
-                for f in repo_root.rglob("*.tex")
-                if self.config.build_dir not in f.parents and "_minted" not in str(f)
-            )
-
-        if not tex_files:
-            self.ui.warning("No .tex files found")
-            return 0
-
-        has_chktex = shutil.which("chktex") is not None
-        has_lacheck = shutil.which("lacheck") is not None
-
-        if not has_chktex and not has_lacheck:
-            self.ui.error("Neither chktex nor lacheck found.")
-            self.ui.info("  Install with: tlmgr install chktex lacheck")
-            return 1
-
-        self.ui.info(
-            f"Scanning {len(tex_files)} file(s) with"
-            f"{'chktex' if has_chktex else ''}"
-            f"{' and ' if has_chktex and has_lacheck else ''}"
-            f"{'lacheck' if has_lacheck else ''}"
-        )
-
-        total_errors = 0
-        total_warnings = 0
-        error_re = re.compile(r"Error\s+\d+", re.IGNORECASE)
-
-        for tex_file in tex_files:
-            try:
-                rel = tex_file.relative_to(repo_root)
-            except ValueError:
-                rel = tex_file
-
-            if has_chktex:
-                try:
-                    result = subprocess.run(
-                        ["chktex", "-q", "-f", "%f:%l:%c:%n:%m%n", str(tex_file)],
-                        capture_output=True,
-                        text=True,
-                        timeout=30,
-                    )
-                    if result.stdout.strip():
-                        self.ui.info(f"[chktex] {rel}:")
-                        for line in result.stdout.strip().splitlines():
-                            print(f"  {line}")
-                            if error_re.search(line):
-                                total_errors += 1
-                            else:
-                                total_warnings += 1
-                except (subprocess.TimeoutExpired, OSError) as exc:
-                    self.ui.warning(f"[chktex] Failed to process {rel}: {exc}")
-
-            if has_lacheck:
-                try:
-                    result = subprocess.run(
-                        ["lacheck", str(tex_file)],
-                        capture_output=True,
-                        text=True,
-                        timeout=30,
-                    )
-                    if result.stdout.strip():
-                        self.ui.info(f"[lacheck] {rel}:")
-                        for line in result.stdout.strip().splitlines():
-                            print(f"  {line}")
-                            total_warnings += 1
-                except (subprocess.TimeoutExpired, OSError) as exc:
-                    self.ui.warning(f"[lacheck] Failed to process {rel}: {exc}")
-
-        self.ui.info(
-            f"\nLint summary: {total_errors} error(s), {total_warnings} warning(s) "
-            f"across {len(tex_files)} file(s)"
-        )
-
-        if total_errors > 0:
-            self.ui.error("Linting found errors")
-            return 1
-        if total_warnings > 0:
-            self.ui.warning(f"Linting passed with {total_warnings} warning(s)")
-        else:
-            self.ui.success("Linting passed with no issues")
-        return 0

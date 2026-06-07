@@ -168,7 +168,7 @@ class TestCmdExport:
 
     def test_default_source_main_tex(self, commands, capsys, tmp_path, monkeypatch):
         """No files arg -> defaults to repo root main.tex."""
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         main = tmp_path / "main.tex"
         main.write_text("\\documentclass{article}\n")
         with patch("buildlib.commands.commands.shutil.which", return_value=None):
@@ -182,7 +182,7 @@ class TestCmdExport:
 # ---------------------------------------------------------------------------
 class TestCmdLint:
     def test_no_tex_files(self, commands, capsys, tmp_path, monkeypatch):
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         result = commands.cmd_lint()
         captured = capsys.readouterr()
         assert "No .tex files" in captured.out
@@ -191,7 +191,7 @@ class TestCmdLint:
     def test_no_linters(self, commands, capsys, tmp_path, monkeypatch):
         tex = tmp_path / "test.tex"
         tex.write_text("\\documentclass{article}\n")
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         with patch("buildlib.commands.commands.shutil.which", return_value=None):
             result = commands.cmd_lint([str(tex)])
         captured = capsys.readouterr()
@@ -201,7 +201,7 @@ class TestCmdLint:
     def test_chktex_errors_counted(self, commands, capsys, tmp_path, monkeypatch):
         tex = tmp_path / "test.tex"
         tex.write_text("\\documentclass{article}\n")
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
 
         # Use "Error 1" format which matches regex r"Error\s+\d+"
         chktex_out = (
@@ -224,7 +224,7 @@ class TestCmdLint:
     def test_chktex_no_output(self, commands, capsys, tmp_path, monkeypatch):
         tex = tmp_path / "test.tex"
         tex.write_text("\\documentclass{article}\n")
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
 
         def fake_which(name):
             return "/usr/bin/chktex" if name == "chktex" else None
@@ -240,7 +240,7 @@ class TestCmdLint:
     def test_chktex_only_warnings(self, commands, capsys, tmp_path, monkeypatch):
         tex = tmp_path / "test.tex"
         tex.write_text("\\documentclass{article}\n")
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
 
         chktex_out = "test.tex:1:1:1:Warning message\n"
 
@@ -260,7 +260,7 @@ class TestCmdLint:
     def test_chktex_timeout(self, commands, capsys, tmp_path, monkeypatch):
         tex = tmp_path / "test.tex"
         tex.write_text("\\documentclass{article}\n")
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
 
         def fake_which(name):
             return "/usr/bin/chktex" if name == "chktex" else None
@@ -275,7 +275,7 @@ class TestCmdLint:
     def test_lacheck_output(self, commands, capsys, tmp_path, monkeypatch):
         tex = tmp_path / "test.tex"
         tex.write_text("\\documentclass{article}\n")
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
 
         lacheck_out = "lacheck output line\n"
 
@@ -294,7 +294,7 @@ class TestCmdLint:
     def test_lacheck_timeout(self, commands, capsys, tmp_path, monkeypatch):
         tex = tmp_path / "test.tex"
         tex.write_text("\\documentclass{article}\n")
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
 
         def fake_which(name):
             return "/usr/bin/lacheck" if name == "lacheck" else None
@@ -309,7 +309,7 @@ class TestCmdLint:
     def test_both_linters(self, commands, capsys, tmp_path, monkeypatch):
         tex = tmp_path / "test.tex"
         tex.write_text("\\documentclass{article}\n")
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
 
         def fake_which(name):
             if name in ("chktex", "lacheck"):
@@ -324,7 +324,7 @@ class TestCmdLint:
         assert "chktex" in captured.out or "Scanning" in captured.out
 
     def test_nonexistent_file_in_list(self, commands, capsys, tmp_path, monkeypatch):
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
 
         def fake_which(name):
             return "/usr/bin/chktex" if name == "chktex" else None
@@ -761,7 +761,7 @@ class TestCmdInitEdges:
 
     def test_template_not_found(self, commands, capsys, tmp_path, monkeypatch):
         monkeypatch.chdir(tmp_path)
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path / "empty")
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path / "empty")
         (tmp_path / "empty").mkdir()
         commands.cmd_init(["test-proj"])
         captured = capsys.readouterr()
@@ -1014,7 +1014,7 @@ class TestFindTexForPdf:
 # ---------------------------------------------------------------------------
 class TestCmdDiffExtended:
     def test_regenerate_references(self, commands, capsys, tmp_path, monkeypatch):
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         ref_dir = tmp_path / "tests" / "references"
         ref_dir.mkdir(parents=True)
         build_dir = tmp_path / "build"
@@ -1055,7 +1055,7 @@ class TestCmdDiffExtended:
 # ---------------------------------------------------------------------------
 class TestCmdScaffoldInstitutionExtended:
     def test_path_traversal(self, commands, capsys, tmp_path, monkeypatch):
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         commands.cmd_scaffold_institution(["../../../etc/passwd"])
         captured = capsys.readouterr()
         assert "Invalid" in captured.err

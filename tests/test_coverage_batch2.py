@@ -759,7 +759,7 @@ class TestCmdDiff:
     def test_diff_regenerate_references(self, tmp_path, monkeypatch):
         from buildlib import BuildTasks as Commands
 
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         ui = TerminalOutput(use_color=False)
         runner = CommandRunner(ui=ui, build_mode="dev", verbose=False)
         config = ProjectConfig(build_dir=tmp_path / "build")
@@ -777,8 +777,8 @@ class TestCmdDiff:
     def test_diff_no_source_pdf(self, tmp_path, monkeypatch):
         from buildlib import BuildTasks as Commands
 
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         ui = TerminalOutput(use_color=False)
         runner = CommandRunner(ui=ui, build_mode="dev", verbose=False)
         config = ProjectConfig(build_dir=tmp_path / "build")
@@ -796,7 +796,7 @@ class TestScaffoldInstitution:
     def test_no_files(self, tmp_path, monkeypatch):
         from buildlib import BuildTasks as Commands
 
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         ui = TerminalOutput(use_color=False)
         runner = CommandRunner(ui=ui, build_mode="dev", verbose=False)
         config = ProjectConfig(build_dir=tmp_path / "build")
@@ -807,7 +807,7 @@ class TestScaffoldInstitution:
     def test_invalid_name(self, tmp_path, monkeypatch):
         from buildlib import BuildTasks as Commands
 
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         ui = TerminalOutput(use_color=False)
         runner = CommandRunner(ui=ui, build_mode="dev", verbose=False)
         config = ProjectConfig(build_dir=tmp_path / "build")
@@ -818,7 +818,7 @@ class TestScaffoldInstitution:
     def test_already_exists(self, tmp_path, monkeypatch):
         from buildlib import BuildTasks as Commands
 
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         ui = TerminalOutput(use_color=False)
         runner = CommandRunner(ui=ui, build_mode="dev", verbose=False)
         config = ProjectConfig(build_dir=tmp_path / "build")
@@ -832,7 +832,7 @@ class TestScaffoldInstitution:
     def test_generic_not_found(self, tmp_path, monkeypatch):
         from buildlib import BuildTasks as Commands
 
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         ui = TerminalOutput(use_color=False)
         runner = CommandRunner(ui=ui, build_mode="dev", verbose=False)
         config = ProjectConfig(build_dir=tmp_path / "build")
@@ -850,7 +850,7 @@ class TestCmdInit:
     def test_no_files(self, tmp_path, monkeypatch):
         from buildlib import BuildTasks as Commands
 
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         ui = TerminalOutput(use_color=False)
         runner = CommandRunner(ui=ui, build_mode="dev", verbose=False)
         config = ProjectConfig(build_dir=tmp_path / "build")
@@ -861,7 +861,7 @@ class TestCmdInit:
     def test_invalid_project_name(self, tmp_path, monkeypatch):
         from buildlib import BuildTasks as Commands
 
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         ui = TerminalOutput(use_color=False)
         runner = CommandRunner(ui=ui, build_mode="dev", verbose=False)
         config = ProjectConfig(build_dir=tmp_path / "build")
@@ -872,7 +872,7 @@ class TestCmdInit:
     def test_invalid_doctype(self, tmp_path, monkeypatch):
         from buildlib import BuildTasks as Commands
 
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         ui = TerminalOutput(use_color=False)
         runner = CommandRunner(ui=ui, build_mode="dev", verbose=False)
         config = ProjectConfig(build_dir=tmp_path / "build")
@@ -883,7 +883,7 @@ class TestCmdInit:
     def test_invalid_language(self, tmp_path, monkeypatch):
         from buildlib import BuildTasks as Commands
 
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         ui = TerminalOutput(use_color=False)
         runner = CommandRunner(ui=ui, build_mode="dev", verbose=False)
         config = ProjectConfig(build_dir=tmp_path / "build")
@@ -901,7 +901,7 @@ class TestScaffoldLanguage:
     def test_no_files(self, tmp_path, monkeypatch):
         from buildlib import BuildTasks as Commands
 
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         ui = TerminalOutput(use_color=False)
         runner = CommandRunner(ui=ui, build_mode="dev", verbose=False)
         config = ProjectConfig(build_dir=tmp_path / "build")
@@ -912,7 +912,7 @@ class TestScaffoldLanguage:
     def test_i18n_not_found(self, tmp_path, monkeypatch):
         from buildlib import BuildTasks as Commands
 
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         ui = TerminalOutput(use_color=False)
         runner = CommandRunner(ui=ui, build_mode="dev", verbose=False)
         config = ProjectConfig(build_dir=tmp_path / "build")
@@ -985,7 +985,7 @@ class TestDiffGitRefs:
     def test_diff_git_refs_invalid_ref(self, tmp_path, monkeypatch):
         from buildlib import BuildTasks as Commands
 
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         ui = TerminalOutput(use_color=False)
         runner = CommandRunner(ui=ui, build_mode="dev", verbose=False)
         config = ProjectConfig(build_dir=tmp_path / "build")
@@ -1009,7 +1009,7 @@ class TestDiffGitRefs:
     def test_diff_git_refs_latexdiff_not_available(self, tmp_path, monkeypatch):
         from buildlib import BuildTasks as Commands
 
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         ui = TerminalOutput(use_color=False)
         runner = CommandRunner(ui=ui, build_mode="dev", verbose=False)
         config = ProjectConfig(build_dir=tmp_path / "build")
@@ -1051,7 +1051,7 @@ class TestCmdCheck:
     def test_check_runs(self, tmp_path, monkeypatch):
         from buildlib import BuildTasks as Commands
 
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         ui = TerminalOutput(use_color=False)
         runner = CommandRunner(ui=ui, build_mode="dev", verbose=False)
         config = ProjectConfig(build_dir=tmp_path / "build")
@@ -1076,7 +1076,7 @@ class TestCmdLint:
     def test_lint_no_args(self, tmp_path, monkeypatch):
         from buildlib import BuildTasks as Commands
 
-        monkeypatch.setattr("buildlib.commands.commands.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         ui = TerminalOutput(use_color=False)
         runner = CommandRunner(ui=ui, build_mode="dev", verbose=False)
         config = ProjectConfig(build_dir=tmp_path / "build")
