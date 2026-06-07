@@ -1,42 +1,44 @@
 # OmniLaTeX Roadmap
 
-**Current version:** v2.4.1
+**Current version:** v2.5.0
 **License:** Apache 2.0
 
 ---
 
 ## Current State Assessment
 
-### Metrics (v2.4.1)
+### Metrics (v2.5.0)
 
-| Metric | Value | Delta from v2.2.0 |
+| Metric | Value | Delta from v2.4.1 |
 |--------|-------|--------------------|
 | Document types | 27 | -- |
 | .sty modules | 31 | -- |
-| Examples | 50 | +2 |
+| Examples | 50 | -- |
 | Institutions | 21 | -- |
 | Languages | 25+ | -- |
-| Python tests (fast) | 1346 | +575 |
+| Python tests (fast) | 1365 | +19 |
 | l3build test files | 94 | -- |
-| Lean 4 theorems | 301 | +104 |
-| buildlib coverage | 73% | +73% (from 0%) |
+| Lean 4 theorems | 304 | +3 |
+| buildlib coverage | 72% | -1% (refactored code paths) |
 | CI platforms | 5 | -- |
 | Documentation pages | 25+ | -- |
 
-### Audit Results Summary (v2.4.1 Post-Audit)
+### Audit Results Summary (v2.5.0 Post-Audit)
 
 | Area | Status | Key Findings |
 |------|--------|--------------|
-| Testing | PASS | 1346 fast tests passing, 105 skipped (numpy/rich unavailable). buildlib coverage 73%. |
-| Code Quality | PASS | black/isort/flake8 clean. All pre-commit hooks pass. |
-| Formal Verification | PASS | 301 Lean 4 theorems compile successfully (zero sorry). |
-| CI/CD Security | PASS | All actions SHA-pinned, dependency review on PRs, SBOM generation. |
-| UI/UX Accessibility | FIXED | SVG aria-hidden added, inline styles removed, 0 errors/0 warnings on all pages. |
-| Version Consistency | FIXED | flake.nix, SECURITY.md, ROADMAP.md aligned to v2.4.1. |
-| Gallery Completeness | FIXED | 27/27 doctypes, 21/21 institutions in template picker. |
-| Plugin Registry | FIXED | All 3 plugins registered (example-plugin, markdown-table, watermark). |
-| CI/CD Comments | FIXED | Stale '# v4'/'# v3' comments removed from all 12 workflows. |
-| Documentation | FIXED | README badges, institution count, test count, LuaTeX version corrected. |
+| Testing | PASS | 1365 fast tests passing, 105 skipped. 0 failures. |
+| Code Quality | PASS | black/isort/flake8 clean. 8 formatting fixes, 3 unused import removals. |
+| Test Isolation | FIXED | builder.REPO_ROOT monkeypatch bug causing real filesystem side effects. |
+| Exception Safety | FIXED | Narrowed except Exception to specific types in _compile_example_worker. |
+| Thread Safety | FIXED | Replaced timeout_flag mutable with threading.Event. |
+| Cache Atomicity | FIXED | Atomic writes (temp+rename) prevent corruption on crash. |
+| TOCTOU Race | FIXED | PDF size captured once, not re-stat'd in finally block. |
+| Path Correctness | FIXED | Cleanup uses absolute paths from REPO_ROOT. |
+| CI/CD Security | FIXED | Command injection in integration-matrix.yml, secret logging in docker-digest-sync.yml. |
+| CI/CD Hardening | FIXED | Path filters on build.yml/lean4-ci.yml, permissions on Forgejo/Gitea. |
+| WCAG Accessibility | FIXED | role=tablist->listbox, aria-live regions, 44px touch targets. |
+| Formal Verification | PASS | 29 Lean4 modules (3 new: BuildCacheAtomicity, ExceptionSafety, CleanupPathCorrectness). |
 
 ---
 
@@ -67,6 +69,16 @@
 - [x] Fix heading hierarchy in HTML pages (div to h1)
 - [x] Add header/footer semantic elements to verify.html
 
+### Completed (v2.5.0)
+
+- [x] Fix test isolation bug (builder.REPO_ROOT monkeypatch)
+- [x] Narrow exception handlers to specific types
+- [x] Fix TOCTOU race on PDF stat in finally block
+- [x] Replace timeout_flag with threading.Event
+- [x] Atomic cache writes (temp file + os.replace)
+- [x] Fix cleanup to use absolute paths from REPO_ROOT
+- [x] Remove 3 unused imports across buildlib
+
 ---
 
 ## Phase 2: Performance (v2.5.0) -- 3-4 weeks
@@ -85,6 +97,13 @@
 
 - [x] Profile and optimize LaTeX compilation for large documents (buildlib/profiler.py)
 - [x] Benchmark and optimize SSIM comparison for 50-example builds (buildlib/ssim_benchmark.py)
+
+### Completed (v2.5.0)
+
+- [x] CI/CD security hardening (command injection, secret handling, path filters)
+- [x] WCAG accessibility fixes (aria-live, touch targets, semantic roles)
+- [x] 3 new Lean4 proof modules for hardened properties
+- [x] Pre-push hook hardened (lint failures now block push)
 
 ---
 
@@ -199,6 +218,18 @@
 | 53 | Card elements missing accessible names | High | FIXED |
 | 54 | verify.js &mdash; HTML entity in textContent | Medium | FIXED |
 | 55 | Duplicate inline CSS in 3 HTML pages (~500 lines) | Medium | FIXED |
+| 56 | builder.REPO_ROOT test isolation bug | High | FIXED |
+| 57 | except Exception too broad in _compile_example_worker | High | FIXED |
+| 58 | TOCTOU race on PDF stat in finally block | High | FIXED |
+| 59 | timeout_flag mutable (unsafe under free-threaded Python) | Medium | FIXED |
+| 60 | Non-atomic cache writes (corruption on crash) | High | FIXED |
+| 61 | cleanup.py uses relative paths (CWD-dependent) | High | FIXED |
+| 62 | CI command injection via matrix interpolation | Critical | FIXED |
+| 63 | CI secret logging via echo-pipe docker login | Critical | FIXED |
+| 64 | CI missing path filters (wasteful doc-only builds) | Medium | FIXED |
+| 65 | Gallery role=tablist on non-tab grid | High | FIXED |
+| 66 | Verify status not in aria-live region | High | FIXED |
+| 67 | Lightbox close button below WCAG touch target | Medium | FIXED |
 
 ---
 
@@ -221,9 +252,9 @@
 
 | Version | Target Date | Focus | Status |
 |---------|-------------|-------|--------|
+| v2.5.0 | 2026-06-07 | Exhaustive audit: test isolation, buildlib hardening, CI/CD security, WCAG | RELEASED |
 | v2.4.1 | 2026-06-06 | Audit: tests, CI/CD, UI/UX, design tokens, packages | RELEASED |
 | v2.4.0 | 2026-06-05 | Audit fixes, buildlib tests | RELEASED |
-| v2.5.0 | 2026-07-18 | Performance optimization | PLANNED |
 | v3.0.0 | 2026-09-12 | Distribution (CTAN live) | PLANNED |
 | v3.1.0 | 2026-11-07 | Ecosystem expansion | PLANNED |
 | v4.0.0 | 2027-Q1 | Advanced features | PLANNED |
@@ -239,16 +270,16 @@
 - flake8 linting: PASS
 - markdownlint: PASS
 - YAML validation: PASS
-- Fast pytest suite (1346 tests): PASS
-- Lean 4 proofs (301 theorems): PASS
+- Fast pytest suite (1365 tests): PASS
+- Lean 4 proofs (29 modules): PASS
 - LaTeX TODO check: PASS
 
 ### Pre-Push
 
-- Fast pytest suite (no compilation): PASS
-- Lint checks: PASS
-- Docker digest consistency: PASS
-- Semantic versioning consistency: PASS
+- Fast pytest suite (no compilation): PASS (blocks on failure)
+- Lint checks: PASS (blocks on failure)
+- Docker digest consistency: PASS (blocks on failure)
+- Semantic versioning consistency: PASS (blocks on failure)
 
 ### CI Pipeline (GitHub Actions)
 
