@@ -151,7 +151,9 @@ class TestConcurrentWorkerExecution:
         # Create a real example that will cache-hit
         ex_dir = examples_dir / "cached-ex"
         ex_dir.mkdir()
-        (ex_dir / "main.tex").write_text("\\documentclass{article}\\begin{document}hi\\end{document}")
+        (ex_dir / "main.tex").write_text(
+            "\\documentclass{article}\\begin{document}hi\\end{document}"
+        )
 
         build_core._shared_build_cache = {}
         build_core.config.build_dir = tmp_path / "build"
