@@ -557,10 +557,11 @@ class _BuildCore:
 
         def _refresh_active():
             """Rebuild the active workers display from the dict."""
-            lines = []
-            for name, t0 in active_jobs.items():
-                elapsed = time.perf_counter() - t0
-                lines.append(f"[cyan]⠋ {name}[/cyan]" f"  [dim]{elapsed:.1f}s[/dim]")
+            with active_lock:
+                lines = []
+                for name, t0 in active_jobs.items():
+                    elapsed = time.perf_counter() - t0
+                    lines.append(f"[cyan]⠋ {name}[/cyan]" f"  [dim]{elapsed:.1f}s[/dim]")
             active_jobs_text.plain = "\n".join(lines) if lines else "[dim]—[/dim]"
 
         results = []

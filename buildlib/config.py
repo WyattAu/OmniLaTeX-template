@@ -28,7 +28,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 @dataclass
 class ProjectConfig:
     build_dir: Path = Path("build")
-    cnf_lines: list[str] = None
+    cnf_lines: list[str] | None = None
 
     def is_ci(self) -> bool:
         return any(os.environ.get(var) for var in ["CI", "GITHUB_ACTIONS", "GITLAB_CI"])

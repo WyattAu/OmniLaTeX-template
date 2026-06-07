@@ -19,7 +19,12 @@ from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 
-from bs4 import BeautifulSoup, Tag
+try:
+    from bs4 import BeautifulSoup, Tag
+
+    _HAS_BS4 = True
+except ImportError:
+    _HAS_BS4 = False
 
 
 class Severity(Enum):
@@ -793,6 +798,16 @@ def check_html_accessibility(
     """
     file_path = Path(file_path)
     result = CheckResult(file=file_path.name)
+
+    if not _HAS_BS4:
+        result.violations.append(
+            Violation(
+                criterion="N/A",
+                message="beautifulsoup4 not installed; cannot check accessibility",
+                severity=Severity.WARNING,
+            )
+        )
+        return result
 
     if not file_path.exists():
         result.violations.append(

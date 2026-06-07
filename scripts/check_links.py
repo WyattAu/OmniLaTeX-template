@@ -33,20 +33,19 @@ def check_internal_link(target: str, source_file: Path) -> list[str]:
             content = source_file.read_text(encoding="utf-8", errors="replace")
             heading = anchor.lower().replace("-", " ")
             if heading not in content.lower():
-                errors.append("Anchor #{anchor} not found in {source_file.name}")
+                errors.append(f"Anchor #{anchor} not found in {source_file.name}")
         return errors
 
     target_path = (source_file.parent / target).resolve()
 
     if not target_path.exists():
-        errors.append("File not found: {target} (from {source_file.name})")
+        errors.append(f"File not found: {target} (from {source_file.name})")
 
     return errors
 
 
 def main():
     errors = []
-    warnings: list[str] = []  # noqa: F841
 
     for md_file in DOCS_DIR.glob("*.md"):
         content = md_file.read_text(encoding="utf-8", errors="replace")
@@ -60,15 +59,15 @@ def main():
             else:
                 errs = check_internal_link(target, md_file)
                 for e in errs:
-                    errors.append("{md_file.name}:{line}: {e}")
+                    errors.append(f"{md_file.name}:{line}: {e}")
 
     if errors:
         print("LINK ERRORS:")
         for e in errors:
-            print("  {e}")
+            print(f"  {e}")
         sys.exit(1)
     else:
-        print("All internal links valid in {len(list(DOCS_DIR.glob('*.md')))} files")
+        print(f"All internal links valid in {len(list(DOCS_DIR.glob('*.md')))} files")
         sys.exit(0)
 
 

@@ -100,7 +100,7 @@ def parse_options(option_string: str) -> FloatOptions:
 
 
 def find_matching_end(text: str, env: str, start_pos: int) -> int:
-    token = "\\end{{{env}}}"
+    token = f"\\end{{{env}}}"
     idx = start_pos
     while True:
         idx = text.find(token, idx)
@@ -116,21 +116,21 @@ def build_caption_lines(opts: FloatOptions, base_env: str, indent: str) -> str:
     lines: List[str] = []
     if opts.caption_width:
         width = strip_braces(opts.caption_width)
-        lines.append("{indent}\\captionsetup{{width={width}}}")
+        lines.append(f"{indent}\\captionsetup{{width={width}}}")
     if opts.caption:
         caption_content = strip_braces(opts.caption)
         caption_cmd = "\\caption"
         if opts.short_caption:
             short = strip_braces(opts.short_caption)
-            caption_cmd += "[{short}]"
-        caption_cmd += "{{{caption_content}}}"
-        lines.append("{indent}{caption_cmd}")
+            caption_cmd += f"[{short}]"
+        caption_cmd += f"{{{caption_content}}}"
+        lines.append(f"{indent}{caption_cmd}")
     if opts.label:
         label = strip_braces(opts.label)
-        lines.append("{indent}\\label{{{label}}}")
+        lines.append(f"{indent}\\label{{{label}}}")
     if opts.footnote:
         footnote = strip_braces(opts.footnote)
-        lines.append("{indent}\\caption*{{{footnote}}}")
+        lines.append(f"{indent}\\caption*{{{footnote}}}")
     if not lines:
         return ""
     return "\n".join(lines) + "\n"
@@ -140,21 +140,21 @@ def build_manual_caption_commands(opts: FloatOptions, base_env: str) -> List[str
     commands: List[str] = []
     if opts.caption_width:
         width = strip_braces(opts.caption_width)
-        commands.append("\\captionsetup{{width={width}}}")
+        commands.append(f"\\captionsetup{{width={width}}}")
     if opts.caption:
         caption_content = strip_braces(opts.caption)
-        caption_cmd = "\\captionof{{{base_env}}}"
+        caption_cmd = f"\\captionof{{{base_env}}}"
         if opts.short_caption:
             short = strip_braces(opts.short_caption)
-            caption_cmd += "[{short}]"
-        caption_cmd += "{{{caption_content}}}"
+            caption_cmd += f"[{short}]"
+        caption_cmd += f"{{{caption_content}}}"
         commands.append(caption_cmd)
     if opts.label:
         label = strip_braces(opts.label)
-        commands.append("\\label{{{label}}}")
+        commands.append(f"\\label{{{label}}}")
     if opts.footnote:
         footnote = strip_braces(opts.footnote)
-        commands.append("\\caption*{{{footnote}}}")
+        commands.append(f"\\caption*{{{footnote}}}")
     return commands
 
 
@@ -176,7 +176,7 @@ def replace_manual_caption(body: str, commands: List[str]) -> str:
 def convert_environment(text: str, env: str) -> str:
     result = []
     idx = 0
-    begin_token = "\\begin{{{env}}}"
+    begin_token = f"\\begin{{{env}}}"
     base_env = "figure" if env == "omnlfigure" else "table"
 
     while True:
@@ -219,12 +219,12 @@ def convert_environment(text: str, env: str) -> str:
             result.append(text[start:])
             break
         body = text[body_start:end]
-        closing_token = "\\end{{{env}}}"
+        closing_token = f"\\end{{{env}}}"
         end_pos = end + len(closing_token)
 
         # Prepare new environment
         placement = strip_braces(opts.placement) if opts.placement else "tbp"
-        placement_arg = "[{placement}]" if placement else ""
+        placement_arg = f"[{placement}]" if placement else ""
 
         align_cmd = None
         if opts.align:
@@ -257,7 +257,7 @@ def convert_environment(text: str, env: str) -> str:
         # Ensure manual placeholder is removed if still present
         body_processed = body_processed.replace("\\omnlFloatCaption", "")
 
-        new_block = indent + "\\begin{{{base_env}}}{placement_arg}\n"
+        new_block = f"{indent}\\begin{{{base_env}}}{placement_arg}\n"
         if align_cmd:
             new_block += indent + "    " + align_cmd + "\n"
         if caption_before:
@@ -270,7 +270,7 @@ def convert_environment(text: str, env: str) -> str:
             if not new_block.endswith("\n"):
                 new_block += "\n"
             new_block += caption_after
-        new_block += indent + "\\end{{{base_env}}}"
+        new_block += f"{indent}\\end{{{base_env}}}"
 
         result.append(new_block)
         idx = end_pos
