@@ -46,7 +46,7 @@
           # Full OmniLaTeX package (all files)
           omnilatex = pkgs.stdenv.mkDerivation {
             pname = "omnilatex";
-            version = "2.4.0";
+            version = "2.4.1";
             src = self;
             dontBuild = true;
             installPhase = ''
@@ -125,7 +125,7 @@
       overlays.default = final: prev: {
         omnilatex = final.stdenv.mkDerivation {
           pname = "omnilatex";
-          version = "2.4.0";
+          version = "2.4.1";
           src = self;
           dontBuild = true;
           installPhase = ''

@@ -39,7 +39,6 @@ jobs:
     timeout-minutes: 60
     steps:
     - name: Checkout repository
-        # v4
       uses: actions/checkout@v6
       with:
         fetch-depth: 1
@@ -52,7 +51,6 @@ jobs:
       run: docker pull "${{ steps.digest.outputs.image }}"
 
     - name: Cache built PDFs
-      # v4
       uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
       with:
         path: |
@@ -74,7 +72,6 @@ jobs:
           python3 build.py --mode prod build-examples
 
     - name: Upload built PDFs
-        # v4
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       with:
         name: visual-regression-pdfs
@@ -90,7 +87,6 @@ jobs:
     if: github.event_name != 'workflow_dispatch' || github.event.inputs.regenerate != 'true'
     steps:
     - name: Checkout repository
-        # v4
       uses: actions/checkout@v6
 
     - name: Read Docker image digest
@@ -101,7 +97,6 @@ jobs:
       run: docker pull "${{ steps.digest.outputs.image }}"
 
     - name: Download built PDFs
-        # v4
       uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
       with:
         name: visual-regression-pdfs
@@ -142,7 +137,6 @@ jobs:
       contents: write
     steps:
     - name: Checkout repository
-        # v4
       uses: actions/checkout@v6
 
     - name: Read Docker image digest
@@ -153,7 +147,6 @@ jobs:
       run: docker pull "${{ steps.digest.outputs.image }}"
 
     - name: Download built PDFs
-        # v4
       uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
       with:
         name: visual-regression-pdfs
@@ -165,7 +158,6 @@ jobs:
         cp build/examples/*.pdf tests/references/
 
     - name: Create pull request for updated references
-      # v7
       uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1
       with:
         branch: chore/update-visual-references

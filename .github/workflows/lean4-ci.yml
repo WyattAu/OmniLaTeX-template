@@ -21,7 +21,6 @@ jobs:
 
     steps:
     - name: Checkout repository
-      # v4
       uses: actions/checkout@v6
       with:
         fetch-depth: 0
@@ -31,7 +30,6 @@ jobs:
       uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25
 
     - name: Setup Nix cache
-      # v8
       uses: DeterminateSystems/magic-nix-cache-action@908b263ff629f4cc17666315b7fd3ec127c6244d
 
     - name: Install Lean 4 (elan)
@@ -40,7 +38,6 @@ jobs:
         echo "$HOME/.elan/bin" >> $GITHUB_PATH
 
     - name: Cache Lake build artifacts
-      # v4
       uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
       with:
         path: specs/proofs/.lake

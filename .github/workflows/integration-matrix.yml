@@ -33,7 +33,6 @@ jobs:
         doctype: [article, book, report]
     steps:
     - name: Checkout repository
-        # v4
       uses: actions/checkout@v6
       with:
         fetch-depth: 1
@@ -82,7 +81,6 @@ jobs:
         language: [arabic, hebrew]
     steps:
     - name: Checkout repository
-        # v4
       uses: actions/checkout@v6
       with:
         fetch-depth: 1

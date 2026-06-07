@@ -19,7 +19,6 @@ jobs:
 
     steps:
     - name: Checkout repository
-      # v4
       uses: actions/checkout@v6
 
     - name: Resolve image reference
@@ -65,7 +64,6 @@ jobs:
 
     - name: Create pull request
       if: steps.update-digest.outputs.skip != 'true'
-      # v7
       uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1
       with:
         title: 'chore: update Docker image digest to ${{ steps.digest.outputs.digest }}'

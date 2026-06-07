@@ -24,7 +24,6 @@ jobs:
       version: ${{ steps.version.outputs.version }}
     steps:
     - name: Checkout repository
-      # v4
       uses: actions/checkout@v6
       with:
         fetch-depth: 0
@@ -97,7 +96,6 @@ jobs:
       run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
     - name: Upload CTAN zip artifact
-      # v4
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       with:
         name: omnilatex-ctan-zip

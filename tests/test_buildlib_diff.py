@@ -89,3 +89,45 @@ class TestComputeSsimWindowed:
         arr = np.random.rand(30, 80).astype(np.float64)
         ssim = _compute_ssim_windowed(arr, arr)
         assert ssim == pytest.approx(1.0, abs=1e-6)
+
+    def test_windowed_path_large_arrays(self):
+        """Arrays larger than window_size use the Gaussian windowed path."""
+        arr = np.random.rand(64, 64).astype(np.float64) * 255
+        ssim = _compute_ssim_windowed(arr, arr, window_size=7)
+        assert ssim == pytest.approx(1.0, abs=1e-4)
+
+    def test_windowed_path_with_noise(self):
+        """Windowed SSIM should detect similarity in noisy images."""
+        rng = np.random.default_rng(42)
+        arr1 = rng.integers(0, 256, size=(128, 128)).astype(np.float64)
+        arr2 = arr1 + rng.normal(0, 5, arr1.shape)
+        arr2 = np.clip(arr2, 0, 255)
+        ssim = _compute_ssim_windowed(arr1, arr2, window_size=7)
+        assert 0.5 < ssim <= 1.0
+
+    def test_windowed_path_different_sizes(self):
+        """Test windowed SSIM with various window sizes."""
+        arr = np.random.rand(64, 64).astype(np.float64) * 255
+        for ws in [5, 7, 11]:
+            ssim = _compute_ssim_windowed(arr, arr, window_size=ws)
+            assert ssim == pytest.approx(1.0, abs=1e-4)
+
+    def test_small_array_fallback_different_values(self):
+        """Small arrays with different values should produce valid SSIM."""
+        arr1 = np.full((4, 4), 50.0)
+        arr2 = np.full((4, 4), 200.0)
+        ssim = _compute_ssim_windowed(arr1, arr2, window_size=7)
+        assert isinstance(ssim, float)
+        assert -1.0 <= ssim <= 1.0
+
+    def test_rectangular_arrays(self):
+        """Rectangular arrays should work with windowed computation."""
+        arr = np.random.rand(20, 100).astype(np.float64) * 255
+        ssim = _compute_ssim_windowed(arr, arr, window_size=5)
+        assert ssim == pytest.approx(1.0, abs=1e-4)
+
+    def test_min_dimension_boundary(self):
+        """Arrays where one dimension equals window_size."""
+        arr = np.random.rand(7, 100).astype(np.float64) * 255
+        ssim = _compute_ssim_windowed(arr, arr, window_size=7)
+        assert ssim == pytest.approx(1.0, abs=1e-4)

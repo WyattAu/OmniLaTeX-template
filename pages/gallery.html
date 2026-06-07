@@ -38,7 +38,7 @@
 <section id="profiles">
   <div class="container">
     <h2 class="section-title">
-      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      <svg aria-hidden="true" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
       Document Profiles
     </h2>
     <p class="section-desc">Select a document type, then configure language and institution below.</p>
@@ -65,13 +65,25 @@
         <label for="inst">Institution</label>
         <select id="inst">
           <option value="none">None (generic)</option>
+          <option value="aalto">Aalto</option>
+          <option value="cambridge">Cambridge</option>
+          <option value="chalmers">Chalmers</option>
+          <option value="columbia">Columbia</option>
+          <option value="epfl">EPFL</option>
+          <option value="eth">ETH Zurich</option>
+          <option value="harvard">Harvard</option>
+          <option value="imperial">Imperial</option>
+          <option value="kit">KIT</option>
+          <option value="mit">MIT</option>
+          <option value="ntnu">NTNU</option>
+          <option value="oxford">Oxford</option>
+          <option value="princeton">Princeton</option>
+          <option value="stanford">Stanford</option>
+          <option value="tudelft">TU Delft</option>
           <option value="tuhh">TUHH</option>
           <option value="tum">TUM</option>
-          <option value="eth">ETH Zürich</option>
-          <option value="mit">MIT</option>
-          <option value="stanford">Stanford</option>
-          <option value="cambridge">Cambridge</option>
-          <option value="tudelft">TU Delft</option>
+          <option value="uoft">U of T</option>
+          <option value="yale">Yale</option>
         </select>
       </div>
     </div>
@@ -83,7 +95,7 @@
 <section id="preview">
   <div class="container">
     <h2 class="section-title">
-      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      <svg aria-hidden="true" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
       Live Preview
     </h2>
     <p class="section-desc">Your generated <code style="color:#79C0FF;background:var(--bg-surface);padding:2px 6px;border-radius:4px">\documentclass</code> line and options.</p>
@@ -92,11 +104,11 @@
       <div class="code-block" id="code-output"></div>
       <div class="code-actions">
         <button class="btn btn-primary" id="btn-download">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <svg aria-hidden="true" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Download Template
         </button>
         <button class="btn btn-secondary btn-copy" id="btn-copy">
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <svg aria-hidden="true" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
           Copy to Clipboard
         </button>
       </div>
@@ -107,7 +119,7 @@
 <section id="quickstart">
   <div class="container">
     <h2 class="section-title">
-      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <svg aria-hidden="true" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
       Quick Start
     </h2>
     <p class="section-desc">Up and running in three steps.</p>

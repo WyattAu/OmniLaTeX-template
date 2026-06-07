@@ -27,7 +27,6 @@ jobs:
     timeout-minutes: 10
     steps:
     - name: Checkout repository
-      # v4
       uses: actions/checkout@v6
 
     - name: Set up Python
@@ -53,7 +52,6 @@ jobs:
       contents: read
     steps:
     - name: Dependency Review
-      # v4
       uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294
       with:
         fail-on-severity: moderate
@@ -63,7 +61,6 @@ jobs:
     timeout-minutes: 60
     steps:
     - name: Checkout repository
-      # v4
       uses: actions/checkout@v6
       with:
         fetch-depth: 1
@@ -105,7 +102,6 @@ jobs:
         echo "All $ACTUAL examples built successfully."
 
     - name: Upload root PDF
-      # v4
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       with:
         name: PDF-Root
@@ -114,7 +110,6 @@ jobs:
         retention-days: 30
 
     - name: Upload example PDFs
-      # v4
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       with:
         name: PDF-Examples
@@ -138,7 +133,6 @@ jobs:
 
     - name: Upload site bundle
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      # v3
       uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9
       with:
         path: github-pages
@@ -149,7 +143,6 @@ jobs:
     needs: build
     steps:
     - name: Checkout repository
-      # v4
       uses: actions/checkout@v6
       with:
         fetch-depth: 1
@@ -189,7 +182,6 @@ jobs:
 
     - name: Upload performance metrics
       if: always()
-      # v4
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       with:
         name: performance-metrics
@@ -202,7 +194,6 @@ jobs:
     needs: build
     steps:
     - name: Checkout repository
-      # v4
       uses: actions/checkout@v6
       with:
         fetch-depth: 1
@@ -295,7 +286,6 @@ jobs:
     needs: build
     steps:
     - name: Checkout repository
-      # v4
       uses: actions/checkout@v6
 
     - name: Read Docker image digest
@@ -306,14 +296,12 @@ jobs:
       run: docker pull "${{ steps.digest.outputs.image }}"
 
     - name: Download root PDF
-      # v4
       uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
       with:
         name: PDF-Root
         path: .
 
     - name: Download example PDFs
-      # v4
       uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
       with:
         name: PDF-Examples
@@ -341,7 +329,6 @@ jobs:
 
     - name: Upload test results
       if: always()
-      # v4
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       with:
         name: test-results
@@ -376,7 +363,6 @@ jobs:
 
     steps:
     - name: Checkout repository
-      # v4
       uses: actions/checkout@v6
       with:
         fetch-depth: 0

@@ -24,7 +24,6 @@ jobs:
     timeout-minutes: 15
     steps:
     - name: Checkout repository
-        # v4
       uses: actions/checkout@v6
       with:
         fetch-depth: 1

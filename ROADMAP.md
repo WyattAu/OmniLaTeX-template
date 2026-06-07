@@ -1,13 +1,13 @@
 # OmniLaTeX Roadmap
 
-**Current version:** v2.4.0
+**Current version:** v2.4.1
 **License:** Apache 2.0
 
 ---
 
 ## Current State Assessment
 
-### Metrics (v2.4.0)
+### Metrics (v2.4.1)
 
 | Metric | Value | Delta from v2.2.0 |
 |--------|-------|--------------------|

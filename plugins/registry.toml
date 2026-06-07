@@ -1,6 +1,6 @@
 [registry]
 version = "1.0.0"
-last_updated = "2026-06-06"
+last_updated = "2026-06-07"
 description = "Official OmniLaTeX plugin registry"
 
 [[plugin]]
@@ -12,4 +12,26 @@ homepage = "https://github.com/WyattAu/OmniLaTeX-template"
 license = "Apache-2.0"
 omnilatex_min = "2.4.0"
 tags = ["example", "demo", "getting-started"]
+status = "active"
+
+[[plugin]]
+name = "markdown-table"
+version = "1.0.0"
+description = "Convert Markdown tables to LaTeX table environments"
+author = "Wyatt Au"
+homepage = "https://github.com/WyattAu/OmniLaTeX-template"
+license = "Apache-2.0"
+omnilatex_min = "2.4.0"
+tags = ["table", "markdown", "conversion"]
+status = "active"
+
+[[plugin]]
+name = "watermark"
+version = "1.0.0"
+description = "Add configurable watermarks to LaTeX documents"
+author = "Wyatt Au"
+homepage = "https://github.com/WyattAu/OmniLaTeX-template"
+license = "Apache-2.0"
+omnilatex_min = "2.4.0"
+tags = ["watermark", "overlay", "draft"]
 status = "active"

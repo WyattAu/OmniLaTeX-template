@@ -1,5 +1,10 @@
 # OmniLaTeX
 
+[![Build](https://github.com/WyattAu/OmniLaTeX-template/actions/workflows/build.yml/badge.svg)](https://github.com/WyattAu/OmniLaTeX-template/actions/workflows/build.yml)
+[![Lean 4 Proofs](https://github.com/WyattAu/OmniLaTeX-template/actions/workflows/lean4-ci.yml/badge.svg)](https://github.com/WyattAu/OmniLaTeX-template/actions/workflows/lean4-ci.yml)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![CTAN](https://img.shields.io/ctan/v/omnilatex)](https://ctan.org/pkg/omnilatex)
+
 A modular document class for LuaLaTeX, built on KOMA-Script. Supports 27 document types (thesis, article, CV, letter, presentation, poster, exam, book, and more), 21 institution configurations, 25 languages (including CJK and RTL), and reproducible builds via Docker or Nix.
 
 ## Quick Start
@@ -45,7 +50,7 @@ Pick a `doctype` from the list below and an `institution` from `config/instituti
 
 ### Institutions
 
-20 pre-configured institutions in `config/institutions/`: Aalto, Chalmers, Columbia, Harvard, KIT, NTNU, TUHH, TUM, ETH, MIT, Stanford, Cambridge, Oxford, Yale, Princeton, EPFL, CMU, Imperial, TU Delft, Generic. Each provides colors, logos, and translation strings. Copy an existing config to create your own.
+21 pre-configured institutions in `config/institutions/`: Aalto, Cambridge, Chalmers, CMU, Columbia, EPFL, ETH Zurich, Generic, Harvard, Imperial, KIT, MIT, NTNU, Oxford, Princeton, Stanford, TU Delft, TUHH, TUM, U of T, Yale. Each provides colors, logos, and translation strings. Copy an existing config to create your own.
 
 ### Languages
 
@@ -53,7 +58,7 @@ English, German, French, Spanish, Italian, Portuguese, Russian, Dutch, Polish, C
 
 ## Requirements
 
-- **LuaTeX** (LuaHBTeX 1.17+). Part of TeX Live 2024 or newer.
+- **LuaTeX** (LuaHBTeX 1.21+). Part of TeX Live 2025 or newer.
 - Python 3.10+ for the build system (`build.py`).
 - GNU Make for the test suite.
 
@@ -73,7 +78,7 @@ Use `python build.py --help` for all options.
 ## Testing
 
 ```bash
-python -m pytest tests/                         # fast suite (939 tests, no compilation)
+python -m pytest tests/                         # fast suite (1346 tests, no compilation)
 python -m pytest tests/test_modules.py          # structural tests only
 python -m pytest tests/test_ctan.py             # CTAN package validation
 ```

@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 
 try:
-    import numpy  # noqa: F401
+    import numpy as np  # noqa: F401
 
     _HAS_NUMPY = True
 except (ImportError, OSError):
@@ -204,3 +204,118 @@ class TestSSIMBenchmark:
         # window_size=7 > min(4,4), so no windowed result for this size
         for r in windowed_results:
             assert r.window_size <= min(r.width, r.height)
+
+    def test_make_pair_deterministic(self):
+        """_make_pair with same seed should produce consistent results."""
+        bench = SSIMBenchmark(iterations=1)
+        arr1, arr2 = bench._make_pair(64, 64)
+        assert arr1.shape == (64, 64)
+        assert arr2.shape == (64, 64)
+        assert arr1.dtype == np.float64
+        assert np.all(arr1 >= 0) and np.all(arr1 <= 255)
+        assert np.all(arr2 >= 0) and np.all(arr2 <= 255)
+
+    def test_benchmark_full_image_custom_iterations(self):
+        """Full image benchmark with explicit iteration count."""
+        bench = SSIMBenchmark(iterations=1)
+        result = bench.benchmark_full_image(32, 32, iterations=2)
+        assert result.method == "full_image"
+        assert result.elapsed_s > 0
+
+    def test_benchmark_windowed_custom_iterations(self):
+        """Windowed benchmark with explicit iteration count."""
+        bench = SSIMBenchmark(iterations=1)
+        result = bench.benchmark_windowed(64, 64, window_size=5, iterations=2)
+        assert result.method == "windowed"
+        assert result.window_size == 5
+        assert result.elapsed_s > 0
+
+    def test_run_all_empty_sizes(self):
+        """run_all with empty sizes should return empty suite."""
+        bench = SSIMBenchmark(sizes=[], iterations=1)
+        suite = bench.run_all()
+        assert isinstance(suite, BenchmarkSuite)
+        assert len(suite.results) == 0
+
+    def test_run_all_generates_timestamp(self):
+        """run_all should set the generated timestamp."""
+        bench = SSIMBenchmark(
+            sizes=[(32, 32)],
+            window_sizes=[5],
+            iterations=1,
+        )
+        suite = bench.run_all()
+        assert suite.generated != ""
+        assert "T" in suite.generated  # ISO format
+
+    def test_compare_methods_returns_all_fields(self):
+        """compare_methods should return all expected fields."""
+        bench = SSIMBenchmark(iterations=1)
+        result = bench.compare_methods(64, 64, iterations=1)
+        assert "size" in result
+        assert "full_image" in result
+        assert "windowed" in result
+        assert "speedup" in result
+        assert "windowed_faster" in result
+        assert result["full_image"]["method"] == "full_image"
+        assert result["windowed"]["method"] == "windowed"
+
+    def test_compute_summary_empty_results(self):
+        """_compute_summary with empty list should return empty dict."""
+        bench = SSIMBenchmark(iterations=1)
+        summary = bench._compute_summary([])
+        assert summary == {}
+
+    def test_compute_summary_single_method(self):
+        """_compute_summary with single method should compute stats."""
+        bench = SSIMBenchmark(iterations=1)
+        results = [
+            BenchmarkResult(
+                method="full_image",
+                width=64,
+                height=64,
+                elapsed_s=0.01,
+                images_per_sec=100.0,
+            ),
+        ]
+        summary = bench._compute_summary(results)
+        assert "methods" in summary
+        assert "full_image" in summary["methods"]
+        assert summary["methods"]["full_image"]["count"] == 1
+
+    def test_benchmark_result_to_dict_types(self):
+        """BenchmarkResult.to_dict should return correct types."""
+        r = BenchmarkResult(
+            method="windowed",
+            width=100,
+            height=200,
+            elapsed_s=0.05,
+            images_per_sec=20.0,
+            window_size=7,
+        )
+        d = r.to_dict()
+        assert isinstance(d["method"], str)
+        assert isinstance(d["width"], int)
+        assert isinstance(d["height"], int)
+        assert isinstance(d["elapsed_s"], float)
+        assert isinstance(d["images_per_sec"], float)
+        assert isinstance(d["window_size"], int)
+
+    def test_benchmark_suite_to_dict_structure(self):
+        """BenchmarkSuite.to_dict should have correct structure."""
+        r = BenchmarkResult(
+            method="windowed",
+            width=64,
+            height=64,
+            elapsed_s=0.01,
+            images_per_sec=100.0,
+        )
+        s = BenchmarkSuite(
+            generated="2026-01-01T00:00:00Z",
+            results=[r],
+            summary={"test": True},
+        )
+        d = s.to_dict()
+        assert d["generated"] == "2026-01-01T00:00:00Z"
+        assert len(d["results"]) == 1
+        assert d["summary"]["test"] is True

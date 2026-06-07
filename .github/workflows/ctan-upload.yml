@@ -19,7 +19,6 @@ jobs:
       version: ${{ steps.version.outputs.version }}
       changelog: ${{ steps.changelog.outputs.changelog }}
     steps:
-      # v4
     - uses: actions/checkout@v6
       with:
         fetch-depth: 0
@@ -71,7 +70,6 @@ jobs:
           --changelog "${{ steps.changelog.outputs.changelog }}"
 
     - name: Upload CTAN zip artifact
-      # v4
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       with:
         name: ctan-zip
