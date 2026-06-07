@@ -234,6 +234,13 @@ def _simple_menu(
         elif choice in commands:
             cmd_name = choice
             takes_files = commands[choice][2]
+        else:
+            # Fuzzy match: check if choice is a prefix or substring of any command
+            for name in commands:
+                if name.startswith(choice) or choice in name:
+                    cmd_name = name
+                    takes_files = commands[name][2]
+                    break
 
         if not cmd_name:
             print(f"  Unknown command: {choice}")

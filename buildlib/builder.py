@@ -554,6 +554,8 @@ class _BuildCore:
         log_lines, log_lock = deque(maxlen=200), threading.Lock()
         active_jobs: dict[str, float] = {}  # name -> start_time
         active_lock = threading.Lock()
+        completed: dict[str, bool] = {}  # name -> success
+        completed_lock = threading.Lock()
         overall_progress = Progress(
             TextColumn("[b blue]Overall"),
             MofNCompleteColumn(),
@@ -604,8 +606,16 @@ class _BuildCore:
                 lines = []
                 for name, t0 in active_jobs.items():
                     elapsed = time.perf_counter() - t0
-                    lines.append(f"[cyan]⠋ {name}[/cyan]" f"  [dim]{elapsed:.1f}s[/dim]")
-            active_jobs_text.plain = "\n".join(lines) if lines else "[dim]—[/dim]"
+                    lines.append(f"[cyan]⠋ {name}[/cyan]  [dim]{elapsed:.1f}s[/dim]")
+            with completed_lock:
+                done_lines = []
+                for name, success in sorted(completed.items()):
+                    status = "[green]OK[/green]" if success else "[red]FAIL[/red]"
+                    done_lines.append(f"  {status} {name}")
+            display = "\n".join(lines) if lines else "[dim]No active workers[/dim]"
+            if done_lines:
+                display += "\n" + "\n".join(done_lines[-5:])  # show last 5
+            active_jobs_text.plain = display
 
         results = []
         with Live(layout, console=console, screen=True, refresh_per_second=10):
@@ -623,10 +633,14 @@ class _BuildCore:
                     try:
                         _, success, logs = future.result()
                         results.append(success)
+                        with completed_lock:
+                            completed[name] = success
                         with log_lock:
                             log_lines.extend(logs)
                     except Exception as exc:
                         results.append(False)
+                        with completed_lock:
+                            completed[name] = False
                         log_lines.append(
                             f"[b red]FATAL ERROR: " f"{name}: {exc}[/b red]"
                         )
@@ -636,10 +650,11 @@ class _BuildCore:
                             _refresh_active()
                             log_panel_text.plain = "\n".join(log_lines)
                         overall_progress.update(overall_task, advance=1)
+
+        succeeded = sum(1 for r in results if r)
+        total = len(example_names)
         self.ui.header(
-            "Build Summary: "
-            f"{sum(1 for r in results if r)}"
-            f"/{len(example_names)} successful"
+            f"Build Summary: {succeeded}/{total} successful"
         )
 
     def _build_examples_simple_concurrent(self, example_names: list[str]):
