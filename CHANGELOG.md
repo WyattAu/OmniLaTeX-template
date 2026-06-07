@@ -1,5 +1,48 @@
 # Changelog
 
+## v2.5.0 (2026-06-07)
+
+### Fixed
+
+- **test_buildlib_coverage.py**: Fixed 5 `TestCompileExampleWorker` tests that monkeypatched `buildlib.config.REPO_ROOT` but not `buildlib.builder.REPO_ROOT`, causing real filesystem side effects (orphan `_minted`/`svg-inkscape` directories in `examples/`)
+- **builder.py _compile_example_worker**: Narrowed `except Exception` to `(OSError, shutil.Error)` for PDF copy and `(OSError, ValueError)` for critical errors -- prevents silent swallowing of `KeyboardInterrupt`/`SystemExit`
+- **builder.py TOCTOU race**: Captured PDF size once during copy phase (`_timing_pdf_size`) instead of re-statting in the `finally` block where the file could be deleted between `exists()` and `stat()`
+- **runner.py timeout**: Replaced `timeout_flag = [False]` mutable with `threading.Event()` for proper cross-thread signaling (safe under free-threaded Python 3.13+)
+- **runner.py timeout=0**: Changed `timeout or self.DEFAULT_TIMEOUT` to `timeout if timeout is not None else self.DEFAULT_TIMEOUT` -- explicit `timeout=0` was treated as no timeout
+- **cleanup.py clean_aux**: Added `cwd=_cfg.REPO_ROOT` to `latexmk -C` invocation -- was running in process CWD, potentially cleaning wrong directory
+- **cleanup.py clean_example**: Changed `Path("examples") / name` (relative) to `_cfg.REPO_ROOT / "examples" / name` (absolute) -- relative path broke if CWD changed
+- **cache.py _save_build_cache**: Replaced direct `write_text()` with atomic write (temp file + `os.replace()`) to prevent cache corruption on mid-write kill
+- **SECURITY.md**: Corrected claim that "All GitHub Actions are pinned to commit SHA" -- `actions/checkout` uses `@v6` tag
+
+### Added
+
+- **specs/proofs/OmniLaTeXProofs/BuildCacheAtomicity.lean**: Formal verification of atomic cache write properties (POSIX rename guarantee, temp file uniqueness, cleanup on failure, no partial state)
+- **specs/proofs/OmniLaTeXProofs/ExceptionSafety.lean**: Formal verification of exception handler narrowing (bounded type sets, no silent swallowing, TOCTOU elimination)
+- **specs/proofs/OmniLaTeXProofs/CleanupPathCorrectness.lean**: Formal verification of absolute path usage in cleanup operations
+- **CI/CD integration-matrix.yml**: Fixed command injection vulnerability -- matrix values now passed via `env:` block instead of `${{ }}` interpolation in shell heredocs
+- **CI/CD docker-digest-sync.yml**: Replaced `echo secret | docker login` with `docker/login-action` to prevent secret logging; replaced `${{ steps.* }}` interpolation in shell with `env:` block
+- **CI/CD lean4-ci.yml**: Added path filters (`specs/proofs/**`, `omnilatex.cls`); changed `curl | sh` to download-then-execute; changed `cd` to `working-directory: specs/proofs`; reduced `fetch-depth` from 0 to 1
+- **CI/CD build.yml**: Added path filters to push trigger (excludes doc-only changes); removed `develop` from branch list
+- **CI/CD release.yml**: Fixed content injection by using `env.RELEASE_BODY` instead of direct `${{ }}` interpolation in release body
+- **CI/CD Forgejo/Gitea**: Added `permissions: contents: read` to both workflow files
+- **pages/gallery.html**: Changed `role="tablist"` to `role="listbox"` on profile grid (cards are not tabs); added `role="alert" aria-live="assertive"` to toast notification
+- **pages/verify.html**: Added `role="status" aria-live="polite"` to verification status section
+- **pages/index.css**: Increased lightbox close button from 36px to 44px (WCAG touch target minimum)
+- **.git/hooks/pre-push**: Hardened to fail the push on lint/test failures (was using `|| true` which masked failures)
+- **.pre-commit-config.yaml**: Existing hooks verified working (black, isort, flake8, markdownlint, LaTeX hooks, pytest, Lean4)
+
+### Changed
+
+- **Test count**: 1334 -> 1365 fast tests (all passing, 0 failures)
+- **Lean4 proofs**: 26 -> 29 modules (3 new proof modules for hardened properties)
+- **buildlib/builder.py**: Added `repo_root` property to `_BuildCore` for testability; all `REPO_ROOT` references in instance methods now go through `self.repo_root`
+- **buildlib/mixins/cache.py**: Added `import os` for atomic write operations
+- **buildlib/mixins/cleanup.py**: Removed unused `subprocess` and `pathlib.Path` imports
+- **buildlib/commands/commands.py**: Removed unused `time` import
+- **buildlib/commands/scaffold.py**: Removed unused `pathlib.Path` import
+
+---
+
 ## v2.4.1 (2026-06-06)
 
 ### Fixed

@@ -92,10 +92,12 @@ jobs:
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda   # v3.0.0
+      env:
+        RELEASE_BODY: ${{ steps.changelog.outputs.content }}
       with:
         tag_name: ${{ github.ref_name }}
         name: OmniLaTeX ${{ github.ref_name }}
-        body: ${{ steps.changelog.outputs.content }}
+        body: ${{ env.RELEASE_BODY }}
         draft: false
         prerelease: ${{ contains(github.ref_name, '-') }}
         files: |

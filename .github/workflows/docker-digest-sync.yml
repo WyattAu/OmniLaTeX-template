@@ -28,12 +28,17 @@ jobs:
 
     - name: Get new image digest
       id: digest
+      uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.CR_PAT }}
+
+    - name: Pull image and extract digest
+      id: pull-digest
       env:
-        CR_PAT: ${{ secrets.CR_PAT }}
         IMAGE_REF: ${{ steps.resolve-image.outputs.image_ref }}
-        ACTOR: ${{ github.actor }}
       run: |
-        echo "${CR_PAT}" | docker login ghcr.io -u "${ACTOR}" --password-stdin
         docker pull "${IMAGE_REF}"
         DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' "${IMAGE_REF}" | sed 's/.*@//')
         echo "digest=${DIGEST}" >> $GITHUB_OUTPUT
@@ -41,36 +46,37 @@ jobs:
 
     - name: Update digest in .env.docker
       id: update-digest
+      env:
+        NEW_DIGEST: ${{ steps.pull-digest.outputs.digest }}
       run: |
         OLD_DIGEST=$(grep -oP 'sha256:[a-f0-9]+' .env.docker | head -1)
-        if [ "${OLD_DIGEST}" = "${{ steps.digest.outputs.digest }}" ]; then
+        if [ "${OLD_DIGEST}" = "${NEW_DIGEST}" ]; then
           echo "Digest already up to date, skipping."
           echo "skip=true" >> $GITHUB_OUTPUT
         else
-          echo "Updating digest: ${OLD_DIGEST} -> ${{ steps.digest.outputs.digest }}"
-          sed -i "s|${OLD_DIGEST}|${{ steps.digest.outputs.digest }}|g" .env.docker
+          echo "Updating digest: ${OLD_DIGEST} -> ${NEW_DIGEST}"
+          sed -i "s|${OLD_DIGEST}|${NEW_DIGEST}|g" .env.docker
           TODAY=$(date +%Y-%m-%d)
           sed -i "s|# Pinned digest (.*)|# Pinned digest (${TODAY})|" .env.docker
           echo "skip=false" >> $GITHUB_OUTPUT
 
-          NEW="${{ steps.digest.outputs.digest }}"
-          sed -i "s|${OLD_DIGEST}|${NEW}|g" .gitlab/ci/pipeline.yml
-          sed -i "s|${OLD_DIGEST}|${NEW}|g" .gitea/workflows/build.yml
-          sed -i "s|${OLD_DIGEST}|${NEW}|g" .forgejo/workflows/build.yml
-          sed -i "s|${OLD_DIGEST}|${NEW}|g" .woodpecker/workflows/pipeline.yml
-          sed -i "s|${OLD_DIGEST}|${NEW}|g" .devcontainer/docker-compose.yml
+          sed -i "s|${OLD_DIGEST}|${NEW_DIGEST}|g" .gitlab/ci/pipeline.yml
+          sed -i "s|${OLD_DIGEST}|${NEW_DIGEST}|g" .gitea/workflows/build.yml
+          sed -i "s|${OLD_DIGEST}|${NEW_DIGEST}|g" .forgejo/workflows/build.yml
+          sed -i "s|${OLD_DIGEST}|${NEW_DIGEST}|g" .woodpecker/workflows/pipeline.yml
+          sed -i "s|${OLD_DIGEST}|${NEW_DIGEST}|g" .devcontainer/docker-compose.yml
           echo "Synced digest to all downstream CI files."
         fi
 
     - name: Create pull request
       if: steps.update-digest.outputs.skip != 'true'
       uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1
+      env:
+        PR_DIGEST: ${{ steps.pull-digest.outputs.digest }}
       with:
-        title: 'chore: update Docker image digest to ${{ steps.digest.outputs.digest }}'
+        title: 'chore: update Docker image digest'
         body: |
           Automated digest sync from [Docker Image CI/CD](${{ github.event.workflow_run.html_url }}).
-
-          **New digest:** `${{ steps.digest.outputs.digest }}`
 
           This PR updates the pinned Docker image digest in:
           - `.env.docker`

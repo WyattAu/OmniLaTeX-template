@@ -10,7 +10,7 @@ import datetime
 import hashlib
 import json
 import logging
-import threading
+import os
 from pathlib import Path
 
 import buildlib.config as _cfg
@@ -75,10 +75,7 @@ class BuildCacheMixin:
         dest_pdf = (
             _cfg.REPO_ROOT / self.config.build_dir / _cfg.BUILD_EXAMPLES_SUBDIR
         ) / f"{example_name}.pdf"
-        return (
-            cached.get("source_hash") == source_hash
-            and dest_pdf.exists()
-        )
+        return cached.get("source_hash") == source_hash and dest_pdf.exists()
 
     def _load_build_cache(self) -> dict:
         """Load the build cache from disk. Returns empty dict on missing/corrupt file."""
@@ -119,14 +116,32 @@ class BuildCacheMixin:
         return cache
 
     def _save_build_cache(self, cache: dict) -> None:
-        """Save the build cache to disk, evicting stale entries first."""
+        """Save the build cache to disk, evicting stale entries first.
+
+        Uses atomic write (write to temp file, then rename) to prevent
+        corruption if the process is killed mid-write.
+        """
+        import tempfile
+
         cache = self._evict_cache(cache)
         cache_path = self.config.build_dir / "build_cache.json"
         cache_path.parent.mkdir(parents=True, exist_ok=True)
-        cache_path.write_text(
-            json.dumps(cache, indent=2) + "\n",
-            encoding="utf-8",
+        # Atomic write: write to temp file in same directory, then rename
+        fd, tmp_path = tempfile.mkstemp(
+            dir=cache_path.parent, suffix=".tmp", prefix="build_cache."
         )
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
+                json.dump(cache, f, indent=2)
+                f.write("\n")
+            os.replace(tmp_path, cache_path)
+        except BaseException:
+            # Clean up temp file on any failure (including KeyboardInterrupt)
+            try:
+                os.unlink(tmp_path)
+            except OSError:
+                pass
+            raise
 
     def cmd_cache_stats(self, _: object | None = None) -> None:
         """Display build cache statistics."""

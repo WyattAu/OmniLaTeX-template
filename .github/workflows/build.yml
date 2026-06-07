@@ -16,7 +16,19 @@ concurrency:
 
 on:
   push:
-    branches: [main, master, develop]
+    branches: [main, master]
+    paths:
+    - '**.tex'
+    - '**.sty'
+    - '**.cls'
+    - '**.lua'
+    - build.py
+    - buildlib/**
+    - lib/**
+    - config/**
+    - scripts/**
+    - tests/**
+    - .github/workflows/build.yml
   pull_request:
     branches: [main, master]
   workflow_dispatch:

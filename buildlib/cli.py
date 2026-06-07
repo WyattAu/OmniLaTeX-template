@@ -4,9 +4,9 @@ import argparse
 import os
 import sys
 
-from buildlib.tasks import BuildTasks
 from buildlib.config import ProjectConfig
 from buildlib.runner import CommandRunner
+from buildlib.tasks import BuildTasks
 from buildlib.tui import interactive_menu
 from buildlib.ui import TerminalOutput
 

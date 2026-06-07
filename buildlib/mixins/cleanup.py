@@ -6,8 +6,6 @@ Provides methods for cleaning auxiliary files, PDFs, and build artifacts.
 from __future__ import annotations
 
 import shutil
-import subprocess
-from pathlib import Path
 
 import buildlib.config as _cfg
 
@@ -29,7 +27,7 @@ class CleanupMixin:
     def clean_aux(self, _: object | None = None) -> None:
         """Clean auxiliary files from all examples."""
         self.ui.header("Cleaning auxiliary files")
-        self.runner.run([_cfg.LATEXMK_COMMAND, "-C"])
+        self.runner.run([_cfg.LATEXMK_COMMAND, "-C"], cwd=_cfg.REPO_ROOT)
         self.clean_example([e.name for e in self.discover_examples()])
 
     def clean_example(self, files: list[str]):
@@ -37,11 +35,14 @@ class CleanupMixin:
         if files:
             self.ui.info(f"Cleaning {len(files)} example(s)")
             for name in files:
+                example_dir = _cfg.REPO_ROOT / "examples" / name
                 try:
-                    self.runner.run(
-                        [_cfg.LATEXMK_COMMAND, "-c"], cwd=Path("examples") / name
+                    exit_code, _ = self.runner.run(
+                        [_cfg.LATEXMK_COMMAND, "-c"], cwd=example_dir
                     )
-                except (OSError, subprocess.SubprocessError):
+                    if exit_code != 0:
+                        self.ui.warning(f"Could not clean example {name}")
+                except OSError:
                     self.ui.warning(f"Could not clean example {name}")
 
     def clean_pdf(self, _: object | None = None) -> None:

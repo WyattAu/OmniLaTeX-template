@@ -19,8 +19,8 @@ from buildlib.config import (
     LATEXMK_FORCE_CONTINUE,
     MAIN_TEX_FILENAME,
     MINTED_CACHE_SUBDIR,
-    RICH_AVAILABLE,
     REPO_ROOT,
+    RICH_AVAILABLE,
     SVG_INKSCAPE_CACHE,
     ProjectConfig,
 )
@@ -163,8 +163,17 @@ class _BuildCore(BuildCacheMixin, DiscoveryMixin, CleanupMixin):
         self._shared_build_cache: dict | None = None
 
     @property
+    def repo_root(self) -> Path:
+        """Repository root, read dynamically for testability.
+
+        Always reads from the current value of ``buildlib.builder.REPO_ROOT``
+        so that monkeypatching in tests takes effect.
+        """
+        return REPO_ROOT
+
+    @property
     def version(self) -> str:
-        version_file = REPO_ROOT / "VERSION.md"
+        version_file = self.repo_root / "VERSION.md"
         if version_file.exists():
             text = version_file.read_text(encoding="utf-8")
             m = re.search(r"(\d+\.\d+\.\d+)", text)
@@ -174,7 +183,7 @@ class _BuildCore(BuildCacheMixin, DiscoveryMixin, CleanupMixin):
 
     @property
     def source_files(self) -> list[Path]:
-        return self._get_source_files(REPO_ROOT)
+        return self._get_source_files(self.repo_root)
 
     def _compile_example_worker(self, example_name: str) -> tuple[str, bool, list[str]]:
         """
@@ -185,8 +194,9 @@ class _BuildCore(BuildCacheMixin, DiscoveryMixin, CleanupMixin):
         all_logs = []
         start_time = time.perf_counter()
         _timing_success = False
+        _timing_pdf_size = 0
         try:
-            repo_root = REPO_ROOT
+            repo_root = self.repo_root
             example_dir = repo_root / "examples" / example_name
 
             if not self.force:
@@ -249,7 +259,7 @@ class _BuildCore(BuildCacheMixin, DiscoveryMixin, CleanupMixin):
 
             # Create build/examples directory early to
             # avoid race conditions in concurrent builds
-            repo_root = REPO_ROOT
+            repo_root = self.repo_root
             build_examples_dir = (
                 repo_root / self.config.build_dir / BUILD_EXAMPLES_SUBDIR
             )
@@ -289,7 +299,7 @@ class _BuildCore(BuildCacheMixin, DiscoveryMixin, CleanupMixin):
                             "found[/bold red]"
                         )
                         return example_name, False, all_logs
-                except Exception as copy_exc:
+                except (OSError, shutil.Error) as copy_exc:
                     all_logs.append(f"[DEBUG] Copy exception: {copy_exc}")
                     all_logs.append(
                         "[bold red]✗ FAILURE: Could not copy "
@@ -297,6 +307,7 @@ class _BuildCore(BuildCacheMixin, DiscoveryMixin, CleanupMixin):
                     )
                     return example_name, False, all_logs
                 _timing_success = True
+                _timing_pdf_size = dest_pdf.stat().st_size
                 source_files = self._collect_source_files(example_name)
                 source_hash = self._hash_for_paths(source_files)
                 with self._cache_lock:
@@ -307,7 +318,7 @@ class _BuildCore(BuildCacheMixin, DiscoveryMixin, CleanupMixin):
                     cache[f"examples/{example_name}"] = {
                         "source_hash": source_hash,
                         "mtimes": self._get_mtimes(source_files),
-                        "pdf_size": dest_pdf.stat().st_size,
+                        "pdf_size": _timing_pdf_size,
                         "build_time": time.strftime(
                             "%Y-%m-%dT%H:%M:%SZ", time.gmtime()
                         ),
@@ -321,7 +332,7 @@ class _BuildCore(BuildCacheMixin, DiscoveryMixin, CleanupMixin):
                     f"{src_pdf} after build attempt.[/bold red]"
                 )
                 return example_name, False, all_logs
-        except Exception as exc:
+        except (OSError, ValueError) as exc:
             all_logs.append(
                 "[bold red]✗ A critical error occurred in "
                 f"worker for {example_name}: {exc}[/bold red]"
@@ -330,13 +341,11 @@ class _BuildCore(BuildCacheMixin, DiscoveryMixin, CleanupMixin):
         finally:
             if self.timings:
                 elapsed = time.perf_counter() - start_time
-                repo_root = REPO_ROOT
+                repo_root = self.repo_root
                 example_dir = repo_root / "examples" / example_name
-                pdf_size = (
-                    (example_dir / "main.pdf").stat().st_size
-                    if (example_dir / "main.pdf").exists()
-                    else 0
-                )
+                # Use the size already captured during the copy phase
+                # to avoid a TOCTOU race on the PDF file.
+                pdf_size = _timing_pdf_size if _timing_success else 0
                 timing_record = {
                     "name": example_name,
                     "mode": self.runner.build_mode,
@@ -465,9 +474,7 @@ class _BuildCore(BuildCacheMixin, DiscoveryMixin, CleanupMixin):
 
         succeeded = sum(1 for r in results if r)
         total = len(example_names)
-        self.ui.header(
-            f"Build Summary: {succeeded}/{total} successful"
-        )
+        self.ui.header(f"Build Summary: {succeeded}/{total} successful")
 
     def _build_examples_simple_concurrent(self, example_names: list[str]):
         results, print_lock = [], threading.Lock()

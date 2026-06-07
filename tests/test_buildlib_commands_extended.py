@@ -84,7 +84,9 @@ class TestCmdExport:
             return (0, [])
 
         with patch("buildlib.config.REPO_ROOT", monkeypatch_root):
-            with patch("buildlib.commands.commands.shutil.which", side_effect=fake_which):
+            with patch(
+                "buildlib.commands.commands.shutil.which", side_effect=fake_which
+            ):
                 with patch.object(commands.runner, "run", side_effect=make_html):
                     commands.cmd_export([str(src)], output_format="html")
         captured = capsys.readouterr()
@@ -126,7 +128,9 @@ class TestCmdExport:
             return (0, [])
 
         with patch("buildlib.config.REPO_ROOT", monkeypatch_root):
-            with patch("buildlib.commands.commands.shutil.which", side_effect=fake_which):
+            with patch(
+                "buildlib.commands.commands.shutil.which", side_effect=fake_which
+            ):
                 with patch.object(commands.runner, "run", side_effect=make_epub):
                     commands.cmd_export([str(src)], output_format="epub")
         captured = capsys.readouterr()
@@ -503,7 +507,9 @@ class TestGetTexliveVersion:
         mock_result = MagicMock()
         mock_result.stdout = "TeX Live 2024\n"
         mock_result.returncode = 0
-        with patch("buildlib.commands.commands.subprocess.run", return_value=mock_result):
+        with patch(
+            "buildlib.commands.commands.subprocess.run", return_value=mock_result
+        ):
             result = commands._get_texlive_version()
             assert result == 2024
 
@@ -511,7 +517,9 @@ class TestGetTexliveVersion:
         mock_result = MagicMock()
         mock_result.stdout = "Some random output\n"
         mock_result.returncode = 0
-        with patch("buildlib.commands.commands.subprocess.run", return_value=mock_result):
+        with patch(
+            "buildlib.commands.commands.subprocess.run", return_value=mock_result
+        ):
             result = commands._get_texlive_version()
             assert result is None
 
@@ -519,7 +527,9 @@ class TestGetTexliveVersion:
         mock_result = MagicMock()
         mock_result.stdout = ""
         mock_result.returncode = 0
-        with patch("buildlib.commands.commands.subprocess.run", return_value=mock_result):
+        with patch(
+            "buildlib.commands.commands.subprocess.run", return_value=mock_result
+        ):
             result = commands._get_texlive_version()
             assert result is None
 
@@ -527,7 +537,9 @@ class TestGetTexliveVersion:
         mock_result = MagicMock()
         mock_result.stdout = None
         mock_result.returncode = 0
-        with patch("buildlib.commands.commands.subprocess.run", return_value=mock_result):
+        with patch(
+            "buildlib.commands.commands.subprocess.run", return_value=mock_result
+        ):
             result = commands._get_texlive_version()
             assert result is None
 
@@ -540,7 +552,9 @@ class TestGetTexliveVersion:
             assert result is None
 
     def test_os_error(self, commands):
-        with patch("buildlib.commands.commands.subprocess.run", side_effect=OSError("no tex")):
+        with patch(
+            "buildlib.commands.commands.subprocess.run", side_effect=OSError("no tex")
+        ):
             result = commands._get_texlive_version()
             assert result is None
 
@@ -550,7 +564,9 @@ class TestGetTexliveVersion:
             "TeX Live YYYY\n"  # YYYY won't match \d{4} as int? No, it will match regex
         )
         mock_result.returncode = 0
-        with patch("buildlib.commands.commands.subprocess.run", return_value=mock_result):
+        with patch(
+            "buildlib.commands.commands.subprocess.run", return_value=mock_result
+        ):
             result = commands._get_texlive_version()
             # The regex needs \d{4} so "YYYY" won't match
             assert result is None
@@ -877,8 +893,12 @@ class TestDiffGitRefs:
             return None
 
         with patch("buildlib.commands.commands.subprocess.run", side_effect=fake_run):
-            with patch("buildlib.commands.commands.shutil.which", side_effect=fake_which):
-                with patch("buildlib.commands.commands.Path.cwd", return_value=Path(".")):
+            with patch(
+                "buildlib.commands.commands.shutil.which", side_effect=fake_which
+            ):
+                with patch(
+                    "buildlib.commands.commands.Path.cwd", return_value=Path(".")
+                ):
                     commands._diff_git_refs("ref_a", "ref_b")
 
     def test_latexdiff_unavailable_fallback(self, commands, capsys):
@@ -915,7 +935,9 @@ class TestDiffGitRefs:
 # ---------------------------------------------------------------------------
 class TestCheckAllLatexPackages:
     def test_exception_returns_all_false(self, commands):
-        with patch("buildlib.commands.commands.subprocess.run", side_effect=OSError("fail")):
+        with patch(
+            "buildlib.commands.commands.subprocess.run", side_effect=OSError("fail")
+        ):
             result = commands._check_all_latex_packages(["fontspec", "hyperref"])
         assert all(v is False for v in result.values())
 
@@ -923,7 +945,9 @@ class TestCheckAllLatexPackages:
         mock_result = MagicMock()
         mock_result.returncode = 1
         mock_result.stdout = "/path/to/fontspec.sty\n"
-        with patch("buildlib.commands.commands.subprocess.run", return_value=mock_result):
+        with patch(
+            "buildlib.commands.commands.subprocess.run", return_value=mock_result
+        ):
             result = commands._check_all_latex_packages(["fontspec", "hyperref"])
         assert result["fontspec"] is True
         assert result["hyperref"] is False
@@ -932,7 +956,9 @@ class TestCheckAllLatexPackages:
         mock_result = MagicMock()
         mock_result.returncode = 0
         mock_result.stdout = "/path/to/fontspec.sty\n/path/to/hyperref.sty\n"
-        with patch("buildlib.commands.commands.subprocess.run", return_value=mock_result):
+        with patch(
+            "buildlib.commands.commands.subprocess.run", return_value=mock_result
+        ):
             result = commands._check_all_latex_packages(["fontspec", "hyperref"])
         assert result["fontspec"] is True
         assert result["hyperref"] is True
@@ -951,7 +977,9 @@ class TestCheckLatexPackage:
         assert result is False
 
     def test_os_error(self, commands):
-        with patch("buildlib.commands.commands.subprocess.run", side_effect=OSError("fail")):
+        with patch(
+            "buildlib.commands.commands.subprocess.run", side_effect=OSError("fail")
+        ):
             result = commands._check_latex_package("fontspec")
         assert result is False
 
@@ -959,7 +987,9 @@ class TestCheckLatexPackage:
         mock_result = MagicMock()
         mock_result.returncode = 0
         mock_result.stdout = "/path/to/fontspec.sty\n"
-        with patch("buildlib.commands.commands.subprocess.run", return_value=mock_result):
+        with patch(
+            "buildlib.commands.commands.subprocess.run", return_value=mock_result
+        ):
             result = commands._check_latex_package("fontspec")
         assert result is True
 
@@ -967,7 +997,9 @@ class TestCheckLatexPackage:
         mock_result = MagicMock()
         mock_result.returncode = 1
         mock_result.stdout = ""
-        with patch("buildlib.commands.commands.subprocess.run", return_value=mock_result):
+        with patch(
+            "buildlib.commands.commands.subprocess.run", return_value=mock_result
+        ):
             result = commands._check_latex_package("nonexistent")
         assert result is False
 
@@ -977,7 +1009,9 @@ class TestCheckLatexPackage:
 # ---------------------------------------------------------------------------
 class TestIsGitRef:
     def test_exception(self, commands):
-        with patch("buildlib.commands.commands.subprocess.run", side_effect=OSError("fail")):
+        with patch(
+            "buildlib.commands.commands.subprocess.run", side_effect=OSError("fail")
+        ):
             result = commands._is_git_ref("HEAD")
         assert result is False
 

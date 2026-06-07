@@ -76,8 +76,7 @@ class TestCacheThreadSafety:
                 errors.append(e)
 
         threads = [
-            threading.Thread(target=write_cache, args=(f"ex{i}",))
-            for i in range(10)
+            threading.Thread(target=write_cache, args=(f"ex{i}",)) for i in range(10)
         ]
         for t in threads:
             t.start()
@@ -95,11 +94,13 @@ class TestCacheThreadSafety:
             try:
                 for i in range(10):
                     with build_core._timings_lock:
-                        build_core.timings_data.append({
-                            "name": f"ex_{idx}_{i}",
-                            "wall_time_s": 1.0,
-                            "success": True,
-                        })
+                        build_core.timings_data.append(
+                            {
+                                "name": f"ex_{idx}_{i}",
+                                "wall_time_s": 1.0,
+                                "success": True,
+                            }
+                        )
             except Exception as e:
                 errors.append(e)
 
@@ -143,7 +144,9 @@ class TestConcurrentWorkerExecution:
         names = {r[0] for r in results}
         assert names == {f"ex{i}" for i in range(5)}
 
-    def test_cache_hit_during_concurrent_builds(self, build_core, tmp_path, monkeypatch):
+    def test_cache_hit_during_concurrent_builds(
+        self, build_core, tmp_path, monkeypatch
+    ):
         """Cache hits should work correctly during concurrent builds."""
         monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)

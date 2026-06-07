@@ -18,8 +18,11 @@ import OmniLaTeXProofs.SecondaryLanguageCompleteness
 import OmniLaTeXProofs.CrossReferenceConsistency
 import OmniLaTeXProofs.BeamerProperties
 import OmniLaTeXProofs.BuildCache
+import OmniLaTeXProofs.BuildCacheAtomicity
 import OmniLaTeXProofs.BuildHash
 import OmniLaTeXProofs.CommandRunnerTimeout
+import OmniLaTeXProofs.ExceptionSafety
+import OmniLaTeXProofs.CleanupPathCorrectness
 import OmniLaTeXProofs.TypographicConstraints
 import OmniLaTeXProofs.OutputFormats
 import OmniLaTeXProofs.LaTeXPackageDependencies

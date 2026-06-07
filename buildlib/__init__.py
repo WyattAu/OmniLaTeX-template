@@ -5,8 +5,6 @@ Composes mixin classes into the final BuildTasks class.
 
 from __future__ import annotations
 
-from buildlib.tasks import BuildTasks  # noqa: F401
-
 # Re-export public API for convenience
 from buildlib.cli import main  # noqa: F401, E402
 from buildlib.config import (  # noqa: F401, E402
@@ -21,4 +19,5 @@ from buildlib.config import (  # noqa: F401, E402
     ProjectConfig,
 )
 from buildlib.runner import CommandRunner  # noqa: F401, E402
+from buildlib.tasks import BuildTasks  # noqa: F401
 from buildlib.ui import TerminalOutput  # noqa: F401, E402

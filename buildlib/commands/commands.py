@@ -9,15 +9,14 @@ import re
 import shutil
 import subprocess
 import sys
-import time
 from pathlib import Path
 
+import buildlib.config as _cfg
 from buildlib.commands.check_lint import CheckLintMixin
 from buildlib.commands.doctor import DoctorMixin
 from buildlib.commands.export import ExportMixin
 from buildlib.commands.scaffold import ScaffoldMixin
 from buildlib.commands.watch import WatchMixin
-import buildlib.config as _cfg
 from buildlib.config import (
     BUILD_EXAMPLES_SUBDIR,
     INTERACTION_NONSTOP,
@@ -322,7 +321,11 @@ class _Commands(ScaffoldMixin, ExportMixin, WatchMixin, DoctorMixin, CheckLintMi
             shutil.rmtree(tmpdir, ignore_errors=True)
 
     def _run_latexdiff(
-        self, tex_a: Path, tex_b: Path, output: str | None = None, cwd: Path | None = None
+        self,
+        tex_a: Path,
+        tex_b: Path,
+        output: str | None = None,
+        cwd: Path | None = None,
     ):
         import tempfile
 
@@ -405,7 +408,10 @@ class _Commands(ScaffoldMixin, ExportMixin, WatchMixin, DoctorMixin, CheckLintMi
     # -- cmd_diff -----------------------------------------------------------
 
     def cmd_diff(
-        self, files: list[str], regenerate_references: bool = False, output: str | None = None
+        self,
+        files: list[str],
+        regenerate_references: bool = False,
+        output: str | None = None,
     ):
         """Compare PDFs, git refs, or example references.
 

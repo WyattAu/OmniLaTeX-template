@@ -34,7 +34,7 @@ class CommandRunner:
         thread drains stdout so that the readline loop never blocks past
         the deadline.
         """
-        effective_timeout = timeout or self.DEFAULT_TIMEOUT
+        effective_timeout = timeout if timeout is not None else self.DEFAULT_TIMEOUT
 
         if self.verbose:
             self.ui.debug(f"RUN in '{cwd or Path.cwd()}': " f"{' '.join(cmd_args)}")
@@ -45,13 +45,13 @@ class CommandRunner:
 
         logs: list[str] = []
         lock = threading.Lock()
-        timeout_flag = [False]  # mutable container visible to reader thread
+        timeout_event = threading.Event()
 
         def _reader(stream):
             """Read lines from *stream* until EOF or timeout."""
             try:
                 for line in iter(stream.readline, ""):
-                    if timeout_flag[0]:
+                    if timeout_event.is_set():
                         break
                     stripped = line.rstrip()
                     with lock:
@@ -88,7 +88,7 @@ class CommandRunner:
             try:
                 return_code = process.wait(timeout=effective_timeout)
             except subprocess.TimeoutExpired:
-                timeout_flag[0] = True
+                timeout_event.set()
                 try:
                     process.kill()
                 except OSError:

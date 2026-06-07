@@ -25,6 +25,6 @@ Alternatively, email the maintainer directly. Do not open public issues for secu
 ## Supply Chain
 
 - Docker images are built from pinned Dockerfile and referenced by SHA-256 digest
-- All GitHub Actions are pinned to commit SHA (no tag references)
+- Most GitHub Actions are pinned to commit SHA; `actions/checkout` uses `@v6` tag
 - Dependency review runs on every pull request
 - `.env.docker` digest is validated by pre-push hook

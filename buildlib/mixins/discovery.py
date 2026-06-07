@@ -24,15 +24,22 @@ class DiscoveryMixin:
         key = str(repo_root)
         if key not in self._source_files_cache:
             exclude = {
-                ".git", "node_modules", "build",
-                ".venv", ".direnv", "__pycache__", ".nix",
+                ".git",
+                "node_modules",
+                "build",
+                ".venv",
+                ".direnv",
+                "__pycache__",
+                ".nix",
             }
             sty_files = [
-                p for p in repo_root.rglob("*.sty")
+                p
+                for p in repo_root.rglob("*.sty")
                 if not any(d in exclude for d in p.parts)
             ]
             cls_files = [
-                p for p in repo_root.rglob("*.cls")
+                p
+                for p in repo_root.rglob("*.cls")
                 if not any(d in exclude for d in p.parts)
             ]
             self._source_files_cache[key] = sty_files + cls_files

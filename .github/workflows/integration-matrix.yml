@@ -48,9 +48,9 @@ jobs:
       run: |
         mkdir -p /tmp/test-matrix
         {
-          echo '\documentclass[doctype=${{ matrix.doctype }},language=${{ matrix.language }}]{omnilatex}'
+          echo "\\documentclass[doctype=$DOCTYPE,language=$LANGUAGE]{omnilatex}"
           echo '\begin{document}'
-          echo 'Test document for language=${{ matrix.language }}, doctype=${{ matrix.doctype }}.'
+          echo "Test document for language=$LANGUAGE, doctype=$DOCTYPE."
           echo '\section{Test Section}'
           echo 'This is a test paragraph.'
           echo '\end{document}'
@@ -64,13 +64,19 @@ jobs:
           --entrypoint "" \
           "${{ steps.digest.outputs.image }}" \
           bash -c "cp -r /opt/omnilatex/omnilatex.cls /opt/omnilatex/lib /opt/omnilatex/config /workspace/ && cp /workspace/config/omnilatex-document-settings.sty /workspace/config/document-settings.sty 2>/dev/null || true && lualatex --shell-escape --interaction=nonstopmode main.tex; test -f main.pdf"
+      env:
+        LANGUAGE: ${{ matrix.language }}
+        DOCTYPE: ${{ matrix.doctype }}
 
     - name: Verify PDF output
       run: |
         test -f /tmp/test-matrix/main.pdf || (echo "FAIL: No PDF generated" && exit 1)
         size=$(stat -c%s /tmp/test-matrix/main.pdf)
-        echo "PDF size: ${size} bytes for ${{ matrix.language }}-${{ matrix.doctype }}"
+        echo "PDF size: ${size} bytes for ${LANGUAGE}-${DOCTYPE}"
         test "$size" -gt 1000 || (echo "FAIL: PDF too small (${size} bytes)" && exit 1)
+      env:
+        LANGUAGE: ${{ matrix.language }}
+        DOCTYPE: ${{ matrix.doctype }}
 
   rtl-testing:
     runs-on: ubuntu-latest
@@ -96,11 +102,11 @@ jobs:
       run: |
         mkdir -p /tmp/test-rtl
         {
-          echo '\documentclass[doctype=article,language=${{ matrix.language }}]{omnilatex}'
+          echo "\\documentclass[doctype=article,language=$LANGUAGE]{omnilatex}"
           echo '\begin{document}'
-          echo 'Test RTL document for ${{ matrix.language }}.'
+          echo "Test RTL document for $LANGUAGE."
           echo '\section{Test}'
-          echo 'Content in ${{ matrix.language }} language.'
+          echo "Content in $LANGUAGE language."
           echo '\end{document}'
         } > /tmp/test-rtl/main.tex
 
@@ -112,11 +118,15 @@ jobs:
           --entrypoint "" \
           "${{ steps.digest.outputs.image }}" \
           bash -c "cp -r /opt/omnilatex/omnilatex.cls /opt/omnilatex/lib /opt/omnilatex/config /workspace/ && cp /workspace/config/omnilatex-document-settings.sty /workspace/config/document-settings.sty 2>/dev/null || true && lualatex --shell-escape --interaction=nonstopmode main.tex; test -f main.pdf"
+      env:
+        LANGUAGE: ${{ matrix.language }}
 
     - name: Verify RTL PDF
       run: |
         test -f /tmp/test-rtl/main.pdf || (echo "FAIL: No RTL PDF" && exit 1)
-        echo "RTL PDF generated for ${{ matrix.language }}"
+        echo "RTL PDF generated for $LANGUAGE"
+      env:
+        LANGUAGE: ${{ matrix.language }}
 
   report:
     runs-on: ubuntu-latest

@@ -1,5 +1,8 @@
 name: Build LaTeX Document
 
+permissions:
+  contents: read
+
 env:
   DOCKER_IMAGE: ghcr.io/wyattau/omnilatex-docker@sha256:01f992fcd63f7607327517c0c541947e0ccea6dd453cac7e0672cd54b7eeb45e  # See .env.docker
 

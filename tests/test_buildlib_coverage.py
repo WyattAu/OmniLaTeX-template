@@ -205,6 +205,7 @@ class TestCompileExampleWorker:
         """Worker for nonexistent example should fail (no PDF created)."""
         # Create a minimal examples dir with no example
         monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
         (tmp_path / "examples").mkdir()
         with patch.object(
             build_core.runner, "run", return_value=(1, ["latexmk not found"])
@@ -218,6 +219,7 @@ class TestCompileExampleWorker:
 
     def test_worker_with_timings(self, build_core, tmp_path, monkeypatch):
         monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
         (tmp_path / "examples").mkdir()
         build_core.timings = True
         with patch.object(build_core.runner, "run", return_value=(1, ["fail"])):
@@ -229,6 +231,7 @@ class TestCompileExampleWorker:
 
     def test_worker_with_force_flag(self, build_core, tmp_path, monkeypatch):
         monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
         (tmp_path / "examples").mkdir()
         build_core.force = True
         with patch.object(build_core.runner, "run", return_value=(1, ["fail"])):
@@ -239,6 +242,7 @@ class TestCompileExampleWorker:
 
     def test_worker_with_shared_cache(self, build_core, tmp_path, monkeypatch):
         monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
         (tmp_path / "examples").mkdir()
         build_core._shared_build_cache = {}
         with patch.object(build_core.runner, "run", return_value=(1, ["fail"])):
@@ -250,6 +254,7 @@ class TestCompileExampleWorker:
 
     def test_worker_cnf_lines(self, build_core, tmp_path, monkeypatch):
         monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
         (tmp_path / "examples").mkdir()
         build_core.config.cnf_lines = ["\\setmainfont{Times New Roman}"]
         with patch.object(build_core.runner, "run", return_value=(1, ["fail"])):

@@ -52,7 +52,11 @@ class PreflightTestMixin:
         """Check if a LaTeX package is available."""
         try:
             result = subprocess.run(
-                ["lualatex", "--interaction=nonstopmode", f"\\RequirePackage{{{pkg}}}\\stop"],
+                [
+                    "lualatex",
+                    "--interaction=nonstopmode",
+                    f"\\RequirePackage{{{pkg}}}\\stop",
+                ],
                 capture_output=True,
                 text=True,
                 timeout=15,

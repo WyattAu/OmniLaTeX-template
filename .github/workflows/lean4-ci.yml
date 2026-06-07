@@ -10,8 +10,14 @@ concurrency:
 on:
   push:
     branches: [main, master]
+    paths:
+    - specs/proofs/**
+    - omnilatex.cls
   pull_request:
     branches: [main, master]
+    paths:
+    - specs/proofs/**
+    - omnilatex.cls
   workflow_dispatch:
 
 jobs:
@@ -23,7 +29,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v6
       with:
-        fetch-depth: 0
+        fetch-depth: 1
 
     - name: Install Nix
       # v16
@@ -34,7 +40,8 @@ jobs:
 
     - name: Install Lean 4 (elan)
       run: |
-        curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain $(cat specs/proofs/lean-toolchain)
+        curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -o /tmp/elan-init.sh
+        sh /tmp/elan-init.sh -s -- -y --default-toolchain $(cat specs/proofs/lean-toolchain)
         echo "$HOME/.elan/bin" >> $GITHUB_PATH
 
     - name: Cache Lake build artifacts
@@ -46,9 +53,9 @@ jobs:
           lake-${{ runner.os }}-
 
     - name: Build Lean 4 proofs
+      working-directory: specs/proofs
       run: |
         START_TIME=$(date +%s%N)
-        cd specs/proofs
         lake build
         END_TIME=$(date +%s%N)
         ELAPSED_NS=$(( END_TIME - START_TIME ))
