@@ -5,7 +5,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{omnilatex}[2026/06/06 v2.4.1 OmniLaTeX universal class]
+\ProvidesClass{omnilatex}[2026/06/07 v2.5.0 OmniLaTeX universal class]
 
 \RequirePackage{iftex}
 \RequirePackage{etoolbox}
@@ -90,6 +90,10 @@
 \DeclareBoolOption[true]{enableengineering}
 \DeclareBoolOption[true]{enablecode}
 \DeclareBoolOption[true]{enabletables}
+\DeclareBoolOption[true]{enablelayout}
+\DeclareBoolOption[true]{enablebibliography}
+\DeclareBoolOption[true]{enablehyperref}
+\DeclareBoolOption{minimal}
 
 \DeclareStringOption[169]{beameraspectratio}[169]
 \DeclareBoolOption[true]{beamernavigationsymbols}
@@ -102,6 +106,18 @@
 
 \DeclareDefaultOption{\omnilatex@adduseroption{\CurrentOption}}
 \ProcessKeyvalOptions*
+
+% Minimal mode: disable all optional module groups at once
+\ifomnilatex@minimal
+    \omnilatex@enablelayoutfalse
+    \omnilatex@enablemathfalse
+    \omnilatex@enabletikzfalse
+    \omnilatex@enableengineeringfalse
+    \omnilatex@enablecodefalse
+    \omnilatex@enabletablesfalse
+    \omnilatex@enablebibliographyfalse
+    \omnilatex@enablehyperreffalse
+\fi
 
 \ExplSyntaxOn
 \tl_set:Nn \l__omnilatex_tmp_tl {\omnilatex@doctype}
@@ -244,16 +260,20 @@
 \RequirePackage{lib/typography/omnilatex-fonts}
 % omnilatex-lists uses enumitem which conflicts with beamer's list handling
 \ifomnilatex@beamer\else
-    \RequirePackage{lib/typography/omnilatex-lists}
+    \ifomnilatex@enablelayout
+        \RequirePackage{lib/typography/omnilatex-lists}
+    \fi
 \fi
 \RequirePackage{lib/typography/omnilatex-typesetting}
 % KOMA-Script layout modules are incompatible with beamer base class
 \ifomnilatex@beamer\else
-    \RequirePackage{lib/layout/omnilatex-page}
-    \RequirePackage{lib/layout/omnilatex-koma}
-    \RequirePackage{lib/layout/omnilatex-floats}
-    \RequirePackage{lib/layout/omnilatex-boxes}
-    \RequirePackage{lib/layout/omnilatex-document}
+    \ifomnilatex@enablelayout
+        \RequirePackage{lib/layout/omnilatex-page}
+        \RequirePackage{lib/layout/omnilatex-koma}
+        \RequirePackage{lib/layout/omnilatex-floats}
+        \RequirePackage{lib/layout/omnilatex-boxes}
+        \RequirePackage{lib/layout/omnilatex-document}
+    \fi
 \fi
 % Doctype-specific modules are loaded conditionally after core layouts.
 \IfStrEq{\omnilatex@doctype}{presentation}{%
@@ -264,7 +284,9 @@
 }{}%
 % Beamer loads its own hyperref; skip our hyperref module to avoid option clash
 \ifomnilatex@beamer\else
-    \RequirePackage{lib/references/omnilatex-hyperref}
+    \ifomnilatex@enablehyperref
+        \RequirePackage{lib/references/omnilatex-hyperref}
+    \fi
 \fi
 % Workaround: luaotfload-multiscript.lua calls kpse.find_file('ScriptExtensions.txt')
 % which returns nil in Nix/TL2025, then calls os.exit(-1). Patch kpse.find_file
@@ -434,12 +456,59 @@
 \fi
 % Bibliography module uses KOMA-specific features; skip for beamer
 \ifomnilatex@beamer\else
-    \RequirePackage{lib/references/omnilatex-biblio}
-    \RequirePackage{lib/references/omnilatex-citations}
+    \ifomnilatex@enablebibliography
+        \RequirePackage{lib/references/omnilatex-biblio}
+        \RequirePackage{lib/references/omnilatex-citations}
+    \fi
 \fi
 
 % Plugin system (always available)
 \RequirePackage{lib/utils/omnilatex-plugin}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Graceful degradation stubs for disabled modules
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% When a module group is disabled, provide no-op stubs for its most common
+% commands so that downstream code (e.g. doctype profiles, user documents)
+% does not produce hard errors.  Each stub is only defined if the real
+% command does not already exist (via \providecommand or \@ifundefined).
+
+\ifomnilatex@enablehyperref\else
+    % hyperref stubs
+    \providecommand{\hypersetup}[1]{}
+    \providecommand{\href}[2]{#2}
+    \providecommand{\url}[1]{\texttt{#1}}
+    \providecommand{\texorpdfstring}[2]{#2}
+    % cleveref stubs (loaded by hyperref module)
+    \providecommand{\cref}[1]{}
+    \providecommand{\Cref}[1]{}
+    \providecommand{\crefname}[3]{}
+    \providecommand{\Crefname}[3]{}
+    \providecommand{\crefrange}[2]{}
+    \providecommand{\autoref}[1]{}
+\fi
+
+\ifomnilatex@enablebibliography\else
+    % biblatex stubs
+    \providecommand{\cite}[1]{}
+    \providecommand{\parencite}[1]{}
+    \providecommand{\footcite}[1]{}
+    \providecommand{\textcite}[1]{}
+    \providecommand{\autocite}[1]{}
+    \providecommand{\fullcite}[1]{}
+    \providecommand{\nocite}[1]{}
+    \providecommand{\printbibliography}[1]{}
+    \providecommand{\addbibresource}[1]{}
+\fi
+
+\ifomnilatex@enablelayout\else
+    % KOMA/layout stubs used by doctype profiles
+    \providecommand{\addtokomafont}[2]{}
+    \providecommand{\setkomafont}[2]{}
+    \providecommand{\usekomafont}[1]{}
+    \providecommand{\KOMAoptions}[1]{}
+    \providecommand{\addpart}[1]{}
+\fi
 
 \def\@doctypefile{}
 \edef\@doctypecandidate{config/document-types/omnilatex-doctype-\omnilatex@doctypeprofile}

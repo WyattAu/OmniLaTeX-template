@@ -252,3 +252,109 @@ class TestSourceDateEpoch:
         env = os.environ.copy()
         assert "SOURCE_DATE_EPOCH" in env
         assert env["SOURCE_DATE_EPOCH"] == "1700000000"
+
+
+class TestVersionProperty:
+    """Test _BuildCore.version property."""
+
+    def test_version_from_version_md(self, build_core, tmp_path, monkeypatch):
+        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        vf = tmp_path / "VERSION.md"
+        vf.write_text("Current version: **v3.1.4**\n")
+        assert build_core.version == "3.1.4"
+
+    def test_version_no_file(self, build_core, tmp_path, monkeypatch):
+        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        assert build_core.version == "0.0.0"
+
+    def test_version_no_semver_in_file(self, build_core, tmp_path, monkeypatch):
+        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        vf = tmp_path / "VERSION.md"
+        vf.write_text("No version here\n")
+        assert build_core.version == "0.0.0"
+
+
+class TestCompileWorkerPaths:
+    """Test _compile_example_worker success and failure paths."""
+
+    def test_worker_pdf_copies_successfully(self, build_core, tmp_path, monkeypatch):
+        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        (tmp_path / "examples" / "test-ex").mkdir(parents=True)
+        # Create a fake PDF that the worker will "find"
+        pdf = tmp_path / "examples" / "test-ex" / "main.pdf"
+        pdf.write_bytes(b"%PDF-1.4 fake")
+
+        from unittest.mock import patch
+
+        with patch.object(build_core.runner, "run", return_value=(0, [])):
+            name, success, logs = build_core._compile_example_worker("test-ex")
+
+        assert name == "test-ex"
+        assert success is True
+
+    def test_worker_pdf_not_found_after_build(self, build_core, tmp_path, monkeypatch):
+        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        (tmp_path / "examples" / "test-ex").mkdir(parents=True)
+        # No PDF created
+
+        from unittest.mock import patch
+
+        with patch.object(build_core.runner, "run", return_value=(0, [])):
+            name, success, logs = build_core._compile_example_worker("test-ex")
+
+        assert success is False
+
+    def test_worker_oserror_catch(self, build_core, tmp_path, monkeypatch):
+        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        (tmp_path / "examples" / "test-ex").mkdir(parents=True)
+
+        from unittest.mock import patch
+
+        with patch.object(build_core.runner, "run", side_effect=OSError("disk full")):
+            name, success, logs = build_core._compile_example_worker("test-ex")
+
+        assert success is False
+
+    def test_worker_force_rebuild_env(self, build_core, tmp_path, monkeypatch):
+        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        build_core.force = True
+        (tmp_path / "examples" / "test-ex").mkdir(parents=True)
+        pdf = tmp_path / "examples" / "test-ex" / "main.pdf"
+        pdf.write_bytes(b"%PDF-1.4 fake")
+
+        from unittest.mock import patch
+
+        with patch.object(build_core.runner, "run", return_value=(0, [])):
+            name, success, logs = build_core._compile_example_worker("test-ex")
+
+        assert name == "test-ex"
+
+    def test_worker_with_latexmkrc(self, build_core, tmp_path, monkeypatch):
+        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        (tmp_path / "examples" / "test-ex").mkdir(parents=True)
+        (tmp_path / ".latexmkrc").write_text("$pdflatex = 'lualatex';\n")
+        pdf = tmp_path / "examples" / "test-ex" / "main.pdf"
+        pdf.write_bytes(b"%PDF-1.4 fake")
+
+        from unittest.mock import patch
+
+        with patch.object(build_core.runner, "run", return_value=(0, [])):
+            name, success, logs = build_core._compile_example_worker("test-ex")
+
+        assert success is True
+
+    def test_worker_timings_captured(self, build_core, tmp_path, monkeypatch):
+        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        build_core.timings = True
+        (tmp_path / "examples" / "test-ex").mkdir(parents=True)
+        pdf = tmp_path / "examples" / "test-ex" / "main.pdf"
+        pdf.write_bytes(b"%PDF-1.4 fake")
+
+        from unittest.mock import patch
+
+        with patch.object(build_core.runner, "run", return_value=(0, [])):
+            name, success, logs = build_core._compile_example_worker("test-ex")
+
+        assert success is True
+        assert len(build_core.timings_data) >= 1
+        assert build_core.timings_data[0]["name"] == "test-ex"
