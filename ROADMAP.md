@@ -16,25 +16,27 @@
 | Examples | 50 | +2 |
 | Institutions | 21 | -- |
 | Languages | 25+ | -- |
-| Python tests (fast) | 1333 | +562 |
+| Python tests (fast) | 1346 | +575 |
 | l3build test files | 94 | -- |
 | Lean 4 theorems | 301 | +104 |
 | buildlib coverage | 73% | +73% (from 0%) |
 | CI platforms | 5 | -- |
 | Documentation pages | 25+ | -- |
 
-### Audit Results Summary (v2.4.0 Post-Audit)
+### Audit Results Summary (v2.4.1 Post-Audit)
 
 | Area | Status | Key Findings |
 |------|--------|--------------|
-| Testing | PASS | 1334 fast tests passing, 89 skipped (numpy/rich unavailable). buildlib coverage 73%. |
-| Code Quality | PASS | black/isort/flake8 clean. builder.py discover_examples path bug fixed. |
+| Testing | PASS | 1346 fast tests passing, 105 skipped (numpy/rich unavailable). buildlib coverage 73%. |
+| Code Quality | PASS | black/isort/flake8 clean. All pre-commit hooks pass. |
 | Formal Verification | PASS | 301 Lean 4 theorems compile successfully (zero sorry). |
-| CI/CD Security | FIXED | dependabot/fetch-metadata SHA-pinned, TeX Live year dynamic, timeouts reduced. |
-| UI/UX Accessibility | FIXED | Card aria-labels added, select focus ring restored, inline CSS removed from 3 pages. |
-| CI/CD Performance | FIXED | Performance regression timeout 90m -> 45m, Docker CI 180m -> 120m. |
-| GitLab Templates | FIXED | Removed hardcoded /assign @alex from issue templates. |
-| Coverage Threshold | SET | 72% threshold for fast suite (numpy/rich env-dependent modules excluded). |
+| CI/CD Security | PASS | All actions SHA-pinned, dependency review on PRs, SBOM generation. |
+| UI/UX Accessibility | FIXED | SVG aria-hidden added, inline styles removed, 0 errors/0 warnings on all pages. |
+| Version Consistency | FIXED | flake.nix, SECURITY.md, ROADMAP.md aligned to v2.4.1. |
+| Gallery Completeness | FIXED | 27/27 doctypes, 21/21 institutions in template picker. |
+| Plugin Registry | FIXED | All 3 plugins registered (example-plugin, markdown-table, watermark). |
+| CI/CD Comments | FIXED | Stale '# v4'/'# v3' comments removed from all 12 workflows. |
+| Documentation | FIXED | README badges, institution count, test count, LuaTeX version corrected. |
 
 ---
 
@@ -237,7 +239,7 @@
 - flake8 linting: PASS
 - markdownlint: PASS
 - YAML validation: PASS
-- Fast pytest suite (1333 tests): PASS
+- Fast pytest suite (1346 tests): PASS
 - Lean 4 proofs (301 theorems): PASS
 - LaTeX TODO check: PASS
 
