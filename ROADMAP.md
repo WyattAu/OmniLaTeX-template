@@ -16,10 +16,10 @@
 | Examples | 50 | -- |
 | Institutions | 21 | -- |
 | Languages | 25+ | -- |
-| Python tests (fast) | 1391 | +46 |
+| Python tests (fast) | 1409 | +64 |
 | l3build test files | 94 | -- |
 | Lean 4 theorems | 304 | +3 |
-| buildlib coverage | 75% | +3% |
+| buildlib coverage | 78% | +6% |
 | CI platforms | 5 | -- |
 | Documentation pages | 25+ | -- |
 | Class options | 15 | +3 (enablelayout, enablebibliography, enablehyperref) |
@@ -42,7 +42,8 @@
 | Formal Verification | PASS | 29 Lean4 modules (3 new: BuildCacheAtomicity, ExceptionSafety, CleanupPathCorrectness). |
 | Lazy Module Loading | ADDED | enablelayout, enablebibliography, enablehyperref options + minimal mode. Graceful degradation stubs. |
 | Design Tokens | FIXED | verify.css now uses Spatial Materialism, Amoebic UI, and Brutalism tokens. prefers-reduced-motion added. |
-| Buildlib Coverage | IMPROVED | 72% -> 75%. preflight_test.py 0% -> 100%. New builder.py tests for worker paths. |
+| Buildlib Coverage | IMPROVED | 72% -> 78%. preflight_test.py 0% -> 100%, tui.py 41% -> 99%. New builder.py tests for worker paths. |
+| Preamble Precompilation | BLOCKED | mylatexformat incompatible with LuaTeX. Alternative: draftmode optimization. |
 
 ---
 
