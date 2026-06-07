@@ -204,7 +204,7 @@ class TestCompileExampleWorker:
     def test_worker_nonexistent_example(self, build_core, tmp_path, monkeypatch):
         """Worker for nonexistent example should fail (no PDF created)."""
         # Create a minimal examples dir with no example
-        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         (tmp_path / "examples").mkdir()
         with patch.object(
             build_core.runner, "run", return_value=(1, ["latexmk not found"])
@@ -217,7 +217,7 @@ class TestCompileExampleWorker:
         mock_run.assert_called()
 
     def test_worker_with_timings(self, build_core, tmp_path, monkeypatch):
-        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         (tmp_path / "examples").mkdir()
         build_core.timings = True
         with patch.object(build_core.runner, "run", return_value=(1, ["fail"])):
@@ -228,7 +228,7 @@ class TestCompileExampleWorker:
         assert len(build_core.timings_data) >= 1
 
     def test_worker_with_force_flag(self, build_core, tmp_path, monkeypatch):
-        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         (tmp_path / "examples").mkdir()
         build_core.force = True
         with patch.object(build_core.runner, "run", return_value=(1, ["fail"])):
@@ -238,7 +238,7 @@ class TestCompileExampleWorker:
         assert success is False
 
     def test_worker_with_shared_cache(self, build_core, tmp_path, monkeypatch):
-        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         (tmp_path / "examples").mkdir()
         build_core._shared_build_cache = {}
         with patch.object(build_core.runner, "run", return_value=(1, ["fail"])):
@@ -249,7 +249,7 @@ class TestCompileExampleWorker:
         assert isinstance(build_core._shared_build_cache, dict)
 
     def test_worker_cnf_lines(self, build_core, tmp_path, monkeypatch):
-        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         (tmp_path / "examples").mkdir()
         build_core.config.cnf_lines = ["\\setmainfont{Times New Roman}"]
         with patch.object(build_core.runner, "run", return_value=(1, ["fail"])):
@@ -267,7 +267,7 @@ class TestCompileExampleWorker:
 class TestBuildExamplesEdgeCases:
     def test_build_examples_no_valid_names(self, build_core, tmp_path, monkeypatch):
         """Should warn when no valid examples to build."""
-        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         (tmp_path / "examples").mkdir()
         build_core.build_examples(files=["nonexistent-1", "nonexistent-2"])
 
@@ -286,7 +286,7 @@ class TestBuildExamplesEdgeCases:
 class TestBuildRoot:
     def test_build_root_no_pdf(self, build_core, tmp_path, monkeypatch):
         """build_root should raise SystemExit when PDF not generated."""
-        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         build_core.runner = MagicMock()
         build_core.runner.run = MagicMock(return_value=(1, ["latexmk failed"]))
         with pytest.raises(SystemExit):
@@ -632,7 +632,7 @@ class TestCleanMethods:
 
     def test_clean_all(self, build_core, tmp_path, monkeypatch):
         """clean_all should remove build dir and clean aux files."""
-        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         build_core.config.build_dir = tmp_path / "build"
         build_core.config.build_dir.mkdir(parents=True)
         (build_core.config.build_dir / "test.pdf").write_bytes(b"%PDF")
@@ -667,7 +667,7 @@ class TestCleanMethods:
     def test_clean_pdf_removes_matching(self, build_core, tmp_path, monkeypatch):
         """clean_pdf should remove PDFs in build/examples and examples/."""
         monkeypatch.chdir(tmp_path)
-        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         build_examples_dir = tmp_path / "build" / "examples"
         build_examples_dir.mkdir(parents=True)
         (build_examples_dir / "test.pdf").write_bytes(b"%PDF")

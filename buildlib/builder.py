@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-import hashlib
 import json
 import os
 import re
 import shutil
-import subprocess
 import sys
 import threading
 import time
@@ -26,6 +24,9 @@ from buildlib.config import (
     SVG_INKSCAPE_CACHE,
     ProjectConfig,
 )
+from buildlib.mixins.cache import BuildCacheMixin
+from buildlib.mixins.cleanup import CleanupMixin
+from buildlib.mixins.discovery import DiscoveryMixin
 from buildlib.runner import CommandRunner
 from buildlib.ui import TerminalOutput
 
@@ -132,7 +133,7 @@ def extract_log_path(example_dir: Path) -> Path | None:
 # -----------------------------------------------------------------------------
 # Build Core Mixin
 # -----------------------------------------------------------------------------
-class _BuildCore:
+class _BuildCore(BuildCacheMixin, DiscoveryMixin, CleanupMixin):
     def __init__(
         self,
         config: ProjectConfig,
@@ -174,211 +175,6 @@ class _BuildCore:
     @property
     def source_files(self) -> list[Path]:
         return self._get_source_files(REPO_ROOT)
-
-    @staticmethod
-    def _hash_for_paths(paths: list[Path]) -> str:
-        """Compute SHA-256 hash of all file contents, sorted by path."""
-        h = hashlib.sha256()
-        for p in sorted(paths):
-            if p.exists():
-                h.update(p.read_bytes())
-        return h.hexdigest()
-
-    @staticmethod
-    def _get_mtimes(paths: list[Path]) -> dict[str, float]:
-        """Get modification times for all paths. Used for fast cache checks."""
-        mtimes: dict[str, float] = {}
-        for p in paths:
-            if p.exists():
-                mtimes[str(p)] = p.stat().st_mtime
-        return mtimes
-
-    def _cache_hit(self, example_name: str, source_files: list[Path]) -> bool:
-        """Check if cached build is still valid using mtime fast-path.
-
-        Returns True if the cache entry exists, all source file mtimes match
-        the cached mtimes, and the output PDF exists. This avoids reading
-        every file to compute the full SHA-256 hash when nothing changed.
-        """
-        with self._cache_lock:
-            if self._shared_build_cache is not None:
-                cache = self._shared_build_cache
-            else:
-                cache = self._load_build_cache()
-            cached = cache.get(f"examples/{example_name}")
-
-        if not cached:
-            return False
-
-        # Fast path: check mtimes first (stat-only, no file reads)
-        cached_mtimes = cached.get("mtimes")
-        if cached_mtimes:
-            current_mtimes = self._get_mtimes(source_files)
-            if current_mtimes == cached_mtimes:
-                # mtimes match - check PDF exists
-                dest_pdf = (
-                    REPO_ROOT / self.config.build_dir / BUILD_EXAMPLES_SUBDIR
-                ) / f"{example_name}.pdf"
-                return dest_pdf.exists()
-
-        # Slow path: full hash comparison
-        source_hash = self._hash_for_paths(source_files)
-        dest_pdf = (
-            REPO_ROOT / self.config.build_dir / BUILD_EXAMPLES_SUBDIR
-        ) / f"{example_name}.pdf"
-        return (
-            cached.get("source_hash") == source_hash
-            and dest_pdf.exists()
-        )
-
-    def _load_build_cache(self) -> dict:
-        """Load the build cache from disk. Returns empty dict on missing/corrupt file."""
-        cache_path = self.config.build_dir / "build_cache.json"
-        if cache_path.exists():
-            try:
-                return json.loads(cache_path.read_text(encoding="utf-8"))
-            except (json.JSONDecodeError, OSError):
-                import logging
-
-                logging.getLogger("omnilatex").debug(
-                    "Failed to load build cache", exc_info=True
-                )
-        return {}
-
-    def _evict_cache(
-        self, cache: dict, max_entries: int = 100, max_age_days: int = 90
-    ) -> dict:
-        """Evict stale cache entries: TTL first, then LRU count cap."""
-        import datetime
-
-        now = datetime.datetime.now(datetime.timezone.utc)
-        cutoff = now - datetime.timedelta(days=max_age_days)
-        cutoff_str = cutoff.strftime("%Y-%m-%dT%H:%M:%SZ")
-
-        # Phase 1: Remove expired entries
-        to_remove = [
-            k
-            for k, v in cache.items()
-            if k.startswith("examples/") and v.get("build_time", "") < cutoff_str
-        ]
-        for key in to_remove:
-            del cache[key]
-
-        # Phase 2: Cap entry count by LRU (oldest build_time first)
-        entries = {k: v for k, v in cache.items() if k.startswith("examples/")}
-        if len(entries) > max_entries:
-            sorted_keys = sorted(
-                entries.keys(), key=lambda k: entries[k].get("build_time", "")
-            )
-            for key in sorted_keys[: len(entries) - max_entries]:
-                del cache[key]
-
-        return cache
-
-    def _save_build_cache(self, cache: dict) -> None:
-        """Save the build cache to disk, evicting stale entries first."""
-        cache = self._evict_cache(cache)
-        cache_path = self.config.build_dir / "build_cache.json"
-        cache_path.parent.mkdir(parents=True, exist_ok=True)
-        cache_path.write_text(
-            json.dumps(cache, indent=2) + "\n",
-            encoding="utf-8",
-        )
-
-    def _get_source_files(self, repo_root: Path) -> list[Path]:
-        """Find all .sty and .cls files, excluding non-source directories."""
-        key = str(repo_root)
-        if key not in self._source_files_cache:
-            # Exclude known non-source directories to avoid scanning .git/, node_modules/, etc.
-            exclude = {".git", "node_modules", "build", ".venv", ".direnv", "__pycache__", ".nix"}
-            sty_files = [
-                p for p in repo_root.rglob("*.sty")
-                if not any(d in exclude for d in p.parts)
-            ]
-            cls_files = [
-                p for p in repo_root.rglob("*.cls")
-                if not any(d in exclude for d in p.parts)
-            ]
-            self._source_files_cache[key] = sty_files + cls_files
-        return self._source_files_cache[key]
-
-    def _collect_source_files(self, example_name: str) -> list[Path]:
-        """Collect all source files relevant to an example (tex, bib, sty, cls)."""
-        repo_root = REPO_ROOT
-        example_dir = repo_root / "examples" / example_name
-        files: list[Path] = []
-        tex_file = example_dir / MAIN_TEX_FILENAME
-        if tex_file.exists():
-            files.append(tex_file)
-        for bib in example_dir.rglob("*.bib"):
-            files.append(bib)
-        files.extend(self._get_source_files(repo_root))
-        return files
-
-    def cmd_cache_stats(self, _: object | None = None) -> None:
-        self.ui.header("Build Cache Statistics")
-        cache_path = REPO_ROOT / self.config.build_dir / "build_cache.json"
-        if not cache_path.exists():
-            self.ui.info("No build cache found.")
-            return
-        cache_data = self._load_build_cache()
-        entries = {k: v for k, v in cache_data.items() if k.startswith("examples/")}
-        total_examples = len(self.discover_examples())
-        cached_examples = len(entries)
-        file_size = cache_path.stat().st_size
-        mtimes = [(k, v["build_time"]) for k, v in entries.items() if "build_time" in v]
-        mtimes.sort(key=lambda x: x[1])
-        self.ui.info(f"Cached entries:    {cached_examples}")
-        self.ui.info(f"Cache file size:   {file_size:,} bytes")
-        self.ui.info(f"Total examples:    {total_examples}")
-        self.ui.info(f"Cached examples:   {cached_examples}/{total_examples}")
-        if mtimes:
-            self.ui.info(f"Oldest entry:      {mtimes[0][0]} ({mtimes[0][1]})")
-            self.ui.info(f"Newest entry:      {mtimes[-1][0]} ({mtimes[-1][1]})")
-        self.ui.success("Cache statistics complete.")
-
-    def cmd_cache_clear(self, _: object | None = None) -> None:
-        self.ui.header("Clearing Build Cache")
-        cache_path = REPO_ROOT / self.config.build_dir / "build_cache.json"
-        if cache_path.exists():
-            cache_path.unlink()
-            self.ui.success(f"Deleted build cache: {cache_path}")
-        else:
-            self.ui.info("No build cache file to delete.")
-
-    def discover_examples(self) -> list[Path]:
-        """Find all example directories containing a main.tex file."""
-        d = REPO_ROOT / "examples"
-        return (
-            sorted(
-                [
-                    p
-                    for p in d.iterdir()
-                    if p.is_dir() and (p / MAIN_TEX_FILENAME).is_file()
-                ]
-            )
-            if d.is_dir()
-            else []
-        )
-
-    def list_examples(
-        self,
-        _: object | None = None,
-        *,
-        output_format: str = "text",
-    ) -> None:
-        examples = self.discover_examples()
-        if output_format == "json":
-            data = [
-                {"name": ex.name, "path": str(ex)}
-                for ex in sorted(examples, key=lambda e: e.name)
-            ]
-            print(json.dumps(data, indent=2))
-        else:
-            self.ui.header("Available Examples")
-            for ex in examples:
-                print(f"  {self.ui.bold}{ex.name}{self.ui.end}")
-            self.ui.success(f"Found {len(examples)} example(s).")
 
     def _compile_example_worker(self, example_name: str) -> tuple[str, bool, list[str]]:
         """
@@ -868,48 +664,6 @@ class _BuildCore:
             return self.runner.run(cmd_args)
 
         return exit_code, logs
-
-    def clean_all(self, _: object | None = None) -> None:
-        """Full cleanup: remove auxiliary files and build directory."""
-        self.ui.header("Full cleanup")
-        self.clean_aux()
-        shutil.rmtree(self.config.build_dir, ignore_errors=True)
-        self.ui.success("Full cleanup finished.")
-
-    def clean_aux(self, _: object | None = None) -> None:
-        """Clean auxiliary files from all examples."""
-        self.ui.header("Cleaning auxiliary files")
-        self.runner.run([LATEXMK_COMMAND, "-C"])
-        self.clean_example([e.name for e in self.discover_examples()])
-
-    def clean_example(self, files: list[str]):
-        """Clean auxiliary files from specific examples."""
-        if files:
-            self.ui.info(f"Cleaning {len(files)} example(s)")
-            for name in files:
-                try:
-                    self.runner.run(
-                        [LATEXMK_COMMAND, "-c"], cwd=Path("examples") / name
-                    )
-                except (OSError, subprocess.SubprocessError):
-                    self.ui.warning(f"Could not clean example {name}")
-
-    def clean_pdf(self, _: object | None = None) -> None:
-        """Remove all generated PDFs from build and examples directories."""
-        self.ui.header("Cleaning PDF files")
-        count = 0
-        # Scope glob to build/ and examples/ to avoid scanning .git/, node_modules/
-        build_examples = self.config.build_dir / "examples"
-        if build_examples.is_dir():
-            for pdf in build_examples.glob("*.pdf"):
-                pdf.unlink(missing_ok=True)
-                count += 1
-        examples_dir = REPO_ROOT / "examples"
-        if examples_dir.is_dir():
-            for pdf in examples_dir.rglob("*.pdf"):
-                pdf.unlink(missing_ok=True)
-                count += 1
-        self.ui.success(f"Removed {count} PDF(s).")
 
     def preflight(self, _: object | None = None) -> None:
         self.cmd_preflight()

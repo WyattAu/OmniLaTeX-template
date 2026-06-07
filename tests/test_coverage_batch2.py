@@ -778,7 +778,7 @@ class TestCmdDiff:
         from buildlib import BuildTasks as Commands
 
         monkeypatch.setattr("buildlib.commands.REPO_ROOT", tmp_path)
-        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.config.REPO_ROOT", tmp_path)
         ui = TerminalOutput(use_color=False)
         runner = CommandRunner(ui=ui, build_mode="dev", verbose=False)
         config = ProjectConfig(build_dir=tmp_path / "build")
