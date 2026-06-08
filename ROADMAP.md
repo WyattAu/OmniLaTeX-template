@@ -44,6 +44,10 @@
 | Design Tokens | FIXED | verify.css now uses Spatial Materialism, Amoebic UI, and Brutalism tokens. prefers-reduced-motion added. |
 | Buildlib Coverage | IMPROVED | 72% -> 78%. preflight_test.py 0% -> 100%, tui.py 41% -> 99%. New builder.py tests for worker paths. |
 | Preamble Precompilation | BLOCKED | mylatexformat incompatible with LuaTeX. Alternative: draftmode optimization. |
+| WASM Editor | PROTOTYPE | Monaco editor + WebSocket compilation server. Pure WASM LuaTeX requires 6-12 months. |
+| Export Formats | EXPANDED | 6 formats: html, html5, epub, epub3, docx, md (was 3). |
+| Plugin Marketplace | ADDED | 6 CLI commands + remote registry fetch via urllib. |
+| Windows CI | ADDED | windows-latest runner with TeX Live via chocolatey. |
 
 ---
 
@@ -162,6 +166,14 @@
 - [x] Formal verification expansion (301 theorems, up from 223)
 - [x] 4 new proof modules (TypographicConstraints, OutputFormats, LaTeXPackageDependencies, DocumentClassHierarchy)
 - [x] 7 existing proof modules extended with additional theorems
+
+### In Progress (v2.5.0)
+
+- [x] WASM feasibility report (specs/wasm_feasibility.md)
+- [x] WASM editor prototype (wasm/editor/index.html)
+- [x] WebSocket compilation server (wasm/server/main.py)
+- [ ] Pure WASM LuaTeX compilation (6-12 months, requires dedicated effort)
+- [ ] Tauri desktop app (deferred to after WASM)
 
 ---
 
