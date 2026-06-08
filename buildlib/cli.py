@@ -123,8 +123,46 @@ def main() -> None:
             lambda tasks, files: tasks.cmd_export(
                 files, output_format=getattr(args, "export_format", "html")
             ),
-            "Export LaTeX to HTML, EPUB, or DOCX",
+            "Export LaTeX to HTML, EPUB, DOCX, or Markdown.",
             True,
+        ),
+        "plugin-list": (
+            BuildTasks.cmd_plugin_list,
+            "List installed plugins.",
+            False,
+        ),
+        "plugin-search": (
+            lambda tasks, files: tasks.cmd_plugin_search(
+                files, query=getattr(args, "plugin_query", "")
+            ),
+            "Search the plugin registry.",
+            False,
+        ),
+        "plugin-install": (
+            lambda tasks, files: tasks.cmd_plugin_install(
+                files, name=getattr(args, "plugin_name", "")
+            ),
+            "Install a plugin from the registry.",
+            False,
+        ),
+        "plugin-remove": (
+            lambda tasks, files: tasks.cmd_plugin_remove(
+                files, name=getattr(args, "plugin_name", "")
+            ),
+            "Remove an installed plugin.",
+            False,
+        ),
+        "plugin-validate": (
+            BuildTasks.cmd_plugin_validate,
+            "Validate all plugin manifests.",
+            False,
+        ),
+        "plugin-info": (
+            lambda tasks, files: tasks.cmd_plugin_info(
+                files, name=getattr(args, "plugin_name", "")
+            ),
+            "Show detailed plugin information.",
+            False,
         ),
     }
     diff_subparser = None
@@ -144,6 +182,17 @@ def main() -> None:
             export_subparser = sub
         if name == "list-examples":
             list_examples_subparser = sub
+        # Plugin subcommand arguments
+        if name in ("plugin-install", "plugin-remove", "plugin-info"):
+            sub.add_argument("plugin_name", type=str, help="Plugin name.")
+        if name == "plugin-search":
+            sub.add_argument(
+                "plugin_query",
+                type=str,
+                nargs="?",
+                default="",
+                help="Search query.",
+            )
     if diff_subparser is not None:
         diff_subparser.add_argument(
             "--regenerate-references",
@@ -192,7 +241,7 @@ def main() -> None:
             dest="export_format",
             type=str,
             default="html",
-            choices=["html", "epub", "docx"],
+            choices=["html", "html5", "epub", "epub3", "docx", "md"],
             help="Output format (default: html)",
         )
     if list_examples_subparser is not None:

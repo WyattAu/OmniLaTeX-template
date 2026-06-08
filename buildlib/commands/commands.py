@@ -15,6 +15,7 @@ import buildlib.config as _cfg
 from buildlib.commands.check_lint import CheckLintMixin
 from buildlib.commands.doctor import DoctorMixin
 from buildlib.commands.export import ExportMixin
+from buildlib.commands.plugin import PluginMixin
 from buildlib.commands.scaffold import ScaffoldMixin
 from buildlib.commands.watch import WatchMixin
 from buildlib.config import (
@@ -26,7 +27,9 @@ from buildlib.config import (
 from buildlib.diff import _compute_ssim_windowed
 
 
-class _Commands(ScaffoldMixin, ExportMixin, WatchMixin, DoctorMixin, CheckLintMixin):
+class _Commands(
+    ScaffoldMixin, ExportMixin, WatchMixin, DoctorMixin, CheckLintMixin, PluginMixin
+):
     # -- class-level constants used by cmd_init -----------------------------
 
     VALID_DOCTYPES = [
