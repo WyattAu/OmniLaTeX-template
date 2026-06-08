@@ -9,33 +9,72 @@ interface Document {
 }
 
 const DOCUMENTS: Document[] = [
-  { id: 'thesis', name: 'Thesis', desc: 'Academic thesis with chapters', cat: 'academic', file: 'thesis.pdf' },
-  { id: 'article', name: 'Article', desc: 'Journal article format', cat: 'academic', file: 'article.pdf' },
-  { id: 'book', name: 'Book', desc: 'Full book with parts', cat: 'academic', file: 'book.pdf' },
+  // Academic
+  { id: 'thesis', name: 'Thesis', desc: 'Academic thesis with chapters (TUHH)', cat: 'academic', file: 'thesis.pdf' },
+  { id: 'thesis-spacing', name: 'Thesis (Spacing)', desc: 'Thesis with custom spacing', cat: 'academic', file: 'thesis-spacing.pdf' },
+  { id: 'thesis-tuhh', name: 'Thesis (TUHH)', desc: 'TU Hamburg thesis template', cat: 'academic', file: 'thesis-tuhh.pdf' },
   { id: 'dissertation', name: 'Dissertation', desc: 'Doctoral dissertation', cat: 'academic', file: 'dissertation.pdf' },
-  { id: 'cv', name: 'CV', desc: 'Curriculum vitae', cat: 'professional', file: 'cv.pdf' },
-  { id: 'cover-letter', name: 'Cover Letter', desc: 'Professional cover letter', cat: 'professional', file: 'cover-letter.pdf' },
-  { id: 'letter', name: 'Letter', desc: 'Formal correspondence', cat: 'professional', file: 'letter.pdf' },
-  { id: 'invoice', name: 'Invoice', desc: 'Business invoice', cat: 'professional', file: 'invoice.pdf' },
-  { id: 'presentation', name: 'Presentation', desc: 'Beamer slides', cat: 'presentation', file: 'presentation.pdf' },
-  { id: 'poster', name: 'Poster', desc: 'Conference poster', cat: 'presentation', file: 'poster.pdf' },
-  { id: 'manual', name: 'Manual', desc: 'Technical manual', cat: 'technical', file: 'manual.pdf' },
-  { id: 'technical-report', name: 'Technical Report', desc: 'Engineering report', cat: 'technical', file: 'technical-report.pdf' },
-  { id: 'standard', name: 'Standard', desc: 'Standards document', cat: 'technical', file: 'standard.pdf' },
-  { id: 'patent', name: 'Patent', desc: 'Patent application', cat: 'technical', file: 'patent.pdf' },
+  { id: 'article', name: 'Article', desc: 'Journal article format', cat: 'academic', file: 'article.pdf' },
+  { id: 'article-color', name: 'Article (Color)', desc: 'Article with color themes', cat: 'academic', file: 'article-color.pdf' },
+  { id: 'journal', name: 'Journal', desc: 'Journal paper layout', cat: 'academic', file: 'journal.pdf' },
+  { id: 'inline-paper', name: 'Inline Paper', desc: 'Paper without title page', cat: 'academic', file: 'inline-paper.pdf' },
+  { id: 'book', name: 'Book', desc: 'Full book with parts', cat: 'academic', file: 'book.pdf' },
+  { id: 'research-proposal', name: 'Research Proposal', desc: 'Grant proposal', cat: 'academic', file: 'research-proposal.pdf' },
   { id: 'exam', name: 'Exam', desc: 'Examination paper', cat: 'academic', file: 'exam.pdf' },
   { id: 'homework', name: 'Homework', desc: 'Problem set', cat: 'academic', file: 'homework.pdf' },
   { id: 'handout', name: 'Handout', desc: 'Class handout', cat: 'academic', file: 'handout.pdf' },
   { id: 'lecture-notes', name: 'Lecture Notes', desc: 'Course notes', cat: 'academic', file: 'lecture-notes.pdf' },
   { id: 'syllabus', name: 'Syllabus', desc: 'Course syllabus', cat: 'academic', file: 'syllabus.pdf' },
+  { id: 'citation-styles', name: 'Citation Styles', desc: 'Bibliography citation examples', cat: 'academic', file: 'citation-styles.pdf' },
+
+  // Professional
+  { id: 'cv', name: 'CV', desc: 'Curriculum vitae', cat: 'professional', file: 'cv.pdf' },
+  { id: 'cv-twopage', name: 'CV (Two Page)', desc: 'Extended two-page CV', cat: 'professional', file: 'cv-twopage.pdf' },
+  { id: 'cover-letter', name: 'Cover Letter', desc: 'Professional cover letter', cat: 'professional', file: 'cover-letter.pdf' },
+  { id: 'cover-letter-formal', name: 'Cover Letter (Formal)', desc: 'Formal cover letter variant', cat: 'professional', file: 'cover-letter-formal.pdf' },
+  { id: 'letter', name: 'Letter', desc: 'Formal correspondence', cat: 'professional', file: 'letter.pdf' },
+  { id: 'invoice', name: 'Invoice', desc: 'Business invoice', cat: 'professional', file: 'invoice.pdf' },
   { id: 'memo', name: 'Memo', desc: 'Memorandum', cat: 'professional', file: 'memo.pdf' },
   { id: 'white-paper', name: 'White Paper', desc: 'Technical white paper', cat: 'professional', file: 'white-paper.pdf' },
-  { id: 'research-proposal', name: 'Research Proposal', desc: 'Grant proposal', cat: 'academic', file: 'research-proposal.pdf' },
-  { id: 'recipe', name: 'Recipe', desc: 'Recipe card', cat: 'other', file: 'recipe.pdf' },
-  { id: 'dictionary', name: 'Dictionary', desc: 'Reference dictionary', cat: 'other', file: 'dictionary.pdf' },
+
+  // Presentation
+  { id: 'presentation', name: 'Presentation', desc: 'Beamer slides', cat: 'presentation', file: 'presentation.pdf' },
+  { id: 'poster', name: 'Poster', desc: 'Conference poster', cat: 'presentation', file: 'poster.pdf' },
+  { id: 'beamer-academic', name: 'Beamer (Academic)', desc: 'Academic presentation theme', cat: 'presentation', file: 'beamer-academic.pdf' },
+  { id: 'beamer-corporate', name: 'Beamer (Corporate)', desc: 'Corporate presentation theme', cat: 'presentation', file: 'beamer-corporate.pdf' },
+  { id: 'beamer-minimal', name: 'Beamer (Minimal)', desc: 'Minimal presentation theme', cat: 'presentation', file: 'beamer-minimal.pdf' },
+  { id: 'beamer-defense', name: 'Beamer (Defense)', desc: 'Thesis defense slides', cat: 'presentation', file: 'beamer-defense.pdf' },
+  { id: 'beamer-native', name: 'Beamer (Native)', desc: 'Native beamer theme', cat: 'presentation', file: 'beamer-native.pdf' },
+
+  // Technical
+  { id: 'manual', name: 'Manual', desc: 'Technical manual', cat: 'technical', file: 'manual.pdf' },
+  { id: 'technical-report', name: 'Technical Report', desc: 'Engineering report', cat: 'technical', file: 'technical-report.pdf' },
+  { id: 'standard', name: 'Standard', desc: 'Standards document', cat: 'technical', file: 'standard.pdf' },
+  { id: 'patent', name: 'Patent', desc: 'Patent application', cat: 'technical', file: 'patent.pdf' },
+  { id: 'dictionary', name: 'Dictionary', desc: 'Reference dictionary', cat: 'technical', file: 'dictionary.pdf' },
+
+  // Language & Typography
+  { id: 'cjk-chinese', name: 'CJK (Chinese)', desc: 'Chinese language document', cat: 'language', file: 'cjk-chinese.pdf' },
+  { id: 'cjk-japanese', name: 'CJK (Japanese)', desc: 'Japanese language document', cat: 'language', file: 'cjk-japanese.pdf' },
+  { id: 'cjk-korean', name: 'CJK (Korean)', desc: 'Korean language document', cat: 'language', file: 'cjk-korean.pdf' },
+  { id: 'rtl-arabic', name: 'RTL (Arabic)', desc: 'Arabic right-to-left document', cat: 'language', file: 'rtl-arabic.pdf' },
+  { id: 'rtl-hebrew', name: 'RTL (Hebrew)', desc: 'Hebrew right-to-left document', cat: 'language', file: 'rtl-hebrew.pdf' },
+  { id: 'multi-language', name: 'Multi-Language', desc: 'Multiple languages in one document', cat: 'language', file: 'multi-language.pdf' },
+
+  // Features & Customization
+  { id: 'color-themes', name: 'Color Themes', desc: 'Color theme showcase', cat: 'features', file: 'color-themes.pdf' },
+  { id: 'lua-showcase', name: 'Lua Showcase', desc: 'LuaLaTeX features demo', cat: 'features', file: 'lua-showcase.pdf' },
+  { id: 'music', name: 'Music', desc: 'Musical notation (MusiXTeX)', cat: 'features', file: 'music.pdf' },
+  { id: 'accessibility-test', name: 'Accessibility Test', desc: 'PDF accessibility features', cat: 'features', file: 'accessibility-test.pdf' },
+  { id: 'plugin-demo', name: 'Plugin Demo', desc: 'Plugin system demonstration', cat: 'features', file: 'plugin-demo.pdf' },
+  { id: 'recipe', name: 'Recipe', desc: 'Recipe card', cat: 'features', file: 'recipe.pdf' },
+
+  // Starter
+  { id: 'minimal-starter', name: 'Minimal Starter', desc: 'Bare minimum template', cat: 'starter', file: 'minimal-starter.pdf' },
+  { id: 'minimal-custom', name: 'Minimal Custom', desc: 'Customized minimal template', cat: 'starter', file: 'minimal-custom.pdf' },
 ];
 
-const CATEGORIES = ['all', 'academic', 'professional', 'presentation', 'technical', 'other'];
+const CATEGORIES = ['all', 'academic', 'professional', 'presentation', 'technical', 'language', 'features', 'starter'];
 
 export default function GalleryGrid() {
   const [activeCategory, setActiveCategory] = createSignal('all');
