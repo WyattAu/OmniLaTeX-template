@@ -59,33 +59,39 @@ markdown_extensions:
 
 nav:
 - Home: index.md
-- PDF Gallery: index.html
-- Template Picker: gallery.html
-- Build Verification: verify.html
-- User Guide: USER_GUIDE.md
-- Migration Guide: MIGRATION_GUIDE.md
-- FAQ: FAQ.md
-- API Reference: API_REFERENCE.md
-- Document Types: gallery.md
-- Institution Gallery: INSTITUTION_GALLERY.md
-- Editor Integration: editor-integration.md
-- Overleaf: OVERLEAF.md
-- Accessibility: accessibility.md
-- Performance: PERFORMANCE.md
-- API Stability: API_STABILITY.md
-- Breaking Changes: BREAKING_CHANGES.md
-- CTAN Submission: CTAN_SUBMISSION.md
-- Institution Contributing: INSTITUTION_CONTRIBUTING.md
-- Localization Guide: LOCALIZATION_GUIDE.md
-- Plugin Catalog: PLUGIN_CATALOG.md
-- Language Expansion: language-expansion/LANGUAGE_EXPANSION_GUIDE.md
-- Manual Plan: manual/PLAN.md
-- Manual Part I: manual/PART_I_FOUNDATIONS.md
-- Manual Part II: manual/PART_II_DOCTYPES.md
-- Manual Parts III-XI: manual/PARTS_III_THROUGH_XI.md
+- Gallery:
+  - PDF Gallery: index.html
+  - Template Picker: gallery.html
+  - Build Verification: verify.html
+- Getting Started:
+  - User Guide: USER_GUIDE.md
+  - Migration Guide: MIGRATION_GUIDE.md
+  - FAQ: FAQ.md
+  - Overleaf: OVERLEAF.md
+- Reference:
+  - API Reference: API_REFERENCE.md
+  - Document Types: gallery.md
+  - Institution Gallery: INSTITUTION_GALLERY.md
+  - Editor Integration: editor-integration.md
+- Advanced:
+  - Accessibility: accessibility.md
+  - Performance: PERFORMANCE.md
+  - API Stability: API_STABILITY.md
+  - Breaking Changes: BREAKING_CHANGES.md
+  - Plugin Catalog: PLUGIN_CATALOG.md
+  - Localization Guide: LOCALIZATION_GUIDE.md
+- Distribution:
+  - CTAN Submission: CTAN_SUBMISSION.md
+  - Institution Contributing: INSTITUTION_CONTRIBUTING.md
+  - Language Expansion: language-expansion/LANGUAGE_EXPANSION_GUIDE.md
+- Manual:
+  - Plan: manual/PLAN.md
+  - Part I - Foundations: manual/PART_I_FOUNDATIONS.md
+  - Part II - Doctypes: manual/PART_II_DOCTYPES.md
+  - Parts III-XI: manual/PARTS_III_THROUGH_XI.md
 
 extra:
-  version: 2.4.1
+  version: 2.5.0
 
 validation:
   absolute_links: warn
