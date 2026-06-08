@@ -1,5 +1,5 @@
 ---
-title: BREAKING CHANGES
+title: Breaking Changes
 ---
 # Breaking Changes Checklist
 

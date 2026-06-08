@@ -1,5 +1,5 @@
 ---
-title: LOCALIZATION GUIDE
+title: Localization Guide
 ---
 # OmniLaTeX Localization Guide
 

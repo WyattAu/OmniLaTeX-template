@@ -1,5 +1,5 @@
 ---
-title: Editor-Integration
+title: Editor Integration
 ---
 # Editor Integration
 

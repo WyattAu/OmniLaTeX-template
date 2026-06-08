@@ -1,5 +1,5 @@
 ---
-title: PERFORMANCE
+title: Performance
 ---
 # Performance
 

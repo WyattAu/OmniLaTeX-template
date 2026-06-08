@@ -1,5 +1,5 @@
 ---
-title: API STABILITY
+title: API Stability
 ---
 # OmniLaTeX Public API Stability
 

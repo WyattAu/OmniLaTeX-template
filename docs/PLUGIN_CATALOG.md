@@ -1,5 +1,5 @@
 ---
-title: PLUGIN CATALOG
+title: Plugin Catalog
 ---
 # Plugin Catalog
 

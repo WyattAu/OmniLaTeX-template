@@ -1,5 +1,5 @@
 ---
-title: OVERLEAF
+title: Overleaf
 ---
 # Using OmniLaTeX on Overleaf
 

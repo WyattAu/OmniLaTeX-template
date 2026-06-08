@@ -1,5 +1,5 @@
 ---
-title: API REFERENCE
+title: API Reference
 ---
 # OmniLaTeX API Reference
 

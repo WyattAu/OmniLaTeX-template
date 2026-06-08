@@ -1,5 +1,5 @@
 ---
-title: CTAN SUBMISSION
+title: CTAN Submission
 ---
 # CTAN Submission Guide
 

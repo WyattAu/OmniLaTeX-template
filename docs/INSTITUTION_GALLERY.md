@@ -1,5 +1,5 @@
 ---
-title: INSTITUTION GALLERY
+title: Institution Gallery
 ---
 # Institution Gallery
 

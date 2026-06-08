@@ -1,5 +1,5 @@
 ---
-title: MIGRATION GUIDE
+title: Migration Guide
 ---
 # Migration Guide
 

@@ -1,5 +1,5 @@
 ---
-title: USER GUIDE
+title: User Guide
 ---
 # OmniLaTeX User Guide
 
