@@ -20,19 +20,22 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
   <link rel="stylesheet" href={`${base}styles/global.css`}>
 </head>
 <body>
-  <nav class="nav">
-    <div class="nav-inner">
-      <a href={base} class="nav-brand">OmniLaTeX</a>
-      <div class="nav-links">
-        <a href={`${base}gallery`}>Gallery</a>
-        <a href={`${base}docs`}>Docs</a>
-        <a href={`${base}verify`}>Verify</a>
-        <a href="https://github.com/WyattAu/OmniLaTeX-template" target="_blank" rel="noopener noreferrer">GitHub</a>
+  <a href="#main-content" class="skip-link">Skip to content</a>
+  <header>
+    <nav class="nav" aria-label="Main navigation">
+      <div class="nav-inner">
+        <a href={base} class="nav-brand">OmniLaTeX</a>
+        <div class="nav-links">
+          <a href={`${base}gallery`}>Gallery</a>
+          <a href={`${base}docs`}>Docs</a>
+          <a href={`${base}verify`}>Verify</a>
+          <a href="https://github.com/WyattAu/OmniLaTeX-template" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </div>
       </div>
-    </div>
-  </nav>
+    </nav>
+  </header>
 
-  <main>
+  <main id="main-content">
     <slot />
   </main>
 
@@ -48,6 +51,23 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
 </html>
 
 <style>
+  .skip-link {
+    position: absolute;
+    top: -100px;
+    left: 0;
+    background: var(--accent);
+    color: #fff;
+    padding: 8px 16px;
+    z-index: 1000;
+    font-size: 14px;
+    text-decoration: none;
+    border-radius: 0 0 var(--radius-sm) 0;
+  }
+
+  .skip-link:focus {
+    top: 0;
+  }
+
   .nav {
     position: sticky;
     top: 0;

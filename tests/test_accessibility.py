@@ -39,9 +39,14 @@ from buildlib.accessibility_checker import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-PAGES_DIR = REPO_ROOT / "pages"
+PAGES_DIR = REPO_ROOT / "web" / "dist"
 
-HTML_FILES = sorted(PAGES_DIR.glob("*.html"))
+# Collect top-level HTML files from Astro build output
+HTML_FILES = sorted(
+    [PAGES_DIR / "index.html"]
+    + list((PAGES_DIR / "gallery").glob("*.html"))
+    + list((PAGES_DIR / "verify").glob("*.html"))
+)
 
 
 # ── Fixtures ─────────────────────────────────────────────────────
@@ -452,14 +457,14 @@ class TestFullPageChecks:
         )
 
     def test_gallery_html(self):
-        result = check_html_accessibility(PAGES_DIR / "gallery.html")
+        result = check_html_accessibility(PAGES_DIR / "gallery" / "index.html")
         errors = [v for v in result.violations if v.severity == Severity.ERROR]
-        assert len(errors) == 0, f"gallery.html errors:\n" + "\n".join(
+        assert len(errors) == 0, f"gallery errors:\n" + "\n".join(
             str(v) for v in errors
         )
 
     def test_verify_html(self):
-        result = check_html_accessibility(PAGES_DIR / "verify.html")
+        result = check_html_accessibility(PAGES_DIR / "verify" / "index.html")
         errors = [v for v in result.violations if v.severity == Severity.ERROR]
         assert len(errors) == 0, f"verify.html errors:\n" + "\n".join(
             str(v) for v in errors
