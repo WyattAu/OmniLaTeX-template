@@ -1,3 +1,6 @@
+---
+title: PLUGIN CATALOG
+---
 # Plugin Catalog
 
 OmniLaTeX supports a plugin system for extending document functionality. Plugins

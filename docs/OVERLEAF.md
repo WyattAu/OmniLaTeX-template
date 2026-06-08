@@ -1,3 +1,6 @@
+---
+title: OVERLEAF
+---
 # Using OmniLaTeX on Overleaf
 
 OmniLaTeX works on Overleaf with LuaLaTeX. This guide covers setup for single

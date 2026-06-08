@@ -1,3 +1,6 @@
+---
+title: CTAN SUBMISSION
+---
 # CTAN Submission Guide
 
 Step-by-step instructions for submitting OmniLaTeX to CTAN.

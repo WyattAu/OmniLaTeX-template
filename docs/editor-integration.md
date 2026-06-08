@@ -1,3 +1,6 @@
+---
+title: Editor-Integration
+---
 # Editor Integration
 
 Configuration snippets for popular LaTeX editors.

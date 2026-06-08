@@ -1,3 +1,6 @@
+---
+title: API STABILITY
+---
 # OmniLaTeX Public API Stability
 
 This document defines the public API surface of OmniLaTeX and its stability guarantees.

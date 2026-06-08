@@ -130,7 +130,7 @@ export default function Validator() {
           <Show when={result()!.valid}>
             <div class="class-line">
               <code>{result()!.classLine}</code>
-              <button onClick={copyToClipboard} class="copy-btn">
+              <button onClick={copyToClipboard} class="copy-btn" aria-label="Copy documentclass command to clipboard">
                 {copied() ? 'Copied' : 'Copy'}
               </button>
             </div>

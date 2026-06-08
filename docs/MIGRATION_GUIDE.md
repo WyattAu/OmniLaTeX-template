@@ -1,3 +1,6 @@
+---
+title: MIGRATION GUIDE
+---
 # Migration Guide
 
 This guide covers migrating existing LaTeX documents from standard document classes

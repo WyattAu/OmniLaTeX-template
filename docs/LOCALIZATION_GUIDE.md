@@ -1,3 +1,6 @@
+---
+title: LOCALIZATION GUIDE
+---
 # OmniLaTeX Localization Guide
 
 ## Overview

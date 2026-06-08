@@ -1,3 +1,6 @@
+---
+title: INSTITUTION GALLERY
+---
 # Institution Gallery
 
 OmniLaTeX includes configuration files for 21 institutions.

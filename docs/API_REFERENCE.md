@@ -1,3 +1,6 @@
+---
+title: API REFERENCE
+---
 # OmniLaTeX API Reference
 
 > Auto-generated from `specs/module_contracts/*.toml`

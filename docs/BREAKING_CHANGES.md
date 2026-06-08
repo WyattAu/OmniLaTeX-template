@@ -1,3 +1,6 @@
+---
+title: BREAKING CHANGES
+---
 # Breaking Changes Checklist
 
 This checklist must be completed for any change that modifies the public API surface.

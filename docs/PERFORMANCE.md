@@ -1,3 +1,6 @@
+---
+title: PERFORMANCE
+---
 # Performance
 
 ## Current Benchmarks

@@ -1,3 +1,6 @@
+---
+title: Gallery
+---
 # Template Gallery
 
 Visual showcase of OmniLaTeX example templates.

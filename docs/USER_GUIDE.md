@@ -1,3 +1,6 @@
+---
+title: USER GUIDE
+---
 # OmniLaTeX User Guide
 
 ## Quick Start

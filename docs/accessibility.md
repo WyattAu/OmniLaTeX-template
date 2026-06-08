@@ -1,3 +1,6 @@
+---
+title: Accessibility
+---
 # OmniLaTeX Accessibility Guide
 
 For development setup and testing, see [CONTRIBUTING.md](https://github.com/WyattAu/OmniLaTeX-template/blob/main/CONTRIBUTING.md).

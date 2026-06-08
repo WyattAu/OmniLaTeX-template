@@ -100,7 +100,9 @@ export default function GalleryGrid() {
             {(cat) => (
               <button
                 role="tab"
+                id={`tab-${cat}`}
                 aria-selected={activeCategory() === cat}
+                aria-controls="gallery-panel"
                 class={`tab ${activeCategory() === cat ? 'active' : ''}`}
                 onClick={() => setActiveCategory(cat)}
               >
@@ -119,7 +121,7 @@ export default function GalleryGrid() {
         />
       </div>
 
-      <div class="grid" role="listbox" aria-label="Document gallery">
+      <div id="gallery-panel" class="grid" role="tabpanel" aria-label="Document gallery">
         <For each={filteredDocs()}>
           {(doc) => (
             <a
@@ -131,7 +133,7 @@ export default function GalleryGrid() {
               aria-label={`${doc.name}: ${doc.desc}`}
             >
               <div class="card-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                   <polyline points="14 2 14 8 20 8" />
                 </svg>
