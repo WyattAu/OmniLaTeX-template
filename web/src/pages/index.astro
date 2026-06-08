@@ -13,27 +13,28 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
       27 document types, 21 institutions, 25 languages.
     </p>
     <div class="hero-actions">
-      <a href={`${base}gallery`} class="btn btn-primary">Browse Gallery</a>
-      <a href={`${base}docs`} class="btn">Read Documentation</a>
+      <a href={`${base}gallery/`} class="btn btn-primary">Browse Gallery</a>
+      <a href={`${base}docs/`} class="btn">Read Documentation</a>
     </div>
   </section>
 
   <section class="features">
+    <h2>Features</h2>
     <div class="feature-grid">
       <div class="feature">
-        <h2>27 Document Types</h2>
+        <h3>27 Document Types</h3>
         <p>Thesis, article, CV, letter, presentation, poster, exam, book, and more.</p>
       </div>
       <div class="feature">
-        <h2>21 Institutions</h2>
+        <h3>21 Institutions</h3>
         <p>Pre-configured branding for MIT, Stanford, ETH, Oxford, and 17 more.</p>
       </div>
       <div class="feature">
-        <h2>25+ Languages</h2>
+        <h3>25+ Languages</h3>
         <p>English, German, Chinese, Arabic, Japanese, Korean, and 20 more.</p>
       </div>
       <div class="feature">
-        <h2>Reproducible Builds</h2>
+        <h3>Reproducible Builds</h3>
         <p>Docker and Nix support. Identical output across all platforms.</p>
       </div>
     </div>
@@ -169,7 +170,7 @@ python build.py build-example minimal-starter</code></pre>
   }
 
   .tab {
-    padding: 6px 14px;
+    padding: 10px 14px;
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     background: transparent;

@@ -12,18 +12,27 @@ export async function getStaticPaths() {
 
 const { doc } = Astro.props;
 const { Content } = await render(doc);
-const title = doc.data?.title || doc.id.replace(/\.md$/, '').replace(/\//g, ' / ').replace(/-/g, ' ');
+
+// Generate human-readable title from slug
+function slugToTitle(slug: string): string {
+  return slug
+    .replace(/\.md$/, '')
+    .split('/')
+    .map(part => part.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()))
+    .join(' / ');
+}
+
+const title = doc.data?.title || slugToTitle(doc.id);
 const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
 ---
 
 <BaseLayout title={title}>
   <div class="doc-layout">
     <nav class="doc-sidebar" aria-label="Documentation navigation">
-      <a href={`${base}docs`} class="back-link">&larr; All Docs</a>
+      <a href={`${base}docs/`} class="back-link">&larr; All Docs</a>
     </nav>
 
     <article class="doc-content">
-      <h1>{title}</h1>
       <Content />
     </article>
   </div>
@@ -58,7 +67,7 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
     min-width: 0;
   }
 
-  .doc-content h1 {
+  .doc-content :global(h1) {
     font-size: 2rem;
     margin-bottom: 24px;
   }
@@ -117,6 +126,27 @@ const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL :
     padding-left: 16px;
     margin: 16px 0;
     color: var(--fg-muted);
+  }
+
+  .doc-content :global(pre) {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+
+  .doc-content :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+
+  .doc-content :global(pre code) {
+    background: none;
+    padding: 0;
   }
 
   @media (max-width: 768px) {
