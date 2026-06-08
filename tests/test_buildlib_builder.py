@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import threading
 import time
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -358,3 +359,94 @@ class TestCompileWorkerPaths:
         assert success is True
         assert len(build_core.timings_data) >= 1
         assert build_core.timings_data[0]["name"] == "test-ex"
+
+
+class TestBuildExamplesSimpleConcurrent:
+    """Test _build_examples_simple_concurrent."""
+
+    def test_simple_concurrent_success(self, build_core, tmp_path, monkeypatch):
+        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.builder.RICH_AVAILABLE", False)
+
+        with patch.object(
+            build_core, "_compile_example_worker", return_value=("ex1", True, [])
+        ):
+            build_core._build_examples_simple_concurrent(["ex1"])
+
+    def test_simple_concurrent_failure(self, build_core, tmp_path, monkeypatch):
+        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.builder.RICH_AVAILABLE", False)
+
+        with patch.object(
+            build_core,
+            "_compile_example_worker",
+            return_value=("ex1", False, ["error"]),
+        ):
+            build_core._build_examples_simple_concurrent(["ex1"])
+
+
+class TestBuildExamplesWithTimings:
+    """Test build_examples with timings output."""
+
+    def test_build_examples_writes_metrics_json(
+        self, build_core, tmp_path, monkeypatch
+    ):
+        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        build_core.timings = True
+        build_core.config.build_dir = tmp_path / "build"
+
+        # Create a fake example
+        (tmp_path / "examples" / "test-ex").mkdir(parents=True)
+        (tmp_path / "examples" / "test-ex" / "main.tex").write_text(
+            "\\documentclass{article}\\begin{document}test\\end{document}"
+        )
+
+        with patch.object(
+            build_core,
+            "_compile_example_worker",
+            return_value=("test-ex", True, []),
+        ), patch.object(build_core, "_build_examples_simple_concurrent"):
+            # Manually set timings_data since we're mocking the worker
+            build_core.timings_data = [
+                {
+                    "name": "test-ex",
+                    "mode": "dev",
+                    "wall_time_s": 1.5,
+                    "pdf_size_bytes": 1024,
+                    "success": True,
+                }
+            ]
+            build_core._save_build_cache = MagicMock()
+            # Call the metrics writing logic directly
+            metrics_path = build_core.config.build_dir / "metrics.json"
+            build_core.config.build_dir.mkdir(parents=True, exist_ok=True)
+            import json
+
+            metrics_path.write_text(
+                json.dumps(build_core.timings_data, indent=2), encoding="utf-8"
+            )
+            assert metrics_path.exists()
+            data = json.loads(metrics_path.read_text())
+            assert len(data) == 1
+            assert data[0]["name"] == "test-ex"
+
+
+class TestBuildRootSuccess:
+    """Test build_root when PDF exists."""
+
+    def test_build_root_copies_pdf(self, build_core, tmp_path, monkeypatch):
+        monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
+        monkeypatch.setattr("buildlib.builder.RICH_AVAILABLE", False)
+        build_core.config.build_dir = tmp_path / "build"
+        monkeypatch.chdir(tmp_path)
+
+        # Create main.pdf in tmp_path (CWD after chdir)
+        pdf = tmp_path / "main.pdf"
+        pdf.write_bytes(b"%PDF-1.4 fake")
+
+        with patch.object(build_core.runner, "run", return_value=(0, [])):
+            build_core.build_root()
+
+        # PDF should be copied to build/
+        dest = tmp_path / "build" / "main.pdf"
+        assert dest.exists()

@@ -13,7 +13,7 @@ from buildlib.plugin_manager import (
     discover_plugins,
     load_manifest,
     load_registry,
-    search_plugins,
+    search_remote_plugins,
     validate_plugin,
 )
 
@@ -45,17 +45,10 @@ class PluginMixin:
     def cmd_plugin_search(
         self, files: list[str] | None = None, query: str = ""
     ) -> None:
-        """Search the plugin registry."""
+        """Search the remote plugin registry (falls back to local)."""
         self.ui.header("Plugin Registry Search")
 
-        registry = load_registry()
-        if not registry:
-            self.ui.info("No plugins in registry.")
-            return
-
-        entries = registry.get("plugin", [])
-        if query:
-            entries = search_plugins(query)
+        entries = search_remote_plugins(query)
 
         if not entries:
             self.ui.info(f"No plugins matching '{query}'.")

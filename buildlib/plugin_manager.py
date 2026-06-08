@@ -559,3 +559,56 @@ def validate_plugin(
 
     result.valid = len(result.errors) == 0
     return result
+
+
+# ---------------------------------------------------------------------------
+# Remote registry support
+# ---------------------------------------------------------------------------
+REGISTRY_REMOTE_URL = (
+    "https://raw.githubusercontent.com/WyattAu/omnilatex-plugins" "/main/registry.toml"
+)
+
+
+def fetch_remote_registry(
+    url: str = REGISTRY_REMOTE_URL, timeout: int = 10
+) -> dict[str, Any] | None:
+    """Fetch and parse the remote plugin registry.
+
+    Returns the parsed TOML dict, or None on network/parse error.
+    Uses stdlib urllib (no new dependencies).
+    """
+    import urllib.error
+    import urllib.request
+
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "OmniLaTeX/2.5.0"})
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            data = resp.read().decode("utf-8")
+        return tomllib.loads(data)
+    except (urllib.error.URLError, OSError, ValueError, tomllib.TOMLDecodeError):
+        return None
+
+
+def search_remote_plugins(
+    query: str = "", url: str = REGISTRY_REMOTE_URL
+) -> list[dict[str, Any]]:
+    """Search the remote registry for plugins matching *query*.
+
+    Falls back to the local registry if the remote is unreachable.
+    """
+    registry = fetch_remote_registry(url)
+    if registry is None:
+        registry = load_registry()
+
+    entries = registry.get("plugin", []) if registry else []
+    if not query:
+        return entries
+
+    query_lower = query.lower()
+    return [
+        e
+        for e in entries
+        if query_lower in e.get("name", "").lower()
+        or query_lower in e.get("description", "").lower()
+        or query_lower in " ".join(e.get("tags", [])).lower()
+    ]

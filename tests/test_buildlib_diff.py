@@ -131,3 +131,46 @@ class TestComputeSsimWindowed:
         arr = np.random.rand(7, 100).astype(np.float64) * 255
         ssim = _compute_ssim_windowed(arr, arr, window_size=7)
         assert ssim == pytest.approx(1.0, abs=1e-4)
+
+
+class TestNumpyUnavailable:
+    """Test behavior when numpy is not available."""
+
+    def test_returns_zero_when_numpy_none(self):
+        """_compute_ssim_windowed should return 0.0 when numpy is None."""
+        import buildlib.diff as diff_module
+
+        original = diff_module.np
+        try:
+            diff_module.np = None
+            result = diff_module._compute_ssim_windowed(None, None)
+            assert result == 0.0
+        finally:
+            diff_module.np = original
+
+
+class TestScipyUnavailable:
+    """Test fallback path when scipy is not available."""
+
+    def test_fallback_conv2d_used(self):
+        """When scipy.signal is unavailable, the einsum fallback should be used."""
+        import sys
+
+        import buildlib.diff as diff_module
+
+        # Temporarily remove scipy.signal from sys.modules
+        scipy_backup = sys.modules.get("scipy.signal")
+        sys.modules["scipy.signal"] = None  # block import
+        try:
+            import importlib
+
+            importlib.reload(diff_module)
+            arr = np.random.rand(32, 32).astype(np.float64) * 255
+            ssim = diff_module._compute_ssim_windowed(arr, arr, window_size=7)
+            assert ssim == pytest.approx(1.0, abs=1e-4)
+        finally:
+            if scipy_backup is not None:
+                sys.modules["scipy.signal"] = scipy_backup
+            else:
+                sys.modules.pop("scipy.signal", None)
+            importlib.reload(diff_module)

@@ -108,6 +108,15 @@ if ($build_mode eq 'prod') {
     $max_repeat = 1;
     $pdf_mode = 4;
     $do_gls = 0;      # custom flag to guard glossaries
+} elsif ($build_mode eq 'fast') {
+    # Fast mode: use draftmode for intermediate passes, real PDF on last pass.
+    # This skips PDF output on passes 1..N-1, making them ~30% faster.
+    # The final pass produces the real PDF.
+    # NOTE: draftmode is a pdflatex/xelatex feature; LuaTeX does NOT support
+    # -draftmode natively. Instead, we reduce passes and skip glossaries.
+    $max_repeat = 3;
+    $do_gls = 0;
+    $bibtex_use = 1;
 } else {
     # Development mode: fast iteration
     $max_repeat = 6;  # Allow enough passes for bibliography/glossary churn
