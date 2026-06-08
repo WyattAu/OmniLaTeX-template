@@ -491,5 +491,10 @@ omnilatex-overleaf.zip
 testfmt.log
 build-all-output.log
 
+# Astro build artifacts
+web/node_modules/
+web/dist/
+web/.astro/
+
 # Test scaffolding artifacts
 config/institutions/test-univ/

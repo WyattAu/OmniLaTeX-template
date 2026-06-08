@@ -1,0 +1,132 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('docs');
+  return docs.map(doc => ({
+    params: { slug: doc.id.replace(/\.md$/, '') },
+    props: { doc },
+  }));
+}
+
+const { doc } = Astro.props;
+const { Content } = await render(doc);
+const title = doc.data?.title || doc.id.replace(/\.md$/, '').replace(/\//g, ' / ').replace(/-/g, ' ');
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title={title}>
+  <div class="doc-layout">
+    <nav class="doc-sidebar" aria-label="Documentation navigation">
+      <a href={`${base}docs`} class="back-link">&larr; All Docs</a>
+    </nav>
+
+    <article class="doc-content">
+      <h1>{title}</h1>
+      <Content />
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  .doc-layout {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 48px;
+    padding: 48px 0 80px;
+  }
+
+  .doc-sidebar {
+    position: sticky;
+    top: 80px;
+    align-self: start;
+  }
+
+  .back-link {
+    color: var(--fg-muted);
+    font-size: 14px;
+    text-decoration: none;
+  }
+
+  .back-link:hover {
+    color: var(--fg);
+  }
+
+  .doc-content {
+    max-width: 760px;
+    min-width: 0;
+  }
+
+  .doc-content h1 {
+    font-size: 2rem;
+    margin-bottom: 24px;
+  }
+
+  .doc-content :global(h2) {
+    font-size: 1.5rem;
+    margin-top: 40px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .doc-content :global(h3) {
+    font-size: 1.2rem;
+    margin-top: 32px;
+    margin-bottom: 12px;
+  }
+
+  .doc-content :global(p) {
+    margin-bottom: 16px;
+    line-height: 1.7;
+  }
+
+  .doc-content :global(ul),
+  .doc-content :global(ol) {
+    margin-bottom: 16px;
+    padding-left: 24px;
+  }
+
+  .doc-content :global(li) {
+    margin-bottom: 4px;
+    line-height: 1.6;
+  }
+
+  .doc-content :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+    font-size: 14px;
+  }
+
+  .doc-content :global(th),
+  .doc-content :global(td) {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+
+  .doc-content :global(th) {
+    background: var(--bg-panel);
+    font-weight: 600;
+  }
+
+  .doc-content :global(blockquote) {
+    border-left: 3px solid var(--accent);
+    padding-left: 16px;
+    margin: 16px 0;
+    color: var(--fg-muted);
+  }
+
+  @media (max-width: 768px) {
+    .doc-layout {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .doc-sidebar {
+      position: static;
+    }
+  }
+</style>

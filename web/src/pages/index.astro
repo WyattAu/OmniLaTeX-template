@@ -1,0 +1,379 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import GalleryGrid from '../components/GalleryGrid';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title="Home">
+  <section class="hero">
+    <h1>OmniLaTeX</h1>
+    <p class="hero-desc">
+      A modular document class for LuaLaTeX, built on KOMA-Script.
+      27 document types, 21 institutions, 25 languages.
+    </p>
+    <div class="hero-actions">
+      <a href={`${base}gallery`} class="btn btn-primary">Browse Gallery</a>
+      <a href={`${base}docs`} class="btn">Read Documentation</a>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="feature-grid">
+      <div class="feature">
+        <h3>27 Document Types</h3>
+        <p>Thesis, article, CV, letter, presentation, poster, exam, book, and more.</p>
+      </div>
+      <div class="feature">
+        <h3>21 Institutions</h3>
+        <p>Pre-configured branding for MIT, Stanford, ETH, Oxford, and 17 more.</p>
+      </div>
+      <div class="feature">
+        <h3>25+ Languages</h3>
+        <p>English, German, Chinese, Arabic, Japanese, Korean, and 20 more.</p>
+      </div>
+      <div class="feature">
+        <h3>Reproducible Builds</h3>
+        <p>Docker and Nix support. Identical output across all platforms.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="quick-start">
+    <h2>Quick Start</h2>
+    <pre><code>git clone https://github.com/WyattAu/OmniLaTeX-template.git
+cd OmniLaTeX-template
+python build.py build-example minimal-starter</code></pre>
+  </section>
+
+  <section class="gallery-section">
+    <h2>Document Gallery</h2>
+    <GalleryGrid client:load />
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    text-align: center;
+    padding: 80px 0 60px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  .hero-desc {
+    font-size: 18px;
+    color: var(--fg-muted);
+    max-width: 600px;
+    margin: 0 auto 32px;
+    line-height: 1.6;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 10px 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--duration-fast) var(--ease);
+    color: var(--fg);
+  }
+
+  .btn:hover {
+    background: var(--bg-elevated);
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-hover);
+  }
+
+  .features {
+    padding: 40px 0;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+  }
+
+  .feature {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 24px;
+  }
+
+  .feature h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .feature p {
+    font-size: 14px;
+    color: var(--fg-muted);
+    line-height: 1.5;
+  }
+
+  .quick-start {
+    padding: 40px 0;
+  }
+
+  .quick-start h2 {
+    margin-bottom: 16px;
+  }
+
+  .gallery-section {
+    padding: 40px 0 80px;
+  }
+
+  .gallery-section h2 {
+    margin-bottom: 24px;
+  }
+</style>
+
+<style is:global>
+  /* Gallery component styles (global so they apply to SolidJS components) */
+  .controls {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .category-tabs {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .tab {
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--fg-muted);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease);
+  }
+
+  .tab:hover {
+    color: var(--fg);
+    border-color: var(--border-light);
+  }
+
+  .tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .search-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-panel);
+    color: var(--fg);
+    font-size: 14px;
+    outline: none;
+    transition: border-color var(--duration-fast) var(--ease);
+  }
+
+  .search-input:focus {
+    border-color: var(--accent);
+  }
+
+  .search-input::placeholder {
+    color: var(--fg-subtle);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+  }
+
+  .card {
+    display: block;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    text-decoration: none;
+    color: var(--fg);
+    transition: all var(--duration-fast) var(--ease);
+  }
+
+  .card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: var(--depth-2);
+    text-decoration: none;
+  }
+
+  .card-icon {
+    color: var(--fg-muted);
+    margin-bottom: 12px;
+  }
+
+  .card-name {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--fg-muted);
+    line-height: 1.4;
+    margin-bottom: 8px;
+  }
+
+  .card-cat {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    background: var(--bg-elevated);
+    font-size: 11px;
+    color: var(--fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--fg-muted);
+  }
+
+  /* Validator styles */
+  .validator {
+    max-width: 600px;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .form-grid label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .label-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .form-grid select {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-panel);
+    color: var(--fg);
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .result {
+    padding: 16px;
+    border-radius: var(--radius-md);
+    border: 1px solid;
+  }
+
+  .result.valid {
+    background: rgba(126, 231, 135, 0.08);
+    border-color: rgba(126, 231, 135, 0.3);
+  }
+
+  .result.invalid {
+    background: rgba(255, 123, 114, 0.08);
+    border-color: rgba(255, 123, 114, 0.3);
+  }
+
+  .errors, .warnings {
+    margin-bottom: 12px;
+  }
+
+  .errors strong { color: var(--error); }
+  .warnings strong { color: var(--warning); }
+
+  .errors ul, .warnings ul {
+    margin: 8px 0 0 20px;
+    font-size: 14px;
+  }
+
+  .class-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .class-line code {
+    flex: 1;
+    word-break: break-all;
+  }
+
+  .copy-btn {
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-panel);
+    color: var(--fg);
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .copy-btn:hover {
+    background: var(--bg-elevated);
+  }
+
+  /* PDF viewer */
+  .pdf-viewer {
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+  }
+
+  .pdf-loading, .pdf-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    color: var(--fg-muted);
+  }
+</style>
