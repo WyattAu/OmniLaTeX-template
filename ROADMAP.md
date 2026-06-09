@@ -182,13 +182,10 @@
 - [x] 4 new proof modules (TypographicConstraints, OutputFormats, LaTeXPackageDependencies, DocumentClassHierarchy)
 - [x] 7 existing proof modules extended with additional theorems
 
-### In Progress (v2.5.0)
+### Completed (v2.5.0)
 
-- [x] WASM feasibility report (specs/wasm_feasibility.md)
-- [x] WASM editor prototype (wasm/editor/index.html)
-- [x] WebSocket compilation server (wasm/server/main.py)
-- [ ] Pure WASM LuaTeX compilation (6-12 months, requires dedicated effort)
-- [ ] Tauri desktop app (deferred to after WASM)
+- [x] 4 new proof modules (TypographicConstraints, OutputFormats, LaTeXPackageDependencies, DocumentClassHierarchy)
+- [x] 7 existing proof modules extended with additional theorems
 
 ---
 
