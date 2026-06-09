@@ -215,7 +215,9 @@ class TestInstitutions:
         ],
     )
     def test_institution_has_color_definitions(self, institution):
-        sty = (self.INSTITUTION_DIR / institution / f"{institution}.sty").read_text(encoding="utf-8")
+        sty = (
+            self.INSTITUTION_DIR / institution / f"{institution}.sty"
+        ).read_text(encoding="utf-8")
         has_colors = (
             "\\definecolor" in sty or "\\textcolor" in sty or "\\colorlet" in sty
         )

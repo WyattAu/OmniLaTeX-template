@@ -68,9 +68,15 @@ class TestPluginInstall:
 
     def test_install_success(self, stub, tmp_path, monkeypatch):
         monkeypatch.setattr("buildlib.commands.plugin._cfg", MagicMock(REPO_ROOT=tmp_path))
-        registry = {"plugin": [{"name": "test", "version": "1.0.0", "description": "Test", "author": "A", "license": "MIT"}]}
+        registry = {
+            "plugin": [{
+                "name": "test", "version": "1.0.0",
+                "description": "Test", "author": "A", "license": "MIT",
+            }]
+        }
         with patch("buildlib.commands.plugin.load_registry", return_value=registry), \
-             patch("buildlib.commands.plugin.load_manifest", return_value={"plugin": {"name": "test"}}):
+             patch("buildlib.commands.plugin.load_manifest",
+                   return_value={"plugin": {"name": "test"}}):
             stub.cmd_plugin_install(name="test")
             stub.ui.success.assert_called()
             assert (tmp_path / "plugins" / "test" / "manifest.toml").exists()
@@ -138,10 +144,18 @@ class TestPluginInfo:
         monkeypatch.setattr("buildlib.commands.plugin._cfg", MagicMock(REPO_ROOT=tmp_path))
         plugin_dir = tmp_path / "plugins" / "test"
         plugin_dir.mkdir(parents=True)
-        (plugin_dir / "manifest.toml").write_text(
-            '[plugin]\nname="test"\nversion="1.0.0"\ndescription="Test"\nauthor="A"\nlicense="MIT"\n'
+        manifest_toml = (
+            '[plugin]\nname="test"\nversion="1.0.0"\n'
+            'description="Test"\nauthor="A"\nlicense="MIT"\n'
         )
-        manifest = {"plugin": {"name": "test", "version": "1.0.0", "description": "Test", "author": "A", "license": "MIT", "security": {"network": False}}}
+        (plugin_dir / "manifest.toml").write_text(manifest_toml)
+        manifest = {
+            "plugin": {
+                "name": "test", "version": "1.0.0",
+                "description": "Test", "author": "A",
+                "license": "MIT", "security": {"network": False},
+            }
+        }
         with patch("buildlib.commands.plugin.load_manifest", return_value=manifest):
             stub.cmd_plugin_info(name="test")
             stub.ui.info.assert_called()
