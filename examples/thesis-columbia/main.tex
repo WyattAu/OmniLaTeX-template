@@ -1,0 +1,75 @@
+%!TEX TS-program = lualatex
+\documentclass[
+    language=english,
+    doctype=thesis,
+    institution=columbia,
+    titlestyle=thesis,
+    twoside,
+    BCOR=5mm,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\frontmatter
+\maketitle
+\tableofcontents
+
+\mainmatter
+\chapter{Introduction}
+Summarize the research motivation and objectives~\cite{bibid}.  Provide context
+by reviewing relevant prior work and clearly state the gap this thesis aims to
+address.  Outline the structure of the document and highlight the key
+contributions.
+
+\chapter{Background and Related Work}
+Review the theoretical foundations underpinning the research~\cite{knuthTeXbook1986}.
+Discuss established methods in the field, their strengths, and their
+limitations.  Position the present work within the broader research landscape.
+
+\chapter{Methodology}
+Document experimental design, data acquisition, and analysis
+steps~\cite{knuthTeXbook1986}.  The governing equation for the system under
+study is given by
+\begin{equation}
+    \frac{\partial u}{\partial t}
+    = \alpha \nabla^{2} u + f(\mathbf{x}, t),
+    \label{eq:diffusion}
+\end{equation}
+where $u$ is the field variable, $\alpha$ is the diffusivity, and
+$f(\mathbf{x}, t)$ represents the source term.
+
+\chapter{Results}
+Present findings supported by figures and tables~\cite{einstein1905}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Error metrics for successive mesh refinements.}
+    \label{tab:results}
+    \begin{tabular}{@{}lccc@{}}
+        \toprule
+        Level & $\Delta x$ & $L^{2}$ error & Order \\
+        \midrule
+        1 & 0.100 & $3.42 \times 10^{-2}$ & --- \\
+        2 & 0.050 & $8.67 \times 10^{-3}$ & 1.98 \\
+        3 & 0.025 & $2.18 \times 10^{-3}$ & 1.99 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\chapter{Discussion}
+Interpret the results in the context of the research questions~\cite{birdNaturalLanguageProcessing2009}.
+
+\chapter{Conclusion}
+Highlight contributions, limitations, and future work.
+
+\appendix
+\chapter{Additional Material}
+Provide supporting derivations, extended data tables, and supplementary figures.
+
+\backmatter
+\printbibliography
+
+\end{document}
