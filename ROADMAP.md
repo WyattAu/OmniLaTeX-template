@@ -131,61 +131,49 @@
 
 ---
 
-## Phase 3: Distribution (v3.0.0) -- 6-8 weeks
+## Phase 3: Distribution -- COMPLETE
 
-### Completed
+All distribution channels operational.
 
+- [x] CTAN publication ([omnilatex](https://ctan.org/pkg/omnilatex))
 - [x] PDF Gallery (CI builds PDFs, gallery serves them)
 - [x] Cloudflare Pages deployment (wrangler.toml configured)
-- [x] CSP headers on HTML pages
-- [x] Add HSTS and Permissions-Policy headers to wrangler.toml
-- [x] Add favicon and og:image to all HTML pages
-
-### Target
-
-- [x] CTAN publication (published as [omnilatex](https://ctan.org/pkg/omnilatex))
-- [ ] Overleaf Template Gallery submission (top templates)
-- [x] Package manager distribution (Nix flake app, Homebrew formula, AUR package)
-- [x] Docker image multi-arch builds (amd64 + arm64, already configured)
+- [x] CSP, HSTS, Permissions-Policy headers
+- [x] Favicon and og:image on all HTML pages
+- [x] Package managers (Nix flake, Homebrew formula, AUR package)
+- [x] Docker image multi-arch (amd64/arm64)
+- [ ] Overleaf Template Gallery submission (manual, prepare zip + metadata)
 
 ---
 
-## Phase 4: Ecosystem (v3.1.0) -- 6-8 weeks
+## Phase 4: Ecosystem -- COMPLETE
 
-### Completed
-
-- [x] Lightbox focus trapping and focus restoration
-- [x] Add @media print stylesheets to HTML pages
-- [x] Extract inline CSS from HTML pages into external stylesheets
-- [x] Add theme-color meta tags to all pages
-- [x] Extract inline JavaScript from HTML pages to external files
-- [x] Add ARIA tablist semantics to gallery.html template cards
-- [x] Add design language CSS tokens (Spatial Materialism, Amoebic UI, Brutalism)
-- [x] Plugin system specification and sandbox (manifest.toml, registry)
-- [x] VS Code extension marketplace preparation guide
-- [x] Language expansion scaffolding (40+ languages target)
-
-### Completed (v2.4.1)
-
-- [x] Plugin system expansion (plugin_manager.py, registry, sandbox, validation)
+- [x] WCAG 2.1 AA compliance (automated testing, 229+ a11y tests)
+- [x] Plugin system (manifest.toml, registry, sandbox, validation)
 - [x] Plugin examples (markdown-table, watermark)
-- [x] Interactive documentation site (template picker, live preview)
-- [x] Full accessibility compliance (WCAG 2.1 AA automated tests, 126 tests)
+- [x] Interactive documentation site (template picker, gallery)
+- [x] VS Code extension (doctype picker, build commands, log diagnostics)
+- [x] Formal verification (301 theorems, 29 Lean 4 modules)
+- [x] Language scaffolding (25+ languages, CJK/RTL support)
 
 ---
 
-## Phase 5: Advanced Features (v4.0.0) -- 12-16 weeks
+## Phase 5: v3.0.0 -- User-Facing Features
 
-### Completed (v2.4.1)
+Previous Phase 5 (WASM, Tauri) was out of scope for a document class project and
+removed. v3.0.0 should deliver something users notice.
 
-- [x] Formal verification expansion (301 theorems, up from 223)
-- [x] 4 new proof modules (TypographicConstraints, OutputFormats, LaTeXPackageDependencies, DocumentClassHierarchy)
-- [x] 7 existing proof modules extended with additional theorems
+### Candidates (pick from these or add your own)
 
-### Completed (v2.5.0)
-
-- [x] 4 new proof modules (TypographicConstraints, OutputFormats, LaTeXPackageDependencies, DocumentClassHierarchy)
-- [x] 7 existing proof modules extended with additional theorems
+| Feature | User Impact | Effort | Notes |
+|---------|-------------|--------|-------|
+| Overleaf Gallery submission | Discoverability | Low | Prepare zip + metadata, submit |
+| Template quality polish | First impression | Medium | Make each of the 50 examples a showcase |
+| Build error messages UX | Daily workflow | Medium | Parse LaTeX errors into actionable fixes |
+| New document types | Capability | Medium | Based on user demand (grant proposals, IEEE papers) |
+| Dark mode in PDF output | Visual | Medium | Already has dark mode in web, not in PDF |
+| Multi-language docs site | Reach | High | Docs in DE/ZH/JA alongside EN |
+| VS Code live preview | Workflow | High | Show PDF on save, like LaTeX Workshop |
 
 ---
 
@@ -348,9 +336,8 @@
 | v2.5.0 | 2026-06-07 | Exhaustive audit: test isolation, buildlib hardening, CI/CD security, WCAG | RELEASED |
 | v2.4.1 | 2026-06-06 | Audit: tests, CI/CD, UI/UX, design tokens, packages | RELEASED |
 | v2.4.0 | 2026-06-05 | Audit fixes, buildlib tests | RELEASED |
-| v3.0.0 | 2026-09-12 | Distribution (CTAN live) | PLANNED |
-| v3.1.0 | 2026-11-07 | Ecosystem expansion | PLANNED |
-| v4.0.0 | 2027-Q1 | Advanced features | PLANNED |
+| v3.0.0 | TBD | User-facing features (TBD -- see Phase 5 candidates) | PLANNED |
+| v4.0.0 | TBD | Future major release | PLANNED |
 
 ---
 
