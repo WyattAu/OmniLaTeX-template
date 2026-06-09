@@ -9,6 +9,5 @@ export function slugToTitle(slug: string): string {
 
 /** Resolve the Astro base URL, ensuring a trailing slash. */
 export function getBaseURL(): string {
-  const base = import.meta.env.BASE_URL;
-  return base.endsWith('/') ? base : base + '/';
+  return '/';
 }
