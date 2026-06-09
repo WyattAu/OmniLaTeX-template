@@ -426,7 +426,7 @@ class TestBuildExamplesWithTimings:
                 json.dumps(build_core.timings_data, indent=2), encoding="utf-8"
             )
             assert metrics_path.exists()
-            data = json.loads(metrics_path.read_text())
+            data = json.loads(metrics_path.read_text(encoding="utf-8"))
             assert len(data) == 1
             assert data[0]["name"] == "test-ex"
 

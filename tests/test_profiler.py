@@ -200,7 +200,7 @@ class TestBuildProfiler:
         out = tmp_path / "output.json"
         result_path = profiler.export_json(out)
         assert result_path.exists()
-        data = json.loads(result_path.read_text())
+        data = json.loads(result_path.read_text(encoding="utf-8"))
         assert data["total_examples"] == 1
         assert data["profiles"][0]["name"] == "a"
 

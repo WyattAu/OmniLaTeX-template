@@ -110,7 +110,7 @@ class TestSaveBuildCache:
         build_core._save_build_cache(cache)
         cache_file = build_core.config.build_dir / "build_cache.json"
         assert cache_file.exists()
-        loaded = json.loads(cache_file.read_text())
+        loaded = json.loads(cache_file.read_text(encoding="utf-8"))
         assert loaded["examples/test"]["source_hash"] == "abc"
 
     def test_eviction_before_save(self, build_core, tmp_path):
@@ -127,7 +127,7 @@ class TestSaveBuildCache:
             },
         }
         build_core._save_build_cache(cache)
-        loaded = json.loads((tmp_path / "build" / "build_cache.json").read_text())
+        loaded = json.loads((tmp_path / "build" / "build_cache.json").read_text(encoding="utf-8"))
         assert "examples/new" in loaded
         assert "examples/old" not in loaded
 

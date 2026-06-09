@@ -21,12 +21,12 @@ class TestOptionSchema:
         assert schema.is_file(), "option_schema.toml must exist"
 
     def test_option_schema_has_options_section(self):
-        schema = (REPO_ROOT / "specs" / "option_schema.toml").read_text()
+        schema = (REPO_ROOT / "specs" / "option_schema.toml").read_text(encoding="utf-8")
         assert "[[option]]" in schema or "[options]" in schema
 
     @pytest.mark.parametrize("section", ["meta", "option"])
     def test_option_schema_sections_exist(self, section):
-        schema = (REPO_ROOT / "specs" / "option_schema.toml").read_text()
+        schema = (REPO_ROOT / "specs" / "option_schema.toml").read_text(encoding="utf-8")
         assert (
             f"[{section}]" in schema or f"[[{section}]]" in schema
         ), f"Missing [{section}] section"
@@ -34,7 +34,7 @@ class TestOptionSchema:
     def test_version_schema_exists(self):
         version_file = REPO_ROOT / "VERSION.md"
         assert version_file.is_file()
-        content = version_file.read_text()
+        content = version_file.read_text(encoding="utf-8")
         assert re.search(r"v\d+\.\d+\.\d+", content)
 
 
@@ -98,7 +98,7 @@ class TestDocumentTypes:
         ],
     )
     def test_doctype_has_providespackage(self, doctype):
-        sty = (self.DOCTYPE_DIR / f"omnilatex-doctype-{doctype}.sty").read_text()
+        sty = (self.DOCTYPE_DIR / f"omnilatex-doctype-{doctype}.sty").read_text(encoding="utf-8")
         assert (
             "\\ProvidesPackage" in sty or "\\ProvidesFile" in sty
         ), f"{doctype}.sty missing ProvidesPackage"
@@ -114,7 +114,7 @@ class TestDocumentTypes:
         ],
     )
     def test_doctype_has_provides_date(self, doctype):
-        sty = (self.DOCTYPE_DIR / f"omnilatex-doctype-{doctype}.sty").read_text()
+        sty = (self.DOCTYPE_DIR / f"omnilatex-doctype-{doctype}.sty").read_text(encoding="utf-8")
         assert "\\ProvidesPackage" in sty, f"{doctype}.sty missing ProvidesPackage"
         # ProvidesPackage should include a date
         assert re.search(
@@ -137,7 +137,7 @@ class TestDocumentTypes:
         ],
     )
     def test_doctype_has_citationstyle(self, doctype):
-        sty = (self.DOCTYPE_DIR / f"omnilatex-doctype-{doctype}.sty").read_text()
+        sty = (self.DOCTYPE_DIR / f"omnilatex-doctype-{doctype}.sty").read_text(encoding="utf-8")
         assert "\\citationstyle" in sty, f"{doctype}.sty missing \\citationstyle"
 
 
@@ -215,7 +215,7 @@ class TestInstitutions:
         ],
     )
     def test_institution_has_color_definitions(self, institution):
-        sty = (self.INSTITUTION_DIR / institution / f"{institution}.sty").read_text()
+        sty = (self.INSTITUTION_DIR / institution / f"{institution}.sty").read_text(encoding="utf-8")
         has_colors = (
             "\\definecolor" in sty or "\\textcolor" in sty or "\\colorlet" in sty
         )
@@ -279,7 +279,7 @@ class TestI18n:
         assert self.I18N_FILE.is_file()
 
     def test_has_setotherlanguages(self):
-        content = self.I18N_FILE.read_text()
+        content = self.I18N_FILE.read_text(encoding="utf-8")
         assert "\\setotherlanguages" in content
 
     @pytest.mark.parametrize(
@@ -312,7 +312,7 @@ class TestI18n:
         ],
     )
     def test_polyglossia_language_configured(self, lang):
-        content = self.I18N_FILE.read_text()
+        content = self.I18N_FILE.read_text(encoding="utf-8")
         assert lang in content, f"Language '{lang}' not in setotherlanguages"
 
     @pytest.mark.parametrize(
@@ -339,7 +339,7 @@ class TestI18n:
         ],
     )
     def test_translation_block_exists(self, lang):
-        content = self.I18N_FILE.read_text()
+        content = self.I18N_FILE.read_text(encoding="utf-8")
         assert (
             f"\\DeclareTranslation{{{lang}}}" in content
         ), f"No DeclareTranslation for {lang}"
@@ -403,7 +403,7 @@ class TestExamples:
         ],
     )
     def test_example_uses_omnilatex_class(self, example):
-        tex = (REPO_ROOT / "examples" / example / "main.tex").read_text()
+        tex = (REPO_ROOT / "examples" / example / "main.tex").read_text(encoding="utf-8")
         assert "omnilatex" in tex, f"{example}/main.tex doesn't use omnilatex class"
 
 
@@ -438,7 +438,7 @@ class TestLeanProofs:
     def test_no_sorry_in_proofs(self):
         """All Lean 4 proofs must be complete (no 'sorry')."""
         for lean_file in self.PROOFS_DIR.glob("*.lean"):
-            content = lean_file.read_text()
+            content = lean_file.read_text(encoding="utf-8")
             assert (
                 "sorry" not in content
             ), f"{lean_file.name} contains 'sorry' (incomplete proof)"
@@ -451,12 +451,12 @@ class TestReproducibility:
         assert (REPO_ROOT / ".latexmkrc").is_file()
 
     def test_latexmkrc_has_sde(self):
-        content = (REPO_ROOT / ".latexmkrc").read_text()
+        content = (REPO_ROOT / ".latexmkrc").read_text(encoding="utf-8")
         assert "source_date_epoch" in content.lower() or "SDE" in content
 
     def test_version_consistent(self):
-        version_file = (REPO_ROOT / "VERSION.md").read_text()
-        build_lua = (REPO_ROOT / "build.lua").read_text()
+        version_file = (REPO_ROOT / "VERSION.md").read_text(encoding="utf-8")
+        build_lua = (REPO_ROOT / "build.lua").read_text(encoding="utf-8")
         v_md = re.search(r"(\d+\.\d+\.\d+)", version_file)
         v_lua = re.search(r"(\d+\.\d+\.\d+)", build_lua)
         assert v_md and v_lua, "Version not found in VERSION.md or build.lua"
@@ -467,7 +467,7 @@ class TestReproducibility:
 
     def test_docker_env_exists(self):
         assert (REPO_ROOT / ".env.docker").is_file()
-        content = (REPO_ROOT / ".env.docker").read_text()
+        content = (REPO_ROOT / ".env.docker").read_text(encoding="utf-8")
         assert "sha256:" in content, ".env.docker must contain SHA-256 digest"
 
 
@@ -503,14 +503,14 @@ class TestCICD:
 
     def test_docker_digest_consistency(self):
         """All CI configs must use the same Docker digest as .env.docker."""
-        env_docker = (REPO_ROOT / ".env.docker").read_text().strip()
+        env_docker = (REPO_ROOT / ".env.docker").read_text(encoding="utf-8").strip()
         digest = re.search(r"(sha256:[a-f0-9]+)", env_docker)
         assert digest, "No sha256 digest in .env.docker"
         digest_str = digest.group(1)
 
         checked = 0
         for yml in REPO_ROOT.rglob("*.yml"):
-            content = yml.read_text()
+            content = yml.read_text(encoding="utf-8")
             if "sha256:" in content and digest_str not in content:
                 # Skip digest-sync workflow (it references old digests for replacement)
                 if "digest-sync" in str(yml):

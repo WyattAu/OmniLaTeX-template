@@ -747,7 +747,7 @@ class TestCmdInitEdges:
         assert "Initialized" in captured.out
         main_tex = tmp_path / "my-proj" / "main.tex"
         assert main_tex.exists()
-        content = main_tex.read_text()
+        content = main_tex.read_text(encoding="utf-8")
         assert "doctype=thesis" in content
 
     def test_thesis_with_explicit_doctype(
@@ -770,7 +770,7 @@ class TestCmdInitEdges:
             ["proj"], doctype="article", institution="mit", language="german"
         )
         main_tex = tmp_path / "proj" / "main.tex"
-        content = main_tex.read_text()
+        content = main_tex.read_text(encoding="utf-8")
         assert "doctype=article" in content
         assert "institution=mit" in content
         assert "language=german" in content
