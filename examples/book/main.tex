@@ -12,18 +12,159 @@
 
 \frontmatter
 \maketitle
+
+\begin{abstract}
+This book provides a comprehensive introduction to the design and analysis of algorithms, covering fundamental data structures, graph algorithms, dynamic programming, and computational complexity. Each chapter includes worked examples and exercises suitable for advanced undergraduate or introductory graduate courses in computer science.
+\end{abstract}
+
 \tableofcontents
 
-\mainmatter
-\chapter{Introduction}
-Outline the purpose and structure of the book.
+\chapter*{Preface}
+\addcontentsline{toc}{chapter}{Preface}
 
-\chapter{Foundations}
-Introduce the key ideas and terminology used throughout the chapters.
+The study of algorithms lies at the heart of computer science. From the earliest sorting routines to modern machine-learning pipelines, the ability to design efficient algorithms and reason about their correctness remains an essential skill for every software engineer and researcher.
+
+This book grew out of lecture notes developed over several years of teaching a graduate-level algorithms course. Our goal is to present the material in a way that balances mathematical rigor with practical intuition. We include formal proofs where they illuminate the core ideas, but we also provide running examples and pseudocode that readers can translate directly into working programs.
+
+We assume the reader has a solid background in discrete mathematics, basic probability, and at least one programming language. Familiarity with big-O notation and elementary data structures such as arrays, linked lists, and binary trees will be helpful but is briefly reviewed in Chapter~\ref{ch:foundations}.
+
+\vspace{1em}
+\noindent\textit{The Authors}\\
+\noindent Cambridge, Massachusetts
+
+\mainmatter
+
+\chapter{Introduction}\label{ch:introduction}
+
+Algorithms are step-by-step procedures for solving computational problems. A good algorithm is correct, efficient, and---where possible---easy to understand. In this chapter we outline the scope of the book and establish the notation and conventions used throughout.
+
+\section{What Is an Algorithm?}
+
+An algorithm is a finite sequence of well-defined instructions that takes some input and produces a corresponding output. The concept predates electronic computers by millennia: Euclid's algorithm for computing the greatest common divisor, described around 300 BCE, is one of the earliest known examples.
+
+In the modern context we formalize algorithms using pseudocode, which occupies a middle ground between natural language and executable code. Pseudocode allows us to express ideas precisely without committing to the syntax of any particular programming language.
+
+\section{Scope and Organization}
+
+The book is organized into four parts. Part~I (Chapters~\ref{ch:foundations}--\ref{ch:datastructures}) covers foundational material including asymptotic analysis and core data structures. Part~II (Chapters~\ref{ch:sorting}--\ref{ch:graphs}) presents algorithm design paradigms through the lens of classic problem domains. Part~III (Chapters~\ref{ch:dp}--\ref{ch:np}) addresses advanced topics including dynamic programming and computational complexity. Part~IV consists of the appendices, which collect supplementary proofs and reference tables.
+
+\section{Notation and Conventions}
+
+We write $[n]$ to denote the set $\{1, 2, \dots, n\}$. Landau notation is used throughout: $f(n) = O(g(n))$ means $f$ is asymptotically bounded above by a constant multiple of $g$; $f(n) = \Theta(g(n))$ means $f$ is bounded both above and below; and $f(n) = \Omega(g(n))$ means $f$ is bounded below. We write $\lg n$ for $\log_2 n$ and $\ln n$ for the natural logarithm.
+
+\chapter{Foundations}\label{ch:foundations}
+
+Before designing sophisticated algorithms, we need tools for analyzing their resource consumption. This chapter introduces asymptotic notation, recurrences, and the master theorem---the basic analytical toolkit used in every subsequent chapter.
+
+\section{Asymptotic Analysis}
+
+The running time of an algorithm depends on the size of its input. Rather than counting exact operations, we classify algorithms by how their running time grows as a function of input size. This abstraction frees us from details such as processor speed and constant factors, allowing us to focus on the structural properties that determine scalability.
+
+For example, insertion sort runs in $O(n^2)$ time in the worst case but $O(n)$ time on already-sorted input. Merge sort runs in $O(n \lg n)$ time regardless of input ordering but requires $O(n)$ additional space. Understanding these trade-offs is the first step toward choosing the right algorithm for a given problem.
+
+\section{Recurrences and the Master Theorem}
+
+Divide-and-conquer algorithms naturally give rise to recurrences. A recurrence of the form
+\[
+T(n) = a\,T\!\left(\frac{n}{b}\right) + f(n)
+\]
+describes an algorithm that splits a problem of size $n$ into $a$ subproblems of size $n/b$ and spends $f(n)$ time on the divide-and-combine steps. The master theorem provides closed-form solutions for many such recurrences by comparing $f(n)$ with $n^{\log_b a}$.
+
+\section{Amortized Analysis}
+
+Not every operation in a sequence is equally expensive. Amortized analysis distributes the cost of expensive operations over the entire sequence, yielding a tighter bound than worst-case analysis. The classic example is the dynamic array: although an individual append may trigger an $O(n)$ reallocation, the amortized cost per operation is $O(1)$.
+
+\chapter{Core Data Structures}\label{ch:datastructures}
+
+Data structures provide the scaffolding on which algorithms operate. This chapter covers arrays, linked structures, hash tables, binary search trees, and heaps---the workhorses of efficient computation.
+
+\section{Arrays and Linked Lists}
+
+Arrays provide $O(1)$ random access but $O(n)$ insertion and deletion in the worst case. Linked lists offer $O(1)$ insertion and deletion at known positions but lack random access. The choice between them depends on the access pattern of the algorithm.
+
+\section{Hash Tables}
+
+A hash table maps keys to values in expected $O(1)$ time per operation. The key idea is to use a hash function $h$ that maps each key to an index in an array. Collisions are resolved either by chaining (storing multiple elements at each index) or by open addressing (probing for the next free slot). Under simple uniform hashing, the expected length of each chain is $n/m$, where $n$ is the number of elements and $m$ is the table size.
+
+\section{Binary Search Trees and Heaps}
+
+A binary search tree (BST) supports search, insertion, and deletion in $O(h)$ time, where $h$ is the height of the tree. A balanced BST such as an AVL tree or a red-black tree guarantees $h = O(\lg n)$. Heaps are nearly complete binary trees that satisfy the heap property and support extract-min (or extract-max) in $O(\lg n)$ time, making them ideal for priority-queue applications.
+
+\chapter{Sorting and Searching}\label{ch:sorting}
+
+Sorting is one of the most studied problems in computer science. This chapter presents several sorting algorithms, compares their performance, and discusses lower bounds.
+
+\section{Comparison-Based Sorting}
+
+Any comparison-based sorting algorithm requires $\Omega(n \lg n)$ comparisons in the worst case. Algorithms that achieve this bound include merge sort, heap sort, and quick sort (with high probability). Each has different strengths: merge sort is stable and parallelizable, heap sort is in-place, and quick sort has excellent cache performance in practice.
+
+\section{Non-Comparison Sorting}
+
+When keys are integers in a bounded range, we can sort without comparisons. Counting sort runs in $O(n + k)$ time, where $k$ is the range of key values. Radix sort extends this idea to multi-digit keys, sorting digit by digit from least significant to most significant. These algorithms achieve linear time when $k = O(n)$.
+
+\section{Lower Bounds}
+
+The information-theoretic argument for the $\Omega(n \lg n)$ lower bound on comparison sorting observes that $n$ elements have $n!$ possible orderings, and each comparison yields at most one bit of information. Since $\log_2(n!) = \Theta(n \lg n)$, any decision tree for sorting must have depth $\Omega(n \lg n)$.
+
+\chapter{Graph Algorithms}\label{ch:graphs}
+
+Graphs model pairwise relationships among objects. This chapter covers graph representations, breadth-first and depth-first search, shortest paths, and minimum spanning trees.
+
+\section{Graph Representations}
+
+A graph $G = (V, E)$ can be stored as an adjacency matrix ($|V| \times |V|$ boolean array) or as adjacency lists (an array of $|V|$ linked lists). The matrix representation uses $O(|V|^2)$ space and supports $O(1)$ edge lookup, while the list representation uses $O(|V| + |E|)$ space and is more space-efficient for sparse graphs.
+
+\section{Shortest Paths}
+
+Dijkstra's algorithm finds single-source shortest paths in $O((|V| + |E|) \lg |V|)$ time when edge weights are non-negative. The Bellman--Ford algorithm handles negative weights at the cost of $O(|V| \cdot |E|)$ time and can detect negative cycles. The Floyd--Warshall algorithm computes all-pairs shortest paths in $O(|V|^3)$ time using dynamic programming.
+
+\section{Minimum Spanning Trees}
+
+A minimum spanning tree (MST) of a connected, weighted, undirected graph is a tree that spans all vertices with minimum total edge weight. Kruskal's algorithm builds the MST by repeatedly adding the cheapest edge that does not create a cycle, using a union-find data structure for cycle detection. Prim's algorithm grows the MST from an arbitrary root by repeatedly attaching the cheapest edge crossing the cut between tree and non-tree vertices.
 
 \appendix
-\chapter{Appendix}
-Provide supplementary reference material.
+\chapter{Proof of the Master Theorem}\label{app:master}
+
+\begin{theorem}[Master Theorem]
+Let $a \geq 1$ and $b > 1$ be constants, and let $f(n)$ be a non-negative function defined on exact powers of $b$. The recurrence
+\[
+T(n) = a\,T\!\left(\frac{n}{b}\right) + f(n)
+\]
+has the following solution:
+\begin{enumerate}
+    \item If $f(n) = O(n^{\log_b a - \epsilon})$ for some $\epsilon > 0$, then $T(n) = \Theta(n^{\log_b a})$.
+    \item If $f(n) = \Theta(n^{\log_b a} \lg^k n)$ for some $k \geq 0$, then $T(n) = \Theta(n^{\log_b a} \lg^{k+1} n)$.
+    \item If $f(n) = \Omega(n^{\log_b a + \epsilon})$ for some $\epsilon > 0$ and $a\,f(n/b) \leq c\,f(n)$ for some $c < 1$, then $T(n) = \Theta(f(n))$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+Unfold the recurrence for $j = 0, 1, \dots, \log_b n$ levels. At level $j$ there are $a^j$ subproblems, each of size $n / b^j$, and the non-recursive work at that level is
+\[
+a^j \, f\!\left(\frac{n}{b^j}\right).
+\]
+Summing over all levels and comparing the geometric decay of $a^j$ with the growth rate of $f(n/b^j)$ yields the three cases. The regularity condition in Case~3 ensures the series is dominated by its first term.
+\end{proof}
+
+\chapter{Complexity Classes}\label{app:complexity}
+
+\begin{table}[htbp]
+\centering
+\caption{Summary of common complexity classes}
+\begin{tabular}{lll}
+\toprule
+\textbf{Class} & \textbf{Model} & \textbf{Example Problem} \\
+\midrule
+P        & Deterministic poly-time & Sorting, MST \\
+NP       & Nondeterministic poly-time & SAT, Clique \\
+co-NP    & Complement of NP         & Tautology \\
+PSPACE   & Polynomial space         & Quantified Boolean Formula \\
+EXPTIME  & Deterministic exp-time   & Chess (generalized) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+It is widely believed that $\text{P} \neq \text{NP}$, but a proof remains one of the most important open problems in mathematics. The implications of P\,=\,NP would be profound: efficient algorithms would exist for thousands of problems currently considered intractable, from protein folding to cryptanalysis.
 
 \backmatter
 \printbibliography

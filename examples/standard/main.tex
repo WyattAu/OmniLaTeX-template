@@ -15,19 +15,123 @@
 \tableofcontents
 
 \section{Scope}
-Specify the scope and applicability of the standard.
+
+This standard specifies the requirements for the OmniLaTeX document preparation system, a modular \LaTeX{} template designed for producing high-quality technical documents across multiple languages and document types. It applies to all users who employ the OmniLaTeX class to generate articles, books, dissertations, technical reports, and standards documents.
+
+The standard covers document class options, package loading conventions, front-matter and back-matter structure, bibliography management, and multilingual typesetting via LuaLaTeX and the luatexja engine. Compliance with this standard ensures consistent formatting, reproducible builds, and cross-platform portability.
 
 \section{Normative References}
-List referenced documents and standards.
+
+The following documents are referenced in this standard and are indispensable for its application. For dated references, only the edition cited applies. For undated references, the latest edition of the referenced document (including any amendments) applies.
+
+\begin{itemize}
+    \item \textbf{ISO 80000-2:2019} --- Quantities and units --- Part~2: Mathematics.
+    \item \textbf{ISO 2145:1978} --- Documentation --- Numbering of divisions and subdivisions in written documents.
+    \item \textbf{ISO 690:2021} --- Information and documentation --- Guidelines for bibliographic references and citations to information resources.
+    \item \textbf{ISO 31000:2018} --- Risk management --- Guidelines.
+    \item \textbf{The \TeX{}book} (Knuth, 1986) --- Definitive reference for \TeX{} typesetting primitives.
+\end{itemize}
 
 \section{Terms and Definitions}
-Define essential terminology.
+
+For the purposes of this standard, the following terms and definitions apply.
+
+\subsection{Document Types}
+
+\begin{description}
+    \item[Article] A short document intended for journal or conference publication, typically without chapters.
+    \item[Book] A long-form document organized into chapters, with front matter, back matter, and appendices.
+    \item[Dissertation] An academic thesis submitted in partial fulfillment of degree requirements, including abstract, literature review, methodology, and conclusions.
+    \item[Standard] A normative document established by consensus and approved by a recognized body, providing rules, guidelines, or characteristics for common and repeated use.
+\end{description}
+
+\subsection{Template Terminology}
+
+\begin{description}
+    \item[Preamble] The portion of the \texttt{.tex} source between \texttt{\textbackslash documentclass} and \texttt{\textbackslash begin\{document\}}, containing package loading and configuration.
+    \item[Class Option] A key-value pair passed to the document class to configure language, document type, institution, and title style.
+    \item[Title Style] The visual design applied to the document title page, including font selection, layout, and decorative elements.
+    \item[Front Matter] Preliminary sections such as the title page, table of contents, and preface, typically numbered with Roman numerals.
+    \item[Back Matter] Concluding sections such as the bibliography, index, and colophon, following the main content.
+\end{description}
 
 \section{Requirements}
-Describe the mandatory requirements and procedures.
+
+\subsection{Document Class Options}
+
+All OmniLaTeX documents shall specify at least the \texttt{language} and \texttt{doctype} class options. The \texttt{institution} option shall be set to an institution identifier recognized by the template or to \texttt{none} for documents without institutional affiliation. Optional options include \texttt{titlestyle}, \texttt{oneside}, and language-specific parameters.
+
+The class file \texttt{omnilatex.cls} shall be referenced via a relative or absolute path. The following declaration pattern is mandatory:
+\begin{verbatim}
+\documentclass[
+    language=english,
+    doctype=standard,
+    institution=none,
+]{../../omnilatex}
+\end{verbatim}
+
+\subsection{Package Loading}
+
+Packages required by the document shall be loaded in the preamble using \texttt{\textbackslash RequirePackage} rather than \texttt{\textbackslash usepackage} to ensure correct load order within the class file. User-supplied packages may be loaded in a local \texttt{config/document-settings.tex} file referenced via \texttt{\textbackslash RequirePackage\{config/document-settings\}}.
+
+\subsection{Bibliography Management}
+
+Documents that include a bibliography shall reference the shared bibliography file using \texttt{\textbackslash addbibresource\{../../bib/bibliography.bib\}} in the preamble and shall invoke \texttt{\textbackslash printbibliography} in the back matter. Bibliography entries shall conform to the Bib\LaTeX{} format specified in ISO~690.
+
+\subsection{Multilingual Support}
+
+Documents in CJK languages (Chinese, Japanese, Korean) shall use the \texttt{language} option set to the appropriate identifier. The OmniLaTeX class shall automatically configure LuaLaTeX, luatexja, and language-specific fonts. Users shall not manually load conflicting font packages in the preamble.
+
+\subsection{Build Process}
+
+All documents shall be compiled with LuaLaTeX. A typical build sequence for a document with bibliography and glossary support is:
+\begin{enumerate}
+    \item \texttt{lualatex main} (first pass)
+    \item \texttt{biber main} (bibliography)
+    \item \texttt{lualatex main} (second pass)
+    \item \texttt{lualatex main} (third pass, resolves cross-references)
+\end{enumerate}
+
+\section{Quality Assurance}
+
+Documents produced with OmniLaTeX shall be verified against the following criteria:
+\begin{itemize}
+    \item No unresolved references or undefined citations.
+    \item Correct rendering of all mathematical symbols, including CJK characters.
+    \item Table of contents accurately reflecting section structure.
+    \item Compliance with the chosen title style and institutional formatting guidelines.
+\end{itemize}
 
 \appendix
-\section{Annex A}
-Provide informative annex material.
+\section{Annex A --- Class Option Reference}
+
+Table~\ref{tab:options} provides a complete list of supported class options and their permitted values.
+
+\begin{table}[htbp]
+\centering
+\caption{OmniLaTeX class options}\label{tab:options}
+\begin{tabular}{lll}
+\toprule
+\textbf{Option} & \textbf{Permitted Values} & \textbf{Default} \\
+\midrule
+language    & english, german, chinese, japanese, korean & --- \\
+doctype     & article, book, dissertation, standard, report, beamer & --- \\
+institution & none, tum, mit, custom & none \\
+titlestyle  & book, plain, modern, thesis & book \\
+oneside     & (boolean flag) & false \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Annex B --- File Structure}
+
+The OmniLaTeX template follows a standardized directory layout:
+\begin{itemize}
+    \item \texttt{omnilatex.cls} --- Main document class file.
+    \item \texttt{bib/} --- Shared bibliography and glossary databases.
+    \item \texttt{figures/} --- Image assets organized by chapter or section.
+    \item \texttt{config/} --- User-overridable configuration files.
+    \item \texttt{examples/} --- Reference documents demonstrating each document type.
+\end{itemize}
 
 \end{document}
