@@ -1,6 +1,9 @@
 # Cloudflare Pages Configuration
 # For Forgejo-hosted repositories
-# Deploy MkDocs documentation site to Cloudflare Pages
+#
+# Note: The primary site is deployed via GitHub Pages (astro build).
+# This wrangler.toml is kept for Cloudflare headers and any
+# Forgejo-specific Cloudflare Pages deployments.
 #
 # Usage:
 #   wrangler pages deploy site/ --project-name=omnilatex-docs
@@ -14,8 +17,7 @@ compatibility_date = "2024-01-01"
 
 # Cloudflare Pages does not use [build] from wrangler.toml.
 # Build is configured in the dashboard or CI workflow:
-#   Build command: pip install -r docs/requirements.txt && mkdocs build
-#   Output directory: site
+#   npx astro build --site https://wyattau.github.io/OmniLaTeX-template/
 
 # Global security headers applied to all routes
 [[headers]]
@@ -53,18 +55,3 @@ for = "/pdfs/*"
 [headers.values]
 Cache-Control = "public, max-age=86400"
 Content-Disposition = "inline"
-
-[[redirects]]
-from = "/docs"
-to = "/USER_GUIDE/"
-status = 302
-
-[[redirects]]
-from = "/api"
-to = "/API_REFERENCE/"
-status = 302
-
-[[redirects]]
-from = "/guide"
-to = "/USER_GUIDE/"
-status = 302
