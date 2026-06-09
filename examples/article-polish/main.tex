@@ -1,0 +1,45 @@
+%!TEX TS-program = lualatex
+\documentclass[
+    language=polish,
+    doctype=article,
+]{../../omnilatex}
+
+\title{Metody formalnej weryfikacji oprogramowania}
+\subtitle{Od model checkingu po interaktywne dowodzenie twierdzeń}
+\author{Prof. dr hab. Tomasz Kowalski}
+\date{\today}
+\keywords{weryfikacja formalna, model checking, dowodzenie twierdzeń, poprawność oprogramowania, systemy krytyczne}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Formalna weryfikacja oprogramowania stanowi zbiór technik matematycznych pozwalających na rygorystyczne udowodnienie poprawności programów komputerowych. W niniejszym artykule przedstawiono przegląd głównych metod formalnej weryfikacji, w tym model checking, sprawdzanie typów zależnych oraz interaktywne dowodzenie twierdzeń. Omówiono zalety i ograniczenia poszczególnych podejść oraz ich praktyczne zastosowania w tworzeniu systemów krytycznych dla bezpieczeństwa.
+\end{abstract}
+
+\section{Wprowadzenie}
+Nieodłącznym wyzwaniem współczesnej inżynierii oprogramowania jest zapewnienie wysokiej niezawodności systemów komputerowych. Tradycyjne metody testowania, choć niezwykle cenne, nie są w stanie zagwarantować pełnej poprawności programów: testy wykazują obecność błędów w konkretnych scenariuszach, lecz nie dowodzą ich braku w ogóle. Formalna weryfikacja oferuje matematyczne gwarancje poprawności, co jest kluczowe w systemach o najwyższych wymaganiach dotyczących bezpieczeństwa, takich jak systemy awioniczne, medyczne czy kolejowe.
+
+\section{Model checking}
+Model checking to zautomatyzowana metoda weryfikacji polegająca na systematycznym przeglądaniu przestrzeni stanów modelu systemu w celu sprawdzenia, czy spełnia on określone właściwości. Właściwości te formułuje się zazwyczaj w logikach temporalnych, pozwalających na wyrażanie twierdzeń o zachowaniu systemu w czasie. Metoda ta jest całkowicie automatyczna: po zbudowaniu modelu i sformułowaniu właściwości narzędzie samodzielnie przeszukuje przestrzeń stanów i generuje kontrprzykład w przypadku wykrycia naruszenia właściwości.
+
+Narzędzia takie jak SPIN, NuSMV czy CBMC odniiosły znaczący sukces w weryfikacji protokołów komunikacyjnych, sterowników urządzeń i programowania współbieżnego. Weryfikacja protokołów bezpieczeństwa za pomocą model checkingu pozwala wykryć luki, które trudno zauważyć w procesie ręcznej analizy lub testowania. W przypadku sterowników systemowych narzędzia oparte na modelowaniu stanów pozwalają sprawdzić zgodność z interfejsami programistycznymi oraz brak zakleszczeń.
+
+Głównym ograniczeniem model checkingu jest zjawisko eksplozji przestrzeni stanów. Wraz ze wzrostem liczby współbieżnych komponentów lub rozmiaru dziedziny danych liczba osiągalnych stanów rośnie wykładniczo, co uniemożliwia pełne przeszukanie modelu. Do przezwyciężenia tego problemu stosuje się techniki redukcji przestrzeni stanów, w tym abstrakcję danych, symetrię stanów oraz porządek częściowy zdarzeń.
+
+\section{Interaktywne dowodzenie twierdzeń}
+Interaktywne asystenci dowodzenia, takie jak Coq, Isabelle/HOL czy Lean, stanowią bardziej wyraziste, ale i bardziej wymagające podejście do formalnej weryfikacji. W przeciwieństwie do model checkingu pozwalają one na pracę z ciągłymi i nieskończonymi dziedzinami danych. Użytkownik formułuje twierdzenia o zachowaniu programu i kieruje procesem dowodzenia, podczas gdy system weryfikuje każdy krok pod kątem poprawności.
+
+Metodologia interaktywnego dowodzenia twierdzeń z powodzeniem jest stosowana w weryfikacji algorytmów kryptograficznych, kompilatorów oraz mikrojader systemów operacyjnych. Projekt seL4, w którym mikrojadro systemu operacyjnego zostało w pełni zweryfikowane za pomocą Isabelle/HOL, dowodzi możliwości praktycznego zastosowania tego podejścia do złożonych systemów programowych. Weryfikacja kompilatora CompCert udowadnia, że wygenerowany kod maszynowy jest semantycznie równoważny programowi źródłowemu w języku C.
+
+Koszt interaktywnej weryfikacji pozostaje istotny: proces dowodzenia może wymagać wielokrotnie więcej wysiłku niż sama implementacja programu. Niemniej jednak dla systemów o ekstremalnie wysokich wymaganiach dotyczących niezawodności te nakłady są uzasadnione zmniejszeniem ryzyka i kosztów usuwania błędów na późnych etapach cyklu życia.
+
+\section{Podejścia hybrydowe i statyczna analiza}
+Zaawansowane systemy typów oraz narzędzia statycznej analizy zajmują pozycję pośrednią między tradycyjnym testowaniem a pełną formalną weryfikacją. Systemy typów z typami zależnymi, takie jak zaimplementowane w językach Idris i Agda, pozwalają kodować właściwości programów bezpośrednio w typach danych. Analizatory przepływu danych i narzędzia do weryfikacji modeli pamięci wykrywają szeroki wachlarz wad, w tym wycieki pamięci, wyścigi danych i niezdefiniowane zachowanie.
+
+Narzędzia formalnej weryfikacji dla języków programowania używanych w przemyśle, takie jak Frama-C dla języka C czy SPARK dla języka Ada, oferują możliwości formalnej specyfikacji i weryfikacji przy stosunkowo umiarkowanych kosztach wdrożenia i integracji z procesem rozwoju. Narzędzia te pozwalają inżynierom stopniowo podnosić poziom formalizacji w projektach, rozpoczynając od adnotacji kontraktów i przechodząc do pełnych dowodów poprawności wybranych komponentów.
+
+\section{Podsumowanie}
+Formalna weryfikacja oprogramowania stanowi unikalny zestaw możliwości zapewnienia niezawodności systemów krytycznych. Wybór konkretnej metody zależy od charakteru weryfikowanego systemu, dostępnych zasobów oraz wymagań dotyczących poziomu gwarancji. Model checking pozostaje najbardziej praktycznym podejściem dla systemów o skończonej wielkości, podczas gdy interaktywne dowodzenie twierdzeń zapewnia najbardziej rygorystyczne gwarancje dla systemów o podwyższonej złożoności. Rozwój narzędzi automatyzacji dowodzenia i integracja metod formalnej weryfikacji z procesami rozwoju oprogramowania obiecują istotne obniżenie kosztów i szersze upowszechnienie formalnych metod w przemyśle.
+
+\end{document}

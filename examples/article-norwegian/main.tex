@@ -1,0 +1,48 @@
+%!TEX TS-program = lualatex
+\documentclass[
+    language=norsk,
+    doctype=article,
+]{../../omnilatex}
+
+\title{Programvarearkitektur for skytjenester}
+\subtitle{Skalerbare og resiliente designtyper for skybaserte systemer}
+\author{Prof. Dr. ing. Lars Haugen}
+\date{\today}
+\keywords{programvarearkitektur, skytjenester, mikroserice, skalerbarhet, resilien}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Programvarearkitektur for skytjenester krever en annen tilnærming enn tradisjonell lokal arkitektur. Denne artikkelen undersøker arkitekturmønstre og designprinsipper som er spesielt egnet for skybaserte systemer, inkludert mikrotjenestearkitektur, hendelsesdrevet arkitektur og serverløse arkitekturer. Vi diskuterer avveininger mellom kompleksitet, skalerbarhet og kostnad, og presenterer retningslinjer for valg av arkitektur til ulike typer skytjenester.
+\end{abstract}
+
+\section{Innledning}
+Skytenester har fundamentalt endret måten programvare arkitekteres, utvikles og driftes på. Tradisjonell arkitektur var begrenset av faste maskinressurser, mens skyen tilbyr elastiske ressurser som kan skaleres dynamisk etter behov. Denne fleksibiliteten åpner for nye arkitekturmuligheter, men introduserer også nye utfordringer knyttet til nettverkstidenhet, distribuerte data og kompleks drift. Å designe programvare for skyen krever en dyp forståelse av skytjenesteleverandørens tilbud, begrensninger og prismodeller.
+
+\section{Mikrotjenestearkitektur}
+Mikrotjenestearkitektur deler et programvaresystem inn i små, uavhengige tjenester som hver er ansvarlig for en spesifikk forretningsfunksjon. Hver tjeneste kan utvikles, distribueres og skaleres uavhengig av de andre. Denne arkitekturen tilbyr høy grad av uavhengighet i utvikling og distribusjon, noe som muliggjør raske utgivelsessykluser og organisasjonsfleksibilitet. Eksempler på vellykkede mikrotjenestearkitekturer finner vi hos selskaper som Netflix, Amazon og Spotify.
+
+Imidlertid medfører mikrotjenester betydelig økt kompleksitet sammenlignet med monolittiske arkitekturer. Nettverkskommunikasjon mellom tjenester introduserer forsinkelse og feilpunkter. Distribuert transaksjonshåndtering, observabilitet på tvers av tjenester og konsistent datalagring er alle utfordringer som krever bevisste arkitektoniske beslutninger. Service mesh-teknologier som Istio og Linkerd adresserer noen av disse utfordringene ved å tilby transparent nettverksstyring og sikkerhet mellom tjenester.
+
+\section{Hendelsesdrevet arkitektur}
+Hendelsesdrevet arkitektur bygger på prinsippet om at systemkomponenter kommuniserer gjennom produksjon og konsum av hendelser, i stedet for direkte synkrone anrop. Denne tilnærmingen gir løs kobling mellom komponenter og muliggjør asynkron bearbeiding, noe som forbedrer both skalerbarheten og resilien til systemet. Hendelsesplattformer som Apache Kafka og Amazon EventBridge tilbyr robust infrastruktur for hendelsesdrevne systemer.
+
+CQRS-mønsteret separerer lese- og skriveoperasjoner i ulike komponenter, noe som optimaliserer ytelsen for ulike arbeidsbelastninger. Sammen med hendelsesstyring og eventuelle Kafka-givere gir dette mønsteret mulighet for å bygge høyt ytende, resiliente skytjenester som kan håndtere store datamengder med forutsigbar oppførsel.
+
+Saga-mønsteret håndterer distribuerte transaksjoner ved å bryte ned komplekse forretningsprosesser i en sekvens av lokale transaksjoner, hver med tilhørende kompenserende handlinger. Dette er spesielt viktig i skybaserte systemer, hvor tradisjonelle distribuerte transaksjoner med tofaseinnhenting ikke er praktisk gjennomførbare på grunn av nettverksforsinkelser og begrensede transaksjonstider.
+
+\section{Serverløse arkitekturer}
+Serverløs databehandling abstraherer serverinfrastrukturen helt bort fra utvikleren. Utviklere definerer funksjoner som utløses av hendelser, og skytjenesteleverandøren håndterer all infrastruktur. Denne modellen tilbyr ekstrem elastisitet, der hver funksjon skalerer automatisk fra null til tusenvis av samtidige kjøringer, og utviklere betaler kun for faktisk forbruk.
+
+Ulempene med serverløs arkitektur inkluderer kalde oppstartstider, begrensninger på kjøretid og avhengighet av spesifikke plattformfunksjoner. Mangelen på persistente forbindelser og begrenset kjøretid for individuelle funksjoner gjør at serverløs arkitektur er mest egnet for tilstandsløse, kortvarige operasjoner. For mer komplekse arbeidsbelastninger kan en hybrid tilnærming kombinere serverløse funksjoner med containerbaserte tjenester være optimal.
+
+\section{Arkitektoniske avveininger}
+Valg av arkitektur for en skytjeneste innebærer alltid avveininger. Mikrotjenester gir uavhengighet og skalerbarhet, men introduserer operasjonell kompleksitet. Hendelsesdrevet arkitektur gir asynkronitet og resilien, men kompliserer datakonsistens. Serverløse løsninger minimaliserer driftsbyrden, men begrenser fleksibiliteten. Arkitekter må nøye vurdere systemets krav til ytelse, tilgjengelighet, skalerbarhet og kostnad før de velger arkitektur.
+
+En viktig prinsipp er å starte med enklere arkitekturer og gradvis innføre kompleksitet etter hvert som behovet oppstår. Antimønsteret «distributed monolith» oppstår når mikrotjenestearkitektur velges uten at organisasjonen er moden for det, noe som fører til et system som har ulempene ved distribuert arkitektur uten fordelene.
+
+\section{Konklusjon}
+Programvarearkitektur for skytjenester er et dynamisk felt som kontinuerlig utvikler seg i takt med nye skytjenester og teknologier. Suksessfull arkitektur for skyen krever forståelse for både teknologiske muligheter og forretningsmessige behov. Valg av riktig arkitekturmønster, basert på krav til skalerbarhet, resilien og kostnadseffektivitet, er avgjørende for å bygge skytjenester som er robuste, vedlikeholdbare og i stand til å vokse med virksomhetens behov.
+
+\end{document}

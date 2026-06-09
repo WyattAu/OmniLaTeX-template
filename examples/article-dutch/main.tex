@@ -1,0 +1,43 @@
+%!TEX TS-program = lualatex
+\documentclass[
+    language=dutch,
+    doctype=article,
+]{../../omnilatex}
+
+\title{Duurzaamheid in de software-engineering}
+\subtitle{Van groene code tot energiebewust ontwerpproces}
+\author{Dr. ir. Jan-Willem van der Berg}
+\date{\today}
+\keywords{duurzaamheid, software-engineering, groene IT, energie-efficiëntie, softwarearchitectuur}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+De informatiesector is verantwoordelijk voor een groeiend aandeel van de wereldwijde energieconsumptie en broeikasgasemissies. Dit artikel onderzoekt hoe software-engineers kunnen bijdragen aan verduurzaming door energie-efficiënte code te schrijven, bewuste architectuurkeuzes te maken en duurzame ontwikkelpraktijken toe te passen. We bespreken meetmethoden voor de ecologische voetafdruk van software en presenteren praktische richtlijnen voor een meer duurzame software-engineeringpraktijk.
+\end{abstract}
+
+\section{Inleiding}
+De digitalisering van de samenleving heeft geleid tot een exponentiële groei van het aantal datacenters, netwerkinfrastructuur en eindgebruikerapparaten. Hoewel digitalisering vaak wordt gepresenteerd als een middel om andere sectoren te verduurzamen, is de ICT-sector zelf een aanzienlijke bron van milieubelasting. Geschat wordt dat de sector tussen de drie en vier procent van de wereldwijde CO\textsubscript{2}-emissies veroorzaakt, een cijfer dat vergelijkbaar is met de luchtvaartsector. Binnen deze context groeit de aandacht voor duurzaamheid in de software-engineering.
+
+\section{De ecologische voetafdruk van software}
+Software heeft een verborgen ecologische voetafdruk die door haar hele levenscyclus aanwezig is. Tijdens de ontwikkelingsfase wordt energie verbruikt door de werkstations van ontwikkelaars, build-servers en continue integratiepijplijnen. In de gebruiksfase verbruikt de software rekenkracht, netwerkbandbreedte en opslagcapaciteit. Aan het einde van de levenscyclus kunnen data en achtergebleven infrastructuur extra energie vergen. Het verminderen van deze voetafdruk vereist een holistische benadering die alle fasen van de softwarelevenscyclus bestrijkt.
+
+Het meten van de energieconsumptie van software is geen triviale taak. De werkelijke energieconsumptie van een programma hangt af van de hardware waarop het draait, de omgevingsfactoren zoals temperatuur, en het samengestelde karakter van de workload. Instrumenten zoals PowerAPI, Green Software Foundation's Software Carbon Intensity-specificatie en Scaphandre bieden ontwikkelaars de mogelijkheid om het energieverbruik van hun toepassingen te kwantificeren en te monitoren.
+
+\section{Energie-efficiënte ontwerpprincipes}
+Het selecteren van efficiënte algoritmen is een van de meest directe manieren om het energieverbruik van software te verminderen. Een algoritme met een lagere tijd- en ruimtelijke complexiteit verbruikt minder CPU-cycli en minder geheugen, wat direct leidt tot een lagere energieconsumptie. In grote schaalbare systemen, waarbij kleine verbeteringen per transactie worden vermenigvuldigd over miljoenen uitvoeringen, kunnen deze optimalisaties aanzienlijke energiebesparingen opleveren.
+
+De softwarearchitectuur heeft een eveneens belangrijke invloed op duurzaamheid. Microservice-architectuur brengt extra overhead mee door netwerkcommunicatie tussen diensten, containerisatie en orchestratie. In gevallen waar deze extra complexiteit niet gerechtvaardigd is door werkelijke schaalbaarheids- of organisatorische behoeften, kan een meer monolithische architectuur energie-efficiënter zijn. Architecten moeten duurzaamheid expliciet meenemen als een kwaliteitsattribuut in hun ontwerpbeslissingen.
+
+Data-efficiëntie is een derde belangrijke pijler. Het verminderen van de hoeveelheid data die wordt overgedraagd, opgeslagen en verwerkt, leidt direct tot minder energieverbruik. Compressie van netwerkverkeer, slimme caching-strategieën en het vermijden van overbodige gegevensverzameling dragen bij aan een kleinere ecologische voetafdruk. Het toepassen van het minimalismeprincipe bij het ontwerpen van datastructuren en API's kan een aanzienlijke impact hebben.
+
+\section{Praktijk en toekomstperspectief}
+Verschillende organisaties hebben al stappen gezet op het gebied van duurzame software-engineering. Bedrijven zoals Google en Microsoft publiceren regelmatig rapporten over hun energieverbruik en kooldioxide-uitstoot, en investeren in hernieuwbare energiebronnen voor hun datacenters. Open-source projecten beginnen energiebenchmarks op te nemen in hun test suites, en universiteiten integreren duurzaamheid in hun curricula voor informatica.
+
+Toekomstige ontwikkelingen omvatten de verdere automatisering van energiemonitoring in ontwikkelworkflows, de uitbreiding van groene software-certificeringen en de ontwikkeling van programmeertalen die energie-efficiëntie als een expliciet ontwerpcriterium hanteren. De komende jaren zullen bepalend zijn voor de vraag of de software-industrie haar groeiende milieubelasting succesvol kan inperken.
+
+\section{Conclusie}
+Duurzaamheid in de software-engineering is geen luxeproduct maar een noodzaak. Door energie-efficiënte algoritmen te kiezen, bewuste architectuurbeslissingen te nemen en data-efficiënt te werken, kunnen software-engineers een significante bijdrage leveren aan de verduurzaming van de digitale sector. Het integreren van duurzaamheidsmetingen in bestaande ontwikkelprocessen en het creëren van bewustwording bij ontwikkelaars vormen de eerste stappen naar een groenere softwareindustrie.
+
+\end{document}

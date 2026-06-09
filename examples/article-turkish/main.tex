@@ -1,0 +1,46 @@
+%!TEX TS-program = lualatex
+\documentclass[
+    language=turkish,
+    doctype=article,
+]{../../omnilatex}
+
+\title{Yapay zeka destekli yazılım geliştirme}
+\subtitle{Kod üretimi, hata tespiti ve süreç otomasyonu}
+\author{Doç. Dr. Emre Yılmaz}
+\date{\today}
+\keywords{yapay zeka, yazılım geliştirme, kod tamamlama, otomasyon, büyük dil modelleri}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Yapay zeka teknolojileri, yazılım geliştirme süreçlerini köklü biçimde değiştirmeye başlamıştır. Bu makale, büyük dil modellerinin ve yapay zeka destekli araçların yazılım geliştirme sürecindeki rolünü incelemektedir. Kod tamamlama sistemleri, otomatik hata tespiti, test oluşturma ve kod incelemesi alanlarındaki gelişmeler değerlendirilmekte ve bu teknolojilerin getirdiği fırsatlar ve riskler tartışılmaktadır. Ayrıca, yapay zeka araçlarının kalite güvencesi süreçlerine entegrasyonu incelenmektedir.
+\end{abstract}
+
+\section{Giriş}
+Yazılım geliştirme, insan zekasının yoğun olarak kullanıldığı karmaşık bir yaratıcı süreçtir. Son yıllarda yapay zeka alanında yaşanan devrim niteliğindeki gelişmeler, bu sürecin çeşitli aşamalarını otomatikleştirme veya destekleme potansiyelini sunmaktadır. Büyük dil modelleri, doğal dil işleme teknikleri ve makine öğrenimi algoritmaları, kod yazma, hata ayıklama ve test etme gibi geleneksel olarak insan yeteneklerine dayanan faaliyetlerde giderek daha etkili sonuçlar üretmektedir. Bu değişim, yazılım mühendislerinin iş akışlarını, gerekli becerilerini ve mesleki rollerini yeniden tanımlamaktadır.
+
+\section{Kod tamamlama ve üretim sistemleri}
+Yapay zeka destekli kod tamamlama sistemleri, geliştiricinin yazdığı bağlama dayalı olarak kod parçaları veya tam fonksiyonlar önermektedir. Bu sistemler, derin öğrenme modelleri kullanarak milyonlarca açık kaynak kod deposundan öğrenir ve geliştiricinin niyetini tahmin ederek ilgili kodu üretir. Araçlar hem tek satırlık öneriler hem de çok satırlık kod blokları oluşturma yeteneğine sahiptir ve çeşitli programlama dillerini desteklemektedir.
+
+Bu sistemlerin etkinliği üzerine yapılan araştırmalar, yapay zeka destekli tamamlama araçlarının geliştirici üretkenliğini belirgin şekilde artırdığını göstermektedir. Bazı çalışmalarda, araç kullanan geliştiricilerin kod yazma hızının yüzde otuz ile elli arasında arttığı raporlanmıştır. Ancak, bu hız artışının kalite ile ilişkisi daha karmaşıktır: yapay zeka tarafından üretilen kod genellikle işlevsel olmakla birlikte, güvenlik açıkları, performans sorunları veya kötü tasarım kalıpları içerebilir. Bu nedenle, insan denetimi yapay zeka destekli geliştirmede vazgeçilmez bir bileşen olarak kalmaktadır.
+
+\section{Otomatik hata tespiti ve analiz}
+Yapay zeka destekli araçlar, statik kod analizinde yeni bir çağ başlatmaktadır. Geleneksel kural tabanlı analiz araçları, önceden tanımlı kalıplar aracılığıyla bilinen hata türlerini tespit edebilmektedir. Buna karşılık, makine öğrenimi tabanlı analiz araçları, tarihsel verilerden öğrenerek yeni ve daha önce görülmemiş hata kalıplarını da tanıyabilmektedir. Derin öğrenme modelleri, kodun semantik yapısını anlayarak mantıksal hataları, yarış koşullarını ve bellek sızıntılarını tespit edebilir.
+
+Güvenlik açıklarının tespiti, yapay zekanın en değerli katkılarından birini oluşturmaktadır. Büyük dil modelleri, bilinen güvenlik açığı veri tabanlarından öğrenerek kodda potansiyel güvenlik zayıflıklarını belirleyebilir. Bu yetenek, özellikle büyük ölçekli projelerde ve güvenlik açıklarının maliyetli sonuçlar doğurabileceği kritik sistemlerde büyük değer taşımaktadır. Bununla birlikte, yapay zeka sistemleri hala yanlış pozitif ve yanlış negatif sonuçlar üretebilir, bu nedenle insan uzmanlık güvenlik değerlendirmesinde temel bir gereklilik olarak kalmaktadır.
+
+\section{Test oluşturma ve kod incelemesi}
+Otomatik test oluşturma araçları, yapay zeka teknolojilerinden büyük ölçüde yararlanmaktadır. Bu araçlar, mevcut kodu analiz ederek kapsamlı birim testleri, entegrasyon testleri ve durum testleri oluşturabilir. Özellikle kod yollarını kapsayan test senaryoları üretme konusunda yapay zeka sistemleri, insan geliştiricilerin gözden kaçırabileceği kenar durumlarını dikkate alabilir. Bu, yazılım kalitesinin artırılmasında önemli bir katkı sağlar.
+
+Yapay zeka destekli kod incelemesi, geleneksel eşli programlama ve kod incelemesi süreçlerini güçlendirmektedir. Dil modelleri, kodun okunabilirliğini, adlandırma kurallarına uyumunu ve mimari tutarlılığını değerlendirebilir. Bu otomatik değerlendirmeler, kod inceleme süreçlerini hızlandırır ve insan gözden geçirenlerin dikkatini daha önemli tasarım kararlarına odaklamasına olanak tanır.
+
+\section{Riskler ve etik hususlar}
+Yapay zeka destekli yazılım geliştirmede birkaç önemli risk mevcuttur. Yapay zeka sistemlerinin eğitildiği veri setlerindeki önyargılar, üretilen kodda istenmeyen kalıplara yol açabilir. Açık kaynak lisans ihlalleri, yapay zeka tarafından üretilen kodda bilinçsiz olarak kopyalanan lisanslı kod parçacıklarının kullanımı riskini taşır. Bu durum, hukuki ve etik sorunlar doğurabilir.
+
+Geliştiricilerin yapay zeka araçlarına aşırı bağımlı hale gelmesi, temel programlama becerilerinin körelmesi riskini barındırmaktadır. Ayrıca, yapay zeka sistemlerinin güvenilirliği tam olarak garanti edilemediğinden, kritik sistemlerde yapay zeka tarafından üretilen kodun kapsamlı bir şekilde doğrulanması gerekmektedir. Bu doğrulamanın maliyeti, yapay zeka araçlarının sağladığı hız kazancını kısmen azaltabilir.
+
+\section{Sonuç}
+Yapay zeka destekli yazılım geliştirme, üretkenliği artırma ve tekrarlayan görevleri otomatikleştirme açısından önemli bir dönüşüm potansiyeli sunmaktadır. Kod tamamlama, hata tespiti, test oluşturma ve kod incelemesi alanlarındaki gelişmeler, yazılım geliştirme süreçlerini hızlandırmakta ve kaliteyi artırmaktadır. Ancak, bu teknolojilerin etkin ve güvenli kullanımı, geliştiricilerin eleştirel düşünme becerilerini korumasını ve kalite güvencesi süreçlerini güçlendirmesini gerektirmektedir. Geleceğin yazılım mühendisi, yapay zeka araçlarını ustalıkla kullanan, ürettiklerini sorgulayan ve kaliteyi denetleyen bir profesyonel olacaktır.
+
+\end{document}

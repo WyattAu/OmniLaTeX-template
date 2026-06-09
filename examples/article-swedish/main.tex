@@ -1,0 +1,39 @@
+%!TEX TS-program = lualatex
+\documentclass[
+    language=swedish,
+    doctype=article,
+]{../../omnilatex}
+
+\title{Hållbar programvaruutveckling}
+\subtitle{Principer och metoder för grönare mjukvara}
+\author{Fil. dr. Erik Lindqvist}
+\date{\today}
+\keywords{hållbarhet, programvaruutveckling, grön IT, energieffektivitet, programvaruarkitektur}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+IT-sektorn svarar för en växande andel av den globala energianvändningen och utsläppen av växthusgaser. Denna artikel undersöker hur programvaruutvecklare kan bidra till en mer hållbar digital utveckling genom att skriva energieffektiv kod, göra medvetna arkitekturval och tillämpa hållbara utvecklingsmetoder. Vi diskuterar mätmetoder för mjukvarans ekologiska fotavtryck och presenterar konkreta riktlinjer för hållbar programvaruutveckling.
+\end{abstract}
+
+\section{Inledning}
+Den snabba digitaliseringen av samhället har lett till en exponentiell ökning av antalet datacenter, nätverksinfrastrukturer och slutanvändarenheter. ICT-sektorn beräknas stå för ungefär tre till fyra procent av de globala koldioxidutsläppen, vilket gör den jämförbar med flygbranschen. Hållbar programvaruutveckling syftar till att minska mjukvarans ekologiska fotavtryck genom medvetna designbeslut och effektiv implementering.
+
+\section{Mjukvarans ekologiska fotavtryck}
+Mjukvarans ekologiska fotavtryck föreligger i alla faser av livscykeln. Under utvecklingsfasen förbrukas energi av utvecklares arbetsstationer, byggserverar och integrationspipelines. I användningsfasen förbrukar mjukvaran beräkningskapacitet, nätverksbandbredd och lagringsutrymme. Att mäta mjukvarans energianvändning är inte trivialt, eftersom den faktiska förbrukningen beror på hårdvara, omgivningsfaktorer och arbetsbelastningens sammansättning. Verktyg som Software Carbon Intensity-specifikationen och Scaphandre möjliggör kvantifiering av mjukvarans energianvändning.
+
+\section{Energieffektiva designprinciper}
+Valet av effektiva algoritmer är en av de mest direkta metoderna för att minska mjukvarans energianvändning. En algoritm med lägre tids- och rumskomplexitet kräver färre processorcykler och minne, vilket leder till direkt lägre energiförbrukning. I storskaliga system, där små förbättringar per transaktion multipliceras med miljontals exekveringar, kan dessa optimeringar ge betydande besparingar.
+
+Programvaruarkitekturen har en avgörande inverkan på hållbarheten. Mikrotjänstarkitektur medför extra overhead genom nätverkskommunikation mellan tjänster och containerorkestrering. I fall där denna extra komplexitet inte är motiverad av faktiska skalbarhetsbehov kan en mer monolitisk arkitektur vara mer energieffektiv. Arkitekter bör inkludera hållbarhet som ett uttryckligt kvalitetsattribut i sina designbeslut.
+
+Dataeffektivitet är en tredje viktig pelare. Att minska mängden data som överförs, lagras och bearbetas leder direkt till lägre energianvändning. Komprimering av nätverkstrafik, smarta cachelagringsstrategier och undvikande av överflödig datainsamling bidrar alla till en mindre ekologisk fotavtryck. Tillämpningen av minimalismprincipen vid design av datastrukturer och API:er kan ha betydande inverkan.
+
+\section{Praktik och framtidsutsikter}
+Flera organisationer har redan vidtagit åtgärder för hållbar programvaruutveckling. Företag som Google och Microsoft publicerar regelbundet rapporter om sitt energianvändande och investerar i förnybar energiförsörjning för sina datacenter. Open-source-projekt börjar inkludera energibenchmarkar i sina testsviter. Framtida utvecklingar omfattar automatisering av energimätning i utvecklingsarbetsflöden, utvidgning av grön mjukvarucertifiering och utveckling av programmeringsspråk som har energieffektivitet som ett uttryckligt designkriterium.
+
+\section{Slutsats}
+Hållbarhet i programvaruutveckling är inte en lyx utan ett krav. Genom att välja energieffektiva algoritmer, fatta medvetna arkitekturbeslut och arbeta dataeffektivt kan programvaruutvecklare bidra väsentligt till en grönare digital sektor. Integrationen av hållbarhetsmätningar i befintliga utvecklingsprocesser och skapandet av medvetenhet hos utvecklare utgör de första stegen mot en mer hållbar programvaruindustri.
+
+\end{document}

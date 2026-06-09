@@ -1,0 +1,43 @@
+%!TEX TS-program = lualatex
+\documentclass[
+    language=czech,
+    doctype=article,
+]{../../omnilatex}
+
+\title{Vývoj vestavěných systémů s použitím jazyka Rust}
+\subtitle{Bezpečnost paměti a výkon bez garbage collectoru}
+\author{Ing. Martin Novák, Ph.D.}
+\date{\today}
+\keywords{Rust, vestavěné systémy, bezpečnost paměti, no_std, mikrokontroly}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Programovací jazyk Rust získává v posledních letech stále větší pozornost v oblasti vývoje vestavěných systémů. Tento článek zkoumá vhodnost jazyka Rust pro programování mikrokontrolerů a systémů s omezenými prostředky. Zaměřujeme se na vlastnosti jazyka, které jsou pro vestavěné systémy nejcennější: bezpečnost paměti bez garbage collectoru, jemnou kontrolu nad hardwarovými prostředky a vysoký výkon. Analyzujeme také současný stav ekosystému a výzvy spojené s adopcí Rustu v průmyslovém prostředí.
+\end{abstract}
+
+\section{Úvod}
+Vývoj vestavěných systémů tradičně dominuje jazyk C a v menší míře C++. Tyto jazyky nabízejí nízkou úroveň abstrakce a efektivní kontrolu nad hardwarovými prostředky, avšak za cenu značného rizika chyb souvisejících s manipulací paměti. Chyby jako přetečení vyrovnávací paměti, uvolnění již uvolněné paměti nebo visící ukazatele jsou podle statistik příčinou významné části bezpečnostních zranitelností v softwaru pro vestavěné systémy. Programovací jazyk Rust přistupuje k tomuto problému zásadně jinak: jeho systém vlastnictví a půjčování zaručuje bezpečnost paměti při kompilaci, aniž by vyžadoval garbage collector.
+
+\section{Vlastnosti jazyka Rust pro vestavěné systémy}
+Systém vlastnictví a půjčování představuje fundamentální inovaci jazyka Rust. Každá hodnota v programu má přesně jednoho vlastníka, a po dobu její existence může existovat nejvýše jedna měnitelná reference nebo libovolný počet neměnitelných referencí. Kompilátor tyto pravidla vynucuje při překladu programu, čímž zabraňuje vzniku datových závodů a chyb souvisejících s neplatnou pamětí. Pro vestavěné systémy, kde korekce takových chyb za běhu programu často není možná, představuje tato garance obrovskou výhodu.
+
+Prostředí no_std umožňuje kompilaci Rustu bez standardní knihovny, což je nezbytné pro systémy s velmi omezenými zdroji. V režimu no_std programátor ovládá alokaci paměti explicitně a může využívat pouze jádro jazyka bez závislosti na operačním systému. Kombinace no_std s atributem no_main umožňuje vytvoření binárního obrazu vhodného pro přímé spuštění na mikrokontroleru. Crate jako heapless nabízejí kolekce datových struktur pracující výhradně na zásobníku, což eliminuje potřebu dynamické alokace paměti.
+
+Volitelná unsafe bloky poskytují nezbytný únik pro operace, které nelze bezpečně vyjádřit v rámci systému vlastnictví, jako je přímý přístup k hardwarovým registrům nebo obsluha přerušení. Klíčovým principem je izolace unsafe kódu do co nejmenších celků s jasně definovaným bezpečným rozhraním. Tím se minimalizuje plocha útoku a usnadňuje revize kódu.
+
+\section{Ekosystém a nástroje}
+Ekosystém Rustu pro vestavěné systémy se rychle rozvíjí. Projekt Embedded HAL (Hardware Abstraction Layer) definuje jednotné rozhraní pro periferie jako sériové linky, I2C sběrnice, SPI rozhraní a ADC převodníky. Knihovny implementující tyto rozhraní existují pro desítky mikrokontrolerů od výrobců jako STM, NXP, Microchip a Nordic Semiconductor. Podpora debuggerů a trasovacích nástrojů se neustále zlepšuje, přičemž probe-rs a cargo-embed umožňují pohodlný vývojový cyklus přímo z příkazové řádky.
+
+Frameworky jako RTIC (Real-Time Interrupt-driven Concurrency) nabízejí strukturovaný přístup k obsluze přerušení a sdílení zdrojů v reálném čase s kompilací kontrolovanou stavovým automatem. Cargo-embed integruje kompilaci, nahrání firmware a sériovou konzoli do jediného nástroje, což výrazně zjednodušuje vývojový cyklus. Pro komplexnější systémy poskytuje Embassy asynchronní runtime postavený na konceptech async/await, umožňující psát neblokující kód v deklarativním stylu.
+
+\section{Výzvy a budoucnost}
+Hlavní výzvou pro širší adopci Rustu v průmyslu vestavěných systémů je nedostatek zkušených vývojářů a menší nabídka komerčních nástrojů ve srovnání s ekosystémem jazyka C. Doba kompilace Rustu je delší než u jazyka C, což může být problematické při iterativním vývoji. Některé specifické hardwarové funkce zatím nemají dobře zralou podporu v jazyce Rust.
+
+Navzdory těmto výzvám se Rust postupně prosazuje v komerčních projektech. Společnosti jako Microsoft, Google a Amazon integrují Rust do svých vestavěných systémů a iniciativy jako Ferrocene nabízejí certifikovaný kompilátor Rustu pro bezpečnostně kritické aplikace. Budoucnost vývoje vestavěných systémů bude pravděpodobně charakterizována koexistencí C/C++ a Rustu, přičemž Rust bude postupně přebírat roli v nových projektech s vysokými nároky na bezpečnost a spolehlivost.
+
+\section{Závěr}
+Programovací jazyk Rust nabízí přesvědčivou kombinaci bezpečnosti paměti, vysokého výkonu a kontroly nad hardwarovými prostředky, která je ideální pro vývoj vestavěných systémů. Rychle rostoucí ekosystém nástrojů a knihoven, kombinovaný s jasnějšími garancemi bezpečnosti než u tradičních jazyků, činí z Rustu perspektivní volbu pro nové projekty v oblasti vestavěných systémů. Přechod na Rust vyžaduje investici do vzdělání vývojářů a adaptaci stávajících procesů, ale dlouhodobé přínosy v podobě sníženého počtu chyb a vyšší spolehlivosti tuto investici ospravedlňují.
+
+\end{document}

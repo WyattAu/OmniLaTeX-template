@@ -1,0 +1,45 @@
+%!TEX TS-program = lualatex
+\documentclass[
+    language=italian,
+    doctype=article,
+]{../../omnilatex}
+
+\title{Metodologie agili nello sviluppo di sistemi embedded}
+\subtitle{Adattamento di Scrum e Kanban per contesti con risorse limitate}
+\author{Prof.ssa Giulia Ferrara}
+\date{\today}
+\keywords{metodologie agili, sistemi embedded, Scrum, Kanban, sviluppo software}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Lo sviluppo di sistemi embedded presenta sfide uniche che rendono l'applicazione diretta delle metodologie agili tradizionali particolarmente complessa. Questo articolo esamina come i principi del manifesto agile possano essere adattati al contesto dello sviluppo di sistemi con risorse limitate, vincoli di tempo reale e requisiti di affidabilità elevata. Vengono presentate strategie pratiche per integrare Scrum e Kanban nei flussi di lavoro di sviluppo embedded, con particolare attenzione alla gestione dei requisiti hardware-software.
+\end{abstract}
+
+\section{Introduzione}
+I sistemi embedded rappresentano una categoria di sistemi informatici progettati per eseguire funzioni specifiche all'interno di dispositivi più ampi. Dalla domotica all'automotive, dalla medicina all'aerospaziale, questi sistemi sono presenti in innumerevoli contesti della vita moderna. Lo sviluppo di software per sistemi embedded differisce significativamente dallo sviluppo di applicazioni tradizionali a causa dei vincoli stringenti su memoria, potenza di calcolo e tempo di risposta. Queste limitazioni hanno storicamente favorito l'adozione di metodologie a cascata, ma la crescente complessità dei sistemi moderni sta spingendo l'industria verso approcci più flessibili e iterativi.
+
+\section{Sfide specifiche dello sviluppo embedded}
+Tra le principali sfide dello sviluppo di sistemi embedded figurano i vincoli di tempo reale, che richiedono che il sistema risponda a stimoli esterni entro intervalli temporali prestabiliti. In questi contesti, un ritardo anche minimo può avere conseguenze catastrofiche, come nel caso dei sistemi di controllo per applicazioni automotive o mediche. Questi vincoli rendono difficile l'applicazione dei principi agili tradizionali, che tendono a privilegiare la flessibilità e la rapidità di consegna rispetto alla prevedibilità assoluta delle tempistiche.
+
+La dipendenza dall'hardware costituisce un altro ostacolo significativo. Nello sviluppo di software per sistemi embedded, il codice deve interagire strettamente con periferiche fisiche come sensori, attuatori e microcontrollori. Questa interazione crea una forte dipendenza tra il software e l'hardware, rendendo necessaria la disponibilità della piattaforma target per i test di integrazione. Nei progetti in cui l'hardware non è ancora disponibile, gli sviluppatori devono ricorrere a simulazioni e emulatori, che possono non riprodurre fedelmente il comportamento del sistema reale.
+
+La scarsità di risorse di calcolo e memoria impone inoltre restrizioni significative sulle scelte architetturali e di implementazione. Tecniche comuni nello sviluppo di software tradizionale, come l'allocazione dinamica della memoria o l'uso intensivo di librerie esterne, possono essere inappropriate o impossibili in contesti embedded. Gli sviluppatori devono pertanto prestare particolare attenzione all'efficienza del codice fin dalle fasi iniziali del progetto, il che sembra in contrasto con il principio agile di implementare prima la funzionalità più semplice e ottimizzare successivamente.
+
+\section{Adattamento di Scrum per sistemi embedded}
+L'adattamento di Scrum allo sviluppo embedded richiede modifiche sostanziali rispetto alla sua applicazione standard. La durata degli sprint deve essere attentamente calibrata per consentire l'integrazione con l'hardware e l'esecuzione di test su piattaforma target. In molti casi, sprint di due o tre settimane si rivelano più appropriati rispetto alla settimana standard raccomandata dalle metodologie agili tradizionali.
+
+La definizione di «fatto» (Definition of Done) deve essere estesa per includere criteri specifici dell'ambito embedded, come la verifica del rispetto dei vincoli temporali, la misurazione dell'occupazione di memoria e la validazione dell'interazione con le periferiche hardware. Questi criteri aggiuntivi garantiscono che ogni incremento software sia non solo funzionalmente corretto, ma anche conforme ai vincoli non funzionali del sistema.
+
+Un ruolo cruciale nello Scrum embedded è quello del System Integration Team, un gruppo specializzato responsabile della integrazione continua tra software e hardware. Questo team lavora a stretto contatto con il team di sviluppo software e il team hardware per risolvere tempestivamente i problemi di interfaccia e garantire che ogni sprint produca un incremento testabile sulla piattaforma target.
+
+\section{Kanban e continuous delivery per firmware}
+Per progetti con flussi di lavoro più lineari, Kanban offre un approccio complementare a Scrum. La visualizzazione del flusso di lavoro attraverso una bacheca Kanban permette di identificare collo di bottiglia e ottimizzare il ciclo di sviluppo del firmware. In contesti embedded, le colonne della bacheca possono includere fasi specifiche come compilazione cross-platform, test su simulatore e test su hardware fisico.
+
+La continuous integration e la continuous delivery, concetti fondamentali di DevOps, stanno guadagnando terreno anche nello sviluppo embedded. Pipeline automatizzate che compilano il firmware per diverse piattaforme target, eseguono suite di test e generano report di conformità consentono di accelerare significativamente il ciclo di feedback. L'integrazione di questi strumenti con le pratiche agili crea un ecosistema di sviluppo efficiente e reattivo.
+
+\section{Conclusioni}
+L'adozione di metodologie agili nello sviluppo di sistemi embedded è non solo possibile, ma increasingly necessaria di fronte alla crescente complessità dei sistemi moderni. La chiave del successo risiede nell'adattamento intelligente dei principi agili alle specificità del dominio embedded, senza sacrificare l'affidabilità e il rispetto dei vincoli temporali. La combinazione di Scrum, Kanban e pratiche di continuous integration offre un quadro metodologico robusto che può essere adattato a contesti molto diversi, dallo sviluppo di firmware per microcontrollori alla realizzazione di sistemi complessi per l'automotive.
+
+\end{document}
