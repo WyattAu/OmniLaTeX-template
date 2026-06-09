@@ -49,6 +49,11 @@ class Violation:
         return f"[{self.severity.value.upper()}] {self.criterion}: {self.message}{elem}{loc}"
 
 
+def _tag_line(tag: Tag) -> int | None:
+    """Extract source line number from a BeautifulSoup Tag, if available."""
+    return getattr(tag, "sourceline", None)
+
+
 @dataclass
 class CheckResult:
     """Result of an accessibility check."""
@@ -250,6 +255,7 @@ def check_color_contrast(soup: BeautifulSoup, file_path: str) -> list[Violation]
                     message=f"Contrast ratio {ratio:.2f}:1 (need {min_ratio}:1)",
                     severity=severity,
                     element=element_str,
+                    line=_tag_line(tag),
                 )
             )
 

@@ -13,7 +13,6 @@ from pathlib import Path
 
 from buildlib.config import (
     BUILD_EXAMPLES_SUBDIR,
-    FORCE_REBUILD_FLAG,
     INTERACTION_NONSTOP,
     LATEXMK_COMMAND,
     LATEXMK_FORCE_CONTINUE,
@@ -23,6 +22,7 @@ from buildlib.config import (
     RICH_AVAILABLE,
     SVG_INKSCAPE_CACHE,
     ProjectConfig,
+    build_latexmk_command,
 )
 from buildlib.mixins.cache import BuildCacheMixin
 from buildlib.mixins.cleanup import CleanupMixin
@@ -210,18 +210,13 @@ class _BuildCore(BuildCacheMixin, DiscoveryMixin, CleanupMixin):
                     return example_name, True, all_logs
 
             # --- Start: EXACT reproduction of original script's core logic ---
-            cmd = [LATEXMK_COMMAND]
-            latexmk_flags: list[str] = [INTERACTION_NONSTOP, LATEXMK_FORCE_CONTINUE]
-            if os.environ.get("OMNILATEX_FORCE_REBUILD") == "1":
-                latexmk_flags.append(FORCE_REBUILD_FLAG)
-
-            invoke: list[str] = cmd + latexmk_flags
-
             root_latexmkrc = repo_root / ".latexmkrc"
-            if root_latexmkrc.exists():
-                invoke.extend(["-r", str(root_latexmkrc)])
-
-            invoke.append(MAIN_TEX_FILENAME)
+            invoke = build_latexmk_command(
+                force_rebuild=self.force
+                or os.environ.get("OMNILATEX_FORCE_REBUILD") == "1",
+                include_root_rc=True,
+                root_rc_path=root_latexmkrc,
+            )
 
             # Use absolute paths to avoid thread-unsafe os.chdir().
             # The runner.run() call already sets cwd=example_dir.

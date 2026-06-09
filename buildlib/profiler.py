@@ -15,7 +15,7 @@ from pathlib import Path
 from statistics import mean, median, stdev
 from typing import Any
 
-from buildlib.config import MAIN_TEX_FILENAME, REPO_ROOT, ProjectConfig
+from buildlib.config import MAIN_TEX_FILENAME, REPO_ROOT, ProjectConfig, build_latexmk_command
 
 # ---------------------------------------------------------------------------
 # Data classes
@@ -182,17 +182,8 @@ class BuildProfiler:
         """Build using the project's CommandRunner."""
         import os
 
-        from buildlib.builder import (
-            INTERACTION_NONSTOP,
-            LATEXMK_COMMAND,
-            LATEXMK_FORCE_CONTINUE,
-        )
-
         example_dir = REPO_ROOT / "examples" / example_name
-        cmd = [LATEXMK_COMMAND, INTERACTION_NONSTOP, LATEXMK_FORCE_CONTINUE]
-        if force:
-            cmd.append("-g")
-        cmd.append(MAIN_TEX_FILENAME)
+        cmd = build_latexmk_command(force_rebuild=force)
 
         extra_env = {
             "TEXINPUTS": os.pathsep.join([".", str(REPO_ROOT), ""]),
@@ -205,10 +196,7 @@ class BuildProfiler:
         import subprocess
 
         example_dir = REPO_ROOT / "examples" / example_name
-        cmd = ["latexmk", "-interaction=nonstopmode", "-f"]
-        if force:
-            cmd.append("-g")
-        cmd.append(MAIN_TEX_FILENAME)
+        cmd = build_latexmk_command(force_rebuild=force)
 
         env = os.environ.copy()
         env["TEXINPUTS"] = os.pathsep.join([".", str(REPO_ROOT), ""])
