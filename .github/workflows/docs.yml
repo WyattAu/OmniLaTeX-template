@@ -62,17 +62,29 @@ jobs:
           echo "No successful build-examples run found, skipping PDF download"
         fi
 
-    - name: Create Cloudflare _redirects and _headers files
+    - name: Create Cloudflare static files
       run: |
-        # _redirects: rewrite /OmniLaTeX-template/* to /* for custom domain
-        # The Astro build uses base='/OmniLaTeX-template/' for GitHub Pages.
-        # The Cloudflare custom domain (omnilatex-template.wyattau.com) serves
-        # from root, so these rewrites map prefixed paths to actual files.
-        cat > web/dist/_redirects << 'EOF'
-        /OmniLaTeX-template/assets/* /assets/:splat 200
-        /OmniLaTeX-template/pdfs/* /pdfs/:splat 200
-        /OmniLaTeX-template/favicon.svg /favicon.svg 200
-        EOF
+        # _worker.js: Cloudflare Pages Functions entry point.
+        # Handles the base-path mismatch between GitHub Pages
+        # (/OmniLaTeX-template/) and the custom domain (/).
+        # When the custom domain receives a request for
+        # /OmniLaTeX-template/assets/foo.js, this worker rewrites
+        # it to /assets/foo.js before hitting the static file server.
+        mkdir -p web/dist/functions
+        cat > web/dist/functions/_worker.js << 'WORKER_EOF'
+        export default {
+          async fetch(request, env) {
+            const url = new URL(request.url);
+            const prefix = '/OmniLaTeX-template';
+
+            if (url.pathname.startsWith(prefix)) {
+              url.pathname = url.pathname.slice(prefix.length);
+              return env.ASSETS.fetch(url.toString(), request);
+            }
+            return env.ASSETS.fetch(request);
+          }
+        };
+        WORKER_EOF
 
         cat > web/dist/_headers << 'EOF'
         /*
@@ -84,12 +96,6 @@ jobs:
           Content-Disposition: inline
           Cache-Control: public, max-age=86400
           X-Content-Type-Options: nosniff
-
-        /OmniLaTeX-template/assets/*.js
-          Content-Type: application/javascript
-
-        /OmniLaTeX-template/assets/*.css
-          Content-Type: text/css
         EOF
 
     - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9
