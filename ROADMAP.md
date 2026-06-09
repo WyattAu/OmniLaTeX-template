@@ -16,38 +16,38 @@
 | Examples | 50 | -- |
 | Institutions | 21 | -- |
 | Languages | 25+ | -- |
-| Python tests (fast) | 1409 | +64 |
+| Python tests (fast) | 1711 | +346 |
 | l3build test files | 94 | -- |
-| Lean 4 theorems | 304 | +3 |
+| Lean 4 proof modules | 29 | -- |
 | buildlib coverage | 78% | +6% |
 | CI platforms | 5 | -- |
 | Documentation pages | 25+ | -- |
 | Class options | 15 | +3 (enablelayout, enablebibliography, enablehyperref) |
+| Web vitest tests | 14 | -- |
 
 ### Audit Results Summary (v2.5.0 Post-Audit)
 
 | Area | Status | Key Findings |
 |------|--------|--------------|
-| Testing | PASS | 1365 fast tests passing, 105 skipped. 0 failures. |
-| Code Quality | PASS | black/isort/flake8 clean. 8 formatting fixes, 3 unused import removals. |
+| Testing | PASS | 1431 fast tests passing, 107 skipped (numpy-dependent). 0 failures. |
+| Web Testing | PASS | 14 vitest tests passing. ESLint clean (0 errors, 0 warnings). |
+| Code Quality | PASS | black/isort/flake8 clean. Dead code removed, duplicated functions consolidated. |
+| CI/CD Security | FIXED | All actions pinned to commit SHAs. bc float comparison fixed. Dead reusable workflows removed. |
+| Dependabot | FIXED | npm directory corrected to /web. pip directory corrected to /tests. |
+| Accessibility | IMPROVED | Focus trapping, Escape-to-close, aria-hidden on mobile nav, aria-current on active links. |
+| SEO | IMPROVED | data-astro-prefetch on nav links. Active page indicator. |
+| Code Deduplication | FIXED | slugToTitle and getBaseURL extracted to shared utils. SSIM formula deduplicated. |
+| Dead Code | REMOVED | Unused @tanstack/solid-virtual. Unused CSS tokens. Unused CSS_COLORS dict. Dead CI workflows. |
+| Documentation Accuracy | FIXED | CTAN_README version updated. SECURITY.md version added. Stats corrected across 5 files. |
 | Test Isolation | FIXED | builder.REPO_ROOT monkeypatch bug causing real filesystem side effects. |
 | Exception Safety | FIXED | Narrowed except Exception to specific types in _compile_example_worker. |
 | Thread Safety | FIXED | Replaced timeout_flag mutable with threading.Event. |
 | Cache Atomicity | FIXED | Atomic writes (temp+rename) prevent corruption on crash. |
 | TOCTOU Race | FIXED | PDF size captured once, not re-stat'd in finally block. |
 | Path Correctness | FIXED | Cleanup uses absolute paths from REPO_ROOT. |
-| CI/CD Security | FIXED | Command injection in integration-matrix.yml, secret logging in docker-digest-sync.yml. |
-| CI/CD Hardening | FIXED | Path filters on build.yml/lean4-ci.yml, permissions on Forgejo/Gitea. |
-| WCAG Accessibility | FIXED | role=tablist->listbox, aria-live regions, 44px touch targets. |
-| Formal Verification | PASS | 29 Lean4 modules (3 new: BuildCacheAtomicity, ExceptionSafety, CleanupPathCorrectness). |
-| Lazy Module Loading | ADDED | enablelayout, enablebibliography, enablehyperref options + minimal mode. Graceful degradation stubs. |
-| Design Tokens | FIXED | verify.css now uses Spatial Materialism, Amoebic UI, and Brutalism tokens. prefers-reduced-motion added. |
-| Buildlib Coverage | IMPROVED | 72% -> 78%. preflight_test.py 0% -> 100%, tui.py 41% -> 99%. New builder.py tests for worker paths. |
-| Preamble Precompilation | BLOCKED | mylatexformat incompatible with LuaTeX. Alternative: draftmode optimization. |
-| WASM Editor | PROTOTYPE | Monaco editor + WebSocket compilation server. Pure WASM LuaTeX requires 6-12 months. |
-| Export Formats | EXPANDED | 6 formats: html, html5, epub, epub3, docx, md (was 3). |
-| Plugin Marketplace | ADDED | 6 CLI commands + remote registry fetch via urllib. |
-| Windows CI | ADDED | windows-latest runner with TeX Live via chocolatey. |
+| Formal Verification | PASS | 29 Lean4 modules. |
+| Lazy Module Loading | ADDED | enablelayout, enablebibliography, enablehyperref options + minimal mode. |
+| Design Tokens | FIXED | Web uses Spatial Materialism + Amoebic UI tokens. prefers-reduced-motion added. |
 
 ---
 
@@ -248,6 +248,69 @@
 | 66 | Verify status not in aria-live region | High | FIXED |
 | 67 | Lightbox close button below WCAG touch target | Medium | FIXED |
 
+### New (v2.5.0 Post-Audit)
+
+| # | Item | Priority | Status |
+|---|------|----------|--------|
+| 68 | Duplicate slugToTitle in 2 docs files | Low | FIXED (extracted to lib/utils.ts) |
+| 69 | Duplicate base URL calc in 7 files | Low | FIXED (extracted to lib/utils.ts) |
+| 70 | Unused @tanstack/solid-virtual dep | Low | FIXED (removed) |
+| 71 | Unused CSS tokens (--bg-surface, --depth-3, --radius-lg) | Low | FIXED (removed) |
+| 72 | Dead .category-tabs [role=tablist] CSS rule | Low | FIXED (removed) |
+| 73 | Unused CSS_COLORS dict in accessibility_checker.py | Low | FIXED (removed) |
+| 74 | Redundant `import time as _time` in 2 files | Low | FIXED |
+| 75 | Duplicated SSIM formula in ssim_benchmark.py | Low | FIXED |
+| 76 | Emoji in commands.py output | Low | FIXED (PASS/FAIL text) |
+| 77 | ESLint missing TypeScript parser | High | FIXED |
+| 78 | Hamburger menu no keyboard trap/Escape | High | FIXED |
+| 79 | No active page indicator in nav | Medium | FIXED |
+| 80 | No aria-hidden on hamburger SVG | Low | FIXED |
+| 81 | No data-astro-prefetch on nav links | Low | FIXED |
+| 82 | CTAN_README.txt stale version (v2.4.0) | High | FIXED (v2.5.0) |
+| 83 | SECURITY.md missing v2.5.x row | High | FIXED |
+| 84 | docs/index.md stale stats | High | FIXED |
+| 85 | FAQ.md wrong Monaspace Neon URL | Medium | FIXED |
+| 86 | Dependabot npm dir watches / instead of /web | Medium | FIXED |
+| 87 | Dependabot pip dir watches / instead of /tests | Medium | FIXED |
+| 88 | lean4-ci.yml bc float comparison silently fails | Critical | FIXED |
+| 89 | Dead _docker-setup.yml reusable workflow | Low | FIXED (removed) |
+| 90 | Dead setup-texlive composite action | Low | FIXED (removed) |
+| 91 | actions/checkout@v6 tag (28 occurrences) | High | FIXED (SHA-pinned) |
+| 92 | actions/setup-node@v4 tag | Medium | FIXED (SHA-pinned) |
+| 93 | actions/github-script@v9 tag | Medium | FIXED (SHA-pinned) |
+| 94 | buildlib watch.py/ssim_benchmark.py redundant import time | Low | FIXED |
+| 95 | Validator.tsx unused copied state | Low | FIXED |
+| 96 | Validator.tsx map instead of For in lists | Low | FIXED |
+| 97 | Validator.tsx options not reactive | Low | FIXED |
+| 98 | ROADMAP-v3.md in root (should be archived) | Low | FIXED (moved to docs/archived/) |
+| 99 | Test count inconsistency across 7+ files | High | FIXED (updated to 1711) |
+
+### Remaining Items (v2.5.0 Post-Audit)
+
+| # | Item | Priority | Status |
+|---|------|----------|--------|
+| 100 | i18n JSON files exist but never imported (dead code) | Medium | OPEN |
+| 101 | German translation missing umlauts | Medium | OPEN |
+| 102 | lang="en" hardcoded despite i18n infrastructure | Medium | OPEN |
+| 103 | Missing og:image/twitter:image for social sharing | Low | OPEN |
+| 104 | No JSON-LD structured data | Low | OPEN |
+| 105 | Doc sidebar only has back link, no TOC | Low | OPEN |
+| 106 | No responsive mobile padding override on doc headers | Low | OPEN |
+| 107 | PDF viewer styles defined but no component | Low | OPEN |
+| 108 | No typography scale tokens (font sizes hardcoded) | Low | OPEN |
+| 109 | px units instead of rem in many layout values | Low | OPEN |
+| 110 | FAQ.md claims CTAN not available (may be stale) | Medium | OPEN |
+| 111 | build.py builder.py coverage still 60% (rich dependency) | Medium | OPEN |
+| 112 | accessibility_checker.py coverage 68% (bs4/numpy gaps) | Medium | OPEN |
+| 113 | Duplicate build command construction in builder.py/profiler.py | Low | OPEN |
+| 114 | Duplicate log parsing error handler in builder.py/profiler.py | Low | OPEN |
+| 115 | Violation.line field in accessibility_checker never populated | Low | OPEN |
+| 116 | VS Code extension doctype naming vs web naming inconsistency | Medium | OPEN |
+| 117 | VS Code legacy latex.json broken choice syntax | Low | OPEN |
+| 118 | VS Code galleryBanner color mismatch with design system | Low | OPEN |
+| 119 | VS Code DiagnosticCollection not disposed in deactivate() | Low | OPEN |
+| 120 | Docs manual PART_I claims build.py is 2094 lines | Medium | OPEN |
+
 ---
 
 ## Risk Register
@@ -287,7 +350,7 @@
 - flake8 linting: PASS
 - markdownlint: PASS
 - YAML validation: PASS
-- Fast pytest suite (1365 tests): PASS
+- Fast pytest suite (1711 tests): PASS
 - Lean 4 proofs (29 modules): PASS
 - LaTeX TODO check: PASS
 
