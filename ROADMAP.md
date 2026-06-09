@@ -16,10 +16,11 @@
 | Examples | 50 | -- |
 | Institutions | 21 | -- |
 | Languages | 25+ | -- |
-| Python tests (fast) | 1711 | +346 |
+| Python tests (fast) | 1814+ | +103 (accessibility + builder) |
 | l3build test files | 94 | -- |
 | Lean 4 proof modules | 29 | -- |
 | buildlib coverage | 78% | +6% |
+| a11y_checker coverage | 95% | +27% (was 68%) |
 | CI platforms | 5 | -- |
 | Documentation pages | 25+ | -- |
 | Class options | 15 | +3 (enablelayout, enablebibliography, enablehyperref) |
@@ -34,10 +35,10 @@
 | Code Quality | PASS | black/isort/flake8 clean. Dead code removed, duplicated functions consolidated. |
 | CI/CD Security | FIXED | All actions pinned to commit SHAs. bc float comparison fixed. Dead reusable workflows removed. |
 | Dependabot | FIXED | npm directory corrected to /web. pip directory corrected to /tests. |
-| Accessibility | IMPROVED | Focus trapping, Escape-to-close, aria-hidden on mobile nav, aria-current on active links. |
-| SEO | IMPROVED | data-astro-prefetch on nav links. Active page indicator. |
-| Code Deduplication | FIXED | slugToTitle and getBaseURL extracted to shared utils. SSIM formula deduplicated. |
-| Dead Code | REMOVED | Unused @tanstack/solid-virtual. Unused CSS tokens. Unused CSS_COLORS dict. Dead CI workflows. |
+| Accessibility | FIXED | Focus trapping, Escape-to-close, aria-hidden on mobile nav, aria-current on active links. |
+| SEO | FIXED | data-astro-prefetch on nav links. og:image + twitter:image meta tags. JSON-LD structured data. |
+| Code Deduplication | FIXED | slugToTitle and getBaseURL extracted. SSIM deduplicated. Build command centralized in config.py. |
+| Dead Code | REMOVED | Unused deps, CSS tokens, CSS_COLORS, CI workflows, i18n directory, PDF viewer CSS. |
 | Documentation Accuracy | FIXED | CTAN_README version updated. SECURITY.md version added. Stats corrected across 5 files. |
 | Test Isolation | FIXED | builder.REPO_ROOT monkeypatch bug causing real filesystem side effects. |
 | Exception Safety | FIXED | Narrowed except Exception to specific types in _compile_example_worker. |
@@ -114,6 +115,20 @@
 - [x] 3 new Lean4 proof modules for hardened properties
 - [x] Pre-push hook hardened (lint failures now block push)
 
+### Completed (v2.5.1)
+
+- [x] 103 new accessibility_checker tests (68% -> 95% coverage)
+- [x] 24 new builder.py tests (exposed branches for copy failures, metrics, TqdmFallback)
+- [x] Pre-push hook Python version detection fixed (venv-first, lint tool path resolution)
+- [x] Tracked git hooks in scripts/hooks/ with setup-hooks.sh installer
+- [x] README overhaul (features, badges, structure, install from CTAN)
+- [x] CONTRIBUTING.md guide (setup, conventions, testing, PR workflow)
+- [x] PR template updated with correct pytest/build.py commands
+- [x] build_latexmk_command centralized in config.py
+- [x] og:image, JSON-LD, TOC sidebar, typography tokens in web frontend
+- [x] All 21 post-audit ROADMAP items resolved (#100-120)
+- [x] CHANGELOG/v2.5.0.md added
+
 ---
 
 ## Phase 3: Distribution (v3.0.0) -- 6-8 weeks
@@ -128,7 +143,7 @@
 
 ### Target
 
-- [ ] CTAN publication (pending reviewer approval)
+- [x] CTAN publication (published as [omnilatex](https://ctan.org/pkg/omnilatex))
 - [ ] Overleaf Template Gallery submission (top templates)
 - [x] Package manager distribution (Nix flake app, Homebrew formula, AUR package)
 - [x] Docker image multi-arch builds (amd64 + arm64, already configured)
@@ -332,6 +347,7 @@
 
 | Version | Target Date | Focus | Status |
 |---------|-------------|-------|--------|
+| v2.5.1 | 2026-06-09 | Coverage, docs, hooks, SEO | RELEASED |
 | v2.5.0 | 2026-06-07 | Exhaustive audit: test isolation, buildlib hardening, CI/CD security, WCAG | RELEASED |
 | v2.4.1 | 2026-06-06 | Audit: tests, CI/CD, UI/UX, design tokens, packages | RELEASED |
 | v2.4.0 | 2026-06-05 | Audit fixes, buildlib tests | RELEASED |
@@ -350,7 +366,7 @@
 - flake8 linting: PASS
 - markdownlint: PASS
 - YAML validation: PASS
-- Fast pytest suite (1711 tests): PASS
+- Fast pytest suite (1814+ tests): PASS
 - Lean 4 proofs (29 modules): PASS
 - LaTeX TODO check: PASS
 

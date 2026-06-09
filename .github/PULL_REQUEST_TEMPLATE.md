@@ -5,16 +5,15 @@
 ## Changes
 
 <!-- List the key changes -->
-
 -
 
 ## Verification
 
-- [ ] `build.py preflight` passes (Nix: run inside `nix develop .#`)
-- [ ] `build.py doctor` passes
-- [ ] `build.py build-examples` succeeds (all examples)
-- [ ] `pytest` passes (from `tests/` directory)
+- [ ] `python -m pytest tests/ -m "not slow"` passes (fast suite)
+- [ ] `python build.py doctor` passes
+- [ ] `python build.py build-example minimal-starter` succeeds
 - [ ] No new LaTeX warnings in build logs
+- [ ] Lint passes: `black --check .`, `isort --check .`, `flake8 .`
 
 ## Related Issues
 
