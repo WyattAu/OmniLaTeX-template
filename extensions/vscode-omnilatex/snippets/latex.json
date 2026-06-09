@@ -5,7 +5,7 @@
       "\\documentclass[",
       "    language=english,",
       "    doctype=${1:article|thesis|book|report|letter},",
-      "    institution=${2|none},",
+      "    institution=${2:none},",
       "]{../../omnilatex}"
     ],
     "description": "OmniLaTeX document class"

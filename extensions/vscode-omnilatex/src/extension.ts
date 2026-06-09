@@ -3,6 +3,8 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { spawn } from 'child_process';
 
+let logDiagnostics: vscode.DiagnosticCollection | undefined;
+
 function spawnAsync(command: string, args: string[], options: { cwd: string }): Promise<{ error: Error | null; stdout: string; stderr: string }> {
     return new Promise((resolve) => {
         const proc = spawn(command, args, options);
@@ -432,7 +434,7 @@ export function activate(context: vscode.ExtensionContext): void {
     updateStatusBar();
 
     // LaTeX log file diagnostic provider
-    const logDiagnostics = vscode.languages.createDiagnosticCollection('latex-log');
+    logDiagnostics = vscode.languages.createDiagnosticCollection('latex-log');
 
     function parseLatexErrors(logContent: string): vscode.Diagnostic[] {
         const diagnostics: vscode.Diagnostic[] = [];
@@ -496,4 +498,9 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.workspace.onDidOpenTextDocument(updateLogDiagnostics);
 }
 
-export function deactivate() {}
+export function deactivate() {
+    if (logDiagnostics) {
+        logDiagnostics.dispose();
+        logDiagnostics = undefined;
+    }
+}
