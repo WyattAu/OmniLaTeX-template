@@ -1,4 +1,6 @@
-import { createSignal, For, Show } from 'solid-js';
+import { createSignal, For, Show, onMount } from 'solid-js';
+import { Tabs } from '@kobalte/core/tabs';
+import { autoAnimate } from '@formkit/auto-animate';
 
 interface Document {
   id: string;
@@ -26,7 +28,6 @@ const DOCUMENTS: Document[] = [
   { id: 'lecture-notes', name: 'Lecture Notes', desc: 'Course notes', cat: 'academic', file: 'lecture-notes.pdf' },
   { id: 'syllabus', name: 'Syllabus', desc: 'Course syllabus', cat: 'academic', file: 'syllabus.pdf' },
   { id: 'citation-styles', name: 'Citation Styles', desc: 'Bibliography citation examples', cat: 'academic', file: 'citation-styles.pdf' },
-
   // Professional
   { id: 'cv', name: 'CV', desc: 'Curriculum vitae', cat: 'professional', file: 'cv.pdf' },
   { id: 'cv-twopage', name: 'CV (Two Page)', desc: 'Extended two-page CV', cat: 'professional', file: 'cv-twopage.pdf' },
@@ -36,7 +37,6 @@ const DOCUMENTS: Document[] = [
   { id: 'invoice', name: 'Invoice', desc: 'Business invoice', cat: 'professional', file: 'invoice.pdf' },
   { id: 'memo', name: 'Memo', desc: 'Memorandum', cat: 'professional', file: 'memo.pdf' },
   { id: 'white-paper', name: 'White Paper', desc: 'Technical white paper', cat: 'professional', file: 'white-paper.pdf' },
-
   // Presentation
   { id: 'presentation', name: 'Presentation', desc: 'Beamer slides', cat: 'presentation', file: 'presentation.pdf' },
   { id: 'poster', name: 'Poster', desc: 'Conference poster', cat: 'presentation', file: 'poster.pdf' },
@@ -45,40 +45,41 @@ const DOCUMENTS: Document[] = [
   { id: 'beamer-minimal', name: 'Beamer (Minimal)', desc: 'Minimal presentation theme', cat: 'presentation', file: 'beamer-minimal.pdf' },
   { id: 'beamer-defense', name: 'Beamer (Defense)', desc: 'Thesis defense slides', cat: 'presentation', file: 'beamer-defense.pdf' },
   { id: 'beamer-native', name: 'Beamer (Native)', desc: 'Native beamer theme', cat: 'presentation', file: 'beamer-native.pdf' },
-
   // Technical
   { id: 'manual', name: 'Manual', desc: 'Technical manual', cat: 'technical', file: 'manual.pdf' },
   { id: 'technical-report', name: 'Technical Report', desc: 'Engineering report', cat: 'technical', file: 'technical-report.pdf' },
   { id: 'standard', name: 'Standard', desc: 'Standards document', cat: 'technical', file: 'standard.pdf' },
   { id: 'patent', name: 'Patent', desc: 'Patent application', cat: 'technical', file: 'patent.pdf' },
   { id: 'dictionary', name: 'Dictionary', desc: 'Reference dictionary', cat: 'technical', file: 'dictionary.pdf' },
-
-  // Language & Typography
+  // Language
   { id: 'cjk-chinese', name: 'CJK (Chinese)', desc: 'Chinese language document', cat: 'language', file: 'cjk-chinese.pdf' },
   { id: 'cjk-japanese', name: 'CJK (Japanese)', desc: 'Japanese language document', cat: 'language', file: 'cjk-japanese.pdf' },
   { id: 'cjk-korean', name: 'CJK (Korean)', desc: 'Korean language document', cat: 'language', file: 'cjk-korean.pdf' },
   { id: 'rtl-arabic', name: 'RTL (Arabic)', desc: 'Arabic right-to-left document', cat: 'language', file: 'rtl-arabic.pdf' },
   { id: 'rtl-hebrew', name: 'RTL (Hebrew)', desc: 'Hebrew right-to-left document', cat: 'language', file: 'rtl-hebrew.pdf' },
   { id: 'multi-language', name: 'Multi-Language', desc: 'Multiple languages in one document', cat: 'language', file: 'multi-language.pdf' },
-
-  // Features & Customization
+  // Features
   { id: 'color-themes', name: 'Color Themes', desc: 'Color theme showcase', cat: 'features', file: 'color-themes.pdf' },
   { id: 'lua-showcase', name: 'Lua Showcase', desc: 'LuaLaTeX features demo', cat: 'features', file: 'lua-showcase.pdf' },
   { id: 'music', name: 'Music', desc: 'Musical notation (MusiXTeX)', cat: 'features', file: 'music.pdf' },
   { id: 'accessibility-test', name: 'Accessibility Test', desc: 'PDF accessibility features', cat: 'features', file: 'accessibility-test.pdf' },
   { id: 'plugin-demo', name: 'Plugin Demo', desc: 'Plugin system demonstration', cat: 'features', file: 'plugin-demo.pdf' },
   { id: 'recipe', name: 'Recipe', desc: 'Recipe card', cat: 'features', file: 'recipe.pdf' },
-
   // Starter
   { id: 'minimal-starter', name: 'Minimal Starter', desc: 'Bare minimum template', cat: 'starter', file: 'minimal-starter.pdf' },
   { id: 'minimal-custom', name: 'Minimal Custom', desc: 'Customized minimal template', cat: 'starter', file: 'minimal-custom.pdf' },
 ];
 
-const CATEGORIES = ['all', 'academic', 'professional', 'presentation', 'technical', 'language', 'features', 'starter'];
+const CATEGORIES = ['all', 'academic', 'professional', 'presentation', 'technical', 'language', 'features', 'starter'] as const;
 
 export default function GalleryGrid() {
-  const [activeCategory, setActiveCategory] = createSignal('all');
+  const [activeCategory, setActiveCategory] = createSignal<string>('all');
   const [searchQuery, setSearchQuery] = createSignal('');
+  let gridRef: HTMLDivElement | undefined;
+
+  onMount(() => {
+    if (gridRef) autoAnimate(gridRef);
+  });
 
   const filteredDocs = () => {
     const cat = activeCategory();
@@ -95,22 +96,17 @@ export default function GalleryGrid() {
   return (
     <div>
       <div class="controls">
-        <div class="category-tabs" role="tablist" aria-label="Document categories">
-          <For each={CATEGORIES}>
-            {(cat) => (
-              <button
-                role="tab"
-                id={`tab-${cat}`}
-                aria-selected={activeCategory() === cat}
-                aria-controls="gallery-panel"
-                class={`tab ${activeCategory() === cat ? 'active' : ''}`}
-                onClick={() => setActiveCategory(cat)}
-              >
-                {cat.charAt(0).toUpperCase() + cat.slice(1)}
-              </button>
-            )}
-          </For>
-        </div>
+        <Tabs value={activeCategory()} onChange={setActiveCategory} aria-label="Document categories">
+          <Tabs.List class="category-tabs">
+            <For each={CATEGORIES}>
+              {(cat) => (
+                <Tabs.Trigger value={cat} class="tab">
+                  {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                </Tabs.Trigger>
+              )}
+            </For>
+          </Tabs.List>
+        </Tabs>
         <input
           type="text"
           placeholder="Search documents..."
@@ -121,7 +117,7 @@ export default function GalleryGrid() {
         />
       </div>
 
-      <div id="gallery-panel" class="grid" role="tabpanel" aria-label="Document gallery">
+      <div ref={gridRef} class="grid" role="tabpanel" aria-label="Document gallery">
         <For each={filteredDocs()}>
           {(doc) => (
             <a
@@ -129,7 +125,6 @@ export default function GalleryGrid() {
               target="_blank"
               rel="noopener noreferrer"
               class="card"
-              role="option"
               aria-label={`${doc.name}: ${doc.desc}`}
             >
               <div class="card-icon">

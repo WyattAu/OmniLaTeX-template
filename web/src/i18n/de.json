@@ -1,0 +1,64 @@
+{
+  "nav": {
+    "gallery": "Galerie",
+    "docs": "Dokumentation",
+    "verify": "Verifizieren",
+    "github": "GitHub"
+  },
+  "hero": {
+    "title": "OmniLaTeX",
+    "description": "Eine modulare Dokumentklasse fur LuaLaTeX, aufgebaut auf KOMA-Script. 27 Dokumenttypen, 21 Institutionen, 25 Sprachen.",
+    "browse": "Galerie durchsuchen",
+    "readDocs": "Dokumentation lesen"
+  },
+  "features": {
+    "title": "Funktionen",
+    "doctypes": "27 Dokumenttypen",
+    "doctypesDesc": "Arbeit, Artikel, CV, Brief, Prasentation, Poster, Klausur, Buch und mehr.",
+    "institutions": "21 Institutionen",
+    "institutionsDesc": "Vorkonfiguriertes Branding fur MIT, Stanford, ETH, Oxford und 17 weitere.",
+    "languages": "25+ Sprachen",
+    "languagesDesc": "Englisch, Deutsch, Chinesisch, Arabisch, Japanisch, Koreanisch und 20 weitere.",
+    "reproducible": "Reproduzierbare Builds",
+    "reproducibleDesc": "Docker- und Nix-Unterstutzung. Identische Ausgabe auf allen Plattformen."
+  },
+  "gallery": {
+    "title": "PDF-Galerie",
+    "description": "50 Beispieldokumente durchsuchen, die mit OmniLaTeX erstellt wurden.",
+    "search": "Dokumente suchen...",
+    "noResults": "Keine Dokumente gefunden.",
+    "categories": {
+      "all": "Alle",
+      "academic": "Akademisch",
+      "professional": "Professionell",
+      "presentation": "Prasentation",
+      "technical": "Technisch",
+      "language": "Sprache",
+      "features": "Funktionen",
+      "starter": "Starter"
+    }
+  },
+  "verify": {
+    "title": "Build-Verifizierung",
+    "description": "Ihre OmniLaTeX-Dokumentkonfiguration validieren.",
+    "doctype": "Dokumenttyp",
+    "institution": "Institution",
+    "language": "Sprache",
+    "copy": "Kopieren",
+    "errors": "Fehler:",
+    "warnings": "Warnungen:"
+  },
+  "docs": {
+    "title": "Dokumentation",
+    "description": "Alles, was Sie brauchen, um OmniLaTeX zu verwenden, zu konfigurieren und zu erweitern.",
+    "gettingStarted": "Erste Schritte",
+    "reference": "Referenz",
+    "advanced": "Fortgeschritten",
+    "distribution": "Distribution",
+    "manual": "Handbuch",
+    "back": "Alle Dokumente"
+  },
+  "footer": {
+    "text": "OmniLaTeX Vorlage"
+  }
+}

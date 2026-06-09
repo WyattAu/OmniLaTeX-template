@@ -119,6 +119,77 @@ pre code {
   outline-offset: 2px;
 }
 
+/* Kobalte Select */
+.select-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-panel);
+  color: var(--fg);
+  font-size: 14px;
+  cursor: pointer;
+  min-width: 160px;
+}
+
+.select-trigger:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.select-icon {
+  font-size: 10px;
+  margin-left: 8px;
+}
+
+.select-content {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--depth-2);
+  z-index: 1000;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.select-listbox {
+  padding: 4px;
+  list-style: none;
+}
+
+.select-listbox [role="option"] {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--fg);
+  border-radius: var(--radius-sm);
+}
+
+.select-listbox [role="option"]:hover,
+.select-listbox [role="option"][data-highlighted] {
+  background: var(--bg-elevated);
+}
+
+.select-listbox [role="option"][aria-selected="true"] {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* Kobalte Tabs */
+.category-tabs [role="tablist"] {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

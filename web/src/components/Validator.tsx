@@ -1,4 +1,6 @@
 import { createSignal, Show, onMount } from 'solid-js';
+import { Select } from '@kobalte/core/select';
+import { Toaster, toast } from 'solid-sonner';
 
 const DOCTYPES = [
   'article', 'book', 'thesis', 'dissertation', 'cv', 'cover-letter',
@@ -42,7 +44,6 @@ function validate(doctype: string, institution: string, language: string): Valid
     warnings.push(`Language "${language}" may not be fully supported. Check polyglossia documentation.`);
   }
 
-  // Doctype-specific warnings
   if (['thesis', 'dissertation', 'book', 'dictionary'].includes(doctype) && institution === 'none') {
     warnings.push(`Doctype "${doctype}" typically uses an institution config for branding.`);
   }
@@ -60,6 +61,34 @@ function validate(doctype: string, institution: string, language: string): Valid
   return { valid: errors.length === 0, errors, warnings, classLine };
 }
 
+function SelectField(props: { label: string; options: string[]; value: string; onChange: (v: string) => void }) {
+  const options = props.options.map(o => ({ value: o, label: o }));
+  return (
+    <div class="select-field">
+      <label class="label-text">{props.label}</label>
+      <Select
+        options={options}
+        value={options.find(o => o.value === props.value)}
+        onChange={(opt) => opt && props.onChange(opt.value)}
+        optionValue="value"
+        optionTextValue="label"
+      >
+        <Select.Trigger class="select-trigger" aria-label={props.label}>
+          <Select.Value<string>>
+            {(state) => state.selectedOption()?.label ?? props.value}
+          </Select.Value>
+          <Select.Icon class="select-icon">&#9662;</Select.Icon>
+        </Select.Trigger>
+        <Select.Portal>
+          <Select.Content class="select-content">
+            <Select.Listbox class="select-listbox" />
+          </Select.Content>
+        </Select.Portal>
+      </Select>
+    </div>
+  );
+}
+
 export default function Validator() {
   const [doctype, setDoctype] = createSignal('article');
   const [institution, setInstitution] = createSignal('none');
@@ -74,9 +103,12 @@ export default function Validator() {
   const copyToClipboard = async () => {
     const r = result();
     if (r?.classLine) {
-      await navigator.clipboard.writeText(r.classLine);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      try {
+        await navigator.clipboard.writeText(r.classLine);
+        toast.success('Copied to clipboard');
+      } catch {
+        toast.error('Failed to copy');
+      }
     }
   };
 
@@ -84,27 +116,11 @@ export default function Validator() {
 
   return (
     <div class="validator">
+      <Toaster position="bottom-right" />
       <div class="form-grid">
-        <label>
-          <span class="label-text">Document Type</span>
-          <select value={doctype()} onChange={(e) => { setDoctype(e.currentTarget.value); runValidation(); }}>
-            {DOCTYPES.map(d => <option value={d}>{d}</option>)}
-          </select>
-        </label>
-
-        <label>
-          <span class="label-text">Institution</span>
-          <select value={institution()} onChange={(e) => { setInstitution(e.currentTarget.value); runValidation(); }}>
-            {INSTITUTIONS.map(i => <option value={i}>{i}</option>)}
-          </select>
-        </label>
-
-        <label>
-          <span class="label-text">Language</span>
-          <select value={language()} onChange={(e) => { setLanguage(e.currentTarget.value); runValidation(); }}>
-            {LANGUAGES.map(l => <option value={l}>{l}</option>)}
-          </select>
-        </label>
+        <SelectField label="Document Type" options={DOCTYPES} value={doctype()} onChange={(v) => { setDoctype(v); runValidation(); }} />
+        <SelectField label="Institution" options={INSTITUTIONS} value={institution()} onChange={(v) => { setInstitution(v); runValidation(); }} />
+        <SelectField label="Language" options={LANGUAGES} value={language()} onChange={(v) => { setLanguage(v); runValidation(); }} />
       </div>
 
       <Show when={result()}>
@@ -131,7 +147,7 @@ export default function Validator() {
             <div class="class-line">
               <code>{result()!.classLine}</code>
               <button onClick={copyToClipboard} class="copy-btn" aria-label="Copy documentclass command to clipboard">
-                {copied() ? 'Copied' : 'Copy'}
+                Copy
               </button>
             </div>
           </Show>

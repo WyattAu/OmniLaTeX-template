@@ -1,0 +1,64 @@
+{
+  "nav": {
+    "gallery": "Gallery",
+    "docs": "Docs",
+    "verify": "Verify",
+    "github": "GitHub"
+  },
+  "hero": {
+    "title": "OmniLaTeX",
+    "description": "A modular document class for LuaLaTeX, built on KOMA-Script. 27 document types, 21 institutions, 25 languages.",
+    "browse": "Browse Gallery",
+    "readDocs": "Read Documentation"
+  },
+  "features": {
+    "title": "Features",
+    "doctypes": "27 Document Types",
+    "doctypesDesc": "Thesis, article, CV, letter, presentation, poster, exam, book, and more.",
+    "institutions": "21 Institutions",
+    "institutionsDesc": "Pre-configured branding for MIT, Stanford, ETH, Oxford, and 17 more.",
+    "languages": "25+ Languages",
+    "languagesDesc": "English, German, Chinese, Arabic, Japanese, Korean, and 20 more.",
+    "reproducible": "Reproducible Builds",
+    "reproducibleDesc": "Docker and Nix support. Identical output across all platforms."
+  },
+  "gallery": {
+    "title": "PDF Gallery",
+    "description": "Browse 50 example documents compiled with OmniLaTeX.",
+    "search": "Search documents...",
+    "noResults": "No documents match your search.",
+    "categories": {
+      "all": "All",
+      "academic": "Academic",
+      "professional": "Professional",
+      "presentation": "Presentation",
+      "technical": "Technical",
+      "language": "Language",
+      "features": "Features",
+      "starter": "Starter"
+    }
+  },
+  "verify": {
+    "title": "Build Verification",
+    "description": "Validate your OmniLaTeX document configuration.",
+    "doctype": "Document Type",
+    "institution": "Institution",
+    "language": "Language",
+    "copy": "Copy",
+    "errors": "Errors:",
+    "warnings": "Warnings:"
+  },
+  "docs": {
+    "title": "Documentation",
+    "description": "Everything you need to use, configure, and extend OmniLaTeX.",
+    "gettingStarted": "Getting Started",
+    "reference": "Reference",
+    "advanced": "Advanced",
+    "distribution": "Distribution",
+    "manual": "Manual",
+    "back": "All Docs"
+  },
+  "footer": {
+    "text": "OmniLaTeX Template"
+  }
+}
