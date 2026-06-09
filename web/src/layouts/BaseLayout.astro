@@ -1,12 +1,15 @@
 ---
+import { getBaseURL } from '../lib/utils';
+
 export interface Props {
   title: string;
   description?: string;
 }
 
 const { title, description = 'Universal LaTeX document class with 27 doctypes, 21 institutions, 25 languages' } = Astro.props;
-const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
+const base = getBaseURL();
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const currentPath = Astro.url.pathname;
 ---
 
 <!DOCTYPE html>
@@ -41,16 +44,16 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       <div class="nav-inner">
         <a href={base} class="nav-brand">OmniLaTeX</a>
         <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="3" y1="5" x2="17" y2="5"/>
             <line x1="3" y1="10" x2="17" y2="10"/>
             <line x1="3" y1="15" x2="17" y2="15"/>
           </svg>
         </button>
-        <div class="nav-links">
-          <a href={`${base}gallery/`}>Gallery</a>
-          <a href={`${base}docs/`}>Docs</a>
-          <a href={`${base}verify/`}>Verify</a>
+        <div class="nav-links" aria-hidden="true">
+          <a href={`${base}gallery/`} data-astro-prefetch aria-current={currentPath.startsWith('/OmniLaTeX-template/gallery') || currentPath.endsWith('/gallery/') ? 'page' : undefined}>Gallery</a>
+          <a href={`${base}docs/`} data-astro-prefetch aria-current={currentPath.startsWith('/OmniLaTeX-template/docs') || currentPath.endsWith('/docs/') ? 'page' : undefined}>Docs</a>
+          <a href={`${base}verify/`} data-astro-prefetch aria-current={currentPath.endsWith('/verify/') ? 'page' : undefined}>Verify</a>
           <a href="https://github.com/WyattAu/OmniLaTeX-template" target="_blank" rel="noopener noreferrer">GitHub</a>
         </div>
       </div>
@@ -140,8 +143,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     transition: color 0.15s;
   }
 
-  .nav-links a:hover {
+  .nav-links a:hover,
+  .nav-links a[aria-current="page"] {
     color: var(--fg);
+  }
+
+  .nav-links a[aria-current="page"] {
+    font-weight: 700;
   }
 
   .footer {
@@ -193,10 +201,50 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   const toggle = document.querySelector('.nav-toggle');
   const links = document.querySelector('.nav-links');
   if (toggle && links) {
+    function openMenu() {
+      toggle.setAttribute('aria-expanded', 'true');
+      links.classList.add('open');
+      links.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeMenu() {
+      toggle.setAttribute('aria-expanded', 'false');
+      links.classList.remove('open');
+      links.setAttribute('aria-hidden', 'true');
+      toggle.focus();
+    }
+
     toggle.addEventListener('click', () => {
-      const expanded = toggle.getAttribute('aria-expanded') === 'true';
-      toggle.setAttribute('aria-expanded', String(!expanded));
-      links.classList.toggle('open');
+      const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+      if (isOpen) {
+        closeMenu();
+      } else {
+        openMenu();
+        const firstLink = links.querySelector('a');
+        if (firstLink) firstLink.focus();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        closeMenu();
+      }
+    });
+
+    // Trap focus within mobile menu when open
+    links.addEventListener('keydown', (e) => {
+      if (e.key !== 'Tab' || toggle.getAttribute('aria-expanded') !== 'true') return;
+      const focusable = Array.from(links.querySelectorAll('a'));
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     });
   }
 </script>

@@ -1,4 +1,4 @@
-OmniLaTeX v2.4.0 — Universal LaTeX Template System
+OmniLaTeX v2.5.0 — Universal LaTeX Template System
 ====================================================
 
 A modular LaTeX document class supporting multiple document types

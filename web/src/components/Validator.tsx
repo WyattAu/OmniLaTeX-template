@@ -1,4 +1,4 @@
-import { createSignal, Show, onMount } from 'solid-js';
+import { createSignal, Show, For, onMount } from 'solid-js';
 import { Select } from '@kobalte/core/select';
 import { Toaster, toast } from 'solid-sonner';
 
@@ -62,13 +62,13 @@ function validate(doctype: string, institution: string, language: string): Valid
 }
 
 function SelectField(props: { label: string; options: string[]; value: string; onChange: (v: string) => void }) {
-  const options = props.options.map(o => ({ value: o, label: o }));
+  const options = () => props.options.map(o => ({ value: o, label: o }));
   return (
     <div class="select-field">
       <label class="label-text">{props.label}</label>
-      <Select
-        options={options}
-        value={options.find(o => o.value === props.value)}
+        <Select
+        options={options()}
+        value={options().find(o => o.value === props.value)}
         onChange={(opt) => opt && props.onChange(opt.value)}
         optionValue="value"
         optionTextValue="label"
@@ -94,7 +94,6 @@ export default function Validator() {
   const [institution, setInstitution] = createSignal('none');
   const [language, setLanguage] = createSignal('english');
   const [result, setResult] = createSignal<ValidationResult | null>(null);
-  const [copied, setCopied] = createSignal(false);
 
   const runValidation = () => {
     setResult(validate(doctype(), institution(), language()));
@@ -129,7 +128,7 @@ export default function Validator() {
             <div class="errors">
               <strong>Errors:</strong>
               <ul>
-                {result()!.errors.map(e => <li>{e}</li>)}
+                <For each={result()!.errors}>{(e) => <li>{e}</li>}</For>
               </ul>
             </div>
           </Show>
@@ -138,7 +137,7 @@ export default function Validator() {
             <div class="warnings">
               <strong>Warnings:</strong>
               <ul>
-                {result()!.warnings.map(w => <li>{w}</li>)}
+                <For each={result()!.warnings}>{(w) => <li>{w}</li>}</For>
               </ul>
             </div>
           </Show>

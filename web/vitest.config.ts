@@ -5,6 +5,8 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     include: ['tests/**/*.{test,spec}.{ts,tsx}'],
+    pool: 'forks',
+    singleThread: true,
     server: {
       deps: {
         inline: ['solid-js', '@solidjs/testing-library'],

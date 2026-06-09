@@ -538,7 +538,7 @@ class _Commands(
 
                             threshold = 0.95
                             page_pass = ssim >= threshold
-                            status = "✅" if page_pass else "❌"
+                            status = "PASS" if page_pass else "FAIL"
                             self.ui.info(f"  Page {i + 1}: SSIM={ssim:.4f} {status}")
                             if not page_pass:
                                 all_pass = False

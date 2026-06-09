@@ -78,7 +78,7 @@ Use `python build.py --help` for all options.
 ## Testing
 
 ```bash
-python -m pytest tests/                         # fast suite (1346 tests, no compilation)
+python -m pytest tests/                         # fast suite (1711 tests, no compilation)
 python -m pytest tests/test_modules.py          # structural tests only
 python -m pytest tests/test_ctan.py             # CTAN package validation
 ```

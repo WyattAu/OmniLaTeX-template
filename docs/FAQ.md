@@ -99,7 +99,7 @@ Check the log file for the specific error. Common causes:
 **"Font 'Monaspace Neon' not found"**
 
 This is a warning, not a fatal error. OmniLaTeX falls back to Latin Modern Mono.
-To install: download from <https://github.com/chriskapp/neon-monospace> and place
+To install: download from <https://github.com/githubnext/monaspace> and place
 the OTF files in `~/.local/share/fonts/`, then run `luaotfload-tool --update`.
 
 **"Module 'omnilatex-xxx' not found"**

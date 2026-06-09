@@ -1,18 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { slugToTitle, getBaseURL } from '../../lib/utils';
 
 const allDocs = await getCollection('docs');
 const docs = allDocs.filter(d => d.id !== 'index' && d.id !== 'index.md');
-const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
-
-function slugToTitle(slug: string): string {
-  return slug
-    .replace(/\.md$/, '')
-    .split('/')
-    .map(part => part.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()))
-    .join(' / ');
-}
+const base = getBaseURL();
 
 // Group docs by category
 const groups = {

@@ -205,24 +205,6 @@ def _is_large_text(tag: Tag) -> bool:
     return pt >= 18 or (pt >= 14 and is_bold)
 
 
-# ── Named color map (from CSS) ──────────────────────────────────
-
-# These are from the style.css design tokens
-CSS_COLORS = {
-    "--bg": "#0A0E13",
-    "--bg-card": "#12171E",
-    "--bg-surface": "#1A1F27",
-    "--bg-elevated": "#282D35",
-    "--text": "#E6EDF3",
-    "--text-secondary": "#8B949E",
-    "--text-muted": "#6E7681",
-    "--border": "#21262D",
-    "--border-light": "#3D444D",
-    "--accent": "#4A90D9",
-    "--accent-light": "#6BA8F0",
-}
-
-
 def check_color_contrast(soup: BeautifulSoup, file_path: str) -> list[Violation]:
     """Check color contrast ratios for text elements."""
     violations: list[Violation] = []

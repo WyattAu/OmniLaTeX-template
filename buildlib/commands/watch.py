@@ -37,9 +37,7 @@ class WatchMixin:
                 def on_modified(self, event):
                     path = Path(event.src_path)
                     if path.suffix in self.extensions:
-                        import time as _time
-
-                        now = _time.time()
+                        now = time.time()
                         if now - self._last_rebuild < 1.0:
                             return
                         self._last_rebuild = now

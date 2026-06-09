@@ -3,7 +3,6 @@
   /* Spatial Materialism surfaces */
   --bg: #0A0E13;
   --bg-panel: #161B22;
-  --bg-surface: #1A1F26;
   --bg-elevated: #21262D;
 
   /* Foreground */
@@ -27,12 +26,10 @@
   /* Depth shadows */
   --depth-1: 0 1px 2px rgba(0,0,0,0.3);
   --depth-2: 0 4px 12px rgba(0,0,0,0.4);
-  --depth-3: 0 8px 24px rgba(0,0,0,0.5);
 
   /* Amoebic radius */
   --radius-sm: 6px;
   --radius-md: 12px;
-  --radius-lg: 16px;
   --radius-pill: 999px;
 
   /* Amoebic motion */
@@ -181,13 +178,6 @@ pre code {
 .select-listbox [role="option"][aria-selected="true"] {
   background: var(--accent);
   color: #fff;
-}
-
-/* Kobalte Tabs */
-.category-tabs [role="tablist"] {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
 }
 
 /* Reduced motion */

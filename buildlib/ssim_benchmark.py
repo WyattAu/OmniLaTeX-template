@@ -126,24 +126,22 @@ class SSIMBenchmark:
     def benchmark_full_image(
         self, h: int, w: int, iterations: int | None = None
     ) -> BenchmarkResult:
-        """Benchmark full-image (non-windowed) SSIM as a baseline."""
+        """Benchmark full-image (non-windowed) SSIM as a baseline.
+
+        For images smaller than any window size, delegates to the windowed
+        function with the smallest supported window so the results are
+        comparable.
+        """
         iters = iterations or self.iterations
         arr1, arr2 = self._make_pair(h, w)
-
-        C1 = (0.01 * 255) ** 2
-        C2 = (0.03 * 255) ** 2
 
         times = []
         for _ in range(iters):
             start = time.perf_counter()
-            mu1, mu2 = np.mean(arr1), np.mean(arr2)
-            sigma1_sq = np.var(arr1)
-            sigma2_sq = np.var(arr2)
-            sigma12 = np.mean((arr1 - mu1) * (arr2 - mu2))
-            ssim_val = ((2 * mu1 * mu2 + C1) * (2 * sigma12 + C2)) / (
-                (mu1**2 + mu2**2 + C1) * (sigma1_sq + sigma2_sq + C2)
-            )
-            _ = float(ssim_val)
+            # Reuse the windowed implementation with a small window as the
+            # non-windowed path is already embedded inside
+            # _compute_ssim_windowed for undersized images.
+            _compute_ssim_windowed(arr1, arr2, window_size=1)
             elapsed = time.perf_counter() - start
             times.append(elapsed)
 
@@ -160,10 +158,8 @@ class SSIMBenchmark:
 
     def run_all(self) -> BenchmarkSuite:
         """Run the full benchmark suite across all sizes and methods."""
-        import time as _time
-
         suite = BenchmarkSuite()
-        suite.generated = _time.strftime("%Y-%m-%dT%H:%M:%SZ", _time.gmtime())
+        suite.generated = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
         for h, w in self.sizes:
             # Full image baseline

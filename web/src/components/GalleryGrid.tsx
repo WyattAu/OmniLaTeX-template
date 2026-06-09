@@ -2,6 +2,12 @@ import { createSignal, For, Show, onMount } from 'solid-js';
 import { Tabs } from '@kobalte/core/tabs';
 import { autoAnimate } from '@formkit/auto-animate';
 
+function getBaseURL(): string {
+  // @ts-expect-error -- Astro Vite import.meta.env
+  const base = import.meta.env.BASE_URL;
+  return base.endsWith('/') ? base : base + '/';
+}
+
 interface Document {
   id: string;
   name: string;
@@ -91,7 +97,7 @@ export default function GalleryGrid() {
     });
   };
 
-  const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
+  const base = getBaseURL();
 
   return (
     <div>
