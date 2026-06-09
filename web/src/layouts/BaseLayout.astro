@@ -1,5 +1,6 @@
 ---
 import { getBaseURL } from '../lib/utils';
+import '../styles/global.css';
 
 export interface Props {
   title: string;
@@ -19,8 +20,8 @@ const currentPath = Astro.url.pathname;
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content={description}>
   <meta name="theme-color" content="#0A0E13">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://static.cloudflareinsights.com">
-  <link rel="canonical" href={canonicalURL}
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://static.cloudflareinsights.com https://api.github.com">
+  <link rel="canonical" href={canonicalURL.href}>
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
