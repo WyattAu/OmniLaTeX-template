@@ -86,7 +86,7 @@ All LaTeX dependencies are bundled in TeX Live or installed automatically by the
 ## Building
 
 ```bash
-python build.py build                           # build all 50 examples
+python build.py build                           # build all 87 examples
 python build.py build-example thesis           # build one example
 python build.py build-manual                   # build the 254-page reference manual
 python build.py doctor                         # check build environment
@@ -107,7 +107,7 @@ lib/                       # 31 modules (layout, typography, graphics, language,
 config/
   document-types/          # doctype profiles (one per document type)
   institutions/            # institution configs (colors, logos, translations)
-examples/                  # 50 example documents
+examples/                  # 87 example documents
 doc/                       # reference manual (254 pages)
 bib/                       # sample bibliography
 buildlib/                  # Python build system (9 modules, 78% coverage)
