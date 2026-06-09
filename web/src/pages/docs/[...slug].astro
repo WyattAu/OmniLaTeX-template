@@ -12,16 +12,56 @@ export async function getStaticPaths() {
 }
 
 const { doc } = Astro.props;
-const { Content } = await render(doc);
-
+const { Content, headings } = await render(doc);
 const title = doc.data?.title || slugToTitle(doc.id);
 const base = getBaseURL();
+
+// Extract headings for table of contents (h2 and h3)
+const toc = headings
+  .filter(h => h.depth >= 2 && h.depth <= 3)
+  .map(h => ({
+    id: h.slug,
+    text: h.text,
+    depth: h.depth,
+    children: [] as typeof toc,
+  }));
+
+// Build nested TOC: h3 items become children of the preceding h2
+const nestedToc: typeof toc = [];
+for (const item of toc) {
+  if (item.depth === 2) {
+    nestedToc.push({ ...item, children: [] });
+  } else {
+    const parent = nestedToc[nestedToc.length - 1];
+    if (parent) parent.children.push(item);
+  }
+}
 ---
 
 <BaseLayout title={title}>
   <div class="doc-layout">
     <nav class="doc-sidebar" aria-label="Documentation navigation">
       <a href={`${base}docs/`} class="back-link">&larr; All Docs</a>
+      {nestedToc.length > 0 && (
+        <ul class="toc" aria-label="Table of contents">
+          {nestedToc.map(section => (
+            <li>
+              <a href={`#${section.id}`} class={section.depth === 2 ? 'toc-h2' : 'toc-h3'}>
+                {section.text}
+              </a>
+              {section.children.length > 0 && (
+                <ul>
+                  {section.children.map(sub => (
+                    <li key={sub.id}>
+                      <a href={`#${sub.id}`} class="toc-h3">{sub.text}</a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
     </nav>
 
     <article class="doc-content">
@@ -33,7 +73,7 @@ const base = getBaseURL();
 <style>
   .doc-layout {
     display: grid;
-    grid-template-columns: 200px 1fr;
+    grid-template-columns: 220px 1fr;
     gap: 48px;
     padding: 48px 0 80px;
   }
@@ -45,13 +85,62 @@ const base = getBaseURL();
   }
 
   .back-link {
+    display: inline-block;
     color: var(--fg-muted);
     font-size: 14px;
     text-decoration: none;
+    margin-bottom: 24px;
   }
 
   .back-link:hover {
     color: var(--fg);
+  }
+
+  .toc {
+    list-style: none;
+    padding: 0;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .toc li {
+    margin-bottom: 2px;
+  }
+
+  .toc a {
+    color: var(--fg-muted);
+    text-decoration: none;
+    display: block;
+    padding: 2px 0;
+    border-left: 2px solid transparent;
+    padding-left: 12px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .toc a:hover {
+    color: var(--fg);
+  }
+
+  .toc-h2 {
+    font-weight: 600;
+    border-left-color: var(--border-light);
+    padding-left: 12px;
+  }
+
+  .toc-h3 {
+    padding-left: 24px;
+    font-size: 12px;
+    border-left-color: transparent;
+  }
+
+  .toc-h3 a {
+    padding-left: 24px;
+  }
+
+  .toc ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
   }
 
   .doc-content {
@@ -145,10 +234,19 @@ const base = getBaseURL();
     .doc-layout {
       grid-template-columns: 1fr;
       gap: 24px;
+      padding: 32px 0 48px;
     }
 
     .doc-sidebar {
       position: static;
+      display: none;
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1200px) {
+    .doc-layout {
+      grid-template-columns: 180px 1fr;
+      gap: 32px;
     }
   }
 </style>
