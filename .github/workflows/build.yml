@@ -45,7 +45,7 @@ jobs:
       uses: ./.github/actions/setup-python
 
     - name: Install linting tools
-      run: pip install -q black isort flake8 bandit
+      run: pip install -q -r requirements-lint.txt
 
     - name: Run black --check
       run: black --check tests/ buildlib/ scripts/ tools/ build.py
@@ -131,57 +131,6 @@ jobs:
         path: build/examples/*.pdf
         if-no-files-found: error
         retention-days: 30
-
-  performance:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs: build
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      with:
-        fetch-depth: 1
-
-    - name: Read Docker image digest
-      id: digest
-      uses: ./.github/actions/read-docker-digest
-
-    - name: Pull Docker image
-      run: docker pull "${{ steps.digest.outputs.image }}"
-
-    - name: Build examples with timings
-      run: |
-        docker run --rm --entrypoint "" \
-          -v "$GITHUB_WORKSPACE:/workspace" \
-          -w /workspace \
-          --user root \
-          -e IS_OMNILATEX_CONTAINER=true \
-          -e CI=true \
-          "${{ steps.digest.outputs.image }}" \
-          python3 build.py --mode prod --timings --force build-examples
-
-    - name: Generate performance summary with regression detection
-      if: always()
-      run: |
-        if [ -f build/metrics.json ]; then
-          echo "## Build Performance Metrics" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          docker run --rm --entrypoint "" \
-            -v "$GITHUB_WORKSPACE:/workspace" \
-            -w /workspace \
-            "${{ steps.digest.outputs.image }}" \
-            python3 .github/scripts/extract_metrics.py >> $GITHUB_STEP_SUMMARY
-        else
-          echo "No metrics.json found" >> $GITHUB_STEP_SUMMARY
-        fi
-
-    - name: Upload performance metrics
-      if: always()
-      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-      with:
-        name: performance-metrics
-        path: build/metrics.json
-        retention-days: 90
 
   determinism:
     runs-on: ubuntu-latest
