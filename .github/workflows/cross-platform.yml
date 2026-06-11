@@ -81,10 +81,41 @@ jobs:
         python -c "import buildlib; print('buildlib OK')"
         python -c "from buildlib.config import ProjectConfig; print('config OK')"
 
+  macos:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      with:
+        fetch-depth: 1
+
+    - name: Install TeX Live via Homebrew
+      run: |
+        brew install --cask mactex
+
+    - name: Add TeX Live to PATH
+      run: |
+        echo "/Library/TeX/texbin" >> $GITHUB_PATH
+
+    - name: Install Python dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        pip install pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout hypothesis
+
+    - name: Run fast test suite
+      run: |
+        pytest tests/test_modules.py tests/test_config.py tests/test_negative.py tests/test_unicode.py -v --timeout=60 -m "not slow" --tb=short -q
+
+    - name: Verify Python imports
+      run: |
+        python3 -c "import buildlib; print('buildlib OK')"
+        python3 -c "from buildlib.config import ProjectConfig; print('config OK')"
+
   report:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [linux, windows]
+    needs: [linux, windows, macos]
     if: always()
     steps:
     - name: Cross-platform summary
@@ -95,3 +126,4 @@ jobs:
         echo "|----------|--------|" >> $GITHUB_STEP_SUMMARY
         echo "| Linux (Docker) | ${{ needs.linux.result == 'success' && 'PASS' || 'FAIL' }} |" >> $GITHUB_STEP_SUMMARY
         echo "| Windows | ${{ needs.windows.result == 'success' && 'PASS' || 'FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| macOS | ${{ needs.macos.result == 'success' && 'PASS' || 'FAIL' }} |" >> $GITHUB_STEP_SUMMARY

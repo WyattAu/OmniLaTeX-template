@@ -7,7 +7,7 @@
 accessibility-test = { cold_mean = 64.53 }
 article = { cold_mean = 73.61 }
 article-bengali = { cold_mean = 70.00 }
-article-chinese-traditional = { cold_mean = 70.00 }
+article-chinese-traditional = { cold_mean = 168.82 }
 article-color = { cold_mean = 60.84 }
 article-czech = { cold_mean = 70.00 }
 article-danish = { cold_mean = 70.00 }
@@ -32,7 +32,7 @@ article-vietnamese = { cold_mean = 70.00 }
 # ── Beamer ────────────────────────────────────────────────────────
 beamer-academic = { cold_mean = 41.13 }
 beamer-corporate = { cold_mean = 25.30 }
-beamer-defense = { cold_mean = 26.02 }
+beamer-defense = { cold_mean = 59.83 }
 beamer-minimal = { cold_mean = 25.02 }
 beamer-native = { cold_mean = 25.74 }
 
@@ -44,7 +44,7 @@ recipe = { cold_mean = 39.04 }
 # ── Citation & Language ───────────────────────────────────────────
 citation-styles = { cold_mean = 51.18 }
 cjk-chinese = { cold_mean = 70.87 }
-cjk-japanese = { cold_mean = 71.56 }
+cjk-japanese = { cold_mean = 186.02 }
 cjk-korean = { cold_mean = 59.32 }
 multi-language = { cold_mean = 57.94 }
 rtl-arabic = { cold_mean = 63.66 }
