@@ -10,8 +10,6 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
-
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 BUILD_SCRIPT = PROJECT_ROOT / "build.py"
 
@@ -40,16 +38,16 @@ class TestScaffoldInstitution:
 
     def test_invalid_name_rejected(self) -> None:
         result = _run("scaffold-institution", "../../etc/passwd")
-        # Should either error or not create the directory
-        target = PROJECT_ROOT / "config" / "institutions" / ".."
         # The path traversal check should catch this
         combined = result.stdout + result.stderr
-        assert "Invalid" in combined or "resolves outside" in combined or result.returncode != 0
+        assert (
+            "Invalid" in combined
+            or "resolves outside" in combined
+            or result.returncode != 0
+        )
 
     def test_creates_institution_dir(self, tmp_path: Path) -> None:
         """Test that scaffold creates a valid institution directory."""
-        import os
-
         name = "test-scaffold-inst"
         target = PROJECT_ROOT / "config" / "institutions" / name
         # Clean up if it exists from a previous run
@@ -63,7 +61,11 @@ class TestScaffoldInstitution:
                 assert "assets" in [p.name for p in target.iterdir()]
             else:
                 # If it didn't create, the command should have explained why
-                assert "already exists" in combined or "not found" in combined or "Invalid" in combined
+                assert (
+                    "already exists" in combined
+                    or "not found" in combined
+                    or "Invalid" in combined
+                )
         finally:
             if target.exists():
                 shutil.rmtree(target)
@@ -140,13 +142,21 @@ class TestPluginCommands:
         result = _run("plugin-list", timeout=30)
         combined = result.stdout + result.stderr
         # Should either list plugins or say none installed
-        assert "plugin" in combined.lower() or "No plugins" in combined or result.returncode == 0
+        assert (
+            "plugin" in combined.lower()
+            or "No plugins" in combined
+            or result.returncode == 0
+        )
 
     def test_plugin_validate_runs(self) -> None:
         result = _run("plugin-validate", timeout=30)
         combined = result.stdout + result.stderr
         # Should either validate or say no plugins
-        assert "valid" in combined.lower() or "No plugins" in combined or result.returncode == 0
+        assert (
+            "valid" in combined.lower()
+            or "No plugins" in combined
+            or result.returncode == 0
+        )
 
     def test_plugin_search_runs(self) -> None:
         result = _run("plugin-search", "test", timeout=30)

@@ -21,12 +21,16 @@ class TestOptionSchema:
         assert schema.is_file(), "option_schema.toml must exist"
 
     def test_option_schema_has_options_section(self):
-        schema = (REPO_ROOT / "specs" / "option_schema.toml").read_text(encoding="utf-8")
+        schema = (REPO_ROOT / "specs" / "option_schema.toml").read_text(
+            encoding="utf-8"
+        )
         assert "[[option]]" in schema or "[options]" in schema
 
     @pytest.mark.parametrize("section", ["meta", "option"])
     def test_option_schema_sections_exist(self, section):
-        schema = (REPO_ROOT / "specs" / "option_schema.toml").read_text(encoding="utf-8")
+        schema = (REPO_ROOT / "specs" / "option_schema.toml").read_text(
+            encoding="utf-8"
+        )
         assert (
             f"[{section}]" in schema or f"[[{section}]]" in schema
         ), f"Missing [{section}] section"
@@ -98,7 +102,9 @@ class TestDocumentTypes:
         ],
     )
     def test_doctype_has_providespackage(self, doctype):
-        sty = (self.DOCTYPE_DIR / f"omnilatex-doctype-{doctype}.sty").read_text(encoding="utf-8")
+        sty = (self.DOCTYPE_DIR / f"omnilatex-doctype-{doctype}.sty").read_text(
+            encoding="utf-8"
+        )
         assert (
             "\\ProvidesPackage" in sty or "\\ProvidesFile" in sty
         ), f"{doctype}.sty missing ProvidesPackage"
@@ -114,7 +120,9 @@ class TestDocumentTypes:
         ],
     )
     def test_doctype_has_provides_date(self, doctype):
-        sty = (self.DOCTYPE_DIR / f"omnilatex-doctype-{doctype}.sty").read_text(encoding="utf-8")
+        sty = (self.DOCTYPE_DIR / f"omnilatex-doctype-{doctype}.sty").read_text(
+            encoding="utf-8"
+        )
         assert "\\ProvidesPackage" in sty, f"{doctype}.sty missing ProvidesPackage"
         # ProvidesPackage should include a date
         assert re.search(
@@ -137,7 +145,9 @@ class TestDocumentTypes:
         ],
     )
     def test_doctype_has_citationstyle(self, doctype):
-        sty = (self.DOCTYPE_DIR / f"omnilatex-doctype-{doctype}.sty").read_text(encoding="utf-8")
+        sty = (self.DOCTYPE_DIR / f"omnilatex-doctype-{doctype}.sty").read_text(
+            encoding="utf-8"
+        )
         assert "\\citationstyle" in sty, f"{doctype}.sty missing \\citationstyle"
 
 
@@ -215,9 +225,9 @@ class TestInstitutions:
         ],
     )
     def test_institution_has_color_definitions(self, institution):
-        sty = (
-            self.INSTITUTION_DIR / institution / f"{institution}.sty"
-        ).read_text(encoding="utf-8")
+        sty = (self.INSTITUTION_DIR / institution / f"{institution}.sty").read_text(
+            encoding="utf-8"
+        )
         has_colors = (
             "\\definecolor" in sty or "\\textcolor" in sty or "\\colorlet" in sty
         )
@@ -405,7 +415,9 @@ class TestExamples:
         ],
     )
     def test_example_uses_omnilatex_class(self, example):
-        tex = (REPO_ROOT / "examples" / example / "main.tex").read_text(encoding="utf-8")
+        tex = (REPO_ROOT / "examples" / example / "main.tex").read_text(
+            encoding="utf-8"
+        )
         assert "omnilatex" in tex, f"{example}/main.tex doesn't use omnilatex class"
 
 

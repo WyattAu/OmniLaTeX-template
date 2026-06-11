@@ -6,11 +6,16 @@ in the CLI command registry, and that the menu can be constructed without errors
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
-import pytest
-
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+# Regex for matching TUI menu command names
+_CMD_RE = (
+    r'\("(build-[^"]+|clean[^"]*|test|preflight|doctor|diff|lint|check'
+    r'|list-[^"]+|init|scaffold-[^"]+|watch|export|cache-[^"]+|plugin-[^"]+)"'
+)
 
 
 class TestTUIMenuStructure:
@@ -22,10 +27,8 @@ class TestTUIMenuStructure:
         tui_path = PROJECT_ROOT / "buildlib" / "tui.py"
         tui_content = tui_path.read_text(encoding="utf-8")
 
-        # Extract command names from menu_sections (lines like ("cmd-name", "..."))
-        import re
-
-        menu_cmds = set(re.findall(r'\("(build-[^"]+|clean[^"]*|test|preflight|doctor|diff|lint|check|list-[^"]+|init|scaffold-[^"]+|watch|export|cache-[^"]+|plugin-[^"]+)"', tui_content))
+        # Extract command names from menu_sections
+        menu_cmds = set(re.findall(_CMD_RE, tui_content))
 
         # Parse commands dict from cli.py
         cli_path = PROJECT_ROOT / "buildlib" / "cli.py"
@@ -55,15 +58,13 @@ class TestTUIMenuStructure:
 
     def test_menu_covers_all_commands(self) -> None:
         """Every CLI command should appear in at least one TUI menu section."""
-        import re
-
         tui_path = PROJECT_ROOT / "buildlib" / "tui.py"
         tui_content = tui_path.read_text(encoding="utf-8")
 
         cli_path = PROJECT_ROOT / "buildlib" / "cli.py"
         cli_content = cli_path.read_text(encoding="utf-8")
 
-        menu_cmds = set(re.findall(r'"(build-[^"]+|clean[^"]*|test|preflight|doctor|diff|lint|check|list-[^"]+|init|scaffold-[^"]+|watch|export|cache-[^"]+|plugin-[^"]+)"', tui_content))
+        menu_cmds = set(re.findall(_CMD_RE, tui_content))
 
         cli_cmds = set(re.findall(r'"([a-z][\w-]+)":\s*\(', cli_content))
 
@@ -73,6 +74,6 @@ class TestTUIMenuStructure:
             # These are commands accessible via CLI but not the interactive menu.
             # This is intentional for commands like plugin-*, which have many
             # sub-variants. Just verify the count is reasonable.
-            assert len(unlisted) <= 10, (
-                f"{len(unlisted)} CLI commands not in TUI menu: {sorted(unlisted)}"
-            )
+            assert (
+                len(unlisted) <= 10
+            ), f"{len(unlisted)} CLI commands not in TUI menu: {sorted(unlisted)}"
