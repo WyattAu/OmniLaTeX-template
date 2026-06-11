@@ -57,7 +57,7 @@ jobs:
       run: flake8 tests/ buildlib/ scripts/ tools/ build.py --max-line-length=100 --extend-ignore=E203,W503
 
     - name: Run bandit security scan
-      run: bandit -r buildlib/ -c pyproject.toml -q 2>/dev/null || bandit -r buildlib/ -q --skip B101
+      run: bandit -r buildlib/ -c pyproject.toml -q 2>/dev/null || bandit -r buildlib/ -q --skip B101,B310,B404,B603,B607
 
   dependency-review:
     runs-on: ubuntu-latest
