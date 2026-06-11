@@ -17,7 +17,6 @@ from buildlib.config import ProjectConfig
 from buildlib.runner import CommandRunner
 from buildlib.ui import TerminalOutput
 
-
 pytestmark = pytest.mark.timeout(15)
 
 
@@ -73,9 +72,9 @@ class TestCompileWorkerCopyException:
         pdf = ex / "main.pdf"
         pdf.write_bytes(b"%PDF-1.4 fake")
 
-        with patch.object(
-            build_core.runner, "run", return_value=(0, [])
-        ), patch("buildlib.builder.shutil.copy", side_effect=OSError("copy fail")):
+        with patch.object(build_core.runner, "run", return_value=(0, [])), patch(
+            "buildlib.builder.shutil.copy", side_effect=OSError("copy fail")
+        ):
             name, success, logs = build_core._compile_example_worker("test")
             assert not success
 
@@ -171,7 +170,9 @@ class TestBuildExamplesMetrics:
         history_files = list(history_dir.glob("metrics_*.json"))
         assert len(history_files) == 1
 
-    def test_build_examples_no_timings_no_metrics(self, build_core, tmp_path, monkeypatch):
+    def test_build_examples_no_timings_no_metrics(
+        self, build_core, tmp_path, monkeypatch
+    ):
         monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
         monkeypatch.setattr("buildlib.builder.RICH_AVAILABLE", False)
         build_core.timings = False
@@ -224,9 +225,7 @@ class TestBuildExamplesMetrics:
 
 
 class TestSimpleConcurrentVerboseFail:
-    def test_simple_concurrent_verbose_fail(
-        self, build_core, tmp_path, monkeypatch
-    ):
+    def test_simple_concurrent_verbose_fail(self, build_core, tmp_path, monkeypatch):
         monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
         (tmp_path / "examples" / "test").mkdir(parents=True)
         (tmp_path / "examples" / "test" / "main.tex").write_text(
@@ -249,9 +248,7 @@ class TestSimpleConcurrentVerboseFail:
         def _raiser(name):
             raise RuntimeError("boom")
 
-        with patch.object(
-            build_core, "_compile_example_worker", side_effect=_raiser
-        ):
+        with patch.object(build_core, "_compile_example_worker", side_effect=_raiser):
             build_core._build_examples_simple_concurrent(["test"])
 
         captured = capsys.readouterr()

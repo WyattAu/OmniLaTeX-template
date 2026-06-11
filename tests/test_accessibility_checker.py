@@ -34,7 +34,6 @@ from buildlib.accessibility_checker import (  # noqa: E402
     contrast_ratio,
 )
 
-
 pytestmark = pytest.mark.timeout(15)
 
 
@@ -179,7 +178,7 @@ class TestIsLargeText:
 
 class TestTagLine:
     def test_tag_with_sourceline(self):
-        html = '<div>\n  <p>hello</p>\n</div>'
+        html = "<div>\n  <p>hello</p>\n</div>"
         soup = BeautifulSoup(html, "html.parser")
         tag = soup.find("p")
         line = _tag_line(tag)
@@ -202,7 +201,11 @@ class TestCheckAriaLandmarks:
         html = "<html><body><p>text</p></body></html>"
         soup = _soup(html)
         violations = check_aria_landmarks(soup, "/test/file.html")
-        errors = [v for v in violations if v.criterion == "1.3.1" and v.severity == Severity.ERROR]
+        errors = [
+            v
+            for v in violations
+            if v.criterion == "1.3.1" and v.severity == Severity.ERROR
+        ]
         assert len(errors) == 1
         assert "main" in errors[0].message
 
@@ -210,28 +213,46 @@ class TestCheckAriaLandmarks:
         html = '<html><body><div role="main"><p>text</p></div></body></html>'
         soup = _soup(html)
         violations = check_aria_landmarks(soup, "/test/file.html")
-        errors = [v for v in violations if "main" in v.message and v.severity == Severity.ERROR]
+        errors = [
+            v
+            for v in violations
+            if "main" in v.message and v.severity == Severity.ERROR
+        ]
         assert len(errors) == 0
 
     def test_no_nav_warning(self):
         html = "<html><body><main><p>text</p></main></body></html>"
         soup = _soup(html)
         violations = check_aria_landmarks(soup, "/test/file.html")
-        nav_warnings = [v for v in violations if "nav" in v.message.lower() and "aria-label" not in v.message and v.severity == Severity.WARNING]
+        nav_warnings = [
+            v
+            for v in violations
+            if "nav" in v.message.lower()
+            and "aria-label" not in v.message
+            and v.severity == Severity.WARNING
+        ]
         assert len(nav_warnings) == 1
 
     def test_no_header_warning(self):
         html = "<html><body><main><p>text</p></main></body></html>"
         soup = _soup(html)
         violations = check_aria_landmarks(soup, "/test/file.html")
-        header_warnings = [v for v in violations if "header" in v.message.lower() and v.severity == Severity.WARNING]
+        header_warnings = [
+            v
+            for v in violations
+            if "header" in v.message.lower() and v.severity == Severity.WARNING
+        ]
         assert len(header_warnings) == 1
 
     def test_no_footer_warning(self):
         html = "<html><body><main><p>text</p></main></body></html>"
         soup = _soup(html)
         violations = check_aria_landmarks(soup, "/test/file.html")
-        footer_warnings = [v for v in violations if "footer" in v.message.lower() and v.severity == Severity.WARNING]
+        footer_warnings = [
+            v
+            for v in violations
+            if "footer" in v.message.lower() and v.severity == Severity.WARNING
+        ]
         assert len(footer_warnings) == 1
 
     def test_nav_without_aria_label_warning(self):
@@ -273,21 +294,33 @@ class TestCheckHeadingHierarchy:
         html = "<html><body><h1>One</h1><h3>Three</h3></body></html>"
         soup = _soup(html)
         violations = check_heading_hierarchy(soup, "/test/file.html")
-        skip_errors = [v for v in violations if "skipped" in v.message.lower() and v.severity == Severity.ERROR]
+        skip_errors = [
+            v
+            for v in violations
+            if "skipped" in v.message.lower() and v.severity == Severity.ERROR
+        ]
         assert len(skip_errors) == 1
 
     def test_no_h1_but_has_h2_error(self):
         html = "<html><body><h2>Two</h2></body></html>"
         soup = _soup(html)
         violations = check_heading_hierarchy(soup, "/test/file.html")
-        h1_errors = [v for v in violations if "h1" in v.message.lower() and v.severity == Severity.ERROR]
+        h1_errors = [
+            v
+            for v in violations
+            if "h1" in v.message.lower() and v.severity == Severity.ERROR
+        ]
         assert len(h1_errors) == 1
 
     def test_two_h1_warning(self):
         html = "<html><body><h1>One</h1><h1>Two</h1></body></html>"
         soup = _soup(html)
         violations = check_heading_hierarchy(soup, "/test/file.html")
-        h1_warnings = [v for v in violations if "h1" in v.message.lower() and v.severity == Severity.WARNING]
+        h1_warnings = [
+            v
+            for v in violations
+            if "h1" in v.message.lower() and v.severity == Severity.WARNING
+        ]
         assert len(h1_warnings) == 1
 
     def test_proper_hierarchy_no_violations(self):
@@ -321,7 +354,9 @@ class TestCheckFormLabels:
         assert len(violations) == 0
 
     def test_wrapped_label_no_violation(self):
-        html = '<html><body><label>Enter<input id="x" type="text"></label></body></html>'
+        html = (
+            '<html><body><label>Enter<input id="x" type="text"></label></body></html>'
+        )
         soup = _soup(html)
         violations = check_form_labels(soup, "/test/file.html")
         assert len(violations) == 0
@@ -445,7 +480,9 @@ class TestCheckImageAltText:
         assert len(errors) == 0
 
     def test_alt_with_role_presentation(self):
-        html = '<html><body><img src="test.png" alt="" role="presentation"></body></html>'
+        html = (
+            '<html><body><img src="test.png" alt="" role="presentation"></body></html>'
+        )
         soup = _soup(html)
         violations = check_image_alt_text(soup, "/test/file.html")
         errors = [v for v in violations if v.severity == Severity.ERROR]
@@ -485,7 +522,9 @@ class TestCheckImageAltText:
 
 class TestCheckFocusIndicators:
     def test_outline_none_no_focus_warning(self):
-        html = "<html><head><style>* { outline: none; }</style></head><body></body></html>"
+        html = (
+            "<html><head><style>* { outline: none; }</style></head><body></body></html>"
+        )
         soup = _soup(html)
         violations = check_focus_indicators(soup, "/test/file.html")
         assert len(violations) == 1
@@ -530,7 +569,7 @@ class TestCheckColorContrast:
         assert len(violations) == 0
 
     def test_no_style_skipped(self):
-        html = '<html><body><span>text</span></body></html>'
+        html = "<html><body><span>text</span></body></html>"
         soup = _soup(html)
         violations = check_color_contrast(soup, "/test/file.html")
         assert len(violations) == 0
@@ -603,7 +642,9 @@ class TestCheckLinkAccessibility:
         assert len(violations) == 0
 
     def test_link_with_img_alt_no_violation(self):
-        html = '<html><body><a href="#"><img src="icon.png" alt="Home"></a></body></html>'
+        html = (
+            '<html><body><a href="#"><img src="icon.png" alt="Home"></a></body></html>'
+        )
         soup = _soup(html)
         violations = check_link_accessibility(soup, "/test/file.html")
         assert len(violations) == 0
@@ -632,7 +673,9 @@ class TestCheckHtmlAccessibility:
     def test_no_bs4_returns_warning(self):
         with patch("buildlib.accessibility_checker._HAS_BS4", False):
             result = check_html_accessibility("/nonexistent/file.html")
-        assert any("beautifulsoup4 not installed" in v.message for v in result.violations)
+        assert any(
+            "beautifulsoup4 not installed" in v.message for v in result.violations
+        )
 
     def test_check_exception_caught(self, tmp_path):
         html_file = tmp_path / "test.html"
@@ -653,8 +696,12 @@ class TestCheckHtmlAccessibility:
 
 class TestCheckDirectory:
     def test_scans_directory(self, tmp_path):
-        (tmp_path / "a.html").write_text("<html><body><h1>A</h1></body></html>", encoding="utf-8")
-        (tmp_path / "b.html").write_text("<html><body><h2>B</h2></body></html>", encoding="utf-8")
+        (tmp_path / "a.html").write_text(
+            "<html><body><h1>A</h1></body></html>", encoding="utf-8"
+        )
+        (tmp_path / "b.html").write_text(
+            "<html><body><h2>B</h2></body></html>", encoding="utf-8"
+        )
         results = check_directory(tmp_path)
         assert len(results) == 2
         assert results[0].file == "a.html"
@@ -677,7 +724,13 @@ class TestCheckDirectory:
 
 class TestViolation:
     def test_str_with_line(self):
-        v = Violation(criterion="1.1.1", message="missing alt", severity=Severity.ERROR, element="img", line=42)
+        v = Violation(
+            criterion="1.1.1",
+            message="missing alt",
+            severity=Severity.ERROR,
+            element="img",
+            line=42,
+        )
         s = str(v)
         assert "[ERROR]" in s
         assert "line 42" in s
@@ -689,7 +742,12 @@ class TestViolation:
         assert "line" not in s
 
     def test_str_with_element_no_line(self):
-        v = Violation(criterion="1.1.1", message="missing alt", severity=Severity.WARNING, element="svg")
+        v = Violation(
+            criterion="1.1.1",
+            message="missing alt",
+            severity=Severity.WARNING,
+            element="svg",
+        )
         s = str(v)
         assert "[WARNING]" in s
         assert "[svg]" in s
@@ -706,17 +764,23 @@ class TestCheckResult:
         assert r.warning_count == 0
 
     def test_failed_with_error(self):
-        r = CheckResult(file="test.html", violations=[Violation("1.1.1", "err", Severity.ERROR)])
+        r = CheckResult(
+            file="test.html", violations=[Violation("1.1.1", "err", Severity.ERROR)]
+        )
         assert r.passed is False
         assert r.error_count == 1
 
     def test_failed_with_warning(self):
-        r = CheckResult(file="test.html", violations=[Violation("1.1.1", "warn", Severity.WARNING)])
+        r = CheckResult(
+            file="test.html", violations=[Violation("1.1.1", "warn", Severity.WARNING)]
+        )
         assert r.passed is False
         assert r.warning_count == 1
 
     def test_passed_with_info(self):
-        r = CheckResult(file="test.html", violations=[Violation("1.1.1", "info", Severity.INFO)])
+        r = CheckResult(
+            file="test.html", violations=[Violation("1.1.1", "info", Severity.INFO)]
+        )
         assert r.passed is True
 
     def test_summary(self):

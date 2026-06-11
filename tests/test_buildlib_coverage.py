@@ -127,7 +127,9 @@ class TestSaveBuildCache:
             },
         }
         build_core._save_build_cache(cache)
-        loaded = json.loads((tmp_path / "build" / "build_cache.json").read_text(encoding="utf-8"))
+        loaded = json.loads(
+            (tmp_path / "build" / "build_cache.json").read_text(encoding="utf-8")
+        )
         assert "examples/new" in loaded
         assert "examples/old" not in loaded
 
