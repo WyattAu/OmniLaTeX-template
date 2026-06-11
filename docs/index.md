@@ -24,6 +24,8 @@ latexmk -lualatex main.tex
 python build.py build-example minimal-starter
 ```
 
+For a step-by-step walkthrough, see [Getting Started](GETTING_STARTED.md).
+
 ## Installation
 
 | Method | Command |
