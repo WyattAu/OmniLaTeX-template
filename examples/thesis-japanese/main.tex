@@ -1,0 +1,43 @@
+\documentclass[
+    language=japanese,
+    doctype=thesis,
+    institution=none,
+    titlestyle=thesis,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+
+\frontmatter
+\maketitle
+\tableofcontents
+
+\mainmatter
+\chapter{はじめに}
+本研究は、日本語学術論文の組版における OmniLaTeX の活用を目的としている。国際化が進む学術界において、高品質な日本語組版のニーズが高まっている。本稿では、LuaLaTeX と luatexja を基盤とした日本語論文テンプレートを提案する。
+
+\chapter{研究背景}
+日本語の組版には独特の規則がある。行頭行末の禁則処理、ルビの自動配置、和英混植の間隔調整などが重要である。OmniLaTeX はこれらの処理を自動的に行い、手動調整を不要にする。
+
+近年、日本のソフトウェア業界では国際化対応の重要性が増している。日本語ドキュメントの品質向上は、製品の信頼性と使いやすさに直結する。
+
+\chapter{方法論}
+本研究では、文献調査と実証研究を組み合わせた方法を採用した。国内外の日本語組版規準を比較分析し、学術論文に適用可能な組版ルールをまとめた。
+
+実験データによると、OmniLaTeX を使用した日本語論文は可読性と専門性の両面で従来の組版ツールを上回る。特に、ルビの自動配置精度と禁則処理の正確さが顕著であった。
+
+\chapter{実験結果}
+実験結果は、OmniLaTeX の和英混植間隔処理メカニズムが文書の視覚効果を著しく向上させることを示した。$O(n \log n)$ の計算量を持つアルゴリズムの記述において、和文字と欧文字の自動間隔調整が数式の明確な可読性を確保した。
+
+オイラーの等式 $e^{i\pi} + 1 = 0$ やガウス積分 $\int_{-\infty}^{+\infty} e^{-x^2} \, dx = \sqrt{\pi}$ などの数式は、日本語文脈においても適切な間隔と配置で組版された。
+
+\chapter{結論}
+本稿では、OmniLaTeX を基盤とした日本語論文組版の手法を提案した。LuaLaTeX と luatexja の統合により、ルビ注釈、禁則処理、和英混植の間隔調整など、日本語特有の組版要件を自動的に処理する。
+
+本手法は学位論文、学術誌、技術報告書の組版に幅広く応用可能である。今後は、多言語混在環境での組版や、自動目次生成生成機能の拡充を検討する。
+
+\backmatter
+\printbibliography
+
+\end{document}

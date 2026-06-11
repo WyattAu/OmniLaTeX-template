@@ -1,0 +1,43 @@
+\documentclass[
+    language=chinese,
+    doctype=thesis,
+    institution=none,
+    titlestyle=thesis,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+
+\frontmatter
+\maketitle
+\tableofcontents
+
+\mainmatter
+\chapter{引言}
+本研究旨在探讨中文语境下的学术写作与排版规范。随着中文学术出版的国际化，高质量的中文排版需求日益增长。本文介绍基于 OmniLaTeX 的中文论文模板，涵盖字体配置、章节结构和参考文献管理。
+
+\chapter{研究背景}
+中文排版具有独特的规范要求：段落首行缩进两个字符宽度，行距一般为字号的 1.5 至 2 倍，标点符号使用全角形式。OmniLaTeX 基于 LuaLaTeX 和 luatexja 引擎，自动处理这些细节，无需手动调整。
+
+在当今全球化的学术环境中，中文技术文档的质量直接影响到学术交流的效率。一份排版规范、格式统一的论文，不仅降低了读者的认知负担，也为跨国学术合作搭建了桥梁。
+
+\chapter{方法论}
+本研究采用文献分析与实证研究相结合的方法。通过对比分析国内外中文排版规范，总结出适用于学术论文的排版准则。实验数据表明，使用 OmniLaTeX 排版的中文论文在可读性和专业性方面均优于传统排版工具。
+
+实验在以下方面进行了对比：字体渲染质量、中英混排间距、标点压缩处理以及参考文献格式化。结果表明 OmniLaTeX 在所有维度上均达到或超过了现有商业排版软件的水准。
+
+\chapter{实验结果}
+实验结果显示，OmniLaTeX 的中英混排间距处理机制显著提升了文档的视觉效果。在 $O(n \log n)$ 时间复杂度的算法描述中，中英文字符之间的自动间距调整确保了公式的清晰可读。
+
+欧拉公式 $e^{i\pi} + 1 = 0$ 和高斯积分 $\int_{-\infty}^{+\infty} e^{-x^2} \, dx = \sqrt{\pi}$ 等数学表达在中文语境下的排版效果良好，符号间距均匀，基线对齐准确。
+
+\chapter{结论}
+本文提出了基于 OmniLaTeX 的中文论文排版方案。通过 LuaLaTeX 和 luatexja 的深度集成，实现了简体中文、繁体中文以及中英混排内容的原生支持。该方案可广泛应用于学位论文、学术期刊和技术报告的排版。
+
+未来工作将聚焦于多栏排版支持、中文摘要自动生成以及与主流文献管理工具的集成。
+
+\backmatter
+\printbibliography
+
+\end{document}

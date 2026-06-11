@@ -99,12 +99,14 @@ thesis-spacing = { cold_mean = 38.78 }
 thesis-aalto = { cold_mean = 196.00 }
 thesis-cambridge = { cold_mean = 210.00 }
 thesis-chalmers = { cold_mean = 196.00 }
+thesis-chinese = { cold_mean = 210.00 }
 thesis-cmu = { cold_mean = 196.00 }
 thesis-columbia = { cold_mean = 210.00 }
 thesis-epfl = { cold_mean = 200.00 }
 thesis-eth = { cold_mean = 200.00 }
 thesis-harvard = { cold_mean = 210.00 }
 thesis-imperial = { cold_mean = 210.00 }
+thesis-japanese = { cold_mean = 210.00 }
 thesis-kit = { cold_mean = 196.00 }
 thesis-mit = { cold_mean = 210.00 }
 thesis-ntnu = { cold_mean = 196.00 }
