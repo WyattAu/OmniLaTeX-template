@@ -3,16 +3,11 @@
 from __future__ import annotations
 
 import json
-import time
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-from buildlib.builder import (
-    _BuildCore,
-    extract_log_path,
-    parse_log_for_package_times,
-)
+from buildlib.builder import _BuildCore, extract_log_path, parse_log_for_package_times
 from buildlib.config import ProjectConfig
 from buildlib.runner import CommandRunner
 from buildlib.ui import TerminalOutput
@@ -97,8 +92,8 @@ class TestCompileWorkerSharedCache:
             name, success, logs = build_core._compile_example_worker("test")
 
         assert success is True
-        assert f"examples/test" in shared_cache
-        assert "source_hash" in shared_cache[f"examples/test"]
+        assert "examples/test" in shared_cache
+        assert "source_hash" in shared_cache["examples/test"]
 
 
 class TestBuildRootFailure:

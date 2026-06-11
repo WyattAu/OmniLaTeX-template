@@ -1,8 +1,7 @@
-"""Comprehensive unit tests for buildlib/accessibility_checker.py private helpers and check functions."""
+"""Comprehensive unit tests for buildlib/accessibility_checker.py."""  # noqa: E501
 
 from __future__ import annotations
 
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -271,7 +270,7 @@ class TestCheckAriaLandmarks:
         assert len(label_warnings) == 0
 
     def test_full_page_no_violations(self):
-        html = '<html><body><header></header><nav aria-label="Main"></nav><main><h1>Title</h1></main><footer></footer></body></html>'
+        html = '<html><body><header></header><nav aria-label="Main"></nav><main><h1>Title</h1></main><footer></footer></body></html>'  # noqa: E501
         soup = _soup(html)
         violations = check_aria_landmarks(soup, "/test/file.html")
         errors = [v for v in violations if v.severity == Severity.ERROR]
@@ -448,13 +447,13 @@ class TestCheckSkipLink:
         assert "target" in errors[0].message.lower()
 
     def test_valid_skip_link_no_violation(self):
-        html = '<html><body><a href="#main" class="skip-link">Skip</a><main id="main"><h1>Title</h1></main></body></html>'
+        html = '<html><body><a href="#main" class="skip-link">Skip</a><main id="main"><h1>Title</h1></main></body></html>'  # noqa: E501
         soup = _soup(html)
         violations = check_skip_link(soup, "/test/file.html")
         assert len(violations) == 0
 
     def test_skip_link_by_href_pattern(self):
-        html = '<html><body><a href="#main-content">Skip</a><main id="main-content"><h1>Title</h1></main></body></html>'
+        html = '<html><body><a href="#main-content">Skip</a><main id="main-content"><h1>Title</h1></main></body></html>'  # noqa: E501
         soup = _soup(html)
         violations = check_skip_link(soup, "/test/file.html")
         assert len(violations) == 0
@@ -495,7 +494,7 @@ class TestCheckImageAltText:
         assert len(violations) == 0
 
     def test_svg_no_accessible_name_warning(self):
-        html = '<html><body><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="5"/></svg></body></html>'
+        html = '<html><body><svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="5"/></svg></body></html>'  # noqa: E501
         soup = _soup(html)
         violations = check_image_alt_text(soup, "/test/file.html")
         svg_violations = [v for v in violations if "SVG" in v.message]
@@ -503,14 +502,14 @@ class TestCheckImageAltText:
         assert svg_violations[0].severity == Severity.WARNING
 
     def test_svg_with_title_no_violation(self):
-        html = '<html><body><svg viewBox="0 0 10 10"><title>Icon</title><circle cx="5" cy="5" r="5"/></svg></body></html>'
+        html = '<html><body><svg viewBox="0 0 10 10"><title>Icon</title><circle cx="5" cy="5" r="5"/></svg></body></html>'  # noqa: E501
         soup = _soup(html)
         violations = check_image_alt_text(soup, "/test/file.html")
         svg_violations = [v for v in violations if "SVG" in v.message]
         assert len(svg_violations) == 0
 
     def test_svg_aria_hidden_no_violation(self):
-        html = '<html><body><svg aria-hidden="true" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5"/></svg></body></html>'
+        html = '<html><body><svg aria-hidden="true" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5"/></svg></body></html>'  # noqa: E501
         soup = _soup(html)
         violations = check_image_alt_text(soup, "/test/file.html")
         svg_violations = [v for v in violations if "SVG" in v.message]
@@ -532,7 +531,7 @@ class TestCheckFocusIndicators:
         assert "outline:none" in violations[0].message
 
     def test_outline_none_with_focus_visible_no_warning(self):
-        html = "<html><head><style>* { outline: none; } a:focus-visible { outline: 2px solid blue; }</style></head><body></body></html>"
+        html = "<html><head><style>* { outline: none; } a:focus-visible { outline: 2px solid blue; }</style></head><body></body></html>"  # noqa: E501
         soup = _soup(html)
         violations = check_focus_indicators(soup, "/test/file.html")
         assert len(violations) == 0
@@ -555,7 +554,7 @@ class TestCheckFocusIndicators:
 
 class TestCheckColorContrast:
     def test_low_contrast_produces_violation(self):
-        html = '<html><body><span style="color: #777777; background-color: #888888">text</span></body></html>'
+        html = '<html><body><span style="color: #777777; background-color: #888888">text</span></body></html>'  # noqa: E501
         soup = _soup(html)
         violations = check_color_contrast(soup, "/test/file.html")
         assert len(violations) == 1
@@ -563,7 +562,7 @@ class TestCheckColorContrast:
         assert violations[0].severity == Severity.ERROR
 
     def test_sufficient_contrast_no_violation(self):
-        html = '<html><body><span style="color: #000000; background-color: #ffffff">text</span></body></html>'
+        html = '<html><body><span style="color: #000000; background-color: #ffffff">text</span></body></html>'  # noqa: E501
         soup = _soup(html)
         violations = check_color_contrast(soup, "/test/file.html")
         assert len(violations) == 0
@@ -593,7 +592,7 @@ class TestCheckReducedMotion:
         assert violations[0].severity == Severity.INFO
 
     def test_has_reduced_motion_no_violation(self):
-        html = "<html><head><style>@media (prefers-reduced-motion: reduce) { * { animation: none; } }</style></head><body></body></html>"
+        html = "<html><head><style>@media (prefers-reduced-motion: reduce) { * { animation: none; } }</style></head><body></body></html>"  # noqa: E501
         soup = _soup(html)
         violations = check_reduced_motion(soup, "/test/file.html")
         assert len(violations) == 0

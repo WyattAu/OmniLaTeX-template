@@ -9,11 +9,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from buildlib.builder import (
-    _BuildCore,
-    extract_log_path,
-    parse_log_for_package_times,
-)
+from buildlib.builder import _BuildCore, extract_log_path, parse_log_for_package_times
 from buildlib.config import ProjectConfig
 from buildlib.runner import CommandRunner
 from buildlib.ui import TerminalOutput
