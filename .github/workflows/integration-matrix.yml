@@ -7,9 +7,6 @@ concurrency:
   group: integration-matrix-${{ github.ref }}
   cancel-in-progress: false
 
-# Docker image digest is sourced from .env.docker at runtime.
-# The digest-sync workflow updates only .env.docker (no workflow file edits needed).
-
 on:
   push:
     branches: [main, master]
@@ -63,7 +60,7 @@ jobs:
           --user root \
           --entrypoint "" \
           "${{ steps.digest.outputs.image }}" \
-          bash -c "cp -r /opt/omnilatex/omnilatex.cls /opt/omnilatex/lib /opt/omnilatex/config /workspace/ && cp /workspace/config/omnilatex-document-settings.sty /workspace/config/document-settings.sty 2>/dev/null || true && lualatex --shell-escape --interaction=nonstopmode main.tex; test -f main.pdf"
+          bash -c "cp -r /opt/omnilatex/omnilatex.cls /opt/omnilatex/lib /opt/omnilatex/config /workspace/ && cp /opt/omnilatex/.latexmkrc /workspace/ 2>/dev/null || true && cp /workspace/config/omnilatex-document-settings.sty /workspace/config/document-settings.sty 2>/dev/null || true && cp -r /opt/omnilatex/bib /workspace/ 2>/dev/null || true && latexmk -interaction=nonstopmode -f -r /workspace/.latexmkrc main.tex && test -f main.pdf"
       env:
         LANGUAGE: ${{ matrix.language }}
         DOCTYPE: ${{ matrix.doctype }}
@@ -117,7 +114,7 @@ jobs:
           --user root \
           --entrypoint "" \
           "${{ steps.digest.outputs.image }}" \
-          bash -c "cp -r /opt/omnilatex/omnilatex.cls /opt/omnilatex/lib /opt/omnilatex/config /workspace/ && cp /workspace/config/omnilatex-document-settings.sty /workspace/config/document-settings.sty 2>/dev/null || true && lualatex --shell-escape --interaction=nonstopmode main.tex; test -f main.pdf"
+          bash -c "cp -r /opt/omnilatex/omnilatex.cls /opt/omnilatex/lib /opt/omnilatex/config /workspace/ && cp /opt/omnilatex/.latexmkrc /workspace/ 2>/dev/null || true && cp /workspace/config/omnilatex-document-settings.sty /workspace/config/document-settings.sty 2>/dev/null || true && cp -r /opt/omnilatex/bib /workspace/ 2>/dev/null || true && latexmk -interaction=nonstopmode -f -r /workspace/.latexmkrc main.tex && test -f main.pdf"
       env:
         LANGUAGE: ${{ matrix.language }}
 

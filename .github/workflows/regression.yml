@@ -1,0 +1,296 @@
+name: Regression
+
+permissions:
+  contents: read
+
+concurrency:
+  group: regression-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+    - '**.tex'
+    - '**.sty'
+    - '**.cls'
+    - '**.lua'
+  pull_request:
+    branches: [main, master]
+    paths:
+    - '**.tex'
+    - '**.sty'
+    - '**.cls'
+    - '**.lua'
+  workflow_dispatch:
+    inputs:
+      regenerate:
+        description: Regenerate visual reference PDFs
+        required: false
+        default: 'false'
+        type: choice
+        options:
+        - 'false'
+        - 'true'
+
+jobs:
+  # ── Shared build: builds all examples once with timings ───────────────
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      with:
+        fetch-depth: 1
+
+    - name: Read Docker image digest
+      id: digest
+      uses: ./.github/actions/read-docker-digest
+
+    - name: Pull Docker image
+      run: docker pull "${{ steps.digest.outputs.image }}"
+
+    - name: Build examples with timings
+      run: |
+        docker run --rm --entrypoint "" \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -w /workspace \
+          --user root \
+          -e IS_OMNILATEX_CONTAINER=true \
+          -e CI=true \
+          "${{ steps.digest.outputs.image }}" \
+          python3 build.py --mode prod --timings --force build-examples
+
+    - name: Upload built PDFs
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      with:
+        name: regression-pdfs
+        path: |
+          build/examples/*.pdf
+          main.pdf
+        retention-days: 14
+
+    - name: Upload performance metrics
+      if: always()
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      with:
+        name: performance-metrics
+        path: build/metrics.json
+        retention-days: 90
+
+  # ── Visual diff: compare built PDFs against reference snapshots ───────
+  visual-diff:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: build
+    if: github.event_name != 'workflow_dispatch' || github.event.inputs.regenerate != 'true'
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+    - name: Read Docker image digest
+      id: digest
+      uses: ./.github/actions/read-docker-digest
+
+    - name: Pull Docker image
+      run: docker pull "${{ steps.digest.outputs.image }}"
+
+    - name: Download built PDFs
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+      with:
+        name: regression-pdfs
+        path: .
+
+    - name: Check for reference PDFs
+      id: refs
+      run: |
+        if ls tests/references/*.pdf 1>/dev/null 2>&1; then
+          echo "has_refs=true" >> $GITHUB_OUTPUT
+        else
+          echo "has_refs=false" >> $GITHUB_OUTPUT
+          echo "No reference PDFs found in tests/references/ -- skipping diff."
+        fi
+
+    - name: Copy references into build dir for comparison
+      if: steps.refs.outputs.has_refs == 'true'
+      run: mkdir -p build/references && cp tests/references/*.pdf build/references/
+
+    - name: Run visual regression diff
+      if: steps.refs.outputs.has_refs == 'true'
+      run: |
+        EXAMPLES=$(ls build/examples/*.pdf 2>/dev/null | xargs -I{} basename {} .pdf | tr '\n' ' ')
+        docker run --rm --entrypoint "" \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -w /workspace \
+          --user root \
+          -e CI=true \
+          "${{ steps.digest.outputs.image }}" \
+          python3 build.py diff $EXAMPLES
+
+  # ── Regenerate visual references ─────────────────────────────────────
+  visual-regenerate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: build
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.regenerate == 'true'
+    permissions:
+      contents: write
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+    - name: Download built PDFs
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+      with:
+        name: regression-pdfs
+        path: .
+
+    - name: Regenerate reference PDFs
+      run: |
+        mkdir -p tests/references
+        cp build/examples/*.pdf tests/references/
+
+    - name: Create pull request for updated references
+      uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1
+      with:
+        branch: chore/update-visual-references
+        title: 'chore: update visual regression reference PDFs'
+        add-paths: |
+          tests/references/*.pdf
+        delete-branch: true
+
+  # ── Performance regression: compare build times against baselines ────
+  perf-diff:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: build
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+    - name: Read Docker image digest
+      id: digest
+      uses: ./.github/actions/read-docker-digest
+
+    - name: Pull Docker image
+      run: docker pull "${{ steps.digest.outputs.image }}"
+
+    - name: Download performance metrics
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+      with:
+        name: performance-metrics
+        path: build
+
+    - name: Compare against baselines
+      if: always()
+      run: |
+        if [ ! -f build/metrics.json ]; then
+          echo "::error::build/metrics.json not found"
+          exit 1
+        fi
+
+        docker run --rm --entrypoint "" \
+          -v "$GITHUB_WORKSPACE:/workspace" \
+          -w /workspace \
+          "${{ steps.digest.outputs.image }}" \
+          python3 -c "
+        import json
+        import sys
+
+        try:
+            import tomllib
+        except ImportError:
+            import tomli as tomllib
+
+        THRESHOLD = 1.0
+
+        with open('build/metrics.json') as f:
+            metrics = json.load(f)
+
+        with open('specs/performance_baselines.toml', 'rb') as f:
+            baselines = tomllib.load(f)
+
+        baseline_data = baselines.get('baselines', {})
+        regressions = []
+        improvements = []
+
+        for entry in metrics.get('examples', []):
+            example = entry.get('name')
+            if not example:
+                continue
+            cold_time = entry.get('wall_time_s')
+            if cold_time is None:
+                continue
+
+            bl = baseline_data.get(example)
+            if bl is None:
+                print(f'  SKIP {example}: no baseline entry')
+                continue
+
+            bl_time = bl.get('cold_mean')
+            if bl_time is None:
+                continue
+
+            if bl_time > 0:
+                ratio = cold_time / bl_time - 1.0
+                pct = ratio * 100
+                if ratio > THRESHOLD:
+                    regressions.append((example, cold_time, bl_time, pct))
+                elif ratio < -THRESHOLD:
+                    improvements.append((example, cold_time, bl_time, pct))
+
+        print()
+        print('=== Performance Regression Report ===')
+        print()
+
+        if improvements:
+            print('Improvements (>100% faster):')
+            for name, current, baseline, pct in sorted(improvements, key=lambda x: x[3]):
+                print(f'  {name}: {current:.2f}s vs {baseline:.2f}s baseline ({pct:+.1f}%)')
+            print()
+
+        if regressions:
+            print('FAILURES (>100% slower):')
+            for name, current, baseline, pct in sorted(regressions, key=lambda x: -x[3]):
+                print(f'  ::error::PERF REGRESSION {name}: {current:.2f}s vs {baseline:.2f}s baseline ({pct:+.1f}%)')
+            print()
+            print(f'::error::{len(regressions)} example(s) exceeded the {int(THRESHOLD*100)}% regression threshold.')
+            sys.exit(1)
+        else:
+            print('All examples within acceptable performance range.')
+            print(f'Checked {len(metrics)} examples against {len(baseline_data)} baselines.')
+        "
+
+    - name: Generate performance summary
+      if: always()
+      run: |
+        echo "## Performance Regression Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        if [ -f build/metrics.json ]; then
+          docker run --rm --entrypoint "" \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            -w /workspace \
+            "${{ steps.digest.outputs.image }}" \
+            python3 .github/scripts/extract_metrics.py >> $GITHUB_STEP_SUMMARY
+        else
+          echo "No metrics.json found" >> $GITHUB_STEP_SUMMARY
+        fi
+
+  # ── Summary ──────────────────────────────────────────────────────────
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [build, visual-diff, perf-diff]
+    if: always()
+    steps:
+    - name: Regression summary
+      run: |
+        echo "## Regression Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "| Check | Status |" >> $GITHUB_STEP_SUMMARY
+        echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+        echo "| Build | ${{ needs.build.result == 'success' && 'PASS' || 'FAIL' }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Visual Diff | ${{ needs.visual-diff.result == 'success' && 'PASS' || (needs.visual-diff.result == 'skipped' && 'SKIP' || 'FAIL') }} |" >> $GITHUB_STEP_SUMMARY
+        echo "| Perf Regression | ${{ needs.perf-diff.result == 'success' && 'PASS' || 'FAIL' }} |" >> $GITHUB_STEP_SUMMARY

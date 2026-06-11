@@ -493,8 +493,7 @@ class TestCICD:
             "lean4-ci.yml",
             "ctan.yml",
             "integration-matrix.yml",
-            "visual-regression.yml",
-            "performance-regression.yml",
+            "regression.yml",
             "docker-digest-sync.yml",
         ],
     )
