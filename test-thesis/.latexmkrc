@@ -1,0 +1,1 @@
+/home/wyatt/dev/src/github.com/WyattAu/OmniLaTeX-template/.latexmkrc

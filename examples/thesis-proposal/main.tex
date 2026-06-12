@@ -1,0 +1,128 @@
+\documentclass[
+    language=english,
+    doctype=thesis-proposal,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\section*{Abstract}
+Bayesian optimisation is a sample-efficient approach to global optimisation of
+expensive black-box functions.  However, its effectiveness degrades sharply in
+dimensions beyond approximately 20, owing to the curse of dimensionality and
+the difficulty of modelling complex posterior distributions.  This proposal
+outlines a doctoral research plan to develop novel adaptive sampling strategies
+that combine dimensionality reduction, local surrogate modelling, and
+information-theoretic acquisition functions to enable scalable Bayesian
+optimisation in dimensions ranging from 50 to 500.
+
+\section{Background and Motivation}
+Bayesian optimisation (BO) constructs a surrogate model---typically a Gaussian
+process (GP)---of the objective function and uses an acquisition function to
+select the next evaluation point~\cite{bibid}.  Standard BO methods assume
+low-dimensional input spaces ($d \leq 20$) and fail in higher dimensions due to
+the exponential growth of the search space and the poor conditioning of
+covariance matrices~\cite{einstein1905}.
+
+Recent advances in random projections, subspace identification, and trust-region
+methods have extended BO to moderate dimensions ($20 < d \leq 100$) under the
+assumption that the objective function varies primarily along a low-dimensional
+manifold~\cite{goossensLaTeXCompanion1993}.  However, these methods rely on
+rigid structural assumptions that do not hold for many real-world optimisation
+problems in computational chemistry, materials design, and hyperparameter
+tuning.
+
+\section{Research Questions}
+This doctoral research will address the following questions:
+
+\begin{enumerate}
+    \item \textbf{RQ1:} How can adaptive subspace identification be combined
+    with trust-region methods to avoid premature convergence in high-dimensional
+    Bayesian optimisation?
+    \item \textbf{RQ2:} What information-theoretic acquisition functions best
+    balance exploration and exploitation when the effective dimensionality of the
+    objective function changes across the search space?
+    \item \textbf{RQ3:} How do the proposed methods compare to existing
+    high-dimensional BO approaches on benchmark functions and real-world
+    engineering problems?
+\end{enumerate}
+
+\section{Methodology}
+
+\subsection{Phase 1: Adaptive Subspace BO (Months 1--12)}
+We will develop an adaptive subspace identification module that continuously
+updates its estimate of the low-dimensional subspace as new function
+evaluations become available.  The key innovation is a probabilistic subspace
+prior that is updated via variational inference, enabling the model to track
+shifts in the effective dimensionality of the objective function.
+
+The acquisition function will be formulated in the embedded subspace:
+\begin{equation}
+    \alpha_{\text{sub}}(\mathbf{x}) = \mu_{\text{sub}}(\mathbf{Z}\mathbf{x})
+    + \kappa \, \sigma_{\text{sub}}(\mathbf{Z}\mathbf{x}),
+    \label{eq:ucb-sub}
+\end{equation}
+where $\mathbf{Z} \in \mathbb{R}^{k \times d}$ is the projection matrix
+mapping from the original $d$-dimensional space to the $k$-dimensional subspace,
+$\mu_{\text{sub}}$ and $\sigma_{\text{sub}}$ are the posterior mean and standard
+deviation in the subspace, and $\kappa > 0$ controls the exploration--exploitation
+trade-off.
+
+\subsection{Phase 2: Information-Theoretic Extensions (Months 12--24)}
+We will derive a family of information-theoretic acquisition functions
+that directly maximise the expected reduction in entropy of the posterior
+distribution over the global minimum.  These methods provide stronger
+exploration guarantees than UCB-based approaches and are naturally adaptive to
+changes in local dimensionality.
+
+\subsection{Phase 3: Benchmarking and Applications (Months 24--36)}
+The proposed methods will be evaluated on:
+\begin{itemize}
+    \item Synthetic benchmark functions (Branin, Hartmann,Ackley in high
+    dimensions)
+    \item Hyperparameter optimisation for deep learning models
+    \item Molecular property optimisation in computational chemistry
+    \item Aerodynamic shape optimisation using CFD simulations
+\end{itemize}
+
+\section{Timeline}
+\begin{table}[htbp]
+    \centering
+    \caption{Research timeline and milestones.}
+    \label{tab:timeline}
+    \begin{tabular}{@{}lll@{}}
+        \toprule
+        \textbf{Period} & \textbf{Activity} & \textbf{Output} \\
+        \midrule
+        Months 1--12  & Adaptive subspace BO development & Journal paper \\
+        Months 12--24 & Information-theoretic extensions  & Two conference papers \\
+        Months 24--36 & Benchmarking and applications    & Final thesis chapters \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Expected Contributions}
+\begin{enumerate}
+    \item A novel adaptive subspace BO algorithm with provable convergence
+    guarantees in dimensions up to 500.
+    \item A family of information-theoretic acquisition functions that adapt to
+    varying local dimensionality.
+    \item An open-source Python library implementing the proposed methods, with
+    integration into the BoTorch framework.
+    \item Comprehensive benchmarking results on standard and real-world
+    optimisation problems.
+\end{enumerate}
+
+\section{Preliminary Work}
+Preliminary experiments on the Hartmann-6 function demonstrate that the adaptive
+subspace method reduces the simple regret by a factor of 3.2 compared to
+standard high-dimensional BO after 200 function evaluations.
+
+\printbibliography
+
+\end{document}

@@ -1,0 +1,272 @@
+\documentclass[
+    language=english,
+    doctype=article,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This document specifies the CloudVault REST API for programmatic access to
+cloud object storage.  All endpoints return JSON responses and accept JSON
+request bodies unless otherwise noted.  The base URL for all requests is
+\texttt{https://api.cloudvault.io/v2}.
+\end{abstract}
+
+\tableofcontents
+
+\section{Authentication}
+
+All API requests require authentication via an API key or OAuth 2.0 bearer
+token.  Include the token in the \texttt{Authorization} header:
+
+\begin{verbatim}
+Authorization: Bearer <your-api-token>
+\end{verbatim}
+
+\subsection{Obtaining API Keys}
+
+Navigate to \texttt{Settings > API Keys} in the CloudVault dashboard to
+generate a key pair.  The secret key is shown only once at creation time.
+Keys are scoped to a single project and can be revoked at any time.
+
+\subsection{OAuth 2.0 Flow}
+
+For user-delegated access, implement the OAuth 2.0 authorization code flow:
+
+\begin{enumerate}
+    \item Redirect the user to \texttt{https://auth.cloudvault.io/authorize}
+          with \texttt{client\_id}, \texttt{redirect\_uri}, and
+          \texttt{scope} parameters.
+    \item Exchange the authorization code for an access token via
+          \texttt{POST /oauth/token}.
+    \item Use the access token in subsequent API requests.
+\end{enumerate}
+
+\section{Endpoints}
+
+\subsection{Buckets}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Bucket management endpoints.}
+    \label{tab:buckets}
+    \begin{tabular}{@{}llp{5cm}@{}}
+        \toprule
+        \textbf{Method} & \textbf{Endpoint} & \textbf{Description} \\
+        \midrule
+        \texttt{GET}    & \texttt{/buckets}              & List all buckets
+            in the project \\
+        \texttt{POST}   & \texttt{/buckets}              & Create a new bucket \\
+        \texttt{GET}    & \texttt{/buckets/\{name\}}     & Get bucket metadata
+            and configuration \\
+        \texttt{DELETE} & \texttt{/buckets/\{name\}}     & Delete a bucket
+            (must be empty) \\
+        \texttt{PUT}    & \texttt{/buckets/\{name\}/policy}
+            & Update bucket access policy \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Objects}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Object storage endpoints.}
+    \label{tab:objects}
+    \begin{tabular}{@{}llp{5cm}@{}}
+        \toprule
+        \textbf{Method} & \textbf{Endpoint} & \textbf{Description} \\
+        \midrule
+        \texttt{GET}    & \texttt{/buckets/\{name\}/objects}
+            & List objects with optional prefix filter \\
+        \texttt{PUT}    & \texttt{/buckets/\{name\}/objects/\{key\}}
+            & Upload or overwrite an object \\
+        \texttt{GET}    & \texttt{/buckets/\{name\}/objects/\{key\}}
+            & Download an object \\
+        \texttt{HEAD}   & \texttt{/buckets/\{name\}/objects/\{key\}}
+            & Retrieve object metadata without body \\
+        \texttt{DELETE} & \texttt{/buckets/\{name\}/objects/\{key\}}
+            & Permanently delete an object \\
+        \texttt{POST}   & \texttt{/buckets/\{name\}/objects/\{key\}/copy}
+            & Copy an object within or across buckets \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Request and Response Examples}
+
+\subsection{Create a Bucket}
+
+\textbf{Request:}
+
+\begin{verbatim}
+POST /v2/buckets
+Content-Type: application/json
+
+{
+    "name": "analytics-logs-2026",
+    "region": "us-east-1",
+    "storage_class": "standard",
+    "versioning_enabled": true
+}
+\end{verbatim}
+
+\textbf{Response (201 Created):}
+
+\begin{verbatim}
+{
+    "name": "analytics-logs-2026",
+    "region": "us-east-1",
+    "storage_class": "standard",
+    "versioning_enabled": true,
+    "created_at": "2026-06-12T14:30:00Z",
+    "arn": "arn:cloudvault:us-east-1:48291:bucket/analytics-logs-2026"
+}
+\end{verbatim}
+
+\subsection{Upload an Object}
+
+\textbf{Request:}
+
+\begin{verbatim}
+PUT /v2/buckets/analytics-logs-2026/objects/events/2026-06-12.jsonl
+Content-Type: application/octet-stream
+Content-MD5: 1B2M2Y8AsgTpgAmY7PhCfg==
+
+<binary or streaming body>
+\end{verbatim}
+
+\textbf{Response (200 OK):}
+
+\begin{verbatim}
+{
+    "key": "events/2026-06-12.jsonl",
+    "size": 104857600,
+    "etag": "d41d8cd98f00b204e9800998ecf8427e",
+    "content_type": "application/octet-stream",
+    "last_modified": "2026-06-12T14:35:22Z",
+    "storage_class": "standard"
+}
+\end{verbatim}
+
+\subsection{List Objects with Pagination}
+
+\textbf{Request:}
+
+\begin{verbatim}
+GET /v2/buckets/analytics-logs-2026/objects?prefix=events/&max_keys=100
+    &continuation_token=abc123
+\end{verbatim}
+
+\textbf{Response (200 OK):}
+
+\begin{verbatim}
+{
+    "objects": [
+        {"key": "events/2026-06-12.jsonl", "size": 104857600,
+         "last_modified": "2026-06-12T14:35:22Z"},
+        {"key": "events/2026-06-11.jsonl", "size": 98765432,
+         "last_modified": "2026-06-11T23:59:58Z"}
+    ],
+    "is_truncated": true,
+    "next_continuation_token": "def456",
+    "total_count": 1247
+}
+\end{verbatim}
+
+\section{Error Codes}
+
+The API uses standard HTTP status codes.  Error responses include a JSON body
+with a machine-readable error code and a human-readable message.
+
+\begin{table}[htbp]
+    \centering
+    \caption{API error codes.}
+    \label{tab:errors}
+    \begin{tabular}{@{}llp{5cm}@{}}
+        \toprule
+        \textbf{HTTP} & \textbf{Error Code} & \textbf{Description} \\
+        \midrule
+        400 & \texttt{INVALID\_REQUEST}    & The request body or parameters are
+            malformed or missing required fields. \\
+        401 & \texttt{UNAUTHORIZED}         & The API key or token is missing,
+            expired, or invalid. \\
+        403 & \texttt{FORBIDDEN}            & The authenticated principal lacks
+            permission for the requested operation. \\
+        404 & \texttt{NOT\_FOUND}           & The requested bucket or object
+            does not exist. \\
+        409 & \texttt{CONFLICT}             & The bucket already exists or a
+            concurrent modification was detected. \\
+        429 & \texttt{RATE\_LIMITED}        & Too many requests.  Retry after
+            the duration specified in the \texttt{Retry-After} header. \\
+        500 & \texttt{INTERNAL\_ERROR}      & An unexpected server error
+            occurred.  Contact support with the request ID. \\
+        503 & \texttt{SERVICE\_UNAVAILABLE} & The service is temporarily
+            unavailable.  Retry with exponential backoff. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Example error response:
+
+\begin{verbatim}
+{
+    "error": {
+        "code": "NOT_FOUND",
+        "message": "Bucket 'my-bucket' does not exist.",
+        "request_id": "req-7f3a9b2c"
+    }
+}
+\end{verbatim}
+
+\section{Rate Limiting}
+
+CloudVault enforces rate limits per API key to ensure fair usage:
+
+\begin{table}[htbp]
+    \centering
+    \caption{Rate limit tiers.}
+    \label{tab:ratelimits}
+    \begin{tabular}{@{}lrr@{}}
+        \toprule
+        \textbf{Tier} & \textbf{Requests / Minute} & \textbf{Burst} \\
+        \midrule
+        Free        & 60   & 10  \\
+        Pro         & 600  & 100 \\
+        Enterprise  & 6\,000 & 1\,000 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Rate limit headers are included in every response:
+
+\begin{verbatim}
+X-RateLimit-Limit: 600
+X-RateLimit-Remaining: 587
+X-RateLimit-Reset: 1718212800
+\end{verbatim}
+
+When the limit is exceeded, the API returns \texttt{429 Too Many Requests}.
+Implement exponential backoff with jitter to handle rate limiting gracefully.
+
+\section{Versioning}
+
+The API is versioned via the URL path (\texttt{/v2}).  When a new major version
+is released, the previous version enters a 12-month deprecation period.  Deprecation
+headers are included in responses for deprecated endpoints.
+
+\begin{verbatim}
+Sunset: Sat, 12 Jun 2027 00:00:00 GMT
+Deprecation: true
+Link: <https://docs.cloudvault.io/api/v3>; rel="successor-version"
+\end{verbatim}
+
+\printbibliography[heading=none]
+
+\end{document}

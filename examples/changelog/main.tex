@@ -1,0 +1,175 @@
+\documentclass[
+    language=english,
+    doctype=article,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This document follows the \textbf{Keep a Changelog} format
+\cite{keepachangelog} and tracks all notable changes to the NovaCraft
+platform.  Each release entry is categorised as Added, Changed, Deprecated,
+Removed, Fixed, or Security.
+\end{abstract}
+
+\tableofcontents
+
+\vspace{1em}
+\noindent\textit{All dates follow the \textbf{YYYY-MM-DD} format.  Releases
+are listed in reverse chronological order.}
+
+\section{v4.2.0 --- 2026-06-01}
+
+\subsection{Added}
+\begin{itemize}
+    \item Real-time collaboration engine supporting up to 50 concurrent editors
+          per document.
+    \item Native plugin marketplace with automated security scanning for
+          third-party extensions.
+    \item GraphQL subscription endpoint for live document change notifications.
+    \item Dark mode toggle with system-preference detection.
+\end{itemize}
+
+\subsection{Changed}
+\begin{itemize}
+    \item Migrated the rendering pipeline from Chromium Embedded Framework to
+          WebAssembly-based Skia, reducing memory consumption by 35\%.
+    \item Upgraded the minimum supported Node.js version from 18 to 20.
+    \item Restructured the \texttt{@novacraft/core} package to split the
+          editor and renderer into independent modules.
+\end{itemize}
+
+\subsection{Fixed}
+\begin{itemize}
+    \item Resolved a race condition where concurrent saves could overwrite
+          user edits (issue \#1847).
+    \item Fixed PDF export producing blank pages when documents contained
+          embedded SVG images.
+    \item Corrected timezone offset calculation for documents created in
+          UTC$-$12 and UTC$+$14 zones.
+\end{itemize}
+
+\subsection{Security}
+\begin{itemize}
+    \item Patched a cross-site scripting vulnerability in the Markdown
+          preview renderer (CVE-2026-31842).
+    \item Enforced Content Security Policy headers on all API responses.
+\end{itemize}
+
+\section{v4.1.0 --- 2026-04-15}
+
+\subsection{Added}
+\begin{itemize}
+    \item Branching and merge support for document version control.
+    \item Import and export of LaTeX, AsciiDoc, and reStructuredText formats.
+    \item Webhook configuration for document lifecycle events (create, update,
+          publish, archive).
+\end{itemize}
+
+\subsection{Changed}
+\begin{itemize}
+    \item Replaced the legacy REST API v1 with a unified API v2 endpoint
+          structure.
+    \item Improved table-of-contents generation to support nested heading
+          depths up to six levels.
+    \item Switched the default code highlighting theme from
+          \texttt{monokai} to \texttt{github-dark}.
+\end{itemize}
+
+\subsection{Deprecated}
+\begin{itemize}
+    \item The \texttt{/api/v1/documents} endpoint is deprecated and will be
+          removed in v5.0.  Migrate to \texttt{/api/v2/documents}.
+    \item The \texttt{legacy-export} CLI flag is deprecated.  Use the
+          \texttt{--format} flag instead.
+\end{itemize}
+
+\subsection{Fixed}
+\begin{itemize}
+    \item Fixed memory leak in the WebSocket connection pool when clients
+          disconnected without a proper close handshake.
+    \item Corrected rendering of right-to-left text within mixed-direction
+          paragraphs.
+\end{itemize}
+
+\section{v4.0.0 --- 2026-02-01}
+
+\subsection{Added}
+\begin{itemize}
+    \item Complete rewrite of the editor core using a conflict-free
+          replicated data type (CRDT) architecture.
+    \item Offline-first mode with automatic synchronization upon reconnection.
+    \item End-to-end encryption for all document content at rest.
+    \item Support for custom themes via a CSS variable system.
+\end{itemize}
+
+\subsection{Changed}
+\begin{itemize}
+    \item \textbf{Breaking:} The \texttt{Document.save()} method now returns
+          a \texttt{Promise<Result>} instead of a boolean.
+    \item \textbf{Breaking:} Plugin API version bumped from 1.x to 2.x.
+          See the migration guide for details.
+    \item Replaced PostgreSQL session store with Redis for improved
+          horizontal scalability.
+\end{itemize}
+
+\subsection{Removed}
+\begin{itemize}
+    \item Removed support for Internet Explorer 11 and legacy Edge
+          (Chromium-based Edge is now the minimum).
+    \item Removed the \texttt{novacraft-legacy} compatibility package.
+    \item Dropped the \texttt{file://} protocol handler for local file
+          editing.
+\end{itemize}
+
+\subsection{Security}
+\begin{itemize}
+    \item Implemented hardware security key authentication (FIDO2/WebAuthn).
+    \item Added rate limiting on authentication endpoints to mitigate
+          brute-force attacks.
+    \item All session tokens are now rotated every 15 minutes.
+\end{itemize}
+
+\section{v3.5.2 --- 2025-12-10}
+
+\subsection{Fixed}
+\begin{itemize}
+    \item Hotfix for an infinite loop in the autocomplete engine when
+          suggestions contained special Unicode characters.
+    \item Fixed a regression where the sidebar collapsed state was not
+          persisted across sessions.
+\end{itemize}
+
+\section{v3.5.0 --- 2025-11-01}
+
+\subsection{Added}
+\begin{itemize}
+    \item Inline commenting with threaded discussions.
+    \item Document comparison (diff) view between any two saved versions.
+    \item API rate limit dashboard for project administrators.
+\end{itemize}
+
+\subsection{Changed}
+\begin{itemize}
+    \item Optimized the search index rebuild process, reducing downtime from
+          45 seconds to under 3 seconds on documents with 10\,000+ pages.
+    \item Updated the bundled font stack to include Inter, JetBrains Mono,
+          and Noto Sans Mono.
+\end{itemize}
+
+\subsection{Fixed}
+\begin{itemize}
+    \item Fixed incorrect page numbers in the table of contents after
+          inserting a section break.
+    \item Resolved a deadlock in the concurrent document merge algorithm.
+\end{itemize}
+
+\printbibliography[heading=none]
+
+\end{document}

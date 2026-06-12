@@ -1,0 +1,209 @@
+\documentclass[
+    language=english,
+    doctype=article,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\section{Background}
+
+Meridian Health Systems is a regional healthcare network operating 12
+hospitals and 45 outpatient clinics across the Midwest United States.
+Serving over 2.5 million patients annually, Meridian relies on its
+technology infrastructure to support electronic health records (EHR),
+medical imaging, telehealth services, and operational analytics.
+
+By early 2025, Meridian's on-premises data centers---consisting of
+approximately 2,400 physical servers and 18,000 virtual machines---had
+reached critical capacity. Hardware refresh cycles were falling behind,
+operating costs were escalating, and the organization faced increasing
+difficulty meeting regulatory requirements for data availability and
+disaster recovery.
+
+\section{Problem Statement}
+
+Meridian's legacy infrastructure presented four interconnected challenges:
+
+\begin{enumerate}
+    \item \textbf{Scalability Constraints.} Peak demand during flu season
+        and public health emergencies overwhelmed existing capacity,
+        resulting in degraded EHR performance and delayed access to
+        patient records.
+    \item \textbf{Rising Costs.} Annual infrastructure maintenance costs
+        had grown to \$38 million, consuming 22\% of the IT budget and
+        diverting resources from innovation initiatives.
+    \item \textbf{Compliance Risk.} The organization's disaster recovery
+        capabilities did not meet the 15-minute Recovery Time Objective
+        (RTO) mandated by its Joint Commission accreditation.
+    \item \textbf{Technical Debt.} Legacy systems running unsupported
+        operating versions created security vulnerabilities and increased
+        the risk of unplanned downtime.
+\end{enumerate}
+
+\section{Analysis}
+
+\subsection{Current State Assessment}
+
+A 90-day assessment conducted by the Enterprise Architecture team in Q1
+2025 revealed:
+
+\begin{itemize}
+    \item Average server utilization was only 18\%, indicating massive
+        over-provisioning.
+    \item Storage growth was projected at 40\% annually, driven by
+        medical imaging and genomics data.
+    \item The existing disaster recovery site had a Recovery Time Objective
+        of 4 hours---far exceeding the 15-minute target.
+    \item Annual unplanned downtime costs were estimated at \$2.1 million
+        per hour of outage.
+\end{itemize}
+
+\subsection{Options Evaluation}
+
+Three migration strategies were evaluated:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lccc}
+        \toprule
+        \textbf{Criterion} & \textbf{Lift and Shift} & \textbf{Replatform} & \textbf{Refactor} \\
+        \midrule
+        Cost (3-year)        & \$28M  & \$35M  & \$52M \\
+        Timeline             & 12 mo  & 18 mo  & 30 mo \\
+        Risk level           & Low    & Medium & High \\
+        Scalability gain     & 2x     & 5x     & 10x+ \\
+        Compliance alignment & Partial & Full   & Full \\
+        Operational overhead & High   & Medium & Low \\
+        \bottomrule
+    \end{tabular}
+    \caption{Comparison of migration strategies.}
+\end{table}
+
+The replatform strategy was selected as the optimal balance of cost,
+risk, and long-term benefit. This approach would migrate workloads to
+managed cloud services while preserving existing application architectures
+where feasible.
+
+\section{Solution}
+
+\subsection{Architecture Design}
+
+The target architecture was designed around the following principles:
+
+\begin{itemize}
+    \item \textbf{Hybrid Cloud.} Sensitive workloads (EHR, PHI) would
+        remain in a private cloud environment; non-sensitive workloads
+        (analytics, internal tools) would migrate to a public cloud
+        provider.
+    \item \textbf{Infrastructure as Code.} All infrastructure would be
+        provisioned and managed through Terraform modules, enabling
+        reproducibility and version control.
+    \item \textbf{Zero Trust Security.} Network segmentation, identity-
+        based access controls, and continuous monitoring would replace
+        the traditional perimeter-based model.
+    \item \textbf{Disaster Recovery.} Multi-region active-passive
+        configuration with automated failover to achieve a 10-minute RTO.
+\end{itemize}
+
+\subsection{Migration Approach}
+
+The migration was executed in four phases:
+
+\begin{enumerate}
+    \item \textbf{Foundation (Months 1--3).} Established cloud accounts,
+        identity federation, network connectivity, and security
+        baselines. Deployed monitoring and logging infrastructure.
+    \item \textbf{Non-Critical Workloads (Months 3--6).} Migrated
+        development environments, analytics platforms, and internal
+        business applications. Validated performance and cost models.
+    \item \textbf{Clinical Systems (Months 6--9).} Migrated EHR
+        integrations, medical imaging archives, and telehealth platforms
+        with dedicated cutover windows and rollback procedures.
+    \item \textbf{Optimization (Months 9--12).} Decommissioned legacy
+        data centers, optimized cloud resource utilization, and
+        implemented auto-scaling policies.
+\end{enumerate}
+
+\section{Results}
+
+\subsection{Performance Outcomes}
+
+Post-migration metrics demonstrated significant improvements:
+
+\begin{itemize}
+    \item \textbf{EHR Response Time:} Reduced from 4.2 seconds to 0.8
+        seconds, a 81\% improvement.
+    \item \textbf{System Availability:} Increased from 99.2\% to 99.97\%,
+        equivalent to 25 hours less downtime annually.
+    \item \textbf{Recovery Time Objective:} Achieved 8-minute RTO, well
+        below the 15-minute target.
+    \item \textbf{Peak Capacity:} Auto-scaling handled a 300\% demand
+        surge during the January 2026 flu season without performance
+        degradation.
+\end{itemize}
+
+\subsection{Financial Outcomes}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lrr}
+        \toprule
+        \textbf{Metric} & \textbf{Before} & \textbf{After} \\
+        \midrule
+        Annual infrastructure cost  & \$38M  & \$26M \\
+        IT budget share (infra)      & 22\%   & 14\% \\
+        Capital expenditure (annual) & \$12M  & \$ 3M \\
+        Disaster recovery cost       & \$ 4M  & \$ 1.5M \\
+        \bottomrule
+    \end{tabular}
+    \caption{Financial impact comparison.}
+\end{table}
+
+\subsection{Operational Outcomes}
+
+\begin{itemize}
+    \item Infrastructure provisioning time reduced from 6 weeks to 45
+        minutes for standard environments.
+    \item Security incident response time improved from 4 hours to 12
+        minutes through automated detection and alerting.
+    \item IT staff redeployed 15 engineers from maintenance tasks to
+        innovation projects, including predictive analytics and patient
+        engagement tools.
+\end{itemize}
+
+\section{Lessons Learned}
+
+The following lessons emerged from the migration project and should inform
+future infrastructure modernization efforts:
+
+\begin{enumerate}
+    \item \textbf{Invest Early in Foundational Capabilities.} The 3-month
+        foundation phase---spent on identity, networking, and security
+        ---saved significant rework during later migration phases.
+    \item \textbf{Clinical Workloads Require Special Handling.} EHR and
+        imaging systems demanded extensive performance testing and
+        clinical staff involvement during cutover. Generic cloud migration
+        playbooks were insufficient.
+    \item \textbf{Cost Optimization Is Continuous.} Initial cloud costs
+        were 15\% higher than projected until rightsizing and reserved
+        instances were applied. Organizations must plan for ongoing cost
+        management as a permanent operational discipline.
+    \item \textbf{Change Management Is as Critical as Technology.} Success
+        depended on clinician adoption. Dedicated training sessions and
+        feedback loops with frontline staff were essential to smooth
+        transition.
+    \item \textbf{Hybrid Architectures Introduce Complexity.} Managing
+        two environments increased operational overhead. Investing in
+        unified observability tooling from the outset would have reduced
+        this burden.
+\end{enumerate}
+
+\printbibliography[heading=none]
+
+\end{document}

@@ -1,0 +1,64 @@
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Johns Hopkins University Configuration
+%
+% Official brand colors and identity.
+% Usage: \documentclass[doctype=thesis,institution=johnshopkins]{omnilatex}
+%
+% Brand guidelines: https://www.jhu.edu/about/brand-resources/
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/institutions/johnshopkins/johnshopkins}[2026-06-12 v1.0.0 Johns Hopkins Institution Configuration]
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Color Palette (Official JHU Brand Guidelines)
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Primary: Hopkins Blue
+\definecolor{universityprimary}{RGB}{0, 45, 114}
+% Secondary: Heritage Red
+\definecolor{universitysecondary}{RGB}{207, 69, 32}
+% Accent: Black
+\definecolor{universityaccent}{RGB}{0, 0, 0}
+% Neutral: White
+\definecolor{universitywhite}{RGB}{255, 255, 255}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Logo
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Place your Johns Hopkins logo in: assets/logos/johnshopkins/logo.pdf
+% Official logo download: https://www.jhu.edu/about/brand-resources/
+%
+% \DeclareTranslation{english}{LogoInstitution}{%
+%     \includegraphics[height=1.5cm]{assets/logos/johnshopkins/logo}%
+% }
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Name
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareTranslation{english}{InstitutionName}{Johns Hopkins University}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Link
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareTranslation{english}{LogoInstitution}{%
+    \includegraphics[height=1.5cm]{assets/logos/placeholder/logo}%
+}
+\DeclareTranslation{english}{LinkInstitution}{https://www.jhu.edu}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Apply Colors to Document Elements
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Section headings use Hopkins Blue
+\addtokomafont{section}{\color{universityprimary}}
+\addtokomafont{subsection}{\color{universityprimary}}
+
+% Links and URLs use Hopkins Blue
+\hypersetup{linkcolor=universityprimary, urlcolor=universityprimary}
+
+% Table rules use Heritage Red
+\arrayrulecolor{universitysecondary}
+
+% Footer line uses Hopkins Blue
+\cfoot*{\color{universityprimary}\rule{\textwidth}{0.4pt}}
+
+\endinput

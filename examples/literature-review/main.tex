@@ -1,0 +1,120 @@
+\documentclass[
+    language=english,
+    doctype=article,
+    institution=none,
+    titlestyle=book,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\section*{Abstract}
+Natural language processing (NLP) has advanced rapidly for high-resource
+languages, yet over 7000 languages worldwide remain under-served by modern
+computational tools.  This literature review systematically examines transfer
+learning techniques that adapt models trained on resource-rich languages to
+low-resource settings.  We organise the reviewed literature into four thematic
+strands: cross-lingual pre-training, few-shot and zero-shot adaptation,
+data augmentation strategies, and evaluation frameworks.  The review identifies
+critical gaps in evaluation methodology and highlights promising directions for
+future research.
+
+\section{Introduction}
+The success of large pretrained language models such as BERT, GPT, and
+XLM-R has transformed NLP for English and other high-resource
+languages~\cite{bibid}.  However, the vast majority of the world's languages
+lack sufficient annotated data to train comparable models from
+scratch~\cite{einstein1905}.  Transfer learning offers a principled approach to
+bridging this resource gap by leveraging knowledge encoded in models trained on
+data-rich languages and adapting it to target languages with limited resources.
+
+This review addresses the following research questions:
+\begin{enumerate}
+    \item What transfer learning methods are most effective for low-resource
+          NLP tasks?
+    \item How do cross-lingual representations generalise across typologically
+          diverse languages?
+    \item What evaluation standards are appropriate for assessing model
+          performance in low-resource settings?
+\end{enumerate}
+
+\section{Cross-Lingual Pre-Training}
+
+\subsection{Multilingual Language Models}
+The introduction of multilingual BERT (mBERT) demonstrated that a single model
+can learn representations transferable across 104 languages.  Subsequent work
+extended this approach to over 100 languages with XLM-RoBERTa, achieving
+state-of-the-art results on cross-lingual benchmarks~\cite{goossensLaTeXCompanion1993}.
+
+\subsection{Language-Adaptive Pre-Training}
+A complementary strategy involves continued pre-training on monolingual corpora
+in the target language.  This domain-adaptive approach has shown improvements
+of 3--7 F1 points on named entity recognition tasks for languages such as
+Igbo, Yoruba, and Hausa.
+
+\section{Few-Shot and Zero-Shot Adaptation}
+
+\subsection{Prompt-Based Methods}
+Large language models can be prompted to perform tasks without explicit
+fine-tuning.  Techniques such as pattern-exploiting training (PET) and
+contextual prompting achieve competitive results with as few as 32 labelled
+examples per class.
+
+\subsection{Cross-Lingual Transfer}
+Zero-shot cross-lingual transfer involves fine-tuning a multilingual model on
+a high-resource source language and directly applying it to a target language.
+Performance correlates strongly with typological similarity between the source
+and target language pair.
+
+\section{Data Augmentation Strategies}
+
+\subsection{Translation-Based Augmentation}
+Translating labelled data from a high-resource language into the target
+language is a straightforward augmentation strategy.  However, translation
+artefacts and domain mismatch can introduce noise that degrades model
+performance.
+
+\subsection{Back-Translation and Paraphrase Generation}
+Generating synthetic training examples through back-translation or neural
+paraphrase models has proven effective, particularly for morphologically rich
+languages where inflectional variation is substantial.
+
+\section{Evaluation Frameworks}
+
+\subsection{Benchmark Datasets}
+Several benchmarks have been developed for evaluating low-resource NLP,
+including AmericasNLI, AfriQA, and XTREME.  These datasets cover diverse
+language families and task types.
+
+\subsection{Evaluation Challenges}
+A significant challenge in evaluating low-resource models is the scarcity of
+held-out test sets.  Cross-validation and stratified sampling strategies are
+commonly employed but may overestimate true out-of-sample performance.
+
+\section{Synthesis and Gaps}
+The reviewed literature reveals several persistent gaps:
+\begin{description}
+    \item[Script diversity] Most cross-lingual models assume shared scripts or
+    transliteration into Latin characters, limiting applicability for languages
+    using non-Latin scripts.
+    \item[Oral languages] Languages with limited written traditions are largely
+    absent from the transfer learning literature.
+    \item[Evaluation standards] There is no consensus on appropriate evaluation
+    protocols for extremely low-resource settings (fewer than 1000 labelled
+    sentences).
+\end{description}
+
+\section{Conclusion}
+Transfer learning has made substantial progress in extending NLP capabilities to
+low-resource languages.  Future research should prioritise inclusive evaluation
+methodologies, oral language processing, and community-driven dataset
+development to ensure equitable advances across the world's linguistic
+diversity.
+
+\printbibliography
+
+\end{document}

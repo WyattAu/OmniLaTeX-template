@@ -1,0 +1,110 @@
+\documentclass[
+    language=english,
+    doctype=quiz,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+
+\maketitle
+
+\noindent\textbf{Duration:} 60 minutes \hfill \textbf{Total Marks:} 40
+
+\section*{Part A: Multiple Choice (10 marks)}
+
+\begin{enumerate}
+    \item \textbf{[2 marks]} Which theorem states that a distributed system
+      cannot simultaneously provide consistency, availability, and partition
+      tolerance?
+    \begin{enumerate}[label=\Alph*.]
+        \item Amdahl's Law
+        \item CAP Theorem
+        \item Moore's Law
+        \item Little's Law
+    \end{enumerate}
+
+    \item \textbf{[2 marks]} In the Raft consensus protocol, what is the
+      role of the leader?
+    \begin{enumerate}[label=\Alph*.]
+        \item Receives all client requests and replicates log entries
+        \item Only handles read operations
+        \item Monitors network traffic
+        \item Manages garbage collection
+    \end{enumerate}
+
+    \item \textbf{[2 marks]} What is the minimum number of nodes required
+      to tolerate $f$ Byzantine failures?
+    \begin{enumerate}[label=\Alph*.]
+        \item $2f + 1$
+        \item $3f + 1$
+        \item $f + 1$
+        \item $4f + 1$
+    \end{enumerate}
+
+    \item \textbf{[2 marks]} Which consistency model guarantees that all
+      processes see the same order of operations?
+    \begin{enumerate}[label=\Alph*.]
+        \item Eventual consistency
+        \item Sequential consistency
+        \item Read-your-writes consistency
+        \item Monotonic reads
+    \end{enumerate}
+
+    \item \textbf{[2 marks]} What is the time complexity of the Paxos
+      consensus protocol?
+    \begin{enumerate}[label=\Alph*.]
+        \item $O(1)$
+        \item $O(\log n)$
+        \item $O(n)$
+        \item $O(n^2)$
+    \end{enumerate}
+\end{enumerate}
+
+\section*{Part B: Short Answer (15 marks)}
+
+\begin{enumerate}
+    \item \textbf{[5 marks]} Explain the difference between safety and
+      liveness properties in distributed systems. Give one example of each.
+
+    \item \textbf{[5 marks]} Describe the two-phase commit protocol.
+      What happens if the coordinator crashes after sending COMMIT to
+      some participants?
+
+    \item \textbf{[5 marks]} What is a vector clock? How does it differ
+      from a scalar clock? Draw a diagram showing vector clock updates
+      for three processes.
+\end{enumerate}
+
+\section*{Part C: Problems (15 marks)}
+
+\begin{enumerate}
+    \item \textbf{[7 marks]} Consider a system with 5 nodes running
+      Paxos. Node 3 is the leader and proposes value $v_1$. Nodes 1, 2,
+      3 accept $v_1$. Node 4 is slow and hasn't responded. Node 5
+      crashes.
+    \begin{enumerate}
+        \item Has consensus been reached? Justify your answer.
+        \item What happens when node 4 eventually responds?
+        \item Can a new leader propose a different value $v_2$?
+    \end{enumerate}
+
+    \item \textbf{[8 marks]} Design a replication protocol for a
+      key-value store that provides:
+    \begin{itemize}
+        \item Linearizable reads
+        \item Tolerates one crash failure in a 3-node cluster
+        \item Maximises throughput for read-heavy workloads
+    \end{itemize}
+    Describe your protocol, prove it satisfies the requirements, and
+    analyse its performance.
+\end{enumerate}
+
+\section*{Part D: Essay (bonus, 5 marks)}
+
+Discuss the trade-offs between strong and eventual consistency in
+real-world systems. Reference at least two production systems in
+your answer.
+
+\end{document}

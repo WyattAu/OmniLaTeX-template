@@ -1,0 +1,64 @@
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Cornell University Configuration
+%
+% Official brand colors and identity.
+% Usage: \documentclass[doctype=thesis,institution=cornell]{omnilatex}
+%
+% Brand guidelines: https://brand.cornell.edu/
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/institutions/cornell/cornell}[2026-06-12 v1.0.0 Cornell Institution Configuration]
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Color Palette (Official Cornell Brand Guidelines)
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Primary: Cornell Red
+\definecolor{universityprimary}{RGB}{179, 27, 27}
+% Secondary: Black
+\definecolor{universitysecondary}{RGB}{34, 34, 34}
+% Accent: White
+\definecolor{universityaccent}{RGB}{255, 255, 255}
+% Neutral: White
+\definecolor{universitywhite}{RGB}{255, 255, 255}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Logo
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Place your Cornell logo in: assets/logos/cornell/logo.pdf
+% Official logo download: https://brand.cornell.edu/
+%
+% \DeclareTranslation{english}{LogoInstitution}{%
+%     \includegraphics[height=1.5cm]{assets/logos/cornell/logo}%
+% }
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Name
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareTranslation{english}{InstitutionName}{Cornell University}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Link
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareTranslation{english}{LogoInstitution}{%
+    \includegraphics[height=1.5cm]{assets/logos/placeholder/logo}%
+}
+\DeclareTranslation{english}{LinkInstitution}{https://www.cornell.edu}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Apply Colors to Document Elements
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Section headings use Cornell Red
+\addtokomafont{section}{\color{universityprimary}}
+\addtokomafont{subsection}{\color{universityprimary}}
+
+% Links and URLs use Cornell Red
+\hypersetup{linkcolor=universityprimary, urlcolor=universityprimary}
+
+% Table rules use Black
+\arrayrulecolor{universitysecondary}
+
+% Footer line uses Cornell Red
+\cfoot*{\color{universityprimary}\rule{\textwidth}{0.4pt}}
+
+\endinput

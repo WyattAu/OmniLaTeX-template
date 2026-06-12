@@ -1,0 +1,249 @@
+\documentclass[
+    language=english,
+    doctype=article,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This document specifies the SecureLink transport protocol, a lightweight,
+cryptographically authenticated protocol for secure machine-to-machine
+communication in distributed systems.  SecureLink provides mutual
+authentication, forward secrecy, and resistance to replay attacks while
+imposing minimal computational overhead on constrained devices.
+\end{abstract}
+
+\tableofcontents
+
+\section{Scope}
+
+This specification defines the wire format, handshake procedure, session
+management, and error handling for SecureLink v1.0.  It is intended for
+implementation by:
+
+\begin{itemize}
+    \item IoT gateway manufacturers requiring authenticated device-to-cloud
+          communication.
+    \item Microservice platforms seeking an alternative to mutual TLS with
+          lower connection establishment latency.
+    \item Industrial control systems where deterministic handshake timing is
+          critical.
+\end{itemize}
+
+This specification does not cover application-layer semantics, key management
+infrastructure, or compliance certification procedures.
+
+\section{Requirements}
+
+The key words \textbf{MUST}, \textbf{SHOULD}, and \textbf{MAY} in this
+document are to be interpreted as described in RFC 2119
+\cite{rfc2119}.
+
+\subsection{Functional Requirements}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Functional requirements.}
+    \label{tab:func-req}
+    \begin{tabular}{@{}llp{5.5cm}@{}}
+        \toprule
+        \textbf{ID} & \textbf{Priority} & \textbf{Requirement} \\
+        \midrule
+        FR-01 & MUST & The protocol shall establish a mutually authenticated
+            session within two round trips. \\
+        FR-02 & MUST & The protocol shall support ephemeral key exchange
+            providing forward secrecy. \\
+        FR-03 & MUST & The protocol shall detect and reject replayed
+            handshake messages. \\
+        FR-04 & SHOULD & The protocol shall support session resumption to
+            reduce handshake overhead. \\
+        FR-05 & MAY   & The protocol shall support multiplexed streams over
+            a single connection. \\
+        FR-06 & MUST & The protocol shall negotiate cipher suites using a
+            server-preference ordering. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Non-Functional Requirements}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Non-functional requirements.}
+    \label{tab:nfr}
+    \begin{tabular}{@{}lp{7cm}@{}}
+        \toprule
+        \textbf{ID} & \textbf{Requirement} \\
+        \midrule
+        NFR-01 & Handshake completion shall not exceed 10\,ms on an ARM Cortex-M4
+            at 80\,MHz with hardware AES acceleration. \\
+        NFR-02 & The protocol shall support connections lasting at least 24 hours
+            without mandatory re-authentication. \\
+        NFR-03 & Bandwidth overhead for the handshake shall not exceed 512 bytes. \\
+        NFR-04 & The protocol specification shall be implementable without
+            dependency on any single cryptographic library. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Architecture}
+
+\subsection{Protocol Layers}
+
+SecureLink is structured in three layers:
+
+\begin{enumerate}
+    \item \textbf{Transport Layer:} Provides reliable, ordered byte delivery
+          over TCP or a reliable UDP variant (QUIC).  The transport layer is
+          responsible for fragmentation, reassembly, and congestion control.
+    \item \textbf{Security Layer:} Performs the cryptographic handshake,
+          derives session keys, encrypts and decrypts application data, and
+          manages session lifecycle.
+    \item \textbf{Application Layer:} Carries multiplexed logical streams,
+          each identified by a 16-bit stream identifier.
+\end{enumerate}
+
+\subsection{Handshake Sequence}
+
+The SecureLink handshake proceeds in four phases:
+
+\begin{enumerate}
+    \item \textbf{ClientHello:} The client sends a random nonce (32 bytes),
+          a list of supported cipher suites, and an optional session ticket
+          for resumption.
+    \item \textbf{ServerHello:} The server responds with its selected cipher
+          suite, a random nonce (32 bytes), its certificate chain, and an
+          ephemeral public key.
+    \item \textbf{Key Confirmation:} Both parties derive the session keys
+          using X25519 key exchange and HKDF.  The client sends a
+          \texttt{Finished} message keyed with the derived handshake key.
+    \item \textbf{Session Established:} The server verifies the
+          \texttt{Finished} message and responds with its own
+          \texttt{Finished} message.  Application data may follow immediately.
+\end{enumerate}
+
+\section{Interfaces}
+
+\subsection{Wire Format}
+
+All multi-byte integers are encoded in network byte order (big-endian).
+
+\begin{verbatim}
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|  Version (8)  |  MsgType (8)  |         Length (16)           |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                        Payload (variable)                     |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                        MAC (32)                               |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+\end{verbatim}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Message types.}
+    \label{tab:msgtypes}
+    \begin{tabular}{@{}rl@{}}
+        \toprule
+        \textbf{Code} & \textbf{Message Type} \\
+        \midrule
+        0x01 & ClientHello \\
+        0x02 & ServerHello \\
+        0x03 & Certificate \\
+        0x04 & KeyExchange \\
+        0x05 & Finished \\
+        0x06 & ApplicationData \\
+        0x07 & CloseNotify \\
+        0xFF & Alert \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Cipher Suites}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Supported cipher suites.}
+    \label{tab:ciphers}
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        \textbf{ID} & \textbf{Algorithm} \\
+        \midrule
+        0x01 & X25519 + AES-256-GCM + SHA-384 \\
+        0x02 & X25519 + ChaCha20-Poly1305 + SHA-256 \\
+        0x03 & P-256 + AES-256-GCM + SHA-384 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Constraints}
+
+\begin{itemize}
+    \item \textbf{Maximum record size:} 16\,384 bytes (excluding MAC).
+    \item \textbf{Maximum certificate chain depth:} 3.
+    \item \textbf{Session ticket lifetime:} 24 hours maximum.
+    \item \textbf{Replay window:} 64 messages or 30 seconds, whichever is
+          larger.
+    \item \textbf{Supported platforms:} Any platform with a C99 compiler and
+          a cryptographic random number generator.  Optional hardware
+          acceleration for AES and SHA is recommended but not required.
+\end{itemize}
+
+\section{Testing}
+
+\subsection{Conformance Test Suite}
+
+Implementations MUST pass the SecureLink conformance test suite, which
+validates:
+
+\begin{itemize}
+    \item Correct encoding and decoding of all message types.
+    \item Proper handling of all defined alert codes.
+    \item Interoperability with a reference implementation.
+    \item Resistance to timing side-channel attacks (constant-time comparison
+          for all secret-dependent operations).
+\end{itemize}
+
+\subsection{Test Vectors}
+
+The following test vectors are provided for implementation validation:
+
+\begin{verbatim}
+ClientNonce:  0x000102030405060708090A0B0C0D0E0F
+              101112131415161718191A1B1C1D1E1F
+ServerNonce:  202122232425262728292A2B2C2D2E2F
+              303132333435363738393A3B3C3D3E3F
+CipherSuite:  0x01
+ExpectedHash: 4A8F5A2C3B7D9E1F0A2B3C4D5E6F7A8B
+              9C0D1E2F3A4B5C6D7E8F9A0B1C2D3E4F
+\end{verbatim}
+
+\subsection{Performance Benchmarks}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Reference performance benchmarks (single core).}
+    \label{tab:perf}
+    \begin{tabular}{@{}lrrr@{}}
+        \toprule
+        \textbf{Operation} & \textbf{ARM Cortex-M4} & \textbf{x86-64} &
+            \textbf{Target} \\
+        \midrule
+        Handshake (cold)   & 8.2\,ms   & 1.4\,ms  & $< 10$\,ms \\
+        Handshake (resume) & 3.1\,ms   & 0.6\,ms  & $< 5$\,ms  \\
+        Encrypt (1\,KB)    & 0.42\,ms  & 0.03\,ms & $< 1$\,ms  \\
+        Decrypt (1\,KB)    & 0.44\,ms  & 0.03\,ms & $< 1$\,ms  \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\printbibliography[heading=none]
+
+\end{document}

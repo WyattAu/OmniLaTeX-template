@@ -1,0 +1,179 @@
+\documentclass[
+    language=english,
+    doctype=blog-post,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\RequirePackage{listings}
+\RequirePackage{xcolor}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+    breaklines=true,
+    frame=single,
+    language=Python,
+    captionpos=b,
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    Designing a REST API that can handle a million requests per day requires more
+    than just choosing the right HTTP verbs. In this post, I share the architecture
+    decisions, performance pitfalls, and practical lessons our team learned while
+    scaling a Django-based API from prototype to production.
+\end{abstract}
+
+\section{Introduction}
+
+When we started building the data ingestion API at CloudForge, we expected modest
+traffic: a few hundred requests per minute from internal tools. Six months later,
+external partners were hitting our endpoints at twenty times that volume, and our
+response times had ballooned from 45ms to over two seconds.
+
+This post documents the architectural changes that brought our p95 latency back
+under 100ms---without a complete rewrite.
+
+\section{The Starting Point}
+
+Our initial stack was straightforward: Django REST Framework behind an Nginx
+reverse proxy, with PostgreSQL as the sole datastore. The core endpoint looked
+something like this:
+
+\begin{lstlisting}[caption={Original endpoint handler}]
+class IngestionView(APIView):
+    def post(self, request):
+        serializer = DataPayloadSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Synchronous database write
+        record = DataRecord.objects.create(
+            payload=serializer.validated_data["payload"],
+            source=serializer.validated_data["source"],
+            timestamp=timezone.now(),
+        )
+
+        # Synchronous downstream processing
+        process_record(record)
+
+        return Response(
+            {"id": record.id, "status": "accepted"},
+            status=status.HTTP_202_ACCEPTED,
+        )
+\end{lstlisting}
+
+This worked fine at low volumes. The problem was \texttt{process\_record}, which
+performed a chain of synchronous operations: validation, transformation, index
+updates, and cache invalidation.
+
+\section{Identifying the Bottleneck}
+
+We instrumented the endpoint with timing metrics and discovered that 80\% of
+request time was spent inside \texttt{process\_record}. The chain averaged 320ms
+per request, and with a single worker process, requests queued behind one another.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lrr}
+        \toprule
+        \textbf{Operation} & \textbf{Avg Time (ms)} & \textbf{Share} \\
+        \midrule
+        Deserialization     & 12   & 3\%   \\
+        Database write      & 35   & 10\%  \\
+        Validation          & 28   & 8\%   \\
+        Transformation      & 95   & 28\%  \\
+        Index update        & 78   & 23\%  \\
+        Cache invalidation  & 62   & 18\%  \\
+        Network overhead    & 32   & 10\%  \\
+        \bottomrule
+    \end{tabular}
+    \caption{Breakdown of request processing time before optimization.}
+\end{table}
+
+\section{The Solution: Event-Driven Offloading}
+
+The key insight was that most of the work inside \texttt{process\_record} did not
+need to happen synchronously. Clients needed confirmation that their payload was
+\emph{received}, not that it was fully processed.
+
+We introduced a message queue (Redis Streams) and restructured the handler:
+
+\begin{lstlisting}[caption={Refactored endpoint with async processing}]
+class IngestionView(APIView):
+    def post(self, request):
+        serializer = DataPayloadSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        record = DataRecord.objects.create(
+            payload=serializer.validated_data["payload"],
+            source=serializer.validated_data["source"],
+            timestamp=timezone.now(),
+            status="pending",
+        )
+
+        # Publish to queue for async processing
+        stream_publish("ingestion:incoming", {
+            "record_id": str(record.id),
+            "source": serializer.validated_data["source"],
+            "received_at": timezone.now().isoformat(),
+        })
+
+        return Response(
+            {"id": record.id, "status": "accepted"},
+            status=status.HTTP_202_ACCEPTED,
+        )
+\end{lstlisting}
+
+A separate worker service consumed from the queue and handled the heavy lifting
+independently. This decoupled ingestion throughput from processing throughput.
+
+\section{Results}
+
+After deploying the changes, we observed immediate improvements:
+
+\begin{itemize}
+    \item Median response time dropped from 380ms to 18ms.
+    \item Throughput increased from 150 requests/second to 4,200 requests/second.
+    \item Error rates fell below 0.01\% as backpressure from slow downstream
+          services no longer affected the ingestion path.
+\end{itemize}
+
+\section{Conclusion}
+
+The biggest performance win came not from caching, database optimization, or
+hardware upgrades---it came from rethinking what work truly needed to be
+synchronous. If your API is bottlenecked on processing, ask whether clients
+actually need the result immediately. In our case, they did not, and the async
+offload cut latency by 95\%.
+
+\section*{Tags}
+
+\texttt{\#REST} \texttt{\#API} \texttt{\#SoftwareArchitecture} \texttt{\#Scalability}
+\texttt{\#Django} \texttt{\#Microservices}
+
+\section*{Comments}
+
+\begin{quote}
+    \textbf{Marcus T.} --- Great write-up! We faced a similar issue with our
+    notification service and switched to a fan-out pattern. Did you consider
+    Kafka instead of Redis Streams?
+\end{quote}
+
+\begin{quote}
+    \textbf{Elena Vasquez (Author)} --- We evaluated Kafka but the operational
+    overhead was not justified at our scale. Redis Streams fit our deployment
+    footprint. If we cross 100k messages/second sustained, I would reconsider.
+\end{quote}
+
+\begin{quote}
+    \textbf{Priya N.} --- The timing breakdown table is really helpful for
+    making the case to management. Bookmarking this for our next sprint planning.
+\end{quote}
+
+\end{document}

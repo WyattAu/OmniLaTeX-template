@@ -1,0 +1,64 @@
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% University of Michigan Configuration
+%
+% Official brand colors and identity.
+% Usage: \documentclass[doctype=thesis,institution=umich]{omnilatex}
+%
+% Brand guidelines: https://brand.umich.edu/
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/institutions/umich/umich}[2026-06-12 v1.0.0 University of Michigan Institution Configuration]
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Color Palette (Official Michigan Brand Guidelines)
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Primary: Michigan Blue
+\definecolor{universityprimary}{RGB}{0, 39, 76}
+% Secondary: Maize
+\definecolor{universitysecondary}{RGB}{255, 203, 5}
+% Accent: Black
+\definecolor{universityaccent}{RGB}{0, 0, 0}
+% Neutral: White
+\definecolor{universitywhite}{RGB}{255, 255, 255}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Logo
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Place your Michigan logo in: assets/logos/umich/logo.pdf
+% Official logo download: https://brand.umich.edu/
+%
+% \DeclareTranslation{english}{LogoInstitution}{%
+%     \includegraphics[height=1.5cm]{assets/logos/umich/logo}%
+% }
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Name
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareTranslation{english}{InstitutionName}{University of Michigan}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Link
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareTranslation{english}{LogoInstitution}{%
+    \includegraphics[height=1.5cm]{assets/logos/placeholder/logo}%
+}
+\DeclareTranslation{english}{LinkInstitution}{https://umich.edu}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Apply Colors to Document Elements
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Section headings use Michigan Blue
+\addtokomafont{section}{\color{universityprimary}}
+\addtokomafont{subsection}{\color{universityprimary}}
+
+% Links and URLs use Michigan Blue
+\hypersetup{linkcolor=universityprimary, urlcolor=universityprimary}
+
+% Table rules use Maize
+\arrayrulecolor{universitysecondary}
+
+% Footer line uses Michigan Blue
+\cfoot*{\color{universityprimary}\rule{\textwidth}{0.4pt}}
+
+\endinput

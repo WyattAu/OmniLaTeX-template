@@ -1,0 +1,182 @@
+\documentclass[
+    language=english,
+    doctype=article,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\section{Scope and Purpose}
+
+This regulation establishes minimum requirements for the collection,
+processing, storage, and transmission of personal data by all entities
+operating within the jurisdiction of the National Data Protection Authority
+(NDPA). It applies to:
+
+\begin{itemize}
+    \item All public-sector organizations that process personal data.
+    \item Private-sector organizations that process personal data of more
+        than 10,000 individuals annually.
+    \item Data processors acting on behalf of the above organizations.
+    \item Cross-border data transfers originating from within the
+        jurisdiction.
+\end{itemize}
+
+The purpose of this regulation is to protect the fundamental rights and
+freedoms of natural persons with regard to the processing of their personal
+data, while ensuring the free flow of data within the jurisdiction.
+
+\section{Definitions}
+
+\begin{description}
+    \item[``Personal Data''] means any information relating to an identified
+        or identifiable natural person, including but not limited to names,
+        identification numbers, location data, online identifiers, and
+        factors specific to the physical, physiological, genetic, mental,
+        economic, cultural, or social identity of that person.
+    \item[``Data Controller''] means the natural or legal person which
+        determines the purposes and means of the processing of personal
+        data.
+    \item[``Data Processor''] means a natural or legal person which
+        processes personal data on behalf of the controller.
+    \item[``Processing''] means any operation performed on personal data,
+        including collection, recording, organization, storage, adaptation,
+        retrieval, consultation, use, disclosure, dissemination, alignment,
+        combination, restriction, erasure, or destruction.
+    \item[``Data Breach''] means a breach of security leading to the
+        accidental or unlawful destruction, loss, alteration, unauthorized
+        disclosure of, or access to, personal data.
+    \item[``Data Protection Officer'' (DPO)] means the individual
+        designated by an organization to oversee compliance with this
+        regulation.
+\end{description}
+
+\section{Data Processing Requirements}
+
+\subsection{Lawful Basis for Processing}
+
+Organizations shall process personal data only where one or more of the
+following lawful bases apply:
+
+\begin{enumerate}
+    \item The data subject has given consent to the processing.
+    \item Processing is necessary for the performance of a contract.
+    \item Processing is necessary for compliance with a legal obligation.
+    \item Processing is necessary to protect the vital interests of the
+        data subject.
+    \item Processing is necessary for the performance of a task carried out
+        in the public interest.
+    \item Processing is necessary for the legitimate interests pursued by
+        the controller, except where overridden by the interests, rights,
+        and freedoms of the data subject.
+\end{enumerate}
+
+\subsection{Data Minimization}
+
+Organizations shall ensure that personal data collected is adequate,
+relevant, and limited to what is necessary in relation to the purposes for
+which it is processed.
+
+\subsection{Storage Limitation}
+
+Personal data shall be kept in a form that permits identification of data
+subjects for no longer than is necessary for the purposes for which the
+data is processed. Organizations must document and justify all retention
+periods.
+
+\section{Compliance Requirements}
+
+The following table summarizes the key compliance obligations and their
+deadlines:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lllr}
+        \toprule
+        \textbf{Requirement} & \textbf{Obligation} & \textbf{Deadline} & \textbf{Penalty} \\
+        \midrule
+        Data mapping           & Maintain records of processing    & 6 months  & Up to \$50,000 \\
+        Privacy impact assess. & Conduct for high-risk processing  & 90 days   & Up to \$75,000 \\
+        DPO appointment        & Designate for applicable orgs     & 6 months  & Up to \$25,000 \\
+        Breach notification    & Report to NDPA within 72 hours    & Immediate & Up to \$200,000 \\
+        Subject access rights  & Respond within 30 days            & Ongoing   & Up to \$10,000 \\
+        Cross-border transfers & Complete transfer impact assess.  & 12 months & Up to \$100,000 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Summary of compliance obligations and penalties.}
+\end{table}
+
+\section{Enforcement}
+
+\subsection{Investigation Powers}
+
+The NDPA shall have the power to:
+
+\begin{itemize}
+    \item Conduct investigations and audits of any organization subject to
+        this regulation.
+    \item Issue binding orders requiring organizations to cease unlawful
+        data processing.
+    \item Order the restriction or suspension of data transfers.
+    \item Compel the production of documents and records related to
+        processing activities.
+\end{itemize}
+
+\subsection{Penalty Framework}
+
+Violations of this regulation shall be penalized according to the
+following graduated schedule:
+
+\begin{description}
+    \item[Level 1 --- Warning.] Issued for first-time minor violations
+        with no evidence of harm. The organization shall receive a written
+        warning and must demonstrate corrective action within 60 days.
+    \item[Level 2 --- Administrative Fine.] Imposed for repeated or
+        moderate violations. Fines range from \$10,000 to \$100,000
+        depending on the nature and severity of the violation.
+    \item[Level 3 --- Significant Fine.] Reserved for serious violations,
+        including failure to report data breaches, systematic non-compliance,
+        or processing without a lawful basis. Fines range from \$100,000
+        to \$1,000,000.
+    \item[Level 4 --- Maximum Sanction.] Imposed for egregious violations
+        that cause substantial harm to data subjects. Fines may reach up
+        to 4\% of the organization's annual global turnover or
+        \$10,000,000, whichever is greater.
+\end{description}
+
+\section{Compliance Matrix}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lcccc}
+        \toprule
+        \textbf{Article} & \textbf{Public Sector} & \textbf{Private (Large)} & \textbf{Processor} & \textbf{Cross-Border} \\
+        \midrule
+        Lawful basis         & \checkmark & \checkmark & ---     & \checkmark \\
+        Data minimization    & \checkmark & \checkmark & \checkmark & \checkmark \\
+        Storage limitation   & \checkmark & \checkmark & \checkmark & --- \\
+        Privacy by design    & \checkmark & \checkmark & \checkmark & --- \\
+        Breach notification  & \checkmark & \checkmark & \checkmark & \checkmark \\
+        DPO appointment      & \checkmark & \checkmark & ---     & --- \\
+        Subject access rights & \checkmark & \checkmark & ---     & \checkmark \\
+        Transfer assessment  & \checkmark & \checkmark & \checkmark & \checkmark \\
+        \bottomrule
+    \end{tabular}
+    \caption{Applicability of key articles by entity type.}
+\end{table}
+
+\section{Effective Date and Transitional Provisions}
+
+This regulation shall enter into force on September 1, 2026. Organizations
+shall have a transition period of 12 months from the effective date to
+achieve full compliance. During the transition period, the NDPA shall
+prioritize guidance and technical assistance over enforcement actions.
+
+\printbibliography[heading=none]
+
+\end{document}

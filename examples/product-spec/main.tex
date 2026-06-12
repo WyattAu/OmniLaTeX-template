@@ -1,0 +1,164 @@
+\documentclass[
+    language=english,
+    doctype=article,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\section{Product Overview}
+
+The Acme Platform v3.1 introduces the Advanced Workflow Automation module,
+a visual, low-code environment that enables enterprise customers to design,
+deploy, and manage complex operational workflows without writing custom code.
+This module builds on the real-time analytics capabilities introduced in v3.0
+and integrates with the existing API layer, identity management, and
+monitoring infrastructure.
+
+The primary target users are operations teams, DevOps engineers, and
+line-of-business managers who need to automate repetitive processes, enforce
+compliance rules, and orchestrate cross-functional workflows.
+
+\section{Features}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{llp{5.5cm}}
+        \toprule
+        \textbf{Feature} & \textbf{Priority} & \textbf{Description} \\
+        \midrule
+        Visual Workflow Builder    & P0 & Drag-and-drop canvas for designing
+            multi-step workflows with conditional branching, loops, and
+            error handling. \\
+        Pre-built Connectors      & P0 & Native integrations with 50+
+            SaaS and infrastructure services (AWS, Azure, GCP, Slack,
+            Jira, Salesforce, etc.). \\
+        Conditional Logic Engine   & P0 & Rule-based branching using
+            JSONPath expressions, time-based triggers, and webhook
+            events. \\
+        Audit Trail                & P1 & Immutable log of all workflow
+            executions, state changes, and user actions for compliance
+            and debugging. \\
+        Role-Based Access Control  & P1 & Granular permissions for
+            workflow creation, execution, and modification at the
+            folder and workflow level. \\
+        Version Control            & P1 & Full version history with
+            diff view, rollback, and branch/merge capabilities for
+            workflow definitions. \\
+        Template Library           & P2 & Curated collection of 25+
+            industry-specific workflow templates covering ITSM, HR
+            onboarding, and data pipeline orchestration. \\
+        Advanced Analytics         & P2 & Real-time dashboards for
+            workflow performance, error rates, and resource
+            utilization with exportable reports. \\
+        \bottomrule
+    \end{tabular}
+    \caption{Feature matrix for Acme Platform v3.1.}
+\end{table}
+
+\section{Requirements}
+
+\subsection{Functional Requirements}
+
+\begin{enumerate}
+    \item The workflow builder shall support workflows with up to 200 steps
+          and 50 conditional branches without performance degradation.
+    \item All workflow executions shall complete within the configured
+          timeout period, with a default timeout of 30 minutes.
+    \item The system shall support at least 1,000 concurrent workflow
+          executions per tenant.
+    \item Workflow definitions shall be exportable as JSON for portability
+          and version control.
+    \item The audit trail shall retain records for a minimum of 7 years
+          in compliance with enterprise retention policies.
+\end{enumerate}
+
+\subsection{Non-Functional Requirements}
+
+\begin{itemize}
+    \item \textbf{Performance:} Workflow execution latency shall not exceed
+          500ms for the first step and 200ms for subsequent steps under
+          normal load.
+    \item \textbf{Availability:} The workflow engine shall maintain 99.99\%
+          uptime, measured monthly.
+    \item \textbf{Scalability:} The system shall support horizontal scaling
+          to handle a 10x increase in workflow volume without manual
+          intervention.
+    \item \textbf{Security:} All workflow data in transit and at rest shall
+          be encrypted using AES-256. OAuth 2.0 and SAML 2.0 shall be
+          supported for connector authentication.
+    \item \textbf{Compliance:} The module shall comply with SOC 2 Type II,
+          GDPR, and CCPA requirements.
+\end{itemize}
+
+\section{Architecture}
+
+The workflow automation module is composed of three primary subsystems:
+
+\begin{enumerate}
+    \item \textbf{Workflow Orchestrator:} A state machine engine built on
+          an event-sourced architecture. It processes workflow definitions,
+          manages execution state, and coordinates connector invocations.
+          Deployed as a horizontally scalable microservice on Kubernetes.
+    \item \textbf{Connector Runtime:} An isolated execution environment for
+          third-party integrations. Each connector runs in a sandboxed
+          container with resource limits to prevent noisy-neighbor issues.
+          Connectors communicate with the orchestrator via gRPC.
+    \item \textbf{Persistence Layer:} Workflow definitions and execution
+          history are stored in PostgreSQL with read replicas for analytics
+          queries. Audit logs are streamed to Apache Kafka for long-term
+          retention in object storage.
+\end{enumerate}
+
+\begin{figure}[h]
+    \centering
+    \f\boxed{\par\boxed{0.85\textwidth}{\centering\vspace{2cm}
+    \textbf{Architecture Diagram Placeholder}\\[0.5em]
+    Workflow Orchestrator $\leftrightarrow$ Connector Runtime $\leftrightarrow$ Persistence Layer
+    \vspace{2cm}}}
+    \caption{High-level architecture of the workflow automation module.}
+\end{figure}
+
+\section{Timeline}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{llr}
+        \toprule
+        \textbf{Milestone} & \textbf{Deliverable} & \textbf{Target Date} \\
+        \midrule
+        M1: Design Complete     & Architecture review, API specs        & July 15, 2026  \\
+        M2: Core Engine         & Workflow orchestrator, basic UI       & September 1, 2026 \\
+        M3: Connectors          & 25 pre-built connectors              & October 15, 2026 \\
+        M4: Beta Release        & Feature-complete beta for 10 tenants  & November 30, 2026 \\
+        M5: GA Release          & Production launch with full support   & January 15, 2027 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Development milestones for Acme Platform v3.1.}
+\end{table}
+
+\section{Success Metrics}
+
+Following the general availability release, the following metrics will be
+tracked to evaluate adoption and impact:
+
+\begin{itemize}
+    \item \textbf{Adoption:} 40\% of enterprise tenants activate the
+          workflow module within 90 days of GA.
+    \item \textbf{Engagement:} Average of 15 active workflows per tenant
+          within 6 months.
+    \item \textbf{Efficiency:} Customers report a 25\% reduction in manual
+          operational tasks within the first quarter of use.
+    \item \textbf{Reliability:} Workflow execution success rate above 99.5\%.
+    \item \textbf{Revenue:} \$8M in incremental ARR attributable to the
+          workflow module in FY2027.
+\end{itemize}
+
+\printbibliography[heading=none]
+
+\end{document}

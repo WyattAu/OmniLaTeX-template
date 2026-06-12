@@ -1,0 +1,95 @@
+\documentclass[
+    language=english,
+    doctype=textbook,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\chapter{Foundations of Distributed Systems}
+
+\section{Learning Objectives}
+By the end of this chapter, students will be able to:
+\begin{itemize}
+    \item Define distributed systems and identify their key characteristics
+    \item Explain the CAP theorem and its implications
+    \item Compare consensus protocols (Paxos, Raft)
+    \item Analyse trade-offs between consistency and availability
+\end{itemize}
+
+\section{What Is a Distributed System?}
+A distributed system is a collection of autonomous computing elements
+that appears to its users as a single coherent system~\cite{bibid}.
+The key challenges include:
+
+\begin{description}
+    \item[Transparency] Hiding the distribution from users
+    \item[Openness] Supporting heterogeneous hardware and software
+    \item[Scalability] Maintaining performance as the system grows
+    \item[Fault Tolerance] Continuing operation despite failures
+\end{description}
+
+\section{The CAP Theorem}
+Brewer's CAP theorem states that a distributed system can provide
+at most two of the following three guarantees:
+
+\begin{equation}
+    C + A + P \leq 2
+    \label{eq:cap}
+\end{equation}
+
+where $C$ is consistency, $A$ is availability, and $P$ is partition
+tolerance.
+
+\subsection{Consistency Models}
+We distinguish between several consistency models:
+
+\begin{enumerate}
+    \item \textbf{Linearizability}: All operations appear atomic
+    \item \textbf{Sequential consistency}: All processes agree on order
+    \item \textbf{Eventual consistency}: All replicas converge eventually
+\end{enumerate}
+
+\section{Worked Example}
+Consider a three-node replication system. If node A accepts a write
+while node B is partitioned, the system must choose between:
+
+\begin{itemize}
+    \item Rejecting the write (consistency over availability)
+    \item Accepting the write (availability over consistency)
+\end{itemize}
+
+\section{Key Terms}
+\begin{description}
+    \item[Consensus] Agreement among distributed processes
+    \item[Leader election] Selecting a coordinator node
+    \item[State machine replication] Replicating deterministic state
+\end{description}
+
+\section{Exercises}
+\begin{enumerate}
+    \item Prove that a two-node system cannot tolerate one failure
+      while maintaining consensus.
+    \item Design a protocol that provides eventual consistency with
+      conflict resolution.
+    \item Compare the performance of Paxos and Raft under normal
+      operation and under leader failure.
+\end{enumerate}
+
+\section{Further Reading}
+\begin{itemize}
+    \item Lamport, ``The Part-Time Parliament''~\cite{einstein1905}
+    \item Ongaro and Ousterhout, ``In Search of an Understandable
+      Consensus Algorithm''
+    \item Kleppmann, \emph{Designing Data-Intensive Applications}
+      ~\cite{goossensLaTeXCompanion1993}
+\end{itemize}
+
+\printbibliography[heading=subbibintoc,title=References]
+
+\end{document}

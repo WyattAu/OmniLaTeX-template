@@ -1,0 +1,167 @@
+\documentclass[
+    language=english,
+    doctype=lecture-notes,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+\maketitle
+
+\section{Eigenvalues and Eigenvectors}
+
+\subsection{Definitions and Motivation}
+
+We begin with the central definition of this lecture.
+
+\begin{definition}
+Let $A$ be an $n \times n$ matrix over $\mathbb{R}$.  A nonzero vector
+$\mathbf{v} \in \mathbb{R}^n$ is an \textbf{eigenvector} of $A$ if there
+exists a scalar $\lambda \in \mathbb{R}$ such that
+\[
+    A\mathbf{v} = \lambda \mathbf{v}.
+\]
+The scalar $\lambda$ is called the corresponding \textbf{eigenvalue}.
+\end{definition}
+
+\begin{remark}
+Geometrically, an eigenvector is a direction that is preserved (up to scaling)
+under the linear transformation defined by $A$.  The eigenvalue tells us the
+factor by which the eigenvector is stretched or compressed.
+\end{remark}
+
+\subsection{The Characteristic Polynomial}
+
+\begin{definition}
+The \textbf{characteristic polynomial} of an $n \times n$ matrix $A$ is
+\[
+    p_A(\lambda) = \det(A - \lambda I).
+\]
+The eigenvalues of $A$ are precisely the roots of $p_A(\lambda) = 0$.
+\end{definition}
+
+\begin{theorem}
+An $n \times n$ matrix has at most $n$ eigenvalues (counted with algebraic
+multiplicity).
+\end{theorem}
+
+\begin{proof}
+Since $\deg(p_A) = n$, the Fundamental Theorem of Algebra guarantees at most
+$n$ roots.
+\end{proof}
+
+\subsection{Computing Eigenvalues}
+
+\begin{example}
+Find the eigenvalues of
+\[
+    A = \begin{pmatrix} 4 & 1 \\ 2 & 3 \end{pmatrix}.
+\]
+
+\textbf{Solution.}  We compute:
+\[
+    \det(A - \lambda I) = \det\begin{pmatrix} 4-\lambda & 1 \\ 2 & 3-\lambda \end{pmatrix}
+    = (4-\lambda)(3-\lambda) - 2 = \lambda^2 - 7\lambda + 10
+    = (\lambda - 5)(\lambda - 2).
+\]
+The eigenvalues are $\lambda_1 = 5$ and $\lambda_2 = 2$.
+\end{example}
+
+\begin{example}
+Find the eigenvectors of the matrix $A$ from the previous example.
+
+\textbf{Solution.}  For $\lambda_1 = 5$:
+\[
+    (A - 5I)\mathbf{v} = \begin{pmatrix} -1 & 1 \\ 2 & -2 \end{pmatrix}\mathbf{v} = \mathbf{0}
+    \implies \mathbf{v}_1 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}.
+\]
+For $\lambda_2 = 2$:
+\[
+    (A - 2I)\mathbf{v} = \begin{pmatrix} 2 & 1 \\ 2 & 1 \end{pmatrix}\mathbf{v} = \mathbf{0}
+    \implies \mathbf{v}_2 = \begin{pmatrix} 1 \\ -2 \end{pmatrix}.
+\]
+\end{example}
+
+\section{Diagonalization}
+
+\begin{definition}
+An $n \times n$ matrix $A$ is \textbf{diagonalizable} if there exists an
+invertible matrix $P$ and a diagonal matrix $D$ such that $A = PDP^{-1}$.
+\end{definition}
+
+\begin{theorem}
+An $n \times n$ matrix is diagonalizable if and only if it has $n$ linearly
+independent eigenvectors.
+\end{theorem}
+
+\begin{proof}
+Suppose $A$ has $n$ linearly independent eigenvectors $\mathbf{v}_1,
+\ldots, \mathbf{v}_n$ with eigenvalues $\lambda_1, \ldots, \lambda_n$.
+Let $P = [\mathbf{v}_1 \mid \cdots \mid \mathbf{v}_n]$ and $D =
+\operatorname{diag}(\lambda_1, \ldots, \lambda_n)$.  Then $AP = PD$,
+so $A = PDP^{-1}$ since $P$ is invertible.  The converse follows by
+reversing the construction.
+\end{proof}
+
+\begin{example}
+Diagonalize $A = \begin{pmatrix} 4 & 1 \\ 2 & 3 \end{pmatrix}$.
+
+\textbf{Solution.}  Using the eigenvectors from the previous example:
+\[
+    P = \begin{pmatrix} 1 & 1 \\ 1 & -2 \end{pmatrix}, \quad
+    D = \begin{pmatrix} 5 & 0 \\ 0 & 2 \end{pmatrix}, \quad
+    P^{-1} = \frac{1}{3}\begin{pmatrix} 2 & 1 \\ 1 & -1 \end{pmatrix}.
+\]
+One can verify $A = PDP^{-1}$.
+\end{example}
+
+\section{Key Concepts}
+
+\begin{description}
+    \item[Eigenvalue] A scalar $\lambda$ such that $A\mathbf{v} = \lambda\mathbf{v}$
+          for some nonzero vector $\mathbf{v}$.
+    \item[Eigenvector] A nonzero vector $\mathbf{v}$ satisfying $A\mathbf{v} =
+          \lambda\mathbf{v}$.
+    \item[Characteristic polynomial] $p_A(\lambda) = \det(A - \lambda I)$;
+          its roots are the eigenvalues.
+    \item[Diagonalization] Expressing $A$ as $PDP^{-1}$ where $D$ is diagonal.
+    \item[Algebraic multiplicity] The multiplicity of $\lambda$ as a root of
+          $p_A$.
+    \item[Geometric multiplicity] The dimension of the eigenspace corresponding
+          to $\lambda$.
+\end{description}
+
+\section{Practice Problems}
+
+\begin{problem}
+Find the eigenvalues and eigenvectors of
+\[
+    B = \begin{pmatrix} 2 & 0 & 0 \\ 0 & 3 & 4 \\ 0 & 4 & 9 \end{pmatrix}.
+\]
+\end{problem}
+
+\begin{problem}
+Determine whether the matrix
+\[
+    C = \begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix}
+\]
+is diagonalizable.  Justify your answer.
+\end{problem}
+
+\begin{problem}
+Prove that a matrix $A$ is singular if and only if $0$ is an eigenvalue of $A$.
+\end{problem}
+
+\section{Summary}
+
+Today we introduced eigenvalues and eigenvectors, which capture the fundamental
+geometric behavior of a linear transformation.  The characteristic polynomial
+provides a computational tool for finding eigenvalues, and diagonalization
+allows us to decompose a matrix into a form that makes powers and matrix
+exponentials easy to compute.  These concepts will be essential for our upcoming
+discussion of quadratic forms and singular value decomposition.
+
+\noindent\textbf{Next lecture:} Singular Value Decomposition and its applications.
+
+\end{document}

@@ -1,0 +1,111 @@
+\documentclass[
+    language=english,
+    doctype=lesson-plan,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+
+\maketitle
+
+\section*{Lesson Overview}
+
+\begin{description}
+    \item[Subject] Computer Science --- Distributed Systems
+    \item[Topic] Consensus Protocols: Raft vs Paxos
+    \item[Duration] 75 minutes
+    \item[Level] Upper undergraduate / graduate
+    \item[Prerequisites] Basic understanding of distributed systems,
+      network partitions, leader election
+\end{description}
+
+\section*{Learning Objectives}
+By the end of this lesson, students will be able to:
+\begin{enumerate}
+    \item Explain the Raft consensus protocol step by step
+    \item Compare Raft and Paxos on understandability and performance
+    \item Implement a simplified leader election in pseudocode
+    \item Identify failure modes and recovery strategies
+\end{enumerate}
+
+\section*{Materials}
+\begin{itemize}
+    \item Projector and slides (beamer presentation)
+    \item Printed handouts of Raft paper (Sections 5--8)
+    \item Whiteboard markers
+    \item Student laptops (for interactive simulation)
+\end{itemize}
+
+\section*{Lesson Plan}
+
+\subsection{Warm-Up (10 minutes)}
+\textbf{Activity:} Ask students to recall the FLP impossibility result
+and discuss why practical systems still achieve consensus.
+
+\begin{itemize}
+    \item Poll: ``Can you solve consensus in an asynchronous system?'' (Yes/No/Depends)
+    \item Brief discussion of synchrony assumptions
+\end{itemize}
+
+\subsection{Direct Instruction (25 minutes)}
+\textbf{Content:} Walk through the Raft protocol:
+
+\begin{enumerate}
+    \item Leader election (terms, RequestVote RPC)
+    \item Log replication (AppendEntries RPC)
+    \item Safety (election restriction, commitment)
+\end{enumerate}
+
+\textbf{Visual aid:} Draw the Raft state machine on the whiteboard.
+Use the interactive simulation at raft.github.io to demonstrate
+leader election under network partitions.
+
+\subsection{Guided Practice (20 minutes)}
+\textbf{Activity:} Students work in pairs to trace through a Raft
+execution scenario:
+
+\begin{enumerate}
+    \item 5-node cluster, node 3 is leader
+    \item Node 3 crashes
+    \item Nodes 1, 2, 4, 5 hold election
+    \item Node 4 wins election
+    \item Node 3 recovers and rejoins
+\end{enumerate}
+
+\textbf{Deliverable:} Each pair produces a sequence diagram showing
+the message exchanges.
+
+\subsection{Independent Practice (15 minutes)}
+\textbf{Task:} Write pseudocode for the RequestVote RPC handler.
+Consider:
+\begin{itemize}
+    \item When should a node vote?
+    \item What if the candidate's log is stale?
+    \item How does the term number change?
+\end{itemize}
+
+\subsection{Closure (5 minutes)}
+\textbf{Exit ticket:} Students write one thing they learned and one
+question they still have.
+
+\section*{Assessment}
+\begin{itemize}
+    \item Observation during pair work
+    \item Review of sequence diagrams
+    \item Exit ticket responses
+\end{itemize}
+
+\section*{Homework}
+Read Raft paper Section 9 (Formal Specification) and write a
+one-page comparison of Raft's safety proof approach vs Paxos.
+
+\section*{Differentiation}
+\begin{description}
+    \item[For advanced students] Explore multi-Raft (sharded) systems
+    \item[For struggling students] Focus on leader election only;
+      skip log replication details
+\end{description}
+
+\end{document}

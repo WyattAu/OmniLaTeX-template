@@ -1,0 +1,163 @@
+% Magic Comment: this template requires UTF-8 encoding. The following 'magic comment' is
+% recognized by bib2gls and will ensure UTF-8 is used:
+% Encoding: UTF-8
+% see: https://github.com/nlct/bib2gls/issues/5#issuecomment-490863175
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Thermodynamic state
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@symbol{abs_temperature,
+  name        = {\ensuremath{T}},
+  description = {(absolute) Temperature},
+  unit        = {\unit{\kelvin}}
+}
+@symbol{area,
+  name        = {\ensuremath{A}},
+  description = {Area},
+  unit        = {\unit{\meter\squared}}
+}
+@symbol{component,
+  name        = {\ensuremath{n}},
+  description = {Component},
+  unit        = {\unit{-}}
+}
+@symbol{count,
+  name        = {\ensuremath{k}},
+  description = {Count/Quantity},
+  unit        = {\unit{-}}
+}
+@symbol{density,
+  name        = {\ensuremath{\rho}},
+  description = {Density},
+  unit        = {\unit{\kilogram\per\meter\cubed}}
+}
+@symbol{electric_current,
+  name        = {\ensuremath{J_{\glsentryname{sub.electric}}}},
+  description = {Electric current},
+  unit        = {\unit{\ampere}}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Thermodynamic change of state / energy
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@symbol{electrical_resistance,
+  name        = {\ensuremath{R_{\glsentryname{sub.electric}}}},
+  description = {Electrical resistance},
+  unit        = {\unit{\ohm}}
+}
+@symbol{enthalpy,
+  name        = {\ensuremath{H}},
+  specific    = {\ensuremath{h}},
+  description = {Enthalpy},
+  unit        = {\unit{\joule}}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Air conditioning
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@symbol{first_cart_coord,
+  name        = {\ensuremath{x}},
+  description = {First Cartesian coordinate (length)},
+  unit        = {\unit{\meter}}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Material properties
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@symbol{gas_constant,
+  name        = {\ensuremath{R}},
+  specific    = {\ensuremath{R}},
+  description = {(specific) Gas Constant},
+  unit        = {\unit{\joule\per\kilogram\per\kelvin}}
+}
+@symbol{heat_capacity,
+  name        = {\ensuremath{C}},
+  specific    = {\ensuremath{c}},
+  description = {Heat capacity},
+  unit        = {\unit{\joule\per\kelvin}}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Coordinates etc.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% REQUIRED for built-in \posderiv to work:
+@symbol{heating_value,
+  name        = {\ensuremath{H_{\glsentryname{sub.inferior}}}},
+  specific    = {\ensuremath{H_{\glsentryname{sub.inferior}}}},
+  description = {(specific) Heating Value},
+  unit        = {\unit{\joule\per\kilogram}}
+}
+@symbol{mach_number,
+  name        = {\ensuremath{\operatorname{M}}},
+  description = {\glsfmtname{name.ernst_mach} number},
+  unit        = {\unit{-}}
+}
+@symbol{mass,
+  name        = {\ensuremath{m}},
+  description = {Mass},
+  unit        = {\unit{\kilogram}}
+}
+@symbol{moisture_content,
+  name        = {\ensuremath{x}},
+  description = {Moisture Content},
+  unit        = {%
+                 \unit{
+                 \gram_{\glsfmtname{sub.water}}
+                 \per
+                 \kilogram_{\glsfmtname{sub.dry}\glsfmtname{sub.air}}
+                 }
+                 }
+}
+@symbol{pressure,
+  name        = {\ensuremath{p}},
+  description = {Pressure},
+  unit        = {\unit{\pascal}}
+}
+% REQUIRED for built-in \timederiv to work:
+@symbol{radius,
+  name        = {\ensuremath{r}},
+  description = {Radius},
+  unit        = {\unit{\meter}}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Electrical
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@symbol{reynolds_number,
+  name        = {\ensuremath{\operatorname{Re}}},
+  description = {\glsfmtname{name.osborne_reynolds} number},
+  unit        = {\unit{-}}
+}
+@symbol{second_cart_coord,
+  name        = {\ensuremath{y}},
+  description = {Second Cartesian coordinate (width)},
+  unit        = {\unit{\meter}}
+}
+@symbol{third_cart_coord,
+  name        = {\ensuremath{z}},
+  description = {Third Cartesian coordinate (height)},
+  unit        = {\unit{\meter}}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Dimensionless Quantities
+% Use \operatorname (for which \DeclareMathOperator is a wrapper)
+% for correct spacing etc.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@symbol{time,
+  name        = {\ensuremath{t}},
+  description = {Time},
+  unit        = {\unit{\second}}
+}
+@symbol{velocity,
+  name        = {\ensuremath{c}},
+  description = {Velocity/Speed},
+  unit        = {\unit{\meter\per\second}}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Other
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@symbol{voltage,
+  name        = {\ensuremath{U_{\glsentryname{sub.electric}}}},
+  description = {Voltage},
+  unit        = {\unit{\volt}}
+}
+@symbol{volume,
+  name        = {\ensuremath{V}},
+  specific    = {\ensuremath{v}},
+  description = {Volume},
+  unit        = {\unit{\meter\cubed}}
+}

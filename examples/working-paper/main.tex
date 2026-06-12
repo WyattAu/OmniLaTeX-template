@@ -1,0 +1,190 @@
+\documentclass[
+    language=english,
+    doctype=article,
+    institution=none,
+    titlestyle=book,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\begin{center}
+    \textbf{Discussion Paper --- Comments Welcome}
+\end{center}
+
+\section*{Abstract}
+This paper examines the impact of carbon pricing under the European Union
+Emissions Trading System (EU ETS) on the competitiveness of energy-intensive
+industries.  Using a difference-in-differences framework with firm-level data
+from 2005 to 2024, we estimate the causal effect of carbon allowance costs on
+production volumes, employment, and carbon leakage indicators across seven
+industrial sectors.  Our results indicate that a 10\,EUR per tonne increase in
+carbon allowance prices is associated with a 2.3\% reduction in production
+output and a 1.1\% decrease in employment within the most exposed sectors.
+However, we find limited evidence of significant carbon leakage, suggesting
+that border adjustment mechanisms and free allowance allocations have
+successfully mitigated relocation pressures.
+
+\section{Introduction}
+Carbon pricing has emerged as the principal market-based instrument for
+reducing greenhouse gas emissions from industrial activities.  The EU ETS,
+as the world's largest cap-and-trade system, covers approximately 40\% of
+European greenhouse gas emissions and imposes a carbon cost on over 10,000
+installations~\cite{bibid}.
+
+The competitiveness implications of carbon pricing remain a central concern in
+climate policy debates.  If carbon costs induce firms to relocate production to
+jurisdictions without comparable carbon pricing---a phenomenon known as carbon
+leakage---the environmental effectiveness of the policy is undermined and
+domestic employment is lost~\cite{einstein1905}.  Existing theoretical models
+of carbon leakage rely on assumptions about firm mobility and trade elasticities
+that are difficult to test empirically~\cite{goossensLaTeXCompanion1993}.
+
+This paper contributes to the empirical literature by exploiting the phased
+implementation of the EU ETS across sectors and the variation in carbon
+intensity within sectors to identify the causal effect of carbon pricing on
+industrial outcomes.
+
+\section{Institutional Background}
+
+\subsection{The EU Emissions Trading System}
+The EU ETS operates in four phases:
+\begin{enumerate}
+    \item \textbf{Phase I (2005--2007):} Pilot phase with free allocation
+    based on historical emissions.
+    \item \textbf{Phase II (2008--2012):} Tightened cap aligned with Kyoto
+    Protocol targets.
+    \item \textbf{Phase III (2013--2020):} Shift to auctioning and
+    introduction of the Market Stability Reserve.
+    \item \textbf{Phase IV (2021--2030):} Enhanced ambition with a linear
+    reduction factor of 4.3\% per year and the Carbon Border Adjustment
+    Mechanism (CBAM).
+\end{enumerate}
+
+\subsection{Carbon Leakage Provisions}
+To address competitiveness concerns, the EU ETS provides free allowances to
+sectors deemed at significant risk of carbon leakage.  The allocation is
+benchmarked against the performance of the top 10\% most efficient installations
+in each sector.
+
+\section{Empirical Strategy}
+
+\subsection{Identification}
+We employ a difference-in-differences (DiD) design exploiting variation in
+carbon cost exposure across sectors and over time.  The treatment intensity
+is measured by the sector-specific carbon cost burden, defined as
+\begin{equation}
+    \text{CCB}_{s,t} = \frac{p_t \times e_s}{V_{s,t}},
+    \label{eq:ccb}
+\end{equation}
+where $p_t$ is the carbon allowance price in year $t$, $e_s$ is the
+emission intensity of sector $s$ (tonnes CO$_2$ per unit of output), and
+$V_{s,t}$ is the sectoral value added.
+
+\subsection{Estimation Equation}
+Our baseline specification is
+\begin{equation}
+    Y_{i,s,t} = \alpha_i + \gamma_t + \delta \, \text{CCB}_{s,t} + \mathbf{X}_{i,t}'\boldsymbol{\beta} + \varepsilon_{i,s,t},
+    \label{eq:did}
+\end{equation}
+where $Y_{i,s,t}$ is the outcome of interest for firm $i$ in sector $s$ at
+time $t$, $\alpha_i$ are firm fixed effects, $\gamma_t$ are year fixed
+effects, and $\mathbf{X}_{i,t}$ is a vector of time-varying firm-level
+controls including firm size, capital intensity, and export share.
+
+\section{Data}
+
+\subsection{Source and Coverage}
+We construct a panel dataset combining:
+\begin{itemize}
+    \item Firm-level production and financial data from the Bureau van Dijk
+    Orbis database.
+    \item Emissions and allowance data from the EU ETS Transaction Log.
+    \item Sector-level carbon intensity estimates from Eurostat.
+\end{itemize}
+The final sample covers 12,847 installations across seven energy-intensive
+sectors: cement, steel, aluminium, lime, glass, ceramics, and paper.
+
+\section{Results}
+
+\subsection{Main Findings}
+Table~\ref{tab:main-results} presents the estimated effects of carbon cost
+burden on key industrial outcomes.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Difference-in-differences estimates of the effect of a 10\,EUR/t
+    CO$_2$ increase in carbon cost burden on industrial outcomes.}
+    \label{tab:main-results}
+    \begin{tabular}{@{}lcccc@{}}
+        \toprule
+        \textbf{Outcome} & \textbf{Estimate} & \textbf{SE} &
+            \textbf{95\% CI} & \textbf{$N$} \\
+        \midrule
+        Production (log)  & $-0.023^{**}$ & 0.009 & $[-0.041,\; -0.005]$ &
+            128{,}470 \\
+        Employment (log)  & $-0.011^{*}$  & 0.005 & $[-0.021,\; -0.001]$ &
+            128{,}470 \\
+        Investment (log)  & $-0.008$      & 0.012 & $[-0.032,\; 0.016]$ &
+            115{,}230 \\
+        Export share      & $-0.003$      & 0.004 & $[-0.011,\; 0.005]$ &
+            128{,}470 \\
+        Carbon leakage    & $0.005$       & 0.007 & $[-0.009,\; 0.019]$ &
+            128{,}470 \\
+        \bottomrule
+    \end{tabular}
+    \vspace{1ex}
+    \\[0.5ex]
+    \footnotesize{Notes: Standard errors are clustered at the firm level.
+    Significance levels: $^{*}p < 0.10$, $^{**}p < 0.05$, $^{***}p < 0.01$.}
+\end{table}
+
+The results indicate that increased carbon costs are associated with modest
+reductions in production and employment, but no statistically significant
+increase in carbon leakage.
+
+\subsection{Heterogeneity Analysis}
+We find substantial heterogeneity across sectors.  The cement and steel
+sectors, which face the highest carbon cost burden, exhibit the largest
+production responses.  In contrast, the glass and ceramics sectors show
+negligible effects, likely due to their lower emission intensity and the
+availability of fuel-switching options.
+
+\section{Policy Implications}
+Our findings suggest that the EU ETS competitiveness provisions---particularly
+free allocation and CBAM---have been effective in preventing large-scale carbon
+leakage.  However, the observed production and employment reductions in the
+most exposed sectors raise concerns about the distributional consequences of
+carbon pricing.
+
+\begin{description}
+    \item[Border adjustment] The phased introduction of CBAM should be
+    accelerated to provide a level playing field for EU producers competing
+    against imports from jurisdictions without carbon pricing.
+    \item[Revenue recycling] A portion of auction revenue should be directed
+    toward worker retraining and regional transition funds to address the
+    employment effects documented in this study.
+    \item[Free allocation reform] Free allowances should be phased out in line
+    with the CBAM rollout to maintain environmental integrity while protecting
+    competitiveness.
+\end{description}
+
+\section{Conclusion}
+This paper provides evidence that carbon pricing under the EU ETS has modest
+but significant effects on production and employment in energy-intensive
+industries, without inducing large-scale carbon leakage.  These findings
+support the continued use of carbon pricing as a central climate policy
+instrument, provided that complementary measures are in place to address
+competitiveness and distributional concerns.
+
+Future research should examine the long-run effects of carbon pricing on
+innovation and technology adoption, as well as the interaction between the EU
+ETS and emerging carbon pricing systems in other jurisdictions.
+
+\printbibliography
+
+\end{document}

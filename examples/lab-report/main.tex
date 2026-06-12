@@ -1,0 +1,159 @@
+\documentclass[
+    language=english,
+    doctype=article,
+    institution=none,
+    titlestyle=book,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\section*{Abstract}
+This report investigates the spectrophotometric determination of chlorophyll~$a$
+and chlorophyll~$b$ concentrations in three freshwater algal cultures.  Using
+absorption measurements at defined wavelengths, we compare the accuracy of
+single-wavelength and multi-wavelength methods against certified reference
+materials.  Our results demonstrate that the multi-wavelength approach achieves
+a coefficient of determination $R^{2} = 0.994$ across the tested concentration
+range, significantly outperforming the single-wavelength baseline.
+
+\section{Introduction}
+Chlorophyll concentration is a widely used indicator of phytoplankton biomass
+and aquatic ecosystem health~\cite{bibid}.  Accurate quantification supports
+water quality monitoring programmes, eutrophication assessments, and aquaculture
+management~\cite{einstein1905}.  This experiment compares two
+spectrophotometric methods for determining chlorophyll content in extracted algal
+samples.
+
+\section{Hypothesis}
+We hypothesise that a multi-wavelength spectrophotometric method, which accounts
+for overlapping absorption bands of chlorophyll~$a$, chlorophyll~$b$, and
+carotenoids, will yield significantly more accurate concentration estimates than
+a single-wavelength method calibrated at the chlorophyll~$a$ absorption maximum
+($\lambda = 663$~nm).
+
+\section{Materials and Methods}
+
+\subsection{Sample Preparation}
+Three freshwater algal cultures (\emph{Chlorella vulgaris}, \emph{Scenedesmus
+obliquus}, and \emph{Ankistrodesmus falcatus}) were grown under controlled
+laboratory conditions (20\,$^\circ$C, 12\,h photoperiod, BG-11 medium).
+Cultures were harvested at three density levels: low ($\mathrm{OD}_{750} <
+0.3$), medium ($0.3 \leq \mathrm{OD}_{750} < 0.7$), and high
+($\mathrm{OD}_{750} \geq 0.7$).
+
+\subsection{Chlorophyll Extraction}
+Algal cells were collected on GF/C filters and extracted in 90\% acetone for
+24\,h at 4\,$^\circ$C in darkness.  Extracts were centrifuged at 4000\,$g$ for
+10\,min and the supernatant was used for spectrophotometric analysis.
+
+\subsection{Spectrophotometric Measurements}
+Absorption spectra were recorded from 400\,nm to 750\,nm using a dual-beam
+spectrophotometer with 1\,nm resolution.  All measurements were performed in
+quartz cuvettes with a 1\,cm path length.
+
+\subsection{Calculation Methods}
+The single-wavelength method uses the Lichtenthaler equations:
+\begin{equation}
+    C_a = 11.85 \, A_{663} - 1.54 \, A_{645}, \label{eq:chla}
+\end{equation}
+\begin{equation}
+    C_b = 24.96 \, A_{645} - 7.09 \, A_{663}, \label{eq:chlb}
+\end{equation}
+where $A_{\lambda}$ denotes absorbance at wavelength $\lambda$.  The
+multi-wavelength method applies a least-squares fit across the full spectrum to
+deconvolve individual pigment contributions.
+
+\section{Results}
+Table~\ref{tab:results} presents the measured chlorophyll concentrations and
+recovery rates for each culture and density level.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Chlorophyll~$a$ concentrations ($\mu$g\,L$^{-1}$) and recovery
+    rates for three algal species at different culture densities.}
+    \label{tab:results}
+    \begin{tabular}{@{}llcccc@{}}
+        \toprule
+        \textbf{Species} & \textbf{Density} & $C_{\text{ref}}$ &
+            $C_{\text{single}}$ & $C_{\text{multi}}$ & \textbf{Recovery} \\
+        \midrule
+        \multirow{3}{*}{\emph{C. vulgaris}}
+            & Low    & 12.4 & 11.8 & 12.2 & 98.4\% \\
+            & Medium & 34.7 & 33.1 & 34.5 & 99.4\% \\
+            & High   & 78.2 & 74.6 & 77.8 & 99.5\% \\
+        \addlinespace
+        \multirow{3}{*}{\emph{S. obliquus}}
+            & Low    & 15.1 & 14.3 & 14.9 & 98.7\% \\
+            & Medium & 41.3 & 39.5 & 41.0 & 99.3\% \\
+            & High   & 85.6 & 81.2 & 85.1 & 99.4\% \\
+        \addlinespace
+        \multirow{3}{*}{\emph{A. falcatus}}
+            & Low    & 9.8  & 9.2  & 9.7  & 99.0\% \\
+            & Medium & 27.5 & 26.1 & 27.3 & 99.3\% \\
+            & High   & 63.4 & 60.1 & 63.0 & 99.4\% \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Figure~\ref{fig:absorption} shows representative absorption spectra for the
+three pigment extracts.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=0.75\textwidth,
+            height=6cm,
+            xlabel={Wavelength (nm)},
+            ylabel={Absorbance (a.u.)},
+            legend pos=north east,
+            grid=major,
+            thick,
+            xmin=400, xmax=750,
+            ymin=0,
+        ]
+            \addplot[green!70!black, smooth, domain=400:750, samples=100]
+                {0.3*exp(-((x-430)/25)^2) + 0.8*exp(-((x-663)/15)^2)
+                 + 0.1*exp(-((x-645)/12)^2)};
+            \addlegendentry{\emph{C. vulgaris}}
+            \addplot[blue!60, smooth, domain=400:750, samples=100]
+                {0.35*exp(-((x-435)/22)^2) + 0.9*exp(-((x-665)/14)^2)
+                 + 0.15*exp(-((x-648)/11)^2)};
+            \addlegendentry{\emph{S. obliquus}}
+            \addplot[red!60, smooth, domain=400:750, samples=100]
+                {0.25*exp(-((x-428)/24)^2) + 0.7*exp(-((x-661)/16)^2)
+                 + 0.08*exp(-((x-643)/13)^2)};
+            \addlegendentry{\emph{A. falcatus}}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Absorption spectra of chlorophyll extracts from three algal species
+    showing characteristic Soret bands (400--450\,nm) and Q-bands (630--670\,nm).}
+    \label{fig:absorption}
+\end{figure}
+
+\section{Discussion}
+The multi-wavelength method consistently outperformed the single-wavelength
+approach, particularly for cultures with high pigment density where overlapping
+absorption bands introduce systematic errors~\cite{goossensLaTeXCompanion1993}.
+The recovery rates for the multi-wavelength method remained above 98.4\% across
+all conditions, while the single-wavelength method showed larger deviations at
+high concentrations.
+
+A limitation of this study is the restricted pigment palette.  Natural water
+samples contain additional photosynthetic pigments, including phycobilins and
+chlorophyllides, which would require further spectral deconvolution.
+
+\section{Conclusion}
+The multi-wavelength spectrophotometric method provides superior accuracy for
+chlorophyll determination across the tested concentration range.  We recommend
+its adoption for routine water quality monitoring programmes where high
+throughput and reliability are essential.
+
+\printbibliography
+
+\end{document}

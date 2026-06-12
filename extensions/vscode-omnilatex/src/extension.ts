@@ -24,25 +24,38 @@ function spawnAsync(command: string, args: string[], options: { cwd: string }): 
 }
 
 const DOCTYPES: string[] = [
-    'article', 'book', 'book-chapter', 'cover-letter', 'cv', 'dictionary',
-    'dissertation', 'exam', 'grant-proposal', 'handbook', 'handout',
-    'homework', 'ieee', 'inlinepaper', 'invoice', 'journal', 'guide',
-    'lecture-notes', 'letter', 'manual', 'memo', 'patent', 'poster',
-    'presentation', 'recipe', 'report', 'research-proposal', 'standard',
-    'syllabus', 'technicalreport', 'thesis', 'white-paper'
+    'annotated-bibliography', 'annual-report', 'api-reference', 'article',
+    'beamer', 'blog-post', 'book', 'book-chapter', 'brochure',
+    'business-letter', 'case-study', 'changelog', 'chapter',
+    'conference-proceedings', 'cover-letter', 'course-material',
+    'course-notes', 'cv', 'dictionary', 'dissertation', 'exam',
+    'grant-proposal', 'handbook', 'handout', 'homework', 'ieee',
+    'inlinepaper', 'invitation', 'invoice', 'journal', 'lab-report',
+    'lecture-notes', 'legislation', 'letter', 'literature-review',
+    'manual', 'meeting-minutes', 'memo', 'newsletter', 'patent',
+    'poster', 'preprint', 'presentation', 'proceedings', 'program',
+    'product-spec', 'quiz', 'recipe', 'regulation', 'report',
+    'research-proposal', 'software-documentation', 'standard',
+    'strategic-plan', 'syllabus', 'technical-spec', 'technicalreport',
+    'textbook', 'thesis', 'thesis-proposal', 'white-paper',
+    'working-paper'
 ];
 
 const INSTITUTIONS: string[] = [
-    'cambridge', 'cmu', 'epfl', 'eth', 'generic', 'harvard', 'imperial',
-    'mit', 'none', 'oxford', 'princeton', 'stanford', 'tudelft', 'tuhh',
-    'tum', 'yale'
+    'aalto', 'berkeley', 'brown', 'caltech', 'cambridge', 'chalmers',
+    'cmu', 'cornell', 'columbia', 'dartmouth', 'epfl', 'eth',
+    'gatech', 'generic', 'harvard', 'imperial', 'johnshopkins', 'kit',
+    'mit', 'none', 'ntnu', 'oxford', 'princeton', 'stanford',
+    'tudelft', 'tuhh', 'tum', 'uoft', 'umich', 'upenn', 'wisc', 'yale'
 ];
 
 const LANGUAGES: string[] = [
     'english', 'german', 'french', 'spanish', 'russian', 'italian',
     'portuguese', 'dutch', 'polish', 'czech', 'greek', 'turkish',
     'simplifiedchinese', 'traditionalchinese', 'japanese', 'korean',
-    'arabic', 'hebrew', 'persian'
+    'arabic', 'hebrew', 'persian', 'bengali', 'hindi', 'thai',
+    'vietnamese', 'ukrainian', 'bulgarian', 'croatian', 'serbian',
+    'slovak', 'slovenian', 'romanian', 'catalan', 'mongolian'
 ];
 
 const COLOR_MODES: string[] = ['dark', 'light', 'auto'];
@@ -60,23 +73,56 @@ const CLASS_OPTIONS = [
 
 const DOCTYPE_CATEGORIES: Record<string, string[]> = {
     Academic: [
-        'thesis', 'dissertation', 'article', 'journal', 'research-proposal',
-        'technicalreport', 'lecture-notes', 'syllabus', 'homework', 'exam', 'handout',
-        'book-chapter', 'grant-proposal'
+        'thesis', 'dissertation', 'thesis-proposal', 'article', 'journal',
+        'research-proposal', 'technicalreport', 'lecture-notes', 'syllabus',
+        'homework', 'exam', 'handout', 'book-chapter', 'grant-proposal',
+        'lab-report', 'literature-review', 'annotated-bibliography',
+        'preprint', 'working-paper', 'proceedings'
     ],
-    Business: ['invoice', 'memo', 'cover-letter', 'standard', 'patent', 'manual', 'report', 'ieee'],
-    Personal: ['cv', 'letter', 'book', 'guide', 'handbook', 'dictionary', 'poster', 'presentation', 'white-paper', 'recipe']
+    Business: [
+        'invoice', 'memo', 'cover-letter', 'business-letter', 'standard',
+        'patent', 'manual', 'report', 'ieee', 'meeting-minutes',
+        'quarterly-report', 'strategic-plan', 'product-spec', 'annual-report'
+    ],
+    Education: [
+        'course-material', 'course-notes', 'textbook', 'quiz', 'lesson-plan'
+    ],
+    Technical: [
+        'software-documentation', 'api-reference', 'changelog', 'technical-spec'
+    ],
+    Creative: [
+        'blog-post', 'newsletter', 'brochure', 'invitation', 'program',
+        'recipe', 'white-paper', 'case-study'
+    ],
+    Government: [
+        'legislation', 'regulation'
+    ],
+    Personal: [
+        'cv', 'letter', 'book', 'guide', 'handbook', 'dictionary',
+        'poster', 'presentation'
+    ]
 };
 
 const DOCTYPE_DESCRIPTIONS: Record<string, string> = {
+    'annotated-bibliography': 'Annotated bibliography (scrartcl)',
+    'annual-report': 'Annual report (scrreprt)',
+    'api-reference': 'API reference documentation (scrreprt)',
     'article': 'Standard article (scrartcl)',
+    'beamer': 'Presentation slides (beamer)',
+    'blog-post': 'Blog post / web article (scrartcl)',
     'book': 'Book (scrbook)',
     'book-chapter': 'Individual book chapter (scrartcl)',
+    'brochure': 'Brochure / flyer (scrartcl)',
+    'business-letter': 'Formal business letter (scrartcl)',
+    'case-study': 'Case study analysis (scrartcl)',
+    'changelog': 'Changelog / release notes (scrartcl)',
     'cover-letter': 'Cover letter (scrartcl)',
+    'course-material': 'Course material / syllabus (scrreprt)',
+    'course-notes': 'Lecture / course notes (scrartcl)',
     'cv': 'Curriculum vitae (scrartcl)',
     'dictionary': 'Dictionary/lexicon (scrbook)',
     'dissertation': 'Dissertation (scrbook)',
-    'exam': 'Exam document (scrartcl)',
+    'exam': 'Exam / test document (scrartcl)',
     'grant-proposal': 'Grant proposal (NSF/ERC style, scrartcl)',
     'guide': 'Guidebook (scrbook)',
     'handbook': 'Handbook (scrbook)',
@@ -84,23 +130,41 @@ const DOCTYPE_DESCRIPTIONS: Record<string, string> = {
     'homework': 'Homework assignment (scrartcl)',
     'ieee': 'IEEE conference paper (two-column, scrartcl)',
     'inlinepaper': 'Inline research paper (scrartcl)',
+    'invitation': 'Event invitation (scrartcl)',
     'invoice': 'Invoice (scrartcl)',
     'journal': 'Journal article (scrartcl)',
+    'lab-report': 'Laboratory report (scrartcl)',
     'lecture-notes': 'Lecture notes (scrartcl)',
+    'legislation': 'Legislation / act (scrreprt)',
     'letter': 'Formal letter (scrartcl)',
-    'manual': 'Manual/handbook (scrreprt)',
+    'literature-review': 'Literature review (scrartcl)',
+    'manual': 'Manual / handbook (scrreprt)',
+    'meeting-minutes': 'Meeting minutes (scrartcl)',
     'memo': 'Memo (scrartcl)',
+    'newsletter': 'Newsletter (scrartcl)',
     'patent': 'Patent application (scrreprt)',
     'poster': 'Conference poster (scrartcl)',
+    'preprint': 'Preprint paper (scrartcl)',
     'presentation': 'Presentation slides (scrartcl)',
+    'proceedings': 'Conference proceedings (scrbook)',
+    'program': 'Event programme (scrartcl)',
+    'product-spec': 'Product specification (scrreprt)',
+    'quiz': 'Quiz / test (scrartcl)',
     'recipe': 'Recipe (scrartcl)',
+    'regulation': 'Regulation document (scrreprt)',
     'report': 'Report (scrreprt)',
     'research-proposal': 'Research proposal (scrartcl)',
+    'software-documentation': 'Software documentation (scrreprt)',
     'standard': 'Standards document (scrreprt)',
+    'strategic-plan': 'Strategic plan (scrreprt)',
     'syllabus': 'Syllabus (scrartcl)',
+    'technical-spec': 'Technical specification (scrreprt)',
     'technicalreport': 'Technical report (scrreprt)',
+    'textbook': 'Textbook (scrbook)',
     'thesis': 'Academic thesis (scrbook)',
-    'white-paper': 'White paper (scrartcl)'
+    'thesis-proposal': 'Thesis proposal / prospectus (scrreprt)',
+    'white-paper': 'White paper (scrartcl)',
+    'working-paper': 'Working / discussion paper (scrartcl)'
 };
 
 class OmniLaTeXCompletionProvider implements vscode.CompletionItemProvider {

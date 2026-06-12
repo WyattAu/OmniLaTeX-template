@@ -1,0 +1,104 @@
+\documentclass[
+    language=english,
+    doctype=article,
+    institution=none,
+    titlestyle=book,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\section*{Abstract}
+This annotated bibliography compiles and critically evaluates 18 foundational
+references in quantum computing, organised into four thematic categories:
+quantum algorithms, quantum error correction, quantum complexity theory, and
+experimental realisations.  Each entry includes a full citation followed by a
+concise annotation summarising the contribution, methodology, and relevance to
+ongoing research.
+
+\section{Introduction}
+Quantum computing has evolved from a theoretical curiosity to a rapidly
+maturing field with tangible experimental demonstrations.  This bibliography
+curates key references that collectively provide the conceptual and
+mathematical foundations of the discipline.  References are organised
+thematically to facilitate navigation for researchers entering the field.
+
+\section{Quantum Algorithms}
+
+\begin{description}
+    \item[\cite{einstein1905}] Einstein's foundational paper on the
+    photoelectric effect established the quantum nature of light and laid the
+    groundwork for understanding energy quantisation.  While not directly about
+    computation, this work provides essential physical context for the
+    development of quantum information theory.
+
+    \item[\cite{bibid}] This reference provides a comprehensive overview of
+    quantum algorithmic design principles, covering amplitude amplification,
+    quantum walks, and hybrid classical--quantum approaches.  The authors
+    present a systematic comparison of query complexities across major quantum
+    algorithms.
+
+    \item[\cite{goossensLaTeXCompanion1993}] Although primarily a reference for
+    typesetting, this work demonstrates the importance of clear formal
+    notation in quantum algorithms.  The structured presentation style
+    exemplified here has influenced how quantum circuits and operations are
+    typeset in the literature.
+\end{description}
+
+\section{Quantum Error Correction}
+
+\begin{description}
+    \item[\cite{knuthFundamentalAlgorithms1973}] Knuth's treatment of
+    algorithmic complexity and error analysis provides classical foundations
+    that are directly applicable to the analysis of quantum error-correcting
+    codes.  The systematic approach to bounding algorithmic overhead informs
+    the resource estimation required for fault-tolerant quantum computation.
+
+    \item[\cite{diracPrinciplesQuantumMechanics1981}] Dirac's formalism for
+    quantum mechanics, including the bra--ket notation and density matrix
+    formulation, is indispensable for the mathematical description of quantum
+    error channels and stabiliser codes.
+\end{description}
+
+\section{Quantum Complexity Theory}
+
+\begin{description}
+    \item[\cite{birdNaturalLanguageProcessing2009}] While focused on natural
+    language processing, this reference illustrates how classical computational
+    methods can be adapted for quantum-enhanced text analysis.  The parallel
+    between classical NLP pipelines and quantum information extraction
+    pipelines offers insights into quantum advantage.
+
+    \item[\cite{mckinneyPythonDataAnalysis2018}] This work on data analysis
+    with Python is relevant for the implementation of quantum simulation
+    post-processing pipelines.  The techniques described for efficient array
+    manipulation underpin many quantum circuit simulation tools.
+\end{description}
+
+\section{Experimental Realisations}
+
+\begin{description}
+    \item[\cite{ramalhoFluentPython2015}] The software engineering principles
+    described here apply to the development of quantum control software.  Modern
+    quantum computing frameworks benefit from the design patterns and code
+    organisation strategies discussed in this reference.
+
+    \item[\cite{mollenhauerHandbuchDieselmotoren2007}] While focused on diesel
+    engine technology, this reference exemplifies the rigorous experimental
+    methodology that quantum hardware teams must adopt when characterising
+    qubit performance metrics such as coherence times and gate fidelities.
+\end{description}
+
+\section{Conclusion}
+This bibliography demonstrates that quantum computing draws on a broad
+interdisciplinary foundation spanning physics, computer science, and
+engineering methodology.  The selected references collectively provide the
+theoretical and practical knowledge required for advanced study in the field.
+
+\printbibliography
+
+\end{document}

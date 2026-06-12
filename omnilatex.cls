@@ -164,6 +164,44 @@
 \omnilatex@matchdoctypes{grant-proposal,grantproposal,nsf-proposal,erc-proposal}{\omnilatex@setdoctype{grant-proposal}{scrartcl}{\omnilatex@grantproposaloptions}}%
 \omnilatex@matchdoctypes{ieee,ieee-paper,ieee-conference,ieeetran}{\omnilatex@setdoctype{ieee}{scrartcl}{\omnilatex@ieeeoptions}}%
 \omnilatex@matchdoctypes{book-chapter,bookchapter,chapter}{\omnilatex@setdoctype{book-chapter}{scrartcl}{\omnilatex@bookchapteroptions}}%
+% --- Academic / Research ---
+\omnilatex@matchdoctypes{lab-report,labreport,lab-report-course}{\omnilatex@setdoctype{lab-report}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{literature-review,literaturereview,lit-review}{\omnilatex@setdoctype{literature-review}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{thesis-proposal,thesisproposal,prospectus}{\omnilatex@setdoctype{thesis-proposal}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{annotated-bibliography,annotatedbibliography,annotated-bib}{\omnilatex@setdoctype{annotated-bibliography}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{proceedings,conference-proceedings}{\omnilatex@setdoctype{proceedings}{scrbook}{\omnilatex@bookoptions}}%
+\omnilatex@matchdoctypes{preprint,preprints,eprint}{\omnilatex@setdoctype{preprint}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{working-paper,workingpaper,discussion-paper,discussionpaper}{\omnilatex@setdoctype{working-paper}{scrartcl}{\omnilatex@articleoptions}}%
+% --- Business / Professional ---
+\omnilatex@matchdoctypes{business-letter,businessletter}{\omnilatex@setdoctype{business-letter}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{meeting-minutes,meetingminutes,minutes}{\omnilatex@setdoctype{meeting-minutes}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{quarterly-report,quarterlyreport,quarterly}{\omnilatex@setdoctype{quarterly-report}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{strategic-plan,strategicplan,strategy}{\omnilatex@setdoctype{strategic-plan}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{product-spec,productspec,specification,spec}{\omnilatex@setdoctype{product-spec}{scrreprt}{\omnilatex@reportoptions}}%
+% --- Education ---
+\omnilatex@matchdoctypes{course-material,coursematerial,course-pack}{\omnilatex@setdoctype{course-material}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{course-notes,coursenotes}{\omnilatex@setdoctype{course-notes}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{textbook,text-books}{\omnilatex@setdoctype{textbook}{scrbook}{\omnilatex@bookoptions}}%
+\omnilatex@matchdoctypes{worksheet,worksheets}{\omnilatex@setdoctype{worksheet}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{quiz,quizzes,test,tests,examination-sheet}{\omnilatex@setdoctype{quiz}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{lesson-plan,lessonplan}{\omnilatex@setdoctype{lesson-plan}{scrartcl}{\omnilatex@articleoptions}}%
+% --- Technical / Documentation ---
+\omnilatex@matchdoctypes{software-documentation,softwaredocumentation,sw-docs}{\omnilatex@setdoctype{software-documentation}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{api-reference,apireference,apidocs}{\omnilatex@setdoctype{api-reference}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{changelog,change-log,release-notes,releasenotes}{\omnilatex@setdoctype{changelog}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{technical-spec,technicalspec,tech-spec}{\omnilatex@setdoctype{technical-spec}{scrreprt}{\omnilatex@reportoptions}}%
+% --- Creative / Lifestyle ---
+\omnilatex@matchdoctypes{blog-post,blogpost,article-web}{\omnilatex@setdoctype{blog-post}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{newsletter,newsletters}{\omnilatex@setdoctype{newsletter}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{brochure,brochures}{\omnilatex@setdoctype{brochure}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{invitation,invitations,invitation-card}{\omnilatex@setdoctype{invitation}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{program,programme,event-programme}{\omnilatex@setdoctype{program}{scrartcl}{\omnilatex@articleoptions}}%
+% --- Government / Legal ---
+\omnilatex@matchdoctypes{legislation,act,statute}{\omnilatex@setdoctype{legislation}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{regulation,regulations,rules}{\omnilatex@setdoctype{regulation}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{annual-report,annualreport}{\omnilatex@setdoctype{annual-report}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{case-study,casestudy}{\omnilatex@setdoctype{case-study}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{whitepaper,white-paper-report}{\omnilatex@setdoctype{whitepaper}{scrreprt}{\omnilatex@reportoptions}}%
 \omnilatex@matchdoctypes{beamer,beamers}{\omnilatex@setdoctype{beamer}{beamer}{\omnilatex@beameraoptions}\omnilatex@beamertrue}%
 
 % Validate doctype: warn if user passed an unknown doctype that didn't match

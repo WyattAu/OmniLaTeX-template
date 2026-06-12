@@ -1,0 +1,93 @@
+\documentclass[
+    language=english,
+    doctype=proceedings,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\section*{Preface}
+This volume contains the proceedings of the 8th International Conference on
+Sustainable Energy Systems (ICSES 2026), held in Hannover, Germany from
+15--17 June 2026.  The conference brought together 180 researchers and
+practitioners from 32 countries to present advances in renewable energy
+technologies, grid integration, and energy policy~\cite{bibid}.  Of 245
+submitted manuscripts, 78 were selected for oral presentation and 94 for poster
+display.
+This volume publishes extended versions of 42 selected papers, each reviewed by
+at least two independent experts.
+
+\tableofcontents
+
+\section{Conference Overview}
+
+\subsection{Technical Programme}
+The technical programme was organised into six parallel tracks:
+\begin{itemize}
+    \item Photovoltaic Systems and Materials
+    \item Wind Energy Integration
+    \item Energy Storage Technologies
+    \item Smart Grid Optimisation
+    \item Energy Policy and Economics
+    \item Hydrogen and Fuel Cells
+\end{itemize}
+
+\subsection{Invited Speakers}
+The conference featured keynote lectures from leading researchers in sustainable
+energy~\cite{einstein1905}, including presentations on perovskite solar cell
+stability, off-shore wind farm control, and sector-coupling
+strategies~\cite{goossensLaTeXCompanion1993}.
+
+\section{Selected Papers}
+
+\subsection{Optimal Sizing of Battery Energy Storage Systems for Microgrids}
+\textbf{Authors:} H.\ Martinez, S.\ Kim, and R.\ Becker
+
+This paper presents a mixed-integer linear programming formulation for the
+optimal sizing of battery energy storage systems (BESS) in islanded
+microgrids.  The proposed model minimises total annualised cost while
+satisfying reliability constraints defined by the system average interruption
+duration index (SAIDI).  Case studies on a rural electrification project in
+Sub-Saharan Africa demonstrate cost reductions of 18\% compared to
+rule-of-thumb sizing methods.
+
+\subsection{Data-Driven Demand Response in Smart Distribution Networks}
+\textbf{Authors:} L.\ Tanaka and P.\ Okonkwo
+
+We propose a data-driven demand response framework that uses recurrent neural
+networks to forecast household-level load profiles and aggregate flexibility
+resources.  The approach achieves a mean absolute percentage error below 4\%
+for day-ahead load forecasting and enables real-time demand response events
+with a response latency of less than 30 seconds.
+
+\subsection{Green Hydrogen Production via PEM Electrolysis: A Techno-Economic Assessment}
+\textbf{Authors:} F.\ Al-Rashid and M.\ Johansson
+
+This study evaluates the levelised cost of hydrogen (LCOH) for proton exchange
+membrane (PEM) electrolysis systems paired with dedicated solar photovoltaic
+arrays.  The analysis considers five locations across North Africa and the
+Middle East, accounting for variations in solar irradiance, electricity price,
+and water availability.
+
+\subsection{Topology Optimisation for Resilient Power Distribution Networks}
+\textbf{Authors:} K.\ Novak and T.\ Andersen
+
+We develop a graph-based topology optimisation method for power distribution
+networks that enhances resilience against extreme weather events.  The proposed
+method formulates the problem as a stochastic mixed-integer second-order cone
+program and solves it using a Benders decomposition approach.
+
+\section{Acknowledgements}
+The organisers thank the scientific committee, session chairs, and reviewers for
+their invaluable contributions.  Financial support from the German Research
+Foundation (DFG) and the European Union Horizon Programme is gratefully
+acknowledged.
+
+\printbibliography
+
+\end{document}

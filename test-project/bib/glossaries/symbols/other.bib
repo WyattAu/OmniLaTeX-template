@@ -1,0 +1,56 @@
+% Magic Comment: this template requires UTF-8 encoding. The following 'magic comment' is
+% recognized by bib2gls and will ensure UTF-8 is used:
+% Encoding: UTF-8
+% see: https://github.com/nlct/bib2gls/issues/5#issuecomment-490863175
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Math Operators:
+% REQUIRED for the built-in macros
+% to work (\deriv, \vect etc.)!
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@entry{abs,
+  name        = {\ensuremath{\absfmt*{\symbolplaceholder}}},
+  description = {Absolute of \symbolplaceholder},
+  unit        = {\symbolplaceholder}
+}
+@entry{derivative,
+  name        = {\derivativefmt{\symbolplaceholder}},
+  description = {infinitesimal change in \symbolplaceholder},
+  unit        = {\symbolplaceholder}
+}
+@entry{difference,
+  name        = {\differencefmt{\symbolplaceholder}},
+  description = {Difference in \symbolplaceholder},
+  unit        = {\symbolplaceholder}
+}
+@entry{flow,
+  name        = {\flowfmt{\symbolplaceholder}},
+  description = {\symbolplaceholder{} as a flow quantity},
+  unit        = {\unit{\symbolplaceholder\per\second}}
+}
+@entry{logmean,
+  name        = {\logmeanfmt{\symbolplaceholder}},
+  description = {Logarithmic mean of \symbolplaceholder{}},
+  unit        = {\symbolplaceholder}
+}
+@entry{mean,
+  name        = {\meanfmt{\symbolplaceholder}},
+  description = {Arithmetic mean of \symbolplaceholder{}},
+  unit        = {\symbolplaceholder}
+}
+@entry{nabla,
+  name        = {\nablaoperatorfmt{\symbolplaceholder}},
+  description = {Vector of partial derivatives (Nabla operator) of \symbolplaceholder},
+  unit        = {\unit{-}}
+}
+@entry{partial_derivative,
+  name        = {\partialderivativefmt{\symbolplaceholder}},
+  description = {partial, infinitesimal change in \symbolplaceholder},
+  unit        = {\symbolplaceholder}
+}
+@entry{vector,
+  name        = {\ensuremath{\vectfmt{x}}},
+  description = {Vector},
+  unit        = {\unit{-}}
+}
