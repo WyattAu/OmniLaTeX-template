@@ -212,18 +212,18 @@ Goal: Ship features users notice. Differentiate from raw article/book classes.
 
 Parse LaTeX log files into actionable error messages:
 
-- [ ] Extract error lines from latexmk/lualatex output
-- [ ] Classify errors (missing brace, undefined command, missing package, etc.)
-- [ ] Map errors to line numbers in source .tex files
-- [ ] Suggest fixes for common errors (e.g., "Missing \begin{document}?")
-- [ ] Integrate into build.py output and VS Code diagnostics
-- [ ] Color-coded terminal output (error/warning/info)
+- [x] Extract error lines from latexmk/lualatex output
+- [x] Classify errors (missing brace, undefined command, missing package, etc.)
+- [x] Map errors to line numbers in source .tex files
+- [x] Suggest fixes for common errors (e.g., "Missing \begin{document}?")
+- [x] Integrate into build.py output and VS Code diagnostics
+- [x] Color-coded terminal output (error/warning/info)
 
 ### New Document Types
 
-- [ ] Grant proposal (NSF/ERC style: specific margins, font sizes, section structure)
-- [ ] IEEE conference paper (two-column, IEEEtran compatibility, bibliography style)
-- [ ] Book chapter (individual chapter with independent bibliography)
+- [x] Grant proposal (NSF/ERC style: specific margins, font sizes, section structure)
+- [x] IEEE conference paper (two-column, IEEEtran compatibility, bibliography style)
+- [x] Book chapter (individual chapter with independent bibliography)
 
 ### Template Showcase
 
