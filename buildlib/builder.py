@@ -447,22 +447,26 @@ class _BuildCore(BuildCacheMixin, DiscoveryMixin, CleanupMixin):
             )
         )
 
-        def _refresh_active():
-            """Rebuild the active workers display from the dict."""
-            with active_lock:
-                lines = []
-                for name, t0 in active_jobs.items():
-                    elapsed = time.perf_counter() - t0
-                    lines.append(f"[cyan]⠋ {name}[/cyan]  [dim]{elapsed:.1f}s[/dim]")
-            with completed_lock:
-                done_lines = []
-                for name, success in sorted(completed.items()):
-                    status = "[green]OK[/green]" if success else "[red]FAIL[/red]"
-                    done_lines.append(f"  {status} {name}")
+        def _refresh_active_unlocked():
+            """Rebuild the active workers display (caller holds locks)."""
+            lines = []
+            for name, t0 in active_jobs.items():
+                elapsed = time.perf_counter() - t0
+                lines.append(f"[cyan]⠋ {name}[/cyan]  [dim]{elapsed:.1f}s[/dim]")
+            done_lines = []
+            for name, success in sorted(completed.items()):
+                status = "[green]OK[/green]" if success else "[red]FAIL[/red]"
+                done_lines.append(f"  {status} {name}")
             display = "\n".join(lines) if lines else "[dim]No active workers[/dim]"
             if done_lines:
                 display += "\n" + "\n".join(done_lines[-5:])  # show last 5
             active_jobs_text.plain = display
+
+        def _refresh_active():
+            """Rebuild the active workers display (acquires locks)."""
+            with active_lock:
+                with completed_lock:
+                    _refresh_active_unlocked()
 
         results = []
         with Live(layout, console=console, screen=True, refresh_per_second=10):
@@ -494,7 +498,8 @@ class _BuildCore(BuildCacheMixin, DiscoveryMixin, CleanupMixin):
                     finally:
                         with active_lock:
                             active_jobs.pop(name, None)
-                            _refresh_active()
+                            with completed_lock:
+                                _refresh_active_unlocked()
                             log_panel_text.plain = "\n".join(log_lines)
                         overall_progress.update(overall_task, advance=1)
 
