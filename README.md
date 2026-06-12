@@ -4,10 +4,11 @@
 [![Lean 4 Proofs](https://github.com/WyattAu/OmniLaTeX-template/actions/workflows/lean4-ci.yml/badge.svg)](https://github.com/WyattAu/OmniLaTeX-template/actions/workflows/lean4-ci.yml)
 [![CTAN](https://img.shields.io/ctan/v/omnilatex)](https://ctan.org/pkg/omnilatex)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-1814+-successgreen)](https://github.com/WyattAu/OmniLaTeX-template/tree/main/tests)
-[![Coverage](https://img.shields.io/badge/buildlib_coverage-78%25-green)](https://github.com/WyattAu/OmniLaTeX-template/tree/main/buildlib)
+[![Tests](https://img.shields.io/badge/tests-2106+-successgreen)](https://github.com/WyattAu/OmniLaTeX-template/tree/main/tests)
+[![Coverage](https://img.shields.io/badge/buildlib_coverage-86%25-green)](https://github.com/WyattAu/OmniLaTeX-template/tree/main/buildlib)
+[![Overleaf](https://img.shields.io/badge/Overleaf-47A141?logo=overleaf&logoColor=white)](https://www.overleaf.com/latex/templates?q=omnilatex)
 
-A modular document class for LuaLaTeX, built on KOMA-Script. One class, 27 document types, 21 institutions, 25+ languages. Switch between thesis, CV, poster, or invoice by changing a single option.
+A modular document class for LuaLaTeX, built on KOMA-Script. One class, 30 document types, 21 institutions, 25+ languages. Switch between thesis, CV, poster, or invoice by changing a single option.
 
 ## Quick Start
 
