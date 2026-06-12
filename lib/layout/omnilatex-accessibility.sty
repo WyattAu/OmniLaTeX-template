@@ -71,23 +71,65 @@
   }%
 }
 
-% ── Heading Hierarchy Validation ──────────────────
-% WCAG 2.1 AA 1.3.1: Heading levels must be nested correctly (no skipping).
-% \validatstructure logs an informational check at compile time.
-\newcounter{omnilatex@heading@level}
- \newcommand{\validatstructure}{%
-  \PackageInfo{omnilatex-accessibility}{%
-    Structure validation: heading hierarchy appears consistent%
+% ── Table Alt Text ──────────────────────────────
+% WCAG 2.1 AA 1.1.1: Tables need text alternatives.
+% Use \tablealttext{description} before a table environment.
+\newcommand{\omnilatex@tablealttext}{}
+\newcommand{\tablealttext}[1]{\renewcommand{\omnilatex@tablealttext}{#1}}
+
+\AddToHook{env/table/begin}{%
+  \ifx\omnilatex@tablealttext\empty\else
+    \tagpdfsetup{%
+      alt-text={\omnilatex@tablealttext},
+    }%
+  \fi
+}
+
+% ── List Accessibility ──────────────────────────
+% WCAG 2.1 AA 1.3.1: Lists must be properly tagged.
+\AddToHook{env/itemize/begin}{%
+  \tagpdfsetup{%
+    structure/tag={List},
+    structure/attributes={List/ListItem},
   }%
 }
 
-% ── Color Contrast ────────────────────────────────
-% WCAG 2.1 AA 1.4.3: Text must have contrast ratio >= 4.5:1 against its background.
-% This is an informative-only check; verify exact ratios with a color tool.
-\newcommand{\checkcontrast}[2]{%
-  \PackageInfo{omnilatex-accessibility}{%
-    Color contrast check: #1 on #2 — verify WCAG AA (4.5:1) manually%
+\AddToHook{env/enumerate/begin}{%
+  \tagpdfsetup{%
+    structure/tag={List},
+    structure/attributes={List/Number},
   }%
+}
+
+% ── Figure Caption Accessibility ────────────────
+% WCAG 2.1 AA 1.1.1: Figures must have captions linked.
+% This ensures figure captions are associated with the figure.
+\AddToHook{env/caption/before}{%
+  \tagpdfsetup{%
+    structure/tag={Caption},
+  }%
+}
+
+% ── Skip Navigation Link ───────────────────────
+% WCAG 2.1 AA 2.4.1: Provide a mechanism to skip navigation.
+% \skipnavlink creates a hidden link at the document start.
+\newcommand{\skipnavlink}{%
+  \AddToHook{begindocument/end}{%
+    \pdfstringdefDisableCommands{%
+      \def\skipnav{\texorpdfstring{\href{#main-content}{Skip to content}}{Skip to content}}%
+    }%
+    \hypertarget{main-content}{}%
+  }%
+}
+
+% ── Abbreviation Expansion ─────────────────────
+% WCAG 2.1 AA 3.1.4: Abbreviations must be expandable.
+% Use \abbr{abbreviation}{expansion} for proper tagging.
+\newcommand{\abbr}[2]{%
+  \texorpdfstring{%
+    \pdftooltip{\textsc{#1}}{#2}%
+  }{#1}%
+  \glsadd{#1}%
 }
 
 % ── Reading Order ─────────────────────────────────
