@@ -16,6 +16,7 @@ from typing import Optional
 
 class Severity(Enum):
     """Diagnostic severity levels."""
+
     ERROR = "error"
     WARNING = "warning"
     INFO = "info"
@@ -23,6 +24,7 @@ class Severity(Enum):
 
 class ErrorClass(Enum):
     """LaTeX error classification for fix suggestion mapping."""
+
     UNDEFINED_COMMAND = "undefined_command"
     MISSING_BRACE = "missing_brace"
     MISSING_PACKAGE = "missing_package"
@@ -51,6 +53,7 @@ class ErrorClass(Enum):
 @dataclass
 class Diagnostic:
     """A single parsed diagnostic from a LaTeX log."""
+
     message: str
     severity: Severity
     error_class: ErrorClass
@@ -91,9 +94,7 @@ _RE_GENERAL_ERROR = re.compile(r"^!\s+(.+?)\.\s*$")
 _RE_LATEX_ERROR = re.compile(r"^!\s+LaTeX Error:\s*(.+)$")
 
 # Undefined control sequence: "! Undefined control sequence.\n<recently read> \command"
-_RE_UNDEFINED_CMD = re.compile(
-    r"^!\s+Undefined control sequence\.\s*$"
-)
+_RE_UNDEFINED_CMD = re.compile(r"^!\s+Undefined control sequence\.\s*$")
 
 # Missing character inserted: "! Missing $ inserted."
 _RE_MISSING_DOLLAR = re.compile(r"^!\s+Missing \$ inserted\.?\s*$")
@@ -144,9 +145,7 @@ _RE_FILE_NOT_FOUND = re.compile(
 )
 
 # Encoding error: "! Package inputenc Error: Invalid UTF-8 byte sequence"
-_RE_ENCODING_ERROR = re.compile(
-    r"^!\s+Package inputenc Error:.*Invalid UTF-8"
-)
+_RE_ENCODING_ERROR = re.compile(r"^!\s+Package inputenc Error:.*Invalid UTF-8")
 
 # Runaway argument: "! Runaway argument?"
 _RE_RUNAWAY = re.compile(r"^!\s+Runaway argument\?")
@@ -168,9 +167,7 @@ _RE_CROSSREF_WARNING = re.compile(
 _RE_HYPHENATION = re.compile(r"^TeX capacity exceeded", re.IGNORECASE)
 
 # Source file hint: "(./filename.tex ..." or "<filename.tex ..." or "(filename.tex ..."
-_RE_SOURCE_HINT = re.compile(
-    r"[(<](?:\./)?([^\s()<>]+\.(?:tex|sty|cls|bib|def))"
-)
+_RE_SOURCE_HINT = re.compile(r"[(<](?:\./)?([^\s()<>]+\.(?:tex|sty|cls|bib|def))")
 
 # Line number hint: "l.<number>" or "line <number>"
 _RE_LINE_HINT = re.compile(r"(?:^|\s)l\.(\d+)(?:\s|$)")
@@ -282,6 +279,7 @@ _FIX_SUGGESTIONS: dict[ErrorClass, str] = {
 # ---------------------------------------------------------------------------
 # Main parser
 # ---------------------------------------------------------------------------
+
 
 def parse_latex_log(
     log_content: str,

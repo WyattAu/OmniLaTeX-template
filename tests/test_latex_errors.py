@@ -4,13 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from buildlib.latex_errors import (
-    Diagnostic,
-    ErrorClass,
-    Severity,
-    format_diagnostics,
-    parse_latex_log,
-)
+from buildlib.latex_errors import (Diagnostic, ErrorClass, Severity,
+                                   format_diagnostics, parse_latex_log)
 
 
 class TestParseLatexLog:
@@ -195,7 +190,10 @@ class TestParseLatexLog:
         log = "! Undefined control sequence.\n<recently read> \\foo\nl.5"
         result = parse_latex_log(log)
         assert result[0].suggestion is not None
-        assert "typos" in result[0].suggestion.lower() or "package" in result[0].suggestion.lower()
+        assert (
+            "typos" in result[0].suggestion.lower()
+            or "package" in result[0].suggestion.lower()
+        )
 
     def test_teX_capacity_exceeded(self):
         log = "TeX capacity exceeded, sorry [pattern memory=75000]."
@@ -208,7 +206,11 @@ class TestDiagnostic:
     """Test Diagnostic dataclass."""
 
     def test_to_dict_minimal(self):
-        d = Diagnostic(message="test", severity=Severity.ERROR, error_class=ErrorClass.GENERAL_ERROR)
+        d = Diagnostic(
+            message="test",
+            severity=Severity.ERROR,
+            error_class=ErrorClass.GENERAL_ERROR,
+        )
         result = d.to_dict()
         assert result["message"] == "test"
         assert result["severity"] == "error"
@@ -284,8 +286,16 @@ class TestFormatDiagnostics:
 
     def test_mixed_severities(self):
         diags = [
-            Diagnostic(message="err", severity=Severity.ERROR, error_class=ErrorClass.GENERAL_ERROR),
-            Diagnostic(message="warn", severity=Severity.WARNING, error_class=ErrorClass.OVERFULL_HBOX),
+            Diagnostic(
+                message="err",
+                severity=Severity.ERROR,
+                error_class=ErrorClass.GENERAL_ERROR,
+            ),
+            Diagnostic(
+                message="warn",
+                severity=Severity.WARNING,
+                error_class=ErrorClass.OVERFULL_HBOX,
+            ),
         ]
         result = format_diagnostics(diags, use_color=False)
         assert "1 error(s)" in result
