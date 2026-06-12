@@ -648,3 +648,146 @@ Both thesis and dissertation doctypes use `\frontmatter` / `\mainmatter` / `\bac
 - Column breaks via `\columnbreak`
 - Best for: academic conference posters
 - Example: poster with TikZ accuracy chart + system architecture diagram
+
+---
+
+## Chapter 26: New Document Types (v3.1.0+)
+
+### 26.1 Academic & Research
+
+#### Lab Report (`doctype=lab-report`)
+- Structured abstract (Objective, Methods, Results, Conclusion)
+- Equipment tables, procedure steps
+- Data analysis with pgfplots charts
+- Error propagation calculations
+
+#### Literature Review (`doctype=literature-review`)
+- PRISMA-style methodology
+- Thematic organization with comparison tables
+- Synthesis matrix mapping papers to aspects
+- Gap analysis tables
+
+#### Thesis Proposal (`doctype=thesis-proposal`)
+- Background, research questions, methodology
+- Timeline (Gantt chart)
+- Expected contributions
+
+#### Annotated Bibliography (`doctype=annotated-bibliography`)
+- Entries organized by theme
+- Citation + annotation format
+
+#### Proceedings (`doctype=proceedings`)
+- Conference volume (scrbook base)
+- Preface, table of contents, paper stubs
+
+#### Preprint (`doctype=preprint`)
+- arXiv-style formatting
+- Abstract, sections, figures, bibliography
+
+#### Working Paper (`doctype=working-paper`)
+- Discussion paper format
+- Policy implications section
+
+### 26.2 Business & Professional
+
+#### Business Letter (`doctype=business-letter`)
+- Sender/recipient addresses
+- Formal salutation/closing
+
+#### Meeting Minutes (`doctype=meeting-minutes`)
+- Attendees, agenda, decisions, action items
+
+#### Quarterly Report (`doctype=quarterly-report`)
+- Executive summary, KPI dashboard
+- Financial charts (pgfplots)
+- Department reviews
+
+#### Strategic Plan (`doctype=strategic-plan`)
+- Vision/mission, SWOT analysis
+- Gantt roadmap, resource allocation
+
+#### Product Spec (`doctype=product-spec`)
+- Feature priority matrix
+- Architecture diagrams (TikZ)
+- API endpoints, testing strategy
+
+### 26.3 Education
+
+#### Course Material (`doctype=course-material`)
+- Syllabus hybrid with schedule table
+- Grading policy, learning outcomes
+
+#### Course Notes (`doctype=course-notes`)
+- Lecture notes with key concepts
+- Examples, practice problems
+
+#### Textbook (`doctype=textbook`)
+- Learning objectives, exercises (3 difficulty levels)
+- Theorem/definition environments
+- Code listings
+
+#### Quiz (`doctype=quiz`)
+- Multiple choice, short answer, true/false
+- Point values, time limits
+
+#### Lesson Plan (`doctype=lesson-plan`)
+- Objectives, materials, duration
+- Warm-up, instruction, practice, assessment
+
+### 26.4 Technical & Documentation
+
+#### Software Documentation (`doctype=software-documentation`)
+- Architecture diagrams (TikZ)
+- API reference, CLI reference
+- Code examples (Python, Rust, shell)
+
+#### API Reference (`doctype=api-reference`)
+- Authentication, rate limiting
+- CRUD endpoints with examples
+- Data models, webhooks, SDKs
+
+#### Changelog (`doctype=changelog`)
+- Version entries with categories
+- Added, Changed, Deprecated, Removed, Fixed, Security
+
+#### Technical Spec (`doctype=technical-spec`)
+- Requirements table
+- Architecture, interfaces, constraints
+
+### 26.5 Creative & Lifestyle
+
+#### Blog Post (`doctype=blog-post`)
+- Title, date, author, tags
+- Code blocks, conclusion
+
+#### Newsletter (`doctype=newsletter`)
+- Masthead, lead article, events
+
+#### Brochure (`doctype=brochure`)
+- Multi-column layout
+- Features, testimonials, CTA
+
+#### Invitation (`doctype=invitation`)
+- Host/recipient, event details
+- RSVP section
+
+#### Program (`doctype=program`)
+- Schedule table, speakers, sponsors
+
+### 26.6 Government & Legal
+
+#### Legislation (`doctype=legislation`)
+- Preamble, sections, definitions
+- Effective date, amendments
+
+#### Regulation (`doctype=regulation`)
+- Scope, requirements table
+- Compliance matrix, enforcement
+
+#### Annual Report (`doctype=annual-report`)
+- Chair message, financial summary
+- Achievements, governance
+
+#### Case Study (`doctype=case-study`)
+- Background, analysis, solution
+- Results, lessons learned
