@@ -19,6 +19,7 @@ from buildlib.config import (
     MAIN_TEX_FILENAME,
     REPO_ROOT,
     ProjectConfig,
+    base_build_env,
     build_latexmk_command,
 )
 
@@ -167,34 +168,19 @@ class BuildProfiler:
         # Parse log for package counts and LaTeX-reported time
         log_path = example_dir / "main.log"
         if log_path.exists():
-            try:
-                from buildlib.builder import parse_log_for_package_times
+            from buildlib.builder import parse_build_log_safely
 
-                log_content = log_path.read_text(encoding="utf-8", errors="replace")
-                info = parse_log_for_package_times(log_content)
-                profile.package_count = info.get("package_count", 0)
-                profile.total_time_s = info.get("total_time_s")
-            except Exception:
-                import logging
-
-                logging.getLogger("omnilatex").debug(
-                    "Failed to parse build timing from log", exc_info=True
-                )
+            info = parse_build_log_safely(example_dir)
+            profile.package_count = info.get("package_count", 0)
+            profile.total_time_s = info.get("total_time_s")
 
         return profile
 
     def _build_with_runner(self, example_name: str, runner: Any, force: bool) -> None:
         """Build using the project's CommandRunner."""
-        import os
-
         example_dir = REPO_ROOT / "examples" / example_name
         cmd = build_latexmk_command(force_rebuild=force)
-
-        extra_env = {
-            "TEXINPUTS": os.pathsep.join([".", str(REPO_ROOT), ""]),
-            "LC_ALL": "C.utf8",
-        }
-        runner.run(cmd, extra_env=extra_env, cwd=example_dir)
+        runner.run(cmd, extra_env=base_build_env(), cwd=example_dir)
 
     def _build_with_subprocess(self, example_name: str, force: bool) -> None:
         """Build using a direct subprocess call."""
@@ -204,8 +190,7 @@ class BuildProfiler:
         cmd = build_latexmk_command(force_rebuild=force)
 
         env = os.environ.copy()
-        env["TEXINPUTS"] = os.pathsep.join([".", str(REPO_ROOT), ""])
-        env["LC_ALL"] = "C.utf8"
+        env.update(base_build_env())
 
         subprocess.run(
             cmd,

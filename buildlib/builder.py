@@ -129,6 +129,27 @@ def extract_log_path(example_dir: Path) -> Path | None:
     return log_path if log_path.exists() else None
 
 
+def parse_build_log_safely(example_dir: Path) -> dict[str, dict]:
+    """Parse build log for package counts and timing, returning {} on failure.
+
+    Shared helper used by both builder.py and profiler.py to avoid duplicating
+    the try/except logging pattern around parse_log_for_package_times().
+    """
+    log_path = example_dir / MAIN_TEX_FILENAME.replace(".tex", ".log")
+    if not log_path.exists():
+        return {}
+    try:
+        log_content = log_path.read_text(encoding="utf-8", errors="replace")
+        return parse_log_for_package_times(log_content)
+    except Exception:
+        import logging
+
+        logging.getLogger("omnilatex").debug(
+            "Failed to parse build timing from log", exc_info=True
+        )
+        return {}
+
+
 # -----------------------------------------------------------------------------
 # Build Core Mixin
 # -----------------------------------------------------------------------------
@@ -293,18 +314,9 @@ class _BuildCore(BuildCacheMixin, DiscoveryMixin, CleanupMixin):
             "pdf_size_bytes": pdf_size,
             "success": success,
         }
-        log_path = extract_log_path(example_dir)
-        if log_path:
-            try:
-                log_content = log_path.read_text(encoding="utf-8", errors="replace")
-                package_info = parse_log_for_package_times(log_content)
-                timing_record["package_timing"] = package_info
-            except (OSError, UnicodeDecodeError, KeyError):
-                import logging
-
-                logging.getLogger("omnilatex").debug(
-                    "Failed to parse build timing from log", exc_info=True
-                )
+        info = parse_build_log_safely(example_dir)
+        if info:
+            timing_record["package_timing"] = info
         with self._timings_lock:
             self.timings_data.append(timing_record)
 

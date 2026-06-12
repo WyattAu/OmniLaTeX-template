@@ -54,6 +54,18 @@ class ProjectConfig:
         return os.environ.get("OMNILATEX_VERBOSE", "0").lower() in {"1", "true", "yes"}
 
 
+def base_build_env() -> dict[str, str]:
+    """Return the base environment variables for any LaTeX build.
+
+    Both builder.py and profiler.py need TEXINPUTS and LC_ALL.  This function
+    is the single source of truth for these values, avoiding duplication.
+    """
+    return {
+        "TEXINPUTS": os.pathsep.join([".", str(REPO_ROOT), ""]),
+        "LC_ALL": "C.utf8",
+    }
+
+
 def build_latexmk_command(
     force_rebuild: bool = False,
     include_root_rc: bool = False,
