@@ -322,6 +322,7 @@ def check_aria_landmarks(soup: BeautifulSoup, file_path: str) -> list[Violation]
                     message="<nav> missing aria-label or aria-labelledby",
                     severity=Severity.WARNING,
                     element="nav",
+                    line=_tag_line(nav),
                 )
             )
 
@@ -375,6 +376,7 @@ def check_form_labels(soup: BeautifulSoup, file_path: str) -> list[Violation]:
                     message="Form control missing associated label",
                     severity=Severity.ERROR,
                     element=element_str,
+                    line=_tag_line(inp),
                 )
             )
 
@@ -415,6 +417,7 @@ def check_heading_hierarchy(soup: BeautifulSoup, file_path: str) -> list[Violati
                     message=f"Heading level skipped: h{prev_level} -> h{level}",
                     severity=Severity.ERROR,
                     element=heading.name,
+                    line=_tag_line(heading),
                 )
             )
 
@@ -459,6 +462,7 @@ def check_image_alt_text(soup: BeautifulSoup, file_path: str) -> list[Violation]
                     message=f"Image missing alt attribute: {src[:50]}",
                     severity=Severity.ERROR,
                     element="img",
+                    line=_tag_line(img),
                 )
             )
         elif alt.strip() == "" and not img.get("role") == "presentation":
@@ -480,6 +484,7 @@ def check_image_alt_text(soup: BeautifulSoup, file_path: str) -> list[Violation]
                     message="SVG missing accessible name (title, aria-label, or aria-hidden)",
                     severity=Severity.WARNING,
                     element="svg",
+                    line=_tag_line(svg),
                 )
             )
 
@@ -752,6 +757,7 @@ def check_link_accessibility(soup: BeautifulSoup, file_path: str) -> list[Violat
                     message="Link has no accessible text",
                     severity=Severity.ERROR,
                     element="a",
+                    line=_tag_line(link),
                 )
             )
 
@@ -764,6 +770,7 @@ def check_link_accessibility(soup: BeautifulSoup, file_path: str) -> list[Violat
                         message="External link opens new window without warning",
                         severity=Severity.INFO,
                         element="a",
+                        line=_tag_line(link),
                     )
                 )
 
