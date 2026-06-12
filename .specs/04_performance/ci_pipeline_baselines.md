@@ -82,7 +82,7 @@
 
 | Area | Current | Target | Strategy |
 |------|---------|--------|----------|
-| Example builds | 15 min (50 examples) | 8 min | Increase parallelism to 8 workers |
+| Example builds | 15 min (92 examples) | 8 min | Increase parallelism to 8 workers |
 | Docker build | 18 min | 12 min | Better BuildKit cache utilization |
 | Lean 4 proofs | 5 min | 3 min | Aggressive .lake caching |
 | Fast test suite | 45s | 30s | Parallel pytest execution |

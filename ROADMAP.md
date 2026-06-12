@@ -13,18 +13,20 @@
 |--------|-------|--------------------|
 | Document types | 27 | -- |
 | .sty modules | 31 | -- |
-| Examples | 50 | -- |
+| Examples | 92 | +42 (language variants, institution theses) |
 | Institutions | 21 | -- |
 | Languages | 25+ | -- |
-| Python tests (fast) | 1814+ | +103 (accessibility + builder) |
+| Python tests (fast) | 807 | +582 (commands, TUI, config, negative, Unicode) |
 | l3build test files | 94 | -- |
 | Lean 4 proof modules | 29 | -- |
 | buildlib coverage | 78% | +6% |
 | a11y_checker coverage | 95% | +27% (was 68%) |
-| CI platforms | 5 | -- |
-| Documentation pages | 25+ | -- |
+| CI platforms | 7 | +2 (macOS, CodeQL) |
+| CI workflows | 15 | +5 (regression, codeql, integration, cross-platform, ctan) |
+| Documentation pages | 29 | +4 (getting-started, API reference, regression) |
 | Class options | 15 | +3 (enablelayout, enablebibliography, enablehyperref) |
 | Web vitest tests | 14 | -- |
+| Performance baselines | 92 | +44 (all examples calibrated from CI) |
 
 ### Audit Results Summary (v2.5.0 Post-Audit)
 
@@ -168,7 +170,7 @@ removed. v3.0.0 should deliver something users notice.
 | Feature | User Impact | Effort | Notes |
 |---------|-------------|--------|-------|
 | Overleaf Gallery submission | Discoverability | Low | Prepare zip + metadata, submit |
-| Template quality polish | First impression | Medium | Make each of the 50 examples a showcase |
+| Template quality polish | First impression | Medium | Make each of the 92 examples a showcase |
 | Build error messages UX | Daily workflow | Medium | Parse LaTeX errors into actionable fixes |
 | New document types | Capability | Medium | Based on user demand (grant proposals, IEEE papers) |
 | Dark mode in PDF output | Visual | Medium | Already has dark mode in web, not in PDF |
