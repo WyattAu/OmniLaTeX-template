@@ -1,120 +1,120 @@
 # Performance Baselines — CI Runner (GitHub Actions ubuntu-latest)
-# Auto-generated from CI run
-# Threshold: 250% regression (>2.5x slower than baseline)
+# Auto-generated from CI regression run 2026-06-12T11:55Z
+# Threshold: 100% regression (>2x slower than baseline)
 
 [baselines]
 # ── Articles ──────────────────────────────────────────────────────
-accessibility-test = { cold_mean = 64.53 }
-article = { cold_mean = 73.61 }
-article-bengali = { cold_mean = 70.00 }
-article-chinese-traditional = { cold_mean = 168.82 }
-article-color = { cold_mean = 60.84 }
-article-czech = { cold_mean = 70.00 }
-article-danish = { cold_mean = 70.00 }
-article-dutch = { cold_mean = 70.00 }
-article-finnish = { cold_mean = 70.00 }
-article-french = { cold_mean = 70.00 }
-article-german-formal = { cold_mean = 70.00 }
-article-greek = { cold_mean = 70.00 }
-article-hindi = { cold_mean = 70.00 }
-article-italian = { cold_mean = 70.00 }
-article-norwegian = { cold_mean = 70.00 }
-article-polish = { cold_mean = 70.00 }
-article-portuguese = { cold_mean = 70.00 }
-article-russian = { cold_mean = 70.00 }
-article-spanish = { cold_mean = 70.00 }
-article-swedish = { cold_mean = 70.00 }
-article-thai = { cold_mean = 70.00 }
-article-turkish = { cold_mean = 70.00 }
-article-ukrainian = { cold_mean = 70.00 }
-article-vietnamese = { cold_mean = 70.00 }
+accessibility-test = { cold_mean = 93.50 }
+article = { cold_mean = 120.39 }
+article-bengali = { cold_mean = 106.39 }
+article-chinese-traditional = { cold_mean = 176.59 }
+article-color = { cold_mean = 71.99 }
+article-czech = { cold_mean = 63.38 }
+article-danish = { cold_mean = 62.43 }
+article-dutch = { cold_mean = 67.18 }
+article-finnish = { cold_mean = 64.37 }
+article-french = { cold_mean = 61.96 }
+article-german-formal = { cold_mean = 64.20 }
+article-greek = { cold_mean = 66.73 }
+article-hindi = { cold_mean = 84.66 }
+article-italian = { cold_mean = 62.07 }
+article-norwegian = { cold_mean = 64.57 }
+article-polish = { cold_mean = 62.22 }
+article-portuguese = { cold_mean = 61.82 }
+article-russian = { cold_mean = 67.94 }
+article-spanish = { cold_mean = 61.55 }
+article-swedish = { cold_mean = 64.28 }
+article-thai = { cold_mean = 85.83 }
+article-turkish = { cold_mean = 65.42 }
+article-ukrainian = { cold_mean = 67.63 }
+article-vietnamese = { cold_mean = 62.59 }
 
 # ── Beamer ────────────────────────────────────────────────────────
-beamer-academic = { cold_mean = 41.13 }
-beamer-corporate = { cold_mean = 25.30 }
-beamer-defense = { cold_mean = 59.83 }
-beamer-minimal = { cold_mean = 25.02 }
-beamer-native = { cold_mean = 25.74 }
+beamer-academic = { cold_mean = 62.52 }
+beamer-corporate = { cold_mean = 50.89 }
+beamer-defense = { cold_mean = 63.82 }
+beamer-minimal = { cold_mean = 38.87 }
+beamer-native = { cold_mean = 41.25 }
 
 # ── Books ─────────────────────────────────────────────────────────
-book = { cold_mean = 38.70 }
-manual = { cold_mean = 242.03 }
-recipe = { cold_mean = 39.04 }
+book = { cold_mean = 74.76 }
+manual = { cold_mean = 350.05 }
+recipe = { cold_mean = 63.82 }
 
 # ── Citation & Language ───────────────────────────────────────────
-citation-styles = { cold_mean = 51.18 }
-cjk-chinese = { cold_mean = 70.87 }
-cjk-japanese = { cold_mean = 186.02 }
-cjk-korean = { cold_mean = 59.32 }
-multi-language = { cold_mean = 57.94 }
-rtl-arabic = { cold_mean = 63.66 }
-rtl-hebrew = { cold_mean = 46.59 }
+citation-styles = { cold_mean = 90.45 }
+cjk-chinese = { cold_mean = 101.37 }
+cjk-japanese = { cold_mean = 196.26 }
+cjk-korean = { cold_mean = 125.96 }
+multi-language = { cold_mean = 96.48 }
+rtl-arabic = { cold_mean = 87.41 }
+rtl-hebrew = { cold_mean = 76.56 }
 
 # ── Correspondence ────────────────────────────────────────────────
-cover-letter = { cold_mean = 37.70 }
-cover-letter-formal = { cold_mean = 38.25 }
-invoice = { cold_mean = 37.11 }
-letter = { cold_mean = 36.67 }
-memo = { cold_mean = 38.78 }
+cover-letter = { cold_mean = 51.36 }
+cover-letter-formal = { cold_mean = 51.73 }
+invoice = { cold_mean = 57.41 }
+letter = { cold_mean = 48.72 }
+memo = { cold_mean = 63.30 }
 
 # ── CV & Professional ─────────────────────────────────────────────
-cv = { cold_mean = 38.03 }
-cv-twopage = { cold_mean = 38.40 }
+cv = { cold_mean = 62.57 }
+cv-twopage = { cold_mean = 62.81 }
 
 # ── Documents & Reports ───────────────────────────────────────────
-color-themes = { cold_mean = 42.28 }
-dissertation = { cold_mean = 39.35 }
-dictionary = { cold_mean = 39.25 }
-handout = { cold_mean = 39.10 }
-inline-paper = { cold_mean = 37.29 }
-journal = { cold_mean = 65.90 }
-lecture-notes = { cold_mean = 38.60 }
-minimal-custom = { cold_mean = 48.44 }
-minimal-starter = { cold_mean = 69.53 }
-patent = { cold_mean = 39.28 }
-poster = { cold_mean = 42.59 }
-presentation = { cold_mean = 40.49 }
-research-proposal = { cold_mean = 54.68 }
-standard = { cold_mean = 38.12 }
-technical-report = { cold_mean = 39.79 }
-white-paper = { cold_mean = 34.91 }
+color-themes = { cold_mean = 74.46 }
+dissertation = { cold_mean = 77.80 }
+dictionary = { cold_mean = 68.73 }
+handout = { cold_mean = 66.58 }
+inline-paper = { cold_mean = 59.26 }
+journal = { cold_mean = 112.56 }
+lecture-notes = { cold_mean = 64.43 }
+minimal-custom = { cold_mean = 84.44 }
+minimal-starter = { cold_mean = 122.03 }
+patent = { cold_mean = 61.08 }
+poster = { cold_mean = 75.81 }
+presentation = { cold_mean = 81.52 }
+research-proposal = { cold_mean = 95.72 }
+standard = { cold_mean = 74.47 }
+technical-report = { cold_mean = 69.35 }
+white-paper = { cold_mean = 62.31 }
 
 # ── Education ─────────────────────────────────────────────────────
-exam = { cold_mean = 37.24 }
-homework = { cold_mean = 37.76 }
-syllabus = { cold_mean = 38.89 }
+exam = { cold_mean = 55.84 }
+homework = { cold_mean = 58.36 }
+syllabus = { cold_mean = 72.61 }
 
 # ── Music & Plugins ──────────────────────────────────────────────
-music = { cold_mean = 50.00 }
-plugin-demo = { cold_mean = 50.00 }
+music = { cold_mean = 57.71 }
+plugin-demo = { cold_mean = 65.99 }
 
 # ── LuaTeX ────────────────────────────────────────────────────────
-lua-showcase = { cold_mean = 40.99 }
+lua-showcase = { cold_mean = 68.39 }
 
 # ── Thesis (generic) ─────────────────────────────────────────────
-thesis = { cold_mean = 54.50 }
-thesis-spacing = { cold_mean = 38.78 }
+thesis = { cold_mean = 94.37 }
+thesis-spacing = { cold_mean = 65.03 }
 
 # ── Thesis (institution-specific) ────────────────────────────────
-thesis-aalto = { cold_mean = 196.00 }
-thesis-cambridge = { cold_mean = 210.00 }
-thesis-chalmers = { cold_mean = 196.00 }
-thesis-chinese = { cold_mean = 210.00 }
-thesis-cmu = { cold_mean = 196.00 }
-thesis-columbia = { cold_mean = 210.00 }
-thesis-epfl = { cold_mean = 200.00 }
-thesis-eth = { cold_mean = 200.00 }
-thesis-harvard = { cold_mean = 210.00 }
-thesis-imperial = { cold_mean = 210.00 }
-thesis-japanese = { cold_mean = 210.00 }
-thesis-kit = { cold_mean = 196.00 }
-thesis-mit = { cold_mean = 210.00 }
-thesis-ntnu = { cold_mean = 196.00 }
-thesis-oxford = { cold_mean = 210.00 }
-thesis-princeton = { cold_mean = 210.00 }
-thesis-stanford = { cold_mean = 210.00 }
-thesis-tudelft = { cold_mean = 196.00 }
-thesis-tuhh = { cold_mean = 196.18 }
-thesis-tum = { cold_mean = 196.00 }
-thesis-uoft = { cold_mean = 210.00 }
-thesis-yale = { cold_mean = 210.00 }
+thesis-aalto = { cold_mean = 93.30 }
+thesis-cambridge = { cold_mean = 93.27 }
+thesis-chalmers = { cold_mean = 93.52 }
+thesis-chinese = { cold_mean = 101.95 }
+thesis-cmu = { cold_mean = 93.19 }
+thesis-columbia = { cold_mean = 93.57 }
+thesis-epfl = { cold_mean = 93.87 }
+thesis-eth = { cold_mean = 93.04 }
+thesis-harvard = { cold_mean = 93.08 }
+thesis-imperial = { cold_mean = 92.70 }
+thesis-japanese = { cold_mean = 128.06 }
+thesis-kit = { cold_mean = 93.83 }
+thesis-mit = { cold_mean = 93.47 }
+thesis-ntnu = { cold_mean = 93.01 }
+thesis-oxford = { cold_mean = 92.52 }
+thesis-princeton = { cold_mean = 92.46 }
+thesis-stanford = { cold_mean = 92.17 }
+thesis-tudelft = { cold_mean = 93.34 }
+thesis-tuhh = { cold_mean = 311.94 }
+thesis-tum = { cold_mean = 93.78 }
+thesis-uoft = { cold_mean = 93.37 }
+thesis-yale = { cold_mean = 81.16 }
