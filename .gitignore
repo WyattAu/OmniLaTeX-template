@@ -498,3 +498,4 @@ web/.astro/
 
 # Test scaffolding artifacts
 config/institutions/test-univ/
+config/institutions/test-institution/
