@@ -1,0 +1,111 @@
+\chapter{Conclusion}
+\label{ch:conclusion}
+
+\section{Summary of Contributions}
+\label{sec:conclusion:contributions}
+
+This thesis has presented an adaptive mesh refinement method for simulating multiphase flow in heterogeneous porous media. The key contributions are:
+
+\begin{enumerate}
+    \item \textbf{Novel error indicator.} A local flux imbalance indicator (Equation~\eqref{eq:indicator}) that effectively guides mesh adaptation in heterogeneous media. The indicator is computationally inexpensive and can be evaluated in parallel with minimal communication overhead.
+
+    \item \textbf{Rigorous convergence analysis.} Theorem~\ref{thm:convergence} establishes the optimal convergence rate of the AMR scheme under mild regularity assumptions on the permeability field and the error indicator.
+
+    \item \textbf{Efficient parallel implementation.} The method achieves 65\% weak scaling efficiency at 1024 cores on the SPE10 Model 2 benchmark, making it suitable for full-field reservoir simulations.
+
+    \item \textbf{Open-source software.} The implementation is integrated with the \gls{petsc} framework and includes Python bindings for rapid prototyping and parameter studies.
+
+    \item \textbf{Comprehensive benchmarking.} The method has been validated against three benchmark problems of increasing complexity, demonstrating its accuracy and efficiency across a range of problem configurations.
+\end{enumerate}
+
+\section{Key Findings}
+\label{sec:conclusion:findings}
+
+The numerical experiments demonstrate several important findings:
+
+\begin{itemize}
+    \item The AMR method achieves 2.7$\times$ speedup over uniform TPFA while maintaining comparable or better accuracy for channelized heterogeneity problems.
+
+    \item The parallel scalability is limited primarily by communication overhead at domain decomposition interfaces, with the strong scaling efficiency decreasing to 41\% at 1024 cores.
+
+    \item The method's accuracy is consistent across a range of permeability contrasts (10:1 to 1000:1), indicating robustness to geological uncertainty.
+
+    \item The error indicator provides reliable guidance for mesh adaptation, with refinement concentrated in regions of high flow activity and sharp saturation fronts.
+
+    \item The combination of AMR and parallel domain decomposition enables simulation of problems that would be intractable with uniform grids on the same hardware.
+\end{itemize}
+
+\section{Theoretical Implications}
+\label{sec:conclusion:theoretical}
+
+The theoretical analysis presented in \chref{ch:methodology} establishes a rigorous foundation for the proposed method. The convergence proof (Theorem~\ref{thm:convergence}) demonstrates that the AMR scheme preserves the optimal convergence rate of the underlying finite volume discretization while reducing the total number of unknowns.
+
+The error indicator analysis reveals that local flux imbalance is a robust measure of approximation quality for transport-dominated problems. This finding has implications beyond porous media flow, suggesting that similar indicators could be effective for other conservation laws, such as compressible gas dynamics and shallow water equations.
+
+The stability analysis of the parallel domain decomposition shows that the communication-to-computation ratio scales logarithmically with the number of processors, explaining the observed degradation in strong scaling efficiency at large core counts.
+
+\section{Practical Implications}
+\label{sec:conclusion:practical}
+
+For practitioners in reservoir simulation, the proposed method offers several practical advantages:
+
+\begin{enumerate}
+    \item \textbf{Reduced computational cost.} By concentrating computational resources where they are most needed, the AMR method enables higher-fidelity simulations without requiring additional hardware.
+
+    \item \textbf{Improved accuracy.} The adaptive refinement captures fine-scale heterogeneity that would be smoothed out by uniform grids or upscaling techniques.
+
+    \item \textbf{Scalability.} The parallel implementation enables simulation of large-scale problems that are representative of real field applications.
+
+    \item \textbf{Reproducibility.} The open-source implementation and Python interface facilitate reproducible research and rapid prototyping of new algorithms.
+\end{enumerate}
+
+\section{Limitations and Future Work}
+\label{sec:conclusion:future}
+
+While the proposed method addresses several important challenges in reservoir simulation, there are opportunities for future improvement:
+
+\begin{enumerate}
+    \item \textbf{Extension to unstructured meshes.} Generalizing the method to fully unstructured grids would enable application to complex well trajectories and fault networks. This requires developing error indicators that are robust to mesh quality variations.
+
+    \item \textbf{Three-phase flow.} Extending the formulation to oil-water-gas systems would increase applicability to gas injection and volatile oil reservoirs. The additional complexity of three-phase relative permeability models and flash calculations must be carefully managed.
+
+    \item \textbf{Geomechanical coupling.} Incorporating stress-dependent permeability and poroelastic effects would enable simulation of compacting reservoirs and subsidence prediction. This requires coupling the flow equations with the mechanical equilibrium equations.
+
+    \item \textbf{Machine learning integration.} Training neural networks to predict optimal refinement zones could reduce the computational cost of error indicator evaluation, particularly for time-dependent problems with evolving flow patterns.
+
+    \item \textbf{Upscaling validation.} Comparing the AMR results with standard upscaling techniques would provide insight into the accuracy-cost trade-off for large-scale simulations.
+
+    \item \textbf{GPU acceleration.} The current implementation is limited by the serial performance of the linear solver preconditioner. GPU acceleration of the AMG preconditioner could significantly improve the overall performance.
+
+    \item \textbf{Adaptive time stepping.} Combining spatial adaptation with temporal adaptation could further reduce computational cost by adjusting the time step size based on solution changes.
+
+    \item \textbf{Uncertainty quantification.} Extending the method to handle multiple geological realizations would enable quantification of prediction uncertainty, which is essential for risk-based decision making.
+\end{enumerate}
+
+\section{Final Remarks}
+\label{sec:conclusion:remarks}
+
+The accurate and efficient simulation of multiphase flow in porous media remains a critical challenge for the energy and environmental sectors. The methods presented in this thesis contribute to the ongoing effort to develop robust, scalable, and accurate numerical tools for this important class of problems. The open-source nature of the implementation ensures that the work can be extended and validated by the broader research community.
+
+As computational resources continue to grow, the ability to simulate increasingly complex systems at higher resolution will enable better decision-making in reservoir management, carbon sequestration, and groundwater remediation. The combination of adaptive methods, parallel computing, and data-driven approaches promises to transform the practice of subsurface simulation in the coming decades.
+
+The research presented here demonstrates that significant progress is possible when advanced numerical methods are combined with modern computing infrastructure. The challenges that remain are substantial, but the tools and techniques developed in this thesis provide a foundation for continued progress in this important field.
+
+Looking ahead, the convergence of physics-based simulation, machine learning, and high-performance computing offers tremendous potential for addressing the complex subsurface challenges facing society. From optimizing energy production to protecting groundwater resources and mitigating climate change through carbon storage, the need for accurate and efficient subsurface simulation has never been greater.
+
+This thesis contributes to meeting that need by providing a open-source, scalable, and accurate tool for simulating multiphase flow in porous media. The author hopes that this work will serve as a foundation for future research and development in this exciting and important field.
+
+\section{Lessons Learned}
+\label{sec:conclusion:lessons}
+
+The development of this method has yielded several practical insights that may benefit researchers working on similar problems:
+
+\begin{enumerate}
+    \item \textbf{Simplicity in error indicators.} Complex error indicators do not necessarily outperform simpler alternatives. The flux-based indicator used here is both effective and easy to implement, demonstrating that physical intuition often guides the design of robust numerical methods.
+
+    \item \textbf{Scalability requires careful design.} Achieving good parallel performance requires attention to communication patterns, load balancing, and data structures from the earliest stages of development. Retrofitting parallelism onto serial algorithms is significantly more difficult than designing for parallelism from the start.
+
+    \item \textbf{Python as a research accelerator.} The Python interface has proven invaluable for rapid prototyping, parameter studies, and visualization. The ability to quickly test new ideas in Python before implementing them in C++ has significantly accelerated the research cycle.
+
+    \item \textbf{Reproducibility matters.} Providing open-source code and comprehensive documentation has facilitated collaboration with other researchers and enabled independent verification of results. This investment in reproducibility pays dividends in the long run.
+\end{enumerate}

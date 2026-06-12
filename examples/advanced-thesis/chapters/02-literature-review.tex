@@ -1,0 +1,174 @@
+% ============================================================
+% Chapter 2: Literature Review
+% ============================================================
+\chapter{Literature Review}
+\label{ch:literature-review}
+
+\section{Systematic Review Methodology}
+\label{sec:systematic-review}
+
+This literature review follows the \gls{prisma} guidelines to ensure
+comprehensiveness and reproducibility.  We conducted a systematic search across
+four major databases---IEEE Xplore, ACM Digital Library, arXiv, and
+Google Scholar---using the query string shown in \cref{tab:prisma-query}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{PRISMA-style search methodology and database coverage.}
+    \label{tab:prisma-methodology}
+    \begin{tabularx}{\textwidth}{@{}lXrr@{}}
+        \toprule
+        \textbf{Phase} & \textbf{Description} & \textbf{Records} & \textbf{Retained} \\
+        \midrule
+        Identification & Database search results & 2847 & --- \\
+        Screening & Title and abstract screening & 2847 & 412 \\
+        Eligibility & Full-text assessment & 412 & 87 \\
+        Included & Final synthesis & 87 & 87 \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+The search was conducted in January 2026 and covered publications from 2010 to
+2025.  We included peer-reviewed conference papers, journal articles, and
+preprints with at least 10 citations.  The screening process is summarised in
+\cref{tab:prisma-methodology}.
+
+\section{Taxonomy of High-Dimensional BO Methods}
+\label{sec:taxonomy}
+
+High-dimensional BO methods can be broadly categorised into four families, as
+illustrated by the taxonomy diagram in \cref{fig:taxonomy}.  Each family
+addresses the curse of dimensionality through a distinct strategy, and recent
+work has increasingly combined elements from multiple families.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        level 1/.style={sibling distance=55mm, level distance=18mm},
+        level 2/.style={sibling distance=28mm, level distance=15mm},
+        every node/.style={
+            draw, rounded corners, align=center, fill=primary!10,
+            font=\small, minimum width=18mm, minimum height=8mm
+        },
+        edge from parent/.style={draw, -latex', thick}
+    ]
+        \node[fill=primary!25, font=\small\bfseries] {High-Dimensional BO}
+            child {node {Dimensionality\\Reduction}
+                child {node {Random\\Projections}}
+                child {node {GP-based\\Subspace}}
+            }
+            child {node {Trust-Region\\Methods}
+                child {node {TuRBO}}
+                child {node {Multi-fidelity\\Trust-Region}}
+            }
+            child {node {Information\\Theoretic}
+                child {node {MES}}
+                child {node {PESBO}}
+            }
+            child {node {Hybrid\\Methods}
+                child {node {REMBO\\+TuRBO}}
+                child {node {ASBO\\(Ours)}}
+            };
+    \end{tikzpicture}
+    \caption{Taxonomy of high-dimensional BO methods.  Our proposed ASBO
+    method falls under the hybrid category, combining dimensionality reduction
+    with information-theoretic acquisition.}
+    \label{fig:taxonomy}
+\end{figure}
+
+\section{Dimensionality Reduction Approaches}
+\label{sec:dim-reduction}
+
+The most intuitive strategy for scaling BO to high dimensions is to reduce the
+effective dimensionality before fitting the surrogate model.  The
+\emph{random embedding} approach of \citet{bibid} projects the input space
+onto a random low-dimensional subspace using a matrix $\bZ \in \R^{k \times d}$,
+where $k \ll d$, and performs BO in the embedded space.  While computationally
+efficient, this method assumes the objective function varies primarily along a
+fixed subspace---an assumption that rarely holds in practice.
+
+The \emph{Additive Gaussian Process} (AGP) method decomposes the objective
+function into a sum of low-dimensional components, each modelled by a separate
+\gls{gp}.  This approach avoids explicit subspace identification but requires
+careful specification of the additive structure.
+
+\section{Trust-Region Methods}
+\label{sec:trust-region}
+
+TuRBO~\cite{einstein1905} introduced trust regions to high-dimensional BO by
+maintaining a local surrogate model within a ball of radius $r_n$ centred at
+the current best point.  The trust region is expanded when the surrogate model
+accurately predicts the objective function, and contracted otherwise.  This
+adaptive approach achieves competitive performance in moderate dimensions
+($20 \leq d \leq 50$) but still degrades in very high dimensions.
+
+\section{Information-Theoretic Approaches}
+\label{sec:info-theoretic}
+
+Information-theoretic acquisition functions seek to maximise the expected
+information gain about the location of the global optimum.  The
+Max-value Entropy Search (MES)~\cite{goossensLaTeXCompanion1993} directly
+models the distribution of the maximum value and selects points that reduce
+the entropy of this distribution.  These methods provide stronger exploration
+guarantees than \gls{ucb}-based approaches but are computationally expensive
+in high dimensions.
+
+\section{Comparison of Methods}
+\label{sec:comparison}
+
+\Cref{tab:method-comparison} compares the key properties of the major
+high-dimensional BO methods discussed in this review.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Comparison of high-dimensional BO methods.  ``Adapt.'' indicates
+    whether the method adapts to varying dimensionality.}
+    \label{tab:method-comparison}
+    \begin{tabularx}{\textwidth}{@{}lcccccX@{}}
+        \toprule
+        \textbf{Method} & \textbf{Max $d$} & \textbf{Adapt.} &
+        \textbf{Theory} & \textbf{Open} & \textbf{Year} &
+        \textbf{Key Limitation} \\
+        \midrule
+        REMBO      & 100  & No  & Yes & Yes & 2013 & Fixed subspace \\
+        ALEBO      & 100  & No  & Yes & Yes & 2020 & Linear manifold \\
+        TuRBO      & 50   & Yes & No  & Yes & 2019 & Local scope \\
+        MES        & 30   & No  & Yes & Yes & 2017 & Computational cost \\
+        PESBO      & 50   & Yes & Partial & Yes & 2021 & Approximate inference \\
+        SAASBO     & 200  & No  & No  & Yes & 2022 & Sparse prior \\
+        \textbf{ASBO (Ours)} & \textbf{500} & \textbf{Yes} &
+        \textbf{Yes} & \textbf{Yes} & \textbf{2026} & --- \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+The comparison reveals a clear gap: no existing method simultaneously achieves
+high-dimensional scalability ($d > 100$), adaptivity to varying local
+dimensionality, and rigorous theoretical guarantees.  Our proposed ASBO method
+fills this gap by combining adaptive subspace identification with
+information-theoretic acquisition functions.
+
+\section{Research Gap Analysis}
+\label{sec:research-gap}
+
+Based on the systematic review, we identify three key gaps in the existing
+literature:
+
+\begin{enumerate}
+    \item \textbf{Fixed vs.\ adaptive subspace assumption:} All existing
+    dimensionality reduction methods assume a fixed low-dimensional subspace
+    throughout the optimisation process.  In practice, the intrinsic
+    dimensionality of the objective function may vary across the search space.
+
+    \item \textbf{Limited theoretical analysis:} While TuRBO and related
+    methods achieve strong empirical performance, rigorous convergence guarantees
+    remain unavailable for most high-dimensional BO methods.
+
+    \item \textbf{Lack of unified frameworks:} Current approaches address
+    dimensionality reduction, trust regions, and information-theoretic
+    acquisition in isolation, without a principled mechanism for combining their
+    complementary strengths.
+\end{enumerate}
+
+Our work directly addresses these gaps through the adaptive subspace BO
+framework presented in \cref{ch:methodology}.

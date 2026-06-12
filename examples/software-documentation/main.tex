@@ -13,139 +13,127 @@
 
 \begin{abstract}
 DataPipe is an open-source streaming ETL (Extract, Transform, Load) platform
-designed for real-time data integration.  This document provides a comprehensive
-guide covering installation, configuration, core concepts, the plugin API, and
-troubleshooting procedures.
+for real-time data integration.  This guide covers architecture, installation,
+configuration, APIs, troubleshooting, and version history.
 \end{abstract}
 
 \tableofcontents
 
+%=============================================================================
 \section{Overview}
+\label{sec:overview}
+%=============================================================================
 
 DataPipe ingests data from heterogeneous sources, applies configurable
 transformation pipelines, and delivers processed records to downstream systems
-with sub-second latency.  The architecture is built on Apache Kafka for
-transport and Apache Flink for stateful stream processing.
+with sub-second latency on Apache Kafka and Apache Flink.
 
 Key characteristics:
-
 \begin{itemize}
-    \item \textbf{Throughput:} Sustained ingestion of 500\,000 events per second
-          on a three-node cluster.
-    \item \textbf{Latency:} End-to-end processing latency under 200\,ms at P95.
-    \item \textbf{Durability:} At-least-once delivery with exactly-once semantics
-          available for supported sinks.
-    \item \textbf{Extensibility:} A Java/Scala plugin API for custom connectors
-          and transformation functions.
+    \item \textbf{Throughput:} 500k events/s on a three-node cluster.
+    \item \textbf{Latency:} End-to-end under 200\,ms at P95.
+    \item \textbf{Durability:} At-least-once; exactly-once for supported sinks.
+    \item \textbf{Extensibility:} Java/Scala plugin API for custom connectors.
 \end{itemize}
 
+\subsection{Architecture Diagram}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.2cm and 1.8cm,
+        box/.style={draw, rounded corners, minimum width=2.8cm,
+                     minimum height=0.9cm, text centered, font=\small,
+                     fill=#1!20, draw=#1!60!black},
+        arr/.style={->, >=stealth, thick},
+    ]
+        \node[box=blue]   (src)   {Data Sources};
+        \node[box=teal, right=of src]    (ingest)  {Ingestion};
+        \node[box=orange, right=of ingest] (kafka) {Kafka};
+        \node[box=red, below=of kafka]   (flink)   {Flink};
+        \node[box=purple, below=of flink] (sink)   {Sinks};
+        \node[box=cyan, left=of flink]   (web)    {Web UI};
+        \node[box=green!60!black, left=of sink] (pg) {PostgreSQL};
+        \draw[arr] (src)--(ingest); \draw[arr] (ingest)--(kafka);
+        \draw[arr] (kafka)--(flink); \draw[arr] (flink)--(sink);
+        \draw[arr] (web)--(flink);   \draw[arr] (flink)--(pg);
+    \end{tikzpicture}
+    \caption{High-level architecture.}
+    \label{fig:arch}
+\end{figure}
+
+%=============================================================================
 \section{System Requirements}
+\label{sec:requirements}
+%=============================================================================
 
 \begin{table}[htbp]
     \centering
-    \caption{Minimum and recommended hardware specifications.}
+    \caption{Hardware specifications.}
     \label{tab:hardware}
     \begin{tabular}{@{}lcc@{}}
         \toprule
         \textbf{Resource} & \textbf{Minimum} & \textbf{Recommended} \\
         \midrule
-        CPU cores       & 4   & 16  \\
-        Memory (RAM)    & 8\,GB & 64\,GB \\
-        Disk            & 50\,SSD & 500\,NVMe \\
-        Network         & 1\,Gbps & 10\,Gbps \\
+        CPU cores    & 4   & 16   \\
+        RAM          & 8\,GB & 64\,GB \\
+        Disk         & 50\,GB SSD & 500\,GB NVMe \\
+        Network      & 1\,Gbps & 10\,Gbps \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-Software prerequisites:
+Software: Java 17+, Kafka 3.6+, PostgreSQL 15+, Docker 24+ with Compose v2.
 
-\begin{itemize}
-    \item Java Runtime Environment 17 or later (OpenJDK or Oracle JDK).
-    \item Apache Kafka 3.6+ cluster (or a compatible managed service).
-    \item PostgreSQL 15+ for metadata storage.
-    \item Docker 24+ and Docker Compose v2 (for containerised deployments).
-\end{itemize}
-
+%=============================================================================
 \section{Installation}
-
-\subsection{Quick Start with Docker Compose}
-
-The fastest way to run DataPipe locally is via the provided Compose file:
-
-\begin{verbatim}
-git clone https://github.com/datapipeline/datapipe.git
-cd datapipe
-docker compose -f docker-compose.dev.yaml up -d
-\end{verbatim}
-
-This starts a single-node Kafka broker, a Flink JobManager and TaskManager,
-and the DataPipe web UI on port 8080.
-
-\subsection{Production Installation}
-
-For production environments, deploy DataPipe on a Kubernetes cluster:
-
-\begin{enumerate}
-    \item Add the Helm repository:
-    \begin{verbatim}
-helm repo add datapipe https://charts.datapipeline.io/stable
-helm repo update
-\end{verbatim}
-
-    \item Create a values file (\texttt{values-prod.yaml}) with your Kafka
-          bootstrap servers, PostgreSQL connection string, and resource limits.
-
-    \item Install the release:
-    \begin{verbatim}
-helm install datapipe datapipe/datapipe \
-    -n datapipe --create-namespace \
-    -f values-prod.yaml
-\end{verbatim}
-
-    \item Verify the deployment:
-    \begin{verbatim}
-kubectl get pods -n datapipe
-kubectl logs -f deployment/datapipe-web -n datapipe
-\end{verbatim}
-\end{enumerate}
-
-\section{Configuration}
-
-Configuration is managed through environment variables and a YAML file
-(\texttt{datapipe.yaml}).  The most important settings are:
+\label{sec:installation}
+%=============================================================================
 
 \begin{table}[htbp]
     \centering
-    \caption{Core configuration parameters.}
-    \label{tab:config}
-    \begin{tabular}{@{}lp{6cm}l@{}}
+    \caption{Platform-specific installation methods.}
+    \label{tab:platforms}
+    \begin{tabular}{@{}lp{5cm}p{3.5cm}@{}}
         \toprule
-        \textbf{Parameter} & \textbf{Description} & \textbf{Default} \\
+        \textbf{Platform} & \textbf{Method} & \textbf{Notes} \\
         \midrule
-        \texttt{kafka.brokers}       & Comma-separated Kafka broker addresses
-            & \texttt{localhost:9092} \\
-        \texttt{kafka.group\_id}     & Consumer group identifier
-            & \texttt{datapipe-default} \\
-        \texttt{flink.parallelism}   & Default Flink job parallelism
-            & \texttt{4} \\
-        \texttt{flink.checkpoint\_interval} & Checkpoint interval in milliseconds
-            & \texttt{60000} \\
-        \texttt{pg.url}              & PostgreSQL JDBC connection URL
-            & --- \\
-        \texttt{pg.username}         & PostgreSQL username
-            & --- \\
-        \texttt{pg.password}         & PostgreSQL password (use secrets manager)
-            & --- \\
+        Linux (x86\_64)  & Package manager / Docker & \texttt{.deb} and \texttt{.rpm} \\
+        Linux (ARM64)    & Docker & Multi-arch image \\
+        macOS (ARM)      & Homebrew & \texttt{brew install datapipeline/datapipe/datapipe} \\
+        Windows          & Docker Desktop & WSL 2 required \\
+        Kubernetes       & Helm chart & Production recommended \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-Example \texttt{datapipe.yaml}:
+\subsection{Quick Start}
 
-\begin{verbatim}
+\begin{minted}[caption={Docker Compose quick start.}, label={lst:docker-qs}]{bash}
+git clone https://github.com/datapipeline/datapipe.git
+cd datapipe && docker compose -f docker-compose.dev.yaml up -d
+\end{minted}
+
+\subsection{Kubernetes Production}
+
+\begin{minted}[caption={Helm install.}, label={lst:helm}]{bash}
+helm repo add datapipe https://charts.datapipeline.io/stable && helm repo update
+helm install datapipe datapipe/datapipe -n datapipe --create-namespace -f values-prod.yaml
+\end{minted}
+
+%=============================================================================
+\section{Configuration}
+\label{sec:configuration}
+%=============================================================================
+
+\begin{minted}[
+    caption={\texttt{datapipe.yaml} configuration file.},
+    label={lst:config}, linenos,
+]{yaml}
 kafka:
   brokers: "kafka-1:9092,kafka-2:9092,kafka-3:9092"
   group_id: "datapipe-prod"
+  session_timeout_ms: 30000
 flink:
   parallelism: 16
   checkpoint_interval: 30000
@@ -154,137 +142,329 @@ pg:
   url: "jdbc:postgresql://db.internal:5432/datapipe"
   username: "${DB_USER}"
   password: "${DB_PASSWORD}"
-logging:
-  level: "INFO"
-  format: "json"
-\end{verbatim}
+  pool_size: 20
+logging: { level: "INFO", format: "json" }
+server: { host: "0.0.0.0", port: 8080 }
+\end{minted}
 
-\section{API Overview}
+\begin{table}[htbp]
+    \centering
+    \caption{Environment variables (override YAML values).}
+    \label{tab:env-vars}
+    \begin{tabular}{@{}lp{5.5cm}p{3cm}@{}}
+        \toprule
+        \textbf{Variable} & \textbf{Description} & \textbf{Default} \\
+        \midrule
+        \texttt{DATAPIPE\_KAFKA\_BROKERS} & Broker addresses & \texttt{localhost:9092} \\
+        \texttt{DATAPIPE\_KAFKA\_GROUP\_ID} & Consumer group & \texttt{datapipe-default} \\
+        \texttt{DATAPIPE\_FLINK\_PARALLELISM} & Parallelism & \texttt{4} \\
+        \texttt{DATAPIPE\_PG\_URL} & JDBC URL & --- \\
+        \texttt{DATAPIPE\_PG\_USER} & DB username & --- \\
+        \texttt{DATAPIPE\_PG\_PASSWORD} & DB password & --- \\
+        \texttt{DATAPIPE\_LOG\_LEVEL} & Verbosity & \texttt{INFO} \\
+        \texttt{DATAPIPE\_SERVER\_PORT} & Listen port & \texttt{8080} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
-DataPipe exposes a RESTful API for pipeline management and a gRPC API for
-high-throughput data ingestion.
+\begin{table}[htbp]
+    \centering
+    \caption{Feature flags.}
+    \label{tab:flags}
+    \begin{tabular}{@{}lp{5cm}cc@{}}
+        \toprule
+        \textbf{Flag} & \textbf{Description} & \textbf{Default} & \textbf{Since} \\
+        \midrule
+        \texttt{exactly\_once\_sinks} & Exactly-once for sinks & \texttt{false} & v2.4.0 \\
+        \texttt{schema\_registry} & Confluent Registry auto-register & \texttt{false} & v2.3.0 \\
+        \texttt{grpc\_ingestion} & gRPC ingestion endpoint & \texttt{true} & v2.3.0 \\
+        \texttt{rest\_ingestion} & Legacy REST ingestion & \texttt{false} & v2.3.0 \\
+        \texttt{metrics\_export} & Prometheus \texttt{/metrics} & \texttt{true} & v2.1.0 \\
+        \texttt{saml\_auth} & SAML 2.0 SSO & \texttt{false} & v2.2.0 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
-\subsection{REST API}
+%=============================================================================
+\section{API Reference}
+\label{sec:api-reference}
+%=============================================================================
 
 \begin{table}[htbp]
     \centering
     \caption{REST API endpoints.}
     \label{tab:rest-api}
-    \begin{tabular}{@{}lllp{4cm}@{}}
+    \begin{tabular}{@{}llp{4cm}p{2.5cm}@{}}
         \toprule
-        \textbf{Method} & \textbf{Endpoint} & \textbf{Description} &
-            \textbf{Auth} \\
+        \textbf{Method} & \textbf{Endpoint} & \textbf{Description} & \textbf{Parameters} \\
         \midrule
-        \texttt{GET}    & \texttt{/api/v1/pipelines}       & List all pipelines
-            & Bearer token \\
-        \texttt{POST}   & \texttt{/api/v1/pipelines}       & Create a new pipeline
-            & Bearer token \\
-        \texttt{GET}    & \texttt{/api/v1/pipelines/\{id\}} & Get pipeline details
-            & Bearer token \\
-        \texttt{PUT}    & \texttt{/api/v1/pipelines/\{id\}} & Update a pipeline
-            & Bearer token \\
-        \texttt{DELETE} & \texttt{/api/v1/pipelines/\{id\}} & Delete a pipeline
-            & Bearer token \\
-        \texttt{POST}   & \texttt{/api/v1/pipelines/\{id\}/start} & Start execution
-            & Bearer token \\
-        \texttt{POST}   & \texttt{/api/v1/pipelines/\{id\}/stop}  & Stop execution
-            & Bearer token \\
-        \texttt{GET}    & \texttt{/api/v1/metrics}           & Cluster metrics
-            & Bearer token \\
+        \texttt{GET}    & \texttt{/api/v1/pipelines} & List pipelines & \texttt{?status=active} \\
+        \texttt{POST}   & \texttt{/api/v1/pipelines} & Create pipeline & JSON body \\
+        \texttt{GET}    & \texttt{/api/v1/pipelines/\{id\}} & Get details & Path \texttt{id} \\
+        \texttt{PUT}    & \texttt{/api/v1/pipelines/\{id\}} & Update pipeline & Path \texttt{id} \\
+        \texttt{DELETE} & \texttt{/api/v1/pipelines/\{id\}} & Delete pipeline & Path \texttt{id} \\
+        \texttt{POST}   & \texttt{/api/v1/pipelines/\{id\}/start} & Start & Path \texttt{id} \\
+        \texttt{POST}   & \texttt{/api/v1/pipelines/\{id\}/stop} & Stop & Path \texttt{id} \\
+        \texttt{GET}    & \texttt{/api/v1/metrics} & Metrics & \texttt{?window=5m} \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-\subsection{gRPC Ingestion API}
+\begin{minted}[
+    caption={Create pipeline --- request and response.},
+    label={lst:create-pipeline},
+]{json}
+// POST /api/v1/pipelines
+{ "name": "user-events-etl",
+  "source": { "type": "kafka", "topic": "raw-events" },
+  "sink":   { "type": "postgresql", "table": "events" } }
+// Response 201 Created
+{ "id": "pl_8f3a2b1c", "status": "created", "created_at": "2026-06-12T10:30:00Z" }
+\end{minted}
 
-The gRPC ingestion service accepts protocol buffer messages for maximum
-throughput.  Define your schema in \texttt{ingestion.proto}:
+\subsection{Authentication}
 
-\begin{verbatim}
-syntax = "proto3";
-package datapipe.ingestion;
+\begin{minted}[caption={Obtain and use a Bearer token.}, label={lst:auth}]{bash}
+curl -X POST https://auth.datapipeline.io/oauth/token \
+    -d 'grant_type=client_credentials' -d 'client_id=ID' -d 'client_secret=SECRET'
+# Then use the token:
+curl -H "Authorization: Bearer <token>" https://api.datapipeline.io/api/v1/pipelines
+\end{minted}
 
-service IngestionService {
-    rpc Ingest (stream Record) returns (IngestResponse);
-    rpc IngestBatch (stream IngestBatchRequest)
-        returns (IngestResponse);
+\begin{table}[htbp]
+    \centering
+    \caption{Error codes.}
+    \label{tab:errors}
+    \begin{tabular}{@{}clp{6.5cm}@{}}
+        \toprule
+        \textbf{Code} & \textbf{HTTP} & \textbf{Description} \\
+        \midrule
+        \texttt{PIPE\_NOT\_FOUND}      & 404 & Pipeline not found \\
+        \texttt{PIPE\_ALREADY\_RUNNING} & 409 & Pipeline already running \\
+        \texttt{INVALID\_CONFIG}       & 422 & Invalid configuration \\
+        \texttt{AUTH\_REQUIRED}        & 401 & Missing Authorization header \\
+        \texttt{AUTH\_EXPIRED}         & 401 & Token expired \\
+        \texttt{FORBIDDEN}             & 403 & Insufficient permissions \\
+        \texttt{RATE\_LIMITED}         & 429 & Too many requests \\
+        \texttt{INTERNAL\_ERROR}       & 500 & Server error \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+%=============================================================================
+\section{CLI Reference}
+\label{sec:cli-reference}
+%=============================================================================
+
+\begin{table}[htbp]
+    \centering
+    \caption{CLI commands.}
+    \label{tab:cli}
+    \begin{tabular}{@{}lp{5cm}p{3.5cm}@{}}
+        \toprule
+        \textbf{Command} & \textbf{Description} & \textbf{Example} \\
+        \midrule
+        \texttt{init}     & Scaffold a project & \texttt{datapipe init my-pipe} \\
+        \texttt{validate} & Validate config & \texttt{datapipe validate pipeline.yaml} \\
+        \texttt{run}      & Execute locally & \texttt{datapipe run --dry-run} \\
+        \texttt{deploy}   & Deploy remote & \texttt{datapipe deploy --env prod} \\
+        \texttt{status}   & Pipeline status & \texttt{datapipe status pl\_8f3a2b1c} \\
+        \texttt{logs}     & Tail logs & \texttt{datapipe logs pl\_8f3a2b1c -f} \\
+        \texttt{version}  & Print version & \texttt{datapipe version} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+%=============================================================================
+\section{Code Examples}
+\label{sec:code-examples}
+%=============================================================================
+
+\subsection{Python}
+
+\begin{minted}[caption={Python client.}, label={lst:python}, language=Python, linenos]{python}
+import requests
+
+class DataPipeClient:
+    def __init__(self, base_url: str, token: str):
+        self.base = base_url.rstrip("/")
+        self.s = requests.Session()
+        self.s.headers["Authorization"] = f"Bearer {token}"
+
+    def list_pipelines(self, status=None):
+        r = self.s.get(f"{self.base}/api/v1/pipelines",
+                       params={"status": status} if status else {})
+        r.raise_for_status()
+        return r.json()["pipelines"]
+
+    def create_pipeline(self, config):
+        r = self.s.post(f"{self.base}/api/v1/pipelines", json=config)
+        r.raise_for_status()
+        return r.json()
+
+client = DataPipeClient("https://api.datapipeline.io", "YOUR_TOKEN")
+for p in client.list_pipelines("active"):
+    print(p["name"], p["status"])
+\end{minted}
+
+\subsection{Rust}
+
+\begin{minted}[caption={Rust client.}, label={lst:rust}, language=Rust, linenos]{rust}
+use serde::{Deserialize, Serialize};
+use reqwest::Client;
+
+#[derive(Debug, Serialize, Deserialize)]
+struct Pipeline { id: String, name: String, status: String }
+
+struct DataPipeClient { client: Client, base: String, token: String }
+
+impl DataPipeClient {
+    fn new(url: &str, tok: &str) -> Self {
+        Self { client: Client::new(), base: url.trim_end_matches('/').into(), token: tok.into() }
+    }
+    async fn list_pipelines(&self) -> Result<Vec<Pipeline>, reqwest::Error> {
+        let v = self.client.get(format!("{}/api/v1/pipelines", self.base))
+            .bearer_auth(&self.token).send().await?
+            .json::<serde_json::Value>().await?;
+        Ok(serde_json::from_value(v["pipelines"].clone()).unwrap())
+    }
 }
+\end{minted}
 
-message Record {
-    string source = 1;
-    int64 timestamp = 2;
-    map<string, string> payload = 3;
-}
-\end{verbatim}
+\subsection{Shell}
 
+\begin{minted}[caption={Health check script.}, label={lst:shell}, language=bash, linenos]{bash}
+#!/usr/bin/env bash
+set -euo pipefail
+API="${DATAPIPE_API_URL:-https://api.datapipeline.io}"
+TOKEN="${DATAPIPE_TOKEN:?Missing}" && for i in 1 2 3; do
+    [[ $(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${TOKEN}" "${API}/health/ready") == 200 ]] && exit 0
+    sleep 5; done; echo "Unhealthy" >&2; exit 1
+\end{minted}
+
+%=============================================================================
 \section{Troubleshooting}
-
-\subsection{Common Issues}
+\label{sec:troubleshooting}
+%=============================================================================
 
 \begin{description}
-    \item[Kafka connection refused] Verify that Kafka brokers are running and
-          the \texttt{kafka.brokers} configuration matches your cluster
-          addresses.  Check firewall rules and security group settings.
-
-    \item[High checkpoint duration] If checkpoints consistently exceed the
-          configured interval, increase \texttt{flink.checkpoint\_timeout} or
-          reduce state size by tuning window intervals.
-
-    \item[Out of memory errors] Increase the JVM heap size via
-          \texttt{FLINK\_TASKMANAGER\_MEMORY} or
-          \texttt{JAVA\_OPTS=-Xmx16g}.  Monitor GC logs for excessive
-          full garbage collections.
-
-    \item[Schema evolution failures] When a source connector schema changes,
-          update the pipeline definition before restarting.  DataPipe supports
-          backward-compatible schema evolution by default.
+    \item[Kafka connection refused] Check brokers and \texttt{kafka.brokers} config.
+    \item[High checkpoint duration] Increase \texttt{flink.checkpoint\_timeout} or tune windows.
+    \item[Out of memory] Set \texttt{JAVA\_OPTS=-Xmx16g}; monitor GC logs.
+    \item[Schema evolution failures] Update pipeline definition before restarting.
+    \item[401 auth errors] Token may be expired (default 3600\,s); re-authenticate.
+    \item[Pipeline stuck starting] Check Flink logs for backpressure; increase parallelism.
 \end{description}
 
-\subsection{Health Checks}
+Health endpoints: \texttt{/health/ready}, \texttt{/health/live}, \texttt{/metrics} (Prometheus).
 
-DataPipe exposes health endpoints for integration with load balancers and
-orchestrators:
+%=============================================================================
+\section{Architecture}
+\label{sec:architecture}
+%=============================================================================
 
-\begin{itemize}
-    \item \texttt{/health/ready} --- Returns 200 when the service can accept
-          traffic.
-    \item \texttt{/health/live} --- Returns 200 when the service process is
-          alive.
-    \item \texttt{/metrics} --- Prometheus-format metrics endpoint.
-\end{itemize}
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.0cm and 1.5cm,
+        comp/.style={draw, rounded corners, minimum width=2.4cm,
+                     minimum height=0.8cm, text centered, font=\small,
+                     fill=#1!15, draw=#1!50!black},
+        arr/.style={->, >=stealth, thick},
+    ]
+        \node[comp=orange]              (api)   {REST API};
+        \node[comp=teal,  right=of api]         (engine){Stream Engine};
+        \node[comp=blue,  right=of engine]      (sink)  {Sink Manager};
+        \node[comp=purple,below=of engine]      (auth)  {Auth Service};
+        \node[comp=green!60!black,below=of api] (cfg)   {Config Store};
+        \node[comp=red,   below=of sink]        (mon)   {Metrics};
+        \draw[arr](api)--(engine); \draw[arr](engine)--(sink);
+        \draw[arr](auth)--(api);   \draw[arr](cfg)--(api);
+        \draw[arr](mon)--(engine);
+    \end{tikzpicture}
+    \caption{Component diagram.}
+    \label{fig:components}
+\end{figure}
 
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.5cm and 2.0cm,
+        stage/.style={draw, rounded corners, minimum width=2.2cm,
+                      minimum height=0.8cm, text centered, font=\small},
+        arr/.style={->, >=stealth, thick},
+    ]
+        \node[stage, fill=blue!20]     (src)   {Source};
+        \node[stage, fill=teal!20, right=of src]   (parse) {Parse};
+        \node[stage, fill=orange!20, right=of parse] (xform){Transform};
+        \node[stage, fill=red!20, right=of xform]   (valid){Validate};
+        \node[stage, fill=purple!20, right=of valid] (sink) {Sink};
+        \node[stage, fill=gray!20, below=of xform]  (dlq)  {Dead-Letter Queue};
+        \draw[arr](src)--(parse);
+        \draw[arr](parse)--node[above,font=\scriptsize]{JSON/Avro}(xform);
+        \draw[arr](xform)--node[above,font=\scriptsize]{Enriched}(valid);
+        \draw[arr](valid)--node[above,font=\scriptsize]{Verified}(sink);
+        \draw[arr,dashed](valid)--node[right,font=\scriptsize]{invalid}(dlq);
+    \end{tikzpicture}
+    \caption{Data flow diagram.}
+    \label{fig:data-flow}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.2cm and 1.5cm,
+        zone/.style={draw,dashed,rounded corners,inner sep=10pt,label={[font=\small]above:#1}},
+        box/.style={draw,rounded corners,min width=2.0cm,min height=0.7cm,
+                     text centered,font=\small,fill=#1!15,draw=#1!50!black},
+        arr/.style={->,>=stealth},
+    ]
+        \begin{scope}[zone=Kubernetes]
+            \node[box=blue]  (ingress){Ingress};
+            \node[box=teal, right=of ingress] (web) {Web UI};
+            \node[box=orange,right=of web]    (api2){API};
+            \node[box=red,  below=of api2]    (fl)  {Flink};
+        \end{scope}
+        \begin{scope}[zone=External]
+            \node[box=purple,below=of fl]  (ka){Kafka};
+            \node[box=green!60!black,right=of ka] (pg){PostgreSQL};
+        \end{scope}
+        \draw[arr](ingress)--(web); \draw[arr](web)--(api2);
+        \draw[arr](api2)--(fl);     \draw[arr](fl)--(ka);
+        \draw[arr](fl)--(pg);
+    \end{tikzpicture}
+    \caption{Deployment topology.}
+    \label{fig:deployment}
+\end{figure}
+
+%=============================================================================
 \section{Changelog}
+\label{sec:changelog}
+%=============================================================================
 
-\subsection{v2.4.0 --- 2026-05-15}
-
+\subsection*{v2.4.0 --- 2026-05-15}
 \begin{itemize}
-    \item Added exactly-once semantics for PostgreSQL and MySQL sink connectors.
-    \item Added built-in data quality validation framework.
-    \item Improved Flink job recovery time by 40\% through incremental
-          checkpointing.
-    \item Fixed memory leak in the Kafka consumer poll loop under high
-          throughput.
+    \item Exactly-once semantics for PostgreSQL and MySQL sinks.
+    \item Built-in data quality validation framework.
+    \item 40\% faster Flink job recovery via incremental checkpointing.
+    \item Fixed memory leak in Kafka consumer poll loop at high throughput.
 \end{itemize}
 
-\subsection{v2.3.0 --- 2026-03-01}
-
+\subsection*{v2.3.0 --- 2026-03-01}
 \begin{itemize}
-    \item Added gRPC ingestion API for high-throughput producers.
-    \item Added support for Apache Avro schema registry integration.
-    \item Changed default serialization from JSON to Protocol Buffers for
-          inter-node communication.
-    \item Deprecated the legacy REST ingestion endpoint
-          (\texttt{/api/v1/ingest}).
+    \item gRPC ingestion API for high-throughput producers.
+    \item Apache Avro schema registry integration.
+    \item Default serialization changed from JSON to Protocol Buffers.
+    \item Deprecated legacy REST ingestion (\texttt{/api/v1/ingest}).
 \end{itemize}
 
-\subsection{v2.2.0 --- 2026-01-10}
-
+\subsection*{v2.2.0 --- 2026-01-10}
 \begin{itemize}
-    \item Added Helm chart for Kubernetes production deployments.
-    \item Added SAML 2.0 authentication for the web UI.
-    \item Removed support for Java 11 (Java 17+ required).
+    \item Helm chart for Kubernetes deployments.
+    \item SAML 2.0 SSO for the web UI.
+    \item Dropped Java 11 support (Java 17+ required).
     \item Fixed race condition in pipeline status reporting.
-    \item Fixed incorrect timestamp handling in timezone-aware sources.
+    \item Fixed timezone-aware timestamp handling.
 \end{itemize}
 
 \printbibliography[heading=none]

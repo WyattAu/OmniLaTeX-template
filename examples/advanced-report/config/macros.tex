@@ -1,0 +1,47 @@
+% ─────────────────────────────────────────────────────
+% Custom Commands
+% ─────────────────────────────────────────────────────
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\mat}[1]{\mathbf{#1}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\diag}{diag}
+
+% ─────────────────────────────────────────────────────
+% tcolorbox Styles
+% ─────────────────────────────────────────────────────
+\newtcolorbox{definitionbox}[1][]{
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    fonttitle=\bfseries,
+    title=Definition,
+    #1
+}
+
+\newtcolorbox{warningbox}[1][]{
+    colback=red!5!white,
+    colframe=red!75!black,
+    fonttitle=\bfseries,
+    title=Warning,
+    #1
+}
+
+\newtcolorbox{notebox}[1][]{
+    colback=green!5!white,
+    colframe=green!50!black,
+    fonttitle=\bfseries,
+    title=Note,
+    #1
+}
+
+\newtcolorbox{keyfindingbox}[1][]{
+    colback=orange!5!white,
+    colframe=orange!75!black,
+    fonttitle=\bfseries,
+    title=Key Finding,
+    #1
+}
+
+\endinput

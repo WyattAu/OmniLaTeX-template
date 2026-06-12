@@ -6,266 +6,519 @@
 
 \RequirePackage{config/document-settings}
 \addbibresource{../../bib/bibliography.bib}
+\RequirePackage{booktabs}
+\RequirePackage{longtable}
+\RequirePackage{tabularx}
+\RequirePackage{multirow}
+\RequirePackage[table]{xcolor}
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{minted}
+\RequirePackage{enumitem}
+\newcommand{\methodget}{\textcolor{green!50!black}{\textbf{GET}}}
+\newcommand{\methodpost}{\textcolor{blue!70!black}{\textbf{POST}}}
+\newcommand{\methodput}{\textcolor{orange!80!black}{\textbf{PUT}}}
+\newcommand{\methodpatch}{\textcolor{purple!70!black}{\textbf{PATCH}}}
+\newcommand{\methoddelete}{\textcolor{red!70!black}{\textbf{DELETE}}}
 
+\newtcolorbox{reqbox}[1][]{
+    colback=gray!5, colframe=gray!60!black,
+    fonttitle=\bfseries, title=Request #1,
+    boxrule=0.5pt, arc=2pt, left=6pt, right=6pt,
+}
+\newtcolorbox{resbox}[1][]{
+    colback=green!3, colframe=green!40!black,
+    fonttitle=\bfseries, title=Response #1,
+    boxrule=0.5pt, arc=2pt, left=6pt, right=6pt,
+}
+\newtcolorbox{notebox}{
+    colback=blue!5, colframe=blue!50!black,
+    boxrule=0.5pt, arc=2pt, left=6pt, right=6pt,
+}
 \begin{document}
 
 \maketitle
-
 \begin{abstract}
 This document specifies the CloudVault REST API for programmatic access to
-cloud object storage.  All endpoints return JSON responses and accept JSON
-request bodies unless otherwise noted.  The base URL for all requests is
-\texttt{https://api.cloudvault.io/v2}.
+cloud object storage, user management, project orchestration, and task
+automation.  All endpoints return JSON and accept JSON request bodies.
+Base URL: \texttt{https://api.cloudvault.io/v2}.
 \end{abstract}
-
 \tableofcontents
 
 \section{Authentication}
+\label{sec:auth}
 
-All API requests require authentication via an API key or OAuth 2.0 bearer
-token.  Include the token in the \texttt{Authorization} header:
+\subsection{API Key}
+Include the key in the \texttt{X-API-Key} header:
+\begin{minted}[fontsize=\small, frame=lines, framesep=2mm]{http}
+GET /v2/users/me HTTP/1.1
+Host: api.cloudvault.io
+X-API-Key: cv_live_a1b2c3d4e5f6g7h8i9j0
+\end{minted}
 
-\begin{verbatim}
-Authorization: Bearer <your-api-token>
-\end{verbatim}
+\begin{notebox}
+API keys are project-scoped.  Rotate keys every~90 days.
+\end{notebox}
 
-\subsection{Obtaining API Keys}
+\subsection{OAuth 2.0}
+Three-legged authorization code flow for user-delegated access:
 
-Navigate to \texttt{Settings > API Keys} in the CloudVault dashboard to
-generate a key pair.  The secret key is shown only once at creation time.
-Keys are scoped to a single project and can be revoked at any time.
-
-\subsection{OAuth 2.0 Flow}
-
-For user-delegated access, implement the OAuth 2.0 authorization code flow:
-
-\begin{enumerate}
-    \item Redirect the user to \texttt{https://auth.cloudvault.io/authorize}
-          with \texttt{client\_id}, \texttt{redirect\_uri}, and
-          \texttt{scope} parameters.
-    \item Exchange the authorization code for an access token via
-          \texttt{POST /oauth/token}.
-    \item Use the access token in subsequent API requests.
+\begin{enumerate}[leftmargin=2em]
+    \item \textbf{Authorize} --- Redirect to
+        \texttt{https://auth.cloudvault.io/authorize} with
+        \texttt{client\_id}, \texttt{redirect\_uri}, and \texttt{scope}.
+    \item \textbf{Token exchange} --- \texttt{POST /v2/oauth/token} with
+        \texttt{grant\_type=authorization\_code} and the callback code.
+    \item \textbf{Use token} --- Include
+        \texttt{Authorization: Bearer <token>} in subsequent requests.
 \end{enumerate}
 
-\section{Endpoints}
-
-\subsection{Buckets}
-
-\begin{table}[htbp]
-    \centering
-    \caption{Bucket management endpoints.}
-    \label{tab:buckets}
-    \begin{tabular}{@{}llp{5cm}@{}}
-        \toprule
-        \textbf{Method} & \textbf{Endpoint} & \textbf{Description} \\
-        \midrule
-        \texttt{GET}    & \texttt{/buckets}              & List all buckets
-            in the project \\
-        \texttt{POST}   & \texttt{/buckets}              & Create a new bucket \\
-        \texttt{GET}    & \texttt{/buckets/\{name\}}     & Get bucket metadata
-            and configuration \\
-        \texttt{DELETE} & \texttt{/buckets/\{name\}}     & Delete a bucket
-            (must be empty) \\
-        \texttt{PUT}    & \texttt{/buckets/\{name\}/policy}
-            & Update bucket access policy \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-\subsection{Objects}
-
-\begin{table}[htbp]
-    \centering
-    \caption{Object storage endpoints.}
-    \label{tab:objects}
-    \begin{tabular}{@{}llp{5cm}@{}}
-        \toprule
-        \textbf{Method} & \textbf{Endpoint} & \textbf{Description} \\
-        \midrule
-        \texttt{GET}    & \texttt{/buckets/\{name\}/objects}
-            & List objects with optional prefix filter \\
-        \texttt{PUT}    & \texttt{/buckets/\{name\}/objects/\{key\}}
-            & Upload or overwrite an object \\
-        \texttt{GET}    & \texttt{/buckets/\{name\}/objects/\{key\}}
-            & Download an object \\
-        \texttt{HEAD}   & \texttt{/buckets/\{name\}/objects/\{key\}}
-            & Retrieve object metadata without body \\
-        \texttt{DELETE} & \texttt{/buckets/\{name\}/objects/\{key\}}
-            & Permanently delete an object \\
-        \texttt{POST}   & \texttt{/buckets/\{name\}/objects/\{key\}/copy}
-            & Copy an object within or across buckets \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-\section{Request and Response Examples}
-
-\subsection{Create a Bucket}
-
-\textbf{Request:}
-
-\begin{verbatim}
-POST /v2/buckets
-Content-Type: application/json
-
-{
-    "name": "analytics-logs-2026",
-    "region": "us-east-1",
-    "storage_class": "standard",
-    "versioning_enabled": true
-}
-\end{verbatim}
-
-\textbf{Response (201 Created):}
-
-\begin{verbatim}
-{
-    "name": "analytics-logs-2026",
-    "region": "us-east-1",
-    "storage_class": "standard",
-    "versioning_enabled": true,
-    "created_at": "2026-06-12T14:30:00Z",
-    "arn": "arn:cloudvault:us-east-1:48291:bucket/analytics-logs-2026"
-}
-\end{verbatim}
-
-\subsection{Upload an Object}
-
-\textbf{Request:}
-
-\begin{verbatim}
-PUT /v2/buckets/analytics-logs-2026/objects/events/2026-06-12.jsonl
-Content-Type: application/octet-stream
-Content-MD5: 1B2M2Y8AsgTpgAmY7PhCfg==
-
-<binary or streaming body>
-\end{verbatim}
-
-\textbf{Response (200 OK):}
-
-\begin{verbatim}
-{
-    "key": "events/2026-06-12.jsonl",
-    "size": 104857600,
-    "etag": "d41d8cd98f00b204e9800998ecf8427e",
-    "content_type": "application/octet-stream",
-    "last_modified": "2026-06-12T14:35:22Z",
-    "storage_class": "standard"
-}
-\end{verbatim}
-
-\subsection{List Objects with Pagination}
-
-\textbf{Request:}
-
-\begin{verbatim}
-GET /v2/buckets/analytics-logs-2026/objects?prefix=events/&max_keys=100
-    &continuation_token=abc123
-\end{verbatim}
-
-\textbf{Response (200 OK):}
-
-\begin{verbatim}
-{
-    "objects": [
-        {"key": "events/2026-06-12.jsonl", "size": 104857600,
-         "last_modified": "2026-06-12T14:35:22Z"},
-        {"key": "events/2026-06-11.jsonl", "size": 98765432,
-         "last_modified": "2026-06-11T23:59:58Z"}
-    ],
-    "is_truncated": true,
-    "next_continuation_token": "def456",
-    "total_count": 1247
-}
-\end{verbatim}
-
-\section{Error Codes}
-
-The API uses standard HTTP status codes.  Error responses include a JSON body
-with a machine-readable error code and a human-readable message.
-
-\begin{table}[htbp]
-    \centering
-    \caption{API error codes.}
-    \label{tab:errors}
-    \begin{tabular}{@{}llp{5cm}@{}}
-        \toprule
-        \textbf{HTTP} & \textbf{Error Code} & \textbf{Description} \\
-        \midrule
-        400 & \texttt{INVALID\_REQUEST}    & The request body or parameters are
-            malformed or missing required fields. \\
-        401 & \texttt{UNAUTHORIZED}         & The API key or token is missing,
-            expired, or invalid. \\
-        403 & \texttt{FORBIDDEN}            & The authenticated principal lacks
-            permission for the requested operation. \\
-        404 & \texttt{NOT\_FOUND}           & The requested bucket or object
-            does not exist. \\
-        409 & \texttt{CONFLICT}             & The bucket already exists or a
-            concurrent modification was detected. \\
-        429 & \texttt{RATE\_LIMITED}        & Too many requests.  Retry after
-            the duration specified in the \texttt{Retry-After} header. \\
-        500 & \texttt{INTERNAL\_ERROR}      & An unexpected server error
-            occurred.  Contact support with the request ID. \\
-        503 & \texttt{SERVICE\_UNAVAILABLE} & The service is temporarily
-            unavailable.  Retry with exponential backoff. \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-Example error response:
-
-\begin{verbatim}
-{
-    "error": {
-        "code": "NOT_FOUND",
-        "message": "Bucket 'my-bucket' does not exist.",
-        "request_id": "req-7f3a9b2c"
-    }
-}
-\end{verbatim}
+\subsection{JWT Bearer}
+For machine-to-machine auth, sign a JWT (RS256) with your private key
+containing \texttt{iss}, \texttt{sub}, \texttt{aud}, \texttt{exp}, and
+\texttt{scope} claims, then exchange via
+\texttt{grant\_type=urn:ietf:params:oauth:grant-type:jwt-bearer}.
 
 \section{Rate Limiting}
-
-CloudVault enforces rate limits per API key to ensure fair usage:
+\label{sec:ratelimits}
 
 \begin{table}[htbp]
     \centering
-    \caption{Rate limit tiers.}
+    \caption{Rate limits by plan tier.}
     \label{tab:ratelimits}
-    \begin{tabular}{@{}lrr@{}}
+    \begin{tabular}{@{}lrrrc@{}}
         \toprule
-        \textbf{Tier} & \textbf{Requests / Minute} & \textbf{Burst} \\
+        \textbf{Plan} & \textbf{Reqs/min} & \textbf{Burst}
+            & \textbf{Daily cap} & \textbf{Overage} \\
         \midrule
-        Free        & 60   & 10  \\
-        Pro         & 600  & 100 \\
-        Enterprise  & 6\,000 & 1\,000 \\
+        Free       & 60      & 10     & 10\,000      & Blocked \\
+        Starter    & 300     & 50     & 100\,000     & \$0.001/req \\
+        Pro        & 600     & 100    & 1\,000\,000  & \$0.0005/req \\
+        Enterprise & 6\,000  & 1\,000 & Unlimited    & Negotiated \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-Rate limit headers are included in every response:
+Response headers: \texttt{X-RateLimit-Limit}, \texttt{X-RateLimit-Remaining},
+\texttt{X-RateLimit-Reset}.  On \texttt{429}, honour the
+\texttt{Retry-After} header and implement exponential backoff with jitter.
 
-\begin{verbatim}
-X-RateLimit-Limit: 600
-X-RateLimit-Remaining: 587
-X-RateLimit-Reset: 1718212800
-\end{verbatim}
+\section{Endpoints}
+\label{sec:endpoints}
 
-When the limit is exceeded, the API returns \texttt{429 Too Many Requests}.
-Implement exponential backoff with jitter to handle rate limiting gracefully.
+\subsection{Users}
+\label{sec:users}
+\begin{table}[htbp]
+    \centering
+    \caption{User management endpoints.}
+    \label{tab:users-ep}
+    \begin{tabular}{@{}llp{5cm}@{}}
+        \toprule
+        \textbf{Method} & \textbf{Endpoint} & \textbf{Description} \\
+        \midrule
+        \methodget    & \texttt{/users}                        & List all users \\
+        \methodpost   & \texttt{/users}                        & Create a user \\
+        \methodget    & \texttt{/users/\{id\}}                 & Get user by ID \\
+        \methodput    & \texttt{/users/\{id\}}                 & Replace user \\
+        \methodpatch  & \texttt{/users/\{id\}}                 & Partially update user \\
+        \methoddelete & \texttt{/users/\{id\}}                 & Delete user \\
+        \methodget    & \texttt{/users/\{id\}/keys}            & List user's API keys \\
+        \methodpost   & \texttt{/users/\{id\}/keys}            & Generate API key \\
+        \methoddelete & \texttt{/users/\{id\}/keys/\{kid\}}    & Revoke API key \\
+        \bottomrule
+    \end{tabular}
+\end{table}
 
-\section{Versioning}
+\subsubsection{Create User}
+\begin{reqbox}[--- \texttt{POST /v2/users}]
+\begin{minted}[fontsize=\small]{json}
+{"email": "ada@example.com", "name": "Ada Lovelace",
+ "role": "developer", "teams": ["backend", "infra"]}
+\end{minted}
+\end{reqbox}
+\begin{resbox}[201 Created]
+\begin{minted}[fontsize=\small]{json}
+{"id": "usr_8f3k2m", "email": "ada@example.com", "name": "Ada Lovelace",
+ "role": "developer", "teams": ["backend", "infra"],
+ "created_at": "2026-06-12T10:00:00Z", "last_login": null}
+\end{minted}
+\end{resbox}
 
-The API is versioned via the URL path (\texttt{/v2}).  When a new major version
-is released, the previous version enters a 12-month deprecation period.  Deprecation
-headers are included in responses for deprecated endpoints.
+\subsubsection{List Users with Filtering}
+\begin{reqbox}[--- \texttt{GET /v2/users?role=developer\&limit=25}]
+\end{reqbox}
+\begin{resbox}[200 OK]
+\begin{minted}[fontsize=\small]{json}
+{"data": [{"id": "usr_8f3k2m", "name": "Ada Lovelace", "role": "developer"}],
+ "meta": {"total": 47, "limit": 25, "offset": 0, "has_more": true}}
+\end{minted}
+\end{resbox}
 
-\begin{verbatim}
+\subsection{Projects}
+\label{sec:projects}
+\begin{table}[htbp]
+    \centering
+    \caption{Project management endpoints.}
+    \label{tab:projects-ep}
+    \begin{tabular}{@{}llp{5cm}@{}}
+        \toprule
+        \textbf{Method} & \textbf{Endpoint} & \textbf{Description} \\
+        \midrule
+        \methodget    & \texttt{/projects}                        & List projects \\
+        \methodpost   & \texttt{/projects}                        & Create project \\
+        \methodget    & \texttt{/projects/\{id\}}                 & Get project \\
+        \methodput    & \texttt{/projects/\{id\}}                 & Replace project \\
+        \methodpatch  & \texttt{/projects/\{id\}}                 & Partially update project \\
+        \methoddelete & \texttt{/projects/\{id\}}                 & Archive project \\
+        \methodget    & \texttt{/projects/\{id\}/members}         & List members \\
+        \methodpost   & \texttt{/projects/\{id\}/members}         & Add member \\
+        \methoddelete & \texttt{/projects/\{id\}/members/\{uid\}} & Remove member \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsubsection{Create Project}
+\begin{reqbox}[--- \texttt{POST /v2/projects}]
+\begin{minted}[fontsize=\small]{json}
+{"name": "data-pipeline", "region": "us-east-1", "visibility": "private",
+ "settings": {"versioning_enabled": true, "retention_days": 90}}
+\end{minted}
+\end{reqbox}
+\begin{resbox}[201 Created]
+\begin{minted}[fontsize=\small]{json}
+{"id": "prj_4n7b1x", "name": "data-pipeline", "region": "us-east-1",
+ "created_at": "2026-06-12T10:15:00Z", "created_by": "usr_8f3k2m",
+ "settings": {"versioning_enabled": true, "retention_days": 90}}
+\end{minted}
+\end{resbox}
+
+\subsubsection{Update Project}
+\begin{reqbox}[--- \texttt{PATCH /v2/projects/prj\_4n7b1x}]
+\begin{minted}[fontsize=\small]{json}
+{"settings": {"retention_days": 180}}
+\end{minted}
+\end{reqbox}
+\begin{resbox}[200 OK]
+\begin{minted}[fontsize=\small]{json}
+{"id": "prj_4n7b1x", "settings": {"retention_days": 180},
+ "updated_at": "2026-06-12T10:20:00Z"}
+\end{minted}
+\end{resbox}
+
+\subsection{Tasks}
+\label{sec:tasks}
+\begin{table}[htbp]
+    \centering
+    \caption{Task management endpoints.}
+    \label{tab:tasks-ep}
+    \begin{tabular}{@{}llp{5cm}@{}}
+        \toprule
+        \textbf{Method} & \textbf{Endpoint} & \textbf{Description} \\
+        \midrule
+        \methodget    & \texttt{/projects/\{pid\}/tasks}              & List tasks \\
+        \methodpost   & \texttt{/projects/\{pid\}/tasks}              & Create task \\
+        \methodget    & \texttt{/projects/\{pid\}/tasks/\{id\}}       & Get task \\
+        \methodput    & \texttt{/projects/\{pid\}/tasks/\{id\}}       & Replace task \\
+        \methodpatch  & \texttt{/projects/\{pid\}/tasks/\{id\}}       & Partially update task \\
+        \methoddelete & \texttt{/projects/\{pid\}/tasks/\{id\}}       & Delete task \\
+        \methodpost   & \texttt{/projects/\{pid\}/tasks/\{id\}/run}   & Trigger execution \\
+        \methodget    & \texttt{/projects/\{pid\}/tasks/\{id\}/runs}  & Execution history \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsubsection{Create Task}
+\begin{reqbox}[--- \texttt{POST /v2/projects/prj\_4n7b1x/tasks}]
+\begin{minted}[fontsize=\small]{json}
+{"name": "nightly-export", "type": "scheduled", "schedule": "0 2 * * *",
+ "payload": {"source_bucket": "analytics-raw", "format": "parquet"},
+ "retries": 3, "timeout_seconds": 3600}
+\end{minted}
+\end{reqbox}
+\begin{resbox}[201 Created]
+\begin{minted}[fontsize=\small]{json}
+{"id": "tsk_9m2k5p", "name": "nightly-export", "status": "active",
+ "next_run_at": "2026-06-13T02:00:00Z", "created_at": "2026-06-12T10:30:00Z"}
+\end{minted}
+\end{resbox}
+
+\subsubsection{Trigger Task Run}
+\begin{reqbox}[--- \texttt{POST /v2/.../tasks/tsk\_9m2k5p/run}]
+\begin{minted}[fontsize=\small]{json}
+{"params": {"dry_run": false, "override_date": "2026-06-12"}}
+\end{minted}
+\end{reqbox}
+\begin{resbox}[202 Accepted]
+\begin{minted}[fontsize=\small]{json}
+{"run_id": "run_x7k3m1", "task_id": "tsk_9m2k5p", "status": "queued",
+ "queued_at": "2026-06-12T10:35:00Z"}
+\end{minted}
+\end{resbox}
+
+\section{Data Models}
+\label{sec:models}
+
+\begin{table}[htbp]
+    \centering
+    \caption{User object schema.}
+    \label{tab:user-schema}
+    \begin{tabularx}{\textwidth}{@{}lllX@{}}
+        \toprule
+        \textbf{Field} & \textbf{Type} & \textbf{Constraints} & \textbf{Description} \\
+        \midrule
+        \texttt{id}          & string   & Read-only, \texttt{usr\_[a-z0-9]+} & Unique identifier \\
+        \texttt{email}       & string   & Required, unique, RFC 5322 & Contact email \\
+        \texttt{name}        & string   & Required, 1--128 chars & Display name \\
+        \texttt{role}        & enum     & \texttt{admin}, \texttt{developer}, \texttt{viewer} & Permission level \\
+        \texttt{teams}       & [string] & Optional, max 10 & Team memberships \\
+        \texttt{created\_at} & datetime & Read-only, ISO 8601 & Creation timestamp \\
+        \texttt{last\_login} & datetime & Read-only, nullable & Last auth time \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Project object schema.}
+    \label{tab:project-schema}
+    \begin{tabularx}{\textwidth}{@{}lllX@{}}
+        \toprule
+        \textbf{Field} & \textbf{Type} & \textbf{Constraints} & \textbf{Description} \\
+        \midrule
+        \texttt{id}               & string   & Read-only, \texttt{prj\_[a-z0-9]+} & Unique identifier \\
+        \texttt{name}             & string   & Required, slug format, 1--64 chars & Project name \\
+        \texttt{description}      & string   & Optional, max 512 chars & Description \\
+        \texttt{region}           & enum     & \texttt{us-east-1}, \texttt{eu-west-1}, \texttt{ap-southeast-1} & Deployment region \\
+        \texttt{visibility}       & enum     & \texttt{public} or \texttt{private} & Access scope \\
+        \texttt{settings}         & object   & Optional, nested & Configuration \\
+        \texttt{created\_at}      & datetime & Read-only & Creation timestamp \\
+        \texttt{created\_by}      & string   & Read-only, FK to User & Creator \\
+        \texttt{storage\_used}    & integer  & Read-only, bytes & Storage consumption \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Task object schema.}
+    \label{tab:task-schema}
+    \begin{tabularx}{\textwidth}{@{}lllX@{}}
+        \toprule
+        \textbf{Field} & \textbf{Type} & \textbf{Constraints} & \textbf{Description} \\
+        \midrule
+        \texttt{id}               & string   & Read-only, \texttt{tsk\_[a-z0-9]+} & Unique identifier \\
+        \texttt{name}             & string   & Required, 1--128 chars & Task name \\
+        \texttt{type}             & enum     & \texttt{on-demand}, \texttt{scheduled}, \texttt{webhook-triggered} & Execution model \\
+        \texttt{schedule}         & string   & Required when \texttt{type=scheduled}, cron & Schedule expression \\
+        \texttt{payload}          & object   & Required, max 64\,KB & Task configuration \\
+        \texttt{status}           & enum     & Read-only: \texttt{active}, \texttt{paused}, \texttt{archived} & Current state \\
+        \texttt{retries}          & integer  & 0--10, default 3 & Retry count \\
+        \texttt{timeout\_seconds} & integer  & 1--86400, default 300 & Execution timeout \\
+        \texttt{next\_run\_at}    & datetime & Read-only, nullable & Next execution time \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\section{Webhooks}
+\label{sec:webhooks}
+Configure webhooks in \texttt{Project Settings > Integrations}.
+Payloads are signed with HMAC-SHA256; verify
+\texttt{X-CloudVault-Signature} before processing.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Webhook event types.}
+    \label{tab:webhook-events}
+    \begin{tabularx}{\textwidth}{@{}lX@{}}
+        \toprule
+        \textbf{Event} & \textbf{Description} \\
+        \midrule
+        \texttt{user.created}            & New user account created \\
+        \texttt{user.updated}            & User profile modified \\
+        \texttt{user.deleted}            & User account removed \\
+        \texttt{project.created}         & New project provisioned \\
+        \texttt{project.updated}         & Project settings changed \\
+        \texttt{project.archived}        & Project archived \\
+        \texttt{task.created}            & New task defined \\
+        \texttt{task.run.started}        & Task execution began \\
+        \texttt{task.run.completed}      & Task finished successfully \\
+        \texttt{task.run.failed}         & Task encountered an error \\
+        \texttt{storage.quota.warning}   & Storage $>80\%$ of quota \\
+        \texttt{storage.quota.exceeded}  & Storage at 100\% \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\begin{reqbox}[Webhook payload --- \texttt{task.run.completed}]
+\begin{minted}[fontsize=\small]{json}
+{"event": "task.run.completed", "timestamp": "2026-06-13T02:15:00Z",
+ "project_id": "prj_4n7b1x",
+ "data": {"task_id": "tsk_9m2k5p", "run_id": "run_x7k3m1",
+          "duration_ms": 284100, "records_processed": 1450230}}
+\end{minted}
+\end{reqbox}
+
+\section{SDKs and Client Libraries}
+\label{sec:sdks}
+
+\subsection{Python}
+\begin{minted}[fontsize=\small, frame=lines, framesep=2mm]{python}
+import cloudvault
+
+client = cloudvault.Client(api_key="cv_live_a1b2c3d4e5f6")
+users = client.users.list(role="developer", limit=10)
+for user in users.data:
+    print(f"{user.name} <{user.email}>")
+
+project = client.projects.create(name="data-pipeline", region="us-east-1")
+task = client.tasks.create(project.id, name="nightly-export",
+    type="scheduled", schedule="0 2 * * *",
+    payload={"source_bucket": "analytics-raw"})
+run = client.tasks.trigger(project.id, task.id)
+\end{minted}
+
+\subsection{JavaScript / TypeScript}
+\begin{minted}[fontsize=\small, frame=lines, framesep=2mm]{javascript}
+import CloudVault from "@cloudvault/sdk";
+
+const client = new CloudVault({ apiKey: "cv_live_a1b2c3d4e5f6" });
+const projects = await client.projects.list({ limit: 25 });
+
+const task = await client.tasks.create(project.id, {
+    name: "nightly-export", type: "scheduled", schedule: "0 2 * * *",
+    payload: { source_bucket: "analytics-raw", format: "parquet" },
+});
+const run = await client.tasks.trigger(project.id, task.id, {
+    params: { dry_run: false },
+});
+\end{minted}
+
+\subsection{Go}
+\begin{minted}[fontsize=\small, frame=lines, framesep=2mm]{go}
+package main
+
+import (
+    "context"
+    "fmt"
+    "log"
+    cloudvault "github.com/cloudvault/go-sdk"
+)
+
+func main() {
+    client := cloudvault.NewClient("cv_live_a1b2c3d4e5f6")
+    ctx := context.Background()
+
+    users, err := client.Users.List(ctx, &cloudvault.ListUsersParams{
+        Role:  cloudvault.String("developer"),
+        Limit: cloudvault.Int(10),
+    })
+    if err != nil { log.Fatal(err) }
+    for _, u := range users.Data {
+        fmt.Printf("%s <%s>\n", u.Name, u.Email)
+    }
+}
+\end{minted}
+
+\section{Error Reference}
+\label{sec:errors}
+\begin{longtable}{@{}lllp{4.5cm}@{}}
+    \caption{API error codes and resolutions.}
+    \label{tab:errors} \\
+    \toprule
+    \textbf{Status} & \textbf{Code} & \textbf{Message} & \textbf{Resolution} \\
+    \midrule
+    \endfirsthead
+    \toprule
+    \textbf{Status} & \textbf{Code} & \textbf{Message} & \textbf{Resolution} \\
+    \midrule
+    \endhead
+    \midrule \multicolumn{4}{r}{\textit{Continued on next page\ldots}} \\ \endfoot
+    \bottomrule \endlastfoot
+    400 & \texttt{INVALID\_REQUEST}      & Bad request body      & Validate JSON schema and required fields \\
+    400 & \texttt{VALIDATION\_FAILED}    & Field validation fail & Check constraints (length, format, enum) \\
+    401 & \texttt{UNAUTHORIZED}          & Missing/invalid token & Verify API key or refresh OAuth token \\
+    403 & \texttt{FORBIDDEN}             & Insufficient perms    & Check user role and project membership \\
+    404 & \texttt{NOT\_FOUND}            & Resource missing      & Verify resource ID and path \\
+    409 & \texttt{CONFLICT}              & Already exists        & Use unique name or handle duplicate \\
+    409 & \texttt{VERSION\_CONFLICT}     & Concurrent mod        & Refetch resource and retry \\
+    422 & \texttt{UNPROCESSABLE\_ENTITY} & Semantically invalid  & Review business logic constraints \\
+    429 & \texttt{RATE\_LIMITED}         & Too many requests     & Honour \texttt{Retry-After} header \\
+    500 & \texttt{INTERNAL\_ERROR}       & Server error          & Retry with backoff; contact support \\
+    502 & \texttt{BAD\_GATEWAY}          & Upstream failure      & Retry with exponential backoff \\
+    503 & \texttt{SERVICE\_UNAVAILABLE}  & Maintenance/overload  & Check status page; retry later \\
+    504 & \texttt{GATEWAY\_TIMEOUT}      & Request timed out     & Simplify request or retry \\
+\end{longtable}
+
+Example error:
+
+\begin{minted}[fontsize=\small, frame=lines, framesep=2mm]{json}
+{"error": {"code": "VALIDATION_FAILED",
+ "message": "Field 'email' must be a valid email address.",
+ "details": [{"field": "email", "issue": "format"}],
+ "request_id": "req_7f3a9b2c"}}
+\end{minted}
+
+\section{Versioning and Deprecation}
+\label{sec:versioning}
+\begin{table}[htbp]
+    \centering
+    \caption{Versioning and deprecation policy.}
+    \label{tab:versioning}
+    \begin{tabularx}{\textwidth}{@{}lXX@{}}
+        \toprule
+        \textbf{Phase} & \textbf{Duration} & \textbf{Behaviour} \\
+        \midrule
+        Active       & Until successor released & Full support, no deprecation headers \\
+        Deprecated   & 12 months after successor & Deprecation headers; functionality unchanged \\
+        Sunset       & 6 months after deprecated & \texttt{410 Gone}; migration required \\
+        Removed      & After sunset expires & Endpoints removed \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+Deprecation response headers:
+
+\begin{minted}[fontsize=\small]{http}
 Sunset: Sat, 12 Jun 2027 00:00:00 GMT
 Deprecation: true
 Link: <https://docs.cloudvault.io/api/v3>; rel="successor-version"
-\end{verbatim}
+X-API-Version: 2
+X-API-Deprecated: true
+\end{minted}
+
+\begin{notebox}
+Subscribe to \texttt{api.deprecation.announced} webhook events for
+automatic sunset notifications.
+\end{notebox}
+
+\section{Changelog}
+\label{sec:changelog}
+\begin{table}[htbp]
+    \centering
+    \caption{API version history.}
+    \label{tab:changelog}
+    \begin{tabularx}{\textwidth}{@{}llX@{}}
+        \toprule
+        \textbf{Version} & \textbf{Date} & \textbf{Changes} \\
+        \midrule
+        \texttt{v2.1} & 2026-06-01 &
+            Task scheduling API; webhook \texttt{task.run.*} events;
+            JWT authentication; \texttt{X-RateLimit-Policy} header. \\
+        \texttt{v2.0} & 2025-12-01 &
+            Major rewrite.  New resource model (Projects, Users, Tasks);
+            OAuth 2.0 and API key auth; per-plan rate limiting. \\
+        \texttt{v1.3} & 2025-06-01 &
+            Batch object operations; per-object \texttt{storage\_class};
+            cursor-based pagination. \\
+        \texttt{v1.2} & 2025-01-15 &
+            Bucket versioning; cross-region replication; HEAD metadata. \\
+        \texttt{v1.1} & 2024-08-01 &
+            Object copy endpoint; lifecycle policies; error details. \\
+        \texttt{v1.0} & 2024-03-01 &
+            Initial release.  Bucket and object CRUD; API key auth. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
 
 \printbibliography[heading=none]
 

@@ -1,0 +1,291 @@
+% ============================================================
+% Chapter 4: Experiments
+% ============================================================
+\chapter{Experiments}
+\label{ch:experiments}
+
+\section{Experimental Setup}
+\label{sec:experimental-setup}
+
+All experiments were conducted on a workstation equipped with an AMD EPYC 7763
+(64-core, 128-thread) processor, 256\,GB of DDR4 memory, and an NVIDIA A100
+(80\,GB) GPU.  We used Python 3.11, PyTorch 2.2, and the
+\href{https://github.com/pytorch/botorch}{BoTorch} library (v0.12).  The
+experimental configuration is summarised in \cref{tab:setup}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Experimental configuration and computational resources.}
+    \label{tab:setup}
+    \begin{tabularx}{\textwidth}{@{}lX@{}}
+        \toprule
+        \textbf{Parameter} & \textbf{Value} \\
+        \midrule
+        CPU & AMD EPYC 7763 (64 cores, 2.45\,GHz) \\
+        Memory & 256\,GB DDR4-3200 \\
+        GPU & NVIDIA A100 (80\,GB HBM2e) \\
+        Operating System & Ubuntu 22.04 LTS \\
+        Python & 3.11.7 \\
+        PyTorch & 2.2.0 \\
+        BoTorch & 0.12.0 \\
+        Number of trials & 20 independent runs per benchmark \\
+        Initial samples ($n_0$) & $2(d+1)$ (Latin Hypercube Sampling) \\
+        Maximum evaluations ($n$) & 500 \\
+        Kernel & Mat\'ern-$\frac{5}{2}$ \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\section{Benchmark Functions}
+\label{sec:benchmarks}
+
+We evaluate on 12 synthetic benchmark functions extended to high dimensions
+using the standard protocol from \citet{bibid}.  For each function, we test
+dimensions $d \in \{20, 50, 100, 200, 500\}$.  The benchmarks are summarised in
+\cref{tab:benchmarks}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Synthetic benchmark functions used in the experimental evaluation.}
+    \label{tab:benchmarks}
+    \begin{tabularx}{\textwidth}{@{}lXR@{}}
+        \toprule
+        \textbf{Function} & \textbf{Properties} & \textbf{Min} \\
+        \midrule
+        Branin (high-dim) & Multimodal, scalable & $-0.15$ \\
+        Hartmann-6 (high-dim) & Multimodal, scalable & $-3.32$ \\
+        Ackley (high-dim) & Multimodal, many local optima & $0$ \\
+        Rosenbrock (high-dim) & Non-convex, narrow valley & $0$ \\
+        Schwefel & Multimodal, deceptive & $0$ \\
+        Levy & Multimodal, scalable & $0$ \\
+        Michalewicz & Multimodal, steep ridges & $-9.66$ \\
+        Powell & Non-separable, quartic & $0$ \\
+        Griewank & Multimodal, scalable & $0$ \\
+        Rastrigin & Multimodal, regularly spaced optima & $0$ \\
+        Zakharov & Non-convex, smooth & $0$ \\
+        Dixon-Price & Non-convex, global structure & $0$ \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\section{Baselines}
+\label{sec:baselines}
+
+We compare ASBO against the following state-of-the-art methods:
+\begin{itemize}
+    \item \textbf{REMBO}~\cite{goossensLaTeXCompanion1993}: Random embedding BO.
+    \item \textbf{ALEBO}~\cite{einstein1905}: Augmented linear embedding BO.
+    \item \textbf{TuRBO}~\cite{bibid}: Trust-region BO.
+    \item \textbf{SAASBO}~\cite{goossensLaTeXCompanion1993}: Sparse
+    Additive Approximate \gls{gp} BO.
+    \item \textbf{PESBO}~\cite{einstein1905}: Predictive Entropy Search BO.
+\end{itemize}
+
+\section{Main Results}
+\label{sec:main-results}
+
+\Cref{fig:main-results} shows the convergence curves (simple regret vs.\
+function evaluations) for all methods on the Hartmann-6 benchmark across five
+dimensions.  ASBO consistently achieves lower regret than all baselines, with
+the performance gap increasing with dimension.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=0.95\textwidth,
+            height=6cm,
+            xlabel={Function evaluations},
+            ylabel={Simple regret (log scale)},
+            ymode=log,
+            legend style={
+                at={(0.5, 1.35)}, anchor=north, legend columns=3,
+                font=\small, /tikz/every even column/.append style={column sep=5pt}
+            },
+            grid=major,
+            grid style={gray!30},
+            xmin=0, xmax=500,
+            ymin=1e-4, ymax=1e1,
+        ]
+            \addplot[primary, thick, mark=*, mark size=1.5pt, mark repeat=50] coordinates {
+                (0,10) (50,5.2) (100,2.1) (150,0.8) (200,0.3)
+                (250,0.12) (300,0.05) (350,0.02) (400,0.008) (450,0.003) (500,0.001)
+            };
+            \addplot[secondary, thick, mark=square*, mark size=1.5pt, mark repeat=50] coordinates {
+                (0,10) (50,6.1) (100,3.5) (150,1.8) (200,0.9)
+                (250,0.45) (300,0.22) (350,0.11) (400,0.055) (450,0.028) (500,0.014)
+            };
+            \addplot[accent, thick, mark=triangle*, mark size=1.5pt, mark repeat=50] coordinates {
+                (0,10) (50,7.3) (100,4.8) (150,3.1) (200,2.0)
+                (250,1.3) (300,0.85) (350,0.56) (400,0.37) (450,0.24) (500,0.16)
+            };
+            \addplot[success, thick, mark=diamond*, mark size=1.5pt, mark repeat=50] coordinates {
+                (0,10) (50,5.8) (100,2.9) (150,1.4) (200,0.65)
+                (250,0.30) (300,0.14) (350,0.065) (400,0.030) (450,0.014) (500,0.0065)
+            };
+            \addplot[warning, thick, mark=otimes*, mark size=1.5pt, mark repeat=50] coordinates {
+                (0,10) (50,6.5) (100,3.8) (150,2.2) (200,1.3)
+                (250,0.78) (300,0.47) (350,0.28) (400,0.17) (450,0.10) (500,0.062)
+            };
+            \legend{ASBO, REMBO, TuRBO, PESBO, SAASBO}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Convergence curves on Hartmann-6 (high-dim, $d=100$).
+    Shaded regions indicate 95\% confidence intervals over 20 independent runs.}
+    \label{fig:main-results}
+\end{figure}
+
+\Cref{tab:final-regret} reports the final simple regret (mean $\pm$ std.\ dev.)\ at
+$n=500$ evaluations across all benchmarks at $d=100$.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Final simple regret (mean $\pm$ std.\ dev.)\ at $n=500$ evaluations
+    for $d=100$.  Best result in \textbf{bold}.}
+    \label{tab:final-regret}
+    \begin{tabularx}{\textwidth}{@{}lXXXXX@{}}
+        \toprule
+        \textbf{Function} & \textbf{ASBO} & \textbf{REMBO} & \textbf{TuRBO} &
+        \textbf{PESBO} & \textbf{SAASBO} \\
+        \midrule
+        Branin-Hartmann & $\mathbf{1.2\!\pm\!0.3} \!\times\! 10^{-3}$ &
+        $4.5\!\pm\!1.1 \!\times\! 10^{-3}$ &
+        $8.9\!\pm\!2.3 \!\times\! 10^{-3}$ &
+        $3.1\!\pm\!0.8 \!\times\! 10^{-3}$ &
+        $6.2\!\pm\!1.5 \!\times\! 10^{-3}$ \\
+        Ackley & $\mathbf{2.8\!\pm\!0.6} \!\times\! 10^{-3}$ &
+        $9.1\!\pm\!2.2 \!\times\! 10^{-3}$ &
+        $1.5\!\pm\!0.4 \!\times\! 10^{-2}$ &
+        $5.4\!\pm\!1.3 \!\times\! 10^{-3}$ &
+        $1.2\!\pm\!0.3 \!\times\! 10^{-2}$ \\
+        Rosenbrock & $\mathbf{5.1\!\pm\!1.2} \!\times\! 10^{-3}$ &
+        $1.8\!\pm\!0.4 \!\times\! 10^{-2}$ &
+        $2.4\!\pm\!0.6 \!\times\! 10^{-2}$ &
+        $9.3\!\pm\!2.1 \!\times\! 10^{-3}$ &
+        $1.6\!\pm\!0.4 \!\times\! 10^{-2}$ \\
+        Schwefel & $\mathbf{3.4\!\pm\!0.8} \!\times\! 10^{-3}$ &
+        $1.2\!\pm\!0.3 \!\times\! 10^{-2}$ &
+        $1.9\!\pm\!0.5 \!\times\! 10^{-2}$ &
+        $6.7\!\pm\!1.6 \!\times\! 10^{-3}$ &
+        $1.1\!\pm\!0.3 \!\times\! 10^{-2}$ \\
+        Rastrigin & $\mathbf{1.8\!\pm\!0.4} \!\times\! 10^{-3}$ &
+        $6.3\!\pm\!1.5 \!\times\! 10^{-3}$ &
+        $1.1\!\pm\!0.3 \!\times\! 10^{-2}$ &
+        $4.1\!\pm\!1.0 \!\times\! 10^{-3}$ &
+        $8.7\!\pm\!2.1 \!\times\! 10^{-3}$ \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\section{Ablation Study}
+\label{sec:ablation}
+
+We conduct an ablation study to assess the contribution of each component of
+the ASBO framework.  The results are presented in \cref{fig:ablation}.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=\textwidth, height=5cm,
+                ylabel={Simple regret},
+                ymode=log,
+                xtick={1,2,3,4},
+                xticklabels={ASBO, w/o AES, w/o Adapt, w/o Local},
+                xmin=0.5, xmax=4.5,
+                ymin=1e-4, ymax=1e-1,
+                bar width=12pt,
+                ybar,
+            ]
+                \addplot[fill=primary!70] coordinates {
+                    (1, 1.2e-3) (2, 3.8e-3) (3, 5.5e-3) (4, 7.2e-3)
+                };
+            \end{axis}
+        \end{tikzpicture}
+        \caption{Component ablation ($d=100$, Hartmann-6).}
+        \label{fig:ablation-components}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=\textwidth, height=5cm,
+                ylabel={Runtime (s)},
+                xtick={1,2,3,4},
+                xticklabels={ASBO, REMBO, TuRBO, PESBO},
+                xmin=0.5, xmax=4.5,
+                ymin=0, ymax=600,
+                bar width=12pt,
+                ybar,
+            ]
+                \addplot[fill=secondary!70] coordinates {
+                    (1, 320) (2, 85) (3, 180) (4, 450)
+                };
+            \end{axis}
+        \end{tikzpicture}
+        \caption{Runtime comparison ($d=100$, $n=500$).}
+        \label{fig:ablation-runtime}
+    \end{subfigure}
+    \caption{Ablation study and runtime comparison.  ``w/o AES'' replaces the
+    information-theoretic acquisition with \gls{ucb}.  ``w/o Adapt'' uses a
+    fixed subspace.  ``w/o Local'' removes the local surrogate modelling.}
+    \label{fig:ablation}
+\end{figure}
+
+\section{Scalability Analysis}
+\label{sec:scalability}
+
+\Cref{fig:scalability} shows how the performance of ASBO scales with
+dimension, measured by the normalised simple regret at $n=500$ evaluations.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=0.85\textwidth, height=6cm,
+            xlabel={Dimension $d$},
+            ylabel={Normalised regret},
+            legend style={at={(0.98,0.98)}, anchor=north east, font=\small},
+            grid=major, grid style={gray!30},
+            xmin=15, xmax=520,
+            ymin=0, ymax=1.1,
+            xtick={20,50,100,200,500},
+        ]
+            \addplot[primary, very thick, mark=*, mark size=2pt] coordinates {
+                (20,0.12) (50,0.18) (100,0.28) (200,0.42) (500,0.65)
+            };
+            \addplot[secondary, very thick, mark=square*, mark size=2pt] coordinates {
+                (20,0.15) (50,0.35) (100,0.58) (200,0.82) (500,0.98)
+            };
+            \addplot[accent, very thick, mark=triangle*, mark size=2pt] coordinates {
+                (20,0.11) (50,0.22) (100,0.45) (200,0.78) (500,1.0)
+            };
+            \legend{ASBO, REMBO, TuRBO}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Scalability: normalised simple regret at $n=500$ vs.\ dimension.
+    Lower is better.}
+    \label{fig:scalability}
+\end{figure}
+
+\section{Real-World Applications}
+\label{sec:real-world}
+
+We evaluate ASBO on three real-world engineering problems:
+
+\begin{enumerate}
+    \item \textbf{Molecular property optimisation:} Maximising the binding
+    affinity of drug candidates (62 continuous parameters).
+    \item \textbf{Aerodynamic shape optimisation:} Minimising drag coefficient
+    of an airfoil (128 design variables from CFD simulations).
+    \item \textbf{Hyperparameter tuning:} Optimising the architecture and
+    training hyperparameters of a deep neural network (54 parameters).
+\end{enumerate}
+
+Results on the molecular property optimisation task show that ASBO finds
+candidates with 15\% higher binding affinity than the best baseline after 200
+function evaluations, demonstrating the practical value of the proposed
+framework.

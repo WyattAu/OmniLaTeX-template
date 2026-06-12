@@ -1,0 +1,167 @@
+% ============================================================
+% Chapter 1: Introduction
+% ============================================================
+\chapter{Introduction}
+\label{ch:introduction}
+
+\section{Research Motivation}
+\label{sec:motivation}
+
+Optimisation lies at the heart of countless scientific and engineering
+endeavours, from tuning hyperparameters of deep neural networks to designing
+novel materials with desired properties~\cite{bibid}.  In many of these
+applications, the objective function is expensive to evaluate, noisy, and
+lacks gradient information---characteristics that render classical gradient-based
+optimisation methods inapplicable.  Bayesian optimisation
+(\gls{bo}) has emerged as the method of choice for such black-box
+optimisation problems, offering a principled framework that balances exploration
+and exploitation through surrogate modelling and acquisition function
+maximisation~\cite{einstein1905}.
+
+Despite its success in low-dimensional settings ($d \leq 20$), the
+effectiveness of standard BO degrades sharply in higher dimensions due to the
+curse of dimensionality~\cite{goossensLaTeXCompanion1993}.  The volume of the
+search space grows exponentially with dimension, rendering the surrogate model's
+predictions unreliable across most of the domain.  This limitation represents a
+critical bottleneck, as many real-world problems---such as molecular property
+optimisation in computational chemistry or aerodynamic shape design using
+\gls{cfd} simulations---inherently involve tens to hundreds of
+parameters.
+
+\section{Research Objectives}
+\label{sec:objectives}
+
+The primary goal of this thesis is to develop a scalable \gls{bo} framework
+that maintains sample efficiency in dimensions ranging from 50 to 500.  The
+specific objectives are:
+
+\begin{enumerate}
+    \item \textbf{Objective 1:} Design an adaptive subspace identification
+    algorithm that learns the intrinsic low-dimensional structure of the
+    objective function without imposing rigid manifold assumptions.
+
+    \item \textbf{Objective 2:} Derive information-theoretic acquisition
+    functions that naturally adapt to varying local dimensionality across the
+    search space.
+
+    \item \textbf{Objective 3:} Establish theoretical convergence guarantees
+    for the proposed methods under mild regularity conditions.
+
+    \item \textbf{Objective 4:} Validate the framework on standard benchmark
+    functions and demonstrate its practical utility on real-world engineering
+    problems.
+\end{enumerate}
+
+\section{Contributions}
+\label{sec:contributions}
+
+This thesis makes the following contributions to the field of high-dimensional
+optimisation:
+
+\begin{enumerate}
+    \item A novel adaptive subspace BO (\gls{asbo}) algorithm with provable
+    convergence guarantees in dimensions up to 500, significantly extending the
+    practical range of BO methods.
+
+    \item A family of information-theoretic acquisition functions---including
+    predictive entropy search (PES) and its variants---that adapt to varying
+    local dimensionality, providing stronger exploration guarantees than
+    \gls{ucb}-based approaches.
+
+    \item A comprehensive theoretical analysis of convergence rates, including
+    bounds on simple regret that depend on the intrinsic dimensionality rather
+    than the ambient dimension.
+
+    \item An open-source Python library (\texttt{highdimbo}) implementing the
+    proposed methods, with seamless integration into the
+    \href{https://github.com/pytorch/botorch}{BoTorch} framework.
+
+    \item Extensive empirical evaluation on 12 synthetic benchmarks and 3
+    real-world engineering problems, demonstrating state-of-the-art performance.
+\end{enumerate}
+
+\section{Thesis Outline}
+\label{sec:outline}
+
+The remainder of this thesis is organised as follows:
+
+\begin{itemize}
+    \item \Cref{ch:literature-review} provides a systematic review of existing
+    approaches to high-dimensional BO, including dimensionality reduction
+    techniques, trust-region methods, and information-theoretic approaches.
+
+    \item \Cref{ch:methodology} presents the formal problem definition and
+    details the proposed ASBO algorithm, including the adaptive subspace
+    identification module, local surrogate modelling, and the family of
+    information-theoretic acquisition functions.
+
+    \item \Cref{ch:experiments} describes the experimental setup and presents
+    results on synthetic benchmark functions and real-world engineering problems.
+
+    \item \Cref{ch:analysis} provides a detailed statistical analysis of the
+    experimental results, including ablation studies, scalability analysis, and
+    failure mode analysis.
+
+    \item \Cref{ch:conclusion} summarises the key findings, discusses
+    limitations, and outlines directions for future research.
+\end{itemize}
+
+\section{Thesis Publications}
+\label{sec:publications}
+
+The results presented in this thesis are based on the following publications:
+
+\begin{enumerate}
+    \item \textbf{J. Smith, A. Turing, and D. Knuth.}
+    ``Adaptive Subspace Bayesian Optimisation for High-Dimensional Black-Box
+    Functions.''
+    \textit{Advances in Neural Information Processing Systems (NeurIPS)}, 2025.
+
+    \item \textbf{J. Smith and A. Turing.}
+    ``Information-Theoretic Acquisition Functions for Scalable Bayesian
+    Optimisation.''
+    \textit{International Conference on Machine Learning (ICML)}, 2025.
+
+    \item \textbf{J. Smith, D. Knuth, and G. Hopper.}
+    ``\texttt{highdimbo}: An Open-Source Library for High-Dimensional Bayesian
+    Optimisation.''
+    \textit{Journal of Machine Learning Research (JMLR)}, 2026.
+\end{enumerate}
+
+\section{Notation and Conventions}
+\label{sec:notation}
+
+Throughout this thesis, we adopt the following notation conventions.  Vectors
+are denoted by bold lowercase letters ($\bx, \by, \bw$) and matrices by bold
+uppercase letters ($\bPhi, \bSigma$).  The $i$-th element of a vector $\bx$ is
+denoted $x_i$, and the $(i,j)$-th element of a matrix $\bA$ is $A_{ij}$.  We
+use $\R^d$ to denote the $d$-dimensional real vector space and $\cN(\bmu, \bSigma)$
+to denote a multivariate Gaussian distribution with mean $\bmu$ and covariance
+$\bSigma$.  The notation $\cO(\cdot)$ denotes big-O complexity.  Probabilistic
+notation follows standard conventions: $\Pr(\cdot)$ denotes probability,
+$\E[\cdot]$ denotes expectation, and $\Var(\cdot)$ denotes variance.  Key
+notation is summarised in \cref{tab:notation}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Summary of mathematical notation used in this thesis.}
+    \label{tab:notation}
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        \textbf{Symbol} & \textbf{Description} \\
+        \midrule
+        $d$ & Ambient dimensionality \\
+        $k$ & Intrinsic dimensionality (subspace) \\
+        $n$ & Number of function evaluations \\
+        $f(\bx)$ & Objective function \\
+        $\cO$ & Observation space \\
+        $\cX$ & Input domain, $\cX \subseteq \R^d$ \\
+        $\mu_n(\bx)$ & Posterior mean at iteration $n$ \\
+        $\sigma_n(\bx)$ & Posterior std.\ at iteration $n$ \\
+        $\alpha_n(\bx)$ & Acquisition function at iteration $n$ \\
+        $\bZ \in \R^{k \times d}$ & Subspace projection matrix \\
+        $\cN(\bmu, \bSigma)$ & Gaussian distribution \\
+        $\KL(\cdot \| \cdot)$ & Kullback--Leibler divergence \\
+        \bottomrule
+    \end{tabular}
+\end{table}

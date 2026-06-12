@@ -1,0 +1,526 @@
+% Advanced OmniLaTeX Beamer Showcase
+% Compile with: latexmk -lualatex main.tex
+\documentclass[doctype=beamer, beameraspectratio=169, beamertheme=Madrid, institution=generic]{omnilatex}
+\usecolortheme{whale}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit}
+\usepackage{listings,xcolor,amsmath,amssymb,booktabs}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\lstset{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{green!50!black}\itshape,
+  stringstyle=\color{red!70!black},
+  numbers=left, numberstyle=\tiny\color{gray},
+  frame=single, breaklines=true, showstringspaces=false, tabsize=2,
+}
+\newcommand{\checkmark}{\text{\(\checkmark\)}}
+\title[Advanced Beamer]{Advanced Beamer Features\\with OmniLaTeX and LuaLaTeX}
+\subtitle{A Comprehensive Showcase}
+\author[Jane Doe]{Jane Doe}
+\institute[OmniLaTeX Project]{OmniLaTeX Project\\\texttt{github.com/WyattAu/OmniLaTeX-template}}
+\date{June 2026}
+\usepackage[style=ieee]{biblatex}
+\addbibresource{../../bib/bibliography.bib}
+\begin{document}
+\begin{frame}[plain]\titlepage\end{frame}
+\begin{frame}{Outline}
+  \tableofcontents[hideallsubsections]
+\end{frame}
+\section{Overlays and Animations}
+\begin{frame}{Conditional Content}
+  \begin{block}{\texttt{\textbackslash only} vs.\ \texttt{\textbackslash uncover} vs.\ \texttt{\textbackslash visible}}
+    \begin{itemize}
+      \item \texttt{\textbackslash only<2->{}}: Appears from slide 2; space reserved only when visible.
+      \item \texttt{\textbackslash uncover<2-3>{}}: Visible on slides 2--3; space always reserved.
+      \item \texttt{\textbackslash visible<2->{}}: Like \texttt{\textbackslash uncover}, hidden content not in PDF.
+    \end{itemize}
+  \end{block}
+  \only<2->{\begin{alertblock}{This block appears on slide 2 onward}
+    Demonstrates \texttt{\textbackslash only<2->{}}.
+  \end{alertblock}}
+  \uncover<3-4>{\begin{exampleblock}{This block is visible on slides 3--4}
+    Demonstrates \texttt{\textbackslash uncover<3-4>{}}.
+  \end{exampleblock}}
+\end{frame}
+
+\begin{frame}{Step-by-Step Reveals with \texttt{\textbackslash pause}}
+  Step 1: First piece of content.\pause
+  Step 2: Second piece of content.\pause
+  Step 3: Third piece of content.\pause
+  Step 4: Final piece of content.
+  \vspace{1em}
+  \begin{block}{Note}
+    \texttt{\textbackslash pause} inserts a slide break at each invocation.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Switching, Temporal, and Incremental Items}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \begin{block}{\texttt{\textbackslash alt}}
+      \alt<1|2>{\textbf{Option A: Procedural}}{\textbf{Option B: Functional}}
+    \end{block}
+    \begin{block}{\texttt{\textbackslash temporal}}
+      \temporal<1|2|3>{Before}{Processing \textbf{now}}{After}
+    \end{block}
+    \column{0.48\textwidth}
+    \begin{block}{Incremental Items}
+      \begin{itemize}
+        \item<1-> First item: always visible.
+        \item<2-> Second item: appears on slide 2.
+        \item<3-> Third item: appears on slide 3.
+      \end{itemize}
+    \end{block}
+  \end{columns}
+  \vspace{1em}
+  \begin{block}{Custom Bullets and Highlighted Emphasis}
+    \begin{columns}[T]
+      \column{0.48\textwidth}
+      \begin{itemize}
+        \item[\checkmark] Completed task
+        \item[$\times$] Failed task
+        \item[$\diamond$] Optional task
+      \end{itemize}
+      \column{0.48\textwidth}
+      \begin{center}
+        \only<2>{\color{red}\textbf{Highlighted on slide 2 only}}
+      \end{center}
+    \end{columns}
+  \end{block}
+\end{frame}
+\section{Blocks and Environments}
+\begin{frame}{Block Environments}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \begin{block}{Standard Block}General-purpose highlighted content.\end{block}
+    \begin{alertblock}{Alert Block}Warnings and critical information.\end{alertblock}
+    \column{0.48\textwidth}
+    \begin{exampleblock}{Example Block}Demonstrations and illustrative content.\end{exampleblock}
+    \begin{block}{Custom Colored Block}
+      \setbeamercolor{block body}{bg=blue!10}
+      Adapt block colors per-block.
+    \end{block}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Blocks with Overlays}
+  \begin{block}<2->{Definition Block}
+    This block appears only from slide 2 onward.
+  \end{block}
+  \only<3>{\begin{alertblock}{Alert on Slide 3 Only}
+    This warning appears only on the third sub-slide.
+  \end{alertblock}}
+  \uncover<4->{\begin{exampleblock}{Example Block (Slide 4+)}
+    This example block becomes visible from slide 4.
+  \end{exampleblock}}
+\end{frame}
+\section{Columns and Layouts}
+\begin{frame}{Side-by-Side Comparison}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \begin{block}{Approach A: Procedural}
+      \begin{enumerate}
+        \item Read input file
+        \item Parse line by line
+        \item Transform tokens
+        \item Write output file
+      \end{enumerate}
+    \end{block}
+    \column{0.48\textwidth}
+    \begin{block}{Approach B: Declarative}
+      \begin{enumerate}
+        \item Define grammar rules
+        \item Specify transformations
+        \item Apply pipeline
+        \item Collect results
+      \end{enumerate}
+    \end{block}
+  \end{columns}
+  \vspace{0.5em}
+  \rule{1\textwidth}{0.4pt}
+  \vspace{0.5em}
+  \begin{minipage}{0.3\textwidth}
+    \begin{block}{Phase 1: Input}Parse and validate parameters.\end{block}
+  \end{minipage}\hfill
+  \begin{minipage}{0.3\textwidth}
+    \begin{block}{Phase 2: Process}Execute the core algorithm.\end{block}
+  \end{minipage}\hfill
+  \begin{minipage}{0.3\textwidth}
+    \begin{block}{Phase 3: Output}Format and produce results.\end{block}
+  \end{minipage}
+\end{frame}
+\section{TikZ Integration}
+\begin{frame}{Animated Flowchart Construction}
+  \begin{center}
+    \begin{tikzpicture}[
+      node distance=1.5cm,
+      block/.style={rectangle, draw, fill=blue!5, minimum width=2cm, minimum height=0.8cm, align=center, rounded corners},
+      highlight/.style={rectangle, draw, fill=red!20, minimum width=2cm, minimum height=0.8cm, align=center, rounded corners, thick},
+    ]
+      \node[block] (input) {Input};
+      \only<2->{\node[block, right=of input] (process) {Process};}
+      \only<3->{\node[block, right=of process] (decision) {Decision};}
+      \only<4->{\node[block, right=of decision] (output) {Output};}
+      \only<2->{\draw[->,>=stealth,thick] (input) -- (process);}
+      \only<3->{\draw[->,>=stealth,thick] (process) -- (decision);}
+      \only<4->{\draw[->,>=stealth,thick] (decision) -- (output);}
+      \only<3>{\node[highlight, right=of process] (decision) {Decision};}
+    \end{tikzpicture}
+  \end{center}
+  \begin{center}
+    \small Step-by-step flowchart construction using \texttt{\textbackslash only}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Step-by-Step Algorithm Visualization}
+  \begin{center}
+    \begin{tikzpicture}[
+      node distance=1.2cm,
+      state/.style={circle, draw, minimum size=0.9cm, font=\small},
+      visited/.style={state, fill=green!20, draw=green!60!black},
+      current/.style={state, fill=yellow!40, draw=orange, thick},
+    ]
+      \node[state] (s) at (0,0) {$s$};
+      \node[state] (a) at (2,1.5) {$a$};
+      \node[state] (b) at (2,-1.5) {$b$};
+      \node[state] (c) at (4,0) {$c$};
+      \node[state] (d) at (6,1.5) {$d$};
+      \node[state] (t) at (6,-1.5) {$t$};
+      \draw[->,>=stealth] (s) -- (a) node[midway,above left] {3};
+      \draw[->,>=stealth] (s) -- (b) node[midway,below left] {5};
+      \draw[->,>=stealth] (a) -- (c) node[midway,above] {2};
+      \draw[->,>=stealth] (b) -- (c) node[midway,below] {1};
+      \draw[->,>=stealth] (c) -- (d) node[midway,above right] {4};
+      \draw[->,>=stealth] (c) -- (t) node[midway,below right] {6};
+      \draw[->,>=stealth] (d) -- (t) node[midway,right] {2};
+      \only<2>{\node[visited] at (0,0) {$s$};}
+      \only<3>{\node[visited] at (0,0) {$s$}; \node[visited] at (2,1.5) {$a$};}
+      \only<4>{\node[visited] at (0,0) {$s$}; \node[visited] at (2,1.5) {$a$}; \node[visited] at (2,-1.5) {$b$};}
+      \only<5>{\node[visited] at (0,0) {$s$}; \node[visited] at (2,1.5) {$a$}; \node[visited] at (2,-1.5) {$b$}; \node[current] at (4,0) {$c$};}
+      \only<6>{\node[visited] at (0,0) {$s$}; \node[visited] at (2,1.5) {$a$}; \node[visited] at (2,-1.5) {$b$}; \node[visited] at (4,0) {$c$}; \node[visited] at (6,1.5) {$d$};}
+      \only<7>{\node[visited] at (0,0) {$s$}; \node[visited] at (2,1.5) {$a$}; \node[visited] at (2,-1.5) {$b$}; \node[visited] at (4,0) {$c$}; \node[visited] at (6,1.5) {$d$}; \node[visited] at (6,-1.5) {$t$};}
+    \end{tikzpicture}
+  \end{center}
+  \small Dijkstra's algorithm: visited (green), current (yellow)
+\end{frame}
+
+\begin{frame}{Highlighted Subgraphs}
+  \begin{center}
+    \begin{tikzpicture}[
+      every node/.style={circle, draw, minimum size=1cm},
+      subgraph/.style={draw, dashed, thick, rounded corners, inner sep=5pt},
+    ]
+      \node (a) at (0,0) {$A$};
+      \node (b) at (2,0) {$B$};
+      \node (c) at (1,1.73) {$C$};
+      \node (d) at (4,0) {$D$};
+      \node (e) at (5,1.73) {$E$};
+      \node (f) at (6,0) {$F$};
+      \draw[->,>=stealth] (a) -- (b);
+      \draw[->,>=stealth] (b) -- (c);
+      \draw[->,>=stealth] (c) -- (a);
+      \draw[->,>=stealth] (b) -- (d);
+      \draw[->,>=stealth] (d) -- (e);
+      \draw[->,>=stealth] (e) -- (f);
+      \draw[->,>=stealth] (f) -- (d);
+      \only<2>{\node[subgraph, fill=blue!10, fit=(a)(b)(c)] {};
+                \node[below=0.3cm of a, blue!70!black, font=\small\bfseries] {Subgraph 1};}
+      \only<3>{\node[subgraph, fill=orange!10, fit=(d)(e)(f)] {};
+                \node[below=0.3cm of f, orange!70!black, font=\small\bfseries] {Subgraph 2};}
+      \only<4>{\node[subgraph, fill=blue!10, fit=(a)(b)(c)] {};
+                \node[subgraph, fill=orange!10, fit=(d)(e)(f)] {};
+                \node[below=0.3cm of a, blue!70!black, font=\small\bfseries] {Subgraph 1};
+                \node[below=0.3cm of f, orange!70!black, font=\small\bfseries] {Subgraph 2};}
+    \end{tikzpicture}
+  \end{center}
+  \begin{center}
+    \small Highlight subgraphs with \texttt{\textbackslash only} and TikZ \texttt{fit}
+  \end{center}
+\end{frame}
+\section{Math in Beamer}
+\begin{frame}{Step-by-Step Equation Derivation}
+  \onslide<2->{%
+    \begin{equation}
+      \int_{-\infty}^{\infty} e^{-x^2} \, dx = \sqrt{\pi}
+    \end{equation}
+  }
+  \vspace{1em}
+  \onslide<3->{%
+    \begin{block}{Gaussian Integral --- Derivation}
+      \[
+        I = \int_{-\infty}^{\infty} e^{-x^2} \, dx
+        \implies I^2 = \pi
+        \implies I = \sqrt{\pi}
+      \]
+    \end{block}
+  }
+\end{frame}
+
+\begin{frame}{Matrix with Highlighted Elements}
+  \[
+    A = \begin{pmatrix}
+      \only<2>{\color{red}\mathbf{a_{11}}} \only<3->{a_{11}} &
+      \only<3>{\color{blue}\mathbf{a_{12}}} \only<4->{a_{12}} &
+      a_{13} \\
+      a_{21} &
+      \only<4>{\color{green!50!black}\mathbf{a_{22}}} \only<5->{a_{22}} &
+      a_{23} \\
+      a_{31} & a_{32} &
+      \only<5>{\color{purple}\mathbf{a_{33}}} \only<6->{a_{33}}
+    \end{pmatrix}
+  \]
+  \vspace{1em}
+  \onslide<6->
+  \begin{block}{Determinant Expansion}
+    \[
+      \det(A) = a_{11}(a_{22}a_{33} - a_{23}a_{32})
+              - a_{12}(a_{21}a_{33} - a_{23}a_{31})
+              + a_{13}(a_{21}a_{32} - a_{22}a_{31})
+    \]
+  \end{block}
+\end{frame}
+
+\begin{frame}{Proof Steps with Overlays}
+  \begin{block}{Theorem: Pythagorean Identity}
+    For any angle $\theta$: $\sin^2\theta + \cos^2\theta = 1$
+  \end{block}
+  \vspace{1em}
+  \begin{proof}
+    \only<2>{Start with the unit circle definition.}
+    \only<3>{For any point $(x, y)$ on the unit circle: $x^2 + y^2 = 1$.}
+    \only<4>{Substitute $x = \cos\theta$ and $y = \sin\theta$:}
+    \only<5>{We obtain $\cos^2\theta + \sin^2\theta = 1$. \qedhere}
+  \end{proof}
+\end{frame}
+\section{Code in Beamer}
+\begin{frame}[fragile]{Python with Line Highlighting}
+  \begin{block}{Normalized Function}
+    \begin{lstlisting}[language=Python, highlightlines={3-5}]
+import numpy as np
+
+def normalize(x):
+    """Normalize array to [0, 1] range."""
+    x_min, x_max = x.min(), x.max()
+    return (x - x_min) / (x_max - x_min)
+
+data = np.random.rand(100)
+result = normalize(data)
+    \end{lstlisting}
+  \end{block}
+\end{frame}
+\begin{frame}[fragile]{Rust Code Listing}
+  \begin{block}{Rust: Iterator Adapter}
+    \begin{lstlisting}[language=Rust]
+fn fibonacci() -> impl Iterator<Item = u64> {
+    let mut a: u64 = 0;
+    let mut b: u64 = 1;
+    std::iter::from_fn(move || {
+        let next = a;
+        let sum = a + b;
+        a = b;
+        b = sum;
+        Some(next)
+    })
+}
+
+fn main() {
+    let fibs: Vec<u64> = fibonacci().take(10).collect();
+    println!("{:?}", fibs);
+}
+    \end{lstlisting}
+  \end{block}
+\end{frame}
+\section{Tables in Beamer}
+\begin{frame}{Comparison Tables with Highlighted Rows}
+  \begin{center}
+    \begin{tabular}{l c c c}
+      \toprule
+      \textbf{Feature} & \textbf{Option A} & \textbf{Option B} & \textbf{Option C} \\
+      \midrule
+      Speed       & High  & Medium & Low  \\
+      \rowcolor{green!10} Accuracy  & High  & High   & Medium \\
+      Memory      & Low   & Medium & High \\
+      \rowcolor{red!10} Complexity & Low   & High   & High   \\
+      Scalability & Medium & High  & High \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \vspace{1em}
+  \begin{exampleblock}{Highlighting Rows}
+    Colored rows with \texttt{\textbackslash rowcolor} draw attention to
+    key comparisons: green for strengths, red for weaknesses.
+  \end{exampleblock}
+\end{frame}
+\section{Figures}
+\begin{frame}{Subfigures with Overlays}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \begin{block}{Figure 1a: Linear Growth}
+      \begin{center}
+        \begin{tikzpicture}[scale=0.7]
+          \begin{axis}[width=5.5cm, height=4cm, xlabel={Steps}, ylabel={Value}, grid=major, thick]
+            \addplot[blue, thick, smooth, domain=0:10, samples=20] {0.5*x};
+          \end{axis}
+        \end{tikzpicture}
+      \end{center}
+      \centering\small Linear: $f(x) = 0.5x$
+    \end{block}
+    \column{0.48\textwidth}
+    \begin{block}<2->{Figure 1b: Exponential Growth}
+      \begin{center}
+        \begin{tikzpicture}[scale=0.7]
+          \begin{axis}[width=5.5cm, height=4cm, xlabel={Steps}, ylabel={Value}, grid=major, thick]
+            \addplot[red, thick, smooth, domain=0:10, samples=30] {exp(0.3*x)};
+          \end{axis}
+        \end{tikzpicture}
+      \end{center}
+      \centering\small Exponential: $f(x) = e^{0.3x}$
+    \end{block}
+  \end{columns}
+  \begin{center}
+    \small Second subfigure appears on overlay 2, demonstrating timed figure reveals.
+  \end{center}
+\end{frame}
+\section{Navigation and Structure}
+\begin{frame}{Table of Contents}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+    \begin{block}{Full Table of Contents}
+      \tableofcontents[hideallsubsections]
+    \end{block}
+    \column{0.5\textwidth}
+    \begin{block}{Current Section Only}
+      \tableofcontents[currentsection, hideallsubsections]
+    \end{block}
+  \end{columns}
+\end{frame}
+
+\subsection{Subsection Demonstration}
+\begin{frame}{Subsection Content}
+  This frame belongs to a subsection, demonstrating hierarchical structure.
+  \begin{block}{Key Point}
+    Use \texttt{\textbackslash section} and \texttt{\textbackslash subsection}
+    to organize your presentation.
+  \end{block}
+\end{frame}
+\section{Framed Content}
+\begin{frame}{tcolorbox with Beamer Overlays}
+  \begin{tcolorbox}[
+    enhanced, colback=blue!5, colframe=blue!50!black,
+    title={Overlay-Aware tcolorbox}, fonttitle=\bfseries,
+    borderline west={2.5pt}{0pt}{blue!50!black},
+  ]
+    This tcolorbox is always visible. It supports full beamer overlay
+    syntax because tcolorbox integrates deeply with beamer.
+  \end{tcolorbox}
+  \vspace{1em}
+  \only<2>{%
+    \begin{tcolorbox}[
+      enhanced, colback=red!5, colframe=red!70!black,
+      title={Slide 2 Only}, fonttitle=\bfseries,
+      borderline west={2.5pt}{0pt}{red!70!black},
+    ]
+      This tcolorbox appears only on slide 2.
+    \end{tcolorbox}
+  }
+  \only<3>{%
+    \begin{tcolorbox}[
+      enhanced, colback=green!5, colframe=green!50!black,
+      title={Slide 3 Only}, fonttitle=\bfseries,
+      borderline west={2.5pt}{0pt}{green!50!black},
+    ]
+      This tcolorbox appears only on slide 3.
+    \end{tcolorbox}
+  }
+\end{frame}
+\section{Footnotes and References}
+\begin{frame}{Footnotes and Citations}
+  \begin{block}{Timed Footnotes}
+    This content is always visible.\footnote<2->{This footnote appears on slide 2 onward.}
+    Additional context.\footnote<3->{This footnote appears on slide 3 onward.}
+  \end{block}
+  \vspace{1em}
+  \begin{block}{Citations}
+    \begin{itemize}
+      \item Einstein's special relativity\cite{einstein1905}.
+      \item Dirac's quantum mechanics\cite{diracPrinciplesQuantumMechanics1981}.
+      \item Bird et al.\ on NLP with Python\cite{birdNaturalLanguageProcessing2009}.
+    \end{itemize}
+  \end{block}
+  \vspace{1em}
+  \begin{center}
+    \small
+    \printbibliography[heading=none]
+  \end{center}
+\end{frame}
+%% ════════════════════════════════════════════════════
+%% SUMMARY & THANK YOU
+%% ════════════════════════════════════════════════════
+
+\begin{frame}{Summary}
+  \begin{enumerate}
+    \item Overlays enable step-by-step content delivery.
+    \item Blocks provide structured, colored content areas.
+    \item Columns support flexible multi-column layouts.
+    \item TikZ diagrams animate and highlight per-slide.
+    \item Math supports progressive equation building.
+    \item Code listings with line highlighting.
+    \item Tables with row highlighting for comparisons.
+    \item Subfigures with timed reveals.
+    \item tcolorbox integrates with beamer overlays.
+    \item Footnotes, citations, and appendix complete the toolkit.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}[plain,c]
+  \vspace{2cm}
+  {\huge\bfseries Thank You!}\\[1cm]
+  {\large Questions?}\\[2cm]
+  {\footnotesize
+  \texttt{https://github.com/WyattAu/OmniLaTeX-template}\\
+  \texttt{omnilatex-template.wyattau.com}
+  }
+\end{frame}
+
+%% ════════════════════════════════════════════════════
+%% APPENDIX
+%% ════════════════════════════════════════════════════
+
+\appendix
+
+\begin{frame}[allowframebreaks]{Appendix: Full Doctype Reference}
+  \begin{table}
+    \centering
+    \begin{tabular}{l l l}
+      \hline
+      Doctype         & Base Class & Aliases \\
+      \hline
+      thesis          & scrbook    & theses \\
+      dissertation    & scrbook    & dissertations \\
+      book            & scrbook    & --- \\
+      manual          & scrreprt   & manuals, guide, handbook \\
+      article         & scrartcl   & articles, paper \\
+      cv              & scrartcl   & resume, curriculumvitae \\
+      poster          & scrartcl   & posters \\
+      beamer          & beamer     & --- \\
+      \hline
+    \end{tabular}
+  \end{table}
+  (27 canonical profiles with 55+ aliases)
+\end{frame}
+
+\begin{frame}{Appendix: Detailed Derivation}
+  \begin{block}{Cauchy--Schwarz Inequality Proof Sketch}
+    For $u, v \in V$ over field $\mathbb{F}$:
+    \[ t \mapsto \|u + tv\|^2 = \langle u + tv, u + tv \rangle \geq 0 \]
+    Expanding:
+    \[ \|u\|^2 + 2t \operatorname{Re}\langle u, v \rangle + t^2 \|v\|^2 \geq 0 \]
+    This quadratic in $t$ is non-negative, so its discriminant satisfies:
+    \[ \Delta = 4(\operatorname{Re}\langle u, v \rangle)^2 - 4\|u\|^2\|v\|^2 \leq 0 \]
+    Therefore $|\langle u, v \rangle|^2 \leq \|u\|^2 \|v\|^2$.
+  \end{block}
+\end{frame}
+
+\end{document}

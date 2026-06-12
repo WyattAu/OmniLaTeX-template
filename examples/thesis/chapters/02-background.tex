@@ -1,0 +1,112 @@
+\chapter{Background and Related Work}
+\label{ch:background}
+
+\section{Governing Equations of Porous Media Flow}
+\label{sec:background:governing}
+
+The mathematical description of fluid flow in \gls{porousmedium} systems is rooted in continuum mechanics and thermodynamic principles. The foundational relationship, \gls{darcyslaw}, was established experimentally by Henry Darcy in 1856 and states that the volumetric flow rate through a porous sample is proportional to the cross-sectional area and pressure gradient, and inversely proportional to fluid viscosity~\cite{baehrThermodynamikGrundlagenUnd2016}.
+
+In its generalized tensor form, Darcy's law for a single-phase fluid reads:
+\begin{equation}
+    \vec{v} = -\frac{\vec{K}}{\mu} \cdot \left( \nabla p - \rho \vec{g} \right),
+    \label{eq:darcy}
+\end{equation}
+where $\vec{v}$ is the Darcy velocity, $\vec{K}$ is the permeability tensor (with units of m$^2$), $\mu$ is the dynamic viscosity, $\rho$ is the fluid density, and $\vec{g}$ is the gravitational acceleration vector. The permeability tensor captures the directional dependence of flow resistance and is symmetric positive definite for most geological formations.
+
+For multiphase flow, the extended Darcy equation introduces relative permeability functions $k_{r\alpha}(s_\alpha)$ that depend on the saturation of each phase $\alpha$:
+\begin{equation}
+    \vec{v}_\alpha = -k_{r\alpha}(s_\alpha) \frac{\vec{K}}{\mu_\alpha} \cdot \left( \nabla p_\alpha - \rho_\alpha \vec{g} \right).
+    \label{eq:multiphase_darcy}
+\end{equation}
+
+The coupling between phases is achieved through the capillary pressure relation:
+\begin{equation}
+    p_c(s_w) = p_{\text{nw}} - p_w = p_{\text{oil}} - p_{\text{water}},
+    \label{eq:capillary}
+\end{equation}
+which is typically determined experimentally and fitted to empirical models such as the Brooks--Corey or van Genuchten parameterizations.
+
+\section{Numerical Methods}
+\label{sec:background:methods}
+
+\subsection{Finite Difference Methods}
+\label{ssec:background:fdm}
+
+Early reservoir simulators employed finite difference methods on structured Cartesian grids \cite{knuthFundamentalAlgorithms1973}. The pressure equation~\eqref{eq:pressure} is discretized using a two-point flux approximation (TPFA) on each grid cell:
+\begin{equation}
+    \sum_{f \in \partial \Omega_i} T_f \left( p_j - p_i \right) = Q_i,
+    \label{eq:tpfa}
+\end{equation}
+where $T_f$ is the transmissibility at face $f$, $i$ and $j$ are adjacent cells, and $Q_i$ is the net source term for cell $i$. While TPFA is simple and efficient, it suffers from grid orientation effects and is inconsistent for non-K-orthogonal grids.
+
+\subsection{Finite Volume Methods}
+\label{ssec:background:fvm}
+
+The \gls{finitevolumemethod} extends finite differences by enforcing conservation over control volumes. For an arbitrary polyhedral cell $\Omega_i$, the integral form of the conservation law yields:
+\begin{equation}
+    \frac{\mathrm{d}}{\mathrm{d}t} \int_{\Omega_i} \phi \, s_w \, \mathrm{d}V + \sum_{f \in \partial \Omega_i} \vec{v}_w \cdot \vec{n}_f \, A_f = \int_{\Omega_i} q_w \, \mathrm{d}V,
+    \label{eq:fvm}
+\end{equation}
+where $A_f$ is the face area and $\vec{n}_f$ is the outward normal. Multi-point flux approximation (MPFA) methods restore consistency on general grids by using a wider stencil that accounts for grid non-orthogonality.
+
+\subsection{Multiscale Methods}
+\label{ssec:background:multiscale}
+
+Multiscale methods aim to capture fine-scale effects on coarse grids through local basis functions. The multiscale finite volume (MSFV) method constructs local solutions on dual subgrids that honor fine-scale heterogeneity~\cite{mckinneyPythonDataAnalysis2018}. The coarse-scale pressure is then reconstructed using:
+\begin{equation}
+    p_H(\vec{x}) = \sum_{I} \phi_I(\vec{x}) \, P_I,
+    \label{eq:msfv}
+\end{equation}
+where $\phi_I$ are the multiscale basis functions and $P_I$ are coarse-scale degrees of freedom. The accuracy depends on the quality of the basis functions, which must capture the local anisotropy and heterogeneity of the permeability field.
+
+\section{Optimization and Linear Solvers}
+\label{sec:background:solvers}
+
+The implicit discretization of the governing equations leads to large, sparse nonlinear systems that require iterative solution methods. The \gls{newtonraphson} method provides quadratic convergence:
+\begin{equation}
+    \vec{x}^{(k+1)} = \vec{x}^{(k)} - \mat{J}^{-1}(\vec{x}^{(k)}) \, \vec{F}(\vec{x}^{(k)}),
+    \label{eq:newton}
+\end{equation}
+where $\mat{J}$ is the Jacobian matrix and $\vec{F}$ is the residual vector. At each Newton iteration, a linear system $\mat{J} \delta \vec{x} = -\vec{F}$ must be solved.
+
+For the resulting linear systems, preconditioned Krylov subspace methods such as GMRES and BiCGSTAB are commonly used. The choice of preconditioner is critical for convergence. Algebraic Multigrid (\gls{amg}) methods such as BoomerAMG from the \texttt{hypre} library have proven effective for pressure systems~\cite{PTBSI}.
+
+\section{Domain Decomposition and Parallel Computing}
+\label{sec:background:parallel}
+
+Large-scale reservoir simulations require parallel computing to handle problems with billions of unknowns. Domain decomposition methods partition the computational domain into subdomains assigned to different processors. The Schwarz alternating procedure provides a mathematical framework for this decomposition:
+\begin{equation}
+    -\nabla \cdot \left( \frac{\vec{K}}{\mu} \nabla p^{(n+1)}_i \right) = q \quad \text{in } \Omega_i, \quad p^{(n+1)}_i = p^{(n)}_j \quad \text{on } \partial \Omega_i \cap \partial \Omega_j.
+    \label{eq:schwarz}
+\end{equation}
+
+The \gls{petsc} library provides infrastructure for parallel sparse linear algebra, including distributed vectors and matrices, and interfaces to external solvers. Communication between processors is handled through \gls{mpi}, which defines the standard for message passing on distributed-memory architectures.
+
+\section{Recent Advances}
+\label{sec:background:recent}
+
+Recent literature has explored several promising directions. Machine learning approaches have been applied to history matching and production forecasting, using neural networks to learn mappings from geological parameters to production data~\cite{ramalhoFluentPython2015}. Hybrid physics-informed neural networks (PINNs) embed the governing partial differential equations as constraints in the loss function, potentially reducing the amount of training data required.
+
+The \gls{admm} framework has been adapted for large-scale reservoir optimization problems, enabling decomposition of the optimization domain while maintaining consensus across subdomains~\cite{birdNaturalLanguageProcessing2009}. Graph-based representations of well networks allow for flexible modeling of complex completion strategies and surface facility constraints.
+
+\section{Equations of State for Reservoir Fluids}
+\label{sec:background:eos}
+
+Accurate modeling of phase behavior is essential for simulating reservoir fluids, particularly in gas injection and compositional processes. The \gls{pcsaft} equation of state provides a thermodynamically consistent framework for predicting phase equilibria in complex hydrocarbon mixtures~\cite{baehrThermodynamikGrundlagenUnd2016}. The Helmholtz energy is expressed as a sum of contributions:
+\begin{equation}
+    a^{\text{res}} = a^{\text{hc}} + a^{\text{disp}} + a^{\text{assoc}},
+    \label{eq:pcsaft}
+\end{equation}
+where $a^{\text{hc}}$ is the hard-chain reference contribution, $a^{\text{disp}}$ is the dispersion contribution, and $a^{\text{assoc}}$ accounts for association interactions in polar molecules. The accuracy of the equation of state depends on the quality of binary interaction parameters, which are typically fitted to experimental data.
+
+\section{Well Models and Boundary Conditions}
+\label{sec:background:wells}
+
+Wells are the primary means of fluid injection and production in reservoir simulation. The Peaceman model relates the wellbore pressure to the grid-block pressure through:
+\begin{equation}
+    q_w = J_w \left( p_w - p_i \right),
+    \label{eq:peaceman}
+\end{equation}
+where $J_w$ is the well index, $p_w$ is the wellbore pressure, and $p_i$ is the grid-block pressure. The well index depends on the grid-block geometry, permeability, and the equivalent radius $r_0$ of the pressure support region. For horizontal wells, the well index must account for anisotropy and partial penetration effects.
+
+Boundary conditions in reservoir simulation typically fall into three categories: Dirichlet (prescribed pressure), Neumann (prescribed flux), and mixed (prescribed pressure at inflow, prescribed flux at outflow). The choice of boundary conditions significantly affects the solution and must be consistent with the physical problem being modeled.

@@ -1,145 +1,450 @@
 \documentclass[
     language=english,
-    doctype=article,
+    doctype=strategic-plan,
     institution=none,
 ]{../../omnilatex}
-
 \RequirePackage{config/document-settings}
 \addbibresource{../../bib/bibliography.bib}
-
+\usetikzlibrary{positioning,calc,shapes.geometric,arrows.meta,fit,backgrounds,shadows,decorations.pathreplacing,patterns}
 \begin{document}
-
 \maketitle
 
-\section{Vision}
-
+\begin{tcolorbox}[
+    enhanced, colback=blue!5, colframe=blue!75!black, coltitle=white,
+    fonttitle=\sffamily\bfseries\large, title={Vision},
+    sharp corners, leftrule=4pt, rightrule=0pt, toprule=0pt, bottomrule=0pt,
+    boxrule=0.5pt, shadow={1mm}{-1mm}{0mm}{black!30},
+]
 To be the global leader in intelligent infrastructure solutions, empowering
 organizations to operate more efficiently, securely, and sustainably in an
 increasingly connected world.
-
-\section{Mission}
-
+\end{tcolorbox}
+\vspace{0.5cm}
+\begin{tcolorbox}[
+    enhanced, colback=green!5, colframe=green!50!black, coltitle=white,
+    fonttitle=\sffamily\bfseries\large, title={Mission},
+    sharp corners, leftrule=4pt, rightrule=0pt, toprule=0pt, bottomrule=0pt,
+    boxrule=0.5pt, shadow={1mm}{-1mm}{0mm}{black!30},
+]
 Acme Corporation designs, builds, and operates cloud-native platforms that
 enable enterprises to modernize their critical infrastructure. We combine
 deep technical expertise with a customer-centric approach to deliver measurable
 outcomes and lasting value.
+\end{tcolorbox}
 
-\section{Strategic Goals}
+\section{Strategic Pillars}
+\subsection{Pillar 1: Revenue Growth}
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{llllr}
+    \toprule
+    \textbf{Objective} & \textbf{KPI} & \textbf{Owner} & \textbf{Timeline} & \textbf{Target} \\
+    \midrule
+    Expand APAC     & Revenue from APAC     & CFO, VP Sales & 2026--29 & \$25M \\
+    Partner program & Partner-sourced rev.  & VP Channels   & 2027--28 & 15\% ARR \\
+    Enterprise ACV  & Avg.\ contract value  & VP Sales      & 2026--29 & \$120K \\
+    Reduce churn    & Net revenue retention & VP CS         & 2026--27 & 125\% \\
+    \bottomrule
+\end{tabular}
+\caption{Revenue growth objectives.}
+\end{table}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[ybar,bar width=12pt,width=0.85\linewidth,height=5.5cm,
+    ylabel={Revenue (\$M)},symbolic x coords={2024,2025,2026,2027,2028,2029},
+    xtick=data,nodes near coords,every node near coord/.append style={font=\footnotesize},
+    legend style={at={(0.5,-0.18)},anchor=north,legend columns=-1,draw=none,fill=none},
+    grid=major,grid style={dashed,gray!40}]
+    \addplot[fill=blue!60] coordinates {(2024,95)(2025,120)(2026,148)(2027,185)(2028,235)(2029,300)};
+    \addplot[fill=orange!60] coordinates {(2024,20)(2025,30)(2026,42)(2027,58)(2028,78)(2029,105)};
+    \legend{Total Revenue, APAC Revenue}
+\end{axis}
+\end{tikzpicture}
+\caption{Revenue growth trajectory.}
+\end{figure}
 
-\subsection{Goal 1: Accelerate Revenue Growth}
+\subsection{Pillar 2: Product Leadership}
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{llllr}
+    \toprule
+    \textbf{Objective} & \textbf{KPI} & \textbf{Owner} & \textbf{Timeline} & \textbf{Target} \\
+    \midrule
+    Ship v4.0         & Releases/yr        & CTO          & 2027   & 2 \\
+    Expand marketplace & 3rd-party integr. & VP Product   & 2026--29 & 200 \\
+    FedRAMP            & Compliance certs   & CISO         & 2026--27 & High \\
+    Deploy time        & Time to value      & VP Eng.      & 2026--28 & $<$2h \\
+    \bottomrule
+\end{tabular}
+\caption{Product leadership objectives.}
+\end{table}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[xbar,bar width=10pt,width=0.85\linewidth,height=5cm,
+    xlabel={Completion (\%)},symbolic y coords={Deploy Time,FedRAMP,Marketplace,v4.0},
+    ytick=data,xmin=0,xmax=110,
+    nodes near coords,every node near coord/.append style={font=\footnotesize},
+    grid=major,grid style={dashed,gray!40}]
+    \addplot[fill=teal!60] coordinates {(25,Deploy Time)(40,FedRAMP)(15,Marketplace)(10,v4.0)};
+    \addplot[fill=red!40] coordinates {(100,Deploy Time)(100,FedRAMP)(100,Marketplace)(100,v4.0)};
+    \legend{Current, Target}
+\end{axis}
+\end{tikzpicture}
+\caption{Product pillar progress.}
+\end{figure}
 
-Achieve compound annual revenue growth of 20\% through organic expansion and
-strategic market entry.
-
-\begin{table}[h]
-    \centering
-    \begin{tabular}{lllr}
-        \toprule
-        \textbf{Objective} & \textbf{Owner} & \textbf{KPI} & \textbf{Target} \\
-        \midrule
-        Expand APAC presence    & CFO, VP Sales  & Revenue from APAC       & \$25M by 2029 \\
-        Launch partner program  & VP Channels    & Partner-sourced revenue & 15\% of ARR \\
-        Increase enterprise ACV & VP Sales       & Average contract value  & \$120K by 2029 \\
-        Reduce churn            & VP Customer Success & Net revenue retention & 125\% \\
-        \bottomrule
-    \end{tabular}
-    \caption{Revenue growth objectives and key results.}
+\subsection{Pillar 3: Operational Excellence}
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{llllr}
+    \toprule
+    \textbf{Objective} & \textbf{KPI} & \textbf{Owner} & \textbf{Timeline} & \textbf{Target} \\
+    \midrule
+    Automate ops   & Automation rate     & VP Ops   & 2026--28 & 80\% \\
+    Cost reduction & Unit cost reduction & CFO      & 2026--29 & $-30\%$ \\
+    Talent growth  & Headcount           & CHRO     & 2026--29 & 1,000 \\
+    Customer sat.  & NPS score           & VP CS    & 2026--29 & 60+ \\
+    \bottomrule
+\end{tabular}
+\caption{Operational excellence objectives.}
 \end{table}
 
-\subsection{Goal 2: Product Leadership}
+\subsection{Pillar 4: Sustainability \& Social Impact}
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{llllr}
+    \toprule
+    \textbf{Objective} & \textbf{KPI} & \textbf{Owner} & \textbf{Timeline} & \textbf{Target} \\
+    \midrule
+    Carbon neutral  & CO\textsubscript{2} em. & CSO          & 2027   & Net zero \\
+    Renewable energy& Renewable share    & VP Facilities & 2028   & 100\% \\
+    STEM investment & Annual spend       & CEO           & 2026--29 & \$5M/yr \\
+    Diversity       & Underrep.\ \%     & CHRO          & 2029   & 45\% \\
+    \bottomrule
+\end{tabular}
+\caption{Sustainability objectives.}
+\end{table}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[ybar stacked,bar width=14pt,width=0.85\linewidth,height=5cm,
+    ylabel={Investment (\$M)},symbolic x coords={2026,2027,2028,2029},
+    xtick=data,legend style={at={(0.5,-0.18)},anchor=north,legend columns=-1,draw=none,fill=none},
+    grid=major,grid style={dashed,gray!40},nodes near coords,
+    every node near coord/.append style={font=\scriptsize},ymin=0]
+    \addplot[fill=green!50] coordinates {(2026,3.0)(2027,4.0)(2028,5.0)(2029,5.5)};
+    \addplot[fill=teal!50] coordinates {(2026,1.5)(2027,2.0)(2028,2.5)(2029,3.0)};
+    \addplot[fill=yellow!60] coordinates {(2026,0.5)(2027,0.8)(2028,1.0)(2029,1.2)};
+    \legend{Environment, Social, Governance}
+\end{axis}
+\end{tikzpicture}
+\caption{Sustainability investment by year.}
+\end{figure}
 
-Establish the Acme Platform as the market-leading infrastructure solution
-through continuous innovation and platform extensibility.
-
-\begin{table}[h]
-    \centering
-    \begin{tabular}{lllr}
-        \toprule
-        \textbf{Objective} & \textbf{Owner} & \textbf{KPI} & \textbf{Target} \\
-        \midrule
-        Ship v4.0 platform         & CTO           & Major releases per year      & 2 \\
-        Expand marketplace         & VP Product    & Third-party integrations     & 200 by 2029 \\
-        Achieve FedRAMP            & CISO          & Compliance certifications    & FedRAMP High \\
-        Reduce deployment time     & VP Engineering & Time to first value        & $<$2 hours \\
-        \bottomrule
-    \end{tabular}
-    \caption{Product leadership objectives and key results.}
+\section{Market Analysis}
+\subsection{SWOT Analysis}
+\begin{table}[htbp]
+\centering\small
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|>{\columncolor{green!8}}p{0.45\linewidth}|>{\columncolor{orange!8}}p{0.45\linewidth}|}
+    \hline
+    \cellcolor{green!20}\textbf{Strengths} & \cellcolor{orange!20}\textbf{Weaknesses} \\
+    \hline
+    \begin{itemize}[nosep,leftmargin=*]
+        \item Market-leading platform, 99.99\% uptime
+        \item Deep enterprise relationships, 45 patents
+        \item FedRAMP authorization in progress
+    \end{itemize} &
+    \begin{itemize}[nosep,leftmargin=*]
+        \item Limited APAC presence
+        \item Higher pricing than competitors
+        \item Single-product dependency (85\% revenue)
+    \end{itemize} \\
+    \hline
+    \cellcolor{blue!8}\textbf{Opportunities} & \cellcolor{red!8}\textbf{Threats} \\
+    \hline
+    \begin{itemize}[nosep,leftmargin=*]
+        \item \$180B market by 2029
+        \item Sovereign cloud demand, AI/ML expansion
+        \item Federal modernization spending
+    \end{itemize} &
+    \begin{itemize}[nosep,leftmargin=*]
+        \item Hyperscale pricing pressure
+        \item Open-source alternatives growing
+        \item Regulatory complexity in new markets
+    \end{itemize} \\
+    \hline
+\end{tabular}
+\caption{SWOT analysis matrix.}
 \end{table}
 
-\subsection{Goal 3: Operational Excellence}
+\subsection{Competitive Landscape}
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{lccccc}
+    \toprule
+    \textbf{Capability} & \textbf{Acme} & \textbf{CloudMax} & \textbf{InfraCore} & \textbf{NexaOps} & \textbf{OpenStack} \\
+    \midrule
+    Enterprise SLA    & 99.99\% & 99.95\% & 99.9\%  & 99.95\% & Best eff. \\
+    FedRAMP           & High    & High    & Moderate & None    & N/A \\
+    Marketplace apps  & 120     & 250     & 80      & 60      & 400+ \\
+    Deploy time       & 4h      & 8h      & 12h     & 6h      & 24h+ \\
+    NPS               & 48      & 42      & 35      & 40      & N/A \\
+    Pricing (rel.)    & High    & High    & Medium  & Medium  & Low \\
+    \bottomrule
+\end{tabular}
+\caption{Competitive capability comparison.}
+\end{table}
+\subsection{Market Size}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[ybar,bar width=16pt,width=0.85\linewidth,height=5.5cm,
+    ylabel={Market Size (\$B)},symbolic x coords={2024,2025,2026,2027,2028,2029},
+    xtick=data,nodes near coords,every node near coord/.append style={font=\footnotesize},
+    legend style={at={(0.5,-0.18)},anchor=north,legend columns=-1,draw=none,fill=none},
+    grid=major,grid style={dashed,gray!40},ymin=0]
+    \addplot[fill=blue!70] coordinates {(2024,110)(2025,125)(2026,142)(2027,160)(2028,180)(2029,200)};
+    \addplot[fill=red!50] coordinates {(2024,8)(2025,10)(2026,13)(2027,17)(2028,22)(2029,28)};
+    \legend{TAM, Acme Target Segment}
+\end{axis}
+\end{tikzpicture}
+\caption{Cloud infrastructure market projections.}
+\end{figure}
+\section{Implementation Roadmap}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    phase/.style={fill=#1,rounded corners=2pt,minimum height=0.55cm,font=\scriptsize\sffamily,text=white,inner sep=3pt},
+    milestone/.style={diamond,fill=red!70,draw=black,inner sep=1.5pt},
+    yearlabel/.style={font=\small\sffamily\bfseries},
+]
+    \draw[gray!30,very thin] (0,0) grid (14,8);
+    \foreach \x/\yr in {0/2026,2.8/2027,5.6/2028,8.4/2029,11.2/2030} {
+        \draw[gray!60,thick] (\x,0) -- (\x,8);
+        \node[yearlabel] at (\x+1.4,8.4) {\yr};
+    }
+    \node[phase=blue!70] at (1.4,7) {Foundation};
+    \node[phase=blue!70] at (1.4,6.4) {Platform v3.1};
+    \node[phase=teal!70] at (4.2,7) {APAC Launch};
+    \node[phase=teal!70] at (4.2,6.4) {Partner Program};
+    \node[phase=teal!70] at (5.6,6.4) {ISO 27001};
+    \node[phase=orange!70] at (7.7,7) {v4.0 Launch};
+    \node[phase=orange!70] at (7.7,6.4) {FedRAMP Auth};
+    \node[phase=orange!70] at (9.1,6.4) {Marketplace};
+    \node[phase=red!60] at (11.2,7) {EU Expansion};
+    \node[phase=red!60] at (11.2,6.4) {Carbon Neg.};
+    \node[phase=red!60] at (12.6,6.4) {1000 Employees};
+    \node[milestone,label={[font=\tiny]below:Start}] at (0,5.5) {};
+    \node[milestone,label={[font=\tiny]below:v3.1}] at (2.8,5.5) {};
+    \node[milestone,label={[font=\tiny]below:v4.0}] at (7.0,5.5) {};
+    \node[milestone,label={[font=\tiny]below:\$300M}] at (11.2,5.5) {};
+    \node[milestone,label={[font=\tiny]below:End}] at (14,5.5) {};
+\end{tikzpicture}
+\caption{Implementation roadmap with phases and milestones.}
+\end{figure}
 
-Improve operational efficiency and scalability to support rapid growth while
-maintaining high customer satisfaction.
-
-\begin{itemize}
-    \item \textbf{Automation:} Automate 80\% of routine operational tasks by 2028.
-    \item \textbf{Cost Optimization:} Achieve 30\% reduction in unit costs through
-          infrastructure modernization and vendor consolidation.
-    \item \textbf{Talent:} Grow headcount to 1,000 employees by 2029 with voluntary
-          turnover below 10\%.
-    \item \textbf{Customer Satisfaction:} Maintain NPS above 60 across all segments.
-\end{itemize}
-
-\subsection{Goal 4: Sustainability and Social Impact}
-
-Integrate sustainability into business operations and demonstrate measurable
-social impact.
-
-\begin{itemize}
-    \item Achieve carbon-neutral operations by end of 2027.
-    \item Source 100\% renewable energy for all data centers by 2028.
-    \item Invest \$5M annually in STEM education and workforce development
-          programs.
-    \item Increase workforce diversity to 45\% underrepresented groups by 2029.
-\end{itemize}
-
-\section{Timeline}
-
-\begin{description}
-    \item[2026 H2] Launch APAC operations, ship Platform v3.1, begin FedRAMP
-        certification process.
-    \item[2027 H1] Open Tokyo and Sydney offices, launch partner certification
-        program, achieve ISO 27001 renewal.
-    \item[2027 H2] Ship Platform v4.0, achieve carbon-neutral operations,
-        complete FedRAMP authorization.
-    \item[2028] Expand to European markets, launch marketplace with 100+
-        integrations, reach 800 employees.
-    \item[2029] Achieve \$300M ARR, 1,000 employees, 200 marketplace
-        integrations, and carbon-negative operations.
-\end{description}
+\subsection{Milestones and Dependencies}
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{llcl}
+    \toprule
+    \textbf{ID} & \textbf{Milestone} & \textbf{Date} & \textbf{Status} \\
+    \midrule
+    M1  & APAC operations launch       & 2026 Q3 & On track \\
+    M2  & Platform v3.1 release         & 2026 Q4 & On track \\
+    M3  & Tokyo office, partner program & 2027 Q1 & Planned  \\
+    M4  & ISO 27001, FedRAMP auth       & 2027 Q2 & Planned  \\
+    M5  & Platform v4.0 release         & 2027 Q4 & Planned  \\
+    M6  & Marketplace 100+ integrations & 2028 Q2 & Planned  \\
+    M7  & EU market entry               & 2028 Q3 & Planned  \\
+    M8  & Carbon-negative, \$300M ARR   & 2029 Q4 & Planned  \\
+    \bottomrule
+\end{tabular}
+\caption{Key milestones.}
+\end{table}
 
 \section{Resource Allocation}
-
-\begin{table}[h]
-    \centering
-    \begin{tabular}{lrr}
-        \toprule
-        \textbf{Investment Area} & \textbf{Annual Budget} & \textbf{\% of Revenue} \\
-        \midrule
-        R\&D and Product Engineering & \$38M  & 25\% \\
-        Sales and Marketing          & \$30M  & 20\% \\
-        Customer Success             & \$12M  &  8\% \\
-        Infrastructure and Operations & \$15M  & 10\% \\
-        Sustainability and CSR       & \$ 5M  &  3\% \\
-        \bottomrule
-    \end{tabular}
-    \caption{Planned investment allocation (2026--2029 average).}
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{lrrrrr}
+    \toprule
+    \textbf{Area} & \textbf{2026} & \textbf{2027} & \textbf{2028} & \textbf{2029} & \textbf{Total} \\
+    \midrule
+    R\&D / Engineering    & \$32M & \$38M & \$45M & \$52M & \$167M \\
+    Sales \& Marketing    & \$25M & \$30M & \$36M & \$42M & \$133M \\
+    Customer Success      & \$10M & \$12M & \$15M & \$18M & \$55M  \\
+    Infrastructure \& Ops & \$12M & \$15M & \$18M & \$20M & \$65M  \\
+    Sustainability \& CSR & \$ 3M & \$ 5M & \$ 8M & \$10M & \$26M  \\
+    \midrule
+    \textbf{Total}        & \$82M & \$100M & \$122M & \$142M & \$446M \\
+    \bottomrule
+\end{tabular}
+\caption{Multi-year budget (\$M).}
+\end{table}
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{lrrrr}
+    \toprule
+    \textbf{Department} & \textbf{2026} & \textbf{2027} & \textbf{2028} & \textbf{2029} \\
+    \midrule
+    Engineering          & 280 & 350 & 420 & 480 \\
+    Sales \& Marketing   & 120 & 155 & 190 & 225 \\
+    Customer Success     &  60 &  80 & 100 & 120 \\
+    Operations \& IT     &  50 &  65 &  80 &  95 \\
+    Corporate Functions  &  40 &  50 &  60 &  80 \\
+    \midrule
+    \textbf{Total}       & 550 & 700 & 850 & 1000 \\
+    \bottomrule
+\end{tabular}
+\caption{Headcount plan.}
+\end{table}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[ybar stacked,bar width=14pt,width=0.85\linewidth,height=5.5cm,
+    ylabel={Headcount},symbolic x coords={2026,2027,2028,2029},
+    xtick=data,legend style={at={(0.5,-0.18)},anchor=north,legend columns=-1,draw=none,fill=none},
+    grid=major,grid style={dashed,gray!40},nodes near coords,
+    every node near coord/.append style={font=\scriptsize},ymin=0]
+    \addplot[fill=blue!60] coordinates {(2026,280)(2027,350)(2028,420)(2029,480)};
+    \addplot[fill=orange!60] coordinates {(2026,120)(2027,155)(2028,190)(2029,225)};
+    \addplot[fill=teal!60] coordinates {(2026,60)(2027,80)(2028,100)(2029,120)};
+    \addplot[fill=gray!50] coordinates {(2026,50)(2027,65)(2028,80)(2029,95)};
+    \addplot[fill=purple!50] coordinates {(2026,40)(2027,50)(2028,60)(2029,80)};
+    \legend{Engineering, Sales, CS, Ops, Corp}
+\end{axis}
+\end{tikzpicture}
+\caption{Personnel allocation by department.}
+\end{figure}
+\section{Risk Management}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    risk/.style={rectangle,rounded corners=3pt,draw,font=\scriptsize\sffamily,text centered,minimum width=1.8cm,minimum height=0.5cm},
+]
+    \draw[thick,->] (0,0) -- (6.5,0) node[below,font=\small\sffamily] {Likelihood};
+    \draw[thick,->] (0,0) -- (0,6.5) node[left,font=\small\sffamily,rotate=90,anchor=south] {Impact};
+    \fill[green!15]  (0,0) rectangle (2,2);
+    \fill[yellow!15] (2,0) rectangle (4,2);
+    \fill[yellow!15] (0,2) rectangle (2,4);
+    \fill[orange!20] (4,0) rectangle (6,2);
+    \fill[orange!20] (2,2) rectangle (4,4);
+    \fill[orange!20] (0,4) rectangle (2,6);
+    \fill[red!20]    (4,2) rectangle (6,4);
+    \fill[red!20]    (2,4) rectangle (4,6);
+    \fill[red!30]    (4,4) rectangle (6,6);
+    \node[font=\tiny\sffamily,green!50!black] at (1,1) {Low};
+    \node[font=\tiny\sffamily,yellow!50!black] at (3,1) {Med};
+    \node[font=\tiny\sffamily,yellow!50!black] at (1,3) {Med};
+    \node[font=\tiny\sffamily,orange!60!black] at (5,1) {High};
+    \node[font=\tiny\sffamily,orange!60!black] at (3,3) {High};
+    \node[font=\tiny\sffamily,orange!60!black] at (1,5) {High};
+    \node[font=\tiny\sffamily,red!70!black] at (5,3) {Crit};
+    \node[font=\tiny\sffamily,red!70!black] at (3,5) {Crit};
+    \node[font=\tiny\sffamily,red!80!black] at (5,5) {Crit};
+    \node[risk,fill=red!30] at (4.5,4.5) {R1: Macro};
+    \node[risk,fill=orange!30] at (3.5,3.5) {R2: Pricing};
+    \node[risk,fill=orange!30] at (2.5,4.5) {R3: Talent};
+    \node[risk,fill=yellow!30] at (1.5,3.5) {R4: Reg.};
+    \node[risk,fill=yellow!30] at (4.5,1.5) {R5: Tech};
+    \node[risk,fill=green!30] at (1.5,1.5) {R6: Supply};
+\end{tikzpicture}
+\caption{Risk matrix: likelihood vs.\ impact.}
+\end{figure}
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{llcccl}
+    \toprule
+    \textbf{ID} & \textbf{Risk} & \textbf{L} & \textbf{I} & \textbf{Score} & \textbf{Mitigation} \\
+    \midrule
+    R1 & Macro downturn          & 3 & 4 & 12 & Diversify revenue, cash reserves \\
+    R2 & Competitive pricing     & 4 & 3 & 12 & Differentiate on SLA/compliance  \\
+    R3 & Talent shortage         & 3 & 4 & 12 & Remote-first, equity comp        \\
+    R4 & Regulatory changes      & 2 & 3 & 6  & Dedicated compliance team        \\
+    R5 & Tech obsolescence       & 3 & 2 & 6  & Continuous R\&D, modularity      \\
+    R6 & Supply chain disruption & 2 & 2 & 4  & Multi-vendor strategy            \\
+    \bottomrule
+\end{tabular}
+\caption{Risk register (L = Likelihood, I = Impact).}
 \end{table}
 
-\section{Risk Factors}
+\section{KPIs and Metrics Dashboard}
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{llccc}
+    \toprule
+    \textbf{Category} & \textbf{Metric} & \textbf{2026} & \textbf{2027} & \textbf{2029} \\
+    \midrule
+    \multirow{2}{*}{\textbf{Financial}}
+        & ARR           & \$148M & \$185M & \$300M \\
+        & Gross margin  & 72\%   & 74\%   & 76\%   \\
+    \midrule
+    \multirow{2}{*}{\textbf{Customer}}
+        & NPS           & 48     & 55     & 65     \\
+        & Net rev. ret. & 112\%  & 118\%  & 125\%  \\
+    \midrule
+    \multirow{2}{*}{\textbf{Product}}
+        & Uptime        & 99.99\%& 99.99\%& 99.995\% \\
+        & Deploy time   & 4h     & 2h     & $<$1h    \\
+    \midrule
+    \multirow{2}{*}{\textbf{People}}
+        & Headcount     & 550    & 700    & 1000     \\
+        & Vol. turn.    & 12\%   & 10\%   & $<$10\%  \\
+    \bottomrule
+\end{tabular}
+\caption{KPI dashboard across strategic dimensions.}
+\end{table}
 
-\begin{itemize}
-    \item \textbf{Macroeconomic Conditions:} A prolonged economic downturn could
-          delay enterprise purchasing decisions and extend sales cycles.
-    \item \textbf{Competitive Landscape:} Aggressive pricing from well-funded
-          competitors may compress margins.
-    \item \textbf{Talent Acquisition:} Intensifying competition for engineering
-          talent may increase compensation costs and slow hiring.
-    \item \textbf{Regulatory Changes:} Evolving data privacy and sovereignty
-          regulations in new markets may require additional compliance
-          investment.
-\end{itemize}
+\section{Governance}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    node distance=1cm and 1.5cm,
+    org/.style={rectangle,draw=blue!60,fill=blue!10,rounded corners,minimum width=2.4cm,minimum height=0.8cm,font=\scriptsize\sffamily,text centered},
+    dept/.style={rectangle,draw=teal!60,fill=teal!10,rounded corners,minimum width=2cm,minimum height=0.7cm,font=\tiny\sffamily,text centered},
+    line/.style={-{Stealth[length=2mm]},thick,blue!50},
+]
+    \node[org,fill=blue!25,minimum width=3cm] (ceo) {CEO};
+    \node[org,above=1.5cm of ceo,fill=gray!20] (board) {Board of Directors};
+    \draw[line] (board) -- (ceo);
+    \foreach \name/\xshift in {cfo/-4,cto/-2,cpo/0,ciso/2,chro/4}
+        \node[dept,below=1.2cm of ceo,xshift=\xshift cm] (\name) {\name};
+    \foreach \name in {cfo,cto,cpo,ciso,chro}
+        \draw[line] (ceo) -- (\name);
+    \node[dept,below=0.9cm of cfo] (finance) {Finance};
+    \node[dept,below=0.9cm of cto] (eng) {Engineering};
+    \node[dept,below=0.9cm of cpo] (product) {Product};
+    \node[dept,below=0.9cm of ciso] (sec) {Security};
+    \node[dept,below=0.9cm of chro] (hr) {People Ops};
+    \draw[line] (cfo) -- (finance);
+    \draw[line] (cto) -- (eng);
+    \draw[line] (cpo) -- (product);
+    \draw[line] (ciso) -- (sec);
+    \draw[line] (chro) -- (hr);
+    \node[org,fill=orange!15,right=3cm of board] (advisor) {Advisory Board};
+    \draw[dashed,thick,orange!50] (advisor) -- (ceo);
+\end{tikzpicture}
+\caption{Organizational governance structure.}
+\end{figure}
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{llll}
+    \toprule
+    \textbf{Committee} & \textbf{Chair} & \textbf{Cadence} & \textbf{Scope} \\
+    \midrule
+    Executive Leadership & CEO    & Weekly    & Strategic decisions \\
+    Product Council      & CPO    & Biweekly  & Roadmap, resources \\
+    Security Review      & CISO   & Monthly   & Compliance, risk   \\
+    Investment Committee & CFO    & Monthly   & Capital, M\&A      \\
+    People Committee     & CHRO   & Monthly   & Talent, DE\&I      \\
+    Board of Directors   & Chair  & Quarterly & Governance         \\
+    \bottomrule
+\end{tabular}
+\caption{Governance committees.}
+\end{table}
 
 \printbibliography[heading=none]
-
 \end{document}

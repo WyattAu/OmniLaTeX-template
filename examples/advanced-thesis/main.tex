@@ -1,0 +1,110 @@
+%!TEX TS-program = lualatex
+\documentclass[
+    doctype=thesis,
+    language=english,
+    institution=none,
+    titlestyle=thesis,
+    twoside,
+    BCOR=5mm,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\RequirePackage{config/macros}
+
+\RequirePackage{tikz}
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\RequirePackage{booktabs}
+\RequirePackage{longtable}
+\RequirePackage{tabularx}
+\RequirePackage[ruled,vlined,linesnumbered]{algorithm2e}
+\RequirePackage{minted}
+\RequirePackage[acronym]{glossaries}
+\RequirePackage{makeidx}
+\RequirePackage{cleveref}
+\RequirePackage{subcaption}
+\RequirePackage{float}
+\RequirePackage{multirow}
+\RequirePackage{xcolor}
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{mdframed}
+\RequirePackage{fancyhdr}
+\RequirePackage{titlesec}
+\RequirePackage{appendices}
+
+\makeindex
+\makeglossaries
+
+\input{glossary}
+
+\addbibresource{../../bib/bibliography.bib}
+
+% Header and footer configuration
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\leftmark}
+\fancyhead[RO]{\rightmark}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+% ============================================================
+% Front Matter
+% ============================================================
+\frontmatter
+
+\maketitle
+
+\section*{Abstract}
+This thesis addresses the fundamental challenge of scaling Bayesian optimisation
+(BO) to high-dimensional problems, where existing methods degrade sharply beyond
+approximately 20 dimensions.  We propose a unified framework that combines
+adaptive subspace identification, local surrogate modelling, and
+information-theoretic acquisition functions to enable efficient optimisation in
+dimensions ranging from 50 to 500.  Through extensive theoretical analysis and
+empirical evaluation on both synthetic benchmarks and real-world engineering
+problems, we demonstrate that our approach achieves up to 3.2$\times$ reduction
+in simple regret compared to state-of-the-art methods.  The framework is made
+available as an open-source Python library integrated with the BoTorch framework.
+
+\section*{Acknowledgements}
+I would like to express my sincere gratitude to my advisor, Prof. Alan Turing,
+for his invaluable guidance and unwavering support throughout this research.  I am
+equally grateful to my committee members---Dr. Ada Lovelace, Dr. Donald Knuth,
+and Dr. Grace Hopper---for their insightful feedback and constructive criticism.
+This work was supported by the National Science Foundation under Grant
+No.\ 12345678.
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+\printglossary[type=\acronymtype,title=List of Abbreviations]
+\printglossary[title=Glossary]
+
+% ============================================================
+% Main Matter
+% ============================================================
+\mainmatter
+
+\include{chapters/01-introduction}
+\include{chapters/02-literature-review}
+\include{chapters/03-methodology}
+\include{chapters/04-experiments}
+\include{chapters/05-analysis}
+\include{chapters/06-conclusion}
+
+% ============================================================
+% Back Matter
+% ============================================================
+\backmatter
+
+\printbibliography
+
+\appendix
+\include{chapters/appendix-a}
+
+\printindex
+
+\end{document}

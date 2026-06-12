@@ -1,0 +1,100 @@
+\chapter{Introduction}
+\label{ch:introduction}
+
+\section{Research Motivation}
+\label{sec:introduction:motivation}
+
+The accurate prediction of fluid flow through \gls{porousmedium} systems remains one of the most challenging problems in computational engineering. Applications ranging from petroleum reservoir management to carbon sequestration and groundwater remediation require robust numerical methods capable of handling the complex physics of \gls{multiphaseflow} \cite{einstein1905, mollenhauerHandbuchDieselmotoren2007}. Despite decades of research, significant gaps persist in our ability to efficiently simulate large-scale heterogeneous systems with complex well configurations and geomechanical coupling.
+
+The petroleum industry alone invests billions of dollars annually in reservoir simulation for field development planning and production optimization~\cite{dubbelTaschenbuchFurMaschinenbau2007}. As conventional reservoirs mature, the industry increasingly targets unconventional resources such as tight oil, shale gas, and heavy oil, which present even greater computational challenges due to their extremely low permeabilities and complex fracture networks. The need for efficient and accurate simulation tools has never been more urgent.
+
+The fundamental governing equations for incompressible flow in porous media are derived from \gls{darcyslaw} and mass conservation principles~\cite{dubbelTaschenbuchFurMaschinenbau2007}. For a two-phase system consisting of oil and water, the pressure equation takes the form:
+\begin{equation}
+    \nabla \cdot \left( \lambda_{\text{tot}}(\vec{x}, s_w) \, \vec{K}(\vec{x}) \, \nabla p \right) = q(\vec{x}, t),
+    \label{eq:pressure}
+\end{equation}
+where $\lambda_{\text{tot}}$ is the total mobility, $\vec{K}$ is the permeability tensor, $p$ is the pressure field, and $q$ represents source/sink terms. The saturation equation follows from the mass balance of the wetting phase:
+\begin{equation}
+    \phi(\vec{x}) \pd{s_w}{t} + \nabla \cdot \left( \vec{v} \, f_w(s_w) \right) = \nabla \cdot \left( D(s_w) \, \nabla s_w \right) + q_w(\vec{x}, t),
+    \label{eq:saturation}
+\end{equation}
+where $\phi$ is the porosity, $s_w$ is the water saturation, $f_w$ is the fractional flow function, and $D$ is the capillary diffusion coefficient. These coupled nonlinear partial differential equations pose significant numerical challenges, particularly in heterogeneous media with high permeability contrasts.
+
+The computational cost of reservoir simulation scales poorly with problem size, especially when fine-scale geological models contain billions of grid cells. Industrial practice typically involves upscaling techniques that reduce the dimensionality of the problem but introduce significant approximation errors~\cite{goossensLaTeXCompanion1993}. There is a pressing need for methods that can accurately capture fine-scale effects without prohibitive computational overhead.
+
+\section{Historical Context}
+\label{sec:introduction:history}
+
+The history of reservoir simulation dates back to the 1930s, when engineers first began using analytical solutions to predict well performance~\cite{knuthFundamentalAlgorithms1973}. The development of digital computers in the 1950s and 1960s enabled the first numerical simulators, which were based on finite difference methods applied to structured Cartesian grids. These early simulators were limited to small problems with a few thousand grid cells.
+
+The 1970s and 1980s saw significant advances in numerical methods, including the development of implicit formulations, adaptive time stepping, and improved linear solvers. The introduction of the implicit pressure-explicit saturation (IMPES) method and its fully implicit variants provided the foundation for modern reservoir simulation~\cite{goossensLaTeXCompanion1993}.
+
+The 1990s brought the development of advanced discretization schemes such as multi-point flux approximation (MPFA) and mixed finite element methods, which improved the accuracy of simulations on non-Cartesian grids. Parallel computing also emerged as a critical tool, enabling simulations with millions of grid cells.
+
+In recent decades, the focus has shifted toward multiscale methods, adaptive mesh refinement, and the integration of data-driven approaches. Machine learning techniques have been applied to history matching, production forecasting, and optimization, complementing traditional physics-based simulation~\cite{mckinneyPythonDataAnalysis2018, ramalhoFluentPython2015}.
+
+\section{Research Objectives}
+\label{sec:introduction:objectives}
+
+This thesis addresses the following research questions:
+
+\begin{enumerate}
+    \item How can adaptive mesh refinement strategies be optimized for heterogeneous porous media with channelized flow paths?
+    \item What is the convergence behavior of the proposed multiscale finite volume method under varying levels of permeability contrast?
+    \item How does the parallel scalability of the algorithm compare with state-of-the-art commercial simulators such as \gls{eclipse}?
+\end{enumerate}
+
+The primary contributions of this work are:
+\begin{itemize}
+    \item A novel error indicator based on local flux imbalance that guides adaptive refinement in heterogeneous media.
+    \item A domain decomposition strategy that achieves near-optimal parallel scaling up to 1024 cores on modern HPC architectures.
+    \item An open-source implementation integrated with the \gls{petsc} framework for reproducible research.
+\end{itemize}
+
+\section{Scope and Delimitations}
+\label{sec:introduction:scope}
+
+This thesis focuses on incompressible and slightly compressible two-phase flow (oil and water) in porous media. The following aspects are explicitly excluded from the scope:
+
+\begin{itemize}
+    \item Three-phase flow (oil, water, and gas) systems
+    \item Compositional simulation with phase behavior
+    \item Thermal recovery processes
+    \item Geomechanical coupling and stress-dependent properties
+    \item Wellbore hydraulics and surface facility modeling
+\end{itemize}
+
+While these extensions are important for many practical applications, their inclusion would significantly increase the complexity of the numerical methods and implementation. The focus on two-phase flow allows for a thorough investigation of the adaptive mesh refinement strategy and parallel scalability without the additional complications of multiphase physics.
+
+\section{Document Structure}
+\label{sec:introduction:structure}
+
+The remainder of this thesis is organized as follows. \chref{ch:background} reviews the theoretical foundations of porous media flow and existing numerical methods. \chref{ch:methodology} presents the proposed algorithm and its mathematical analysis. \chref{ch:results} demonstrates the method's accuracy and efficiency through benchmark problems. \chref{ch:discussion} interprets the results and discusses limitations. \chref{ch:conclusion} summarizes the findings and outlines directions for future research.
+
+\section{Notation and Conventions}
+\label{sec:introduction:notation}
+
+Throughout this thesis, vectors are denoted in boldface (e.g., $\vec{x}$, $\vec{v}$), tensors in boldface capitals (e.g., $\mat{K}$), and scalar fields in regular italic ($p$, $s$). The $L^2$ inner product is written as $\inner{u}{v}$, and the $L^p$ norm as $\norm{u}_p$. The partial derivative with respect to time is denoted $\pd{u}{t}$, and spatial gradients are $\nabla u$. Units follow the SI system unless otherwise noted.
+
+Mathematical symbols and operators follow standard conventions in applied mathematics and numerical analysis. Theorems, lemmas, and propositions are stated in boldface, with proofs presented in the same environment. Definitions are presented in italics within the definition environment.
+
+\section{Preliminary Mathematical Concepts}
+\label{sec:introduction:preliminary}
+
+Before proceeding, we establish some preliminary mathematical concepts that will be used throughout this thesis. Let $\Omega \subset \R^d$ ($d = 2$ or $3$) be a bounded domain with Lipschitz boundary $\partial \Omega$. We denote by $L^p(\Omega)$ the space of Lebesgue-measurable functions $u: \Omega \to \R$ for which
+\begin{equation}
+    \norm{u}_{L^p(\Omega)} = \left( \int_\Omega \abs{u(\vec{x})}^p \, \mathrm{d}\vec{x} \right)^{1/p} < \infty, \quad 1 \leq p < \infty,
+    \label{eq:lp}
+\end{equation}
+and $L^\infty(\Omega)$ the space of essentially bounded functions. The Sobolev space $H^1(\Omega)$ consists of functions in $L^2(\Omega)$ with square-integrable weak derivatives:
+\begin{equation}
+    H^1(\Omega) = \left\{ u \in L^2(\Omega) \,:\, \nabla u \in [L^2(\Omega)]^d \right\}.
+    \label{eq:h1}
+\end{equation}
+
+The inner product in $L^2(\Omega)$ is defined as
+\begin{equation}
+    \inner{u}{v} = \int_\Omega u(\vec{x}) \, v(\vec{x}) \, \mathrm{d}\vec{x},
+    \label{eq:inner}
+\end{equation}
+and induces the norm $\norm{u} = \sqrt{\inner{u}{u}}$. These function spaces provide the mathematical framework for analyzing the well-posedness and convergence of numerical methods for partial differential equations.

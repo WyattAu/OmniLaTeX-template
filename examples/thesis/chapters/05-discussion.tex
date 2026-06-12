@@ -1,0 +1,144 @@
+\chapter{Discussion}
+\label{ch:discussion}
+
+\section{Interpretation of Results}
+\label{sec:discussion:interpretation}
+
+The results presented in \chref{ch:results} demonstrate that the proposed adaptive mesh refinement method offers significant advantages over uniform grid approaches for heterogeneous porous media flow problems. The convergence analysis confirms that the method achieves second-order accuracy (Theorem~\ref{thm:convergence}), matching the theoretical prediction and validating the error indicator design.
+
+The parallel scalability results are particularly encouraging. The weak scaling efficiency of approximately 65\% at 1024 cores indicates that the method can effectively utilize modern HPC architectures. This efficiency is achieved through careful attention to the communication-to-computation ratio, which is maintained by the graph-based domain decomposition strategy described in \secref{sec:methodology:parallel}.
+
+The comparison with existing methods (see \tabref{tab:method_comparison}) reveals that the AMR approach achieves the best balance between accuracy and computational cost for channelized heterogeneity problems. While the multiscale finite volume method is slightly faster in terms of raw CPU time, the AMR method produces significantly lower approximation errors, making it preferable for applications where accuracy is paramount.
+
+\section{Analysis of the Error Indicator}
+\label{sec:discussion:errorindicator}
+
+The error indicator defined in Equation~\eqref{eq:indicator} is based on local flux imbalance across cell interfaces. This choice is motivated by the physical principle that mass conservation is a fundamental requirement for any numerical scheme simulating fluid flow. The indicator effectively captures regions where the numerical flux deviates significantly from the true flux, indicating regions where the mesh resolution is insufficient.
+
+Several properties of the error indicator contribute to its effectiveness:
+
+\begin{enumerate}
+    \item \textbf{Locality.} The indicator is computed locally within each coarse cell, requiring only information from immediate neighbors. This makes it suitable for parallel implementation with minimal communication overhead.
+
+    \item \textbf{Consistency.} For smooth solutions on fine grids, the indicator scales as $\mathcal{O}(h^{p+1})$, matching the convergence rate of the underlying discretization.
+
+    \item \textbf{Robustness.} The indicator remains effective across a wide range of permeability contrasts (10:1 to 1000:1), as demonstrated by the benchmark problems.
+
+    \item \textbf{Efficiency.} The computational cost of evaluating the indicator is negligible compared to the cost of solving the linear system, adding less than 5\% to the total simulation time.
+\end{enumerate}
+
+However, the indicator has limitations. For problems with smooth but rapidly varying solutions (e.g., gravity segregation in tall columns), the indicator may not provide sufficient guidance for refinement. In such cases, a hierarchy of indicators based on different solution components (pressure, saturation, velocity) may be more effective.
+
+\section{Comparison with Existing Methods}
+\label{sec:discussion:comparison}
+
+Compared to the finite element method, the finite volume approach offers superior mass conservation properties, which is critical for long-term reservoir simulations where small conservation errors can accumulate over thousands of time steps. The method's ability to handle general polygonal meshes (through MPFA) provides flexibility in representing complex geological features.
+
+The multiscale finite volume method achieves comparable speedups to the proposed AMR approach, but with higher approximation errors (see \tabref{tab:method_comparison}). This trade-off between accuracy and computational cost is an important consideration for practitioners. For problems where capturing fine-scale heterogeneity is essential (e.g., fractured reservoirs), the AMR approach is preferred.
+
+\subsection{Comparison with Industry Standard Simulators}
+\label{ssec:discussion:industry}
+
+The proposed method has been compared against the \gls{eclipse} reservoir simulator, which represents the industry standard for commercial reservoir simulation. While \gls{eclipse} offers a more complete set of features (including well models, surface facilities, and compositional options), the proposed method demonstrates superior performance for the specific class of problems considered in this thesis.
+
+Key differences include:
+
+\begin{itemize}
+    \item \textbf{Grid flexibility.} \gls{eclipse} primarily uses structured Cartesian grids with local corner-point refinement. The proposed method supports general unstructured meshes through MPFA, enabling more accurate representation of complex geological features.
+
+    \item \textbf{Parallel scalability.} The proposed method achieves better weak scaling efficiency than \gls{eclipse} on large core counts, primarily due to the more efficient domain decomposition strategy.
+
+    \item \textbf{Transparency.} As an open-source implementation, the proposed method allows full inspection and modification of the numerical algorithms, which is not possible with commercial simulators.
+\end{itemize}
+
+\section{Limitations}
+\label{sec:discussion:limitations}
+
+Several limitations of the current work should be acknowledged:
+
+\begin{enumerate}
+    \item \textbf{Geometric complexity.} The current implementation assumes a structured underlying grid for the fine-scale discretization. Extension to fully unstructured meshes would improve applicability to complex well trajectories and fault networks.
+
+    \item \textbf{Three-phase flow.} The methodology has been demonstrated for two-phase (oil-water) systems. Extension to three-phase flow (oil-water-gas) introduces additional complexity through the saturation constraint $s_o + s_w + s_g = 1$ and more complex relative permeability models.
+
+    \item \textbf{Geomechanical coupling.} The current model does not account for stress-dependent permeability or poroelastic effects, which are important in compacting reservoirs.
+
+    \item \textbf{Well models.} The point source approximation used for wells may be insufficient for horizontal wells with complex completion strategies. A more detailed well model using Peaceman's equation or its extensions would improve near-well accuracy.
+
+    \item \textbf{Capillary pressure.} The current formulation neglects capillary pressure effects, which can be significant in low-permeability formations and at low saturation values.
+
+    \item \textbf{Numerical dispersion.} While the AMR method reduces computational cost, it does not eliminate numerical dispersion inherent in low-order spatial discretizations. Higher-order schemes (e.g., flux limiters, discontinuous Galerkin) would be needed to reduce numerical smearing.
+\end{enumerate}
+
+\section{Practical Implications}
+\label{sec:discussion:implications}
+
+The findings have several practical implications for the reservoir simulation community:
+
+\begin{itemize}
+    \item The open-source implementation, built on \gls{petsc}, provides a transparent and extensible platform for research and development.
+
+    \item The Python bindings enable rapid prototyping of new numerical schemes and parameter studies, reducing development time for industrial applications.
+
+    \item The demonstrated scalability on modern HPC hardware suggests that the method can be deployed for full-field simulations with billions of grid cells.
+
+    \item The error indicator can be used as a diagnostic tool to assess the quality of existing simulations, identifying regions where additional refinement may improve accuracy.
+\end{itemize}
+
+For reservoir engineers, the AMR method offers a practical approach to balancing accuracy and computational cost. By focusing computational resources where they are most needed, the method enables higher-fidelity simulations without requiring prohibitive computational resources.
+
+\section{Connection to Broader Research}
+\label{sec:discussion:broader}
+
+This work connects to several active research areas in computational science. The adaptive mesh refinement strategy is related to goal-oriented error estimation in finite element methods~\cite{goossensLaTeXCompanion1993}. The domain decomposition approach shares similarities with the Schwarz methods used in atmospheric modeling and climate simulation.
+
+The machine learning approaches reviewed in \secref{sec:background:recent} represent a complementary direction. While the proposed method focuses on physics-based simulation, hybrid approaches that combine traditional numerical methods with data-driven components are increasingly promising. For example, neural networks could be trained to predict optimal refinement zones based on coarse-scale solutions, potentially reducing the computational cost of the error indicator evaluation.
+
+\subsection{Applications to Other Fields}
+\label{ssec:discussion:applications}
+
+The numerical techniques developed in this thesis have potential applications beyond petroleum engineering:
+
+\begin{itemize}
+    \item \textbf{Groundwater hydrology.} The methods can be applied to simulate contaminant transport in aquifers, where accurate prediction of plume migration is essential for remediation planning.
+
+    \item \textbf{Carbon sequestration.} Modeling CO$_2$ injection and storage in saline aquifers requires efficient simulation of multiphase flow with phase behavior.
+
+    \item \textbf{Geothermal energy.} Simulating heat and fluid flow in fractured geothermal reservoirs requires similar numerical methods.
+
+    \item \textbf{Fuel cells.} Modeling water management in proton exchange membrane fuel cells involves multiphase flow in porous media.
+\end{itemize}
+
+\section{Statistical Analysis}
+\label{sec:discussion:statistics}
+
+The performance metrics across 50 independent simulation runs show consistent behavior. The mean CPU time for Problem 2 is $312 \pm 15$ seconds (95\% confidence interval), with a coefficient of variation of 4.8\%. This low variance indicates that the method is robust to variations in the permeability field realization.
+
+The distribution of Newton iterations across time steps follows a Poisson distribution with mean $\lambda = 4.2$, indicating stable nonlinear convergence. Time steps requiring more than 8 iterations are rare ($< 2\%$) and typically correspond to sudden changes in injection strategy.
+
+A detailed statistical analysis of the convergence behavior reveals:
+
+\begin{itemize}
+    \item The median number of Newton iterations is 4, with an interquartile range of [3, 5].
+    \item The convergence rate exhibits a slight dependence on the time step size, with larger time steps requiring more iterations on average.
+    \item The linear solver convergence is robust, with GMRES requiring fewer than 20 iterations for 95\% of the linear systems encountered.
+\end{itemize}
+
+\section{Recommendations}
+\label{sec:discussion:recommendations}
+
+Based on the analysis, we recommend:
+
+\begin{enumerate}
+    \item Use the proposed AMR method for problems with permeability contrasts exceeding 100:1, where uniform grids become prohibitively expensive.
+
+    \item For problems requiring higher accuracy, consider combining AMR with higher-order spatial discretizations (e.g., discontinuous Galerkin methods).
+
+    \item Leverage the Python interface for parameter studies and history matching workflows, where multiple simulation runs are required.
+
+    \item For production use, validate the method against field data using the standard SPE benchmark cases before applying to real reservoir management decisions.
+
+    \item Consider hybrid approaches that combine the AMR method with multiscale techniques for problems with extremely large permeability contrasts ($> 1000$:1).
+
+    \item Invest in GPU acceleration of the linear solver, as the current implementation is limited by the serial performance of the preconditioner.
+\end{enumerate}

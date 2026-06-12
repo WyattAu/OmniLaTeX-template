@@ -1,9 +1,9 @@
-% OmniLaTeX Academic Beamer Presentation (Themed Showcase)
+% OmniLaTeX Advanced Beamer Showcase
 % Compile with: latexmk -lualatex main.tex
 %
-% Demonstrates: multiple beamer color themes (Madrid, Berlin, Copenhagen,
-% metropolis), two-column layouts, figures, tables, code listings, math
-% typesetting, bibliography, and appendix slides.
+% Demonstrates: overlays & animations, blocks & environments, columns &
+% layouts, TikZ integration, navigation & structure, advanced formatting,
+% code listings, math typesetting, footnotes & references, appendix slides.
 
 \documentclass[
   doctype=beamer,
@@ -15,23 +15,40 @@
 \usecolortheme{whale}
 
 \usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,decorations.pathreplacing}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{green!50!black}\itshape,
+  stringstyle=\color{red!70!black},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  stepnumber=1,
+  frame=single,
+  breaklines=true,
+  showstringspaces=false,
+  tabsize=2,
+  language=Python,
+  morekeywords={self,True,False,None},
+}
+
+\newcommand{\checkmark}{\text{\(\checkmark\)}}
 
 % ── Presentation metadata ──────────────────────────
-% Beamer themes available via class options:
-%   beamertheme=Madrid|Berlin|Copenhagen|metropolis|Warsaw|Rochester|Goettingen|Pittsburgh
-%   beamercolortheme=whale|beaver|seahorse|dolphin|orchid|rose|lily|albatross|crane
-
-\title[OmniLaTeX Beamer Showcase]{A Modular Approach to Document Generation\\
+\title[Advanced Beamer Features]{Advanced Beamer Features\\
 with OmniLaTeX and LuaLaTeX}
-\subtitle{Conference on Reproducible Research 2026}
+\subtitle{A Comprehensive Showcase}
 \author[Wyatt Au]{Wyatt Au}
 \institute[OmniLaTeX Project]{OmniLaTeX Project\\\texttt{https://github.com/WyattAu/OmniLaTeX-template}}
 \date{June 2026}
 
 % ── Bibliography ────────────────────────────────────
-% Uncomment to include references on a slide:
-% \usepackage[style=ieee]{biblatex}
-% \addbibresource{bibliography.bib}
+\usepackage[style=ieee]{biblatex}
+\addbibresource{../../bib/bibliography.bib}
 
 \begin{document}
 
@@ -52,274 +69,444 @@ with OmniLaTeX and LuaLaTeX}
 \end{frame}
 
 %% ────────────────────────────────────────────────────
-\section{Motivation and Background}
+\section{Overlays and Animations}
 %% ────────────────────────────────────────────────────
 
-\begin{frame}{The Document Generation Problem}
+\begin{frame}{Conditional Content}
+  \begin{block}{\texttt{\textbackslash only} vs.\ \texttt{\textbackslash uncover} vs.\ \texttt{\textbackslash visible}}
+    \begin{itemize}
+      \item \texttt{\textbackslash only<2->{}}: Content appears from slide 2 onward; space reserved only when visible.
+      \item \texttt{\textbackslash uncover<2-3>{}}: Content appears on slides 2--3; space always reserved.
+      \item \texttt{\textbackslash visible<2->{}}: Like \texttt{\textbackslash uncover}, but invisible content is also hidden from PDF.
+    \end{itemize}
+  \end{block}
+
+  \only<2->{\begin{alertblock}{This block appears on slide 2 onward}
+    Demonstrates \texttt{\textbackslash only<2->{}}.
+  \end{alertblock}}
+
+  \uncover<3-4>{\begin{exampleblock}{This block is visible on slides 3--4}
+    Demonstrates \texttt{\textbackslash uncover<3-4>{}}.
+  \end{exampleblock}}
+\end{frame}
+
+\begin{frame}{Step-by-Step Reveals with \texttt{\textbackslash pause}}
+  Step 1: First piece of content.\pause
+  Step 2: Second piece of content.\pause
+  Step 3: Third piece of content.\pause
+  Step 4: Final piece of content.
+
+  \vspace{1em}
+  \begin{block}{Note}
+    \texttt{\textbackslash pause} inserts a slide break at each invocation.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Switching and Temporal Effects}
   \begin{columns}[T]
-    \column{0.48\textwidth}
-    \begin{block}{Current State}
-      \begin{itemize}
-        \item Manual preamble configuration
-        \item 50--200 lines of boilerplate
-        \item Package conflicts common
-        \item Theme changes require restarts
-      \end{itemize}
+    \column{0.5\textwidth}
+    \begin{block}{\texttt{\textbackslash alt}}
+      \alt<1|2>{First option}{Second option}
     \end{block}
 
-    \column{0.48\textwidth}
-    \begin{block}{Desired State}
-      \begin{itemize}
-        \item One \texttt{\textbackslash documentclass} line
-        \item 27 doctypes from one class
-        \item 20+ institution configs
-        \item Live theme switching
-      \end{itemize}
+    \column{0.5\textwidth}
+    \begin{block}{\texttt{\textbackslash temporal}}
+      \temporal<1|2|3>{Before}{At current}{After}
     \end{block}
   \end{columns}
 
-  \vspace{0.5em}
-  \begin{alertblock}{Key Insight}
-    Most document configuration is \emph{typographic knowledge} that can be encoded once and reused.
+  \vspace{1em}
+  \begin{alertblock}{Try navigating!}
+    Use \texttt{<} and \texttt{>} keys or click to step through overlays.
   \end{alertblock}
 \end{frame}
 
-\begin{frame}{Why LuaLaTeX?}
-  \begin{enumerate}
-    \item \textbf{Unicode native} --- Full CJK, Arabic, Hebrew, Cyrillic support without font encoding hacks.
-    \item \textbf{OpenType fonts} --- Access to system fonts (Fira, Source Serif, Libertinus) with full OpenType features.
-    \item \textbf{Lua scripting} --- Programmatic document generation, conditional includes, dynamic content.
-    \item \textbf{Deterministic builds} --- Byte-for-byte reproducible PDFs via \texttt{SOURCE\_DATE\_EPOCH}.
-  \end{enumerate}
+\begin{frame}{Incremental Item Reveals}
+  \begin{itemize}
+    \item<1-> First item: Always visible.
+    \item<2-> Second item: Appears on slide 2.
+    \item<3-> Third item: Appears on slide 3.
+    \item<4-> Fourth item: Appears on slide 4.
+    \item<5-> Fifth item: Appears on slide 5.
+  \end{itemize}
 
-  \begin{exampleblock}{TeX Live 2025+ Standard}
-    LuaLaTeX is the default engine in TeX Live 2025. All 48 OmniLaTeX examples compile on LuaHBTeX 1.21.0+.
+  \vspace{0.5em}
+  \begin{exampleblock}{Custom bullets}
+    \begin{itemize}
+      \item[\checkmark] Completed task
+      \item[\checkmark] Another done task
+      \item[---] Pending task
+    \end{itemize}
   \end{exampleblock}
 \end{frame}
 
 %% ────────────────────────────────────────────────────
-\section{Architecture}
+\section{Blocks and Environments}
 %% ────────────────────────────────────────────────────
 
-\begin{frame}{Modular Architecture}
+\begin{frame}{Block Environments}
   \begin{columns}[T]
-    \column{0.55\textwidth}
-    \begin{figure}
-      \centering
-      \begin{tikzpicture}[
-        block/.style={rectangle,draw,fill=blue!5,text width=2.8cm,align=center,rounded corners=2pt,font=\small},
-        arrow/.style={->,>=stealth,thick},
-      ]
-        \node[block] (cls) at (0,0) {\texttt{omnilatex.cls}\\(entry point)};
-        \node[block] (doc) at (0,-1.8) {Doctype Config\\(27 profiles)};
-        \node[block] (lib) at (-3,-3.6) {Layout\\(7 modules)};
-        \node[block] (typ) at (0,-3.6) {Typography\\(4 modules)};
-        \node[block] (ref) at (3,-3.6) {References\\(4 modules)};
-        \draw[arrow] (cls) -- (doc);
-        \draw[arrow] (doc) -- (lib);
-        \draw[arrow] (doc) -- (typ);
-        \draw[arrow] (doc) -- (ref);
-      \end{tikzpicture}
-      \caption{Module dependency graph (simplified)}
-    \end{figure}
+    \column{0.48\textwidth}
+    \begin{block}{Standard Block}
+      General-purpose highlighted content.
+    \end{block}
+    \begin{alertblock}{Alert Block}
+      Warnings and critical information.
+    \end{alertblock}
 
-    \column{0.45\textwidth}
-    \begin{table}
-      \centering
-      \caption{Module Categories}
-      \label{tab:modules}
-      \begin{tabular}{l r}
-        \hline
-        Category & Modules \\
-        \hline
-        Core       & 1 \\
-        Layout     & 7 \\
-        Typography & 4 \\
-        References & 4 \\
-        Language   & 3 \\
-        Graphics   & 4 \\
-        Tables     & 1 \\
-        Code       & 1 \\
-        Utilities  & 6 \\
-        \hline
-        \textbf{Total} & \textbf{31} \\
-        \hline
-      \end{tabular}
-    \end{table}
+    \column{0.48\textwidth}
+    \begin{exampleblock}{Example Block}
+      Demonstrations and examples.
+    \end{exampleblock}
+    \begin{block}{Custom Colored Block}
+      \setbeamercolor{block body}{bg=blue!10}
+      Adapt block colors per-block.
+    \end{block}
   \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Document Class API}
-  \begin{block}{Single Entry Point}
-    \begin{semiverbatim}
-\\documentclass[
-  doctype=thesis,
-  institution=tuhh,
-  language=german,
-  font=libertinus,
-  citations=ieee,
-  color=midnight,
-]\\{omnilatex}
-    \end{semiverbatim}
-  \end{block}
+\begin{frame}{Theorem and Proof Environments}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+    \begin{block}{Theorem 1 (Cauchy--Schwarz)}
+      For vectors $u, v$ in an inner product space:
+      \[
+        |\langle u, v \rangle|^2 \leq \langle u, u \rangle \cdot \langle v, v \rangle
+      \]
+    \end{block}
 
-  \begin{itemize}
-    \item \textbf{55+ doctype aliases} resolve to 27 canonical profiles
-    \item \textbf{25+ languages} via polyglossia with 47 translation keys each
-    \item \textbf{20 institutions} with color schemes, logos, and degree translations
-    \item \textbf{6 color themes} with dark/light mode toggle
-    \item \textbf{Option cascading:} \texttt{doctype > institution > theme > override}
-  \end{itemize}
+    \column{0.5\textwidth}
+    \begin{block}{Proof}
+      Consider the non-negativity of $\|u - \lambda v\|^2 \geq 0$ for all $\lambda \in \mathbb{R}$.
+      Expanding and minimizing over $\lambda$ yields the inequality.
+    \end{block}
+  \end{columns}
+
+  \begin{block}{Lemma 2}
+    If $f$ is continuous on $[a,b]$ and differentiable on $(a,b)$, then there exists $c \in (a,b)$ such that $f'(c) = \frac{f(b)-f(a)}{b-a}$.
+  \end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Code Listings in Beamer}
+  \begin{block}{Python: Fibonacci with Memoization}
+    \begin{lstlisting}[language=Python]
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def fib(n):
+    if n < 2:
+        return n
+    return fib(n - 1) + fib(n - 2)
+
+# Compute first 10 Fibonacci numbers
+print([fib(i) for i in range(10)])
+    \end{lstlisting}
+  \end{block}
 \end{frame}
 
 %% ────────────────────────────────────────────────────
-\section{Reproducibility}
+\section{Columns and Layouts}
 %% ────────────────────────────────────────────────────
 
-\begin{frame}{Deterministic Builds}
+\begin{frame}{Side-by-Side Comparison}
   \begin{columns}[T]
     \column{0.48\textwidth}
-    \begin{block}{Mechanism}
-      \begin{itemize}
-        \item \texttt{SOURCE\_DATE\_EPOCH} pinned to Unix epoch (1700000000)
-        \item PDF metadata timestamps derived from epoch
-        \item LuaLaTeX ID suppression (\texttt{--safer --no-shell-escape})
-        \item All external data hashed into cache keys
-      \end{itemize}
+    \begin{block}{Approach A: Procedural}
+      \begin{enumerate}
+        \item Read input file
+        \item Parse line by line
+        \item Transform tokens
+        \item Write output file
+      \end{enumerate}
     \end{block}
 
     \column{0.48\textwidth}
-    \begin{block}{Verification}
+    \begin{block}{Approach B: Declarative}
+      \begin{enumerate}
+        \item Define grammar rules
+        \item Specify transformations
+        \item Apply pipeline
+        \item Collect results
+      \end{enumerate}
+    \end{block}
+  \end{columns}
+
+  \vspace{1em}
+  \rule{1\textwidth}{0.4pt}
+
+  \begin{center}
+    \textbf{\color{OmniPrimaryColor}Both approaches yield equivalent results.}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Multi-Column with Minipages}
+  \begin{minipage}{0.3\textwidth}
+    \begin{block}{Column 1}
+      First column content with some text to demonstrate the layout.
+    \end{block}
+  \end{minipage}\hfill
+  \begin{minipage}{0.3\textwidth}
+    \begin{block}{Column 2}
+      Second column content. Minipages allow fine-grained width control.
+    \end{block}
+  \end{minipage}\hfill
+  \begin{minipage}{0.3\textwidth}
+    \begin{block}{Column 3}
+      Third column content. Three equal-width columns with \texttt{\textbackslash hfill} spacing.
+    \end{block}
+  \end{minipage}
+\end{frame}
+
+%% ────────────────────────────────────────────────────
+\section{TikZ Integration}
+%% ────────────────────────────────────────────────────
+
+\begin{frame}{Animated TikZ Diagram}
+  \begin{center}
+    \begin{tikzpicture}[
+      node distance=1.5cm,
+      block/.style={rectangle, draw, fill=blue!5, minimum width=2cm,
+                    minimum height=0.8cm, align=center, rounded corners},
+      highlight/.style={rectangle, draw, fill=red!20, minimum width=2cm,
+                        minimum height=0.8cm, align=center, rounded corners, thick},
+    ]
+      % Step 1: Input node
+      \node[block] (input) {Input};
+      % Step 2: Process node (hidden initially)
+      \only<2->{\node[block, right=of input] (process) {Process};}
+      % Step 3: Decision node (hidden initially)
+      \only<3->{\node[block, right=of process] (decision) {Decision};}
+      % Step 4: Output node (hidden initially)
+      \only<4->{\node[block, right=of decision] (output) {Output};}
+
+      % Arrows
+      \only<2->{\draw[->,>=stealth,thick] (input) -- (process);}
+      \only<3->{\draw[->,>=stealth,thick] (process) -- (decision);}
+      \only<4->{\draw[->,>=stealth,thick] (decision) -- (output);}
+
+      % Highlight on specific slides
+      \only<3>{\node[highlight, right=of process] (decision) {Decision};}
+    \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.5em}
+  \begin{center}
+    \small Step-by-step construction of a flow diagram using \texttt{\textbackslash only}
+  \end{center}
+\end{frame}
+
+\begin{frame}{TikZ with Highlighted Nodes}
+  \begin{center}
+    \begin{tikzpicture}[
+      every node/.style={circle, draw, minimum size=1cm},
+      highlight/.style={fill=red!30, draw=red!70!black, thick},
+    ]
+      \node (a) at (0,0) {$A$};
+      \node (b) at (2,0) {$B$};
+      \node (c) at (1,1.73) {$C$};
+      \node (d) at (1,-1.73) {$D$};
+
+      \draw[->,>=stealth] (a) -- (b);
+      \draw[->,>=stealth] (b) -- (c);
+      \draw[->,>=stealth] (c) -- (a);
+      \draw[->,>=stealth] (a) -- (d);
+      \draw[->,>=stealth] (d) -- (b);
+
+      \only<2>{\node[highlight] at (0,0) {$A$};}
+      \only<3>{\node[highlight] at (2,0) {$B$};}
+      \only<4>{\node[highlight] at (1,1.73) {$C$};}
+      \only<5>{\node[highlight] at (1,-1.73) {$D$};}
+    \end{tikzpicture}
+  \end{center}
+
+  \begin{center}
+    \small Highlight individual nodes with \texttt{\textbackslash only<slide>\{\textbackslash node[highlight]...\};}
+  \end{center}
+\end{frame}
+
+%% ────────────────────────────────────────────────────
+\section{Navigation and Structure}
+%% ────────────────────────────────────────────────────
+
+\begin{frame}{Table of Contents}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+    \begin{block}{Full Table of Contents}
+      \tableofcontents[hideallsubsections]
+    \end{block}
+
+    \column{0.5\textwidth}
+    \begin{block}{Current Section Only}
+      \tableofcontents[currentsection, hideallsubsections]
+    \end{block}
+  \end{columns}
+\end{frame}
+
+\subsection{Subsection Example}
+\begin{frame}{Subsection Content}
+  This frame belongs to a subsection, demonstrating hierarchical structure.
+  \begin{block}{Key Point}
+    Use \texttt{\textbackslash section} and \texttt{\textbackslash subsection} to organize your presentation.
+  \end{block}
+\end{frame}
+
+%% ────────────────────────────────────────────────────
+\section{Advanced Formatting}
+%% ────────────────────────────────────────────────────
+
+\begin{frame}{Emphasis and Alignment}
+  \begin{columns}[T]
+    \column{0.5\textwidth}
+    \begin{block}{Text Emphasis}
       \begin{itemize}
-        \item Two sequential builds produce byte-identical PDFs
-        \item CI determinism check: file size within 3\% tolerance
-        \item Visual regression with SSIM (Structural Similarity)
-        \item Nix flake for hermetic build environment
+        \item \textbf{Bold text} for strong emphasis
+        \item \textit{Italic text} for terms
+        \item \texttt{Monospace} for code references
+        \item \textcolor{red}{Colored text} for warnings
+        \item \textbf{\color{blue!70!black}Combined} emphasis
+      \end{itemize}
+    \end{block}
+
+    \column{0.5\textwidth}
+    \begin{block}{Custom Bullets}
+      \begin{itemize}
+        \item[\checkmark] Completed task
+        \item[$\times$] Failed task
+        \item[$\diamond$] Optional task
+        \item[$\circ$] Pending task
+        \item[$\bullet$] Standard bullet
       \end{itemize}
     \end{block}
   \end{columns}
 
   \vspace{1em}
-  \[
-    \text{Build}( \text{source}, t_1 ) \equiv \text{Build}( \text{source}, t_2 )
-    \quad\forall\, t_1, t_2 \in \mathbb{T}
-  \]
-\end{frame}
-
-\begin{frame}[fragile]{Nix and Docker Reproducibility}
-  \begin{block}{Nix Flake (Linux/macOS)}
-    \begin{semiverbatim}
-\\# hermetic build with pinned TeX Live 2025
-nix develop
-python build.py build-example thesis
-    \end{semiverbatim}
-  \end{block}
-
-  \begin{block}{Docker (Any Platform)}
-    \begin{semiverbatim}
-\\# multi-arch image (amd64 + arm64)
-docker run -v \$(pwd):/workspace \\
-  ghcr.io/wyattau/omnilatex-docker@sha256:dae352...
-python build.py build-all
-    \end{semiverbatim}
-  \end{block}
-
-  \begin{alertblock}{Supply Chain Security}
-    Docker image digests are SHA-pinned across all CI configs. Digest changes require an automated PR with full CI validation.
-  \end{alertblock}
-\end{frame}
-
-%% ────────────────────────────────────────────────────
-\section{Results and Validation}
-%% ────────────────────────────────────────────────────
-
-\begin{frame}{Test Suite Coverage}
-  \begin{table}
-    \centering
-    \begin{tabular}{l r r c}
-      \hline
-      Test Suite & Files & Tests & Coverage \\
-      \hline
-      Structural validation & \texttt{test\_modules.py} & 260+ & \checkmark \\
-      Property-based (Hypothesis) & \texttt{test\_properties.py} & 75+ & \checkmark \\
-      Configuration & \texttt{test\_config.py} & 250+ & \checkmark \\
-      CTAN packaging & \texttt{test\_ctan.py} & 16 & \checkmark \\
-      Beamer regression & \texttt{test\_beamer\_regression.py} & 11 & \checkmark \\
-      Institution validation & \texttt{test\_institutions.py} & 65+ & \checkmark \\
-      Build system CLI & \texttt{test\_build\_py.py} & 24 & \checkmark \\
-      PDF content analysis & \texttt{test\_pdf\_content.py} & 90+ & \checkmark \\
-      \hline
-      \textbf{Total fast tests} & & \textbf{775} & \\
-      \hline
-    \end{tabular}
-  \end{table}
-\end{frame}
-
-\begin{frame}{Formal Verification}
-  \begin{columns}[T]
-    \column{0.5\textwidth}
-    \begin{block}{Lean 4 Proofs}
-      \begin{itemize}
-        \item 198 theorems across 16 modules
-        \item Zero \texttt{sorry} (all theorems proven)
-        \item CI verification on every push
-        \item Proof regression detection (20\% threshold)
-      \end{itemize}
-    \end{block}
-
-    \column{0.5\textwidth}
-    \begin{exampleblock}{Example Property}
-      \begin{itemize}
-        \item Module load ordering is acyclic
-        \item Institution configs are idempotent
-        \item Doctype option parsing yields exactly one canonical profile
-        \item Language fallback chains are well-founded
-      \end{itemize}
-    \end{exampleblock}
-  \end{columns}
-
-  \vspace{0.5em}
   \begin{center}
-    \texttt{specs/proofs/OmniLaTeXProofs/} --- 16 Lean modules, 0 \texttt{sorry}
+    \rule{1\textwidth}{0.4pt}
+  \end{center}
+  \begin{center}
+    \raggedright
+    This text is \texttt{\textbackslash raggedright} aligned, stopping at the margin.
   \end{center}
 \end{frame}
 
 %% ────────────────────────────────────────────────────
-\section{Conclusion}
+\section{Code Listings}
 %% ────────────────────────────────────────────────────
+
+\begin{frame}[fragile]{Python with Line Highlighting}
+  \begin{block}{Highlighted Lines}
+    \begin{lstlisting}[language=Python, highlightlines={3-5}]
+import numpy as np
+
+def normalize(x):
+    """Normalize array to [0, 1] range."""
+    x_min, x_max = x.min(), x.max()
+    return (x - x_min) / (x_max - x_min)
+
+data = np.random.rand(100)
+result = normalize(data)
+    \end{lstlisting}
+  \end{block}
+\end{frame}
+
+\begin{frame}[fragile]{LaTeX Code Listing}
+  \begin{block}{Document Class Usage}
+    \begin{lstlisting}[language={[LaTeX]TeX}, basicstyle=\ttfamily\scriptsize]
+\documentclass[
+  doctype=thesis,
+  institution=tuhh,
+  language=german,
+  font=libertinus,
+]{omnilatex}
+    \end{lstlisting}
+  \end{block}
+\end{frame}
+
+%% ────────────────────────────────────────────────────
+\section{Math in Beamer}
+%% ────────────────────────────────────────────────────
+
+\begin{frame}{Step-by-Step Equation Building}
+  \onslide<2->{%
+    \begin{equation}
+      \int_{-\infty}^{\infty} e^{-x^2} \, dx = \sqrt{\pi}
+    \end{equation}
+  }
+
+  \vspace{1em}
+  \onslide<3->{%
+    \begin{block}{Gaussian Integral}
+      \[
+        I = \int_{-\infty}^{\infty} e^{-x^2} \, dx
+        \implies I^2 = \pi
+        \implies I = \sqrt{\pi}
+      \]
+    \end{block}
+  }
+\end{frame}
+
+\begin{frame}{Matrix with Highlighted Elements}
+  \[
+    A = \begin{pmatrix}
+      \only<2>{\color{red}\mathbf{a_{11}}} \only<3->{a_{11}} &
+      \only<3>{\color{blue}\mathbf{a_{12}}} \only<4->{a_{12}} &
+      a_{13} \\
+      a_{21} &
+      \only<4>{\color{green!50!black}\mathbf{a_{22}}} \only<5->{a_{22}} &
+      a_{23} \\
+      a_{31} &
+      a_{32} &
+      \only<5>{\color{purple}\mathbf{a_{33}}} \only<6->{a_{33}}
+    \end{pmatrix}
+  \]
+
+  \vspace{1em}
+  \onslide<6->
+  \begin{block}{Determinant Expansion}
+    \[
+      \det(A) = a_{11}(a_{22}a_{33} - a_{23}a_{32})
+              - a_{12}(a_{21}a_{33} - a_{23}a_{31})
+              + a_{13}(a_{21}a_{32} - a_{22}a_{31})
+    \]
+  \end{block}
+\end{frame}
+
+%% ────────────────────────────────────────────────────
+\section{Footnotes and References}
+%% ────────────────────────────────────────────────────
+
+\begin{frame}{Footnotes and Citations}
+  \begin{block}{Timed Footnotes}
+    This content is always visible.\footnote<2->{This footnote appears on slide 2 and onward.}
+
+    Additional context.\footnote<3->{This footnote appears on slide 3 onward.}
+  \end{block}
+
+  \vspace{1em}
+  \begin{block}{Citations}
+    \begin{itemize}
+      \item Knuth's foundational work\cite{knuthTeXbook1986} on typesetting.
+      \item Einstein's relativity paper\cite{einstein1905}.
+      \item McKinney's Python data analysis guide\cite{mckinneyPythonDataAnalysis2018}.
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+%% ════════════════════════════════════════════════════
+%% FRAME: Summary
+%% ════════════════════════════════════════════════════
 
 \begin{frame}{Summary}
   \begin{enumerate}
-    \item OmniLaTeX provides 27 doctypes, 20 institutions, and 25 languages from a single \texttt{\textbackslash documentclass}.
-    \item Modular architecture with 31 \texttt{.sty} packages enables selective feature loading.
-    \item Deterministic builds via \texttt{SOURCE\_DATE\_EPOCH} and hermetic Nix/Docker environments.
-    \item 775 fast tests, 198 Lean 4 theorems, 0 regressions.
-    \item CTAN submission pending --- \texttt{tlmgr install omnilatex} coming soon.
+    \item Overlays and animations enable step-by-step content delivery.
+    \item Block environments provide structured, colored content areas.
+    \item Columns and minipages support flexible multi-column layouts.
+    \item TikZ diagrams can be animated and highlighted per-slide.
+    \item Section/subsection structure with dynamic table of contents.
+    \item Code listings with line highlighting for source code display.
+    \item Math environments support progressive equation building.
+    \item Timed footnotes and bibliography citations enhance references.
   \end{enumerate}
-\end{frame}
-
-\begin{frame}{Future Directions}
-  \begin{columns}[T]
-    \column{0.48\textwidth}
-    \begin{block}{Short Term (v2.3--v3.0)}
-      \begin{itemize}
-        \item CTAN publication and TeX Live inclusion
-        \item Overleaf template gallery
-        \item VS Code extension marketplace
-        \item Package manager distributions (Homebrew, AUR)
-      \end{itemize}
-    \end{block}
-
-    \column{0.48\textwidth}
-    \begin{block}{Long Term (v3.1+)}
-      \begin{itemize}
-        \item Institution contribution wizard
-        \item Language expansion to 40+
-        \item Plugin ecosystem
-        \item Accessibility (PDF/UA-1) compliance
-      \end{itemize}
-    \end{block}
-  \end{columns}
 \end{frame}
 
 %% ════════════════════════════════════════════════════
@@ -341,7 +528,8 @@ python build.py build-all
 %% ════════════════════════════════════════════════════
 
 \appendix
-\begin{frame}[allowframebreaks]{Backup: Complete Doctype Reference}
+
+\begin{frame}[allowframebreaks]{Appendix: Full Doctype Reference}
   \begin{table}
     \centering
     \begin{tabular}{l l l}
@@ -366,6 +554,47 @@ python build.py build-all
     \end{tabular}
   \end{table}
   (Full list: 27 canonical profiles with 55+ aliases)
+\end{frame}
+
+\begin{frame}{Appendix: Detailed Derivation}
+  \begin{block}{Cauchy--Schwarz Inequality Proof Sketch}
+    For $u, v \in V$ over field $\mathbb{F}$:
+    \[
+      t \mapsto \|u + tv\|^2 = \langle u + tv, u + tv \rangle \geq 0
+    \]
+    Expanding:
+    \[
+      \|u\|^2 + 2t \operatorname{Re}\langle u, v \rangle + t^2 \|v\|^2 \geq 0
+    \]
+    This quadratic in $t$ is non-negative, so its discriminant satisfies:
+    \[
+      \Delta = 4(\operatorname{Re}\langle u, v \rangle)^2 - 4\|u\|^2\|v\|^2 \leq 0
+    \]
+    Therefore $|\langle u, v \rangle|^2 \leq \|u\|^2 \|v\|^2$.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Appendix: Overlay Reference Table}
+  \begin{table}
+    \centering
+    \small
+    \begin{tabular}{l l}
+      \hline
+      Command & Behavior \\
+      \hline
+      \texttt{\textbackslash only<n>{}} & Show only on slide $n$; no space reserved \\
+      \texttt{\textbackslash only<n->{}} & Show from slide $n$ onward \\
+      \texttt{\textbackslash only<n-m>{}} & Show on slides $n$ through $m$ \\
+      \texttt{\textbackslash uncover<n->{}} & Like \texttt{\textbackslash only}, space always reserved \\
+      \texttt{\textbackslash visible<n->{}} & Like \texttt{\textbackslash uncover}, hidden content not in PDF \\
+      \texttt{\textbackslash alt<n|n>{}} & Switch between two alternatives \\
+      \texttt{\textbackslash temporal<n|n|n>{}} & Before, at, after overlays \\
+      \texttt{\textbackslash pause} & Insert slide break \\
+      \texttt{\textbackslash item<n->} & Incremental item reveal \\
+      \texttt{\textbackslash footnote<n->{}} & Timed footnote \\
+      \hline
+    \end{tabular}
+  \end{table}
 \end{frame}
 
 \end{document}

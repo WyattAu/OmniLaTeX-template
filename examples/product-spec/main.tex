@@ -7,157 +7,437 @@
 \RequirePackage{config/document-settings}
 \addbibresource{../../bib/bibliography.bib}
 
+\RequirePackage{booktabs,tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
 \begin{document}
 
 \maketitle
 
+\begin{abstract}
+This document specifies the Acme Platform v3.1 Advanced Workflow Automation
+module---a visual, low-code environment enabling enterprise customers to
+design, deploy, and manage complex operational workflows without custom code.
+It covers product scope, feature priorities, architecture, non-functional
+requirements, and the release roadmap.
+\end{abstract}
+
+\tableofcontents
+
 \section{Product Overview}
 
-The Acme Platform v3.1 introduces the Advanced Workflow Automation module,
-a visual, low-code environment that enables enterprise customers to design,
-deploy, and manage complex operational workflows without writing custom code.
-This module builds on the real-time analytics capabilities introduced in v3.0
-and integrates with the existing API layer, identity management, and
-monitoring infrastructure.
+\begin{tcolorbox}[colback=blue!5!white, colframe=blue!75!black,
+    title={\sffamily\bfseries Value Proposition}, fonttitle=\sffamily\large,
+    leftrule=4mm, arc=2mm, enhanced]
+\textbf{Acme Platform v3.1} empowers operations teams, DevOps engineers,
+and line-of-business managers to automate repetitive processes, enforce
+compliance rules, and orchestrate cross-functional workflows---all through
+an intuitive drag-and-drop canvas requiring zero custom code.
+\begin{itemize}
+    \item \textbf{Speed:} Reduce workflow creation from weeks to hours.
+    \item \textbf{Compliance:} Immutable audit trails and RBAC.
+    \item \textbf{Scale:} Thousands of concurrent workflows, 99.99\% uptime.
+    \item \textbf{Intelligence:} Real-time analytics and anomaly detection.
+\end{itemize}
+\end{tcolorbox}
 
-The primary target users are operations teams, DevOps engineers, and
-line-of-business managers who need to automate repetitive processes, enforce
-compliance rules, and orchestrate cross-functional workflows.
+The module builds on the real-time analytics capabilities introduced in v3.0
+and integrates with the existing API layer, identity management, and
+monitoring infrastructure~\cite{acme2026platform}.
+
+\section{User Stories}
+
+\begin{table}[htbp]
+    \centering\small
+    \begin{tabular}{@{}p{2.4cm}p{4.2cm}p{4.8cm}@{}}
+        \toprule
+        \textbf{Persona} & \textbf{I want to\dots} & \textbf{So that\dots} \\
+        \midrule
+        Ops Engineer    & Design multi-step workflows with conditional
+            branching visually. &
+            I can automate incident-response without scripts. \\
+        DevOps Lead     & Integrate executions with Slack, Jira,
+            and AWS Lambda natively. &
+            Cross-tool orchestration requires no glue code. \\
+        Compliance Mgr  & Access immutable audit logs for every execution. &
+            I can demonstrate compliance during audits. \\
+        Product Manager & Define approval gates with folder-level RBAC. &
+            Only authorized personnel modify critical workflows. \\
+        Data Analyst    & Export execution metrics to dashboards. &
+            I can track KPIs and identify bottlenecks. \\
+        \bottomrule
+    \end{tabular}
+    \caption{User stories mapping personas to goals and benefits.}
+    \label{tab:user-stories}
+\end{table}
 
 \section{Features}
 
-\begin{table}[h]
+\subsection{Feature Priority Matrix}
+
+P0 = critical, P1 = important, P2 = nice-to-have:
+
+\begin{table}[htbp]
     \centering
-    \begin{tabular}{llp{5.5cm}}
+    \begin{tabular}{@{}llccc@{}}
         \toprule
-        \textbf{Feature} & \textbf{Priority} & \textbf{Description} \\
+        \textbf{Feature} & \textbf{Domain} & \textbf{P0} & \textbf{P1}
+            & \textbf{P2} \\
         \midrule
-        Visual Workflow Builder    & P0 & Drag-and-drop canvas for designing
-            multi-step workflows with conditional branching, loops, and
-            error handling. \\
-        Pre-built Connectors      & P0 & Native integrations with 50+
-            SaaS and infrastructure services (AWS, Azure, GCP, Slack,
-            Jira, Salesforce, etc.). \\
-        Conditional Logic Engine   & P0 & Rule-based branching using
-            JSONPath expressions, time-based triggers, and webhook
-            events. \\
-        Audit Trail                & P1 & Immutable log of all workflow
-            executions, state changes, and user actions for compliance
-            and debugging. \\
-        Role-Based Access Control  & P1 & Granular permissions for
-            workflow creation, execution, and modification at the
-            folder and workflow level. \\
-        Version Control            & P1 & Full version history with
-            diff view, rollback, and branch/merge capabilities for
-            workflow definitions. \\
-        Template Library           & P2 & Curated collection of 25+
-            industry-specific workflow templates covering ITSM, HR
-            onboarding, and data pipeline orchestration. \\
-        Advanced Analytics         & P2 & Real-time dashboards for
-            workflow performance, error rates, and resource
-            utilization with exportable reports. \\
+        Visual Workflow Builder    & UX       & \cellcolor{red!20}Yes
+            & --- & --- \\
+        Pre-built Connectors      & Infra    & \cellcolor{red!20}Yes
+            & --- & --- \\
+        Conditional Logic Engine   & Engine   & \cellcolor{red!20}Yes
+            & --- & --- \\
+        Audit Trail                & Security & --- & \cellcolor{yellow!30}Yes
+            & --- \\
+        Role-Based Access Control  & Security & --- & \cellcolor{yellow!30}Yes
+            & --- \\
+        Version Control            & DevOps   & --- & \cellcolor{yellow!30}Yes
+            & --- \\
+        Template Library           & UX       & --- & ---
+            & \cellcolor{green!20}Yes \\
+        Advanced Analytics         & Analytics & --- & ---
+            & \cellcolor{green!20}Yes \\
         \bottomrule
     \end{tabular}
-    \caption{Feature matrix for Acme Platform v3.1.}
+    \caption{Feature priority matrix with color-coded cells.}
+    \label{tab:priority-matrix}
 \end{table}
 
-\section{Requirements}
+\subsection{Feature Details}
 
-\subsection{Functional Requirements}
+\begin{description}
+    \item[Visual Workflow Builder (P0)] Drag-and-drop canvas with up to 200
+        steps and 50 branches. \emph{Criteria:} GUI add/remove/reorder;
+        JSONPath; auto-save 30s. \emph{Edge:} Large workflows use lazy
+        rendering.
+    \item[Pre-built Connectors (P0)] 50+ native integrations (AWS, Azure,
+        GCP, Slack, Jira, Salesforce) in sandboxed containers.
+        \emph{Criteria:} OAuth 2.0/SAML 2.0; gRPC; sandbox isolation.
+        \emph{Edge:} Rate-limited APIs respect upstream throttling.
+    \item[Audit Trail (P1)] Immutable log retained 7+ years.
+        \emph{Criteria:} Append-only; Kafka streaming; queries $\leq$5s
+        for 90-day ranges. \emph{Edge:} Throughput $>$10k events/sec
+        must not cause $>$60s backpressure.
+\end{description}
 
-\begin{enumerate}
-    \item The workflow builder shall support workflows with up to 200 steps
-          and 50 conditional branches without performance degradation.
-    \item All workflow executions shall complete within the configured
-          timeout period, with a default timeout of 30 minutes.
-    \item The system shall support at least 1,000 concurrent workflow
-          executions per tenant.
-    \item Workflow definitions shall be exportable as JSON for portability
-          and version control.
-    \item The audit trail shall retain records for a minimum of 7 years
-          in compliance with enterprise retention policies.
-\end{enumerate}
+\subsection{Feature Comparison}
 
-\subsection{Non-Functional Requirements}
-
-\begin{itemize}
-    \item \textbf{Performance:} Workflow execution latency shall not exceed
-          500ms for the first step and 200ms for subsequent steps under
-          normal load.
-    \item \textbf{Availability:} The workflow engine shall maintain 99.99\%
-          uptime, measured monthly.
-    \item \textbf{Scalability:} The system shall support horizontal scaling
-          to handle a 10x increase in workflow volume without manual
-          intervention.
-    \item \textbf{Security:} All workflow data in transit and at rest shall
-          be encrypted using AES-256. OAuth 2.0 and SAML 2.0 shall be
-          supported for connector authentication.
-    \item \textbf{Compliance:} The module shall comply with SOC 2 Type II,
-          GDPR, and CCPA requirements.
-\end{itemize}
+\begin{table}[htbp]
+    \centering\small
+    \begin{tabular}{@{}lccc@{}}
+        \toprule
+        \textbf{Capability} & \textbf{Acme v3.1} & \textbf{Competitor A}
+            & \textbf{Competitor B} \\
+        \midrule
+        Visual Builder          & \checkmark & \checkmark & ---     \\
+        Pre-built Connectors    & 50+        & 30+        & 15+     \\
+        Conditional Logic       & \checkmark & Partial    & ---     \\
+        Immutable Audit Trail   & \checkmark & ---        & \checkmark \\
+        RBAC at Folder Level    & \checkmark & ---        & ---     \\
+        Version Control / Diff  & \checkmark & ---        & ---     \\
+        Template Library        & 25+        & 10+        & 5+      \\
+        Real-time Analytics     & \checkmark & Partial    & \checkmark \\
+        \bottomrule
+    \end{tabular}
+    \caption{Feature comparison against competitors.}
+    \label{tab:feature-comparison}
+\end{table}
 
 \section{Architecture}
 
-The workflow automation module is composed of three primary subsystems:
+\subsection{System Architecture}
 
-\begin{enumerate}
-    \item \textbf{Workflow Orchestrator:} A state machine engine built on
-          an event-sourced architecture. It processes workflow definitions,
-          manages execution state, and coordinates connector invocations.
-          Deployed as a horizontally scalable microservice on Kubernetes.
-    \item \textbf{Connector Runtime:} An isolated execution environment for
-          third-party integrations. Each connector runs in a sandboxed
-          container with resource limits to prevent noisy-neighbor issues.
-          Connectors communicate with the orchestrator via gRPC.
-    \item \textbf{Persistence Layer:} Workflow definitions and execution
-          history are stored in PostgreSQL with read replicas for analytics
-          queries. Audit logs are streamed to Apache Kafka for long-term
-          retention in object storage.
-\end{enumerate}
-
-\begin{figure}[h]
+\begin{figure}[htbp]
     \centering
-    \f\boxed{\par\boxed{0.85\textwidth}{\centering\vspace{2cm}
-    \textbf{Architecture Diagram Placeholder}\\[0.5em]
-    Workflow Orchestrator $\leftrightarrow$ Connector Runtime $\leftrightarrow$ Persistence Layer
-    \vspace{2cm}}}
-    \caption{High-level architecture of the workflow automation module.}
+    \begin{tikzpicture}[
+        node distance=1.8cm and 2.5cm,
+        box/.style={draw, rounded corners, minimum width=2.8cm,
+            minimum height=1.1cm, text centered, font=\sffamily\small, thick},
+        db/.style={draw, cylinder, shape border rotate=90, aspect=0.25,
+            minimum width=2.3cm, minimum height=1.1cm,
+            text centered, font=\sffamily\small, thick},
+        arrow/.style={-{Stealth[length=3mm]}, thick},
+        lbl/.style={font=\sffamily\tiny, text=gray60},
+    ]
+        \node[box, fill=blue!15]   (ui)   {Workflow UI};
+        \node[box, fill=red!15,  below=of ui] (orch) {Orchestrator};
+        \node[box, fill=green!15, right=of orch] (conn) {Connector Runtime};
+        \node[db,  fill=orange!15, below=of orch] (db) {PostgreSQL};
+        \node[box, fill=purple!15, right=of conn] (kafka) {Apache Kafka};
+        \node[db,  fill=orange!15, below=of conn] (oss) {Object Storage};
+        \draw[arrow] (ui)   -- (orch) node[midway, right, lbl]{REST/gRPC};
+        \draw[arrow] (orch) -- (conn) node[midway, above, lbl]{gRPC};
+        \draw[arrow] (orch) -- (db)   node[midway, left,  lbl]{SQL};
+        \draw[arrow] (conn) -- (kafka) node[midway, above, lbl]{Events};
+        \draw[arrow] (kafka) -- (oss) node[midway, right, lbl]{Archive};
+    \end{tikzpicture}
+    \caption{High-level system architecture.}
+    \label{fig:architecture}
 \end{figure}
 
-\section{Timeline}
+\subsection{Data Model}
 
-\begin{table}[h]
-    \centering
-    \begin{tabular}{llr}
+\begin{table}[htbp]
+    \centering\small
+    \begin{tabular}{@{}llp{5cm}@{}}
         \toprule
-        \textbf{Milestone} & \textbf{Deliverable} & \textbf{Target Date} \\
+        \textbf{Entity} & \textbf{Key Fields} & \textbf{Description} \\
         \midrule
-        M1: Design Complete     & Architecture review, API specs        & July 15, 2026  \\
-        M2: Core Engine         & Workflow orchestrator, basic UI       & September 1, 2026 \\
-        M3: Connectors          & 25 pre-built connectors              & October 15, 2026 \\
-        M4: Beta Release        & Feature-complete beta for 10 tenants  & November 30, 2026 \\
-        M5: GA Release          & Production launch with full support   & January 15, 2027 \\
+        Workflow  & \texttt{id}, \texttt{name}, \texttt{version},
+            \texttt{definition\_json} & Versioned JSON workflow definitions. \\
+        Execution & \texttt{id}, \texttt{workflow\_id}, \texttt{status},
+            \texttt{started\_at} & Runtime execution records. \\
+        Step      & \texttt{id}, \texttt{execution\_id},
+            \texttt{step\_type}, \texttt{duration\_ms} & Per-step timing
+            and results. \\
+        Connector & \texttt{id}, \texttt{service}, \texttt{auth\_type} &
+            Registered connectors with sandbox config. \\
+        AuditLog  & \texttt{id}, \texttt{actor}, \texttt{action},
+            \texttt{timestamp} & Append-only compliance log. \\
         \bottomrule
     \end{tabular}
-    \caption{Development milestones for Acme Platform v3.1.}
+    \caption{Core data model entities.}
+    \label{tab:data-model}
 \end{table}
+
+\subsection{API Endpoints}
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{@{}llp{5cm}@{}}
+    \toprule
+    \textbf{Method} & \textbf{Endpoint} & \textbf{Description} \\
+    \midrule
+    POST   & \texttt{/v1/workflows}         & Create workflow. \\
+    GET    & \texttt{/v1/workflows/\{id\}}   & Retrieve workflow. \\
+    PUT    & \texttt{/v1/workflows/\{id\}}   & Update workflow. \\
+    DELETE & \texttt{/v1/workflows/\{id\}}   & Soft-delete (audit
+        retained). \\
+    POST   & \texttt{/v1/executions}         & Trigger execution. \\
+    GET    & \texttt{/v1/executions/\{id\}}  & Execution status and
+        steps. \\
+    GET    & \texttt{/v1/audit}              & Query audit log. \\
+    POST   & \texttt{/v1/connectors/test}    & Validate connector
+        health. \\
+    \bottomrule
+\end{tabular}
+\caption{REST API endpoints.}
+\label{tab:api-endpoints}
+\end{table}
+
+\section{Non-Functional Requirements}
+
+\subsection{Performance Requirements}
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{@{}lp{5cm}l@{}}
+    \toprule
+    \textbf{Metric} & \textbf{Requirement} & \textbf{Target} \\
+    \midrule
+    First-step latency      & Latency for the initial step. &
+        $\leq 500$\,ms \\
+    Subsequent-step latency & Latency after the first step. &
+        $\leq 200$\,ms \\
+    Concurrent executions   & Max simultaneous per tenant. &
+        $\geq 1{,}000$ \\
+    Workflow size           & Max steps without degradation. &
+        200 steps / 50 branches \\
+    API response time       & 95th-percentile REST latency. &
+        $\leq 100$\,ms \\
+    \bottomrule
+\end{tabular}
+\caption{Performance requirements.}
+\label{tab:perf-req}
+\end{table}
+
+\subsection{Security Requirements}
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{@{}lp{5cm}l@{}}
+    \toprule
+    \textbf{Requirement} & \textbf{Details} & \textbf{Standard} \\
+    \midrule
+    Encryption at rest    & AES-256 for data and audit logs. &
+        SOC 2 \\
+    Encryption in transit & TLS 1.3 for all communication. & SOC 2 \\
+    Authentication        & OAuth 2.0 / SAML 2.0 for connectors. &
+        SOC 2 \\
+    Access control        & Granular RBAC with audit logging. &
+        SOC 2, GDPR \\
+    Data retention        & 7-year audit trail; GDPR Art.\ 17. &
+        GDPR, CCPA \\
+    \bottomrule
+\end{tabular}
+\caption{Security requirements.}
+\label{tab:security-req}
+\end{table}
+
+\subsection{Scalability Requirements}
+
+\begin{itemize}
+    \item Horizontal scaling to handle 10$\times$ workflow volume without
+          manual intervention; orchestrator auto-scales 3--50 pods.
+    \item Read replicas scale independently; connector sandbox containers
+          recycled to maintain $<$2s cold start.
+\end{itemize}
+
+\section{Technical Constraints}
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{@{}lp{4.2cm}p{3.8cm}@{}}
+    \toprule
+    \textbf{Constraint} & \textbf{Description} & \textbf{Mitigation} \\
+    \midrule
+    Kubernetes 1.28+     & All services on K8s with Istio mesh. &
+        Helm charts and Terraform modules. \\
+    PostgreSQL 16         & No alternative RDBMS permitted. &
+        Read replicas + PgBouncer. \\
+    gRPC connectors      & Connector-to-orchestrator via gRPC. &
+        Proto schema registry. \\
+    Kafka audit log      & Audit events through Kafka only. &
+        Idempotent consumers + DLQ. \\
+    Browser support      & Chrome 100+, Firefox 100+, Safari 16+. &
+        Cross-browser CI testing. \\
+    \bottomrule
+\end{tabular}
+\caption{Technical constraints and mitigations.}
+\label{tab:constraints}
+\end{table}
+
+\section{Testing Strategy}
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{@{}lp{3cm}p{3.5cm}l@{}}
+    \toprule
+    \textbf{Test Type} & \textbf{Scope} & \textbf{Tools}
+        & \textbf{Target} \\
+    \midrule
+    Unit         & Functions, parsers, validators. &
+        Jest, Go test. & 90\% coverage \\
+    Integration  & gRPC connector flows. &
+        Testcontainers. & All 50+ connectors \\
+    End-to-end   & Full workflow lifecycle. &
+        Playwright, Go harness. & Top 20 journeys \\
+    Performance  & Latency, throughput. &
+        k6, Grafana. & All P0 NFRs \\
+    Security     & Auth bypass, injection, RBAC. &
+        OWASP ZAP, fuzzing. & OWASP Top 10 \\
+    Chaos        & Pod failure, network partition. &
+        Litmus Chaos. & Critical paths \\
+    \bottomrule
+\end{tabular}
+\caption{Testing strategy and coverage targets.}
+\label{tab:test-plan}
+\end{table}
+
+\section{Release Plan}
+
+\subsection{Milestones}
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{@{}llrl@{}}
+    \toprule
+    \textbf{Milestone} & \textbf{Deliverable} & \textbf{Date}
+        & \textbf{Owner} \\
+    \midrule
+    M1: Design   & Architecture review, API specs. & Jul 15, 2026
+        & Arch \\
+    M2: Core     & Orchestrator, basic UI, 10 connectors. & Sep 1, 2026
+        & Core \\
+    M3: Connectors & 50 connectors, sandbox hardening. & Oct 15, 2026
+        & Integrations \\
+    M4: Beta     & Feature-complete, 10 tenant pilots. & Nov 30, 2026
+        & Product \\
+    M5: GA       & Production launch, full support. & Jan 15, 2027
+        & Engineering \\
+    \bottomrule
+\end{tabular}
+\caption{Development milestones.}
+\label{tab:milestones}
+\end{table}
+
+\subsection{Timeline (Gantt Chart)}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=0.35cm, y=0.6cm,
+    phase/.style={draw, fill=#1, rounded corners=2pt, minimum height=0.5cm,
+        font=\sffamily\tiny, text=white, text centered, minimum width=1cm},
+    milestone/.style={draw, fill=black, regular polygon,
+        regular polygon sides=3, minimum size=0.3cm, inner sep=0pt},
+]
+    \foreach \m/\l in {0/Jun,4/Jul,8/Aug,12/Sep,16/Oct,20/Nov,24/Dec,28/Jan} {
+        \node[font=\sffamily\tiny, below] at (\m, -0.3) {\l};
+        \draw[gray!30, thin] (\m, 0) -- (\m, 8.5);
+    }
+    \node[phase=blue!70]   at (6,8)  {M1};
+    \node[phase=green!60]  at (16,6) {M2};
+    \node[phase=orange!70] at (22,4) {M3};
+    \node[phase=red!50]    at (26,2) {M4};
+    \node[phase=purple!60] at (30,0) {M5};
+    \fill[blue!30]   (0,7.6) rectangle (8,8.4);
+    \fill[green!30]  (4,5.6) rectangle (16,6.4);
+    \fill[orange!30] (12,3.6) rectangle (22,4.4);
+    \fill[red!20]    (20,1.6) rectangle (26,2.4);
+    \fill[purple!30] (24,-0.4) rectangle (30,0.4);
+    \foreach \x/\y in {8/8,16/6,22/4,26/2,30/0}
+        \node[milestone] at (\x,\y) {};
+\end{tikzpicture}
+\caption{Release timeline (Jun 2026 -- Jan 2027).}
+\label{fig:gantt}
+\end{figure}
+
+\subsection{Rollback Plan}
+
+\begin{enumerate}
+    \item \textbf{Pre-release snapshot:} Full DB backup and container image
+          snapshot before each milestone deployment.
+    \item \textbf{Feature flags:} All new features behind flags; disabling
+          reverts behavior within seconds.
+    \item \textbf{Canary:} Roll out to 5\% of tenants; monitor 24 hours
+          before proceeding.
+    \item \textbf{Auto-rollback:} If error rate $>$0.5\% or p99 $>$1s,
+          CI pipeline reverts to last stable release.
+    \item \textbf{Communication:} Status page update within 5 minutes;
+          post-mortem within 48 hours.
+\end{enumerate}
 
 \section{Success Metrics}
 
-Following the general availability release, the following metrics will be
-tracked to evaluate adoption and impact:
-
-\begin{itemize}
-    \item \textbf{Adoption:} 40\% of enterprise tenants activate the
-          workflow module within 90 days of GA.
-    \item \textbf{Engagement:} Average of 15 active workflows per tenant
-          within 6 months.
-    \item \textbf{Efficiency:} Customers report a 25\% reduction in manual
-          operational tasks within the first quarter of use.
-    \item \textbf{Reliability:} Workflow execution success rate above 99.5\%.
-    \item \textbf{Revenue:} \$8M in incremental ARR attributable to the
-          workflow module in FY2027.
-\end{itemize}
+\begin{tcolorbox}[colback=green!5!white, colframe=green!60!black,
+    title={\sffamily\bfseries KPI Dashboard}, fonttitle=\sffamily\large,
+    leftrule=4mm, arc=2mm, enhanced]
+\begin{table}[htbp]
+\centering\small
+\begin{tabular}{@{}lllr@{}}
+    \toprule
+    \textbf{KPI} & \textbf{Definition} & \textbf{Target}
+        & \textbf{Window} \\
+    \midrule
+    Adoption Rate     & Tenants activating within 90 days. & 40\%
+        & 90 days \\
+    Active Workflows  & Avg active workflows per tenant. & 15
+        & 6 months \\
+    Task Reduction    & Manual task reduction reported. & 25\%
+        & 1 quarter \\
+    Execution Success & Workflow success rate. & $\geq$99.5\%
+        & Ongoing \\
+    Incremental ARR   & Revenue from workflow module. & \$8M
+        & FY2027 \\
+    \bottomrule
+\end{tabular}
+\caption{Key performance indicators.}
+\label{tab:kpi}
+\end{table}
+\end{tcolorbox}
 
 \printbibliography[heading=none]
 

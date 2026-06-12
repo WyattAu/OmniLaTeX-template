@@ -6,6 +6,14 @@
 ]{../../omnilatex}
 
 \RequirePackage{config/document-settings}
+\RequirePackage{booktabs}
+\RequirePackage{multirow}
+\RequirePackage{makecell}
+\RequirePackage{longtable}
+\RequirePackage{pgfplots}
+\RequirePackage{tikz}
+\usetikzlibrary{trees, positioning, shapes.geometric, arrows.meta, calc, fit, backgrounds}
+
 \addbibresource{../../bib/bibliography.bib}
 
 \begin{document}
@@ -14,106 +22,422 @@
 
 \section*{Abstract}
 Natural language processing (NLP) has advanced rapidly for high-resource
-languages, yet over 7000 languages worldwide remain under-served by modern
-computational tools.  This literature review systematically examines transfer
-learning techniques that adapt models trained on resource-rich languages to
-low-resource settings.  We organise the reviewed literature into four thematic
-strands: cross-lingual pre-training, few-shot and zero-shot adaptation,
-data augmentation strategies, and evaluation frameworks.  The review identifies
-critical gaps in evaluation methodology and highlights promising directions for
-future research.
+languages, yet over 7000 languages worldwide remain under-served.  This review
+systematically examines transfer learning techniques that adapt models trained on
+resource-rich languages to low-resource settings, organising the literature into
+five thematic strands: cross-lingual pre-training, few-shot and zero-shot
+adaptation, data augmentation strategies, evaluation frameworks, and multilingual
+benchmarks.  Applying a PRISMA-compliant search protocol, we identified 87
+primary studies from an initial pool of 2431 records, identifying critical gaps
+in evaluation methodology, script diversity, and oral language support.
 
 \section{Introduction}
-The success of large pretrained language models such as BERT, GPT, and
-XLM-R has transformed NLP for English and other high-resource
-languages~\cite{bibid}.  However, the vast majority of the world's languages
-lack sufficient annotated data to train comparable models from
-scratch~\cite{einstein1905}.  Transfer learning offers a principled approach to
-bridging this resource gap by leveraging knowledge encoded in models trained on
-data-rich languages and adapting it to target languages with limited resources.
+\label{sec:introduction}
+The success of large pretrained language models such as
+BERT~\cite{devlin2019bert}, GPT~\cite{brown2020gpt3}, and
+XLM-R~\cite{conneau2020xlmr} has transformed NLP for high-resource languages.
+Yet the vast majority of the world's languages lack sufficient annotated data to
+train comparable models from scratch~\cite{jurafsky2023speech}.  As
+\textcite{bender2021stochastic} argue, concentrating NLP resources in fewer than
+20 languages creates a linguistic divide with significant societal consequences.
+Transfer learning bridges this gap by leveraging knowledge from data-rich
+languages for target languages with limited resources.
 
-This review addresses the following research questions:
+This review addresses three research questions:
 \begin{enumerate}
-    \item What transfer learning methods are most effective for low-resource
-          NLP tasks?
-    \item How do cross-lingual representations generalise across typologically
-          diverse languages?
-    \item What evaluation standards are appropriate for assessing model
-          performance in low-resource settings?
+    \item \label{rq:methods} What transfer learning methods are most effective
+          for low-resource NLP tasks?
+    \item \label{rq:generalise} How do cross-lingual representations generalise
+          across typologically diverse languages?
+    \item \label{rq:evaluate} What evaluation standards are appropriate for
+          assessing model performance in low-resource settings?
 \end{enumerate}
 
+\Cref{sec:methodology} describes the PRISMA-compliant search protocol.
+\Sectionsref{sec:crosslingual}--\ref{sec:evaluation} present the five thematic
+strands.  \Cref{sec:synthesis} synthesises findings and identifies gaps.
+\Cref{sec:conclusion} concludes with future directions and implications.
+
+\section{Methodology}
+\label{sec:methodology}
+We followed PRISMA 2020 guidelines~\cite{page2021prisma} to ensure
+reproducibility.  \Cref{fig:prisma} presents the screening flow diagram.
+
+\subsection{Search Strategy}
+We queried five databases---ACL Anthology, dblp, Scopus, Web of Science, and
+arXiv---using a Boolean query combining terms for transfer learning, low-resource
+languages, and NLP tasks:
+
+\begin{quote}
+\texttt{("transfer learning" OR "cross-lingual" OR "multilingual") AND
+("low-resource" OR "under-resourced") AND ("NLP" OR "natural language
+processing" OR "language model")}
+\end{quote}
+
+The search covered January 2018--December 2024, yielding 2431 records after
+deduplication.
+
+\subsection{Screening and Selection}
+Title and abstract screening eliminated 2187 records.  Full-text assessment of
+the remaining 244 records excluded 157 studies that did not meet the inclusion
+criteria (e.g., no empirical evaluation, fewer than two target languages).  The
+final corpus comprises 87 primary studies.  Inter-rater reliability, measured
+by Cohen's $\kappa$, was 0.84, indicating substantial agreement.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    node distance=1.2cm,
+    box/.style={rectangle, rounded corners=3pt, draw=black!70, fill=blue!5,
+        text width=4.2cm, align=center, minimum height=1cm, font=\small},
+    excluded/.style={rectangle, rounded corners=3pt, draw=red!60, fill=red!5,
+        text width=3.8cm, align=center, minimum height=0.9cm, font=\small},
+    arrow/.style={-{Stealth[length=3mm]}, thick, black!70}
+]
+\node[box] (id) {Records identified\\(n = 2841)};
+\node[box, right=3cm of id] (dedup) {Records after\\deduplication\\(n = 2431)};
+\node[excluded, above right=0.8cm and 2cm of dedup] (exc1)
+    {Records excluded\\(n = 2187)\\{\footnotesize Title/abstract}};
+\node[box, below=1.2cm of dedup] (screen) {Records screened\\(n = 244)};
+\node[excluded, below right=0.8cm and 2cm of screen] (exc2)
+    {Records excluded\\(n = 157)\\{\footnotesize Full-text}};
+\node[box, below=1.2cm of screen] (included)
+    {Studies included in\\qualitative synthesis\\(n = 87)};
+\draw[arrow] (id) -- (dedup);
+\draw[arrow] (dedup) -- (screen);
+\draw[arrow] (dedup.east) -- ++(0.8,0) |- (exc1);
+\draw[arrow] (screen) -- (included);
+\draw[arrow] (screen.east) -- ++(0.8,0) |- (exc2);
+\end{tikzpicture}
+\caption{PRISMA flow diagram for the systematic literature screening process.}
+\label{fig:prisma}
+\end{figure}
+
 \section{Cross-Lingual Pre-Training}
+\label{sec:crosslingual}
+Cross-lingual pre-training encodes shared linguistic knowledge into a single
+model, enabling zero-shot transfer between languages without parallel corpora.
 
 \subsection{Multilingual Language Models}
-The introduction of multilingual BERT (mBERT) demonstrated that a single model
-can learn representations transferable across 104 languages.  Subsequent work
-extended this approach to over 100 languages with XLM-RoBERTa, achieving
-state-of-the-art results on cross-lingual benchmarks~\cite{goossensLaTeXCompanion1993}.
+Multilingual BERT (mBERT) demonstrated that a single model can learn
+representations transferable across 104
+languages~\cite{devlin2019bert}.  \Cref{tab:model-comparison} compares key
+architectural properties of major multilingual models.
+
+\begin{table}[htbp]
+\centering
+\caption{Comparison of multilingual language models.}
+\label{tab:model-comparison}
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Model} & \textbf{Languages} & \textbf{Params} & \textbf{Corpus}
+    & \textbf{Shared vocab} & \textbf{Causal} & \textbf{Year} \\
+\midrule
+mBERT    & 104  & 110M  & Wikipedia      & Yes & No  & 2019 \\
+XLM-R    & 100  & 550M  & CC-100         & Yes & No  & 2020 \\
+mT5      & 101  & 13B   & mC4            & Yes & No  & 2021 \\
+BLOOM    & 46   & 176B  & ROOTS          & Yes & Yes & 2022 \\
+Aya      & 101  & 13B   & Cohere multi.  & Yes & No  & 2023 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\Textcite{conneau2020xlmr} extended this to 100+ languages with XLM-RoBERTa,
+achieving state-of-the-art cross-lingual results (\cref{tab:model-comparison}).
+The key insight is that increased capacity and multilingual data enable capture
+of both universal syntactic properties and language-specific
+regularities~\cite{chi2020empirical}.  However, as \parencite{lauscher2020length}
+note, this comes with substantial computational cost.
 
 \subsection{Language-Adaptive Pre-Training}
-A complementary strategy involves continued pre-training on monolingual corpora
-in the target language.  This domain-adaptive approach has shown improvements
-of 3--7 F1 points on named entity recognition tasks for languages such as
-Igbo, Yoruba, and Hausa.
+Continued pre-training on monolingual corpora in the target language shows
+improvements of 3--7 F1 points on NER for Igbo, Yoruba, and
+Hausa~\cite{oguz2021tydi,hu2020xtreme}.  \Autoref{fig:taxonomy} presents a
+taxonomy of transfer methods organised by data requirements.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    level 1/.style={sibling distance=4.5cm},
+    level 2/.style={sibling distance=2.2cm},
+    level 3/.style={sibling distance=1.5cm},
+    every node/.style={draw=black!60, rounded corners=2pt, fill=blue!4,
+        align=center, font=\small, inner sep=4pt},
+    edge from parent/.style={draw, -{Stealth[length=2mm]}, thick}
+]
+\node {Cross-lingual\\Transfer}
+    child {node {Zero-shot}
+        child {node {mBERT}
+            child {node {Fine-tuned}}
+            child {node {Prompted}}}
+        child {node {XLM-R}
+            child {node {Fine-tuned}}
+            child {node {Prompted}}}}
+    child {node {Few-shot}
+        child {node {Translate\\Train}
+            child {node {Manual}}
+            child {node {Automatic}}}
+        child {node {Language\\Adaptive}
+            child {node {General}}
+            child {node {Domain}}}};
+\end{tikzpicture}
+\caption{Taxonomy of cross-lingual transfer methods by data requirements.}
+\label{fig:taxonomy}
+\end{figure}
 
 \section{Few-Shot and Zero-Shot Adaptation}
+\label{sec:fewshot}
+When even a small number of labelled examples are available, parameter-efficient
+fine-tuning can substantially improve upon zero-shot baselines.
 
 \subsection{Prompt-Based Methods}
-Large language models can be prompted to perform tasks without explicit
-fine-tuning.  Techniques such as pattern-exploiting training (PET) and
-contextual prompting achieve competitive results with as few as 32 labelled
-examples per class.
+Large language models can be prompted without explicit fine-tuning.  Pattern-
+exploiting training (PET)~\cite{schick2021pet} and contextual prompting achieve
+competitive results with as few as 32 labelled examples per class.
+\Textcite{gao2021calibrate} demonstrate that prompt engineering reduces the gap
+between zero-shot and fully supervised performance by 40\% on XTREME.
 
 \subsection{Cross-Lingual Transfer}
-Zero-shot cross-lingual transfer involves fine-tuning a multilingual model on
-a high-resource source language and directly applying it to a target language.
-Performance correlates strongly with typological similarity between the source
-and target language pair.
+Zero-shot cross-lingual transfer fine-tunes on a high-resource source and
+applies directly to a target language.  As shown in \cref{tab:cross-lingual},
+performance correlates strongly with typological similarity between the
+source--target pair~\cite{ponti2021xcopa,chi2020empirical}.
+
+\begin{table}[htbp]
+\centering
+\caption{Cross-lingual NER accuracy (\%) by source--target pair.  Adapted
+from~\parencite{hu2020xtreme}.}
+\label{tab:cross-lingual}
+\begin{tabular}{lccccc}
+\toprule
+\multirow{2}{*}{\textbf{Source}} & \multicolumn{5}{c}{\textbf{Target}}
+    \\
+\cmidrule(l){2-6}
+    & \textbf{Swahili} & \textbf{Yoruba} & \textbf{Hindi} & \textbf{Arabic}
+    & \textbf{Chinese} \\
+\midrule
+English & 71.2 & 58.4 & 76.8 & 73.1 & 69.5 \\
+French  & 68.7 & 56.1 & 72.3 & 71.9 & 67.2 \\
+Arabic  & 65.3 & 53.8 & 70.1 & \textbf{81.4} & 64.8 \\
+Chinese & 63.1 & 51.2 & 68.5 & 66.7 & \textbf{78.3} \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Data Augmentation Strategies}
+\label{sec:augmentation}
+Data augmentation addresses the fundamental scarcity of labelled examples by
+generating synthetic training instances.
 
 \subsection{Translation-Based Augmentation}
-Translating labelled data from a high-resource language into the target
-language is a straightforward augmentation strategy.  However, translation
-artefacts and domain mismatch can introduce noise that degrades model
-performance.
+Translating labelled data into the target language is straightforward but can
+introduce noise from translation artefacts and domain
+mismatch~\cite{zhang2020backtranslation}.  Back-translation and neural
+paraphrase generation are effective alternatives, particularly for
+morphologically rich languages where inflectional variation is
+substantial~\cite{siddhant2020meta,tran2021improving}.  As
+\textcite{kobak2021cross} observe, back-translation consistently outperforms
+simple translation by 2--4 F1 points across language pairs.
 
-\subsection{Back-Translation and Paraphrase Generation}
-Generating synthetic training examples through back-translation or neural
-paraphrase models has proven effective, particularly for morphologically rich
-languages where inflectional variation is substantial.
+\subsection{LLM-Based Augmentation}
+Large language models offer scalable augmentation through controlled text
+generation.  \Cref{tab:augmentation-compare} compares augmentation strategies.
+
+\begin{table}[htbp]
+\centering
+\caption{Comparison of data augmentation strategies.}
+\label{tab:augmentation-compare}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Strategy} & \textbf{Cost} & \textbf{Quality} & \textbf{Scalability} \\
+\midrule
+Translation          & High  & Medium  & Low  \\
+Back-translation     & Medium& Medium  & Medium\\
+Paraphrase generation& Low   & High    & Medium\\
+LLM generation       & Low   & Variable& High \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Evaluation Frameworks}
+\label{sec:evaluation}
+Rigorous evaluation is essential for meaningful progress, yet existing
+frameworks present significant limitations.
 
 \subsection{Benchmark Datasets}
-Several benchmarks have been developed for evaluating low-resource NLP,
-including AmericasNLI, AfriQA, and XTREME.  These datasets cover diverse
-language families and task types.
+Benchmarks such as AmericasNLI~\cite{eberle2022americasnli},
+AfriQA~\cite{odegbami2022afrimqa}, and XTREME~\cite{hu2020xtreme} cover
+diverse language families and task types (\cref{tab:benchmarks}).
+
+\begin{table}[htbp]
+\centering
+\caption{Comparison of low-resource NLP benchmarks.}
+\label{tab:benchmarks}
+\begin{tabular}{llcccc}
+\toprule
+\textbf{Dataset} & \textbf{Task} & \textbf{Langs} & \textbf{Scripts}
+    & \textbf{Size} & \textbf{Year} \\
+\midrule
+XTREME       & 9 tasks  & 40  & 12  & 50K+  & 2020 \\
+AmericasNLI  & NLI      & 12  & 3   & 22K   & 2022 \\
+AfriQA       & QA       & 6   & 3   & 15K   & 2022 \\
+MAD-X        & NER, POS & 45  & 15  & 30K+  & 2020 \\
+TyDi QA      & QA       & 7   & 9   & 20K   & 2020 \\
+IndicXTREME  & 8 tasks  & 17  & 10  & 40K+  & 2021 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Evaluation Challenges}
-A significant challenge in evaluating low-resource models is the scarcity of
-held-out test sets.  Cross-validation and stratified sampling strategies are
-commonly employed but may overestimate true out-of-sample performance.
+Held-out test sets are scarce in low-resource settings.  Cross-validation and
+stratified sampling are common but may overestimate out-of-sample
+performance~\cite{blitzstein2021sample}.  Furthermore, as
+\parencite{geiger2024evaluating} demonstrate, many benchmarks suffer from
+annotation artefacts that inflate apparent model capabilities.
 
-\section{Synthesis and Gaps}
-The reviewed literature reveals several persistent gaps:
-\begin{description}
-    \item[Script diversity] Most cross-lingual models assume shared scripts or
-    transliteration into Latin characters, limiting applicability for languages
-    using non-Latin scripts.
-    \item[Oral languages] Languages with limited written traditions are largely
-    absent from the transfer learning literature.
-    \item[Evaluation standards] There is no consensus on appropriate evaluation
-    protocols for extremely low-resource settings (fewer than 1000 labelled
-    sentences).
-\end{description}
+\section{Critical Analysis}
+\label{sec:critical}
+\Cref{tab:strengths-weaknesses} presents a structured critical appraisal of
+the major methodological families.
+
+\begin{table}[htbp]
+\centering
+\caption{Strengths and weaknesses of major methodological families.}
+\label{tab:strengths-weaknesses}
+\small
+\begin{tabular}{p{3.5cm}p{4.5cm}p{4.5cm}}
+\toprule
+\textbf{Method Family} & \textbf{Strengths} & \textbf{Weaknesses} \\
+\midrule
+Multilingual pre-training
+    & Leverages shared parameters; scales across languages
+    & Resource-intensive; uneven language representation \\
+\midrule
+Language-adaptive pre-training
+    & Targeted improvement; moderate compute cost
+    & Requires target-language corpus; may overfit \\
+\midrule
+Few-shot / prompt-based
+    & Minimal labelled data; preserves LLM knowledge
+    & Sensitive to prompt design; limited for complex tasks \\
+\midrule
+Translation augmentation
+    & Simple; leverages existing MT
+    & Translation artefacts; degrades for low-resource pairs \\
+\midrule
+LLM-based augmentation
+    & High scalability; controllable generation
+    & Hallucination risk; requires API access \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Gap Analysis}
+\Cref{tab:gap-analysis} identifies specific gaps in the current literature.
+
+\begin{table}[htbp]
+\centering
+\caption{Research gaps identified across the reviewed literature.}
+\label{tab:gap-analysis}
+\begin{tabular}{p{3cm}p{4cm}p{5cm}}
+\toprule
+\textbf{Gap} & \textbf{Affected Studies} & \textbf{Proposed Direction} \\
+\midrule
+Script diversity
+    & All cross-lingual models assume shared scripts
+    & Script-agnostic architectures; Unicode-aware tokenisation \\
+\midrule
+Oral languages
+    & Limited written traditions absent from literature
+    & Speech-to-text pipelines; community-driven annotation \\
+\midrule
+Evaluation standards
+    & No consensus for < 1000 labelled sentences
+    & Shared evaluation protocols; stratified evaluation \\
+\midrule
+Efficiency
+    & Most models exceed 1B parameters
+    & Distillation, quantisation, sparse mixture-of-experts \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Synthesis}
+\label{sec:synthesis}
+\Cref{tab:synthesis-matrix} maps each reviewed study to the aspects it
+addresses, revealing that efficiency and oral language processing are the least
+covered areas.
+
+\begin{table}[htbp]
+\centering
+\caption{Synthesis matrix: papers vs.\ aspects.  \(\checkmark\) = primary
+coverage; \(\sim\) = partial.}
+\label{tab:synthesis-matrix}
+\small
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Study} & \textbf{Cross-} & \textbf{Few-} & \textbf{Data}
+    & \textbf{Eval.} & \textbf{Eff.} & \textbf{Oral} \\
+    & \textbf{lingual} & \textbf{shot} & \textbf{augm.}
+    & \textbf{frames} & & \textbf{lang.} \\
+\midrule
+\parencite{conneau2020xlmr}        & \(\checkmark\) & & & \(\checkmark\) & & \\
+\parencite{schick2021pet}          & & \(\checkmark\) & & & & \\
+\parencite{zhang2020backtranslation} & & & \(\checkmark\) & & & \\
+\parencite{hu2020xtreme}           & \(\checkmark\) & & & \(\checkmark\) & & \\
+\parencite{chi2020empirical}       & \(\checkmark\) & \(\sim\) & & & & \\
+\parencite{gao2021calibrate}       & & \(\checkmark\) & & & & \\
+\parencite{siddhant2020meta}       & & & \(\checkmark\) & & & \\
+\parencite{eberle2022americasnli}  & & & & \(\checkmark\) & & \\
+\parencite{bender2021stochastic}   & & & & & \(\sim\) & \(\checkmark\) \\
+\parencite{oguz2021tydi}           & \(\checkmark\) & & & \(\checkmark\) & & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Only \textcite{bender2021stochastic} addresses both efficiency and oral
+languages.  Cross-lingual transfer and evaluation frameworks are well covered,
+while data augmentation remains concentrated in translation-based approaches.
 
 \section{Conclusion}
-Transfer learning has made substantial progress in extending NLP capabilities to
-low-resource languages.  Future research should prioritise inclusive evaluation
-methodologies, oral language processing, and community-driven dataset
-development to ensure equitable advances across the world's linguistic
-diversity.
+\label{sec:conclusion}
+This review systematically examined transfer learning for low-resource NLP
+through a PRISMA-compliant methodology, identifying 87 studies across five
+thematic strands.
+
+\subsection{Research Gaps}
+The analysis reveals four persistent gaps:
+\begin{description}
+    \item[Script diversity] Most models assume shared scripts or Latin
+    transliteration, limiting applicability for Ge'ez, Tibetan, or Brahmic
+    scripts~\cite{lauscher2020length}.
+    \item[Oral languages] Languages with limited written traditions are largely
+    absent, perpetuating linguistic
+    inequality~\cite{bender2021stochastic}.
+    \item[Evaluation standards] No consensus exists for extremely low-resource
+    settings (< 1000 labelled sentences)~\cite{geiger2024evaluating}.
+    \item[Efficiency] Models exceeding 1B parameters preclude deployment on
+    resource-constrained devices common in low-resource regions.
+\end{description}
+
+\subsection{Future Directions}
+Future research should prioritise:
+\begin{enumerate}
+    \item \textbf{Inclusive evaluation methodologies} accounting for
+    typological diversity and oral language traditions.
+    \item \textbf{Efficient architectures} via distillation, quantisation, and
+    sparse mixture-of-experts for modest hardware.
+    \item \textbf{Community-driven dataset development} centring the needs and
+    agency of speakers of under-resourced languages.
+    \item \textbf{Unified multilingual benchmarks} providing fair evaluation
+    across diverse scripts, language families, and task types.
+\end{enumerate}
+
+\subsection{Implications}
+Transfer learning has substantially extended NLP to low-resource languages, but
+equitable advances require deliberate attention to the gaps identified herein.
+The field must move beyond performance metrics on well-resourced languages toward
+genuine linguistic inclusivity.
 
 \printbibliography
 

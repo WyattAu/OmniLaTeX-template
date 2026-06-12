@@ -1,0 +1,177 @@
+% ============================================================
+% Appendix A: Supplementary Material
+% ============================================================
+\chapter{Supplementary Material}
+\label{ch:appendix-a}
+
+\section{Proof of \cref{thm:regret}}
+\label{sec:proof-main}
+
+We provide the complete proof of the main regret bound.
+
+\begin{proofbox}[Proof of \cref{thm:regret}]
+The proof proceeds in three steps.
+
+\textbf{Step 1: Decomposition of the regret.}
+The simple regret can be decomposed as:
+\begin{equation}
+    r_n = f(\bx^\star) - f(\bx_n^\star) \leq
+    \alpha_n(\bx_n^\star) + \varepsilon_n(\bx_n^\star),
+    \label{eq:regret-decompose}
+\end{equation}
+where $\alpha_n(\bx_n^\star)$ is the value of the acquisition function at the
+chosen point and $\varepsilon_n(\bx_n^\star)$ captures the approximation error
+due to the adaptive subspace.
+
+\textbf{Step 2: Bounding the acquisition function.}
+Using the standard \gls{gp} regret bound and the adaptive subspace structure:
+\begin{equation}
+    \alpha_n(\bx) \leq \sqrt{2\kappa_{\max}^2 \beta_n} \cdot \sigma_n(\bx),
+    \label{eq:acquisition-bound}
+\end{equation}
+where $\sigma_n(\bx)$ is the posterior standard deviation in the projected
+space and $\beta_n$ is the exploration parameter.
+
+\textbf{Step 3: Summing over the subspace.}
+By \cref{lem:subspace}, the effective dimensionality of the projected space is
+$k_n$, and the maximum information gain satisfies $\gamma_n \leq
+k_n \log(1 + n^2 \pi^2 / (6\delta))$.  Combining these bounds yields:
+\begin{equation}
+    r_n \leq \sqrt{2\kappa_{\max}^2 \beta_n \cdot \frac{k_n \gamma_n}{n}}.
+    \label{eq:final-bound}
+\end{equation}
+\end{proofbox}
+
+\section{Proof of \cref{lem:subspace}}
+\label{sec:proof-subspace}
+
+\begin{proofbox}[Proof of \cref{lem:subspace}]
+We bound the Frobenius norm error $\| \bZ_n - \bZ^\star \|_F$ using the
+variational lower bound.  By the \gls{kl} divergence inequality:
+\begin{equation}
+    \KL(q(\bZ_n) \| p(\bZ \mid \cD_n)) \leq \frac{1}{2} \Tr(\bSigma_n^{-1}
+    \bSigma^\star) + \frac{1}{2} \| \bmu_n - \bmu^\star \|_{\bSigma_n^{-1}}^2
+    - \frac{k d}{2},
+    \label{eq:kl-expansion}
+\end{equation}
+where $\bmu_n, \bSigma_n$ are the variational parameters and
+$\bmu^\star, \bSigma^\star$ are the true posterior parameters.
+
+Since $\KL(q \| p) \leq C / \sqrt{n}$ by the variational inference convergence
+result (Theorem 1 of~\citet{bibid}), we obtain:
+\begin{equation}
+    \| \bZ_n - \bZ^\star \|_F \leq \sqrt{\frac{2C}{\sqrt{n}}} = \frac{C'}{\sqrt[4]{n}},
+    \label{eq:frobenius-bound}
+\end{equation}
+where $C' = \sqrt{2C}$ depends on the prior parameters and the smoothness
+of $f$.
+\end{proofbox}
+
+\section{Extended Results Tables}
+\label{sec:extended-results}
+
+\Cref{tab:extended-d20} and \cref{tab:extended-d500} provide the complete
+results at $d=20$ and $d=500$ respectively.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Final simple regret at $d=20$ ($n=500$ evaluations).}
+    \label{tab:extended-d20}
+    \begin{tabularx}{\textwidth}{@{}lXXXXX@{}}
+        \toprule
+        \textbf{Function} & \textbf{ASBO} & \textbf{REMBO} & \textbf{TuRBO} &
+        \textbf{PESBO} & \textbf{SAASBO} \\
+        \midrule
+        Branin-Hartmann & $\mathbf{2.1 \times 10^{-4}}$ & $5.8 \times 10^{-4}$ &
+        $3.2 \times 10^{-4}$ & $2.8 \times 10^{-4}$ & $4.5 \times 10^{-4}$ \\
+        Ackley & $\mathbf{3.5 \times 10^{-4}}$ & $8.2 \times 10^{-4}$ &
+        $5.1 \times 10^{-4}$ & $4.2 \times 10^{-4}$ & $7.1 \times 10^{-4}$ \\
+        Rosenbrock & $\mathbf{1.8 \times 10^{-4}}$ & $4.1 \times 10^{-4}$ &
+        $2.5 \times 10^{-4}$ & $2.1 \times 10^{-4}$ & $3.8 \times 10^{-4}$ \\
+        Schwefel & $\mathbf{2.9 \times 10^{-4}}$ & $7.5 \times 10^{-4}$ &
+        $4.8 \times 10^{-4}$ & $3.6 \times 10^{-4}$ & $6.2 \times 10^{-4}$ \\
+        Rastrigin & $\mathbf{1.5 \times 10^{-4}}$ & $3.9 \times 10^{-4}$ &
+        $2.8 \times 10^{-4}$ & $1.9 \times 10^{-4}$ & $3.3 \times 10^{-4}$ \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Final simple regret at $d=500$ ($n=500$ evaluations).}
+    \label{tab:extended-d500}
+    \begin{tabularx}{\textwidth}{@{}lXXXXX@{}}
+        \toprule
+        \textbf{Function} & \textbf{ASBO} & \textbf{REMBO} & \textbf{TuRBO} &
+        \textbf{PESBO} & \textbf{SAASBO} \\
+        \midrule
+        Branin-Hartmann & $\mathbf{4.2 \times 10^{-3}}$ & $1.8 \times 10^{-2}$ &
+        $3.1 \times 10^{-2}$ & $8.5 \times 10^{-3}$ & $2.1 \times 10^{-2}$ \\
+        Ackley & $\mathbf{8.1 \times 10^{-3}}$ & $3.5 \times 10^{-2}$ &
+        $5.2 \times 10^{-2}$ & $1.4 \times 10^{-2}$ & $4.2 \times 10^{-2}$ \\
+        Rosenbrock & $\mathbf{6.5 \times 10^{-3}}$ & $2.8 \times 10^{-2}$ &
+        $4.1 \times 10^{-2}$ & $1.1 \times 10^{-2}$ & $3.3 \times 10^{-2}$ \\
+        Schwefel & $\mathbf{5.8 \times 10^{-3}}$ & $2.4 \times 10^{-2}$ &
+        $3.8 \times 10^{-2}$ & $9.2 \times 10^{-3}$ & $2.9 \times 10^{-2}$ \\
+        Rastrigin & $\mathbf{3.9 \times 10^{-3}}$ & $1.6 \times 10^{-2}$ &
+        $2.7 \times 10^{-2}$ & $6.8 \times 10^{-3}$ & $1.9 \times 10^{-2}$ \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\section{Reproducibility Checklist}
+\label{sec:reproducibility}
+
+To ensure reproducibility, we provide the following checklist:
+
+\begin{enumerate}
+    \item \textbf{Code availability:} The complete source code for ASBO and all
+    experiments is available at
+    \url{https://github.com/example/highdimbo} under the MIT licence.
+
+    \item \textbf{Random seeds:} All experiments use fixed random seeds
+    (\texttt{seed=42} for each of the 20 independent runs).
+
+    \item \textbf{Hyperparameters:} The complete hyperparameter configuration
+    is provided in \texttt{configs/} directory of the repository.
+
+    \item \textbf{Dependencies:} A \texttt{requirements.txt} file specifies
+    exact package versions for reproducibility.
+
+    \item \textbf{Computational requirements:} Full replication requires
+    approximately 48 GPU-hours on an NVIDIA A100.
+
+    \item \textbf{Data:} All synthetic benchmark functions are standard and
+    defined in the code.  Real-world datasets are publicly available and
+    referenced in the paper.
+
+    \item \textbf{License:} The code is released under the MIT licence, and
+    the data under CC-BY-4.0.
+\end{enumerate}
+
+\section{Hyperparameter Sensitivity}
+\label{sec:hyperparameter-sensitivity}
+
+We conducted a sensitivity analysis of the key hyperparameters of ASBO.
+\Cref{tab:hyperparameters} summarises the default values and the range over
+which each parameter was varied.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Hyperparameter sensitivity analysis.  Default values and tested
+    ranges.}
+    \label{tab:hyperparameters}
+    \begin{tabularx}{\textwidth}{@{}lXcc@{}}
+        \toprule
+        \textbf{Parameter} & \textbf{Description} & \textbf{Default} &
+        \textbf{Range} \\
+        \midrule
+        $k_0$ & Initial subspace dimension & 10 & $\{5, 10, 20, 50\}$ \\
+        $n_0$ & Initial samples & $2(d+1)$ & $\{d, 2d, 4d\}$ \\
+        $\kappa$ & Subspace update frequency & 5 & $\{1, 5, 10, 20\}$ \\
+        $\delta$ & Variational inference precision & $0.01$ & $\{0.001, 0.01, 0.1\}$ \\
+        $\ell$ & \gls{gp} length-scale & $1.0$ & $\{0.1, 1.0, 10.0\}$ \\
+        $\sigma_f$ & Signal variance & $1.0$ & $\{0.1, 1.0, 5.0\}$ \\
+        \bottomrule
+    \end{tabularx}
+\end{table}

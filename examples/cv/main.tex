@@ -7,15 +7,51 @@
 
 \RequirePackage{config/document-settings}
 
-\title{Alexandra Chen}
-\cvrole{Senior Software Engineer}
-\cvcontact{alexandra.chen@example.com \textbar{} alexchen.dev}
+\RequirePackage{tabularx}
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\definecolor{cvaccent}{HTML}{2E86AB}
+\definecolor{cvskill}{HTML}{A23B72}
+\definecolor{cvlink}{HTML}{1B998B}
+\definecolor{cvtimeline}{HTML}{C4C4C4}
+\definecolor{cvsection}{HTML}{303030}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=cvlink,
+    urlcolor=cvlink,
+}
+
+\newcommand{\cvitem}[2]{%
+    \noindent\textbf{#1}\hfill\textit{#2}\par\vspace{2pt}%
+}
+
+\newcommand{\cvskillbar}[2]{%
+    \begin{tikzpicture}
+        \fill[gray!20] (0,0) rectangle (5,0.35);
+        \fill[cvskill] (0,0) rectangle ({5*#1/100},0.35);
+        \node[right, font=\small] at (0,0.55) {#2};
+    \end{tikzpicture}%
+}
+
+\newcommand{\cvtimelineentry}[3]{%
+    \node[left, font=\small, text width=3.5cm, align=right] at (-0.5,0) {#1};
+    \node[right, font=\small, text width=\dimexpr\textwidth-4.5cm\relax, align=left] at (0.5,0) {%
+        \textbf{#2}\\[2pt]{\small #3}%
+    };
+}
+
+\title{Dr.\ Alexandra Chen}
+\cvrole{Senior Software Engineer $\cdot$ Open-Source Contributor}
 \cvphone{+1 (555) 012-3456}
+\cvcontact{\href{mailto:alexandra.chen@example.com}{alexandra.chen@example.com}}
 \cvlocation{San Francisco, CA}
 \cvlinks{%
-    \faGithub\; github.com/achen \quad
-    \faLinkedin\; linkedin.com/in/achen \quad
-    \faGlobe\; alexchen.dev%
+    \faIcon{github}\;\href{https://github.com/achen}{github.com/achen} \quad
+    \faIcon{linkedin}\;\href{https://linkedin.com/in/achen}{linkedin.com/in/achen} \quad
+    \faIcon{globe}\;\href{https://alexchen.dev}{alexchen.dev} \quad
+    \faIcon{envelope}\;\href{mailto:alexandra.chen@example.com}{alex}%
 }
 \cvsummary{Results-driven software engineer with 8+ years of experience building
 scalable distributed systems and developer tooling.  Proven track record of
@@ -28,77 +64,141 @@ optimisation, developer experience, and mentoring early-career engineers.}
 
 \maketitle
 
-\section{Professional Experience}
+\section{\texorpdfstring{\color{cvsection}\faIcon{briefcase}}{} \hspace{4pt}Professional Experience}
 
-\subsection{Senior Software Engineer --- Meridian Systems, San Francisco}
+\subsection{Senior Software Engineer --- \href{https://meridiansys.com}{Meridian Systems}, San Francisco}
 \textit{Jan 2022 -- Present}
 \begin{itemize}
-    \item Architected a real-time event-processing pipeline handling 2\,M+
-        messages per second using Apache Kafka and Go, reducing P99 latency by
-        43\%.
-    \item Led migration from monolithic Ruby on Rails service to a
-        micro-frontend architecture with React and TypeScript, cutting average
-        page load time from 4.2\,s to 1.1\,s.
-    \item Directed a team of six engineers through quarterly planning, sprint
-        execution, and incident response rotations; mentored two junior
-        developers to mid-level promotion.
-    \item Introduced automated canary deployments with feature flags, achieving
-        zero-downtime releases for 18 consecutive months.
+    \item Architected a real-time event-processing pipeline handling 2\,M+ messages per second using Apache Kafka and Go, reducing P99 latency by 43\%.
+    \item Led migration from monolithic Ruby on Rails service to a micro-frontend architecture with React and TypeScript, cutting average page load time from 4.2\,s to 1.1\,s.
+    \item Directed a team of six engineers through quarterly planning, sprint execution, and incident response rotations; mentored two junior developers to mid-level promotion.
+    \item Introduced automated canary deployments with feature flags, achieving zero-downtime releases for 18 consecutive months.
+    \item Built internal CLI tool in Rust adopted by 40+ engineers, reducing deployment setup time from 30\,min to 90\,s.
 \end{itemize}
 
-\subsection{Software Engineer --- Aurora Dynamics, Boston}
+\subsection{Software Engineer --- \href{https://auroradyne.com}{Aurora Dynamics}, Boston}
 \textit{Jun 2019 -- Dec 2021}
 \begin{itemize}
-    \item Developed simulation and visualisation tools in Python and C++ for
-        guidance, navigation, and control subsystems of autonomous aerial
-        vehicles.
-    \item Built a CI/CD pipeline with GitHub Actions and Docker that reduced
-        average build--test--deploy cycle from 45\,min to 12\,min.
-    \item Co-authored three internal technical standards on flight-software
-        testing adopted across two programme offices.
+    \item Developed simulation and visualisation tools in Python and C++ for guidance, navigation, and control subsystems of autonomous aerial vehicles.
+    \item Built a CI/CD pipeline with GitHub Actions and Docker that reduced average build--test--deploy cycle from 45\,min to 12\,min.
+    \item Co-authored three internal technical standards on flight-software testing adopted across two programme offices.
 \end{itemize}
 
-\subsection{Junior Engineer --- Polaris Labs, Austin}
+\subsection{Junior Engineer --- \href{https://polarislabs.io}{Polaris Labs}, Austin}
 \textit{Aug 2017 -- May 2019}
 \begin{itemize}
-    \item Implemented RESTful APIs and database schemas for an IoT fleet
-        management platform serving 500+ connected devices.
-    \item Contributed to an open-source MQTT broker used by 1\,200+ stars on
-        GitHub; authored documentation and example projects.
+    \item Implemented RESTful APIs and database schemas for an IoT fleet management platform serving 500+ connected devices.
+    \item Contributed to an open-source MQTT broker used by 1\,200+ stars on GitHub; authored documentation and example projects.
 \end{itemize}
 
-\section{Education}
+\section{\texorpdfstring{\color{cvsection}\faIcon{graduation-cap}}{} \hspace{4pt}Education}
 
 \begin{itemize}
-    \item \textbf{M.S.\ Computer Science} --- Stanford University, 2017.
-        Thesis: ``Adaptive Scheduling Strategies for Heterogeneous Stream
-        Processing.''
-    \item \textbf{B.S.\ Applied Physics} --- University of Texas at Austin,
-        2015.  Magna Cum Laude.
+    \item \textbf{M.S.\ Computer Science} --- Stanford University, 2017. \hfill \textit{GPA: 3.95/4.0}\\
+        Thesis: ``Adaptive Scheduling Strategies for Heterogeneous Stream Processing.''\\
+        Advisor: Prof.\ Maria Rodriguez. \textit{Summa Cum Laude.}
+    \item \textbf{B.S.\ Applied Physics} --- University of Texas at Austin, 2015. \hfill \textit{GPA: 3.88/4.0}\\
+        Dean's List (all semesters). \textit{Magna Cum Laude.}
 \end{itemize}
 
-\section{Skills}
+\section{\texorpdfstring{\color{cvsection}\faIcon{chart-bar}}{} \hspace{4pt}Skills}
 
-\begin{description}
-    \item[Languages] Go, Python, TypeScript, Rust, C++, SQL
-    \item[Infrastructure] Kubernetes, Docker, Terraform, AWS, GCP
-    \item[Data] Kafka, PostgreSQL, Redis, Elasticsearch
-    \item[Practices] CI/CD, SRE, TDD, code review, agile
-\end{description}
+\noindent
+\begin{tabularx}{\textwidth}{@{}X X@{}}
+\begin{minipage}[t]{0.48\textwidth}
+\textbf{Languages \& Frameworks}
+\vspace{6pt}
 
-\section{Selected Publications}
+\cvskillbar{95}{Go / Rust}
+\cvskillbar{90}{Python / C++}
+\cvskillbar{85}{TypeScript / React}
+\cvskillbar{80}{SQL / GraphQL}
+\vspace{8pt}
+
+\textbf{Infrastructure}
+\vspace{6pt}
+
+\cvskillbar{90}{Kubernetes / Docker}
+\cvskillbar{85}{AWS / GCP}
+\cvskillbar{80}{Terraform / Ansible}
+\end{minipage}
+&
+\begin{minipage}[t]{0.48\textwidth}
+\textbf{Data \& Messaging}
+\vspace{6pt}
+
+\cvskillbar{90}{Kafka / Redis}
+\cvskillbar{85}{PostgreSQL / Elasticsearch}
+\vspace{8pt}
+
+\textbf{Practices}
+\vspace{6pt}
+
+\cvskillbar{95}{CI/CD / SRE}
+\cvskillbar{90}{TDD / BDD}
+\cvskillbar{85}{System Design}
+\cvskillbar{80}{Technical Writing}
+\end{minipage}
+\end{tabularx}
+
+\section{\texorpdfstring{\color{cvsection}\faIcon{book-open}}{} \hspace{4pt}Selected Publications}
 
 \begin{enumerate}
-    \item A.~Chen, M.~Rivera, ``Adaptive Windowing for Low-Latency Stream
-        Joins,'' \textit{Proc.\ VLDB Endowment}, vol.~15, no.~4, pp.~891--904,
-        2022.
-    \item A.~Chen, K.~Nguyen, ``Graceful Degradation in Distributed Actor
-        Systems,'' \textit{Proc.\ ACM SIGPLAN Int.\ Conf.\ on Functional
-        Programming}, pp.~112--124, 2021.
+    \setlength{\itemsep}{4pt}
+    \item A.~Chen and M.~Rivera, ``Adaptive Windowing for Low-Latency Stream Joins,'' in \textit{Proc.\ VLDB Endowment}, vol.~15, no.~4, pp.~891--904, 2022.
+    \item A.~Chen and K.~Nguyen, ``Graceful Degradation in Distributed Actor Systems,'' in \textit{Proc.\ ACM SIGPLAN Int.\ Conf.\ on Functional Programming}, pp.~112--124, 2021.
+    \item A.~Chen, L.~Park, and J.~Silva, ``Real-Time Anomaly Detection in High-Throughput Event Streams,'' in \textit{Proc.\ IEEE Int.\ Conf.\ on Big Data}, pp.~2045--2054, 2020.
 \end{enumerate}
 
-\section{Languages}
+\section{\texorpdfstring{\color{cvsection}\faIcon{project-diagram}}{} \hspace{4pt}Projects}
 
-English (Native), Mandarin Chinese (Professional Working), Spanish (Conversational)
+\begin{description}
+    \item[\href{https://github.com/achen/eventflow}{\color{cvlink}EventFlow}\hfill\textit{Go, Apache Kafka}]
+    Open-source stream-processing framework for building stateful, exactly-once pipelines.  2\,400+ GitHub stars; adopted by three Fortune 500 companies for real-time analytics workloads.
+
+    \item[\href{https://github.com/achen/rustvm}{\color{cvlink}RustVM}\hfill\textit{Rust}]
+    Lightweight virtual machine for deterministic event replay used in financial fraud detection.  Processes 50\,K events/sec with sub-millisecond latency.
+
+    \item[\href{https://github.com/achen/devbench}{\color{cvlink}DevBench}\hfill\textit{Python, Docker}]
+    CLI benchmarking suite for measuring developer productivity across teams.  Integrates with GitHub Actions, GitLab CI, and Jenkins; used by 800+ engineers.
+\end{description}
+
+\section{\texorpdfstring{\color{cvsection}\faIcon{language}}{} \hspace{4pt}Languages}
+
+\begin{tabularx}{\textwidth}{@{}X X X@{}}
+\textbf{English} & \textbf{Mandarin Chinese} & \textbf{Spanish} \\
+\begin{tikzpicture}
+    \fill[cvaccent] (0,0) rectangle (2.8,0.25);
+    \node[below right, font=\scriptsize] at (0,-0.1) {Native};
+\end{tikzpicture}
+&
+\begin{tikzpicture}
+    \fill[cvaccent] (0,0) rectangle (2.0,0.25);
+    \node[below right, font=\scriptsize] at (0,-0.1) {Professional};
+\end{tikzpicture}
+&
+\begin{tikzpicture}
+    \fill[cvaccent] (0,0) rectangle (1.2,0.25);
+    \node[below right, font=\scriptsize] at (0,-0.1) {Conversational};
+\end{tikzpicture}
+\end{tabularx}
+
+\section{\texorpdfstring{\color{cvsection}\faIcon{trophy}}{} \hspace{4pt}Awards \& Honors}
+
+\begin{itemize}
+    \item \textbf{ACM SIGOPS Outstanding Dissertation Award} --- 2017
+    \item \textbf{Google Open-Source Contributor Summit Invitee} --- 2021, 2023
+    \item \textbf{AWS re:Invent Hackathon Winner} --- 2022 (1st place, 500+ teams)
+    \item \textbf{Stanford CS Department Fellowship} --- 2015--2017
+\end{itemize}
+
+\section{\texorpdfstring{\color{cvsection}\faIcon{users}}{} \hspace{4pt}Professional Affiliations}
+
+\begin{itemize}
+    \item \textbf{Association for Computing Machinery (ACM)} --- Senior Member, since 2019
+    \item \textbf{IEEE Computer Society} --- Member, since 2018
+    \item \textbf{Rust Foundation} --- Contributor, since 2021
+    \item \textbf{Open Source Initiative (OSI)} --- Advocacy Committee, 2022--2024
+\end{itemize}
 
 \end{document}

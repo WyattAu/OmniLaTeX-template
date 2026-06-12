@@ -2,112 +2,68 @@
     language=english,
     doctype=thesis,
     institution=none,
-    titlestyle=thesis
+    titlestyle=thesis,
+    loadGlossaries=true
 ]{../../omnilatex}
 
+% Document settings and metadata
 \RequirePackage{config/document-settings}
+
+% Custom macros and commands
+\RequirePackage{config/macros}
+
+% Bibliography resource
 \addbibresource{../../bib/bibliography.bib}
+
+% Index support
+\makeindex
 
 \begin{document}
 
+% Front matter
 \frontmatter
 \maketitle
 \tableofcontents
+\listoffigures
+\listoftables
+\listofalgorithms
 
+% Glossary
+\printglossary[type=\acronymtype,title=List of Abbreviations]
+\printglossary[title=List of Terms]
+
+% Main content
 \mainmatter
-\chapter{Introduction}
-Summarize the research motivation and objectives~\cite{bibid}.  Provide context
-by reviewing relevant prior work and clearly state the gap this thesis aims to
-address.  Outline the structure of the document and highlight the key
-contributions.
 
-\chapter{Background and Related Work}
-Review the theoretical foundations underpinning the research~\cite{knuthTeXbook1986}.
-Discuss established methods in the field, their strengths, and their
-limitations.  Position the present work within the broader research landscape.
+% Chapter 1: Introduction
+\include{chapters/01-introduction}
 
-\chapter{Methodology}
-Document experimental design, data acquisition, and analysis
-steps~\cite{knuthTeXbook1986}.  The governing equation for the system under
-study is given by
-\begin{equation}
-    \frac{\partial u}{\partial t}
-    = \alpha \nabla^{2} u + f(\mathbf{x}, t),
-    \label{eq:diffusion}
-\end{equation}
-where $u$ is the field variable, $\alpha$ is the diffusivity, and
-$f(\mathbf{x}, t)$ represents the source term.
+% Chapter 2: Background and Related Work
+\include{chapters/02-background}
 
-Numerical experiments were carried out on a uniform grid with spacing
-$\Delta x = 0.01$ and a time step satisfying the CFL condition
-$\Delta t \leq \Delta x^{2} / (2\alpha)$.  Convergence was verified by
-refining the mesh until the $L^{2}$-norm of the error fell below $10^{-6}$.
+% Chapter 3: Methodology
+\include{chapters/03-methodology}
 
-\chapter{Results}
-Present findings supported by figures and tables~\cite{einstein1905}.  Figure~\ref{fig:convergence} shows the
-convergence behaviour of the proposed scheme.
+% Chapter 4: Results
+\include{chapters/04-results}
 
-\begin{figure}[htbp]
-    \centering
-    \begin{tikzpicture}
-    \begin{axis}[
-        width=0.7\textwidth,
-        height=5cm,
-        xlabel={Mesh elements $N$},
-        ylabel={$L^{2}$ error},
-        xmode=log,
-        ymode=log,
-        grid=major,
-        thick,
-        legend pos=south west,
-    ]
-        \addplot[blue, mark=square*, thick] coordinates {
-            (10, 0.1) (20, 0.025) (40, 0.0063) (80, 0.0016) (160, 4e-4)
-        };
-        \addlegendentry{Numerical}
-        \addplot[red, dashed, thick, domain=10:160, samples=20] {10/x^2};
-        \addlegendentry{$\mathcal{O}(N^{-2})$}
-    \end{axis}
-\end{tikzpicture}
-    \caption{Convergence of the numerical solution with mesh refinement.}
-    \label{fig:convergence}
-\end{figure}
+% Chapter 5: Discussion
+\include{chapters/05-discussion}
 
-Table~\ref{tab:results} summarises the error metrics for each refinement
-level.
+% Chapter 6: Conclusion
+\include{chapters/06-conclusion}
 
-\begin{table}[htbp]
-    \centering
-    \caption{Error metrics for successive mesh refinements.}
-    \label{tab:results}
-    \begin{tabular}{@{}lccc@{}}
-        \toprule
-        Level & $\Delta x$ & $L^{2}$ error & Order \\
-        \midrule
-        1 & 0.100 & $3.42 \times 10^{-2}$ & --- \\
-        2 & 0.050 & $8.67 \times 10^{-3}$ & 1.98 \\
-        3 & 0.025 & $2.18 \times 10^{-3}$ & 1.99 \\
-        4 & 0.012 & $5.47 \times 10^{-4}$ & 2.00 \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-\chapter{Discussion}
-Interpret the results in the context of the research questions.  Compare the
-observed convergence rate with theoretical predictions and discuss possible
-sources of discrepancy~\cite{birdNaturalLanguageProcessing2009}.
-
-\chapter{Conclusion}
-Highlight contributions, limitations, and future work.  Suggest directions for
-extending the methodology to more complex geometries and multi-physics
-coupling scenarios.
-
+% Appendices
 \appendix
-\chapter{Additional Material}
-Provide supporting derivations, extended data tables, and supplementary
-figures.
+\include{chapters/07-appendix}
 
+% Back matter
 \backmatter
+
+% Bibliography
 \printbibliography
+
+% Index
+\printindex
 
 \end{document}

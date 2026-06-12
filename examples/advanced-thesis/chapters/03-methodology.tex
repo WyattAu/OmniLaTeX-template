@@ -1,0 +1,184 @@
+% ============================================================
+% Chapter 3: Methodology
+% ============================================================
+\chapter{Methodology}
+\label{ch:methodology}
+
+\section{Problem Definition}
+\label{sec:problem-definition}
+
+We consider the problem of minimising a continuous, black-box function
+$f \colon \cX \to \R$ over a bounded domain $\cX \subseteq \R^d$, where $d$
+may be as large as 500.  The function $f$ is assumed to be expensive to
+evaluate, lacking gradient information, and potentially noisy.  Formally, we
+seek the global minimiser:
+\begin{equation}
+    \bx^\star = \argmin_{\bx \in \cX} f(\bx),
+    \label{eq:objective}
+\end{equation}
+subject to a budget of $n$ function evaluations.  The quality of a solution is
+measured by the \emph{simple regret}:
+\begin{equation}
+    r_n = f(\bx^\star) - f(\bx_n^\star),
+    \label{eq:regret}
+\end{equation}
+where $\bx_n^\star = \argmin_{i=1,\ldots,n} f(\bx_i)$ is the best point
+observed after $n$ evaluations.
+
+\section{Adaptive Subspace Identification}
+\label{sec:adaptive-subspace}
+
+The key insight underlying our approach is that many real-world objective
+functions, despite being defined in a high-dimensional ambient space, vary
+primarily along a low-dimensional manifold.  We parameterise this manifold as a
+linear subspace defined by a projection matrix
+$\bZ \in \R^{k \times d}$, where $k \ll d$ is the intrinsic dimensionality.
+
+\begin{definitionbox}[title=Adaptive Subspace Prior]
+\label{def:subspace-prior}
+Let $\bZ \in \R^{k \times d}$ be a random projection matrix with rows
+$\bz_1^\top, \ldots, \bz_k^\top$ drawn from a matrix normal prior:
+\begin{equation}
+    \bZ \sim \cN(\bZ_0, \bSigma_Z \otimes \bI_d),
+    \label{eq:subspace-prior}
+\end{equation}
+where $\bZ_0 \in \R^{k \times d}$ is the prior mean, $\bSigma_Z \in \R^{k \times k}$
+is the row covariance, and $\otimes$ denotes the Kronecker product.  The prior is
+updated via variational inference using observed function evaluations.
+\end{definitionbox}
+
+The variational posterior over $\bZ$ is factorised as:
+\begin{equation}
+    q(\bZ) = \prod_{i=1}^{k} \cN(\bz_i; \bmu_i, \bLambda_i),
+    \label{eq:variational-posterior}
+\end{equation}
+where $\bmu_i \in \R^d$ and $\bLambda_i \in \R^{d \times d}$ are variational
+parameters optimised to minimise the \gls{kl} divergence
+$\KL(q(\bZ) \| p(\bZ \mid \cD_n))$.
+
+\section{Local Surrogate Modelling}
+\label{sec:local-surrogate}
+
+Within the identified subspace, we fit a \gls{gp} surrogate model.  For a set
+of $n$ observations $\cD_n = \{(\bx_i, y_i)\}_{i=1}^n$ with
+$y_i = f(\bx_i) + \varepsilon_i$ and $\varepsilon_i \sim \cN(0, \sigma_n^2)$,
+the \gls{gp} posterior at a new point $\bx$ is:
+\begin{align}
+    \mu_n(\bx) &= \bk_n(\bx)^\top (\bK_n + \sigma_n^2 \bI)^{-1} \by_n,
+    \label{eq:gp-mean} \\
+    \sigma_n^2(\bx) &= k(\bx, \bx) - \bk_n(\bx)^\top (\bK_n + \sigma_n^2 \bI)^{-1} \bk_n(\bx),
+    \label{eq:gp-variance}
+\end{align}
+where $k(\cdot, \cdot)$ is a kernel function,
+$\bk_n(\bx) = [k(\bx, \bx_1), \ldots, k(\bx, \bx_n)]^\top$ is the
+cross-covariance vector, $\bK_n$ is the $n \times n$ kernel matrix, and
+$\by_n = [y_1, \ldots, y_n]^\top$ is the vector of observations.
+
+The computational cost of \gls{gp} inference is $\cO(n^3)$ for matrix
+inversion.  In high dimensions, we exploit the subspace structure by fitting the
+\gls{gp} in the $k$-dimensional projected space, reducing the kernel evaluation
+to $k(\bx, \bx') = \sigma_f^2 \exp(-\frac{1}{2} \| \bZ\bx - \bZ\bx' \|^2 / \ell^2)$,
+where $\ell$ is a length-scale parameter.
+
+\section{Information-Theoretic Acquisition Functions}
+\label{sec:acquisition-functions}
+
+We introduce a family of acquisition functions that adapt to the local
+dimensionality of the objective function.  The general form is:
+\begin{equation}
+    \alpha_n(\bx) = \beta_n(\bx) \cdot \gamma_n(\bx),
+    \label{eq:acquisition-general}
+\end{equation}
+where $\beta_n(\bx)$ captures the exploration bonus (uncertainty) and
+$\gamma_n(\bx)$ captures the exploitation term (predicted improvement).
+
+\subsection{Adaptive Entropy Search (AES)}
+\label{subsec:aes}
+
+The Adaptive Entropy Search acquisition function selects the point that
+maximises the expected reduction in the entropy of the posterior distribution
+over the global minimiser $\bx^\star$:
+\begin{equation}
+    \alpha_n^{\AES}(\bx) = \cH[q_n(\bx^\star)] - \E_{y \mid \bx}\left[\cH[q_{n+1}(\bx^\star) \mid y]\right],
+    \label{eq:aes}
+\end{equation}
+where $\cH[\cdot]$ denotes the differential entropy and the expectation is
+taken with respect to the predictive distribution of $y = f(\bx) + \varepsilon$.
+
+\section{Convergence Analysis}
+\label{sec:convergence}
+
+We establish convergence guarantees for the proposed ASBO algorithm under the
+following regularity conditions.
+
+\begin{theorembox}[title=Regret Bound for ASBO, label=thm:regret-bound]
+\label{thm:regret}
+Let $f \colon \cX \to \R$ be a sample path of a \gls{gp} with kernel $k$ that
+is bounded, continuous, and satisfies $\sup_{\bx \in \cX} k(\bx, \bx) \leq \kappa_{\max}^2$.
+Let $\bZ_n$ denote the adaptive subspace projection at iteration $n$, and let
+$k_n$ denote the intrinsic dimensionality estimated at iteration $n$.  Then,
+under \cref{def:subspace-prior}, the simple regret of ASBO satisfies:
+\begin{equation}
+    r_n \leq \sqrt{2\kappa_{\max}^2 \beta_n} \cdot \sqrt{\frac{k_n \gamma_n}{n}},
+    \label{eq:regret-bound}
+\end{equation}
+where $\beta_n = 2\log(1 + \delta^{-1}) + 2k_n \log(1 + n^2\pi^2/(6\delta))$
+and $\gamma_n$ is the maximum information gain.
+\end{theorembox}
+
+\begin{lemmabox}[title=Subspace Convergence, label=lem:subspace-convergence]
+\label{lem:subspace}
+Let $\bZ_n$ be the adaptive subspace projection at iteration $n$ and $\bZ^\star$
+the optimal projection.  Then, under the variational inference procedure
+described in \cref{sec:adaptive-subspace}:
+\begin{equation}
+    \| \bZ_n - \bZ^\star \|_F \leq \frac{C}{\sqrt{n}},
+    \label{eq:subspace-convergence}
+\end{equation}
+for a constant $C > 0$ depending on the prior parameters and the smoothness
+of $f$.
+\end{lemmabox}
+
+\begin{corollarybox}[title=Dimensionality Adaptation, label=cor:dimensionality]
+\label{cor:dimensionality}
+As $n \to \infty$, the estimated intrinsic dimensionality $k_n$ converges to the
+true intrinsic dimensionality $k^\star$ of the objective function's variation
+manifold, i.e., $\Pr(|k_n - k^\star| > \epsilon) \to 0$ for any $\epsilon > 0$.
+\end{corollarybox}
+
+\begin{proofbox}
+The proof follows from \cref{lem:subspace} and the consistency of the
+variational posterior.  Specifically, by the \gls{kl} divergence bound:
+\begin{equation}
+    \KL(q(\bZ_n) \| p(\bZ \mid \cD_n)) \leq \frac{C}{\sqrt{n}},
+    \label{eq:kl-bound}
+\end{equation}
+the posterior mass concentrates around $\bZ^\star$, and the rank of $\bZ_n$
+converges to $\rank(\bZ^\star) = k^\star$ by the continuity of the singular
+value decomposition.
+\end{proofbox}
+
+\section{Algorithm}
+\label{sec:algorithm}
+
+The complete ASBO algorithm is presented in \cref{alg:asbo}.
+
+\begin{algorithm}[htbp]
+\caption{Adaptive Subspace Bayesian Optimisation (ASBO)}
+\label{alg:asbo}
+\KwIn{Objective function $f$, domain $\cX \subseteq \R^d$, budget $n$,
+initial samples $n_0$, subspace dimension $k_0$}
+\KwOut{Best observed point $\bx_n^\star$}
+Initialise $\cD_{n_0} \leftarrow \{(\bx_i, f(\bx_i))\}_{i=1}^{n_0}$\;
+Initialise subspace $\bZ_0 \leftarrow \text{RandomProjection}(k_0, d)$\;
+\For{$t = n_0 + 1, \ldots, n$}{
+    Update subspace: $\bZ_t \leftarrow \text{UpdateSubspace}(\cD_{t-1}, \bZ_{t-1})$\;
+    Fit \gls{gp} in projected space $\bZ_t \cX$\;
+    Compute acquisition $\alpha_t(\bx) \leftarrow \text{AES}(\bx; \cD_{t-1}, \bZ_t)$\;
+    Select $\bx_t \leftarrow \argmax_{\bx \in \cX} \alpha_t(\bx)$\;
+    Evaluate $y_t \leftarrow f(\bx_t) + \varepsilon_t$\;
+    Update: $\cD_t \leftarrow \cD_{t-1} \cup \{(\bx_t, y_t)\}$\;
+    Update intrinsic dimension: $k_t \leftarrow \text{EstimateDim}(\bZ_t)$\;
+}
+\Return $\bx_n^\star \leftarrow \argmin_{(\bx, y) \in \cD_n} y$\;
+\end{algorithm}

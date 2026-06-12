@@ -1,0 +1,153 @@
+% ============================================================
+% Chapter 6: Conclusion
+% ============================================================
+\chapter{Conclusion}
+\label{ch:conclusion}
+
+\section{Summary of Contributions}
+\label{sec:summary}
+
+This thesis has presented the Adaptive Subspace Bayesian Optimisation (ASBO)
+framework, a principled approach to scaling Bayesian optimisation to
+high-dimensional problems.  The key contributions are:
+
+\begin{enumerate}
+    \item \textbf{Adaptive subspace identification:} We developed a variational
+    inference procedure that learns the intrinsic low-dimensional structure of
+    the objective function, adapting to varying local dimensionality across the
+    search space.  This eliminates the rigid fixed-subspace assumption of prior
+    methods.
+
+    \item \textbf{Information-theoretic acquisition:} We derived the Adaptive
+    Entropy Search (AES) acquisition function, which naturally adapts to the
+    local dimensionality and provides stronger exploration guarantees than
+    \gls{ucb}-based alternatives.
+
+    \item \textbf{Theoretical guarantees:} We established convergence bounds
+    for ASBO (\cref{thm:regret}), showing that the simple regret depends on the
+    intrinsic dimensionality rather than the ambient dimension.  This provides a
+    formal justification for the dimensionality reduction approach.
+
+    \item \textbf{Empirical validation:} We demonstrated state-of-the-art
+    performance on 12 synthetic benchmarks and 3 real-world engineering
+    problems, with up to $3.2\times$ improvement over the best baseline.
+
+    \item \textbf{Open-source library:} We released the \texttt{highdimbo}
+    Python library, enabling practitioners to apply ASBO to their own
+    optimisation problems with minimal configuration.
+\end{enumerate}
+
+\section{Limitations}
+\label{sec:limitations}
+
+Despite the strong results, several limitations of the current framework should
+be acknowledged:
+
+\begin{itemize}
+    \item \textbf{Computational overhead:} The adaptive subspace inference adds
+    computational cost compared to simpler methods like REMBO.  While the
+    overhead is modest for $d < 200$, it becomes more significant for very high
+    dimensions.
+
+    \item \textbf{Linear subspace assumption:} The current framework assumes a
+    linear subspace structure.  Extending ASBO to non-linear manifold
+    structures (e.g., using deep \glspl{vae}) is an important direction for
+    future work.
+
+    \item \textbf{Parallel evaluations:} The current implementation evaluates
+    one point at a time.  Extending ASBO to batch acquisition (parallel
+    evaluations) would significantly improve wall-clock efficiency.
+
+    \item \textbf{Constraint handling:} The framework currently addresses
+    unconstrained optimisation.  Extending ASBO to handle black-box constraints
+    (e.g., via constraint acquisition functions) would broaden its applicability.
+\end{itemize}
+
+\section{Future Work}
+\label{sec:future-work}
+
+We identify several promising directions for future research:
+
+\begin{enumerate}
+    \item \textbf{Non-linear subspace models:} Replace the linear projection
+    with deep generative models (e.g., \glspl{vae} or normalising flows) to
+    capture non-linear manifold structures in the objective function.
+
+    \item \textbf{Batch ASBO:} Develop batch acquisition strategies that select
+    multiple evaluation points simultaneously, leveraging recent advances in
+    batch \gls{bo}.
+
+    \item \textbf{Multi-fidelity extension:} Combine ASBO with multi-fidelity
+    optimisation, using cheap low-fidelity evaluations to inform the subspace
+    estimate before committing to expensive high-fidelity evaluations.
+
+    \item \textbf{Constraint handling:} Integrate constraint acquisition
+    functions to handle black-box equality and inequality constraints.
+
+    \item \textbf{Theoretical extensions:} Tighten the convergence bounds in
+    \cref{thm:regret} and extend the analysis to non-Gaussian likelihoods.
+
+    \item \textbf{Applications:} Apply ASBO to additional domains, including
+    reinforcement learning hyperparameter tuning, materials discovery, and
+    climate model calibration.
+\end{enumerate}
+
+\section{Broader Impact}
+\label{sec:broader-impact}
+
+The work presented in this thesis has potential broader impact across several
+domains.  In drug discovery, ASBO can accelerate the identification of
+promising drug candidates by reducing the number of expensive wet-lab
+experiments required, potentially shortening the timeline from target
+identification to clinical trials.  In materials science, the framework can
+enable more efficient exploration of compositional spaces, accelerating the
+discovery of novel materials with tailored properties.  In machine learning,
+ASBO can reduce the computational cost of hyperparameter tuning, making
+advanced model architectures accessible to researchers with limited
+computational resources.
+
+We note that the open-source release of the \texttt{highdimbo} library lowers
+the barrier to adoption, enabling broad access to these optimisation
+capabilities.  We encourage the community to build upon this work and explore
+applications in their respective domains.
+
+\section{Lessons Learned}
+\label{sec:lessons}
+
+Several practical lessons emerged during this research that may benefit future
+work:
+
+\begin{enumerate}
+    \item \textbf{Start with the subspace:} Estimating the intrinsic
+    dimensionality early in the optimisation process provides a strong inductive
+    bias that accelerates convergence, even when the estimate is imperfect.
+
+    \item \textbf{Balance exploration and computation:} Information-theoretic
+    acquisition functions provide stronger theoretical guarantees but are more
+    computationally expensive than \gls{ucb}-based alternatives.  The choice
+    should be guided by the relative cost of function evaluations versus
+    acquisition function computation.
+
+    \item \textbf{Validate incrementally:} Each component of the ASBO framework
+   ---subspace identification, local surrogate modelling, and acquisition
+    function design---was validated independently before integration.  This
+    incremental approach facilitated debugging and provided clearer insights
+    into the contribution of each component.
+\end{enumerate}
+
+\section{Closing Remarks}
+\label{sec:closing}
+
+High-dimensional black-box optimisation remains a fundamental challenge across
+science and engineering.  By combining adaptive subspace identification with
+information-theoretic acquisition functions, ASBO provides a principled and
+effective approach that scales to hundreds of dimensions while maintaining
+sample efficiency.  We hope that the theoretical insights, algorithms, and
+open-source tools presented in this thesis will empower researchers and
+practitioners to tackle optimisation problems that were previously intractable.
+
+The journey from low-dimensional Bayesian optimisation to the scalable
+framework presented here has been both intellectually rewarding and practically
+impactful.  As the complexity of the problems we face continues to grow, we are
+confident that principled, adaptive approaches like ASBO will play an
+increasingly important role in scientific discovery and engineering innovation.

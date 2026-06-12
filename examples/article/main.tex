@@ -8,92 +8,1279 @@
 \RequirePackage{config/document-settings}
 \addbibresource{../../bib/bibliography.bib}
 
+% Additional packages for advanced features
+\RequirePackage{amsthm}
+\RequirePackage{amssymb}
+\RequirePackage{algorithm2e}
+\RequirePackage{tikz-cd}
+\RequirePackage{makecell}
+\RequirePackage{cancel}
+
+% ─────────────────────────────────────────────────────
+% Theorem Environments
+% ─────────────────────────────────────────────────────
+\theoremstyle{definition}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}{Example}[section]
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}[section]
+
+% ─────────────────────────────────────────────────────
+% Custom Commands
+% ─────────────────────────────────────────────────────
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\Softmax}{Softmax}
+\newcommand{\mat}[1]{\mathbf{#1}}
+\newcommand{\tensor}[2]{#1^{#2}}
+\newcommand{\hyp}{\mathcal{H}}
+\newcommand{\dataset}{\mathcal{D}}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\newcommand{\inner}[2]{\langle #1, #2 \rangle}
+
 \begin{document}
 
 \maketitle
 
 \section*{Abstract}
-This template demonstrates the OmniLaTeX article configuration.  We present a
-concise overview of the formatting features available, including mathematics,
-figures, tables, and bibliographic references.
+This article is a comprehensive showcase of advanced \LaTeX{} features available in
+the OmniLaTeX template.  We demonstrate complex pgfplots visualisations, advanced
+mathematical typesetting including commutative diagrams and tensor notation,
+algorithm pseudocode with complexity analysis, syntax-highlighted code listings
+across multiple languages, sophisticated tables with multirow and multicolumn
+spanning, subfigures, cross-referencing with \verb|\autoref| and \verb|\cref|,
+various citation styles, and custom TikZ diagrams including system architecture
+and neural network visualisations.
 
 \tableofcontents
 
-\section{Introduction}
-This section outlines the scope of the article~\cite{bibid}.  The central
-question motivating this work can be stated as follows: given a dataset
-$\mathcal{D} = \{(\mathbf{x}_i, y_i)\}_{i=1}^{N}$, how should one choose a
-model class $\mathcal{M}$ that balances expressiveness with generalisation?
-We address this question through both theoretical analysis and empirical
-evaluation.
+% =====================================================
+\section{Complex TikZ and pgfplots}
+\label{sec:pgfplots}
+% =====================================================
 
-\section{Methodology}
-Our approach builds on the framework of regularised empirical risk
-minimisation.  Given a hypothesis $h \in \mathcal{H}$, the objective function
-is
-\begin{equation}
-    \mathcal{L}(h) = \frac{1}{N} \sum_{i=1}^{N} \ell\bigl(h(\mathbf{x}_i),\; y_i\bigr)
-    + \lambda\, \Omega(h),
-    \label{eq:objective}
-\end{equation}
-where $\ell$ is a convex loss function and $\Omega(h)$ is a complexity penalty
-with regularisation strength $\lambda > 0$.
+\subsection{Line and Scatter Plots with Error Bars}
+\label{sec:line-scatter}
 
-\section{Results}
-We evaluate the proposed method on three benchmark datasets.  Table~\ref{tab:benchmarks}
-summarises the performance.
+\Cref{fig:line-scatter} shows a combined line and scatter plot with error bars,
+demonstrating the \texttt{error bars} library of pgfplots.
 
-\begin{table}[htbp]
+\begin{figure}[htbp]
     \centering
-    \caption{Classification accuracy (\%) on benchmark datasets.}
-    \label{tab:benchmarks}
-    \begin{tabular}{@{}lcccc@{}}
-        \toprule
-        Method & Dataset A & Dataset B & Dataset C & Average \\
-        \midrule
-        Baseline & 82.3 & 76.1 & 88.5 & 82.3 \\
-        Proposed & \textbf{89.7} & \textbf{83.4} & \textbf{92.1} & \textbf{88.4} \\
-        \bottomrule
-    \end{tabular}
-\end{table}
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=0.85\textwidth,
+        height=6cm,
+        xlabel={Temperature [\si{\kelvin}]},
+        ylabel={Conductivity [\si{\siemens\per\metre}]},
+        legend pos=north west,
+        grid=major,
+        thick,
+        error bars/.cd,
+            y dir=both,
+            y explicit,
+    ]
+        \addplot[
+            color=cBlue,
+            mark=*,
+            mark size=2pt,
+        ] coordinates {
+            (300, 12.3) +- (0, 0.8)
+            (350, 18.7) +- (0, 1.2)
+            (400, 24.1) +- (0, 0.9)
+            (450, 31.5) +- (0, 1.5)
+            (500, 38.2) +- (0, 1.1)
+            (550, 42.0) +- (0, 1.8)
+        };
+        \addlegendentry{Measurement}
 
-Figure~\ref{fig:training} illustrates the training convergence behaviour.
+        \addplot[
+            color=cRed,
+            dashed,
+            thick,
+            domain=300:550,
+            samples=50,
+        ] {0.08*x - 11.5};
+        \addlegendentry{Linear fit}
+
+        \addplot[
+            color=cGreen,
+            mark=square*,
+            mark size=2pt,
+            only marks,
+        ] coordinates {
+            (310, 13.0)
+            (370, 20.5)
+            (430, 28.3)
+            (480, 35.0)
+            (530, 40.1)
+        };
+        \addlegendentry{Simulation}
+    \end{axis}
+    \end{tikzpicture}
+    \caption{Electrical conductivity versus temperature with error bars.  Linear
+    fit and simulation data are shown for comparison.}
+    \label{fig:line-scatter}
+\end{figure}
+
+
+\subsection{Bar Chart and Grouped Plots}
+\label{sec:bar-chart}
+
+\Cref{fig:bar-chart} demonstrates grouped bar charts using the
+\texttt{groupplots} library.  Two sub-panels share an axis for direct
+comparison.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+    \begin{groupplot}[
+        group style={
+            group size=2 by 1,
+            horizontal sep=2.5cm,
+        },
+        width=0.42\textwidth,
+        height=6cm,
+        ylabel={Accuracy [\%]},
+        symbolic x coords={A, B, C, D},
+        xtick=data,
+        ybar=4pt,
+        bar width=10pt,
+        legend style={at={(0.5,-0.2)}, anchor=north, legend columns=-1,
+                      font=\footnotesize},
+        ymin=60, ymax=100,
+        grid=major,
+        grid style={dashed, gray!40},
+    ]
+        \nextgroupplot[title={\textbf{Dataset 1}}]
+            \addplot[fill=cBlue!70] coordinates {(A,85) (B,78) (C,92) (D,88)};
+            \addplot[fill=cRed!70] coordinates {(A,89) (B,83) (C,95) (D,91)};
+            \addlegendentry{Baseline}
+            \addlegendentry{Proposed}
+
+        \nextgroupplot[title={\textbf{Dataset 2}}]
+            \addplot[fill=cBlue!70] coordinates {(A,72) (B,68) (C,81) (D,75)};
+            \addplot[fill=cRed!70] coordinates {(A,79) (B,76) (C,87) (D,82)};
+            \addlegendentry{Baseline}
+            \addlegendentry{Proposed}
+    \end{groupplot}
+    \end{tikzpicture}
+    \caption{Grouped bar chart comparing baseline and proposed methods on two
+    benchmark datasets across four metrics.}
+    \label{fig:bar-chart}
+\end{figure}
+
+
+\subsection{Heatmap}
+\label{sec:heatmap}
+
+\Cref{fig:heatmap} presents a correlation heatmap generated entirely with
+pgfplots, showcasing the \texttt{mesh/colormap} feature.
 
 \begin{figure}[htbp]
     \centering
     \begin{tikzpicture}
     \begin{axis}[
         width=0.7\textwidth,
-        height=5cm,
-        xlabel={Epoch},
-        ylabel={Loss},
-        legend pos=north east,
-        grid=major,
-        thick,
+        height=7cm,
+        view={0}{90},
+        colormap/viridis,
+        colorbar,
+        colorbar style={
+            ylabel={Correlation},
+            ylabel style={font=\small},
+        },
+        xtick={0,1,2,3,4},
+        xticklabels={Feature 1, Feature 2, Feature 3, Feature 4, Feature 5},
+        xticklabel style={rotate=45, anchor=east, font=\small},
+        ytick={0,1,2,3,4},
+        yticklabels={Feature 1, Feature 2, Feature 3, Feature 4, Feature 5},
+        yticklabel style={font=\small},
+        title={\textbf{Feature Correlation Matrix}},
     ]
-        \addplot[blue, smooth, domain=1:200, samples=50]
-            {1.8*exp(-0.02*x) + 0.05 + 0.05*rand};
-        \addlegendentry{Training}
-        \addplot[red, smooth, dashed, domain=1:200, samples=50]
-            {1.9*exp(-0.018*x) + 0.12 + 0.08*rand};
-        \addlegendentry{Validation}
+        \addplot[matrix plot*, mesh/rows=5] table {
+            1.00  0.85  0.32  0.15  0.08
+            0.85  1.00  0.41  0.22  0.12
+            0.32  0.41  1.00  0.73  0.55
+            0.15  0.22  0.73  1.00  0.68
+            0.08  0.12  0.55  0.68  1.00
+        };
     \end{axis}
-\end{tikzpicture}
-    \caption{Convergence of training and validation loss over 200 epochs.}
-    \label{fig:training}
+    \end{tikzpicture}
+    \caption{Heatmap of the feature correlation matrix for the five input
+    variables.}
+    \label{fig:heatmap}
 \end{figure}
 
-\section{Discussion}
-The results in Table~\ref{tab:benchmarks} demonstrate consistent improvements
-across all three benchmarks~\cite{einstein1905}.  The largest gain is observed
-on Dataset B, which contains the highest label noise, suggesting that the
-regularisation term effectively mitigates overfitting.
 
+\subsection{Dual-Axis Plot}
+\label{sec:dual-axis}
+
+\Cref{fig:dual-axis} shows a dual-\(y\)-axis plot, useful when two quantities
+with different units must be displayed simultaneously.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=0.85\textwidth,
+        height=6cm,
+        xlabel={Time [\si{\second}]},
+        ylabel={Voltage [\si{\volt}]},
+        axis y line*=left,
+        grid=major,
+        thick,
+        legend pos=north west,
+    ]
+        \addplot[cBlue, thick, domain=0:10, samples=100]
+            {5*sin(deg(x*0.628)) * exp(-0.15*x)};
+        \addlegendentry{Voltage}
+    \end{axis}
+    \begin{axis}[
+        width=0.85\textwidth,
+        height=6cm,
+        ylabel={Current [\si{\ampere}]},
+        axis y line*=right,
+        axis x line=none,
+        thick,
+        legend pos=north east,
+    ]
+        \addplot[cRed, thick, dashed, domain=0:10, samples=100]
+            {0.8*cos(deg(x*0.628)) * exp(-0.1*x)};
+        \addlegendentry{Current}
+    \end{axis}
+    \end{tikzpicture}
+    \caption{Dual-axis plot of voltage and current in a damped RLC circuit.}
+    \label{fig:dual-axis}
+\end{figure}
+
+
+\subsection{Contour Plot}
+\label{sec:contour}
+
+\Cref{fig:contour} visualises a two-dimensional scalar field using contour
+lines and filled regions.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=0.75\textwidth,
+        height=7cm,
+        xlabel={\(x\)},
+        ylabel={\(y\)},
+        title={\textbf{Scalar Field \(f(x,y) = x^2 + y^2\)}},
+        view={0}{90},
+        colormap/viridis,
+        colorbar,
+        colorbar style={ylabel={\(f(x,y)\)}},
+    ]
+        \addplot3[
+            contour filled={number=10},
+            domain=-2:2,
+            domain y=-2:2,
+            samples=30,
+        ] {x^2 + y^2};
+        \addplot3[
+            contour gnuplot={number=8},
+            thick,
+            domain=-2:2,
+            domain y=-2:2,
+            samples=30,
+        ] {x^2 + y^2};
+    \end{axis}
+    \end{tikzpicture}
+    \caption{Filled contour plot of the scalar field \(f(x,y) = x^2 + y^2\),
+    demonstrating the \texttt{contour} and \texttt{colormap} features.}
+    \label{fig:contour}
+\end{figure}
+
+
+\subsection{Pie Chart}
+\label{sec:pie}
+
+\Cref{fig:pie} shows a pie chart drawn with TikZ, illustrating the breakdown
+of methods used in the benchmark study.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[font=\footnotesize]
+        \def\radius{2.5}
+        % Draw slices directly
+        \draw[fill=cBlue!70,  draw=white, thick] (0,0) -- (0:\radius) arc(0:126:\radius)   -- cycle;
+        \draw[fill=cRed!70,   draw=white, thick] (0,0) -- (126:\radius) arc(126:216:\radius) -- cycle;
+        \draw[fill=cGreen!70, draw=white, thick] (0,0) -- (216:\radius) arc(216:288:\radius) -- cycle;
+        \draw[fill=orange!70, draw=white, thick] (0,0) -- (288:\radius) arc(288:331.2:\radius) -- cycle;
+        \draw[fill=violet!70, draw=white, thick] (0,0) -- (331.2:\radius) arc(331.2:360:\radius) -- cycle;
+        % Percentage labels on slices
+        \node[font=\bfseries] at (63:{0.65*\radius})   {35\%};
+        \node[font=\bfseries] at (171:{0.65*\radius})  {25\%};
+        \node[font=\bfseries] at (252:{0.65*\radius})  {20\%};
+        \node[font=\bfseries] at (309.6:{0.65*\radius}) {12\%};
+        \node[font=\bfseries] at (345.6:{0.65*\radius}) {8\%};
+        % Legend
+        \fill[cBlue!70]  (\radius+0.6,  0.0)  rectangle ++(0.3,0.3);
+        \node[anchor=west] at (\radius+1.0, 0.15) {Deep Learning};
+        \fill[cRed!70]   (\radius+0.6, -0.5)  rectangle ++(0.3,0.3);
+        \node[anchor=west] at (\radius+1.0,-0.35) {Random Forests};
+        \fill[cGreen!70] (\radius+0.6, -1.0)  rectangle ++(0.3,0.3);
+        \node[anchor=west] at (\radius+1.0,-0.85) {SVMs};
+        \fill[orange!70] (\radius+0.6, -1.5)  rectangle ++(0.3,0.3);
+        \node[anchor=west] at (\radius+1.0,-1.35) {Grad.\ Boosting};
+        \fill[violet!70] (\radius+0.6, -2.0)  rectangle ++(0.3,0.3);
+        \node[anchor=west] at (\radius+1.0,-1.85) {Other};
+    \end{tikzpicture}
+    \caption{Market share of machine learning methods in the benchmark study,
+    drawn entirely with TikZ.}
+    \label{fig:pie}
+\end{figure}
+
+
+% =====================================================
+\section{Advanced Mathematical Typesetting}
+\label{sec:math}
+% =====================================================
+
+\subsection{Commutative Diagrams}
+\label{sec:cd}
+
+Commutative diagrams are typeset with the \texttt{tikz-cd} package.
+\Cref{fig:cd-exact} shows an exact sequence, while \cref{fig:cd-pushout}
+demonstrates a pushout square.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzcd}[column sep=large, row sep=large]
+        0 \arrow[r] &
+        A \arrow[r, "f"] \arrow[d, "g"'] &
+        B \arrow[r, "h"] \arrow[d, "k"'] &
+        C \arrow[r] \arrow[d, "m"'] &
+        0 \\
+        0 \arrow[r] &
+        A' \arrow[r, "f'"'] &
+        B' \arrow[r, "h'"'] &
+        C' \arrow[r] &
+        0
+    \end{tikzcd}
+    \caption{A commutative diagram with exact rows.}
+    \label{fig:cd-exact}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzcd}[column sep=huge, row sep=huge]
+        A \arrow[r, "i_A"] \arrow[d, "i_B"'] &
+        B \arrow[d, dashed, "\exists!\, u"] \\
+        C \arrow[r, "j_C"'] &
+        P \arrow[ul, phantom, "\ulcorner" rotate=40, very near start]
+    \end{tikzcd}
+    \caption{A pushout diagram in category theory.}
+    \label{fig:cd-pushout}
+\end{figure}
+
+
+\subsection{Aligned Equations and Tensor Notation}
+\label{sec:aligned}
+
+Multi-line aligned equations are rendered with the \texttt{align} environment.
+\Cref{eq:loss-decompose} decomposes the total loss.
+
+\begin{align}
+    \label{eq:loss-decompose}
+    \mathcal{L}_{\text{total}}
+        &= \mathcal{L}_{\text{recon}} + \beta\, \mathcal{L}_{\text{KL}}
+           + \gamma\, \mathcal{L}_{\text{reg}} \\[6pt]
+    \mathcal{L}_{\text{recon}}
+        &= -\mathbb{E}_{q_\phi(\mat{z} \mid \mat{x})}
+           \bigl[\log p_\theta(\mat{x} \mid \mat{z})\bigr] \\[4pt]
+    \mathcal{L}_{\text{KL}}
+        &= D_{\mathrm{KL}}\!\bigl(
+            q_\phi(\mat{z} \mid \mat{x})
+            \,\|\,
+            p(\mat{z})
+           \bigr) \\
+        &= -\frac{1}{2}\sum_{j=1}^{J}
+           \Bigl(
+               1 + \log \sigma_j^2 - \mu_j^2 - \sigma_j^2
+           \Bigr)
+\end{align}
+
+Tensor notation is used extensively in general relativity.
+\Cref{eq:einstein} shows the Einstein field equations.
+
+\begin{equation}
+    \label{eq:einstein}
+    R_{\mu\nu} - \frac{1}{2}\,R\,g_{\mu\nu}
+        + \Lambda\, g_{\mu\nu}
+        = \frac{8\pi G}{c^4}\, T_{\mu\nu}
+\end{equation}
+
+The Christoffel symbols of the second kind are defined as
+
+\begin{equation}
+    \label{eq:christoffel}
+    \Gamma^{\lambda}{}_{\mu\nu}
+        = \frac{1}{2}\,g^{\lambda\sigma}
+          \Bigl(
+              \partial_\mu g_{\nu\sigma}
+              + \partial_\nu g_{\mu\sigma}
+              - \partial_\sigma g_{\mu\nu}
+          \Bigr)
+\end{equation}
+
+
+\subsection{Operator Definitions and Custom Notation}
+\label{sec:operators}
+
+We define domain-specific operators and notation.
+The softmax function (\cref{eq:softmax}) and the cross-entropy loss
+(\cref{eq:xent}) are fundamental in classification.
+
+\begin{equation}
+    \label{eq:softmax}
+    \Softmax(z_i)
+        = \frac{\exp(z_i)}{\sum_{j=1}^{K}\exp(z_j)},
+        \quad i = 1, \ldots, K
+\end{equation}
+
+\begin{equation}
+    \label{eq:xent}
+    \mathcal{L}_{\text{CE}}
+        = -\sum_{k=1}^{K} y_k \log \hat{y}_k
+\end{equation}
+
+The matrix trace satisfies \(\Tr(\mat{A}\mat{B}) = \Tr(\mat{B}\mat{A})\) and the
+Hadamard product is \(\mat{A} \circ \mat{B}\).
+The inner product on a Hilbert space \(\hyp\) is denoted
+\(\inner{u}{v}_{\hyp}\).
+
+
+\subsection{Theorem Environments}
+\label{sec:theorems}
+
+\begin{theorem}[Taylor's Theorem]
+    \label{thm:taylor}
+    Let \(f \colon \R \to \R\) be \(n\)-times continuously differentiable.
+    For any \(x, a \in \R\),
+    \begin{equation}
+        f(x) = \sum_{k=0}^{n-1}
+            \frac{f^{(k)}(a)}{k!}(x-a)^k
+            + R_n(x),
+    \end{equation}
+    where the remainder satisfies
+    \(R_n(x) = \frac{f^{(n)}(\xi)}{n!}(x-a)^n\) for some \(\xi\) between
+    \(a\) and \(x\).
+\end{theorem}
+
+\begin{definition}[Lipschitz Continuity]
+    \label{def:lipschitz}
+    A function \(f \colon \R^n \to \R^m\) is \emph{Lipschitz continuous} with
+    constant \(L > 0\) if
+    \(\norm{f(\mat{x}) - f(\mat{y})} \le L\,\norm{\mat{x} - \mat{y}}\)
+    for all \(\mat{x}, \mat{y} \in \R^n\).
+\end{definition}
+
+\begin{lemma}
+    \label{lem:lipschitz-gradient}
+    If \(f\) is differentiable and \(\norm{\nabla f(\mat{x})} \le L\) for all
+    \(\mat{x}\), then \(f\) is Lipschitz continuous with constant \(L\).
+\end{lemma}
+
+\begin{proof}
+    By the mean value theorem,
+    \(\abs{f(\mat{x}) - f(\mat{y})}
+        = \abs{\inner{\nabla f(\mat{\xi})}{\mat{x} - \mat{y}}}
+        \le \norm{\nabla f(\mat{\xi})}\,\norm{\mat{x} - \mat{y}}
+        \le L\,\norm{\mat{x} - \mat{y}}\).
+\end{proof}
+
+\begin{proposition}
+    \label{prop:strongly-convex}
+    If \(f\) is \(L\)-smooth and \(\mu\)-strongly convex, then
+    \(\frac{\mu}{2}\norm{\mat{x} - \mat{x}^*}^2
+        \le f(\mat{x}) - f(\mat{x}^*)
+        \le \frac{L}{2}\norm{\mat{x} - \mat{x}^*}^2\).
+\end{proposition}
+
+\begin{corollary}
+    \label{cor:condition-number}
+    The condition number \(\kappa = L/\mu\) governs the convergence rate of
+    gradient descent: after \(t\) iterations,
+    \(f(\mat{x}_t) - f(\mat{x}^*) \le
+        \frac{L\,\norm{\mat{x}_0 - \mat{x}^*}^2}{2}
+        \!\left(\frac{\kappa - 1}{\kappa + 1}\right)^{\!2t}\).
+\end{corollary}
+
+\begin{example}
+    \label{ex:quadratic}
+    For \(f(\mat{x}) = \frac{1}{2}\mat{x}^\top\mat{Q}\mat{x}
+        - \mat{b}^\top\mat{x}\) with
+    \(\mu\mat{I} \preceq \mat{Q} \preceq L\mat{I}\),
+    \(\kappa = \lambda_{\max}(\mat{Q})/\lambda_{\min}(\mat{Q})\).
+\end{example}
+
+\begin{remark}
+    \label{rem:adaptive}
+    Adaptive methods such as Adam~\cite{mckinneyPythonDataAnalysis2018} modify
+    the learning rate per-parameter, effectively reducing the condition number
+    in practice.
+\end{remark}
+
+
+% =====================================================
+\section{Algorithm Pseudocode}
+\label{sec:algorithm}
+% =====================================================
+
+\Cref{alg:sgd} presents stochastic gradient descent with momentum, including
+complexity analysis.  The total time complexity per epoch is
+\(\mathcal{O}(N\,d)\) where \(N\) is the number of samples and \(d\) is the
+feature dimension.
+
+\begin{algorithm}[htbp]
+    \caption{Stochastic Gradient Descent with Momentum}
+    \label{alg:sgd}
+    \SetAlgoLined
+    \SetKwInOut{Input}{Input}
+    \SetKwInOut{Output}{Output}
+
+    \Input{Dataset \(\dataset = \{(\mat{x}_i, y_i)\}_{i=1}^{N}\),
+           learning rate \(\eta > 0\),
+           momentum \(\alpha \in [0,1)\),
+           epochs \(E\)}
+    \Output{Optimal parameters \(\mat{\theta}^*\)}
+
+    Initialise \(\mat{\theta}\) randomly\;
+    \(\mat{v} \gets \mat{0}\) \tcp*{velocity vector}
+    \For{epoch $\gets 1$ \KwTo $E$}{
+        Shuffle \(\dataset\)\;
+        \For{each mini-batch \(\mathcal{B} \subseteq \dataset\) of size \(B\)}{
+            \(\mat{g} \gets \frac{1}{B}\displaystyle\sum_{(\mat{x}_i,y_i)\in\mathcal{B}}
+                \nabla_{\mat{\theta}}\,\ell\!\bigl(f_{\mat{\theta}}(\mat{x}_i),\; y_i\bigr)\)
+                \tcp*{gradient, \(\mathcal{O}(B\,d)\)}
+            \(\mat{v} \gets \alpha\,\mat{v} + \eta\,\mat{g}\)
+                \tcp*{velocity update, \(\mathcal{O}(d)\)}
+            \(\mat{\theta} \gets \mat{\theta} - \mat{v}\)
+                \tcp*{parameter update, \(\mathcal{O}(d)\)}
+        }
+        Evaluate loss on validation set\;
+    }
+    \Return \(\mat{\theta}^* \gets \mat{\theta}\)\;
+\end{algorithm}
+
+
+% =====================================================
+\section{Code Listings}
+\label{sec:listings}
+% =====================================================
+
+\subsection{Python}
+\label{sec:python}
+
+\Cref{lst:python} shows a PyTorch training loop.  The \texttt{minted} package
+with the \texttt{manni} style provides syntax highlighting with line numbers.
+
+\begin{listing}[htbp]
+    \centering
+    \begin{minted}[
+        linenos,
+        stepnumber=5,
+        fontsize=\small,
+        frame=leftline,
+        framerule=1pt,
+        rulecolor=\color{g3},
+        breaklines,
+    ]{python}
+import torch
+import torch.nn as nn
+from torch.utils.data import DataLoader
+
+def train_epoch(model, loader, optimizer, device):
+    model.train()
+    total_loss = 0.0
+    for batch_x, batch_y in loader:
+        batch_x, batch_y = batch_x.to(device), batch_y.to(device)
+        optimizer.zero_grad()
+        logits = model(batch_x)
+        loss = nn.functional.cross_entropy(logits, batch_y)
+        loss.backward()
+        optimizer.step()
+        total_loss += loss.item() * batch_x.size(0)
+    return total_loss / len(loader.dataset)
+
+# Hyperparameters
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = nn.Linear(784, 10).to(device)
+optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+
+for epoch in range(1, 11):
+    loss = train_epoch(model, train_loader, optimizer, device)
+    print(f"Epoch {epoch:3d}  Loss: {loss:.4f}")
+    \end{minted}
+    \caption{PyTorch training loop for a linear classifier on MNIST.}
+    \label{lst:python}
+\end{listing}
+
+
+\subsection{Rust}
+\label{sec:rust}
+
+\Cref{lst:rust} demonstrates idiomatic Rust for concurrent data processing
+using channels.
+
+\begin{listing}[htbp]
+    \centering
+    \begin{minted}[
+        linenos,
+        stepnumber=5,
+        fontsize=\small,
+        frame=leftline,
+        framerule=1pt,
+        rulecolor=\color{g3},
+        breaklines,
+    ]{rust}
+use std::sync::mpsc;
+use std::thread;
+
+fn process_data(data: Vec<f64>) -> Vec<f64> {
+    let (tx, rx) = mpsc::channel();
+    let chunk_size = data.len() / num_cpus::get();
+
+    for chunk in data.chunks(chunk_size) {
+        let tx = tx.clone();
+        let chunk = chunk.to_vec();
+        thread::spawn(move || {
+            let result: Vec<f64> = chunk
+                .iter()
+                .map(|x| x.powi(2) + x.sqrt())
+                .collect();
+            tx.send(result).unwrap();
+        });
+    }
+
+    drop(tx);
+    rx.iter().flatten().collect()
+}
+
+fn main() {
+    let data: Vec<f64> = (0..1_000_000)
+        .map(|i| i as f64 * 0.001)
+        .collect();
+    let result = process_data(data);
+    println!("Processed {} elements", result.len());
+}
+    \end{minted}
+    \caption{Concurrent data processing in Rust using threads and channels.}
+    \label{lst:rust}
+\end{listing}
+
+
+\subsection{SQL}
+\label{sec:sql}
+
+\Cref{lst:sql} shows a complex analytical query with window functions and
+common table expressions.
+
+\begin{listing}[htbp]
+    \centering
+    \begin{minted}[
+        linenos,
+        stepnumber=5,
+        fontsize=\small,
+        frame=leftline,
+        framerule=1pt,
+        rulecolor=\color{g3},
+        breaklines,
+    ]{sql}
+WITH monthly_stats AS (
+    SELECT
+        department,
+        DATE_TRUNC('month', hire_date) AS month,
+        COUNT(*)                       AS new_hires,
+        AVG(salary)                    AS avg_salary
+    FROM employees
+    WHERE hire_date >= '2024-01-01'
+    GROUP BY department, DATE_TRUNC('month', hire_date)
+),
+ranked AS (
+    SELECT
+        department,
+        month,
+        new_hires,
+        avg_salary,
+        RANK() OVER (
+            PARTITION BY month ORDER BY new_hires DESC
+        ) AS dept_rank
+    FROM monthly_stats
+)
+SELECT
+    department,
+    month,
+    new_hires,
+    ROUND(avg_salary, 2) AS avg_salary,
+    dept_rank
+FROM ranked
+WHERE dept_rank <= 3
+ORDER BY month DESC, dept_rank;
+    \end{minted}
+    \caption{SQL analytical query using CTEs and window functions.}
+    \label{lst:sql}
+\end{listing}
+
+
+% =====================================================
+\section{Complex Tables}
+\label{sec:tables}
+% =====================================================
+
+\subsection{Multirow and Multicolumn Spanning}
+\label{sec:multirow}
+
+\Cref{tab:multirow} demonstrates cells that span multiple rows and columns,
+a common requirement in technical reports.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Model performance across hardware platforms.}
+    \label{tab:multirow}
+    \begin{tabular}{@{}llccc@{}}
+        \toprule
+        \multirow{2}{*}{\textbf{Model}}
+            & \multirow{2}{*}{\textbf{Backend}}
+            & \multicolumn{3}{c}{\textbf{Inference Latency [\si{\milli\second}]}} \\
+        \cmidrule(l){3-5}
+            & & \textbf{CPU} & \textbf{GPU} & \textbf{TPU} \\
+        \midrule
+        \multirow{2}{*}{ResNet-50}
+            & PyTorch  & 12.3 & \textbf{2.1} & 1.8 \\
+            & ONNX     & 10.8 & 2.4           & --- \\
+        \midrule
+        \multirow{2}{*}{BERT-base}
+            & PyTorch  & 45.6 & \textbf{8.3} & 6.1 \\
+            & ONNX     & 38.2 & 9.7           & --- \\
+        \midrule
+        \multirow{2}{*}{GPT-2}
+            & PyTorch  & 120.5 & \textbf{28.4} & --- \\
+            & ONNX     & 98.7  & 31.2           & --- \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+
+\subsection{Coloured Cells with \texorpdfstring{\texttt{\textbackslash cellcolor}}{cellcolor}}
+\label{sec:coloured}
+
+\Cref{tab:heatmap-table} uses background colours to highlight cells,
+providing an at-a-glance performance overview.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Accuracy (\%) heatmap across datasets and models.}
+    \label{tab:heatmap-table}
+    \definecolor{heatlow}{RGB}{254,232,200}
+    \definecolor{heatmid}{RGB}{253,187,45}
+    \definecolor{heathigh}{RGB}{39,148,73}
+    \begin{tabular}{@{}l*{5}{c}@{}}
+        \toprule
+        \textbf{Model}
+            & \textbf{MNIST} & \textbf{CIFAR-10}
+            & \textbf{ImageNet} & \textbf{COCO} & \textbf{SQuAD} \\
+        \midrule
+        Baseline
+            & \cellcolor{heathigh}98.1
+            & \cellcolor{heatmid}76.3
+            & \cellcolor{heatlow}62.4
+            & \cellcolor{heatlow}38.1
+            & \cellcolor{heatmid}71.2 \\
+        Model A
+            & \cellcolor{heathigh}98.5
+            & \cellcolor{heatmid}81.7
+            & \cellcolor{heatmid}68.9
+            & \cellcolor{heatlow}42.3
+            & \cellcolor{heatmid}76.8 \\
+        Model B
+            & \cellcolor{heathigh}99.0
+            & \cellcolor{heathigh}88.4
+            & \cellcolor{heatmid}74.2
+            & \cellcolor{heatmid}48.7
+            & \cellcolor{heathigh}84.1 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+
+\subsection{Long Table Spanning Multiple Pages}
+\label{sec:longtable}
+
+\Cref{tab:long} demonstrates a table that spans multiple pages, using
+\texttt{tabularray}'s \texttt{longtblr} environment with automatic
+continuation headers.
+
+\begin{longtblr}[
+    caption = {Complete hyperparameter search results across all experimental
+               runs.},
+    label = {tab:long},
+    entry = {long},
+    comment = {Continued on next page},
+    row{odd} = {g2!15},
+]{
+    colspec = {lccccr},
+    row{1} = {font=\bfseries},
+    hlines,
+}
+    \textbf{Run}
+        & \textbf{Learning Rate}
+        & \textbf{Batch Size}
+        & \textbf{Epochs}
+        & \textbf{Val. Loss}
+        & \textbf{Val. Acc. (\%)}
+        & \textbf{Time [\si{\minute}]} \\
+    1  & 0.001  & 32   & 50  & 0.342 & 87.2 & 12  \\
+    2  & 0.001  & 64   & 50  & 0.298 & 89.1 & 10  \\
+    3  & 0.001  & 128  & 50  & 0.271 & 90.3 & 8   \\
+    4  & 0.0005 & 32   & 80  & 0.255 & 91.0 & 18  \\
+    5  & 0.0005 & 64   & 80  & 0.231 & 92.4 & 15  \\
+    6  & 0.0005 & 128  & 80  & 0.218 & 93.1 & 12  \\
+    7  & 0.0005 & 256  & 80  & 0.205 & 93.8 & 10  \\
+    8  & 0.0002 & 64   & 120 & 0.192 & 94.2 & 22  \\
+    9  & 0.0002 & 128  & 120 & 0.184 & 94.7 & 18  \\
+    10 & 0.0002 & 256  & 120 & 0.178 & 95.0 & 14  \\
+    11 & 0.0001 & 128  & 200 & 0.171 & 95.3 & 28  \\
+    12 & 0.0001 & 256  & 200 & 0.165 & 95.6 & 22  \\
+    13 & 0.0001 & 512  & 200 & 0.162 & 95.8 & 18  \\
+    14 & 0.0001 & 512  & 300 & 0.158 & 96.0 & 26  \\
+    15 & 0.00005& 512  & 300 & 0.155 & 96.1 & 26  \\
+    16 & 0.00005& 256  & 400 & 0.153 & 96.2 & 30  \\
+    17 & 0.00005& 512  & 400 & 0.151 & 96.3 & 25  \\
+    18 & 0.00005& 1024 & 400 & 0.149 & 96.4 & 20  \\
+    19 & 0.00005& 1024 & 500 & 0.148 & 96.5 & 24  \\
+    20 & 0.00002& 1024 & 500 & 0.147 & 96.5 & 24  \\
+\end{longtblr}
+
+
+\subsection{Table with Footnotes and \texorpdfstring{\texttt{\textbackslash makecell}}{makecell}}
+\label{sec:makecell}
+
+\Cref{tab:footnotes} uses \texttt{makecell} for multi-line cell content and
+table notes.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Comparison of optimiser configurations.}
+    \label{tab:footnotes}
+    \begin{tabular}{@{}lccl@{}}
+        \toprule
+        \textbf{Optimiser}
+            & \textbf{\makecell[l]{Weight\\Decay}}
+            & \textbf{\makecell[l]{Best\\Acc. (\%)}}
+            & \textbf{Notes} \\
+        \midrule
+        SGD + Momentum
+            & \(10^{-4}\) & 93.2
+            & \makecell[l]{Standard baseline;\\requires careful LR tuning} \\
+        Adam
+            & ---        & 94.8
+            & \makecell[l]{Fast convergence;\\may generalise poorly} \\
+        AdamW
+            & \(10^{-2}\) & 96.1
+            & \makecell[l]{Decoupled weight decay;\\recommended for Transformers} \\
+        LAMB
+            & \(10^{-1}\) & 95.7
+            & \makecell[l]{Designed for large batch;\scales to 64K+} \\
+        \bottomrule
+    \end{tabular}
+    \vspace{4pt}\\
+    {\footnotesize Notes: All experiments use a cosine learning rate schedule
+    with warmup.  Accuracies are top-1 on ImageNet-1K.}
+\end{table}
+
+
+% =====================================================
+\section{Figures and Subfigures}
+\label{sec:figures}
+% =====================================================
+
+\subsection{Subfigures with \texorpdfstring{\texttt{\textbackslash subcaptionbox}}{subcaptionbox}}
+\label{sec:subfigures}
+
+\Cref{fig:subfigs} contains three subfigures demonstrating different plot types.
+
+\begin{figure}[htbp]
+    \centering
+    \subcaptionbox{Line plot\label{fig:sf-line}}[0.3\textwidth]{
+        \begin{tikzpicture}
+        \begin{axis}[
+            width=0.28\textwidth,
+            height=4cm,
+            ticks=none,
+            title={\footnotesize Exponential Decay},
+        ]
+            \addplot[cBlue, thick, smooth, domain=0:5, samples=50]
+                {exp(-0.8*x)};
+        \end{axis}
+        \end{tikzpicture}
+    }
+    \hfill
+    \subcaptionbox{Bar chart\label{fig:sf-bar}}[0.3\textwidth]{
+        \begin{tikzpicture}
+        \begin{axis}[
+            width=0.28\textwidth,
+            height=4cm,
+            ybar,
+            bar width=12pt,
+            ticks=none,
+            title={\footnotesize Category Counts},
+        ]
+            \addplot[fill=cRed!60] coordinates {(1,8) (2,15) (3,12) (4,6)};
+        \end{axis}
+        \end{tikzpicture}
+    }
+    \hfill
+    \subcaptionbox{Scatter plot\label{fig:sf-scatter}}[0.3\textwidth]{
+        \begin{tikzpicture}
+        \begin{axis}[
+            width=0.28\textwidth,
+            height=4cm,
+            ticks=none,
+            title={\footnotesize Clusters},
+        ]
+            \addplot+[only marks, mark=*, mark size=1.5pt]
+                {rand*2+1};
+            \addplot+[only marks, mark=square*, mark size=1.5pt]
+                {rand*2+3};
+        \end{axis}
+        \end{tikzpicture}
+    }
+    \caption{Three subfigures: (\subref{fig:sf-line}) an exponential decay,
+    (\subref{fig:sf-bar}) a bar chart, and (\subref{fig:sf-scatter}) a scatter
+    plot.}
+    \label{fig:subfigs}
+\end{figure}
+
+
+\subsection{TikZ Neural Network Diagram}
+\label{sec:nn}
+
+\Cref{fig:nn} shows a feed-forward neural network drawn entirely in TikZ,
+illustrating the architecture visually.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        neuron/.style={
+            circle,
+            draw=black!80,
+            thick,
+            minimum size=22pt,
+            inner sep=0pt,
+            font=\footnotesize,
+        },
+        input neuron/.style={neuron, fill=cBlue!20},
+        hidden neuron/.style={neuron, fill=cGreen!20},
+        output neuron/.style={neuron, fill=cRed!20},
+        annot/.style={text width=4em, align=center, font=\footnotesize},
+    ]
+        % Input layer
+        \foreach \i in {1,...,4}
+            \node[input neuron] (I-\i) at (0,-\i*1.2) {$x_{\i}$};
+
+        % Hidden layer 1
+        \foreach \j in {1,...,5}
+            \node[hidden neuron] (H1-\j) at (2.5,-\j*1.2+0.6) {$h_{\j}$};
+
+        % Hidden layer 2
+        \foreach \j in {1,...,4}
+            \node[hidden neuron] (H2-\j) at (5,-\j*1.2) {$h_{\j}'$};
+
+        % Output layer
+        \foreach \k in {1,...,2}
+            \node[output neuron] (O-\k) at (7.5,-\k*1.2-0.6) {$y_{\k}$};
+
+        % Connections: input -> hidden1
+        \foreach \i in {1,...,4}
+            \foreach \j in {1,...,5}
+                \draw[->, thin, gray!50] (I-\i) -- (H1-\j);
+
+        % Connections: hidden1 -> hidden2
+        \foreach \j in {1,...,5}
+            \foreach \k in {1,...,4}
+                \draw[->, thin, gray!50] (H1-\j) -- (H2-\k);
+
+        % Connections: hidden2 -> output
+        \foreach \j in {1,...,4}
+            \foreach \k in {1,...,2}
+                \draw[->, thin, gray!50] (H2-\j) -- (O-\k);
+
+        % Layer labels
+        \node[annot, above=10pt] at (0,0)   {Input};
+        \node[annot, above=10pt] at (2.5,0)  {Hidden 1};
+        \node[annot, above=10pt] at (5,0)    {Hidden 2};
+        \node[annot, above=10pt] at (7.5,0)  {Output};
+    \end{tikzpicture}
+    \caption{Feed-forward neural network with two hidden layers,
+    4 inputs, 5 and 4 hidden units, and 2 outputs.}
+    \label{fig:nn}
+\end{figure}
+
+
+\subsection{TikZ Circuit Diagram}
+\label{sec:circuit}
+
+\Cref{fig:circuit} uses the \texttt{circuitikz} package to draw an
+RLC circuit.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[american]
+        \draw (0,0)
+            to[V, l=$V_s$, i=$i$] (0,3)
+            to[R, l=$R$, i=$i_R$] (3,3)
+            to[L, l=$L$, i=$i_L$] (6,3)
+            to[C, l=$C$] (6,0)
+            -- (0,0);
+        \draw (3,3) to[short, *-] (3,2.2)
+            to[short, -*] (3,1.4);
+        \draw (6,3) to[short, *-] (6,2.2)
+            to[short, -*] (6,1.4);
+        \node at (3,1.8) {\footnotesize $v_R$};
+        \node at (6,1.8) {\footnotesize $v_C$};
+    \end{tikzpicture}
+    \caption{Series RLC circuit showing voltage and current conventions.}
+    \label{fig:circuit}
+\end{figure}
+
+
+\subsection{Data Visualisation with pgfplots}
+\label{sec:pgfvis}
+
+\Cref{fig:pgfvis} combines bar and line plots to show model performance
+metrics.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=0.85\textwidth,
+        height=6cm,
+        ybar,
+        bar width=14pt,
+        ylabel={Score},
+        symbolic x coords={Precision, Recall, F1, AUC},
+        xtick=data,
+        ymin=0, ymax=1.05,
+        legend style={at={(0.5,-0.18)}, anchor=north, legend columns=3,
+                      font=\footnotesize},
+        grid=major,
+        grid style={dashed, gray!30},
+    ]
+        \addplot[fill=cBlue!60]   coordinates
+            {(Precision,0.89) (Recall,0.82) (F1,0.85) (AUC,0.93)};
+        \addplot[fill=cRed!60]    coordinates
+            {(Precision,0.92) (Recall,0.78) (F1,0.84) (AUC,0.95)};
+        \addplot[fill=cGreen!60]  coordinates
+            {(Precision,0.85) (Recall,0.91) (F1,0.88) (AUC,0.91)};
+        \addlegendentry{Logistic Reg.}
+        \addlegendentry{Random Forest}
+        \addlegendentry{Gradient Boost}
+    \end{axis}
+    \end{tikzpicture}
+    \caption{Performance metrics for three classification models on the test
+    set.}
+    \label{fig:pgfvis}
+\end{figure}
+
+
+% =====================================================
+\section{System Architecture and Flow Diagrams}
+\label{sec:diagrams}
+% =====================================================
+
+\subsection{System Architecture}
+\label{sec:arch}
+
+\Cref{fig:arch} presents a high-level system architecture diagram, drawn with
+TikZ using the flow chart styles from the engineering module.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[node distance=1.5cm, auto, >=stealth']
+        % Nodes
+        \node[io]       (input)     {Data Sources};
+        \node[process, right of=input, xshift=1.5cm]  (ingest)  {Ingestion \& ETL};
+        \node[process, right of=ingest, xshift=1.5cm] (store)   {Data Lake};
+        \node[process, below of=store, yshift=-0.5cm]  (train)   {Training Pipeline};
+        \node[decision, below of=train, yshift=-0.5cm] (deploy)  {Deploy?};
+        \node[process, below of=deploy, yshift=-0.5cm] (serve)   {Model Serving};
+        \node[io, below of=serve, yshift=-0.5cm]       (output) {Predictions};
+        \node[startstop, left of=deploy, xshift=-2cm]  (log)    {Monitoring \& Logging};
+
+        % Arrows
+        \draw[arrow] (input)  -- (ingest);
+        \draw[arrow] (ingest) -- (store);
+        \draw[arrow] (store)  -- (train);
+        \draw[arrow] (train)  -- (deploy);
+        \draw[arrow] (deploy) -- node {Yes} (serve);
+        \draw[arrow] (serve)  -- (output);
+        \draw[arrow] (deploy) -| node [near start] {No} (log);
+        \draw[arrow] (log)    |- (train);
+    \end{tikzpicture}
+    \caption{High-level system architecture for the ML pipeline.}
+    \label{fig:arch}
+\end{figure}
+
+
+\subsection{Data Flow Diagram}
+\label{sec:dataflow}
+
+\Cref{fig:dataflow} shows how data moves through the processing stages.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[>=stealth', node distance=2cm, auto]
+        \node[process, minimum width=3cm] (raw) {Raw Data};
+        \node[process, right of=raw, xshift=2cm, minimum width=3cm] (clean)
+            {Cleaning};
+        \node[process, right of=clean, xshift=2cm, minimum width=3cm] (feat)
+            {Feature Eng.};
+        \node[process, right of=feat, xshift=2cm, minimum width=3cm] (model)
+            {Model};
+
+        \draw[->, thick, cBlue] (raw)  -- node {JSON, CSV} (clean);
+        \draw[->, thick, cGreen] (clean) -- node {NaN fill, scale} (feat);
+        \draw[->, thick, cRed]   (feat) -- node {embeddings} (model);
+
+        % Annotation
+        \draw[->, annotatearrow, thick] (2.5,-1.8) --
+            node[below, annotatearrow, fill=white, inner sep=2pt, rounded corners]
+            {\footnotesize Quality checks at each stage} (7,-1.8);
+    \end{tikzpicture}
+    \caption{Data flow from raw ingestion to model inference.}
+    \label{fig:dataflow}
+\end{figure}
+
+
+% =====================================================
+\section{Cross-References}
+\label{sec:xref}
+% =====================================================
+
+OmniLaTeX provides \verb|\autoref|, \verb|\cref|, \verb|\Cref|, and
+\verb|\namecref| for intelligent cross-referencing via the
+\texttt{cleveref} package.  Some examples:
+
+\begin{itemize}
+    \item \verb|\autoref{eq:loss-decompile}| $\to$ \autoref{eq:loss-decompose}
+    \item \verb|\cref{fig:nn}| $\to$ \cref{fig:nn}
+    \item \verb|\cref{tab:multirow}| $\to$ \cref{tab:multirow}
+    \item \verb|\cref{alg:sgd}| $\to$ \cref{alg:sgd}
+    \item \verb|\cref{thm:taylor}| $\to$ \cref{thm:taylor}
+    \item \verb|\cref{def:lipschitz}| $\to$ \cref{def:lipschitz}
+    \item \verb|\cref{lst:python}| $\to$ \cref{lst:python}
+    \item \verb|\cref{fig:cd-exact,fig:cd-pushout}| $\to$ \cref{fig:cd-exact,fig:cd-pushout}
+    \item \verb|\namecref{sec:pgfplots}| $\to$ \namecref{sec:pgfplots}
+\end{itemize}
+
+
+% =====================================================
+\section{Bibliography and Citations}
+\label{sec:bibliography}
+% =====================================================
+
+The \texttt{biblatex} package (with \texttt{ext-authoryear} style) supports
+multiple citation commands.  Examples:
+
+\begin{itemize}
+    \item \verb|\cite{einstein1905}| $\to$ \cite{einstein1905}
+    \item \verb|\parencite{diracPrinciplesQuantumMechanics1981}|
+          $\to$ \parencite{diracPrinciplesQuantumMechanics1981}
+    \item \verb|\textcite{knuthTeXbook1986}|
+          $\to$ \textcite{knuthTeXbook1986}
+    \item \verb|\footcite{goossensLaTeXCompanion1993}|
+          $\to$ \footcite{goossensLaTeXCompanion1993}
+    \item \verb|\cites{einstein1905}{diracPrinciplesQuantumMechanics1981}|
+          $\to$ \cites{einstein1905}{diracPrinciplesQuantumMechanics1981}
+\end{itemize}
+
+Multiple citations can be combined: as shown by
+\textcite{einstein1905} and \textcite{knuthTeXbook1986}, foundational
+works continue to shape modern research.  Further context is provided
+by \parencite{baehrThermodynamikGrundlagenUnd2016,
+    mollenhauerHandbuchDieselmotoren2007}.
+
+
+% =====================================================
+\section{Custom Commands and Operators}
+\label{sec:custom}
+% =====================================================
+
+Custom commands defined in the preamble ensure consistent notation throughout.
+Here is a summary of the domain-specific commands used in this article:
+
+\begin{table}[htbp]
+    \centering
+    \caption{Custom commands defined for this article.}
+    \label{tab:commands}
+    \begin{tabular}{@{}lll@{}}
+        \toprule
+        \textbf{Command} & \textbf{Renders} & \textbf{Usage} \\
+        \midrule
+        \verb|\R|         & \(\R\)          & Real numbers \\
+        \verb|\N|         & \(\N\)          & Natural numbers \\
+        \verb|\mat{A}|    & \(\mat{A}\)     & Matrix / vector \\
+        \verb|\inner{u}{v}| & \(\inner{u}{v}\) & Inner product \\
+        \verb|\argmin|    & \(\argmin\)     & Arg minimum \\
+        \verb|\argmax|    & \(\argmax\)     & Arg maximum \\
+        \verb|\Tr|        & \(\Tr\)         & Matrix trace \\
+        \verb|\diag|      & \(\diag\)       & Diagonal matrix \\
+        \verb|\Softmax|   & \(\Softmax\)    & Softmax function \\
+        \verb|\Var|       & \(\Var\)        & Variance \\
+        \verb|\Cov|       & \(\Cov\)        & Covariance \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The optimisation problem from \cref{eq:loss-decompose} can be rewritten using
+these operators as
+\begin{equation}
+    \label{eq:argmin}
+    \mat{\theta}^* = \argmin_{\mat{\theta} \in \R^d}
+        \frac{1}{N}\sum_{i=1}^{N}
+        \ell\!\bigl(f_{\mat{\theta}}(\mat{x}_i),\; y_i\bigr)
+        + \lambda\,\norm{\mat{\theta}}_2^2
+\end{equation}
+
+
+% =====================================================
 \section{Conclusion}
-Key findings are highlighted in this section~\cite{goossensLaTeXCompanion1993}.
-The proposed method achieves state-of-the-art accuracy while maintaining
-computational efficiency, making it suitable for deployment in resource-constrained
-environments.
+\label{sec:conclusion}
+% =====================================================
+
+This article has demonstrated the breadth of advanced features available in the
+OmniLaTeX template.  From complex pgfplots visualisations
+(\cref{sec:pgfplots}) to commutative diagrams (\cref{sec:cd}), from algorithm
+pseudocode (\cref{sec:algorithm}) to multi-language code listings
+(\cref{sec:listings}), and from sophisticated tables (\cref{sec:tables}) to
+TikZ system diagrams (\cref{sec:diagrams}), the template provides a
+comprehensive toolkit for scientific publishing.
+
+The combination of \texttt{cleveref} cross-references
+(\cref{sec:xref}), \texttt{biblatex} citations (\cref{sec:bibliography}),
+and custom mathematical commands (\cref{sec:custom}) ensures that the resulting
+documents are both visually polished and semantically rich.
+
 
 \printbibliography
 

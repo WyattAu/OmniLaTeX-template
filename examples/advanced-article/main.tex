@@ -1,0 +1,789 @@
+\documentclass[
+    language=english,
+    doctype=article,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+\RequirePackage{tikz}
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\RequirePackage{booktabs}
+\RequirePackage{longtable}
+\RequirePackage{tabularx}
+\RequirePackage[ruled,vlined,linesnumbered]{algorithm2e}
+\RequirePackage{minted}
+\RequirePackage{cleveref}
+\RequirePackage{subcaption}
+\RequirePackage{float}
+\RequirePackage{multirow}
+\RequirePackage{xcolor}
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{cancel}
+\RequirePackage{siunitx}
+\RequirePackage{chemformula}
+\RequirePackage{physics}
+\RequirePackage{tikz-cd}
+\RequirePackage{makecell}
+
+% ─────────────────────────────────────────────────────
+% Theorem Environments
+% ─────────────────────────────────────────────────────
+\theoremstyle{definition}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}{Example}[section]
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}[section]
+
+% ─────────────────────────────────────────────────────
+% Custom Commands
+% ─────────────────────────────────────────────────────
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\Softmax}{Softmax}
+\DeclareMathOperator{\Concat}{Concat}
+\newcommand{\mat}[1]{\mathbf{#1}}
+\newcommand{\tensor}[2]{#1^{#2}}
+\newcommand{\hyp}{\mathcal{H}}
+\newcommand{\dataset}{\mathcal{D}}
+\newcommand{\graph}{\mathcal{G}}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\newcommand{\inner}[2]{\langle #1, #2 \rangle}
+
+\begin{document}
+
+\maketitle
+
+% ─────────────────────────────────────────────────────
+% Structured Abstract
+% ─────────────────────────────────────────────────────
+\begin{abstract}
+\noindent\textbf{Background.}
+Knowledge graph reasoning requires models that can traverse multiple hops
+across heterogeneous relation types, yet existing graph neural networks
+suffer from over-smoothing and relational information loss beyond three
+hops~\cite{goossensLaTeXCompanion1993}.
+
+\noindent\textbf{Methods.}
+We introduce HeteroGNN, a novel architecture that combines relation-aware
+attention with adaptive neighbourhood sampling.  The model employs a
+hierarchical message-passing scheme with residual connections at each hop
+to preserve long-range signal~\cite{knuthTeXbook1986}.
+
+\noindent\textbf{Results.}
+On four benchmark knowledge graphs, HeteroGNN achieves up to
+\(\SI{8.3}{\percent}\) improvement in Mean Reciprocal Rank over the
+strongest baseline while reducing training time by
+\(\SI{35}{\percent}\)~\cite{mckinneyPythonDataAnalysis2018}.
+
+\noindent\textbf{Conclusions.}
+Our results demonstrate that relation-aware attention combined with
+adaptive sampling provides a principled solution to multi-hop reasoning
+over heterogeneous graphs, opening new directions for scalable knowledge
+graph completion.
+\end{abstract}
+
+\tableofcontents
+
+% =====================================================
+\section{Introduction}
+\label{sec:intro}
+% =====================================================
+
+Knowledge graphs (KGs) encode structured real-world knowledge as
+triples~\(\langle \text{head}, \text{relation}, \text{tail}\rangle\)
+and power applications from question answering to drug
+discovery~\cite{einstein1905}.  Multi-hop reasoning---inferring facts
+that require traversing multiple edges---remains a fundamental challenge.
+
+\textcite{knuthTeXbook1986} identified three core difficulties: (i) the
+combinatorial explosion of reachable nodes, (ii) the heterogeneity of
+relation types, and (iii) the degradation of learned representations at
+greater depths.  Despite significant progress, no existing method
+simultaneously addresses all three.
+
+\subsection{Research Gap}
+
+Existing graph neural networks (GNNs) for KG reasoning fall into two
+categories.  Path-based methods~\cite{mollenhauerHandbuchDieselmotoren2007}
+enumerate explicit paths but scale exponentially with hop count.
+Message-passing methods~\cite{ramalhoFluentPython2015} aggregate
+neighbourhood information but suffer from over-smoothing, where node
+representations converge to indistinguishable vectors after several
+layers~\cite{baehrThermodynamikGrundlagenUnd2016}.
+
+\subsection{Contributions}
+
+This paper makes the following contributions:
+\begin{enumerate}
+    \item We propose \emph{HeteroGNN}, a relation-aware graph neural
+          network with adaptive neighbourhood sampling
+          (\cref{sec:methodology}).
+    \item We prove formal bounds on the information preservation across
+          multiple message-passing hops (\cref{thm:info-preserve}).
+    \item We conduct extensive experiments on four benchmarks, achieving
+          state-of-the-art results (\cref{sec:experiments}).
+\end{enumerate}
+
+% =====================================================
+\section{Related Work}
+\label{sec:related}
+% =====================================================
+
+\subsection{Graph Neural Networks for Reasoning}
+
+Early approaches applied spectral graph convolutions to
+KGs~\cite{diracPrinciplesQuantumMechanics1981}.  More recent work
+focuses on spatial message-passing, where each node aggregates
+information from its neighbours.
+
+\Cref{tab:related} compares the key properties of existing approaches.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Comparison of graph neural network architectures for knowledge
+    graph reasoning.}
+    \label{tab:related}
+    \begin{tabular}{@{}llccccc@{}}
+        \toprule
+        \textbf{Method}
+            & \textbf{Year}
+            & \multicolumn{1}{c}{\textbf{Hetero.}}
+            & \multicolumn{1}{c}{\textbf{Multi-hop}}
+            & \multicolumn{1}{c}{\textbf{Attn.}}
+            & \multicolumn{1}{c}{\textbf{Adapt.\ Sampling}}
+            & \multicolumn{1}{c}{\textbf{Scalable}} \\
+        \midrule
+        \multirow{2}{*}{R-GCN}
+            & 2018 & \checkmark & & & & \checkmark \\
+            & & \multicolumn{5}{l}{\footnotesize Per-relation weight matrices} \\
+        \midrule
+        \multirow{2}{*}{CompGCN}
+            & 2020 & \checkmark & & \checkmark & & \checkmark \\
+            & & \multicolumn{5}{l}{\footnotesize Compositional embeddings} \\
+        \midrule
+        \multirow{2}{*}{HAN}
+            & 2019 & \checkmark & & \checkmark & & \\
+            & & \multicolumn{5}{l}{\footnotesize Hierarchical attention} \\
+        \midrule
+        \multirow{2}{*}{NBFNet}
+            & 2021 & & \checkmark & & & \\
+            & & \multicolumn{5}{l}{\footnotesize Bellman--Ford message passing} \\
+        \midrule
+        \multirow{2}{*}{\textbf{Ours}}
+            & 2026 & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+            & & \multicolumn{5}{l}{\footnotesize Relation-aware attention + adaptive sampling} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+% =====================================================
+\section{Methodology}
+\label{sec:methodology}
+% =====================================================
+
+\subsection{Problem Definition}
+
+\begin{definition}[Heterogeneous Knowledge Graph]
+    \label{def:hkg}
+    A heterogeneous knowledge graph is a tuple
+    \(\graph = (\mathcal{V}, \mathcal{E}, \mathcal{R}, \phi)\)
+    where \(\mathcal{V}\) is a set of nodes,
+    \(\mathcal{E} \subseteq \mathcal{V} \times \mathcal{R} \times \mathcal{V}\)
+    is a set of edges, \(\mathcal{R}\) is a finite set of relation types,
+    and \(\phi \colon \mathcal{V} \to \mathcal{T}\) maps nodes to types.
+\end{definition}
+
+The goal of multi-hop link prediction is: given a query triple
+\((h, r, ?)\), predict the tail entity \(t\) by reasoning over paths of
+length \(k\) in \(\graph\).
+
+\subsection{Algorithm}
+
+\Cref{alg:heternn} describes the forward pass of HeteroGNN.
+
+\begin{algorithm}[htbp]
+    \caption{HeteroGNN Forward Pass}
+    \label{alg:heternn}
+    \SetAlgoLined
+    \SetKwInOut{Input}{Input}
+    \SetKwInOut{Output}{Output}
+
+    \Input{Graph \(\graph\), node features \(\mat{X} \in \R^{|\mathcal{V}|\times d}\),
+           number of layers \(L\), sample size \(S\)}
+    \Output{Updated node representations \(\mat{H}^{(L)}\)}
+
+    \(\mat{H}^{(0)} \gets \mat{X}\) \tcp*{initialise}
+    \For{$\ell \gets 1$ \KwTo $L$}{
+        \ForEach{relation $r \in \mathcal{R}$}{
+            \(\mathcal{N}_r(v) \gets\) \textsc{AdaptiveSample}
+                \((\graph, v, r, S)\) \tcp*{\(\mathcal{O}(|\mathcal{E}_r|)\)}
+            \(\mat{m}_r^{(\ell)} \gets
+                \sum_{u \in \mathcal{N}_r(v)}
+                \alpha_{vu}^{r}\,
+                \mat{W}_r^{(\ell)}\,\mat{h}_u^{(\ell-1)}\)
+                \tcp*{relation-aware message, \(\mathcal{O}(S\,d^2)\)}
+        }
+        \(\mat{h}_v^{(\ell)} \gets
+            \sigma\!\left(
+                \mat{W}_{\text{res}}^{(\ell)}\,\mat{h}_v^{(\ell-1)}
+                + \sum_{r \in \mathcal{R}}
+                \beta_r\,\mat{m}_r^{(\ell)}
+            \right)\)
+            \tcp*{residual update, \(\mathcal{O}(|\mathcal{R}|\,d)\)}
+    }
+    \Return \(\mat{H}^{(L)}\)\;
+\end{algorithm}
+
+\subsection{Complexity Analysis}
+
+\begin{proposition}[Time Complexity]
+    \label{prop:complexity}
+    The total time complexity of HeteroGNN per forward pass is
+    \(\mathcal{O}\bigl(L \cdot |\mathcal{R}| \cdot (S\,d^2 + |\mathcal{V}|\,d)\bigr)\),
+    where \(L\) is the number of layers, \(|\mathcal{R}|\) the number of
+    relation types, \(S\) the sample size, and \(d\) the hidden dimension.
+\end{proposition}
+
+\subsection{Mathematical Proof}
+
+\begin{theorem}[Information Preservation]
+    \label{thm:info-preserve}
+    Let \(\mat{H}^{(\ell)}\) be the node representations at layer \(\ell\).
+    If the residual connection satisfies
+    \(\norm{\mat{W}_{\text{res}}^{(\ell)} - \mat{I}} \le \epsilon < 1\),
+    then the mutual information between input features and layer-\(L\)
+    representations satisfies
+    \(\mathcal{I}\bigl(\mat{X};\,\mat{H}^{(L)}\bigr)
+        \ge (1-\epsilon)^L \cdot \mathcal{I}\bigl(\mat{X};\,\mat{H}^{(0)}\bigr)\).
+\end{theorem}
+
+\begin{proof}
+    By induction on \(L\).  For \(L=0\), the bound holds trivially.
+    Assume it holds for \(L-1\).  At layer \(L\), the residual connection
+    gives
+    \[
+        \mat{h}_v^{(L)}
+            = \mat{W}_{\text{res}}^{(L)}\,\mat{h}_v^{(L-1)}
+              + \mat{f}^{(L)}\!\bigl(\mathcal{N}(v)\bigr),
+    \]
+    where \(\mat{f}^{(L)}\) is the aggregated message.  By the data
+    processing inequality applied to the linear map
+    \(\mat{W}_{\text{res}}^{(L)}\),
+    \begin{align}
+        \mathcal{I}\bigl(\mat{X};\,\mat{H}^{(L)}\bigr)
+            &\ge \mathcal{I}\bigl(\mat{X};\,
+               \mat{W}_{\text{res}}^{(L)}\,\mat{H}^{(L-1)}\bigr) \\
+            &\ge (1-\epsilon)\,\mathcal{I}\bigl(\mat{X};\,\mat{H}^{(L-1)}\bigr) \\
+            &\ge (1-\epsilon)^L\,\mathcal{I}\bigl(\mat{X};\,\mat{H}^{(0)}\bigr),
+    \end{align}
+    where the last step applies the inductive hypothesis.
+\end{proof}
+
+\begin{corollary}
+    \label{cor:residual-depth}
+    With \(\epsilon = 0.1\), at least \(\SI{65}{\percent}\) of the input
+    information is preserved after \(L=5\) layers.
+\end{corollary}
+
+\subsection{System Architecture}
+
+\Cref{fig:arch} shows the overall architecture of HeteroGNN.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.4cm, auto, >=stealth',
+        block/.style={rectangle, draw, fill=blue!15, text width=2.5cm,
+                      text centered, rounded corners, minimum height=0.8cm},
+        io/.style={trapezium, trapezium left angle=70,
+                   trapezium right angle=110, draw, fill=green!15,
+                   text width=2cm, text centered, minimum height=0.8cm},
+        arr/.style={->, thick},
+    ]
+        \node[io]    (input)                {Input KG};
+        \node[block, right of=input, xshift=1.8cm]  (embed)  {Relation\\Embeddings};
+        \node[block, right of=embed, xshift=1.8cm]  (sample) {Adaptive\\Sampler};
+        \node[block, right of=sample, xshift=1.8cm] (agg)    {Relation-Aware\\Aggregation};
+        \node[block, below of=agg, yshift=-0.8cm]   (res)    {Residual\\Connection};
+        \node[io,    below of=res, yshift=-0.8cm]   (out)    {Predictions};
+
+        \draw[arr] (input)  -- (embed);
+        \draw[arr] (embed)  -- (sample);
+        \draw[arr] (sample) -- (agg);
+        \draw[arr] (agg)    -- (res);
+        \draw[arr] (res)    -- (out);
+        \draw[arr, dashed] (res.west) -- ++(-2,0) |- node[near start, left] {skip} (sample.south);
+    \end{tikzpicture}
+    \caption{Architecture of the HeteroGNN model showing the main
+    computational stages.}
+    \label{fig:arch}
+\end{figure}
+
+\subsection{Data Flow}
+
+\Cref{fig:dataflow} illustrates how data transforms through the pipeline.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[>=stealth', node distance=2.2cm, auto,
+        proc/.style={rectangle, draw, fill=orange!15, text width=2.2cm,
+                     text centered, minimum height=0.7cm, rounded corners},
+    ]
+        \node[proc] (raw)   {Raw Triples};
+        \node[proc, right of=raw, xshift=1.5cm]   (enc)   {Tokenise};
+        \node[proc, right of=enc, xshift=1.5cm]   (feat)  {Feature Map};
+        \node[proc, right of=feat, xshift=1.5cm]  (gnn)   {HeteroGNN};
+        \node[proc, below of=gnn, yshift=-0.8cm]  (dec)   {Decode};
+
+        \draw[->, thick, cBlue]   (raw)  -- node {triples} (enc);
+        \draw[->, thick, cGreen]  (enc)  -- node {\(\mat{X}\)} (feat);
+        \draw[->, thick, cRed]    (feat) -- node {context} (gnn);
+        \draw[->, thick, violet]  (gnn)  -- node {\(\mat{H}\)} (dec);
+    \end{tikzpicture}
+    \caption{Data flow from raw knowledge graph triples to predictions.}
+    \label{fig:dataflow}
+\end{figure}
+
+\subsection{Neural Network Diagram}
+
+\Cref{fig:nn} visualises the layer structure of HeteroGNN.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        neuron/.style={circle, draw=black!80, thick, minimum size=20pt,
+                       inner sep=0pt, font=\footnotesize},
+        in/.style={neuron, fill=cBlue!20},
+        hid/.style={neuron, fill=cGreen!20},
+        out/.style={neuron, fill=cRed!20},
+        lbl/.style={text width=3em, align=center, font=\footnotesize},
+    ]
+        \foreach \i in {1,...,4}
+            \node[in]  (I-\i) at (0, -\i*1.1) {$e_{\i}$};
+        \foreach \j in {1,...,5}
+            \node[hid] (H-\j) at (2.5, -\j*1.1+0.55) {$h_{\j}$};
+        \foreach \k in {1,...,3}
+            \node[out] (O-\k) at (5, -\k*1.1-0.55) {$o_{\k}$};
+
+        \foreach \i in {1,...,4}
+            \foreach \j in {1,...,5}
+                \draw[->, thin, gray!50] (I-\i) -- (H-\j);
+        \foreach \j in {1,...,5}
+            \foreach \k in {1,...,3}
+                \draw[->, thin, gray!50] (H-\j) -- (O-\k);
+
+        \node[lbl, above=10pt] at (0,0)   {Input};
+        \node[lbl, above=10pt] at (2.5,0) {Hidden};
+        \node[lbl, above=10pt] at (5,0)   {Output};
+    \end{tikzpicture}
+    \caption{Layer structure of HeteroGNN with 4 input, 5 hidden, and
+    3 output units.}
+    \label{fig:nn}
+\end{figure}
+
+% =====================================================
+\section{Experiments}
+\label{sec:experiments}
+% =====================================================
+
+\subsection{Experimental Setup}
+
+\Cref{tab:setup} summarises the datasets used.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Dataset statistics for the four knowledge graph benchmarks.}
+    \label{tab:setup}
+    \begin{tabular}{@{}lrrrr@{}}
+        \toprule
+        \textbf{Dataset}
+            & \textbf{\#Nodes}
+            & \textbf{\#Edges}
+            & \textbf{\#Relations}
+            & \textbf{\#Train / Val / Test} \\
+        \midrule
+        WN18RR   & 40\,943   & 93\,003   & 11 & 86\,835 / 3\,034 / 3\,134 \\
+        FB15K-237 & 14\,541  & 310\,116  & 237 & 272\,115 / 17\,535 / 20\,466 \\
+        YAGO3-10 & 123\,182 & 1\,079\,040 & 37 & 936\,090 / 22\,826 / 20\,130 \\
+        NELL-995 & 75\,492  & 200\,423  & 200 & 139\,700 / 14\,968 / 14\,968 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Main Results}
+
+\Cref{fig:main-results} shows the primary performance comparison across
+all datasets.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=0.85\textwidth,
+        height=6.5cm,
+        ybar,
+        bar width=12pt,
+        ylabel={MRR},
+        symbolic x coords={WN18RR, FB15K-237, YAGO3-10, NELL-995},
+        xtick=data,
+        ymin=0.1, ymax=0.6,
+        legend style={at={(0.5,-0.2)}, anchor=north, legend columns=4,
+                      font=\footnotesize},
+        grid=major,
+        grid style={dashed, gray!30},
+        nodes near coords,
+        every node near coord/.append style={font=\tiny, rotate=90,
+                                              anchor=west},
+    ]
+        \addplot[fill=cBlue!60] coordinates
+            {(WN18RR,0.42) (FB15K-237,0.30) (YAGO3-10,0.35) (NELL-995,0.28)};
+        \addplot[fill=cRed!60] coordinates
+            {(WN18RR,0.47) (FB15K-237,0.34) (YAGO3-10,0.39) (NELL-995,0.31)};
+        \addplot[fill=cGreen!60] coordinates
+            {(WN18RR,0.49) (FB15K-237,0.36) (YAGO3-10,0.41) (NELL-995,0.33)};
+        \addplot[fill=violet!60] coordinates
+            {(WN18RR,0.53) (FB15K-237,0.41) (YAGO3-10,0.46) (NELL-995,0.38)};
+        \addlegendentry{R-GCN}
+        \addlegendentry{CompGCN}
+        \addlegendentry{NBFNet}
+        \addlegendentry{\textbf{HeteroGNN}}
+    \end{axis}
+    \end{tikzpicture}
+    \caption{Mean Reciprocal Rank (MRR) on four knowledge graph benchmarks.
+    Higher is better.}
+    \label{fig:main-results}
+\end{figure}
+
+\subsection{Ablation Study}
+
+\Cref{fig:ablation} isolates the contribution of each component.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+    \begin{groupplot}[
+        group style={
+            group size=2 by 1,
+            horizontal sep=2.5cm,
+        },
+        width=0.42\textwidth,
+        height=6cm,
+        ylabel={MRR},
+        symbolic x coords={Full, No Attn, No Res, No Sample},
+        xtick=data,
+        x tick label style={rotate=30, anchor=east, font=\footnotesize},
+        ybar=4pt,
+        bar width=10pt,
+        legend style={at={(0.5,-0.3)}, anchor=north, legend columns=-1,
+                      font=\footnotesize},
+        ymin=0.3, ymax=0.6,
+        grid=major,
+        grid style={dashed, gray!40},
+    ]
+        \nextgroupplot[title={\textbf{WN18RR}}]
+            \addplot[fill=cBlue!70] coordinates
+                {(Full,0.53) (No Attn,0.47) (No Res,0.44) (No Sample,0.51)};
+            \addplot[fill=cRed!70] coordinates
+                {(Full,0.51) (No Attn,0.45) (No Res,0.42) (No Sample,0.49)};
+            \addlegendentry{3 hops}
+            \addlegendentry{5 hops}
+
+        \nextgroupplot[title={\textbf{FB15K-237}}]
+            \addplot[fill=cBlue!70] coordinates
+                {(Full,0.41) (No Attn,0.36) (No Res,0.33) (No Sample,0.39)};
+            \addplot[fill=cRed!70] coordinates
+                {(Full,0.39) (No Attn,0.34) (No Res,0.31) (No Sample,0.37)};
+            \addlegendentry{3 hops}
+            \addlegendentry{5 hops}
+    \end{groupplot}
+    \end{tikzpicture}
+    \caption{Ablation study: removing attention, residual connections, or
+    adaptive sampling degrades performance at both 3 and 5 hops.}
+    \label{fig:ablation}
+\end{figure}
+
+\subsection{Scalability Analysis}
+
+\Cref{fig:scalability} examines the trade-off between model size and
+training time.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+    \begin{axis}[
+        width=0.85\textwidth,
+        height=6cm,
+        xlabel={Number of Parameters [\si{\mega}]},
+        ylabel={MRR},
+        axis y line*=left,
+        grid=major,
+        thick,
+        legend pos=north west,
+    ]
+        \addplot[cBlue, thick, mark=*, mark size=2.5pt] coordinates
+            {(2.1, 0.42) (4.3, 0.47) (8.7, 0.51) (17.4, 0.53) (34.8, 0.54)};
+        \addlegendentry{MRR}
+    \end{axis}
+    \begin{axis}[
+        width=0.85\textwidth,
+        height=6cm,
+        ylabel={Time [\si{\hour}]},
+        axis y line*=right,
+        axis x line=none,
+        thick,
+        legend pos=north east,
+    ]
+        \addplot[cRed, thick, dashed, mark=square*, mark size=2.5pt] coordinates
+            {(2.1, 1.2) (4.3, 2.8) (8.7, 5.1) (17.4, 10.3) (34.8, 22.5)};
+        \addlegendentry{Training time}
+    \end{axis}
+    \end{tikzpicture}
+    \caption{Scalability analysis: MRR improves with model size (left axis)
+    at the cost of training time (right axis).}
+    \label{fig:scalability}
+\end{figure}
+
+\subsection{Failure Analysis}
+
+\Cref{fig:failure} categorises the types of errors made by HeteroGNN.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[font=\footnotesize]
+        \def\radius{2.5}
+        \draw[fill=cBlue!70,  draw=white, thick] (0,0) -- (0:\radius)
+            arc(0:144:\radius) -- cycle;
+        \draw[fill=cRed!70,   draw=white, thick] (0,0) -- (144:\radius)
+            arc(144:234:\radius) -- cycle;
+        \draw[fill=cGreen!70, draw=white, thick] (0,0) -- (234:\radius)
+            arc(234:306:\radius) -- cycle;
+        \draw[fill=orange!70, draw=white, thick] (0,0) -- (306:\radius)
+            arc(306:360:\radius) -- cycle;
+
+        \node[font=\bfseries] at (72:{0.65*\radius})  {40\%};
+        \node[font=\bfseries] at (189:{0.65*\radius}) {25\%};
+        \node[font=\bfseries] at (270:{0.65*\radius}) {20\%};
+        \node[font=\bfseries] at (333:{0.65*\radius}) {15\%};
+
+        \fill[cBlue!70]  (\radius+0.6,  0.0) rectangle ++(0.3,0.3);
+        \node[anchor=west] at (\radius+1.0, 0.15) {Relation ambiguity};
+        \fill[cRed!70]   (\radius+0.6, -0.5) rectangle ++(0.3,0.3);
+        \node[anchor=west] at (\radius+1.0,-0.35) {Long-tail entities};
+        \fill[cGreen!70] (\radius+0.6, -1.0) rectangle ++(0.3,0.3);
+        \node[anchor=west] at (\radius+1.0,-0.85) {Noisy triples};
+        \fill[orange!70] (\radius+0.6, -1.5) rectangle ++(0.3,0.3);
+        \node[anchor=west] at (\radius+1.0,-1.35) {Missing links};
+    \end{tikzpicture}
+    \caption{Distribution of error types in the failure analysis.}
+    \label{fig:failure}
+\end{figure}
+
+\subsection{Qualitative Results}
+
+\Cref{fig:qualitative} shows example predictions on multi-hop queries.
+
+\begin{figure}[htbp]
+    \centering
+    \subcaptionbox{2-hop query\label{fig:qual-2hop}}[0.45\textwidth]{
+        \begin{tikzpicture}[>=stealth', node distance=1.2cm,
+            ent/.style={circle, draw, fill=cBlue!15, minimum size=24pt,
+                        inner sep=0pt, font=\small},
+            rel/.style={font=\footnotesize, sloped, above},
+        ]
+            \node[ent] (h) {$h$};
+            \node[ent, right of=h, xshift=1.5cm] (m) {$m$};
+            \node[ent, right of=m, xshift=1.5cm] (t) {$t$};
+            \draw[->, thick] (h) -- node[rel] {$r_1$} (m);
+            \draw[->, thick] (m) -- node[rel] {$r_2$} (t);
+        \end{tikzpicture}
+    }
+    \hfill
+    \subcaptionbox{3-hop query\label{fig:qual-3hop}}[0.45\textwidth]{
+        \begin{tikzpicture}[>=stealth', node distance=1.2cm,
+            ent/.style={circle, draw, fill=cGreen!15, minimum size=24pt,
+                        inner sep=0pt, font=\small},
+            rel/.style={font=\footnotesize, sloped, above},
+        ]
+            \node[ent] (h) {$h$};
+            \node[ent, right of=h, xshift=1.2cm] (m1) {$m_1$};
+            \node[ent, right of=m1, xshift=1.2cm] (m2) {$m_2$};
+            \node[ent, right of=m2, xshift=1.2cm] (t) {$t$};
+            \draw[->, thick] (h)  -- node[rel] {$r_1$} (m1);
+            \draw[->, thick] (m1) -- node[rel] {$r_2$} (m2);
+            \draw[->, thick] (m2) -- node[rel] {$r_3$} (t);
+        \end{tikzpicture}
+    }
+    \caption{Multi-hop query examples: (\subref{fig:qual-2hop}) a 2-hop
+    reasoning path and (\subref{fig:qual-3hop}) a 3-hop path.}
+    \label{fig:qualitative}
+\end{figure}
+
+% =====================================================
+\section{Discussion}
+\label{sec:discussion}
+% =====================================================
+
+\subsection{Key Findings}
+
+Our experiments demonstrate that relation-aware attention consistently
+outperforms relation-agnostic aggregation, confirming that heterogeneous
+edge types carry complementary signal.  The residual connection is
+critical for multi-hop reasoning: without it, performance drops sharply
+at five hops (\cref{fig:ablation}).
+
+\subsection{Limitations}
+
+Several limitations merit attention.  First, the adaptive sampling
+strategy assumes a uniform distribution of relation types, which may not
+hold in highly imbalanced KGs.  Second, our theoretical bound
+(\cref{thm:info-preserve}) is worst-case; tighter analysis using mutual
+information estimators may yield sharper guarantees.  Third, we have not
+explored dynamic graph settings where edges arrive over time.
+
+\subsection{Future Work}
+
+Promising directions include: (i) combining HeteroGNN with pre-trained
+language models for joint reasoning over text and graph
+structures~\cite{mollenhauerHandbuchDieselmotoren2007};
+(ii) extending to temporal knowledge graphs where edge timestamps
+encode evolution; and (iii) exploring federated training across
+distributed KG partitions for privacy-preserving applications.
+
+% =====================================================
+\section{Conclusion}
+\label{sec:conclusion}
+% =====================================================
+
+This paper introduced HeteroGNN, a relation-aware graph neural network
+for multi-hop reasoning over heterogeneous knowledge graphs.  Our key
+contributions are: (1) a relation-aware attention mechanism that preserves
+heterogeneous structure, (2) a theoretical bound on information
+preservation via residual connections (\cref{thm:info-preserve}), and
+(3) extensive experiments demonstrating state-of-the-art performance on
+four benchmarks (\cref{sec:experiments}).
+
+% =====================================================
+\section{Supplementary Material}
+\label{sec:supplementary}
+% =====================================================
+
+\subsection{Extended Results}
+
+\Cref{tab:extended} reports Hits@\(k\) metrics beyond MRR.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Extended results: Hits@1, Hits@3, and Hits@10 on all benchmarks.}
+    \label{tab:extended}
+    \begin{tabular}{@{}llcccc@{}}
+        \toprule
+        \textbf{Dataset} & \textbf{Method}
+            & \textbf{H@1} & \textbf{MRR}
+            & \textbf{H@3} & \textbf{H@10} \\
+        \midrule
+        WN18RR
+            & R-GCN   & 0.34 & 0.42 & 0.47 & 0.56 \\
+            & CompGCN & 0.38 & 0.47 & 0.52 & 0.61 \\
+            & \textbf{Ours} & \textbf{0.45} & \textbf{0.53} & \textbf{0.58} & \textbf{0.67} \\
+        \midrule
+        FB15K-237
+            & R-GCN   & 0.22 & 0.30 & 0.34 & 0.44 \\
+            & CompGCN & 0.25 & 0.34 & 0.38 & 0.48 \\
+            & \textbf{Ours} & \textbf{0.32} & \textbf{0.41} & \textbf{0.46} & \textbf{0.56} \\
+        \midrule
+        YAGO3-10
+            & R-GCN   & 0.27 & 0.35 & 0.39 & 0.48 \\
+            & CompGCN & 0.30 & 0.39 & 0.43 & 0.52 \\
+            & \textbf{Ours} & \textbf{0.38} & \textbf{0.46} & \textbf{0.50} & \textbf{0.59} \\
+        \midrule
+        NELL-995
+            & R-GCN   & 0.20 & 0.28 & 0.32 & 0.41 \\
+            & CompGCN & 0.23 & 0.31 & 0.35 & 0.44 \\
+            & \textbf{Ours} & \textbf{0.30} & \textbf{0.38} & \textbf{0.42} & \textbf{0.52} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Implementation}
+
+\Cref{lst:python} shows the core aggregation function.
+
+\begin{listing}[htbp]
+    \centering
+    \begin{minted}[
+        linenos,
+        stepnumber=5,
+        fontsize=\small,
+        frame=leftline,
+        framerule=1pt,
+        rulecolor=\color{g3},
+        breaklines,
+    ]{python}
+import torch
+import torch.nn as nn
+from torch_geometric.nn import MessagePassing
+
+class HeteroConvLayer(MessagePassing):
+    def __init__(self, in_dim, out_dim, num_relations):
+        super().__init__(aggr="add")
+        self.W = nn.ModuleList([
+            nn.Linear(in_dim, out_dim) for _ in range(num_relations)
+        ])
+        self.residual = nn.Linear(in_dim, out_dim)
+        self.attn = nn.MultiheadAttention(out_dim, num_heads=4)
+
+    def forward(self, x, edge_index_dict):
+        msgs = []
+        for r, (edge_index, _) in edge_index_dict.items():
+            h = self.W[r](x)
+            msg = self.propagate(edge_index, x=h)
+            msgs.append(msg)
+        agg = torch.stack(msgs).mean(dim=0)
+        res = self.residual(x)
+        return torch.relu(res + agg)
+    \end{minted}
+    \caption{Core HeteroGNN layer in PyTorch Geometric.}
+    \label{lst:python}
+\end{listing}
+
+% ─────────────────────────────────────────────────────
+% Cross-References
+% ─────────────────────────────────────────────────────
+\subsection{Cross-Reference Examples}
+
+OmniLaTeX's \texttt{cleveref} integration provides intelligent
+cross-references throughout:
+
+\begin{itemize}
+    \item \verb|\cref{thm:info-preserve}| \(\to\) \cref{thm:info-preserve}
+    \item \verb|\cref{alg:heternn}| \(\to\) \cref{alg:heternn}
+    \item \verb|\cref{fig:main-results}| \(\to\) \cref{fig:main-results}
+    \item \verb|\cref{tab:extended}| \(\to\) \cref{tab:extended}
+    \item \verb|\cref{def:hkg}| \(\to\) \cref{def:hkg}
+    \item \verb|\cref{lst:python}| \(\to\) \cref{lst:python}
+    \item \verb|\cref{fig:qual-2hop,fig:qual-3hop}|
+          \(\to\) \cref{fig:qual-2hop,fig:qual-3hop}
+\end{itemize}
+
+% ─────────────────────────────────────────────────────
+% Bibliography
+% ─────────────────────────────────────────────────────
+\printbibliography
+
+\end{document}

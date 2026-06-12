@@ -1,0 +1,32 @@
+### Metrics Ingestion API
+
+# Ingest a single metric payload
+POST https://metrics-api.nexus.io/api/v2/metrics/ingest
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "hostname": "db-primary-01",
+  "timestamp": "2026-03-15T14:30:00Z",
+  "metrics": {
+    "latency_ms": 312,
+    "iops": 24000,
+    "cpu_percent": 71,
+    "memory_percent": 82
+  }
+}
+
+### Query P99 latency for a host
+GET https://metrics-api.nexus.io/api/v2/metrics/query
+    ?host=db-primary-01
+    &window=2h
+    &percentile=99
+Authorization: Bearer <token>
+
+### List all monitored hosts
+GET https://metrics-api.nexus.io/api/v2/hosts
+Authorization: Bearer <token>
+
+### Get host health status
+GET https://metrics-api.nexus.io/api/v2/hosts/db-primary-01/health
+Authorization: Bearer <token>

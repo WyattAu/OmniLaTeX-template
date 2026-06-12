@@ -1,0 +1,77 @@
+% Glossary entries for the thesis
+% Requires loadGlossaries=true option
+
+\newglossaryentry{porousmedium}{
+    name={porous medium},
+    description={A material containing pores (voids), typically saturated with fluid. The study of fluid flow through porous media is fundamental to petroleum engineering, hydrology, and environmental science}
+}
+
+\newglossaryentry{permeability}{
+    name={permeability},
+    description={A measure of the ability of a porous material to allow fluids to pass through it, measured in Darcy (D) or milliDarcy (mD). Symbolically represented as $k$}
+}
+
+\newglossaryentry{darcyslaw}{
+    name={Darcy's law},
+    description={An empirical equation describing the flow of fluid through a porous medium. States that the flow rate is proportional to the pressure gradient and inversely proportional to fluid viscosity}
+}
+
+\newglossaryentry{reynoldsnumber}{
+    name={Reynolds number},
+    description={A dimensionless quantity in fluid mechanics used to predict flow patterns. For porous media flow, defined as $\mathrm{Re} = \rho v d_p / \mu$ where $d_p$ is the particle diameter}
+}
+
+\newglossaryentry{cflcondition}{
+    name={CFL condition},
+    description={The Courant--Friedrichs--Lewy condition, a necessary condition for convergence while solving certain partial differential equations numerically. For explicit schemes: $\Delta t \leq C \Delta x / |u_{\max}|$}
+}
+
+\newglossaryentry{finitevolumemethod}{
+    name={finite volume method},
+    description={A numerical method for solving partial differential equations that conserves quantities locally and globally. Particularly suitable for conservation laws in fluid dynamics}
+}
+
+\newglossaryentry{multiphaseflow}{
+    name={multiphase flow},
+    description={The simultaneous flow of multiple immiscible fluids (e.g., oil, water, and gas) in a porous medium. Characterized by relative permeability and capillary pressure curves}
+}
+
+\newglossaryentry{upwindscheme}{
+    name={upwind scheme},
+    description={A numerical scheme for advection-dominated problems that uses information from the direction of wave propagation. Provides stability but introduces numerical diffusion}
+}
+
+\newglossaryentry{newtonraphson}{
+    name={Newton--Raphson method},
+    description={An iterative root-finding algorithm that uses the first derivative to find successively better approximations. Quadratic convergence near the root}
+}
+
+\newglossaryentry{pcsaft}{
+    name={PC-SAFT},
+    description={Perturbed-Chain Statistical Associating Fluid Theory, an equation of state for calculating thermodynamic properties of complex fluid mixtures}
+}
+
+\newglossaryentry{eclipse}{
+    name={Eclipse reservoir simulator},
+    description={An industry-standard reservoir simulation software developed by Schlumberger for modeling multiphase flow in porous media}
+}
+
+\newglossaryentry{amg}{
+    name={algebraic multigrid},
+    description={A multigrid method for solving large sparse linear systems where the grid hierarchy is constructed based on the algebraic properties of the coefficient matrix}
+}
+
+\newglossaryentry{petsc}{
+    name={PETSc},
+    description={Portable, Extensible Toolkit for Scientific Computation, a library of data structures and routines for the scalable solution of partial differential equations}
+}
+
+\newglossaryentry{mpi}{
+    name={Message Passing Interface},
+    description={A standardized and portable message-passing system designed to function on parallel computing architectures. The de facto standard for distributed-memory parallelism}
+}
+
+\newglossaryentry{admm}{
+    name={ADMM},
+    description={Alternating Direction Method of Multipliers, an optimization algorithm that combines the decomposability of dual ascent with the superior convergence properties of the method of multipliers}
+}
