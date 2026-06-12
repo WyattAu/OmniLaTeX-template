@@ -9,7 +9,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from buildlib.builder import _BuildCore, extract_log_path, parse_log_for_package_times
+from buildlib.builder import (_BuildCore, extract_log_path,
+                              parse_log_for_package_times)
 from buildlib.config import ProjectConfig
 from buildlib.runner import CommandRunner
 from buildlib.ui import TerminalOutput
@@ -462,20 +463,34 @@ class TestBuildExamplesRichConcurrent:
 
         all_patches = []
         for name in [
-            "Console", "Live", "Layout", "Progress",
-            "TextColumn", "MofNCompleteColumn", "BarColumn", "TimeElapsedColumn",
-            "Panel", "Text",
+            "Console",
+            "Live",
+            "Layout",
+            "Progress",
+            "TextColumn",
+            "MofNCompleteColumn",
+            "BarColumn",
+            "TimeElapsedColumn",
+            "Panel",
+            "Text",
         ]:
             p = patch(f"buildlib.builder.{name}", return_value=MagicMock())
             all_patches.append(p)
 
-        with all_patches[0], all_patches[1], all_patches[2], all_patches[3], \
-             all_patches[4], all_patches[5], all_patches[6], all_patches[7], \
-             all_patches[8], all_patches[9], \
-             patch.object(build_core, "_compile_example_worker",
-                          return_value=("test-ex", True, ["build ok"])):
+        with all_patches[0], all_patches[1], all_patches[2], all_patches[
+            3
+        ], all_patches[4], all_patches[5], all_patches[6], all_patches[7], all_patches[
+            8
+        ], all_patches[
+            9
+        ], patch.object(
+            build_core,
+            "_compile_example_worker",
+            return_value=("test-ex", True, ["build ok"]),
+        ):
             # Override Live to return our context manager
             import buildlib.builder as _bb
+
             orig_live = _bb.Live
             _bb.Live = lambda *a, **kw: mock_live_ctx
             try:
@@ -493,19 +508,30 @@ class TestBuildExamplesRichConcurrent:
 
         all_patches = []
         for name in [
-            "Console", "Layout", "Progress",
-            "TextColumn", "MofNCompleteColumn", "BarColumn", "TimeElapsedColumn",
-            "Panel", "Text",
+            "Console",
+            "Layout",
+            "Progress",
+            "TextColumn",
+            "MofNCompleteColumn",
+            "BarColumn",
+            "TimeElapsedColumn",
+            "Panel",
+            "Text",
         ]:
             p = patch(f"buildlib.builder.{name}", return_value=MagicMock())
             all_patches.append(p)
 
-        with all_patches[0], all_patches[1], all_patches[2], \
-             all_patches[3], all_patches[4], all_patches[5], all_patches[6], \
-             all_patches[7], all_patches[8], \
-             patch.object(build_core, "_compile_example_worker",
-                          return_value=("test-ex", False, ["error log"])):
+        with all_patches[0], all_patches[1], all_patches[2], all_patches[
+            3
+        ], all_patches[4], all_patches[5], all_patches[6], all_patches[7], all_patches[
+            8
+        ], patch.object(
+            build_core,
+            "_compile_example_worker",
+            return_value=("test-ex", False, ["error log"]),
+        ):
             import buildlib.builder as _bb
+
             orig_live = _bb.Live
             _bb.Live = lambda *a, **kw: mock_live_ctx
             try:
@@ -526,13 +552,17 @@ class TestRunWithDashboard:
     def test_dashboard_success(self, build_core):
         mock_live = self._make_live_ctx()
 
-        with patch("buildlib.builder.Console", return_value=MagicMock()), \
-             patch("buildlib.builder.Live", return_value=mock_live), \
-             patch("buildlib.builder.Text", return_value=MagicMock()), \
-             patch("buildlib.builder.Panel", return_value=MagicMock()), \
-             patch("buildlib.builder.Layout", return_value=MagicMock()), \
-             patch("rich.table.Table", return_value=MagicMock()), \
-             patch.object(build_core.runner, "run", return_value=(0, ["line1", "line2"])):
+        with patch("buildlib.builder.Console", return_value=MagicMock()), patch(
+            "buildlib.builder.Live", return_value=mock_live
+        ), patch("buildlib.builder.Text", return_value=MagicMock()), patch(
+            "buildlib.builder.Panel", return_value=MagicMock()
+        ), patch(
+            "buildlib.builder.Layout", return_value=MagicMock()
+        ), patch(
+            "rich.table.Table", return_value=MagicMock()
+        ), patch.object(
+            build_core.runner, "run", return_value=(0, ["line1", "line2"])
+        ):
             exit_code, logs = build_core._run_with_dashboard(
                 ["latexmk", "main.tex"], title="Test Build"
             )
@@ -542,31 +572,35 @@ class TestRunWithDashboard:
     def test_dashboard_failure(self, build_core):
         mock_live = self._make_live_ctx()
 
-        with patch("buildlib.builder.Console", return_value=MagicMock()), \
-             patch("buildlib.builder.Live", return_value=mock_live), \
-             patch("buildlib.builder.Text", return_value=MagicMock()), \
-             patch("buildlib.builder.Panel", return_value=MagicMock()), \
-             patch("buildlib.builder.Layout", return_value=MagicMock()), \
-             patch("rich.table.Table", return_value=MagicMock()), \
-             patch.object(build_core.runner, "run", return_value=(1, ["error"])):
-            exit_code, logs = build_core._run_with_dashboard(
-                ["latexmk", "main.tex"]
-            )
+        with patch("buildlib.builder.Console", return_value=MagicMock()), patch(
+            "buildlib.builder.Live", return_value=mock_live
+        ), patch("buildlib.builder.Text", return_value=MagicMock()), patch(
+            "buildlib.builder.Panel", return_value=MagicMock()
+        ), patch(
+            "buildlib.builder.Layout", return_value=MagicMock()
+        ), patch(
+            "rich.table.Table", return_value=MagicMock()
+        ), patch.object(
+            build_core.runner, "run", return_value=(1, ["error"])
+        ):
+            exit_code, logs = build_core._run_with_dashboard(["latexmk", "main.tex"])
 
         assert exit_code == 1
 
     def test_dashboard_exception_fallback(self, build_core):
         """When Rich Live raises, should fall back to simple runner."""
-        with patch("buildlib.builder.Console", return_value=MagicMock()), \
-             patch("buildlib.builder.Live", side_effect=RuntimeError("display broken")), \
-             patch("buildlib.builder.Text", return_value=MagicMock()), \
-             patch("buildlib.builder.Panel", return_value=MagicMock()), \
-             patch("buildlib.builder.Layout", return_value=MagicMock()), \
-             patch("rich.table.Table", return_value=MagicMock()), \
-             patch.object(build_core.runner, "run", return_value=(0, ["fallback output"])):
-            exit_code, logs = build_core._run_with_dashboard(
-                ["latexmk", "main.tex"]
-            )
+        with patch("buildlib.builder.Console", return_value=MagicMock()), patch(
+            "buildlib.builder.Live", side_effect=RuntimeError("display broken")
+        ), patch("buildlib.builder.Text", return_value=MagicMock()), patch(
+            "buildlib.builder.Panel", return_value=MagicMock()
+        ), patch(
+            "buildlib.builder.Layout", return_value=MagicMock()
+        ), patch(
+            "rich.table.Table", return_value=MagicMock()
+        ), patch.object(
+            build_core.runner, "run", return_value=(0, ["fallback output"])
+        ):
+            exit_code, logs = build_core._run_with_dashboard(["latexmk", "main.tex"])
 
         assert exit_code == 0
 
@@ -577,9 +611,7 @@ class TestBuildExamplesEntry:
     def test_build_examples_no_valid_names(self, build_core, tmp_path, monkeypatch):
         monkeypatch.setattr("buildlib.builder.REPO_ROOT", tmp_path)
         monkeypatch.setattr("buildlib.builder.RICH_AVAILABLE", False)
-        with patch.object(
-            build_core, "discover_examples", return_value=[]
-        ):
+        with patch.object(build_core, "discover_examples", return_value=[]):
             build_core.build_examples(files=["nonexistent"])
 
     def test_build_examples_with_timings(self, build_core, tmp_path, monkeypatch):
