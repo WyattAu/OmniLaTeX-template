@@ -1,0 +1,46 @@
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% GitHub Dark Color Theme for OmniLaTeX
+%
+% Based on GitHub's dark mode color palette.
+% Usage: \usepackage{plugins/color-themes/github-dark}
+%
+% Palette: https://primer.style/primitives
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{plugins/color-themes/github-dark}[2026-06-12 v1.0.0 GitHub Dark Theme]
+
+\RequirePackage{xcolor}
+
+% GitHub Dark palette
+\definecolor{gh-canvas}{HTML}{0D1117}
+\definecolor{gh-canvas-subtle}{HTML}{161B22}
+\definecolor{gh-canvas-inset}{HTML}{010409}
+\definecolor{gh-fg}{HTML}{E6EDF3}
+\definecolor{gh-fg-subtle}{HTML}{6E7681}
+\definecolor{gh-fg-muted}{HTML}{8B949E}
+\definecolor{gh-border}{HTML}{30363D}
+\definecolor{gh-border-muted}{HTML}{21262D}
+\definecolor{gh-accent-fg}{HTML}{58A6FF}
+\definecolor{gh-accent-emphasis}{HTML}{1F6FEB}
+\definecolor{gh-success-fg}{HTML}{3FB950}
+\definecolor{gh-success-emphasis}{HTML}{238636}
+\definecolor{gh-attention-fg}{HTML}{D29922}
+\definecolor{gh-attention-emphasis}{HTML}{9E6A03}
+\definecolor{gh-danger-fg}{HTML}{F85149}
+\definecolor{gh-danger-emphasis}{HTML}{DA3633}
+
+% Apply to document elements (dark background assumed)
+\addtokomafont{section}{\color{gh-accent-fg}}
+\addtokomafont{subsection}{\color{gh-accent-fg}}
+\addtokomafont{subsubsection}{\color{gh-fg-muted}}
+
+\hypersetup{
+    linkcolor=gh-accent-fg,
+    urlcolor=gh-accent-fg,
+    citecolor=gh-success-fg,
+}
+
+\arrayrulecolor{gh-border}
+
+\endinput

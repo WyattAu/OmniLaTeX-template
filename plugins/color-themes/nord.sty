@@ -1,0 +1,46 @@
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Nord Color Theme for OmniLaTeX
+%
+% Based on the Nord color palette by Arctic Ice Studio.
+% Usage: \usepackage{plugins/color-themes/nord}
+%
+% Palette: https://www.nordtheme.com/
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{plugins/color-themes/nord}[2026-06-12 v1.0.0 Nord Color Theme]
+
+\RequirePackage{xcolor}
+
+% Nord palette
+\definecolor{nord0}{HTML}{2E3440}
+\definecolor{nord1}{HTML}{3B4252}
+\definecolor{nord2}{HTML}{434C5E}
+\definecolor{nord3}{HTML}{4C566A}
+\definecolor{nord4}{HTML}{D8DEE9}
+\definecolor{nord5}{HTML}{E5E9F0}
+\definecolor{nord6}{HTML}{ECEFF4}
+\definecolor{nord7}{XML}{8FBCBB}
+\definecolor{nord8}{HTML}{88C0D0}
+\definecolor{nord9}{HTML}{81A1C1}
+\definecolor{nord10}{HTML}{5E81AC}
+\definecolor{nord11}{HTML}{BF616A}
+\definecolor{nord12}{HTML}{D08770}
+\definecolor{nord13}{HTML}{EBCB8B}
+\definecolor{nord14}{HTML}{A3BE8C}
+\definecolor{nord15}{HTML}{B48EAD}
+
+% Apply to document elements
+\addtokomafont{section}{\color{nord10}}
+\addtokomafont{subsection}{\color{nord9}}
+\addtokomafont{subsubsection}{\color{nord8}}
+
+\hypersetup{
+    linkcolor=nord10,
+    urlcolor=nord8,
+    citecolor=nord14,
+}
+
+\arrayrulecolor{nord3}
+
+\endinput

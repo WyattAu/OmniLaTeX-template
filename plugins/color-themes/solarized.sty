@@ -1,0 +1,46 @@
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Solarized Color Theme for OmniLaTeX
+%
+% Based on Ethan Schoonover's Solarized color palette.
+% Usage: \usepackage{plugins/color-themes/solarized}
+%
+% Palette: https://ethanschoonover.com/solarized/
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{plugins/color-themes/solarized}[2026-06-12 v1.0.0 Solarized Color Theme]
+
+\RequirePackage{xcolor}
+
+% Solarized palette
+\definecolor{solar-base03}{HTML}{002B36}
+\definecolor{solar-base02}{HTML}{073642}
+\definecolor{solar-base01}{HTML}{586E75}
+\definecolor{solar-base00}{HTML}{657B83}
+\definecolor{solar-base0}{HTML}{839496}
+\definecolor{solar-base1}{HTML}{93A1A1}
+\definecolor{solar-base2}{HTML}{EEE8D5}
+\definecolor{solar-base3}{HTML}{FDF6E3}
+\definecolor{solar-yellow}{HTML}{B58900}
+\definecolor{solar-orange}{HTML}{CB4B16}
+\definecolor{solar-red}{HTML}{DC322F}
+\definecolor{solar-magenta}{HTML}{D33682}
+\definecolor{solar-violet}{HTML}{6C71C4}
+\definecolor{solar-blue}{HTML}{268BD2}
+\definecolor{solar-cyan}{HTML}{2AA198}
+\definecolor{solar-green}{HTML}{859900}
+
+% Apply to document elements
+\addtokomafont{section}{\color{solar-blue}}
+\addtokomafont{subsection}{\color{solar-cyan}}
+\addtokomafont{subsubsection}{\color{solar-green}}
+
+\hypersetup{
+    linkcolor=solar-blue,
+    urlcolor=solar-cyan,
+    citecolor=solar-green,
+}
+
+\arrayrulecolor{solar-base01}
+
+\endinput
