@@ -1,0 +1,57 @@
+\documentclass[
+    language=english,
+    doctype=book-chapter,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\section{Introduction}
+This chapter provides an overview of distributed consensus algorithms
+and their applications in modern computing systems.  We examine the
+fundamental challenges and survey the key approaches developed over
+the past four decades.
+
+\section{Theoretical Foundations}
+The study of distributed consensus begins with the FLP impossibility
+result, which establishes that no deterministic protocol can guarantee
+consensus in an asynchronous system with even a single faulty
+process~\cite{bibid}.
+
+\subsection{The CAP Theorem}
+Brewer's CAP theorem and its formal proof by Gilbert and Lynch establish
+that a distributed system cannot simultaneously provide consistency,
+availability, and partition tolerance.
+
+\subsection{Consistency Models}
+We distinguish between strong consistency (linearizability), sequential
+consistency, and eventual consistency, each providing different
+guarantees about the order of operations.
+
+\section{Consensus Protocols}
+
+\subsection{Paxos}
+Lamport's Paxos protocol provides a foundational approach to consensus
+in asynchronous systems.  The protocol operates in two phases: a
+prepare phase and an accept phase.
+
+\subsection{Raft}
+The Raft protocol was designed as an understandable alternative to Paxos,
+providing equivalent safety guarantees with a more straightforward
+leader-based approach.
+
+\section{Practical Applications}
+Modern distributed systems rely on consensus for critical operations
+including configuration management, leader election, and state
+replication.
+
+\section{Summary}
+This chapter has surveyed the landscape of distributed consensus,
+from theoretical foundations to practical implementations.
+
+\printbibliography
+
+\end{document}

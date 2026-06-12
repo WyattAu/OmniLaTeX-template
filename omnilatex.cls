@@ -68,6 +68,9 @@
 \newcommand*{\omnilatex@bookoptions}{listof=totoc,bibliography=totoc,chapterprefix=true,open=right,numbers=noenddot}
 \newcommand*{\omnilatex@reportoptions}{listof=totoc,bibliography=totoc,chapterprefix=false,open=any,numbers=noenddot}
 \newcommand*{\omnilatex@articleoptions}{bibliography=totoc,numbers=noenddot,parskip=half}
+\newcommand*{\omnilatex@grantproposaloptions}{bibliography=totoc,numbers=noenddot,parskip=half,DIV=12,BCOR=0mm}
+\newcommand*{\omnilatex@ieeeoptions}{bibliography=totoc,numbers=noenddot,parskip=off,DIV=9,BCOR=0mm,twocolumn}
+\newcommand*{\omnilatex@bookchapteroptions}{bibliography=totoc,numbers=noenddot,parskip=half}
 \newcommand*{\omnilatex@inlinepaperoptions}{bibliography=totoc,numbers=noenddot,parskip=half,titlepage=false}
 \newcommand*{\omnilatex@journaloptions}{bibliography=totoc,numbers=noenddot,parskip=half,titlepage=true}
 \newcommand*{\omnilatex@cvoptions}{numbers=noenddot,parskip=full,fontsize=11pt}
@@ -158,6 +161,9 @@
 \omnilatex@matchdoctypes{white-paper,whitepapers}{\omnilatex@setdoctype{white-paper}{scrartcl}{\omnilatex@articleoptions}}%
 \omnilatex@matchdoctypes{invoice,invoices}{\omnilatex@setdoctype{invoice}{scrartcl}{\omnilatex@articleoptions}}%
 \omnilatex@matchdoctypes{recipe,recipes}{\omnilatex@setdoctype{recipe}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{grant-proposal,grantproposal,nsf-proposal,erc-proposal}{\omnilatex@setdoctype{grant-proposal}{scrartcl}{\omnilatex@grantproposaloptions}}%
+\omnilatex@matchdoctypes{ieee,ieee-paper,ieee-conference,ieeetran}{\omnilatex@setdoctype{ieee}{scrartcl}{\omnilatex@ieeeoptions}}%
+\omnilatex@matchdoctypes{book-chapter,bookchapter,chapter}{\omnilatex@setdoctype{book-chapter}{scrartcl}{\omnilatex@bookchapteroptions}}%
 \omnilatex@matchdoctypes{beamer,beamers}{\omnilatex@setdoctype{beamer}{beamer}{\omnilatex@beameraoptions}\omnilatex@beamertrue}%
 
 % Validate doctype: warn if user passed an unknown doctype that didn't match

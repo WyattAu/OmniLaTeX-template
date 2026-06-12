@@ -52,6 +52,9 @@ class _Commands(
         "poster",
         "presentation",
         "letter",
+        "grant-proposal",
+        "ieee",
+        "book-chapter",
     ]
 
     VALID_LANGUAGES = [

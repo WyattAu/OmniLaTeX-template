@@ -1,0 +1,51 @@
+\documentclass[
+    language=english,
+    doctype=ieee,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This paper presents a novel approach to distributed consensus that combines
+the strengths of existing protocols while addressing their individual
+limitations.  Our hybrid protocol achieves stronger consistency guarantees
+while maintaining high availability, demonstrating significant improvements
+over state-of-the-art methods on benchmark workloads.
+\end{abstract}
+
+\section{Introduction}
+Distributed systems are fundamental to modern cloud computing infrastructure.
+The challenge of maintaining consistency while ensuring availability remains
+a critical research problem~\cite{bibid}.  This paper addresses this
+challenge through a novel hybrid consensus protocol.
+
+\section{Background}
+The CAP theorem establishes fundamental limits on distributed system
+design.  Existing protocols such as Paxos and Raft provide different
+trade-offs between consistency and availability.
+
+\section{Proposed Method}
+Our approach combines the leader-based efficiency of Raft with the
+multi-decree optimisation of Paxos.  The key insight is that under
+normal operation, a single leader can process commits efficiently,
+while under failure conditions, the protocol degrades gracefully to
+a multi-decree consensus.
+
+\section{Evaluation}
+We evaluate our protocol on a 3-node cluster with synthetic workloads
+measuring throughput, latency, and fault recovery time.
+
+\section{Conclusion}
+The proposed hybrid protocol demonstrates that it is possible to achieve
+stronger consistency guarantees without sacrificing availability under
+normal operation.
+
+\printbibliography
+
+\end{document}

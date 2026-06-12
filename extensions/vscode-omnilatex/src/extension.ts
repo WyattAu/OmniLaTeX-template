@@ -24,12 +24,12 @@ function spawnAsync(command: string, args: string[], options: { cwd: string }): 
 }
 
 const DOCTYPES: string[] = [
-    'article', 'book', 'cover-letter', 'cv', 'dictionary', 'dissertation',
-    'exam', 'handbook', 'handout', 'homework', 'inlinepaper', 'invoice',
-    'journal', 'guide', 'lecture-notes', 'letter', 'manual', 'memo',
-    'patent', 'poster', 'presentation', 'recipe', 'report',
-    'research-proposal', 'standard', 'syllabus', 'technicalreport',
-    'thesis', 'white-paper'
+    'article', 'book', 'book-chapter', 'cover-letter', 'cv', 'dictionary',
+    'dissertation', 'exam', 'grant-proposal', 'handbook', 'handout',
+    'homework', 'ieee', 'inlinepaper', 'invoice', 'journal', 'guide',
+    'lecture-notes', 'letter', 'manual', 'memo', 'patent', 'poster',
+    'presentation', 'recipe', 'report', 'research-proposal', 'standard',
+    'syllabus', 'technicalreport', 'thesis', 'white-paper'
 ];
 
 const INSTITUTIONS: string[] = [
@@ -61,24 +61,28 @@ const CLASS_OPTIONS = [
 const DOCTYPE_CATEGORIES: Record<string, string[]> = {
     Academic: [
         'thesis', 'dissertation', 'article', 'journal', 'research-proposal',
-        'technicalreport', 'lecture-notes', 'syllabus', 'homework', 'exam', 'handout'
+        'technicalreport', 'lecture-notes', 'syllabus', 'homework', 'exam', 'handout',
+        'book-chapter', 'grant-proposal'
     ],
-    Business: ['invoice', 'memo', 'cover-letter', 'standard', 'patent', 'manual', 'report'],
+    Business: ['invoice', 'memo', 'cover-letter', 'standard', 'patent', 'manual', 'report', 'ieee'],
     Personal: ['cv', 'letter', 'book', 'guide', 'handbook', 'dictionary', 'poster', 'presentation', 'white-paper', 'recipe']
 };
 
 const DOCTYPE_DESCRIPTIONS: Record<string, string> = {
     'article': 'Standard article (scrartcl)',
     'book': 'Book (scrbook)',
+    'book-chapter': 'Individual book chapter (scrartcl)',
     'cover-letter': 'Cover letter (scrartcl)',
     'cv': 'Curriculum vitae (scrartcl)',
     'dictionary': 'Dictionary/lexicon (scrbook)',
     'dissertation': 'Dissertation (scrbook)',
     'exam': 'Exam document (scrartcl)',
+    'grant-proposal': 'Grant proposal (NSF/ERC style, scrartcl)',
     'guide': 'Guidebook (scrbook)',
     'handbook': 'Handbook (scrbook)',
     'handout': 'Handout (scrartcl)',
     'homework': 'Homework assignment (scrartcl)',
+    'ieee': 'IEEE conference paper (two-column, scrartcl)',
     'inlinepaper': 'Inline research paper (scrartcl)',
     'invoice': 'Invoice (scrartcl)',
     'journal': 'Journal article (scrartcl)',

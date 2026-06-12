@@ -1,0 +1,49 @@
+\documentclass[
+    language=english,
+    doctype=grant-proposal,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\section*{Project Summary}
+This proposal outlines a research plan for developing novel approaches to
+distributed systems.  The proposed work addresses critical challenges in
+scalability, fault tolerance, and performance optimisation for
+next-generation cloud infrastructure.
+
+\section*{Project Description}
+
+\subsection{Introduction and Background}
+The rapid growth of cloud computing has created new demands on distributed
+systems~\cite{bibid}.  Current approaches struggle to balance consistency
+with availability under partition conditions, as described by the CAP
+theorem.  This research aims to develop new algorithms that provide
+stronger consistency guarantees while maintaining high availability.
+
+\subsection{Proposed Research}
+Our approach builds on recent advances in consensus protocols and
+crash-replicated state machines.  We propose a novel hybrid protocol
+that combines the strengths of Paxos and Raft while addressing their
+individual limitations.
+
+\begin{equation}
+    \mathcal{L}(h) = \frac{1}{N} \sum_{i=1}^{N} \ell\bigl(h(\mathbf{x}_i),\; y_i\bigr)
+    + \lambda\, \Omega(h),
+    \label{eq:objective}
+\end{equation}
+
+\subsection{Broader Impacts}
+This research will advance the state of the art in distributed computing
+and provide practical tools for building more reliable cloud services.
+The open-source implementation will benefit the broader research community.
+
+\section*{References}
+\printbibliography[heading=none]
+
+\end{document}
