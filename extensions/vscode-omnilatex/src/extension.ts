@@ -449,37 +449,142 @@ export function activate(context: vscode.ExtensionContext): void {
         const lines = logContent.split('\n');
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
-            // Match LaTeX errors: "! Undefined control sequence"
-            let m = line.match(/^!(.*) Undefined control sequence\./);
-            if (m) {
-                const d = new vscode.Diagnostic(
+
+            // Undefined control sequence
+            if (/^!\s+Undefined control sequence\.?\s*$/.test(line)) {
+                const cmd = (i + 1 < lines.length)
+                    ? (lines[i + 1].match(/<recently read>\s+(\\?\S+)/) || [])[1] || ''
+                    : '';
+                const msg = cmd ? `Undefined command: ${cmd}` : 'Undefined control sequence';
+                diagnostics.push(new vscode.Diagnostic(
                     new vscode.Range(i, 0, i, line.length),
-                    `LaTeX: ${m[1]} (line ${i + 1})`,
-                    vscode.DiagnosticSeverity.Error,
-                );
-                diagnostics.push(d);
+                    msg, vscode.DiagnosticSeverity.Error,
+                ));
                 continue;
             }
-            // Match LaTeX errors: "! LaTeX Error: ..."
-            m = line.match(/^! LaTeX Error:\s*(.*)$/);
-            if (m) {
-                const d = new vscode.Diagnostic(
+
+            // LaTeX Error (check before generic "!")
+            if (/^!\s+LaTeX Error:\s*(.+)$/.test(line)) {
+                const m = line.match(/^!\s+LaTeX Error:\s*(.+)$/);
+                let msg = m?.[1] || line;
+                // File not found
+                const fnf = line.match(/File `([^']+)' not found/);
+                if (fnf) { msg = `File '${fnf[1]}' not found`; }
+                diagnostics.push(new vscode.Diagnostic(
                     new vscode.Range(i, 0, i, line.length),
-                    `LaTeX Error: ${m[1]} (line ${i + 1})`,
-                    vscode.DiagnosticSeverity.Error,
-                );
-                diagnostics.push(d);
+                    `LaTeX Error: ${msg}`, vscode.DiagnosticSeverity.Error,
+                ));
                 continue;
             }
-            // Match warnings: "Package xyz Warning: ..."
-            m = line.match(/Package \S+ Warning:\s*(.*)$/);
-            if (m) {
-                const d = new vscode.Diagnostic(
+
+            // Package error
+            if (/^!\s+Package \S+ Error:/.test(line)) {
+                const m = line.match(/^!\s+Package (\S+) Error:\s*(.+)$/);
+                diagnostics.push(new vscode.Diagnostic(
                     new vscode.Range(i, 0, i, line.length),
-                    `LaTeX Warning: ${m[1]} (line ${i + 1})`,
-                    vscode.DiagnosticSeverity.Warning,
-                );
-                diagnostics.push(d);
+                    `[${m?.[1] || 'package'}] ${m?.[2] || line}`,
+                    vscode.DiagnosticSeverity.Error,
+                ));
+                continue;
+            }
+
+            // Missing $ inserted
+            if (/^!\s+Missing \$ inserted/.test(line)) {
+                diagnostics.push(new vscode.Diagnostic(
+                    new vscode.Range(i, 0, i, line.length),
+                    'Missing $ inserted (math mode required here)',
+                    vscode.DiagnosticSeverity.Error,
+                ));
+                continue;
+            }
+
+            // Missing brace
+            const braceM = line.match(/^!\s+Missing ([{}]) inserted/);
+            if (braceM) {
+                diagnostics.push(new vscode.Diagnostic(
+                    new vscode.Range(i, 0, i, line.length),
+                    `Missing '${braceM[1]}' inserted`,
+                    vscode.DiagnosticSeverity.Error,
+                ));
+                continue;
+            }
+
+            // Missing endgroup/endcsname
+            if (/^!\s+Missing \\end(group|csname) inserted/.test(line)) {
+                diagnostics.push(new vscode.Diagnostic(
+                    new vscode.Range(i, 0, i, line.length),
+                    line.replace(/^!\s+/, '').replace(/\.?\s*$/, ''),
+                    vscode.DiagnosticSeverity.Error,
+                ));
+                continue;
+            }
+
+            // Invalid character
+            if (/^!\s+Text line contains an invalid character/.test(line)) {
+                diagnostics.push(new vscode.Diagnostic(
+                    new vscode.Range(i, 0, i, line.length),
+                    'Text line contains an invalid character',
+                    vscode.DiagnosticSeverity.Error,
+                ));
+                continue;
+            }
+
+            // Dimension / number / alignment errors
+            if (/^!\s+(Illegal unit of measure|Missing number|Misplaced alignment tab)/.test(line)) {
+                diagnostics.push(new vscode.Diagnostic(
+                    new vscode.Range(i, 0, i, line.length),
+                    line.replace(/^!\s+/, '').replace(/\.?\s*$/, ''),
+                    vscode.DiagnosticSeverity.Error,
+                ));
+                continue;
+            }
+
+            // Runaway argument
+            if (/^!\s+Runaway argument/.test(line)) {
+                diagnostics.push(new vscode.Diagnostic(
+                    new vscode.Range(i, 0, i, line.length),
+                    'Runaway argument (unclosed macro argument)',
+                    vscode.DiagnosticSeverity.Error,
+                ));
+                continue;
+            }
+
+            // Generic "!" error (catch-all, must be after specific patterns)
+            const genericM = line.match(/^!\s+(.+?)\.?\s*$/);
+            if (genericM && line.startsWith('!')) {
+                diagnostics.push(new vscode.Diagnostic(
+                    new vscode.Range(i, 0, i, line.length),
+                    `LaTeX: ${genericM[1]}`, vscode.DiagnosticSeverity.Error,
+                ));
+                continue;
+            }
+
+            // Package warning
+            const warnM = line.match(/^Package\s+(\S+)\s+Warning:\s*(.+)$/);
+            if (warnM) {
+                diagnostics.push(new vscode.Diagnostic(
+                    new vscode.Range(i, 0, i, line.length),
+                    `[${warnM[1]}] ${warnM[2]}`, vscode.DiagnosticSeverity.Warning,
+                ));
+                continue;
+            }
+
+            // LaTeX warning
+            const latexWarnM = line.match(/^LaTeX Warning:\s*(.+)$/);
+            if (latexWarnM) {
+                diagnostics.push(new vscode.Diagnostic(
+                    new vscode.Range(i, 0, i, line.length),
+                    `LaTeX Warning: ${latexWarnM[1]}`, vscode.DiagnosticSeverity.Warning,
+                ));
+                continue;
+            }
+
+            // Overfull/Underfull hbox
+            if (/^(Overfull|Underfull)\s+\\hbox/.test(line)) {
+                diagnostics.push(new vscode.Diagnostic(
+                    new vscode.Range(i, 0, i, line.length),
+                    line.trim(), vscode.DiagnosticSeverity.Warning,
+                ));
                 continue;
             }
         }
