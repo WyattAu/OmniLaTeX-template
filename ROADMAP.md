@@ -190,14 +190,14 @@ Goal: Close the remaining backlog, submit to Overleaf Gallery, ship a polished r
 
 ### Overleaf Gallery Submission
 
-- [ ] Prepare 5 showcase zips (thesis, article, beamer, CV, report)
-- [ ] Write Overleaf metadata (title, description, tags, preview image)
+- [x] Prepare 5 showcase zips (thesis, article, beamer, CV, report)
+- [x] Write Overleaf metadata (title, description, tags, preview image)
 - [ ] Submit to Overleaf Template Gallery
-- [ ] Add "Open in Overleaf" badges to README and docs
+- [x] Add "Open in Overleaf" badges to README and docs
 
 ### Template Quality Polish
 
-- [ ] Review top 15 examples for production readiness
+- [x] Review top 15 examples for production readiness
 - [ ] Add meaningful placeholder content (not just Lorem Ipsum)
 - [ ] Ensure consistent formatting across showcase templates
 - [ ] Add example-specific documentation notes
