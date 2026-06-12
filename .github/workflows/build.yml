@@ -31,6 +31,19 @@ on:
     - .github/workflows/build.yml
   pull_request:
     branches: [main, master]
+    paths:
+    - '**.tex'
+    - '**.sty'
+    - '**.cls'
+    - '**.lua'
+    - build.py
+    - buildlib/**
+    - lib/**
+    - config/**
+    - scripts/**
+    - tests/**
+    - requirements-lint.txt
+    - .github/workflows/build.yml
   workflow_dispatch:
 
 jobs:

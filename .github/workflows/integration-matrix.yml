@@ -17,6 +17,11 @@ on:
     - config/document-types/**
   pull_request:
     branches: [main, master]
+    paths:
+    - lib/language/**
+    - lua/**
+    - omnilatex.cls
+    - config/document-types/**
   workflow_dispatch:
 
 jobs:

@@ -15,6 +15,9 @@ on:
     - '**.sty'
     - '**.cls'
     - '**.lua'
+    - build.py
+    - buildlib/**
+    - config/**
   pull_request:
     branches: [main, master]
     paths:
@@ -22,6 +25,9 @@ on:
     - '**.sty'
     - '**.cls'
     - '**.lua'
+    - build.py
+    - buildlib/**
+    - config/**
   workflow_dispatch:
     inputs:
       regenerate:
