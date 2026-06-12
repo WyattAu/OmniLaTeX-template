@@ -27,6 +27,7 @@ from buildlib.mixins.cache import BuildCacheMixin
 from buildlib.mixins.cleanup import CleanupMixin
 from buildlib.mixins.discovery import DiscoveryMixin
 from buildlib.runner import CommandRunner
+from buildlib.latex_errors import parse_latex_log, format_diagnostics
 from buildlib.ui import TerminalOutput
 
 # --- Rich library integration (conditional on RICH_AVAILABLE) ---
@@ -148,6 +149,25 @@ def parse_build_log_safely(example_dir: Path) -> dict[str, dict]:
             "Failed to parse build timing from log", exc_info=True
         )
         return {}
+
+
+def parse_errors_from_log(example_dir: Path) -> str:
+    """Parse a build log for errors/warnings and return formatted output.
+
+    Used by build_root and _compile_example_worker to display actionable
+    error messages when a build fails.
+    """
+    log_path = example_dir / MAIN_TEX_FILENAME.replace(".tex", ".log")
+    if not log_path.exists():
+        return ""
+    try:
+        log_content = log_path.read_text(encoding="utf-8", errors="replace")
+        diagnostics = parse_latex_log(log_content)
+        if not diagnostics:
+            return ""
+        return format_diagnostics(diagnostics, use_color=False, show_suggestions=True)
+    except Exception:
+        return ""
 
 
 # -----------------------------------------------------------------------------
@@ -362,6 +382,10 @@ class _BuildCore(BuildCacheMixin, DiscoveryMixin, CleanupMixin):
             all_logs.extend(copy_logs)
 
             if not success:
+                # Parse log for actionable error messages
+                parsed = parse_errors_from_log(example_dir)
+                if parsed:
+                    all_logs.append(parsed)
                 return example_name, False, all_logs
 
             _timing_success = True
@@ -635,10 +659,15 @@ class _BuildCore(BuildCacheMixin, DiscoveryMixin, CleanupMixin):
             self.ui.error("Build failure: PDF not generated.")
             if exit_code != 0:
                 self.ui.error(f"latexmk exited with code {exit_code}")
-            # Print captured logs for debugging (especially in CI)
-            tail = logs[-50:] if len(logs) > 50 else logs
-            for line in tail:
-                print(line)
+            # Parse and display actionable error messages
+            parsed = parse_errors_from_log(Path("."))
+            if parsed:
+                print(parsed)
+            else:
+                # Fallback: print raw logs
+                tail = logs[-50:] if len(logs) > 50 else logs
+                for line in tail:
+                    print(line)
             raise SystemExit(1)
 
     def _run_with_dashboard(
