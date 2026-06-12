@@ -177,16 +177,16 @@ Goal: Close the remaining backlog, submit to Overleaf Gallery, ship a polished r
 - [ ] Add typography scale tokens (rem-based) (#108)
 - [ ] Convert px units to rem in layout values (#109)
 - [ ] Fix FAQ stale CTAN claim (#110)
-- [ ] Increase builder.py coverage (rich dependency gaps) (#111)
+- [x] Increase builder.py coverage (rich dependency gaps) (#111)
 - [ ] Increase accessibility_checker.py coverage (#112)
-- [ ] Deduplicate build command construction (#113)
-- [ ] Deduplicate log parsing error handler (#114)
-- [ ] Populate accessibility_checker Violation.line field (#115)
-- [ ] Fix VS Code doctype naming inconsistency (#116)
-- [ ] Fix VS Code legacy latex.json choice syntax (#117)
-- [ ] Fix VS Code galleryBanner color (#118)
-- [ ] Fix VS Code DiagnosticCollection disposal (#119)
-- [ ] Fix docs manual stale build.py line count (#120)
+- [x] Deduplicate build command construction (#113)
+- [x] Deduplicate log parsing error handler (#114)
+- [x] Populate accessibility_checker Violation.line field (#115)
+- [x] Fix VS Code doctype naming inconsistency (#116)
+- [x] Fix VS Code legacy latex.json choice syntax (#117)
+- [x] Fix VS Code galleryBanner color (#118) -- already correct #0A0E13
+- [x] Fix VS Code DiagnosticCollection disposal (#119)
+- [x] Fix docs manual stale build.py line count (#120)
 
 ### Overleaf Gallery Submission
 
@@ -358,16 +358,16 @@ Parse LaTeX log files into actionable error messages:
 | 108 | No typography scale tokens (font sizes hardcoded) | Low | OPEN |
 | 109 | px units instead of rem in many layout values | Low | OPEN |
 | 110 | FAQ.md claims CTAN not available (may be stale) | Medium | OPEN |
-| 111 | build.py builder.py coverage still 60% (rich dependency) | Medium | OPEN |
+| 111 | build.py builder.py coverage still 60% (rich dependency) | Medium | FIXED |
 | 112 | accessibility_checker.py coverage 68% (bs4/numpy gaps) | Medium | OPEN |
-| 113 | Duplicate build command construction in builder.py/profiler.py | Low | OPEN |
-| 114 | Duplicate log parsing error handler in builder.py/profiler.py | Low | OPEN |
-| 115 | Violation.line field in accessibility_checker never populated | Low | OPEN |
-| 116 | VS Code extension doctype naming vs web naming inconsistency | Medium | OPEN |
-| 117 | VS Code legacy latex.json broken choice syntax | Low | OPEN |
-| 118 | VS Code galleryBanner color mismatch with design system | Low | OPEN |
-| 119 | VS Code DiagnosticCollection not disposed in deactivate() | Low | OPEN |
-| 120 | Docs manual PART_I claims build.py is 2094 lines | Medium | OPEN |
+| 113 | Duplicate build command construction in builder.py/profiler.py | Low | FIXED |
+| 114 | Duplicate log parsing error handler in builder.py/profiler.py | Low | FIXED |
+| 115 | Violation.line field in accessibility_checker never populated | Low | FIXED |
+| 116 | VS Code extension doctype naming vs web naming inconsistency | Medium | FIXED |
+| 117 | VS Code legacy latex.json broken choice syntax | Low | FIXED |
+| 118 | VS Code galleryBanner color mismatch with design system | Low | FIXED |
+| 119 | VS Code DiagnosticCollection not disposed in deactivate() | Low | FIXED |
+| 120 | Docs manual PART_I claims build.py is 2094 lines | Medium | FIXED |
 
 ---
 

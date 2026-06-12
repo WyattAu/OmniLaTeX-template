@@ -25,10 +25,11 @@ function spawnAsync(command: string, args: string[], options: { cwd: string }): 
 
 const DOCTYPES: string[] = [
     'article', 'book', 'cover-letter', 'cv', 'dictionary', 'dissertation',
-    'exam', 'handout', 'homework', 'inlinepaper', 'invoice', 'journal',
-    'lecture-notes', 'letter', 'manual', 'memo', 'patent', 'poster',
-    'presentation', 'recipe', 'research-proposal', 'standard', 'syllabus',
-    'technicalreport', 'thesis', 'white-paper'
+    'exam', 'handbook', 'handout', 'homework', 'inlinepaper', 'invoice',
+    'journal', 'guide', 'lecture-notes', 'letter', 'manual', 'memo',
+    'patent', 'poster', 'presentation', 'recipe', 'report',
+    'research-proposal', 'standard', 'syllabus', 'technicalreport',
+    'thesis', 'white-paper'
 ];
 
 const INSTITUTIONS: string[] = [
@@ -62,8 +63,8 @@ const DOCTYPE_CATEGORIES: Record<string, string[]> = {
         'thesis', 'dissertation', 'article', 'journal', 'research-proposal',
         'technicalreport', 'lecture-notes', 'syllabus', 'homework', 'exam', 'handout'
     ],
-    Business: ['invoice', 'memo', 'cover-letter', 'standard', 'patent', 'manual'],
-    Personal: ['cv', 'letter', 'book', 'dictionary', 'poster', 'presentation', 'white-paper', 'recipe']
+    Business: ['invoice', 'memo', 'cover-letter', 'standard', 'patent', 'manual', 'report'],
+    Personal: ['cv', 'letter', 'book', 'guide', 'handbook', 'dictionary', 'poster', 'presentation', 'white-paper', 'recipe']
 };
 
 const DOCTYPE_DESCRIPTIONS: Record<string, string> = {
@@ -74,6 +75,8 @@ const DOCTYPE_DESCRIPTIONS: Record<string, string> = {
     'dictionary': 'Dictionary/lexicon (scrbook)',
     'dissertation': 'Dissertation (scrbook)',
     'exam': 'Exam document (scrartcl)',
+    'guide': 'Guidebook (scrbook)',
+    'handbook': 'Handbook (scrbook)',
     'handout': 'Handout (scrartcl)',
     'homework': 'Homework assignment (scrartcl)',
     'inlinepaper': 'Inline research paper (scrartcl)',
@@ -87,6 +90,7 @@ const DOCTYPE_DESCRIPTIONS: Record<string, string> = {
     'poster': 'Conference poster (scrartcl)',
     'presentation': 'Presentation slides (scrartcl)',
     'recipe': 'Recipe (scrartcl)',
+    'report': 'Report (scrreprt)',
     'research-proposal': 'Research proposal (scrartcl)',
     'standard': 'Standards document (scrreprt)',
     'syllabus': 'Syllabus (scrartcl)',
@@ -231,8 +235,11 @@ function getExampleNames(root: string): string[] {
     if (!fs.existsSync(examplesDir)) { return []; }
     try {
         return fs.readdirSync(examplesDir)
-            .filter(f => f.endsWith('.tex'))
-            .map(f => path.basename(f, '.tex'));
+            .filter(f => {
+                const full = path.join(examplesDir, f);
+                return fs.statSync(full).isDirectory() && fs.existsSync(path.join(full, 'main.tex'));
+            })
+            .sort();
     } catch {
         return [];
     }
@@ -435,6 +442,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
     // LaTeX log file diagnostic provider
     logDiagnostics = vscode.languages.createDiagnosticCollection('latex-log');
+    context.subscriptions.push(logDiagnostics);
 
     function parseLatexErrors(logContent: string): vscode.Diagnostic[] {
         const diagnostics: vscode.Diagnostic[] = [];

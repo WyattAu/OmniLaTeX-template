@@ -4,9 +4,9 @@
     "body": [
       "\\documentclass[",
       "    language=english,",
-      "    doctype=${1:article|thesis|book|report|letter},",
+      "    doctype=${1|article,book,thesis,dissertation,cv,report,manual,standard,letter,cover-letter,poster,presentation,technicalreport,inlinepaper,journal,dictionary,handbook,guide,recipe,white-paper,research-proposal,lecture-notes,syllabus,homework,exam,handout,memo,invoice,patent,letter|},",
       "    institution=${2:none},",
-      "]{../../omnilatex}"
+      "]{omnilatex}"
     ],
     "description": "OmniLaTeX document class"
   }
