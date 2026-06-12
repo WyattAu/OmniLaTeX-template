@@ -26,8 +26,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [english, german, french, spanish, russian, chinese, japanese, korean, arabic, hebrew, hindi]
-        doctype: [article, book, report]
+        language: [english, german, french, spanish, italian, portuguese, russian, dutch, polish, czech, greek, turkish, chinese, japanese, korean, vietnamese, hindi, swedish, finnish, danish, norwegian, thai, bengali, ukrainian]
+        doctype: [article, book, technicalreport]
     steps:
     - name: Checkout repository
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd

@@ -1,13 +1,26 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{config/institutions/harvard/harvard}[2026-05-04 v1.0.0 Harvard University Institution Configuration]
 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Color Palette (Official Harvard Brand Guidelines)
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Primary: Harvard Crimson
 \definecolor{universityprimary}{RGB}{165, 28, 48}
+% Secondary: Black
 \definecolor{universitysecondary}{RGB}{0, 0, 0}
+% Accent: Harvard Blue
 \definecolor{universityaccent}{RGB}{0, 51, 102}
+% Neutral: White
 \definecolor{universitywhite}{RGB}{255, 255, 255}
 
-% \DeclareTranslation{english}{InstitutionName}{Harvard University}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Name
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareTranslation{english}{InstitutionName}{Harvard University}
 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Link
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \DeclareTranslation{english}{LogoInstitution}{%
     \includegraphics[height=1.5cm]{assets/logos/placeholder/logo}%
 }
@@ -17,5 +30,21 @@
 % \DeclareTranslation{english}{LogoInstitution}{%
 %     \includegraphics[height=1.5cm]{assets/logos/harvard/logo}%
 % }
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Apply Colors to Document Elements
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Section headings use Harvard Crimson
+\addtokomafont{section}{\color{universityprimary}}
+\addtokomafont{subsection}{\color{universityprimary}}
+
+% Links and URLs use Harvard Crimson
+\hypersetup{linkcolor=universityprimary, urlcolor=universityprimary}
+
+% Table rules use Harvard Blue
+\arrayrulecolor{universityaccent}
+
+% Footer line uses Harvard Crimson
+\cfoot*{\color{universityprimary}\rule{\textwidth}{0.4pt}}
 
 \endinput

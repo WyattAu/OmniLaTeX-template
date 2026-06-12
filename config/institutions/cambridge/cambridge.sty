@@ -35,7 +35,7 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Institution Name
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \DeclareTranslation{english}{InstitutionName}{University of Cambridge}
+\DeclareTranslation{english}{InstitutionName}{University of Cambridge}
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Institution Link
@@ -48,16 +48,17 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Apply Colors to Document Elements
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Uncomment the lines you want to activate:
+% Section headings use Cambridge Blue
+\addtokomafont{section}{\color{universitysecondary}}
+\addtokomafont{subsection}{\color{universitysecondary}}
 
-% Header / title page background
+% Links and URLs use Cambridge Blue
+\hypersetup{linkcolor=universitysecondary, urlcolor=universitysecondary}
 
-% Section headings
+% Table rules use Dark Gray
+\arrayrulecolor{universityaccent}
 
-% Links and URLs
-
-% Table rules
-
-% Footer line
+% Footer line uses Cambridge Green
+\cfoot*{\color{universityprimary}\rule{\textwidth}{0.4pt}}
 
 \endinput

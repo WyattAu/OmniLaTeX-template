@@ -35,7 +35,7 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Institution Name
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \DeclareTranslation{english}{InstitutionName}{Massachusetts Institute of Technology}
+\DeclareTranslation{english}{InstitutionName}{Massachusetts Institute of Technology}
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Institution Link
@@ -48,16 +48,17 @@
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Apply Colors to Document Elements
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Uncomment the lines you want to activate:
+% Section headings use MIT Crimson
+\addtokomafont{section}{\color{universityprimary}}
+\addtokomafont{subsection}{\color{universityprimary}}
 
-% Header / title page background
+% Links and URLs use MIT Crimson
+\hypersetup{linkcolor=universityprimary, urlcolor=universityprimary}
 
-% Section headings
+% Table rules use Cool Gray
+\arrayrulecolor{universitysecondary}
 
-% Links and URLs
-
-% Table rules
-
-% Footer line
+% Footer line uses MIT Crimson
+\cfoot*{\color{universityprimary}\rule{\textwidth}{0.4pt}}
 
 \endinput
