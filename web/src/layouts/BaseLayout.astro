@@ -68,7 +68,7 @@ const currentPath = Astro.url.pathname;
             <line x1="3" y1="15" x2="17" y2="15"/>
           </svg>
         </button>
-        <div class="nav-links" aria-hidden="true">
+        <div class="nav-links">
           <a href={`${base}gallery/`} data-astro-prefetch aria-current={currentPath.startsWith('/OmniLaTeX-template/gallery') || currentPath.endsWith('/gallery/') ? 'page' : undefined}>Gallery</a>
           <a href={`${base}docs/`} data-astro-prefetch aria-current={currentPath.startsWith('/OmniLaTeX-template/docs') || currentPath.endsWith('/docs/') ? 'page' : undefined}>Docs</a>
           <a href={`${base}verify/`} data-astro-prefetch aria-current={currentPath.endsWith('/verify/') ? 'page' : undefined}>Verify</a>
@@ -143,9 +143,11 @@ const currentPath = Astro.url.pathname;
     background: none;
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    padding: 6px;
+    padding: 12px;
     color: var(--fg);
     cursor: pointer;
+    min-width: 44px;
+    min-height: 44px;
   }
 
   .nav-links {

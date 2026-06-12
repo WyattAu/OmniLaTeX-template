@@ -123,7 +123,7 @@ export default function GalleryGrid() {
         />
       </div>
 
-      <div ref={gridRef} class="grid" role="tabpanel" aria-label="Document gallery">
+      <div ref={gridRef} class="grid" role="region" aria-label="Document gallery">
         <For each={filteredDocs()}>
           {(doc) => (
             <a

@@ -113,16 +113,17 @@ network = false
 
         # Create placeholder .sty file
         sty_path = target_dir / f"omnilatex-plugin-{name}.sty"
-        sty_content = f"""% OmniLaTeX Plugin: {name}
-% Version: {entry.get('version', '1.0.0')}
-% Description: {entry.get('description', '')}
-%
-% Place your plugin code here.
-
-\\NeedsTeXFormat{{LaTeX2e}}
-\\ProvidesPackage{{omnilatex-plugin-{name}}}"""
-        f"""[{entry.get('version', '1.0.0')}"""
-        f""" {entry.get('description', '')}]\n"""
+        sty_content = (
+            f"% OmniLaTeX Plugin: {name}\n"
+            f"% Version: {entry.get('version', '1.0.0')}\n"
+            f"% Description: {entry.get('description', '')}\n"
+            f"%\n"
+            f"% Place your plugin code here.\n"
+            f"\n"
+            f"\\NeedsTeXFormat{{LaTeX2e}}\n"
+            f"\\ProvidesPackage{{omnilatex-plugin-{name}}}"
+            f"[{entry.get('version', '1.0.0')} {entry.get('description', '')}]\n"
+        )
         sty_path.write_text(sty_content, encoding="utf-8")
 
         # Validate the installed plugin
