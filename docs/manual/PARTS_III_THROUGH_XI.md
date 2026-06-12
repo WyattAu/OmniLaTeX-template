@@ -451,7 +451,7 @@ Reaction numbering uses `R[n]` prefix (e.g., `R[2.1]` for chapter 2, reaction 1)
 
 ### Chapter 53: Institutions
 
-1. **16 Institution Configs** -- Table with colors, logos, title pages
+1. **21 Institution Configs** -- Table with colors, logos, title pages
 2. **Creating Your Own** -- Step-by-step: create directory, define .sty, add logo, set colors
 3. **Logo Management** -- SVG logos, `\includesvg`, `\DeclareTranslation{LogoXxx}`
 4. **Color Branding** -- `\setkomacolor`, primary/secondary colors
@@ -765,7 +765,7 @@ The Nix flake includes a reproducibility check (`nix build .#checks.reproducibil
 
 ### Chapter 104: CI/CD
 
-1. **9 GitHub Actions Workflows** -- Purpose, triggers, key steps
+1. **15 GitHub Actions Workflows** -- Purpose, triggers, key steps
 2. **Build Pipeline** -- build.yml: build, verify, deploy-pages
 3. **Lean CI** -- Nix-based proof verification
 4. **CTAN Auto-Upload** -- 5-phase pipeline with pre-flight validation

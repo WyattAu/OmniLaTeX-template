@@ -18,7 +18,7 @@ regression detection is posted to the GitHub Actions job summary page.
 | LuaLaTeX first-run font cache | `luaotfload` scans system fonts (~5-10s) | Pre-warmed in Docker via `luaotfload-tool --update` |
 | Font loading per run | Libertinus + Monaspace + Atkinson (~2-3s) | Inherent to font count; no easy reduction |
 | LuaTeX-ja CJK setup | Additional engine overhead for CJK examples | Required for CJK support |
-| Total CI build time | ~15-20 minutes for 48 examples in Docker | Parallel compilation (`-j N`) mitigates wall time |
+| Total CI build time | ~35-45 minutes for 92 examples in Docker | Parallel compilation (`-j N`) mitigates wall time |
 
 ## Optimization Recommendations
 

@@ -112,7 +112,7 @@ A comprehensive reference manual covering every functionality of modern LaTeX th
 50_PAGE_LAYOUT.md        — KOMA page geometry, BCOR, twoside, custom margins, headers/footers
 51_SECTIONING.md         — KOMA sectioning hierarchy, paragraph, TOC customization
 52_TITLE_PAGES.md        — 4 title styles (book/thesis/simple/tuhh), custom title pages
-53_INSTITUTIONS.md       — All 16 institution configs, how to create your own
+53_INSTITUTIONS.md       — All 21 institution configs, how to create your own
 ```
 
 ### Part VI: Figures, Tables & Floats
@@ -159,7 +159,7 @@ A comprehensive reference manual covering every functionality of modern LaTeX th
 101_GIT_INTEGRATION.md    — Git SHA, ref name, verification box, build date
 102_DOCKER_WORKFLOW.md   — Docker image, build commands, CI/CD pipeline, cross-platform
 103_NIX_WORKFLOW.md      — flake.nix, dev shell, reproducible builds
-104_CI_CD.md             — 9 GitHub Actions workflows, CTAN auto-upload, release automation
+104_CI_CD.md             — 15 GitHub Actions workflows, CTAN auto-upload, release automation
 ```
 
 ### Part XI: Formal Verification

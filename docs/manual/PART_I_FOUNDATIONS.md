@@ -331,7 +331,7 @@ Links to relevant chapters.
 
 ### 12.1 build.py Overview
 
-`build.py` is a 679-line Python build orchestrator that manages all OmniLaTeX compilation. It wraps `latexmk` and provides:
+`build.py` is a thin entry point (14 lines) that delegates to the `buildlib/` package. The actual build logic lives in `buildlib/` (3700+ lines across 15 modules) and provides:
 
 - Explicit dev/prod/ultra build modes
 - Concurrent example building with a Rich UI

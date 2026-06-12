@@ -160,22 +160,78 @@ All distribution channels operational.
 
 ---
 
-## Phase 5: v3.0.0 -- User-Facing Features
+## Phase 5: v2.6.0 -- Polish & Distribution (4-6 weeks)
 
-Previous Phase 5 (WASM, Tauri) was out of scope for a document class project and
-removed. v3.0.0 should deliver something users notice.
+Goal: Close the remaining backlog, submit to Overleaf Gallery, ship a polished release.
 
-### Candidates (pick from these or add your own)
+### Backlog Cleanup (#100-120)
 
-| Feature | User Impact | Effort | Notes |
-|---------|-------------|--------|-------|
-| Overleaf Gallery submission | Discoverability | Low | Prepare zip + metadata, submit |
-| Template quality polish | First impression | Medium | Make each of the 92 examples a showcase |
-| Build error messages UX | Daily workflow | Medium | Parse LaTeX errors into actionable fixes |
-| New document types | Capability | Medium | Based on user demand (grant proposals, IEEE papers) |
-| Dark mode in PDF output | Visual | Medium | Already has dark mode in web, not in PDF |
-| Multi-language docs site | Reach | High | Docs in DE/ZH/JA alongside EN |
-| VS Code live preview | Workflow | High | Show PDF on save, like LaTeX Workshop |
+- [ ] Remove dead i18n JSON files (#100)
+- [ ] Fix German translation missing umlauts (#101)
+- [ ] Make lang attribute dynamic instead of hardcoded "en" (#102)
+- [ ] Add og:image + twitter:image for social sharing (#103)
+- [ ] Add JSON-LD structured data to doc pages (#104)
+- [ ] Add TOC to doc sidebar (#105)
+- [ ] Add responsive mobile padding on doc headers (#106)
+- [ ] Remove dead PDF viewer CSS (#107)
+- [ ] Add typography scale tokens (rem-based) (#108)
+- [ ] Convert px units to rem in layout values (#109)
+- [ ] Fix FAQ stale CTAN claim (#110)
+- [ ] Increase builder.py coverage (rich dependency gaps) (#111)
+- [ ] Increase accessibility_checker.py coverage (#112)
+- [ ] Deduplicate build command construction (#113)
+- [ ] Deduplicate log parsing error handler (#114)
+- [ ] Populate accessibility_checker Violation.line field (#115)
+- [ ] Fix VS Code doctype naming inconsistency (#116)
+- [ ] Fix VS Code legacy latex.json choice syntax (#117)
+- [ ] Fix VS Code galleryBanner color (#118)
+- [ ] Fix VS Code DiagnosticCollection disposal (#119)
+- [ ] Fix docs manual stale build.py line count (#120)
+
+### Overleaf Gallery Submission
+
+- [ ] Prepare 5 showcase zips (thesis, article, beamer, CV, report)
+- [ ] Write Overleaf metadata (title, description, tags, preview image)
+- [ ] Submit to Overleaf Template Gallery
+- [ ] Add "Open in Overleaf" badges to README and docs
+
+### Template Quality Polish
+
+- [ ] Review top 15 examples for production readiness
+- [ ] Add meaningful placeholder content (not just Lorem Ipsum)
+- [ ] Ensure consistent formatting across showcase templates
+- [ ] Add example-specific documentation notes
+
+---
+
+## Phase 6: v3.0.0 -- User-Facing Features (8-12 weeks)
+
+Goal: Ship features users notice. Differentiate from raw article/book classes.
+
+### Build Error Messages UX
+
+Parse LaTeX log files into actionable error messages:
+
+- [ ] Extract error lines from latexmk/lualatex output
+- [ ] Classify errors (missing brace, undefined command, missing package, etc.)
+- [ ] Map errors to line numbers in source .tex files
+- [ ] Suggest fixes for common errors (e.g., "Missing \begin{document}?")
+- [ ] Integrate into build.py output and VS Code diagnostics
+- [ ] Color-coded terminal output (error/warning/info)
+
+### New Document Types
+
+- [ ] Grant proposal (NSF/ERC style: specific margins, font sizes, section structure)
+- [ ] IEEE conference paper (two-column, IEEEtran compatibility, bibliography style)
+- [ ] Book chapter (individual chapter with independent bibliography)
+
+### Template Showcase
+
+- [ ] Production-ready thesis template (with chapters, figures, bibliography, index)
+- [ ] Production-ready article template (with sections, figures, tables, references)
+- [ ] Production-ready beamer template (with blocks, figures, bibliography)
+- [ ] Production-ready CV template (with publications, experience, skills)
+- [ ] Production-ready technical report template (with executive summary, appendices)
 
 ---
 

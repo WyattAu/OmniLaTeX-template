@@ -32,7 +32,7 @@ For a step-by-step walkthrough, see [Getting Started](GETTING_STARTED.md).
 |--------|---------|
 | Docker | `docker run -v $(pwd):/workspace ghcr.io/wyattau/omnilatex-docker:latest` |
 | Nix | `nix develop` |
-| CTAN | `tlmgr install omnilatex` (pending) |
+| CTAN | `tlmgr install omnilatex` |
 | Local | TeX Live 2025+ with LuaLaTeX |
 | Overleaf | [Open in Overleaf](https://www.overleaf.com/latex/templates/omnilatex/cndqjfkdnrfn) |
 
@@ -42,15 +42,15 @@ For a step-by-step walkthrough, see [Getting Started](GETTING_STARTED.md).
 - **21 institutions** -- ETH, MIT, Stanford, TUHH, TUM, Cambridge, Oxford, Harvard, Yale, Princeton, Columbia, EPFL, CMU, Imperial, TU Delft, Aalto, Chalmers, KIT, NTNU, UofT, Generic
 - **25 full translations** -- EN, DE, FR, ES, PT, IT, NL, PL, CZ, EL, TR, RU, VI, HI, SV, FI, DA, NO, and more
 - **25 polyglossia languages** -- full script support including CJK, Arabic, Hebrew, Cyrillic
-- **29 Lean 4 proof modules** -- formal verification of module properties
-- **1711 pytest tests** -- structural, property-based, visual regression, edge cases
+- **27 Lean 4 proof modules** -- formal verification of module properties
+- **2099 pytest tests** -- structural, property-based, visual regression, edge cases
 - **Deterministic builds** -- byte-for-byte reproducible PDFs via `SOURCE_DATE_EPOCH`
 
 ## Web Tools
 
 | Tool | Description |
 |------|-------------|
-| [PDF Gallery](index.html) | Browse all 48 example PDFs with category filtering and lightbox viewer |
+| [PDF Gallery](index.html) | Browse all 92 example PDFs with category filtering and lightbox viewer |
 | [Template Picker](gallery.html) | Interactive template, language, and institution selector |
 | [Build Verification](verify.html) | Verify PDF build provenance against Git commit history |
 
