@@ -239,6 +239,96 @@ class _Commands(
 
     # -- diff helpers -------------------------------------------------------
 
+    def _compare_single_example(
+        self, name: str, source: Path, ref_path: Path, has_ssim: bool
+    ) -> bool:
+        """Compare a single example PDF against its reference.
+
+        Returns True if the example passes (no regression detected).
+        """
+        if not source.exists():
+            self.ui.warning(f"SKIP: {name} \u2014 PDF not found")
+            return True  # skip is not a failure
+
+        if not ref_path.exists():
+            self.ui.info(f"GENERATE: {name} \u2014 no reference, copying as baseline")
+            ref_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, ref_path)
+            return True
+
+        if has_ssim:
+            passed = self._compare_ssim(name, source, ref_path)
+            if passed is not None:
+                return passed
+
+        return self._compare_bytes(name, source, ref_path)
+
+    def _compare_ssim(self, name: str, source: Path, ref_path: Path) -> bool | None:
+        """SSIM-based visual comparison. Returns None if pymupdf unavailable."""
+        try:
+            import fitz  # noqa: F401
+            import numpy as np
+            from PIL import Image
+
+            ref_doc = fitz.open(str(ref_path))
+            test_doc = fitz.open(str(source))
+            try:
+                if ref_doc.page_count != test_doc.page_count:
+                    self.ui.error(
+                        f"FAIL: {name} — page count mismatch "
+                        f"(ref={ref_doc.page_count}, test={test_doc.page_count})"
+                    )
+                    return False
+
+                for i in range(ref_doc.page_count):
+                    dpi = 150
+                    mat = fitz.Matrix(dpi / 72, dpi / 72)
+                    ref_pix = ref_doc[i].get_pixmap(matrix=mat)
+                    test_pix = test_doc[i].get_pixmap(matrix=mat)
+                    ref_img = Image.frombytes(
+                        "RGB", [ref_pix.width, ref_pix.height], ref_pix.samples
+                    )
+                    test_img = Image.frombytes(
+                        "RGB",
+                        [test_pix.width, test_pix.height],
+                        test_pix.samples,
+                    )
+
+                    arr1 = np.array(ref_img.convert("L"), dtype=np.float64)
+                    arr2 = np.array(test_img.convert("L"), dtype=np.float64)
+                    if arr1.shape != arr2.shape:
+                        self.ui.error(f"FAIL: {name} page {i + 1} — dimension mismatch")
+                        return False
+
+                    ssim = _compute_ssim_windowed(arr1, arr2)
+                    threshold = 0.95
+                    page_pass = ssim >= threshold
+                    status = "PASS" if page_pass else "FAIL"
+                    self.ui.info(f"  Page {i + 1}: SSIM={ssim:.4f} {status}")
+                    if not page_pass:
+                        return False
+                return True
+            finally:
+                ref_doc.close()
+                test_doc.close()
+
+        except ImportError:
+            self.ui.info(
+                f"  pymupdf not available for {name}; falling back to byte-level"
+            )
+            return None
+
+    def _compare_bytes(self, name: str, source: Path, ref_path: Path) -> bool:
+        """Byte-level hash comparison fallback."""
+        ref_hash = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
+        test_hash = hashlib.sha256(ref_path.read_bytes()).hexdigest()[:16]
+        if ref_hash == test_hash:
+            self.ui.info(f"\u2705 PASS: {name} (byte-identical)")
+            return True
+        else:
+            self.ui.error(f"\u274c FAIL: {name} (content differs)")
+            return False
+
     def _is_git_ref(self, ref: str) -> bool:
         try:
             result = subprocess.run(
@@ -462,14 +552,14 @@ class _Commands(
             return
 
         try:
-            import numpy as np
-            from PIL import Image
+            import fitz  # noqa: F401
 
             _has_ssim = True
         except ImportError:
             _has_ssim = False
             self.ui.info(
-                "pillow/numpy not available; falling back to byte-level comparison"
+                "pymupdf/numpy/pillow not available; "
+                "falling back to byte-level comparison"
             )
 
         all_pass = True
@@ -479,88 +569,9 @@ class _Commands(
             ref_path = ref_dir / f"{name}.pdf"
             build_copy = build_dir / f"{name}.pdf"
 
-            # Prefer the build output (already post-build) if available
             source = build_copy if build_copy.exists() else pdf_path
 
-            if not source.exists():
-                self.ui.warning(f"SKIP: {name} \u2014 PDF not found")
-                continue
-
-            if not ref_path.exists():
-                self.ui.info(
-                    f"GENERATE: {name} \u2014 no reference, copying as baseline"
-                )
-                ref_path.parent.mkdir(parents=True, exist_ok=True)
-
-                shutil.copy2(source, ref_path)
-                continue
-
-            # Compare using SSIM (requires pymupdf + pillow + numpy)
-            if _has_ssim:
-                try:
-                    import fitz  # noqa: F401
-
-                    ref_doc = fitz.open(str(ref_path))
-                    test_doc = fitz.open(str(source))
-                    try:
-                        if ref_doc.page_count != test_doc.page_count:
-                            self.ui.error(
-                                f"FAIL: {name} — page count mismatch "
-                                f"(ref={ref_doc.page_count}, test={test_doc.page_count})"
-                            )
-                            all_pass = False
-                            continue
-
-                        for i in range(ref_doc.page_count):
-                            dpi = 150
-                            mat = fitz.Matrix(dpi / 72, dpi / 72)
-                            ref_pix = ref_doc[i].get_pixmap(matrix=mat)
-                            test_pix = test_doc[i].get_pixmap(matrix=mat)
-                            ref_img = Image.frombytes(
-                                "RGB", [ref_pix.width, ref_pix.height], ref_pix.samples
-                            )
-                            test_img = Image.frombytes(
-                                "RGB",
-                                [test_pix.width, test_pix.height],
-                                test_pix.samples,
-                            )
-
-                            arr1 = np.array(ref_img.convert("L"), dtype=np.float64)
-                            arr2 = np.array(test_img.convert("L"), dtype=np.float64)
-                            if arr1.shape != arr2.shape:
-                                self.ui.error(
-                                    f"FAIL: {name} page {i + 1} — dimension mismatch"
-                                )
-                                all_pass = False
-                                continue
-
-                            ssim = _compute_ssim_windowed(arr1, arr2)
-
-                            threshold = 0.95
-                            page_pass = ssim >= threshold
-                            status = "PASS" if page_pass else "FAIL"
-                            self.ui.info(f"  Page {i + 1}: SSIM={ssim:.4f} {status}")
-                            if not page_pass:
-                                all_pass = False
-                    finally:
-                        ref_doc.close()
-                        test_doc.close()
-                    continue  # SSIM comparison done, skip byte-level fallback
-
-                except ImportError:
-                    self.ui.info(
-                        f"  pymupdf not available for {name}; falling back to byte-level"
-                    )
-
-            # Byte-level fallback (no SSIM deps available)
-            # Import hashlib at module level (line 5)
-
-            ref_hash = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
-            test_hash = hashlib.sha256(ref_path.read_bytes()).hexdigest()[:16]
-            if ref_hash == test_hash:
-                self.ui.info(f"\u2705 PASS: {name} (byte-identical)")
-            else:
-                self.ui.error(f"\u274c FAIL: {name} (content differs)")
+            if not self._compare_single_example(name, source, ref_path, _has_ssim):
                 all_pass = False
 
         if all_pass:
@@ -569,6 +580,87 @@ class _Commands(
             self.ui.error("Visual regressions detected")
 
     # -- init ---------------------------------------------------------------
+
+    def _validate_init_args(
+        self, project_name: str, doctype: str | None, language: str | None
+    ) -> tuple[str | None, str | None] | None:
+        """Validate init arguments. Returns (doctype, language) or None on error."""
+        if not re.match(r"^[a-zA-Z0-9_-]+$", project_name):
+            self.ui.error(
+                f"Invalid project name '{project_name}'. "
+                "Use only alphanumeric characters, hyphens, and underscores."
+            )
+            return None
+
+        if doctype is not None:
+            doctype = doctype.lower()
+            if doctype not in self.VALID_DOCTYPES:
+                self.ui.error(
+                    f"Unknown doctype '{doctype}'. Valid options: "
+                    + ", ".join(self.VALID_DOCTYPES)
+                )
+                return None
+
+        if language is not None:
+            language = language.lower()
+            if language not in self.VALID_LANGUAGES:
+                self.ui.error(
+                    f"Unknown language '{language}'. Valid options: "
+                    + ", ".join(self.VALID_LANGUAGES)
+                )
+                return None
+
+        return doctype, language
+
+    def _patch_documentclass(
+        self,
+        main_tex: Path,
+        doctype: str | None,
+        institution: str | None,
+        language: str | None,
+    ):
+        """Patch \\documentclass options in main.tex with the given overrides."""
+        content = main_tex.read_text(encoding="utf-8")
+
+        m = re.search(r"(\\documentclass\s*\[)([\s\S]*?)(\]\{[^}]+\})", content)
+        if not m:
+            return
+
+        prefix, opts_str, suffix = m.groups()
+        existing_opts = [
+            o.strip()
+            for o in opts_str.replace("\n", " ").split(",")
+            if o.strip() and not o.strip().startswith("%")
+        ]
+        # Strip inline comments from option values
+        cleaned_opts = []
+        for o in existing_opts:
+            if "%" in o:
+                o = o[: o.index("%")].strip()
+            if o:
+                cleaned_opts.append(o)
+        existing_opts = cleaned_opts
+
+        # Remove options we're overriding
+        existing_opts = [
+            o
+            for o in existing_opts
+            if not o.startswith("doctype=")
+            and not o.startswith("institution=")
+            and not o.startswith("language=")
+        ]
+
+        # Apply overrides
+        if doctype:
+            existing_opts.insert(0, f"doctype={doctype}")
+        if institution:
+            existing_opts.append(f"institution={institution}")
+        if language:
+            existing_opts.append(f"language={language}")
+
+        new_docclass = f"{prefix}{', '.join(existing_opts)}{suffix}"
+        content = content[: m.start()] + new_docclass + content[m.end() :]
+        main_tex.write_text(content, encoding="utf-8")
 
     def cmd_init(
         self,
@@ -599,17 +691,15 @@ class _Commands(
             doctype = "thesis"
 
         project_name = files[0]
-        if not re.match(r"^[a-zA-Z0-9_-]+$", project_name):
-            self.ui.error(
-                f"Invalid project name '{project_name}'. "
-                "Use only alphanumeric characters, hyphens, and underscores."
-            )
+        validated = self._validate_init_args(project_name, doctype, language)
+        if validated is None:
             return
+        doctype, language = validated
+
         repo_root = _cfg.REPO_ROOT
         src = repo_root / "examples" / "minimal-starter"
         dst = Path.cwd() / project_name
 
-        # Verify resolved path stays within current directory
         if not dst.resolve().is_relative_to(Path.cwd()):
             self.ui.error(
                 f"Project name '{project_name}' resolves outside current directory"
@@ -623,26 +713,6 @@ class _Commands(
         if dst.exists():
             self.ui.error(f"Directory '{project_name}' already exists")
             return
-
-        # Validate doctype
-        if doctype is not None:
-            if doctype.lower() not in self.VALID_DOCTYPES:
-                self.ui.error(
-                    f"Unknown doctype '{doctype}'. Valid options: "
-                    + ", ".join(self.VALID_DOCTYPES)
-                )
-                return
-            doctype = doctype.lower()
-
-        # Validate language
-        if language is not None:
-            if language.lower() not in self.VALID_LANGUAGES:
-                self.ui.error(
-                    f"Unknown language '{language}'. Valid options: "
-                    + ", ".join(self.VALID_LANGUAGES)
-                )
-                return
-            language = language.lower()
 
         # Copy template (exclude build artifacts)
         ignore = shutil.ignore_patterns(
@@ -687,44 +757,7 @@ class _Commands(
         # Patch main.tex if any options were specified
         main_tex = dst / "main.tex"
         if (doctype or institution or language) and main_tex.exists():
-
-            content = main_tex.read_text(encoding="utf-8")
-
-            # Multi-line regex: \documentclass[...options...]{class}
-            m = re.search(r"(\\documentclass\s*\[)([\s\S]*?)(\]\{[^}]+\})", content)
-            if m:
-                prefix, opts_str, suffix = m.groups()
-                existing_opts = [
-                    o.strip()
-                    for o in opts_str.replace("\n", " ").split(",")
-                    if o.strip() and not o.strip().startswith("%")
-                ]
-                # Strip inline comments from option values
-                cleaned_opts = []
-                for o in existing_opts:
-                    if "%" in o:
-                        o = o[: o.index("%")].strip()
-                    if o:
-                        cleaned_opts.append(o)
-                existing_opts = cleaned_opts
-                # Remove options we're overriding
-                existing_opts = [
-                    o
-                    for o in existing_opts
-                    if not o.startswith("doctype=")
-                    and not o.startswith("institution=")
-                    and not o.startswith("language=")
-                ]
-                # Apply overrides
-                if doctype:
-                    existing_opts.insert(0, f"doctype={doctype}")
-                if institution:
-                    existing_opts.append(f"institution={institution}")
-                if language:
-                    existing_opts.append(f"language={language}")
-                new_docclass = f"{prefix}{', '.join(existing_opts)}{suffix}"
-                content = content[: m.start()] + new_docclass + content[m.end() :]
-                main_tex.write_text(content, encoding="utf-8")
+            self._patch_documentclass(main_tex, doctype, institution, language)
 
         if thesis:
             self._create_thesis_structure(

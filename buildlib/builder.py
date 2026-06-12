@@ -184,9 +184,132 @@ class _BuildCore(BuildCacheMixin, DiscoveryMixin, CleanupMixin):
     def source_files(self) -> list[Path]:
         return self._get_source_files(self.repo_root)
 
-    def _compile_example_worker(self, example_name: str) -> tuple[str, bool, list[str]]:
+    def _setup_build_env(
+        self, example_dir: Path, repo_root: Path
+    ) -> tuple[list, dict[str, str]]:
+        """Prepare latexmk command and environment variables for a build.
+
+        Returns (invoke_args, extra_env) for use with self.runner.run().
         """
-        Worker function that faithfully reproduces the
+        root_latexmkrc = repo_root / ".latexmkrc"
+        invoke = build_latexmk_command(
+            force_rebuild=self.force
+            or os.environ.get("OMNILATEX_FORCE_REBUILD") == "1",
+            include_root_rc=True,
+            root_rc_path=root_latexmkrc,
+        )
+
+        if self.force:
+            self.runner.run(
+                [LATEXMK_COMMAND, "-C", "-r", str(root_latexmkrc)],
+                cwd=example_dir,
+            )
+
+        for cache_dir in (
+            Path(MINTED_CACHE_SUBDIR),
+            Path(SVG_INKSCAPE_CACHE),
+        ):
+            (example_dir / cache_dir).mkdir(parents=True, exist_ok=True)
+
+        minted_cache_dir = example_dir / MINTED_CACHE_SUBDIR
+        minted_cache_dir.mkdir(parents=True, exist_ok=True)
+
+        extra_env = {
+            "MINTED_CACHE_DIR": str(minted_cache_dir.resolve()),
+            "OMNILATEX_EXAMPLE_ROOT": str(example_dir.resolve()),
+            "TEXINPUTS": os.pathsep.join([".", str(repo_root), ""]),
+            "LC_ALL": "C.utf8",
+        }
+
+        if self.config.cnf_lines:
+            extra_env["OMNILATEX_CNF_LINES"] = ";".join(self.config.cnf_lines)
+
+        return invoke, extra_env
+
+    def _copy_build_output(
+        self, example_name: str, example_dir: Path, build_examples_dir: Path
+    ) -> tuple[bool, list[str], int]:
+        """Copy built PDF and log to the build directory.
+
+        Returns (success, logs, pdf_size).
+        """
+        all_logs = []
+        src_pdf = example_dir / "main.pdf"
+        all_logs.append(f"[DEBUG] Checking for PDF at: {src_pdf}")
+
+        if not src_pdf.exists():
+            all_logs.append(
+                "[bold red]✗ FAILURE: PDF not found at "
+                f"{src_pdf} after build attempt.[/bold red]"
+            )
+            return False, all_logs, 0
+
+        all_logs.append("[DEBUG] PDF exists, size: " f"{src_pdf.stat().st_size} bytes")
+        dest_pdf = build_examples_dir / f"{example_name}.pdf"
+        all_logs.append(f"[DEBUG] Destination PDF: {dest_pdf}")
+
+        try:
+            shutil.copy(src_pdf, dest_pdf)
+            # Preserve .log file for content validation tests
+            src_log = example_dir / "main.log"
+            if src_log.exists():
+                dest_log = build_examples_dir / f"{example_name}.log"
+                shutil.copy(src_log, dest_log)
+            all_logs.append("[DEBUG] Copy operation completed")
+
+            if not dest_pdf.exists():
+                all_logs.append(
+                    "[bold red]✗ FAILURE: Copy reported "
+                    "success but destination PDF not "
+                    "found[/bold red]"
+                )
+                return False, all_logs, 0
+
+            all_logs.append(
+                "[DEBUG] Destination PDF "
+                "confirmed, size: "
+                f"{dest_pdf.stat().st_size} bytes"
+            )
+            all_logs.append("[green]PDF found and copied to build directory.[/green]")
+            return True, all_logs, dest_pdf.stat().st_size
+
+        except (OSError, shutil.Error) as copy_exc:
+            all_logs.append(f"[DEBUG] Copy exception: {copy_exc}")
+            all_logs.append(
+                "[bold red]✗ FAILURE: Could not copy " f"PDF: {copy_exc}[/bold red]"
+            )
+            return False, all_logs, 0
+
+    def _record_timing(
+        self, example_name: str, elapsed: float, success: bool, pdf_size: int
+    ):
+        """Record build timing data for metrics output."""
+        repo_root = self.repo_root
+        example_dir = repo_root / "examples" / example_name
+        timing_record = {
+            "name": example_name,
+            "mode": self.runner.build_mode,
+            "wall_time_s": round(elapsed, 3),
+            "pdf_size_bytes": pdf_size,
+            "success": success,
+        }
+        log_path = extract_log_path(example_dir)
+        if log_path:
+            try:
+                log_content = log_path.read_text(encoding="utf-8", errors="replace")
+                package_info = parse_log_for_package_times(log_content)
+                timing_record["package_timing"] = package_info
+            except (OSError, UnicodeDecodeError, KeyError):
+                import logging
+
+                logging.getLogger("omnilatex").debug(
+                    "Failed to parse build timing from log", exc_info=True
+                )
+        with self._timings_lock:
+            self.timings_data.append(timing_record)
+
+    def _compile_example_worker(self, example_name: str) -> tuple[str, bool, list[str]]:
+        """Worker function that faithfully reproduces the
         original script's logic. Success is determined ONLY
         by the existence of the final PDF.
         """
@@ -208,124 +331,47 @@ class _BuildCore(BuildCacheMixin, DiscoveryMixin, CleanupMixin):
                     _timing_success = True
                     return example_name, True, all_logs
 
-            # --- Start: EXACT reproduction of original script's core logic ---
-            root_latexmkrc = repo_root / ".latexmkrc"
-            invoke = build_latexmk_command(
-                force_rebuild=self.force
-                or os.environ.get("OMNILATEX_FORCE_REBUILD") == "1",
-                include_root_rc=True,
-                root_rc_path=root_latexmkrc,
-            )
+            invoke, extra_env = self._setup_build_env(example_dir, repo_root)
 
-            # Use absolute paths to avoid thread-unsafe os.chdir().
-            # The runner.run() call already sets cwd=example_dir.
-            if self.force:
-                self.runner.run(
-                    [LATEXMK_COMMAND, "-C", "-r", str(root_latexmkrc)],
-                    cwd=example_dir,
-                )
-
-            for cache_dir in (
-                Path(MINTED_CACHE_SUBDIR),
-                Path(SVG_INKSCAPE_CACHE),
-            ):
-                (example_dir / cache_dir).mkdir(parents=True, exist_ok=True)
-
-            minted_cache_dir = example_dir / MINTED_CACHE_SUBDIR
-            minted_cache_dir.mkdir(parents=True, exist_ok=True)
-
-            extra_env = {
-                "MINTED_CACHE_DIR": str(minted_cache_dir.resolve()),
-                "OMNILATEX_EXAMPLE_ROOT": str(example_dir.resolve()),
-                "TEXINPUTS": os.pathsep.join([".", str(repo_root), ""]),
-                "LC_ALL": "C.utf8",
-            }
-
-            if self.config.cnf_lines:
-                extra_env["OMNILATEX_CNF_LINES"] = ";".join(self.config.cnf_lines)
-
-            # Run the command but do not raise an exception on failure
             exit_code, logs_from_run = self.runner.run(
                 invoke, extra_env=extra_env, cwd=example_dir
             )
             all_logs.extend(logs_from_run)
-            # --- End: EXACT reproduction of original script's core logic ---
 
-            # Create build/examples directory early to
-            # avoid race conditions in concurrent builds
-            repo_root = self.repo_root
             build_examples_dir = (
                 repo_root / self.config.build_dir / BUILD_EXAMPLES_SUBDIR
             )
-            all_logs.append(f"[DEBUG] Build examples dir: " f"{build_examples_dir}")
+            all_logs.append(f"[DEBUG] Build examples dir: {build_examples_dir}")
             build_examples_dir.mkdir(parents=True, exist_ok=True)
 
-            # THE SOLE CRITERION FOR SUCCESS: Does the PDF exist?
-            src_pdf = example_dir / "main.pdf"
-            all_logs.append(f"[DEBUG] Checking for PDF at: {src_pdf}")
-            if src_pdf.exists():
-                all_logs.append(
-                    "[DEBUG] PDF exists, size: " f"{src_pdf.stat().st_size} bytes"
-                )
-                dest_pdf = build_examples_dir / f"{example_name}.pdf"
-                all_logs.append(f"[DEBUG] Destination PDF: {dest_pdf}")
-                try:
-                    shutil.copy(src_pdf, dest_pdf)
-                    # Preserve .log file for content validation tests
-                    src_log = example_dir / "main.log"
-                    if src_log.exists():
-                        dest_log = build_examples_dir / f"{example_name}.log"
-                        shutil.copy(src_log, dest_log)
-                    all_logs.append("[DEBUG] Copy operation completed")
-                    if dest_pdf.exists():
-                        all_logs.append(
-                            "[DEBUG] Destination PDF "
-                            "confirmed, size: "
-                            f"{dest_pdf.stat().st_size} bytes"
-                        )
-                        all_logs.append(
-                            "[green]PDF found and copied to build directory.[/green]"
-                        )
-                    else:
-                        all_logs.append(
-                            "[bold red]✗ FAILURE: Copy reported "
-                            "success but destination PDF not "
-                            "found[/bold red]"
-                        )
-                        return example_name, False, all_logs
-                except (OSError, shutil.Error) as copy_exc:
-                    all_logs.append(f"[DEBUG] Copy exception: {copy_exc}")
-                    all_logs.append(
-                        "[bold red]✗ FAILURE: Could not copy "
-                        f"PDF: {copy_exc}[/bold red]"
-                    )
-                    return example_name, False, all_logs
-                _timing_success = True
-                _timing_pdf_size = dest_pdf.stat().st_size
-                source_files = self._collect_source_files(example_name)
-                source_hash = self._hash_for_paths(source_files)
-                with self._cache_lock:
-                    if self._shared_build_cache is not None:
-                        cache = self._shared_build_cache
-                    else:
-                        cache = self._load_build_cache()
-                    cache[f"examples/{example_name}"] = {
-                        "source_hash": source_hash,
-                        "mtimes": self._get_mtimes(source_files),
-                        "pdf_size": _timing_pdf_size,
-                        "build_time": time.strftime(
-                            "%Y-%m-%dT%H:%M:%SZ", time.gmtime()
-                        ),
-                    }
-                    if self._shared_build_cache is None:
-                        self._save_build_cache(cache)
-                return example_name, True, all_logs
-            else:
-                all_logs.append(
-                    "[bold red]✗ FAILURE: PDF not found at "
-                    f"{src_pdf} after build attempt.[/bold red]"
-                )
+            success, copy_logs, pdf_size = self._copy_build_output(
+                example_name, example_dir, build_examples_dir
+            )
+            all_logs.extend(copy_logs)
+
+            if not success:
                 return example_name, False, all_logs
+
+            _timing_success = True
+            _timing_pdf_size = pdf_size
+
+            source_files = self._collect_source_files(example_name)
+            source_hash = self._hash_for_paths(source_files)
+            with self._cache_lock:
+                if self._shared_build_cache is not None:
+                    cache = self._shared_build_cache
+                else:
+                    cache = self._load_build_cache()
+                cache[f"examples/{example_name}"] = {
+                    "source_hash": source_hash,
+                    "mtimes": self._get_mtimes(source_files),
+                    "pdf_size": pdf_size,
+                    "build_time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                }
+                if self._shared_build_cache is None:
+                    self._save_build_cache(cache)
+            return example_name, True, all_logs
+
         except (OSError, ValueError) as exc:
             all_logs.append(
                 "[bold red]✗ A critical error occurred in "
@@ -335,34 +381,8 @@ class _BuildCore(BuildCacheMixin, DiscoveryMixin, CleanupMixin):
         finally:
             if self.timings:
                 elapsed = time.perf_counter() - start_time
-                repo_root = self.repo_root
-                example_dir = repo_root / "examples" / example_name
-                # Use the size already captured during the copy phase
-                # to avoid a TOCTOU race on the PDF file.
                 pdf_size = _timing_pdf_size if _timing_success else 0
-                timing_record = {
-                    "name": example_name,
-                    "mode": self.runner.build_mode,
-                    "wall_time_s": round(elapsed, 3),
-                    "pdf_size_bytes": pdf_size,
-                    "success": _timing_success,
-                }
-                log_path = extract_log_path(example_dir)
-                if log_path:
-                    try:
-                        log_content = log_path.read_text(
-                            encoding="utf-8", errors="replace"
-                        )
-                        package_info = parse_log_for_package_times(log_content)
-                        timing_record["package_timing"] = package_info
-                    except (OSError, UnicodeDecodeError, KeyError):
-                        import logging
-
-                        logging.getLogger("omnilatex").debug(
-                            "Failed to parse build timing from log", exc_info=True
-                        )
-                with self._timings_lock:
-                    self.timings_data.append(timing_record)
+                self._record_timing(example_name, elapsed, _timing_success, pdf_size)
 
     def _build_examples_rich_concurrent(self, example_names: list[str]):
         console = Console()
