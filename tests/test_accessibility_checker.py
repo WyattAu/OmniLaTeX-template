@@ -5,12 +5,12 @@ from __future__ import annotations
 from unittest.mock import MagicMock, patch
 
 import pytest
-from bs4 import BeautifulSoup, Tag
 
 bs4 = pytest.importorskip("bs4")
+from bs4 import BeautifulSoup, Tag  # noqa: E402
 
 from buildlib.accessibility_checker import CheckResult  # noqa: E402
-from buildlib.accessibility_checker import (
+from buildlib.accessibility_checker import (  # noqa: E402
     Severity,
     Violation,
     _is_large_text,
