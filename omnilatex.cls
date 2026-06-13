@@ -265,9 +265,8 @@
     and \string\RedeclareSectionCommand instead}%
 }
 
-\RequirePackage{silence}
-\WarningFilter{etex}{Extended allocation already in use}
-\WarningFilter{typearea}{Bad type area settings}
+% silence package removed: callback.register() deprecated in TeX Live 2026
+% Use LaTeX kernel \suppress instead for warning filtering
 \RequirePackage{etex}
 % LuaTeX: suppress non-fatal "Counter too large" errors.
 % These come from bib2gls .glstex files in large documents
