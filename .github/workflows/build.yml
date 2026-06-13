@@ -60,7 +60,9 @@ jobs:
       uses: ./.github/actions/setup-python
 
     - name: Install linting tools
-      run: pip install --no-cache-dir -q -r requirements-lint.txt
+      run: |
+        pip install --force-reinstall --no-cache-dir -q -r requirements-lint.txt
+        black --version
 
     - name: Run black --check
       run: black --check tests/ buildlib/ scripts/ tools/ build.py
