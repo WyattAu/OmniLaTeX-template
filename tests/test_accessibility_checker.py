@@ -9,8 +9,8 @@ from bs4 import BeautifulSoup, Tag
 
 bs4 = pytest.importorskip("bs4")
 
-from buildlib.accessibility_checker import (CheckResult,  # noqa: E402
-                                            Severity, Violation,
+from buildlib.accessibility_checker import CheckResult  # noqa: E402
+from buildlib.accessibility_checker import (Severity, Violation,
                                             _is_large_text, _parse_hex_color,
                                             _resolve_color, _tag_line,
                                             check_aria_attributes,
