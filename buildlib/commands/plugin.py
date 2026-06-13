@@ -9,13 +9,9 @@ from __future__ import annotations
 import shutil
 
 import buildlib.config as _cfg
-from buildlib.plugin_manager import (
-    discover_plugins,
-    load_manifest,
-    load_registry,
-    search_remote_plugins,
-    validate_plugin,
-)
+from buildlib.plugin_manager import (discover_plugins, load_manifest,
+                                     load_registry, search_remote_plugins,
+                                     validate_plugin)
 
 
 class PluginMixin:

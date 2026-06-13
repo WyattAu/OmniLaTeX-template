@@ -13,7 +13,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from buildlib.builder import _BuildCore, extract_log_path, parse_log_for_package_times
+from buildlib.builder import (_BuildCore, extract_log_path,
+                              parse_log_for_package_times)
 from buildlib.config import REPO_ROOT, ProjectConfig
 from buildlib.runner import CommandRunner
 from buildlib.ui import TerminalOutput
@@ -359,7 +360,8 @@ class TestBuildProfilerExtended:
         assert summary.mean_wall_time_s > 0
 
     def test_generate_recommendations_high_memory(self):
-        from buildlib.profiler import BuildProfiler, ExampleProfile, ProfilingSummary
+        from buildlib.profiler import (BuildProfiler, ExampleProfile,
+                                       ProfilingSummary)
 
         profiler = BuildProfiler()
         summary = ProfilingSummary(
@@ -378,7 +380,8 @@ class TestBuildProfilerExtended:
         assert any("memory" in r.lower() for r in recs)
 
     def test_generate_recommendations_heavy_packages(self):
-        from buildlib.profiler import BuildProfiler, ExampleProfile, ProfilingSummary
+        from buildlib.profiler import (BuildProfiler, ExampleProfile,
+                                       ProfilingSummary)
 
         profiler = BuildProfiler()
         summary = ProfilingSummary(
@@ -399,7 +402,8 @@ class TestBuildProfilerExtended:
         assert any("package" in r.lower() for r in recs)
 
     def test_generate_recommendations_high_variance(self):
-        from buildlib.profiler import BuildProfiler, ExampleProfile, ProfilingSummary
+        from buildlib.profiler import (BuildProfiler, ExampleProfile,
+                                       ProfilingSummary)
 
         profiler = BuildProfiler()
         summary = ProfilingSummary(

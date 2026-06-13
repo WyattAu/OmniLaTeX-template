@@ -21,7 +21,8 @@ def _ensure_rich_mocks():
 
 _ensure_rich_mocks()
 
-from buildlib.tui import _rich_menu, _simple_menu, interactive_menu  # noqa: E402
+from buildlib.tui import (_rich_menu, _simple_menu,  # noqa: E402
+                          interactive_menu)
 
 
 def _make_rich_mocks():

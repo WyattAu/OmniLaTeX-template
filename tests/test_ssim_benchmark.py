@@ -11,7 +11,8 @@ try:
 except (ImportError, OSError):
     _HAS_NUMPY = False
 
-from buildlib.ssim_benchmark import BenchmarkResult, BenchmarkSuite, SSIMBenchmark
+from buildlib.ssim_benchmark import (BenchmarkResult, BenchmarkSuite,
+                                     SSIMBenchmark)
 
 pytestmark = pytest.mark.skipif(
     not _HAS_NUMPY,

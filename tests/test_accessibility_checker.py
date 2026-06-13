@@ -9,29 +9,23 @@ from bs4 import BeautifulSoup, Tag
 
 bs4 = pytest.importorskip("bs4")
 
-from buildlib.accessibility_checker import (  # noqa: E402
-    CheckResult,
-    Severity,
-    Violation,
-    _is_large_text,
-    _parse_hex_color,
-    _resolve_color,
-    _tag_line,
-    check_aria_attributes,
-    check_aria_landmarks,
-    check_color_contrast,
-    check_directory,
-    check_focus_indicators,
-    check_form_labels,
-    check_heading_hierarchy,
-    check_html_accessibility,
-    check_image_alt_text,
-    check_language_attribute,
-    check_link_accessibility,
-    check_reduced_motion,
-    check_skip_link,
-    contrast_ratio,
-)
+from buildlib.accessibility_checker import (CheckResult,  # noqa: E402
+                                            Severity, Violation,
+                                            _is_large_text, _parse_hex_color,
+                                            _resolve_color, _tag_line,
+                                            check_aria_attributes,
+                                            check_aria_landmarks,
+                                            check_color_contrast,
+                                            check_directory,
+                                            check_focus_indicators,
+                                            check_form_labels,
+                                            check_heading_hierarchy,
+                                            check_html_accessibility,
+                                            check_image_alt_text,
+                                            check_language_attribute,
+                                            check_link_accessibility,
+                                            check_reduced_motion,
+                                            check_skip_link, contrast_ratio)
 
 pytestmark = pytest.mark.timeout(15)
 

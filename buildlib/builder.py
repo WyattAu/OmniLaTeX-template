@@ -11,23 +11,16 @@ from collections import deque
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-from buildlib.config import (
-    BUILD_EXAMPLES_SUBDIR,
-    INTERACTION_NONSTOP,
-    LATEXMK_COMMAND,
-    MAIN_TEX_FILENAME,
-    MINTED_CACHE_SUBDIR,
-    REPO_ROOT,
-    RICH_AVAILABLE,
-    SVG_INKSCAPE_CACHE,
-    ProjectConfig,
-    build_latexmk_command,
-)
+from buildlib.config import (BUILD_EXAMPLES_SUBDIR, INTERACTION_NONSTOP,
+                             LATEXMK_COMMAND, MAIN_TEX_FILENAME,
+                             MINTED_CACHE_SUBDIR, REPO_ROOT, RICH_AVAILABLE,
+                             SVG_INKSCAPE_CACHE, ProjectConfig,
+                             build_latexmk_command)
+from buildlib.latex_errors import format_diagnostics, parse_latex_log
 from buildlib.mixins.cache import BuildCacheMixin
 from buildlib.mixins.cleanup import CleanupMixin
 from buildlib.mixins.discovery import DiscoveryMixin
 from buildlib.runner import CommandRunner
-from buildlib.latex_errors import parse_latex_log, format_diagnostics
 from buildlib.ui import TerminalOutput
 
 # --- Rich library integration (conditional on RICH_AVAILABLE) ---
@@ -36,13 +29,8 @@ if RICH_AVAILABLE:
     from rich.layout import Layout
     from rich.live import Live
     from rich.panel import Panel
-    from rich.progress import (
-        BarColumn,
-        MofNCompleteColumn,
-        Progress,
-        TextColumn,
-        TimeElapsedColumn,
-    )
+    from rich.progress import (BarColumn, MofNCompleteColumn, Progress,
+                               TextColumn, TimeElapsedColumn)
     from rich.text import Text
 
 # --- TQDM fallback ---

@@ -4,18 +4,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from buildlib.config import (
-    BUILD_EXAMPLES_SUBDIR,
-    FORCE_REBUILD_FLAG,
-    INTERACTION_NONSTOP,
-    LATEXMK_COMMAND,
-    LATEXMK_FORCE_CONTINUE,
-    MAIN_TEX_FILENAME,
-    MINTED_CACHE_SUBDIR,
-    REPO_ROOT,
-    SVG_INKSCAPE_CACHE,
-    ProjectConfig,
-)
+from buildlib.config import (BUILD_EXAMPLES_SUBDIR, FORCE_REBUILD_FLAG,
+                             INTERACTION_NONSTOP, LATEXMK_COMMAND,
+                             LATEXMK_FORCE_CONTINUE, MAIN_TEX_FILENAME,
+                             MINTED_CACHE_SUBDIR, REPO_ROOT,
+                             SVG_INKSCAPE_CACHE, ProjectConfig)
 
 
 class TestConstants:
