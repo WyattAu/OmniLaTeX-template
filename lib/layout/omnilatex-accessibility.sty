@@ -87,17 +87,17 @@
 
 % ── List Accessibility ──────────────────────────
 % WCAG 2.1 AA 1.3.1: Lists must be properly tagged.
-\AddToHook{env/itemize/begin}{%
-  \tagpdfsetup{%
-    structure/tag={List},
-    structure/attributes={List/ListItem},
+% Note: only hook after document begins to avoid beamer block conflicts
+\AtBeginDocument{%
+  \AddToHook{env/itemize/begin}{%
+    \tagpdfsetup{%
+      structure/tag={List},
+    }%
   }%
-}
-
-\AddToHook{env/enumerate/begin}{%
-  \tagpdfsetup{%
-    structure/tag={List},
-    structure/attributes={List/Number},
+  \AddToHook{env/enumerate/begin}{%
+    \tagpdfsetup{%
+      structure/tag={List},
+    }%
   }%
 }
 

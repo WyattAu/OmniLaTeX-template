@@ -265,9 +265,8 @@
     and \string\RedeclareSectionCommand instead}%
 }
 
-% silence package removed: callback.register() deprecated in TeX Live 2026
-% Use LaTeX kernel \suppress instead for warning filtering
-\RequirePackage{etex}
+% silence + etex packages removed: callback.register() deprecated in TL2026
+% LuaTeX includes etex functionality natively; explicit loading causes errors
 % LuaTeX: suppress non-fatal "Counter too large" errors.
 % These come from bib2gls .glstex files in large documents
 % (254+ pages).  PDF output is correct — errors are cosmetic.
