@@ -29,6 +29,7 @@ on:
     - scripts/**
     - tests/**
     - .github/workflows/build.yml
+    - .github/actions/setup-python/action.yml
   pull_request:
     branches: [main, master]
     paths:
@@ -44,6 +45,7 @@ on:
     - tests/**
     - requirements-lint.txt
     - .github/workflows/build.yml
+    - .github/actions/setup-python/action.yml
   workflow_dispatch:
 
 jobs:
