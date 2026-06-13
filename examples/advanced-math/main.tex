@@ -1,0 +1,652 @@
+\documentclass[
+    language=english,
+    doctype=article,
+    institution=none,
+    titlestyle=book,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+\RequirePackage{amsmath,amssymb,amsthm}
+\RequirePackage{mathtools}
+\RequirePackage{cancel}
+\RequirePackage{enumitem}
+\RequirePackage{tikz-cd}
+\RequirePackage{booktabs}
+\RequirePackage{subcaption}
+\RequirePackage{float}
+
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\adj}{adj}
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\colim}{colim}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\Res}{Res}
+\DeclareMathOperator{\erf}{erf}
+\DeclareMathOperator{\Lap}{\mathcal{L}}
+\DeclareMathOperator{\iLap}{\mathcal{L}^{-1}}
+\DeclareMathOperator{\Gal}{Gal}
+\DeclareMathOperator{\lcm}{lcm}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\SL}{SL}
+\DeclareMathOperator{\SO}{SO}
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\ker}{ker}
+\DeclareMathOperator{\Id}{Id}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}{Example}[section]
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}[section]
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This gallery demonstrates 20 advanced mathematical typesetting techniques for
+scientific publications, covering commutative diagrams, tensor notation, category
+theory, proof environments, aligned equations, systems of equations, matrices,
+operator definitions, dimensional analysis, chemical equations, logic, set theory,
+probability, statistics, optimization, control theory, Fourier analysis,
+differential geometry, algebraic structures, and number theory.
+\end{abstract}
+
+\tableofcontents
+
+% =====================================================
+\section{Commutative Diagrams}
+\label{sec:commutative-diagrams}
+% =====================================================
+
+\subsection{Exact Sequences}
+
+A short exact sequence of groups:
+\begin{equation}\label{eq:short-exact}
+    0 \longrightarrow A \xrightarrow{f} B \xrightarrow{g} C \longrightarrow 0
+\end{equation}
+
+The long exact sequence in homology:
+\[
+    \cdots \to H_n(A) \xrightarrow{f_*} H_n(B) \xrightarrow{g_*} H_n(C)
+    \xrightarrow{\partial} H_{n-1}(A) \to \cdots
+\]
+
+\subsection{Pushouts and Pullbacks}
+
+The pushout of $f\colon A \to B$ and $g\colon A \to C$:
+\[
+    \begin{tikzcd}
+        A \arrow[r, "f"] \arrow[d, "g"'] & B \arrow[d, "h"] \\
+        C \arrow[r, "k"'] & P \arrow[ul, phantom, "\ulcorner" near end]
+    \end{tikzcd}
+\]
+
+The pullback of $f\colon B \to A$ and $g\colon C \to A$:
+\[
+    \begin{tikzcd}
+        Q \arrow[r, "p"] \arrow[d, "q"'] \arrow[dr, phantom, "\lrcorner" near end]
+            & C \arrow[d, "g"] \\
+        B \arrow[r, "f"'] & A
+    \end{tikzcd}
+\]
+
+\subsection{Natural Transformations}
+
+A natural transformation $\eta\colon F \Rightarrow G$ satisfies naturality for every
+$f\colon X \to Y$ in $\mathcal{C}$:
+\[
+    \begin{tikzcd}
+        F(X) \arrow[r, "F(f)"] \arrow[d, "\eta_X"'] & F(Y) \arrow[d, "\eta_Y"] \\
+        G(X) \arrow[r, "G(f)"'] & G(Y)
+    \end{tikzcd}
+\]
+
+% =====================================================
+\section{Tensor Notation}
+\label{sec:tensor-notation}
+% =====================================================
+
+\subsection{Einstein Summation}
+
+Repeated indices imply summation. The squared norm and metric operations:
+\[
+    \|\mathbf{v}\|^2 = v^i v_i = g_{ij} v^i v^j, \qquad
+    v_i = g_{ij} v^j, \qquad v^i = g^{ij} v_j
+\]
+
+The Riemann curvature tensor symmetry:
+\[
+    R_{ijkl} = -R_{jikl} = -R_{ijlk} = R_{klij}
+\]
+
+\subsection{Covariant Derivative}
+
+\[
+    \nabla_m T^i{}_j = \partial_m T^i{}_j + \Gamma^i_{mk} T^k{}_j - \Gamma^k_{mj} T^i{}_k
+\]
+
+Christoffel symbols of the Levi-Civita connection:
+\[
+    \Gamma^k_{ij} = \frac{1}{2} g^{kl}\left(\partial_i g_{jl} + \partial_j g_{il} - \partial_l g_{ij}\right)
+\]
+
+\subsection{Bianchi Identities}
+
+First (torsion-free): $R^i{}_{jkl} + R^i{}_{lkj} + R^i{}_{kjl} = 0$. Second:
+\[
+    \nabla_m R^i{}_{jkl} + \nabla_k R^i{}_{jlm} + \nabla_l R^i{}_{jmk} = 0
+\]
+
+% =====================================================
+\section{Category Theory}
+\label{sec:category-theory}
+% =====================================================
+
+A (covariant) functor $F\colon \mathcal{C} \to \mathcal{D}$ preserves composition and
+identities:
+\begin{align}
+    F(g \circ f) &= F(g) \circ F(f), \label{eq:functor-comp}\\
+    F(\Id_X) &= \Id_{F(X)}. \label{eq:functor-id}
+\end{align}
+
+An adjunction between $F\colon \mathcal{C} \to \mathcal{D}$ and
+$G\colon \mathcal{D} \to \mathcal{C}$:
+\[
+    \Hom_{\mathcal{D}}(F(X), Y) \cong \Hom_{\mathcal{C}}(X, G(Y))
+\]
+
+The coequaliser of $f, g\colon A \rightrightarrows B$:
+\[
+    \begin{tikzcd}
+        A \arrow[r, shift left, "f"] \arrow[r, shift right, "g"'] &
+        B \arrow[r, "q"] & Q
+    \end{tikzcd}
+\]
+
+The Yoneda lemma: $\Nat(\Hom_{\mathcal{C}}(-, X), F) \cong F(X)$ for
+$F\colon \mathcal{C}^{\mathrm{op}} \to \mathbf{Set}$.
+
+% =====================================================
+\section{Proof Environments}
+\label{sec:proof-environments}
+% =====================================================
+
+\begin{definition}[Metric Space]\label{def:metric}
+A \emph{metric space} is a pair $(X, d)$ where $d\colon X \times X \to \mathbb{R}_{\geq 0}$ satisfies
+non-negativity, symmetry, and the triangle inequality.
+\end{definition}
+
+\begin{theorem}[Bolzano--Weierstrass]\label{thm:bolzano-weierstrass}
+Every bounded sequence in $\mathbb{R}^n$ has a convergent subsequence.
+\end{theorem}
+
+\begin{proof}[Proof of \autoref{thm:bolzano-weierstrass}]
+By the bisection argument on a bounded interval, we extract a convergent subsequence.
+\end{proof}
+
+\begin{lemma}[Arzel\`{a}--Ascoli]\label{lem:arzela-ascoli}
+$\mathcal{F} \subset C(X)$ is relatively compact iff uniformly bounded and equicontinuous.
+\end{lemma}
+
+\begin{proposition}\label{prop:lipschitz}
+If $f\colon \mathbb{R} \to \mathbb{R}$ is Lipschitz with constant $L$, then $f$ is
+absolutely continuous.
+\end{proposition}
+
+\begin{corollary}\label{cor:lipschitz}
+Every Lipschitz function on $[a,b]$ is differentiable almost everywhere.
+\end{corollary}
+
+\begin{example}\label{ex:euclidean}
+$d(x,y) = \sqrt{\sum_{i=1}^n (x_i - y_i)^2}$ defines a metric on $\mathbb{R}^n$.
+\end{example}
+
+\begin{remark}
+Bolzano--Weierstrass fails in infinite-dimensional spaces; use weak compactness.
+\end{remark}
+
+% =====================================================
+\section{Multi-line Aligned Equations}
+\label{sec:aligned-equations}
+% =====================================================
+
+\subsection{The \texttt{align} Environment}
+
+Derivation of the quadratic formula:
+\begin{align}
+    ax^2 + bx + c &= 0, \label{eq:quad-start}\\
+    \left(x + \frac{b}{2a}\right)^2 &= \frac{b^2 - 4ac}{4a^2}, \label{eq:quad-square}\\
+    x &= \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}. \label{eq:quad-end}
+\end{align}
+
+\subsection{The \texttt{alignat} Environment}
+
+Maxwell's equations with explicit column alignment:
+\begin{alignat}{3}
+    &\text{(i)} \quad &&\nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \quad &&\text{(Gauss's law)} \label{eq:maxwell1}\\
+    &\text{(ii)} \quad &&\nabla \cdot \mathbf{B} = 0 \quad &&\text{(No monopoles)} \label{eq:maxwell2}\\
+    &\text{(iii)} \quad &&\nabla \times \mathbf{E} = -\frac{\partial \mathbf{B}}{\partial t} \quad &&\text{(Faraday)} \label{eq:maxwell3}\\
+    &\text{(iv)} \quad &&\nabla \times \mathbf{B} = \mu_0\mathbf{J} + \mu_0\varepsilon_0\frac{\partial \mathbf{E}}{\partial t} \quad &&\text{(Amp\`ere--Maxwell)} \label{eq:maxwell4}
+\end{alignat}
+
+\subsection{The \texttt{gathered} Environment}
+
+\begin{equation}\label{eq:gathered-example}
+    \begin{gathered}
+        u_t = \kappa(u_{xx} + u_{yy}), \\
+        u(x, y, 0) = f(x, y), \\
+        u(x, y, t)\big|_{\partial\Omega} = 0.
+    \end{gathered}
+\end{equation}
+
+% =====================================================
+\section{Systems of Equations}
+\label{sec:systems}
+% =====================================================
+
+\subsection{The \texttt{cases} Environment}
+
+\begin{equation}\label{eq:heaviside}
+    H(x) = \begin{cases}
+        0 & \text{if } x < 0, \\
+        \frac{1}{2} & \text{if } x = 0, \\
+        1 & \text{if } x > 0.
+    \end{cases}
+\end{equation}
+
+\subsection{The \texttt{dcases} Environment}
+
+Double-sized fractions in piecewise definitions:
+\begin{equation}\label{eq:dcases}
+    f(x) = \begin{dcases}
+        \frac{1}{2\sigma}\exp\!\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)
+            & \text{if } x \in [\mu - 3\sigma, \mu + 3\sigma], \\[6pt]
+        0 & \text{otherwise}.
+    \end{dcases}
+\end{equation}
+
+\subsection{The \texttt{empheq} Package}
+
+Numbered boxed system for the Lorenz equations:
+\begin{empheq}[box=\fbox]{align}
+    \dot{x} &= \sigma(y - x) \label{eq:lorenz1}\\
+    \dot{y} &= x(\rho - z) - y \label{eq:lorenz2}\\
+    \dot{z} &= xy - \beta z \label{eq:lorenz3}
+\end{empheq}
+
+% =====================================================
+\section{Matrix Notation}
+\label{sec:matrices}
+% =====================================================
+
+\subsection{Standard Environments}
+
+\[
+    \mathbf{A} = \begin{pmatrix}
+        a_{11} & a_{12} & a_{13} \\
+        a_{21} & a_{22} & a_{23} \\
+        a_{31} & a_{32} & a_{33}
+    \end{pmatrix}, \qquad
+    \begin{bmatrix}
+        1 & 0 \\ 0 & 1
+    \end{bmatrix}, \qquad
+    \begin{vmatrix}
+        a & b \\ c & d
+    \end{vmatrix} = ad - bc
+\]
+
+\subsection{Small Matrices Inline}
+
+The identity is $\bigl(\begin{smallmatrix} 1 & 0 \\ 0 & 1 \end{smallmatrix}\bigr)$.
+
+\subsection{Augmented Matrices}
+
+Row reduction:
+\[
+    \left(\begin{array}{ccc|c}
+        2 & 1 & -1 & 8 \\
+        -3 & -1 & 2 & -11 \\
+        -2 & 1 & 2 & -3
+    \end{array}\right)
+    \xrightarrow{R_2 \leftarrow R_2 + \frac{3}{2}R_1}
+    \left(\begin{array}{ccc|c}
+        2 & 1 & -1 & 8 \\
+        0 & \frac{1}{2} & \frac{1}{2} & 1 \\
+        -2 & 1 & 2 & -3
+    \end{array}\right)
+\]
+
+\subsection{Block Matrices}
+
+\[
+    \mathbf{M} = \begin{pmatrix}
+        \mathbf{A} & \mathbf{B} \\
+        \mathbf{C} & \mathbf{D}
+    \end{pmatrix}, \qquad
+    \mathbf{S} = \mathbf{D} - \mathbf{C}\mathbf{A}^{-1}\mathbf{B}
+\]
+
+% =====================================================
+\section{Operator Definitions}
+\label{sec:operators}
+% =====================================================
+
+Custom operators declared with \verb|\DeclareMathOperator|:
+\begin{align}
+    \tr(\mathbf{A}) &= \sum_{i=1}^n \lambda_i, \label{eq:trace}\\
+    \det(\mathbf{A}) &= \prod_{i=1}^n \lambda_i, \label{eq:determinant}\\
+    \rank(\mathbf{A}) &= \dim(\im(\mathbf{A})), \label{eq:rank}\\
+    \ker(\mathbf{A}) &= \{\mathbf{x} : \mathbf{A}\mathbf{x} = \mathbf{0}\}. \label{eq:kernel}
+\end{align}
+
+The adjugate satisfies $\mathbf{A} \cdot \adj(\mathbf{A}) = \det(\mathbf{A}) \cdot \mathbf{I}_n$.
+
+The error function: $\erf(x) = \frac{2}{\sqrt{\pi}} \int_0^x e^{-t^2}\,\mathup{d}t$.
+
+% =====================================================
+\section{Dimensional Analysis}
+\label{sec:dimensional-analysis}
+% =====================================================
+
+Physical laws with proper units:
+\begin{align}
+    F &= m \cdot a = \qty{10}{\kilo\gram} \cdot \qty{9.81}{\meter\per\second\squared}
+        = \qty{98.1}{\newton}, \label{eq:newton}\\
+    E &= m c^2 = \qty{9.109e-31}{\kilo\gram} \cdot (\qty{2.998e8}{\meter\per\second})^2
+        \approx \qty{8.187e-14}{\joule}, \label{eq:einstein}\\
+    P &= \frac{F}{A} = \frac{\qty{100}{\newton}}{\qty{0.5}{\meter\squared}}
+        = \qty{200}{\pascal}. \label{eq:pressure}
+\end{align}
+
+Measurement with uncertainty:
+\[
+    g = \qty{9.81 +/- 0.02}{\meter\per\second\squared}, \qquad
+    T = 2\pi\sqrt{\frac{L}{g}} \approx \qty{2.006}{\second}
+\]
+
+% =====================================================
+\section{Chemical Equations}
+\label{sec:chemical-equations}
+% =====================================================
+
+Combustion of methane:
+\[
+    \ch{CH4 + 2 O2 -> CO2 + 2 H2O}
+\]
+
+The Haber process:
+\[
+    \ch{N2 + 3 H2 <=>[$K_\text{eq}$] 2 NH3}
+\]
+
+Photosynthesis with state symbols:
+\[
+    \ch{6 CO2(g) + 6 H2O(l) ->[\text{light}] C6H12O6(aq) + 6 O2(g)}
+\]
+
+Net ionic equation for silver chloride precipitation:
+\[
+    \ch{Ag+(aq) + Cl-(aq) -> AgCl(s)}
+\]
+
+% =====================================================
+\section{Logic Notation}
+\label{sec:logic}
+% =====================================================
+
+Quantifiers and connectives:
+\begin{align}
+    \forall\, x \in \mathbb{R},\quad x^2 &\geq 0, \label{eq:universal}\\
+    \exists\, x \in \mathbb{R},\quad x^2 &= 2, \label{eq:existential}\\
+    \forall\, \varepsilon > 0,\;\exists\, \delta > 0 : |x - a| < \delta
+        &\implies |f(x) - f(a)| < \varepsilon. \label{eq:epsilon-delta}
+\end{align}
+
+Logical equivalences:
+\begin{align}
+    P \iff Q &\equiv (P \implies Q) \land (Q \implies P), \label{eq:biconditional}\\
+    \lnot(P \land Q) &\equiv \lnot P \lor \lnot Q, \label{eq:demorgan}\\
+    \lnot(P \lor Q) &\equiv \lnot P \land \lnot Q. \label{eq:demorgan2}
+\end{align}
+
+% =====================================================
+\section{Set Theory}
+\label{sec:set-theory}
+% =====================================================
+
+Basic operations:
+\begin{align}
+    A \cup B &= \{x : x \in A \lor x \in B\}, \label{eq:union}\\
+    A \cap B &= \{x : x \in A \land x \in B\}, \label{eq:intersection}\\
+    A \setminus B &= \{x : x \in A \land x \notin B\}. \label{eq:difference}
+\end{align}
+
+The power set: $\mathcal{P}(S) = \{A : A \subseteq S\}$, $|\mathcal{P}(S)| = 2^{|S|}$.
+
+De Morgan's laws for sets:
+\[
+    (A \cup B)^c = A^c \cap B^c, \qquad (A \cap B)^c = A^c \cup B^c.
+\]
+
+Cantor's theorem: $|S| < |\mathcal{P}(S)|$ for any set $S$.
+
+% =====================================================
+\section{Probability}
+\label{sec:probability}
+% =====================================================
+
+Expectation and variance:
+\begin{align}
+    \mathbb{E}[X] &= \sum_{x} x\,\mathbb{P}(X = x) = \int_{-\infty}^{\infty} x f(x)\,\mathup{d}x, \label{eq:expectation}\\
+    \Var(X) &= \mathbb{E}[(X - \mathbb{E}[X])^2] = \mathbb{E}[X^2] - (\mathbb{E}[X])^2. \label{eq:variance}
+\end{align}
+
+Bayes' theorem:
+\[
+    \mathbb{P}(A \mid B) = \frac{\mathbb{P}(B \mid A)\,\mathbb{P}(A)}{\mathbb{P}(B)}
+\]
+
+Common distributions:
+\begin{align}
+    X \sim \mathcal{N}(\mu, \sigma^2) &\implies f(x) = \frac{1}{\sigma\sqrt{2\pi}}
+        \exp\!\left(-\frac{(x-\mu)^2}{2\sigma^2}\right), \label{eq:normal}\\
+    X \sim \operatorname{Poisson}(\lambda) &\implies \mathbb{P}(X = k) = \frac{\lambda^k e^{-\lambda}}{k!}. \label{eq:poisson}
+\end{align}
+
+% =====================================================
+\section{Statistics}
+\label{sec:statistics}
+% =====================================================
+
+The $z$-test statistic:
+\[
+    z = \frac{\bar{X} - \mu_0}{\sigma / \sqrt{n}}
+\]
+
+A $95\%$ confidence interval:
+\[
+    \bar{X} \pm z_{\alpha/2} \cdot \frac{\sigma}{\sqrt{n}}
+\]
+
+Ordinary least-squares estimator:
+\[
+    \hat{\boldsymbol{\beta}} = (\mathbf{X}^{\top}\mathbf{X})^{-1}\mathbf{X}^{\top}\mathbf{y}
+\]
+
+Coefficient of determination:
+\[
+    R^2 = 1 - \frac{\sum_{i}(y_i - \hat{y}_i)^2}{\sum_{i}(y_i - \bar{y})^2}
+\]
+
+Maximum likelihood: $\ell(\theta) = \sum_{i=1}^n \log f(x_i \mid \theta)$, solved via
+$\frac{\partial \ell}{\partial \theta} = 0$.
+
+% =====================================================
+\section{Optimization}
+\label{sec:optimization}
+% =====================================================
+
+The Lagrangian for equality constraints:
+\[
+    \mathcal{L}(\mathbf{x}, \boldsymbol{\lambda}) = f(\mathbf{x}) + \sum_{i=1}^m \lambda_i\, g_i(\mathbf{x})
+\]
+
+KKT conditions for $\min f(\mathbf{x})$ s.t.\ $g_i(\mathbf{x}) \leq 0$, $h_j(\mathbf{x}) = 0$:
+\begin{align}
+    \nabla f(\mathbf{x}^*) + \sum_{i} \mu_i \nabla g_i(\mathbf{x}^*) + \sum_{j} \lambda_j \nabla h_j(\mathbf{x}^*) &= \mathbf{0}, \label{eq:kkt1}\\
+    \mu_i\, g_i(\mathbf{x}^*) &= 0, \quad \mu_i \geq 0. \label{eq:kkt2}
+\end{align}
+
+Convexity: $f(\theta\mathbf{x} + (1-\theta)\mathbf{y}) \leq \theta f(\mathbf{x}) + (1-\theta) f(\mathbf{y})$.
+
+Minimax: $\min_{\mathbf{x}} \max_{\mathbf{y}} \; \mathbf{x}^{\top} \mathbf{A} \mathbf{y}$.
+
+% =====================================================
+\section{Control Theory}
+\label{sec:control-theory}
+% =====================================================
+
+State-space representation of an LTI system:
+\begin{align}
+    \dot{\mathbf{x}}(t) &= \mathbf{A}\mathbf{x}(t) + \mathbf{B}\mathbf{u}(t), \label{eq:state-space}\\
+    \mathbf{y}(t) &= \mathbf{C}\mathbf{x}(t) + \mathbf{D}\mathbf{u}(t). \label{eq:output}
+\end{align}
+
+Transfer function: $G(s) = \mathbf{C}(s\mathbf{I} - \mathbf{A})^{-1}\mathbf{B} + \mathbf{D}$.
+
+Second-order system: $G(s) = \frac{\omega_n^2}{s^2 + 2\zeta\omega_n s + \omega_n^2}$.
+
+PID controller:
+\[
+    u(t) = K_p\, e(t) + K_i \int_0^t e(\tau)\,\mathup{d}\tau + K_d \frac{\mathup{d}e(t)}{\mathup{d}t}
+\]
+
+% =====================================================
+\section{Fourier Analysis}
+\label{sec:fourier}
+% =====================================================
+
+The Fourier transform and its inverse:
+\begin{align}
+    \hat{f}(\xi) &= \int_{-\infty}^{\infty} f(x)\, e^{-2\pi i \xi x}\,\mathup{d}x, \label{eq:fourier}\\
+    f(x) &= \int_{-\infty}^{\infty} \hat{f}(\xi)\, e^{2\pi i \xi x}\,\mathup{d}\xi. \label{eq:inverse-fourier}
+\end{align}
+
+Fourier series for a periodic function with period $T$:
+\[
+    f(t) = \frac{a_0}{2} + \sum_{n=1}^{\infty} \left(
+        a_n \cos\!\left(\frac{2\pi n t}{T}\right) + b_n \sin\!\left(\frac{2\pi n t}{T}\right)
+    \right)
+\]
+
+Parseval's theorem: $\int |f(x)|^2\,\mathup{d}x = \int |\hat{f}(\xi)|^2\,\mathup{d}\xi$.
+
+Convolution theorem: $\widehat{f * g}(\xi) = \hat{f}(\xi) \cdot \hat{g}(\xi)$.
+
+% =====================================================
+\section{Differential Geometry}
+\label{sec:differential-geometry}
+% =====================================================
+
+A smooth $n$-manifold $\mathcal{M}$ has an atlas of charts
+$\{(U_\alpha, \varphi_\alpha)\}$ with $\varphi_\alpha\colon U_\alpha \to \mathbb{R}^n$.
+
+Curvature tensor of a connection:
+\[
+    R(X, Y) = \nabla_X \nabla_Y - \nabla_Y \nabla_X - \nabla_{[X,Y]}
+\]
+
+Geodesic equation: $\ddot{x}^k + \Gamma^k_{ij}\, \dot{x}^i \dot{x}^j = 0$.
+
+Stokes' theorem for an $(n{-}1)$-form $\omega$ on a compact oriented $n$-manifold:
+\[
+    \int_{\mathcal{M}} \mathup{d}\omega = \int_{\partial\mathcal{M}} \omega
+\]
+
+% =====================================================
+\section{Algebraic Structures}
+\label{sec:algebra}
+% =====================================================
+
+A group $(G, \cdot)$ satisfies closure, associativity, identity, and invertibility.
+The symmetric group $S_n$ has $|S_n| = n!$.
+
+\begin{theorem}[Lagrange]\label{thm:lagrange}
+If $H \leq G$ is a subgroup of a finite group, then $|H|$ divides $|G|$.
+\end{theorem}
+
+A ring $(R, +, \cdot)$ has $(R, +)$ abelian and $(R, \cdot)$ a monoid distributing over addition.
+A field is a commutative ring with multiplicative inverses for all nonzero elements.
+
+Module axioms for an $R$-module $M$:
+\begin{align}
+    r(m + n) &= rm + rn, \label{eq:module1}\\
+    (r + s)m &= rm + sm, \label{eq:module2}\\
+    (rs)m &= r(sm), \label{eq:module3}\\
+    1 \cdot m &= m. \label{eq:module4}
+\end{align}
+
+First isomorphism theorem: $G / \ker(\varphi) \cong \im(\varphi)$ for a homomorphism $\varphi$.
+
+% =====================================================
+\section{Number Theory}
+\label{sec:number-theory}
+% =====================================================
+
+Fundamental theorem of arithmetic: every $n > 1$ factors uniquely as
+$n = p_1^{a_1} p_2^{a_2} \cdots p_k^{a_k}$. Prime number theorem: $\pi(x) \sim \frac{x}{\ln x}$.
+
+\begin{definition}[Congruence]\label{def:congruence}
+$a \equiv b \pmod{n}$ iff $n \mid (a - b)$.
+\end{definition}
+
+\begin{theorem}[Fermat]\label{thm:fermat}
+If $p$ is prime and $\gcd(a, p) = 1$, then $a^{p-1} \equiv 1 \pmod{p}$.
+\end{theorem}
+
+\begin{theorem}[Euler]\label{thm:euler}
+If $\gcd(a, n) = 1$, then $a^{\varphi(n)} \equiv 1 \pmod{n}$.
+\end{theorem}
+
+The Legendre symbol:
+\[
+    \left(\frac{a}{p}\right) = \begin{cases}
+        1 & \text{if } a \text{ is a quadratic residue mod } p, \\
+        -1 & \text{if } a \text{ is a quadratic non-residue mod } p, \\
+        0 & \text{if } p \mid a.
+    \end{cases}
+\]
+
+\begin{example}
+$x^5 - x - 1$ is irreducible over $\mathbb{Q}$ with $\Gal \cong S_5$ (not solvable),
+so the general quintic has no radical solution.
+\end{example}
+
+% =====================================================
+\section{Conclusion}
+\label{sec:conclusion}
+% =====================================================
+
+This gallery demonstrates 20 advanced mathematical typesetting techniques, from
+commutative diagrams and tensor calculus to Galois theory and Fourier analysis.
+The combination of \texttt{mathtools}, \texttt{empheq}, \texttt{tikz-cd},
+\texttt{siunitx}, and \texttt{chemmacros} provides a comprehensive toolkit
+for mathematical and scientific writing.
+
+\end{document}

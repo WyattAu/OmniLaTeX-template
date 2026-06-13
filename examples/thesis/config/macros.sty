@@ -54,4 +54,100 @@
 % Colored boxes for definitions, theorems, etc.
 \newcommand{\highlight}[1]{\colorbox{yellow!30}{$\displaystyle #1$}}
 
+% ============================================================
+% Advanced macro package — tcolorbox, margin notes, tracking
+% ============================================================
+\RequirePackage{tcolorbox}
+\tcbuselibrary{skins, breakable}
+
+\newtcolorbox{importantbox}{%
+    enhanced,
+    breakable,
+    colback=orange!8,
+    colframe=orange!70!black,
+    fonttitle=\bfseries,
+    title={Important},
+    boxrule=0.8pt,
+    arc=3pt,
+    left=6pt, right=6pt, top=4pt, bottom=4pt,
+    before skip=10pt, after skip=10pt
+}
+
+\newcommand{\important}[1]{%
+    \begin{importantbox}
+        #1%
+    \end{importantbox}%
+}
+
+\newtcolorbox{definitionbox}[2][]{%
+    enhanced,
+    breakable,
+    colback=blue!5,
+    colframe=blue!60!black,
+    fonttitle=\bfseries,
+    title={#2},
+    boxrule=0.6pt,
+    arc=2pt,
+    left=6pt, right=6pt, top=4pt, bottom=4pt,
+    before skip=10pt, after skip=10pt,
+    #1
+}
+
+\newtcolorbox{theorembox}[2][]{%
+    enhanced,
+    breakable,
+    colback=green!5,
+    colframe=green!50!black,
+    fonttitle=\bfseries,
+    title={#2},
+    boxrule=0.6pt,
+    arc=2pt,
+    left=6pt, right=6pt, top=4pt, bottom=4pt,
+    before skip=10pt, after skip=10pt,
+    #1
+}
+
+\newtcolorbox{examplebox}[2][]{%
+    enhanced,
+    breakable,
+    colback=purple!5,
+    colframe=purple!50!black,
+    fonttitle=\bfseries,
+    title={#2},
+    boxrule=0.6pt,
+    arc=2pt,
+    left=6pt, right=6pt, top=4pt, bottom=4pt,
+    before skip=10pt, after skip=10pt,
+    #1
+}
+
+\RequirePackage{marginnote}
+\renewcommand*{\marginfont}{\footnotesize\sffamily}
+\renewcommand*{\marginfix}{\vskip-2\baselineskip}
+
+\newcommand{\marginnote}[1]{%
+    \marginpar{#1}%
+}
+
+\newcommand{\todo}[1]{%
+    \textcolor{red!80!black}{\textbf{[TODO: #1]}}%
+    \marginpar{\textcolor{red!80!black}{\tiny\textbf{TODO}}}%
+}
+
+\newcommand{\changed}[1]{%
+    {\color{blue!70!black}\textbf{#1}}%
+    \marginpar{\textcolor{blue!70!black}{\tiny\textbf{CHANGED}}}%
+}
+
+\RequirePackage{listings}
+\newcommand{\code}[1]{%
+    \tikz[baseline=(char.base)]{
+        \node[fill=gray!12, inner sep=1.5pt, rounded corners=1pt, anchor=base] (char) {\texttt{#1}};
+    }%
+}
+
+\newcommand{\keyterm}[1]{%
+    \textbf{\textcolor{teal!70!black}{#1}}%
+}
+
 \endinput

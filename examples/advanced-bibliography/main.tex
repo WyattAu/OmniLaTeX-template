@@ -1,0 +1,474 @@
+%% OmniLaTeX Advanced Bibliography Gallery
+%%
+%% Every citation style and biblatex feature in one document.
+%% Compile with:
+%%   latexmk -xelatex main.tex
+
+\documentclass[
+    language=english,
+    doctype=article,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+%% ─────────────────────────────────────────────────────
+%% BibLaTeX Configuration
+%% ─────────────────────────────────────────────────────
+%% backend=biber is the default; shown here for clarity.
+%% style=authoryear provides author-year citations.
+%% dashed=true replaces repeated author names with a dash.
+%% sorting=nyt sorts by name, year, title.
+\usepackage[
+    backend=biber,
+    style=authoryear,
+    dashed=true,
+    sorting=nyt,
+    maxbibnames=99,
+    minbibnames=3,
+    uniquelist=false,
+    doi=true,
+    isbn=false,
+    url=false,
+    eprint=false,
+]{biblatex}
+
+%% Add the main bibliography and a local supplementary file.
+\addbibresource{../../bib/bibliography.bib}
+\addbibresource{local-refs.bib}
+
+%% ─────────────────────────────────────────────────────
+%% Inline bibliography commands
+%% ─────────────────────────────────────────────────────
+\DeclareCiteCommand{\footfullcitehelper}[\footnote]
+  {\usebibmacro{prenote}}
+  {\printnames{labelname}%
+   \setunit{\addcomma\space}%
+   \printfield[citetitle]{labeltitle}%
+   \setunit{\addcomma\space}%
+   \printfield{year}}
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+% =====================================================
+\section{Citation Styles Overview}
+\label{sec:citation-styles}
+% =====================================================
+
+BibLaTeX provides a rich set of citation commands, each formatting the
+reference differently.  This section demonstrates every standard citation
+command available in the \texttt{authoryear} style.
+
+\subsection{Basic Citation Commands}
+
+The standard \verb|\cite| command produces a compact citation suitable for
+most contexts.  See \cite{einstein1905} for the original formulation of
+special relativity.
+
+Parenthetical citations place the reference in parentheses:
+\parencite{knuthTeXbook1986}.
+
+Textual citations integrate the author name into the running text.
+\textcite{goossensLaTeXCompanion1993} remains the definitive guide to
+\LaTeX{} typesetting.
+
+Footnote citations place the full reference in a footnote:
+\footcite{mckinneyPythonDataAnalysis2018}.
+
+Smart citations adapt to the context---they produce parenthetical or
+textual output depending on the surrounding syntax:
+\smartcite{ramalhoFluentPython2015}.
+
+The \verb|\autocite| command is style-dependent and respects the global
+citation style setting: \autocite{birdNaturalLanguageProcessing2009}.
+
+\subsection{Author and Year Extraction}
+
+Sometimes you need only part of the citation.  Extract just the author
+name: \citeauthor{diracPrinciplesQuantumMechanics1981}.  Extract just the
+publication year: \citeyear{mollenhauerHandbuchDieselmotoren2007}.  Extract
+just the title: \citetitle{baehrThermodynamikGrundlagenUnd2016}.
+
+\subsection{Full Citations}
+
+The \verb|\fullcite| command reproduces the complete bibliography entry
+inline: \fullcite{einstein1905}.
+
+% =====================================================
+\section{Citation Qualifiers and Notes}
+\label{sec:qualifiers}
+% =====================================================
+
+Citation commands accept optional prenote and postnote arguments to add
+textual qualifiers.  The syntax is
+\verb|\cite[<prenote>][<postnote>]{<key>}|.
+
+See, for example, \cite[see][p.~42]{knuthTeXbook1986} for a discussion of
+the typesetting algorithm.  For a specific page range:
+\cite[pp.~891--921]{einstein1905}.  A single optional argument provides a
+postnote only: \cite[p.~144]{PTBSI}.
+
+Parenthetical qualifiers work identically:
+\parencite[for an overview][Chapter~3]{goossensLaTeXCompanion1993}.
+
+% =====================================================
+\section{Multiple Work Citations}
+\label{sec:multiple}
+% =====================================================
+
+When citing several works at once, use the plural forms of citation
+commands.  The \verb|\cites| command handles multiple keys:
+\cites{einstein1905}{knuthTeXbook1986}{goossensLaTeXCompanion1993}.
+
+Parenthetical multiple citations:
+\parencites{ramalhoFluentPython2015}{mckinneyPythonDataAnalysis2018}{birdNaturalLanguageProcessing2009}.
+
+Footnote multiple citations:
+\footcites{diracPrinciplesQuantumMechanics1981}{baehrThermodynamikGrundlagenUnd2016}.
+
+Each plural command also accepts per-entry qualifiers:
+\cites[see][p.~5]{einstein1905}[and][p.~100]{knuthTeXbook1986}.
+
+% =====================================================
+\section{Date Tracking}
+\label{sec:date-tracking}
+% =====================================================
+
+BibLaTeX tracks dates precisely.  Extract just the year:
+\citeyear{einstein1905}.  When an entry contains a full date field, you can
+access it with \verb|\citedate|.  The Einstein paper was published on
+\citedate{einstein1905}.
+
+This is especially useful for works where the exact date matters, such as
+standards: the ISO standard was published on
+\citedate{internationalorganizationforstandardizationISO821720172017}.
+
+% =====================================================
+\section{Citation Counting}
+\label{sec:citation-counting}
+% =====================================================
+
+BibLaTeX provides a \verb|\citecounter| that tracks how many distinct
+works have been cited.  After the first citation, the counter reads
+\citecounter.  This increments with each new unique entry cited throughout
+the document and can be used in custom formatting or statistics.
+
+% =====================================================
+\section{Bibliography Sections and Categories}
+\label{sec:categories}
+% =====================================================
+
+BibLaTeX allows the bibliography to be split into sections by type,
+keyword, or other field.  This is essential for documents that
+distinguish primary sources from secondary literature.
+
+\subsection{Type-Based Filtering}
+
+Only journal articles:
+\printbibliography[type=article,heading=subbibliography,title={Journal Articles}]
+
+Only books:
+\printbibliography[type=book,heading=subbibliography,title={Books}]
+
+\subsection{Keyword-Based Filtering}
+
+Entries tagged with the \texttt{primary} keyword (primary sources):
+\printbibliography[keyword=primary,heading=subbibliography,title={Primary Sources}]
+
+Entries tagged with the \texttt{reference} keyword:
+\printbibliography[keyword=reference,heading=subbibliography,title={Reference Works}]
+
+\subsection{Sub-bibliography with TOC Integration}
+
+A sub-bibliography that appears in the table of contents:
+\printbibliography[heading=subbibintoc,title={Full Bibliography (integrated in TOC)}]
+
+% =====================================================
+\section{Inline and Footnote Bibliography}
+\label{sec:inline}
+% =====================================================
+
+The \verb|\footfullcite| command places a complete bibliography entry in a
+footnote at the point of citation.  This is useful when a full reference
+must appear immediately\footfullcite{einstein1905}.
+
+Another inline example: this technique is common in legal and historical
+writing\footfullcite{diracPrinciplesQuantumMechanics1981}.
+
+% =====================================================
+\section{Custom Entry Types}
+\label{sec:custom-types}
+% =====================================================
+
+BibLaTeX supports custom entry types beyond the standard @book, @article,
+etc.  The following examples demonstrate @online, @software, and @dataset
+entries defined in the supplementary bibliography.
+
+\subsection{Online Sources}
+
+Online references include URL and access-date metadata:
+\cite{GBV}.
+
+Another online entry: \cite{TUB}.
+
+And a software documentation page: \cite{mathworksCreateSimpleClass2020}.
+
+\subsection{Software}
+
+Software citations are increasingly common in reproducible research.
+Our analysis tool is available as \cite{omnilatex2026}.
+
+A related software package: \cite{biber2024}.
+
+\subsection{Datasets}
+
+Scientific datasets deserve proper citation.  The benchmark dataset is
+available at \cite{kaggleGraphBenchmark2025}.
+
+A supplementary dataset: \cite{openalexCitationGraph2025}.
+
+% =====================================================
+\section{Related Entries}
+\label{sec:related}
+% =====================================================
+
+BibLaTeX's \texttt{related} field links entries that are editions,
+translations, or follow-ups of each other.  The \verb|\relatedentry|
+command can render the relationship.
+
+The second edition of Knuth's fundamental work
+\cite{knuthFundamentalAlgorithms1973} is related to the original TeXbook
+\cite{knuthTeXbook1986}---both are part of the same author's
+monumental series on computer programming.
+
+% =====================================================
+\section{Sorting Options}
+\label{sec:sorting}
+% =====================================================
+
+The bibliography can be sorted in different orders.  The current
+configuration uses \texttt{sorting=nyt} (name, year, title), which is the
+standard for author-year styles.  Alternative sortings include:
+
+\begin{description}
+    \item[nyt] Name, Year, Title --- default for authoryear.
+    \item[ynt] Year, Name, Title --- chronological ordering.
+    \item[nyvt] Name, Year, Volume, Title --- for series.
+    \item[none] Citation order --- no sorting, entries appear in the order
+        they are first cited.
+\end{description}
+
+To switch, change the \texttt{sorting} option in the \verb|\usepackage|
+declaration and recompile.
+
+% =====================================================
+\section{BibLaTeX Options in Detail}
+\label{sec:options}
+% =====================================================
+
+\subsection{Backend Selection}
+
+BibLaTeX supports two backends: \texttt{biber} (modern, recommended) and
+\texttt{bibtex} (legacy).  Biber provides full Unicode support, advanced
+sorting, and the \texttt{related} field.  The current configuration uses
+biber.
+
+\subsection{Dashed Repeated Authors}
+
+With \texttt{dashed=true}, repeated author names in the bibliography are
+replaced by a dash (\textemdash), reducing visual clutter.  See the full
+bibliography below for examples where Knuth's multiple works appear with
+dashes.
+
+\subsection{Name Formatting}
+
+BibLaTeX offers fine-grained control over name formatting.  The
+\texttt{maxbibnames} and \texttt{minbibnames} options control when
+et~al.~truncation applies.  The current setting shows all names
+(\texttt{maxbibnames=99}).
+
+\subsection{Field Inclusion}
+
+The \texttt{doi}, \texttt{isbn}, \texttt{url}, and \texttt{eprint}
+options control which identifier fields appear in the bibliography.
+Disabling \texttt{isbn} and \texttt{url} produces cleaner entries when
+those fields are not essential.
+
+% =====================================================
+\section{Compatibility and Multi-Source}
+\label{sec:multi-source}
+% =====================================================
+
+BibLaTeX can coexist with natbib-style commands through the
+\texttt{natbib} compatibility option.  While not enabled in this
+configuration, adding \texttt{natbib} to the package options provides
+access to commands like \verb|\citet| and \verb|\citep|.
+
+Multiple \verb|\addbibresource| calls allow combining bibliographies from
+different sources.  This document loads both the main repository
+bibliography (\texttt{../../bib/bibliography.bib}) and a local
+supplementary file (\texttt{local-refs.bib}) containing custom entry types.
+
+% =====================================================
+\section{Bibliography Filters}
+\label{sec:filters}
+% =====================================================
+
+Beyond type and keyword filtering, BibLaTeX supports exclusion filters.
+Print everything \emph{except} articles:
+\printbibliography[nottype=article,heading=subbibliography,title={Non-Article Entries}]
+
+Exclude entries by name or keyword:
+\printbibliography[notkeyword=reference,heading=subbibliography,title={Non-Reference Entries}]
+
+% =====================================================
+\section{Bibliography Headings}
+\label{sec:headings}
+% =====================================================
+
+BibLaTeX provides several heading styles for bibliography sections:
+
+\begin{description}
+    \item[default] The top-level heading, usually ``References'' or
+        ``Bibliography''.
+    \item[subbibliography] A subordinate heading that does not appear in
+        the table of contents.
+    \item[subbibintoc] A subordinate heading that \emph{does} appear in
+        the table of contents.
+    \item[bibliography] Explicit bibliography heading, useful when
+        overriding the default.
+\end{description}
+
+The choice of heading affects how deeply the bibliography is nested in the
+document structure.  For articles and reports, \texttt{subbibliography} is
+typical.  For books and theses, \texttt{subbibintoc} provides better
+navigation.
+
+% =====================================================
+\section{Name List Customisation}
+\label{sec:name-lists}
+% =====================================================
+
+BibLaTeX offers precise control over how author and editor lists are
+displayed.  The current configuration sets \texttt{maxbibnames=99} so
+all names appear in the bibliography.  With a lower value, such as 3,
+lists exceeding that length would be truncated to the first name
+plus ``et~al.''
+
+The \texttt{uniquelist} option, when enabled, adds extra names from the
+list to disambiguate entries by the same author in the same year.
+Disabling it (\texttt{uniquelist=false}) keeps names consistent across
+entries.
+
+The \texttt{minbibnames} threshold determines the minimum number of names
+shown before truncation occurs.  Setting it equal to \texttt{maxbibnames}
+ensures no truncation happens regardless of list length.
+
+% =====================================================
+\section{Shorthand Entries}
+\label{sec:shorthand}
+% =====================================================
+
+Some references have well-known short forms.  The \texttt{shorthand}
+field defines an abbreviated citation label.  For example, the PTB SI
+units reference uses the shorthand \texttt{PTB07}, and the GBV catalog
+is cited as \texttt{GBV}.
+
+After the first citation, subsequent references use the shorthand:
+\cite{PTBSI}.
+
+The shorthand is particularly useful for frequently cited standards,
+handbooks, and institutional references where the full citation would be
+cumbersome in running text.
+
+% =====================================================
+\section{Abstracts and Annotations}
+\label{sec:abstracts}
+% =====================================================
+
+BibLaTeX can display the \texttt{abstract} and \texttt{annotation} fields
+from bibliography entries.  While not rendered in the standard bibliography
+output, these fields are accessible through custom bibliography drivers or
+verbose citation commands.
+
+The McKinney reference includes an abstract describing Python data analysis
+techniques\footnote{See the full abstract in the bibliography entry for
+\citetitle{mckinneyPythonDataAnalysis2018}.}.  Similarly, the Ramalho
+reference provides a detailed abstract about idiomatic Python
+programming\footnote{The abstract for \citetitle{ramalhoFluentPython2015}
+describes leveraging Python's best features.}.
+
+% =====================================================
+\section{Language and Localization}
+\label{sec:localization}
+% =====================================================
+
+BibLaTeX respects the document's language setting for bibliography strings
+such as ``and'', ``editor'', ``In'', and ``volume''.  With
+\texttt{language=english}, all biblatex strings appear in English.
+
+The \texttt{langid} field in individual entries overrides the document
+language for that entry.  The Baehr thermodynamics reference
+\cite{baehrThermodynamikGrundlagenUnd2016} has \texttt{langid=german},
+which can be used for language-specific sorting or formatting.
+
+BibLaTeX automatically translates strings based on the active language.
+Switching to German in the document preamble would produce ``Herausgeber''
+instead of ``editor'', ``Band'' instead of ``volume'', and so on.
+
+% =====================================================
+\section{DOIs and Identifier Links}
+\label{sec:identifiers}
+% =====================================================
+
+The \texttt{doi} option controls whether Digital Object Identifiers are
+rendered as clickable links.  With \texttt{doi=true}, the Einstein paper
+shows its DOI: \cite{einstein1905}.  The DOI field is automatically
+formatted as a URL pointing to \texttt{https://doi.org/...}.
+
+The \texttt{isbn} and \texttt{url} options are disabled in this
+configuration to keep the bibliography clean.  Re-enabling them would add
+ISBN numbers for books and URLs for online entries.
+
+The \texttt{eprint} option controls the display of arXiv identifiers.
+When enabled, preprint references show their arXiv ID with a link to the
+arXiv abstract page.
+
+% =====================================================
+\section{Cross-Reference Examples}
+\label{sec:crossref}
+% =====================================================
+
+OmniLaTeX integrates \texttt{cleveref} for intelligent cross-references:
+
+\begin{itemize}
+    \item \verb|\cref{sec:citation-styles}| $\to$ \cref{sec:citation-styles}
+    \item \verb|\cref{sec:qualifiers}| $\to$ \cref{sec:qualifiers}
+    \item \verb|\cref{sec:multiple}| $\to$ \cref{sec:multiple}
+    \item \verb|\cref{sec:date-tracking}| $\to$ \cref{sec:date-tracking}
+    \item \verb|\cref{sec:citation-counting}| $\to$ \cref{sec:citation-counting}
+    \item \verb|\cref{sec:categories}| $\to$ \cref{sec:categories}
+    \item \verb|\cref{sec:inline}| $\to$ \cref{sec:inline}
+    \item \verb|\cref{sec:custom-types}| $\to$ \cref{sec:custom-types}
+    \item \verb|\cref{sec:related}| $\to$ \cref{sec:related}
+    \item \verb|\cref{sec:sorting}| $\to$ \cref{sec:sorting}
+    \item \verb|\cref{sec:options}| $\to$ \cref{sec:options}
+    \item \verb|\cref{sec:filters}| $\to$ \cref{sec:filters}
+    \item \verb|\cref{sec:name-lists}| $\to$ \cref{sec:name-lists}
+    \item \verb|\cref{sec:shorthand}| $\to$ \cref{sec:shorthand}
+    \item \verb|\cref{sec:localization}| $\to$ \cref{sec:localization}
+    \item \verb|\cref{sec:identifiers}| $\to$ \cref{sec:identifiers}
+\end{itemize}
+
+% =====================================================
+% Bibliography
+% =====================================================
+\printbibliography
+
+\end{document}

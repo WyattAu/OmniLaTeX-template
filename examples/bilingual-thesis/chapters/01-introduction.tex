@@ -1,0 +1,70 @@
+\chapter{Introduction}
+
+\section{Background}
+Natural language processing (NLP) has achieved remarkable success in
+high-resource languages such as English~\cite{bibid}.  However, the
+majority of the world's languages are considered \emph{low-resource},
+with limited digital presence and annotated datasets.
+
+\foreignlanguage{german}{Die natürliche Sprachverarbeitung (NLP) hat
+bemerkenswerte Erfolge in ressourcenreichen Sprachen wie Englisch
+erzielt~\cite{bibid}.  Allerdings ist die Mehrheit der Sprachen der
+Welt als \emph{ressourcenarm} einzustufen.}
+
+\section{Research Questions}
+
+This thesis addresses the following research questions:
+
+\begin{enumerate}
+    \item \textbf{RQ1:} How can multilingual pre-trained models be
+          fine-tuned for low-resource languages with minimal labeled data?
+
+    \item \textbf{RQ2:} What is the transfer efficiency between
+          typologically distant language pairs?
+
+    \item \textbf{RQ3:} How does the amount of target-language data
+          affect transfer quality across different model architectures?
+
+    \item \textbf{RQ4:} Can zero-shot transfer be improved by
+          intermediate language selection?
+
+    \item \textbf{RQ5:} What role does script similarity play in
+          cross-lingual transfer?
+\end{enumerate}
+
+\section{Contributions}
+
+This thesis makes the following contributions:
+
+\begin{enumerate}
+    \item A novel \textbf{adaptive transfer} method that dynamically
+          selects source languages based on typological features.
+
+    \item A comprehensive \textbf{evaluation framework} covering 15
+          languages from 8 language families.
+
+    \item An open-source \textbf{multilingual NER benchmark} with
+          consistent annotation guidelines across languages.
+
+    \item Theoretical analysis of \textbf{transfer bounds} for
+          typologically diverse language pairs.
+
+    \item Practical \textbf{recommendations} for practitioners working
+          with low-resource languages.
+\end{enumerate}
+
+\section{Thesis Outline}
+The remainder of this thesis is structured as follows.
+\cref{chap:lit-review} reviews related work on multilingual NLP.
+\cref{chap:methodology} presents our proposed approach.
+Results and analysis are discussed in subsequent chapters.
+
+\foreignlanguage{french}{La suite de cette thèse est structurée comme
+suit.  Le \cref{chap:lit-review} passe en revue les travaux connexes
+sur le NLP multilingue.  Le \cref{chap:methodology} présente notre
+approche proposée.}
+
+\foreignlanguage{german}{Der Rest dieser Thesis ist wie folgt
+strukturiert.  \cref{chap:lit-review} behandelt verwandte Arbeiten
+zum mehrsprachigen NLP.  \cref{chap:methodology} stellt unseren
+vorgeschlagenen Ansatz vor.}

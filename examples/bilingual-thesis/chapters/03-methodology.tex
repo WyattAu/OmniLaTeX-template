@@ -1,0 +1,87 @@
+\chapter{Methodology}
+\label{chap:methodology}
+
+\section{Problem Formulation}
+
+Given a source language $S$ with labeled dataset
+$\mathcal{D}_S = \{(x_i^S, y_i^S)\}_{i=1}^{N_S}$ and a target
+language $T$ with limited labeled dataset
+$\mathcal{D}_T = \{(x_j^T, y_j^T)\}_{j=1}^{N_T}$ where
+$N_T \ll N_S$, our goal is to learn a classifier
+$f_\theta: \mathcal{X} \rightarrow \mathcal{Y}$ that performs well
+on both languages.
+
+\section{Proposed Approach}
+
+\subsection{Adaptive Source Selection}
+
+We propose an adaptive method that selects source languages based on
+typological similarity to the target language.  Given a set of
+candidate source languages $\{S_1, \ldots, S_K\}$, we compute a
+similarity score:
+
+\begin{equation}
+    \text{sim}(S_k, T) = \sum_{i=1}^{F} w_i \cdot \delta(t_i^{S_k}, t_i^T)
+    \label{eq:similarity}
+\end{equation}
+
+where $t_i^L$ is the value of typological feature $i$ for language
+$L$, $\delta$ is a distance function, and $w_i$ is the feature weight
+learned from validation data.
+
+\subsection{Fine-Tuning Strategy}
+
+For each selected source language $S_k$, we fine-tune the pre-trained
+model on $\mathcal{D}_{S_k}$ and then adapt to $\mathcal{D}_T$ using
+elastic weight consolidation (EWC) to prevent catastrophic forgetting:
+
+\begin{align}
+    \mathcal{L}_{\text{EWC}}(\theta) &= \mathcal{L}_{\text{task}}(\theta; \mathcal{D}_T) \nonumber \\
+    &\quad + \frac{\lambda}{2} \sum_{i} F_i (\theta_i - \theta_i^{*})^2
+    \label{eq:ewc}
+\end{align}
+
+where $F_i$ is the Fisher information matrix diagonal and
+$\theta^*$ are the fine-tuned parameters.
+
+\subsection{Ensemble Combination}
+
+The final prediction combines outputs from multiple source-language
+models:
+
+\begin{equation}
+    \hat{y} = \arg\max_y \sum_{k=1}^{K} \alpha_k \cdot P(y | x^T; \theta_k)
+    \label{eq:ensemble}
+\end{equation}
+
+where $\alpha_k$ are learned combination weights.
+
+\section{Evaluation Framework}
+
+We evaluate on three tasks: named entity recognition (NER), part-of-speech
+tagging (POS), and sentiment analysis.  The evaluation includes 15
+languages from 8 language families:
+
+\begin{table}[htbp]
+    \centering
+    \caption{Languages and families in the evaluation set.}
+    \label{tab:languages}
+    \begin{tabular}{@{}llc@{}}
+        \toprule
+        Family & Language & Speakers (M) \\
+        \midrule
+        Indo-European & English, German, French & 1500 \\
+        Indo-European & Russian, Hindi, Bengali & 900 \\
+        Sino-Tibetan & Chinese, Burmese & 1200 \\
+        Japonic & Japanese & 125 \\
+        Koreanic & Korean & 80 \\
+        Turkic & Turkish, Uzbek & 100 \\
+        Niger-Congo & Swahili & 100 \\
+        Austronesian & Indonesian, Tagalog & 300 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\foreignlanguage{german}{Wir evaluieren auf drei Aufgaben: NER,
+POS-Tagging und Sentiment-Analyse.  Die Evaluierung umfasst 15
+Sprachen aus 8 Sprachfamilien.}

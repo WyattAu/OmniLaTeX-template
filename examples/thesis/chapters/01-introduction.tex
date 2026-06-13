@@ -98,3 +98,85 @@ The inner product in $L^2(\Omega)$ is defined as
     \label{eq:inner}
 \end{equation}
 and induces the norm $\norm{u} = \sqrt{\inner{u}{u}}$. These function spaces provide the mathematical framework for analyzing the well-posedness and convergence of numerical methods for partial differential equations.
+
+\section{Notation Table}
+\label{sec:introduction:notation_table}
+
+\tabref{tab:notation} summarizes the principal symbols and notation used throughout this thesis.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Principal notation used in this thesis.}
+    \label{tab:notation}
+    \begin{tabularx}{\textwidth}{@{}l X l X@{}}
+        \toprule
+        \textbf{Symbol} & \textbf{Description} & \textbf{Unit} & \textbf{First used} \\
+        \midrule
+        $\Omega$            & Computational domain                        & ---                    & \cref{sec:introduction:preliminary} \\
+        $\vec{K}$           & Permeability tensor                         & mD                     & \cref{eq:pressure} \\
+        $p$                 & Pressure field                               & Pa                     & \cref{eq:pressure} \\
+        $s_w$               & Water saturation                             & ---                    & \cref{eq:saturation} \\
+        $\phi$              & Porosity                                     & ---                    & \cref{eq:saturation} \\
+        $\lambda_{\text{tot}}$ & Total mobility                            & $\text{m}^3/(\text{Pa}\cdot\text{s})$ & \cref{eq:pressure} \\
+        $f_w$               & Fractional flow function                     & ---                    & \cref{eq:saturation} \\
+        $D(s_w)$            & Capillary diffusion coefficient              & $\text{m}^2/\text{s}$ & \cref{eq:saturation} \\
+        $\eta_C$            & Local error indicator for cell $C$           & ---                    & \cref{eq:indicator} \\
+        $\mathcal{T}_h$     & Fine grid                                   & ---                    & \autoref{sec:methodology:formulation} \\
+        $\R^d$              & $d$-dimensional Euclidean space              & ---                    & \autoref{sec:introduction:preliminary} \\
+        $L^p(\Omega)$       & Lebesgue function space                     & ---                    & \autoref{eq:lp} \\
+        $H^1(\Omega)$       & Sobolev function space                      & ---                    & \autoref{eq:h1} \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\section{Research Questions}
+\label{sec:introduction:questions}
+
+This thesis is driven by the following research questions, each addressing a specific gap in the current state of the art:
+
+\begin{enumerate}[label=\textbf{RQ\arabic*}, leftmargin=2.5em]
+    \item \label{rq:amr} How can adaptive mesh refinement strategies be optimized for heterogeneous porous media with channelized flow paths?
+    \item \label{rq:convergence} What is the convergence behavior of the proposed multiscale finite volume method under varying levels of permeability contrast?
+    \item \label{rq:scalability} How does the parallel scalability of the algorithm compare with state-of-the-art commercial simulators such as \gls{eclipse}?
+    \item \label{rq:error} What is the relationship between the local flux-imbalance error indicator and the global $L^2$ error for problems with discontinuous permeability fields?
+    \item \label{rq:implementation} Can the proposed method be implemented within the \gls{petsc} framework to achieve reproducible results across heterogeneous HPC architectures?
+\end{enumerate}
+
+\important{The answers to \cref{rq:amr,rq:convergence,rq:scalability} form the core contribution of this thesis. The subsidiary questions \cref{rq:error,rq:implementation} are addressed implicitly through the numerical experiments in \chref{ch:results}.}
+
+\section{Contributions}
+\label{sec:introduction:contributions}
+
+The primary contributions of this work are enumerated below. Each contribution is evaluated in the corresponding section of \chref{ch:results}.
+
+\begin{enumerate}[label=\textbf{C\arabic*}, leftmargin=2.5em]
+    \item \label{contribution:error} A novel error indicator based on local flux imbalance that guides adaptive refinement in heterogeneous media. This is evaluated in \cref{sec:results:convergence}.
+    \item \label{contribution:domain} A domain decomposition strategy that achieves near-optimal parallel scaling up to 1024 cores on modern HPC architectures, as demonstrated in \cref{sec:results:scalability}.
+    \item \label{contribution:opensource} An open-source implementation integrated with the \gls{petsc} framework for reproducible research, described in \autoref{sec:methodology:implementation}.
+    \item \label{contribution:benchmark} A comprehensive benchmark study comparing the proposed method against TPFA, MPFA, and multiscale FV approaches on three canonical problems, presented in \Cref{sec:results:comparison}.
+    \item \label{convergence:proof} A rigorous convergence proof for the AMR scheme under Lipschitz-continuous permeability assumptions, stated as \Cref{thm:convergence}.
+\end{enumerate}
+
+\important{All code and benchmark data are available at \url{https://github.com/omnilatex/reservoir-amr} to facilitate reproducibility.}
+
+\section{Cross-Reference Summary}
+\label{sec:introduction:xref_summary}
+
+For convenience, \cref{tab:xref_map} provides a mapping from the research questions to the relevant sections and chapters where each is addressed.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Mapping of research questions to thesis sections.}
+    \label{tab:xref_map}
+    \begin{tabularx}{\textwidth}{@{}l X X@{}}
+        \toprule
+        \textbf{Question} & \textbf{Primary section} & \textbf{Supporting sections} \\
+        \midrule
+        \Cref{rq:amr}        & \cref{sec:methodology:amr}        & \cref{sec:results:convergence,sec:results:comparison} \\
+        \Cref{rq:convergence} & \cref{sec:methodology:convergence} & \cref{sec:results:convergence,sec:results:detailed} \\
+        \Cref{rq:scalability} & \cref{sec:methodology:parallel}   & \cref{sec:results:scalability} \\
+        \Cref{rq:error}       & \cref{sec:methodology:amr}        & \autoref{sec:results:matrices} \\
+        \Cref{rq:implementation} & \autoref{sec:methodology:implementation} & \autoref{sec:results:setup} \\
+        \bottomrule
+    \end{tabularx}
+\end{table}

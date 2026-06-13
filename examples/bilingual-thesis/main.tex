@@ -1,0 +1,53 @@
+\documentclass[
+    language=english,
+    doctype=thesis,
+    institution=none,
+    titlestyle=thesis,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\addbibresource{../../bib/bibliography.bib}
+
+% Language switching
+\usepackage{polyglossia}
+\setotherlanguages{german,french,russian,arabic}
+
+\begin{document}
+
+\frontmatter
+\maketitle
+
+% English abstract
+\section*{Abstract}
+This thesis investigates cross-lingual transfer learning techniques for
+low-resource natural language processing.  We propose a novel method that
+leverages multilingual pre-trained models to improve performance on
+languages with limited labeled data.
+
+\foreignlanguage{german}{\section*{Zusammenfassung}
+Diese Thesis untersucht Cross-Lingual Transfer Learning für
+ressourcenarme NLP.  Wir schlagen eine neue Methode vor, die
+mehrsprachige vortrainierte Modelle nutzt, um die Leistung auf
+Sprachen mit begrenzten beschrifteten Daten zu verbessern.}
+
+\foreignlanguage{french}{\section*{Résumé}
+Cette thèse étudie les techniques d'apprentissage transversal pour
+le traitement du langage naturel à faibles ressources.  Nous
+proposons une nouvelle méthode qui exploite les modèles multilingues
+prédéfinis pour améliorer les performances sur les langues avec
+des données étiquetées limitées.}
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+\mainmatter
+
+\include{chapters/01-introduction}
+\include{chapters/02-literature-review}
+\include{chapters/03-methodology}
+
+\backmatter
+\printbibliography
+
+\end{document}

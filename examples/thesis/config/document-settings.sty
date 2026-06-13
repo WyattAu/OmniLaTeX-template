@@ -12,4 +12,70 @@
 \defensedate{June 12, 2026}
 \thesislocation{Hamburg, Germany}
 
+% ============================================================
+% Custom page layout
+% ============================================================
+\RequirePackage{scrlayer-scrpage}
+\RequirePackage{marginnote}
+
+% --- Header / footer with chapter name ---
+\clearpairofpagestyles
+\automark{chapter}
+\ohead{\headmark}
+\ihead{\leftmark}
+\ofoot{\pagemark}
+\cfoot{}
+
+% Continuous header line under header
+\KOMAoptions{
+    headsepline=0.4pt,
+    footsepline=0pt,
+    headtopline=0pt,
+}
+
+% --- Margin note settings ---
+\setlength{\marginparwidth}{20mm}
+\setlength{\marginparsep]{3mm}
+\renewcommand*{\marginfont}{\footnotesize\sffamily\color{gray!70!black}}
+
+% --- Custom title page formatting ---
+\renewcommand*{\titlepagestyle}{empty}
+
+% Title page layout adjustments
+\KOMAoptions{
+    DIV=12,
+    BCOR=20mm,
+}
+
+% Redefine maketitle for thesis title page
+\renewcommand{\maketitle}{%
+    \begin{titlepage}
+        \centering
+        \vspace*{2cm}
+
+        {\Large\sffamily\color{gray}\thesisinstitution}\\[0.5cm]
+        {\large\sffamily\color{gray}\thesisdepartment}\\[2cm]
+
+        \rule{\textwidth}{1.5pt}\\[0.8cm]
+
+        {\LARGE\bfseries\@title}\\[0.8cm]
+
+        \rule{\textwidth}{1.5pt}\\[1.5cm]
+
+        {\Large\@author}\\[1cm]
+
+        {\large Submitted in partial fulfillment of the requirements\\
+        for the degree of \thesisdegree}\\[1.5cm]
+
+        {\normalsize Advisor: \thesisadvisor}\\[0.3cm]
+        {\normalsize Committee: \thesiscommittee}\\[2cm]
+
+        \vfill
+
+        {\large\thesislocation}\\[0.2cm]
+        {\large\defensedate}
+
+    \end{titlepage}
+}
+
 \endinput

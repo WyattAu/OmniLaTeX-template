@@ -1,0 +1,83 @@
+\chapter{Literature Review}
+\label{chap:lit-review}
+
+\section{Multilingual Pre-trained Models}
+
+The advent of multilingual pre-trained models such as
+mBERT~\cite{goossensLaTeXCompanion1993} and XLM-RoBERTa has
+revolutionized cross-lingual NLP.  These models are trained on
+monolingual corpora from 100+ languages using a shared vocabulary
+and Transformer architecture.
+
+\foreignlanguage{german}{Die Entwicklung mehrsprachiger vortrainierter
+Modelle wie mBERT und XLM-RoBERTa hat die cross-linguale NLP
+revolutioniert.  Diese Modelle werden auf einsprachigen Korpora aus
+über 100 Sprachen mit einem geteilten Vokabular und der Transformer-
+Architektur trainiert.}
+
+\section{Transfer Learning Approaches}
+
+\subsection{Zero-Shot Transfer}
+Zero-shot transfer applies a model trained on source languages directly
+to a target language without any target-language training data.  While
+effective for typologically similar languages, performance degrades
+significantly for distant pairs~\cite{einstein1905}.
+
+\subsection{Few-Shot Transfer}
+Few-shot learning uses a small number of labeled examples from the
+target language to adapt the model.  Recent work has shown that as
+few as 100 annotated sentences can significantly improve
+performance~\cite{bibid}.
+
+\subsection{Cross-Lingual Word Embeddings}
+Aligned word embeddings provide a language-agnostic representation
+space.  Methods include unsupervised alignment~\cite{einstein1905}
+and supervised projection using parallel corpora.
+
+\section{Low-Resource NLP Challenges}
+
+\begin{itemize}
+    \item \textbf{Data scarcity:} Limited annotated datasets
+    \item \textbf{Script diversity:} Different writing systems
+    \item \textbf{Morphological complexity:} Rich morphology in many
+          low-resource languages
+    \item \textbf{Code-switching:} Mixed language usage in documents
+    \item \textbf{Dialectal variation:} Significant intra-language diversity
+\end{itemize}
+
+\foreignlanguage{french}{Les défis du NLP à faibles ressources
+comprennent la rareté des données, la diversité des scripts, la
+complexité morphologique, le code-switching et les variations
+dialectales.}
+
+\section{Typological Features}
+Language typology provides a systematic framework for comparing
+languages.  Key features relevant to transfer learning include:
+
+\begin{table}[htbp]
+    \centering
+    \caption{Typological features relevant to cross-lingual transfer.}
+    \label{tab:typology}
+    \begin{tabular}{@{}lll@{}}
+        \toprule
+        Feature & Description & Example \\
+        \midrule
+        Word order & SOV/SVO/VSO & Japanese (SOV) vs. English (SVO) \\
+        Morphology & Agglutinative/fusional & Turkish (agglutinative) \\
+        Script & Latin/Cyrillic/Arabic & Arabic (Arabic script) \\
+        Gender & None/masculine-feminine & German (3 genders) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Research Gap}
+Despite significant progress, several gaps remain in the literature:
+\begin{enumerate}
+    \item Limited understanding of transfer between typologically
+          distant languages
+    \item Lack of standardized evaluation across diverse language families
+    \item Insufficient theoretical bounds on transfer efficiency
+\end{enumerate}
+
+This thesis addresses these gaps through systematic experimentation
+and theoretical analysis, as described in \cref{chap:methodology}.
