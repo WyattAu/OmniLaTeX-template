@@ -211,7 +211,15 @@
         manual, guide, handbook, report, technicalreport, standard, patent,%
         article, inlinepaper, journal, dictionary, cv, cover-letter, poster,%
         presentation, letter, homework, exam, research-proposal, recipe,%
-        lecture-notes, syllabus, handout, memo, white-paper, invoice, beamer}%
+        lecture-notes, syllabus, handout, memo, white-paper, invoice, beamer,%
+        grant-proposal, ieee, book-chapter, lab-report, literature-review,%
+        thesis-proposal, annotated-bibliography, proceedings, preprint,%
+        working-paper, business-letter, meeting-minutes, quarterly-report,%
+        strategic-plan, product-spec, course-material, course-notes,%
+        textbook, quiz, lesson-plan, software-documentation, api-reference,%
+        changelog, technical-spec, blog-post, newsletter, brochure,%
+        invitation, program, legislation, regulation, annual-report,%
+        case-study}%
 \fi
 
 % Validate titlestyle
