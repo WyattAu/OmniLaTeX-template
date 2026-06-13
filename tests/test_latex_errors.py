@@ -4,8 +4,13 @@ from __future__ import annotations
 
 import pytest
 
-from buildlib.latex_errors import (Diagnostic, ErrorClass, Severity,
-                                   format_diagnostics, parse_latex_log)
+from buildlib.latex_errors import (
+    Diagnostic,
+    ErrorClass,
+    Severity,
+    format_diagnostics,
+    parse_latex_log,
+)
 
 
 class TestParseLatexLog:

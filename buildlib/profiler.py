@@ -15,8 +15,13 @@ from pathlib import Path
 from statistics import mean, median, stdev
 from typing import Any
 
-from buildlib.config import (MAIN_TEX_FILENAME, REPO_ROOT, ProjectConfig,
-                             base_build_env, build_latexmk_command)
+from buildlib.config import (
+    MAIN_TEX_FILENAME,
+    REPO_ROOT,
+    ProjectConfig,
+    base_build_env,
+    build_latexmk_command,
+)
 
 # ---------------------------------------------------------------------------
 # Data classes

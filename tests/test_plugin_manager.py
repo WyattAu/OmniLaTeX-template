@@ -6,15 +6,27 @@ from pathlib import Path
 
 import pytest
 
-from buildlib.plugin_manager import (ALWAYS_DENIED, SANDBOX_CAPABILITIES,
-                                     PluginInfo, PluginManifest, RegistryEntry,
-                                     ValidationResult, _parse_version,
-                                     _version_satisfies, check_capabilities,
-                                     check_dependencies, detect_conflicts,
-                                     discover_plugins, get_denied_capabilities,
-                                     load_manifest, load_registry,
-                                     register_plugin, save_registry,
-                                     search_plugins, validate_plugin)
+from buildlib.plugin_manager import (
+    ALWAYS_DENIED,
+    SANDBOX_CAPABILITIES,
+    PluginInfo,
+    PluginManifest,
+    RegistryEntry,
+    ValidationResult,
+    _parse_version,
+    _version_satisfies,
+    check_capabilities,
+    check_dependencies,
+    detect_conflicts,
+    discover_plugins,
+    get_denied_capabilities,
+    load_manifest,
+    load_registry,
+    register_plugin,
+    save_registry,
+    search_plugins,
+    validate_plugin,
+)
 
 
 # ---------------------------------------------------------------------------

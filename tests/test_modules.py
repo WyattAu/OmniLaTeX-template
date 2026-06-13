@@ -3,8 +3,12 @@ import re
 
 import pytest
 
-from tests.constants import (ALL_DOCTYPE_NAMES, ALL_EXAMPLE_NAMES,
-                             DOCTYPE_ALIASES, DOCTYPE_TO_CLASS)
+from tests.constants import (
+    ALL_DOCTYPE_NAMES,
+    ALL_EXAMPLE_NAMES,
+    DOCTYPE_ALIASES,
+    DOCTYPE_TO_CLASS,
+)
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
 

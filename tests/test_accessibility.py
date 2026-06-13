@@ -20,19 +20,23 @@ from pathlib import Path
 import pytest
 from bs4 import BeautifulSoup, Tag
 
-from buildlib.accessibility_checker import (Severity, check_aria_attributes,
-                                            check_aria_landmarks,
-                                            check_color_contrast,
-                                            check_focus_indicators,
-                                            check_form_labels,
-                                            check_heading_hierarchy,
-                                            check_html_accessibility,
-                                            check_image_alt_text,
-                                            check_language_attribute,
-                                            check_link_accessibility,
-                                            check_reduced_motion,
-                                            check_skip_link, contrast_ratio,
-                                            print_report)
+from buildlib.accessibility_checker import (
+    Severity,
+    check_aria_attributes,
+    check_aria_landmarks,
+    check_color_contrast,
+    check_focus_indicators,
+    check_form_labels,
+    check_heading_hierarchy,
+    check_html_accessibility,
+    check_image_alt_text,
+    check_language_attribute,
+    check_link_accessibility,
+    check_reduced_motion,
+    check_skip_link,
+    contrast_ratio,
+    print_report,
+)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PAGES_DIR = REPO_ROOT / "web" / "dist"

@@ -4,8 +4,13 @@ from __future__ import annotations
 
 import json
 
-from buildlib.profiler import (BuildProfiler, ExampleProfile, ProfilingSummary,
-                               compare_profiles, get_slowest_examples)
+from buildlib.profiler import (
+    BuildProfiler,
+    ExampleProfile,
+    ProfilingSummary,
+    compare_profiles,
+    get_slowest_examples,
+)
 
 # ---------------------------------------------------------------------------
 # ExampleProfile

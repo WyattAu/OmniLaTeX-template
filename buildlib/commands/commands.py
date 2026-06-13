@@ -18,8 +18,12 @@ from buildlib.commands.export import ExportMixin
 from buildlib.commands.plugin import PluginMixin
 from buildlib.commands.scaffold import ScaffoldMixin
 from buildlib.commands.watch import WatchMixin
-from buildlib.config import (BUILD_EXAMPLES_SUBDIR, INTERACTION_NONSTOP,
-                             LATEXMK_COMMAND, MAIN_TEX_FILENAME)
+from buildlib.config import (
+    BUILD_EXAMPLES_SUBDIR,
+    INTERACTION_NONSTOP,
+    LATEXMK_COMMAND,
+    MAIN_TEX_FILENAME,
+)
 from buildlib.diff import _compute_ssim_windowed
 
 
