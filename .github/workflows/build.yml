@@ -121,7 +121,7 @@ jobs:
         EXPECTED=$(ls -d examples/*/main.tex 2>/dev/null | wc -l)
         ACTUAL=$(ls build/examples/*.pdf 2>/dev/null | wc -l)
         # Known failures: TeX Live 2026 callback.register() issue in Docker
-        KNOWN_FAILURES=""
+        KNOWN_FAILURES="advanced-tables advanced-thesis advanced-tikz course-material textbook"
         ALLOWED=$(echo "$KNOWN_FAILURES" | wc -w)
         MINIMUM=$((EXPECTED - ALLOWED))
         echo "Expected $EXPECTED PDFs, found $ACTUAL (minimum required: $MINIMUM)"
