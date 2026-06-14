@@ -32,6 +32,7 @@ on:
     - .github/actions/setup-python/action.yml
     - .env.docker
     - .devcontainer/**
+    - .woodpecker/**
   pull_request:
     branches: [main, master]
     paths:
