@@ -81,11 +81,16 @@ end
 
 -- Register the callback (only once)
 if not _counters._registered then
-    local ok, luatexbase = pcall(require, "luatexbase")
-    if ok then
-        luatexbase.add_to_callback("shipout_filter", shipout_callback, "word-count")
-    else
-        callback.register("shipout_filter", shipout_callback)
+    local ok, err = pcall(function()
+        local lb_ok, luatexbase = pcall(require, "luatexbase")
+        if lb_ok and luatexbase.add_to_callback then
+            luatexbase.add_to_callback("shipout_filter", shipout_callback, "word-count")
+        else
+            callback.register("shipout_filter", shipout_callback)
+        end
+    end)
+    if not ok then
+        texio.write_nl("word-count.lua: Warning: Could not register callback: " .. tostring(err))
     end
     _counters._registered = true
     texio.write_nl("word-count.lua: Registered shipout_filter callback.")

@@ -82,11 +82,16 @@ end
 
 -- Register the input buffer callback (only once)
 if not _todos._registered then
-    local ok, luatexbase = pcall(require, "luatexbase")
-    if ok then
-        luatexbase.add_to_callback("process_input_buffer", process_input_buffer, "todo-tracker")
-    else
-        callback.register("process_input_buffer", process_input_buffer)
+    local ok, err = pcall(function()
+        local lb_ok, luatexbase = pcall(require, "luatexbase")
+        if lb_ok and luatexbase.add_to_callback then
+            luatexbase.add_to_callback("process_input_buffer", process_input_buffer, "todo-tracker")
+        else
+            callback.register("process_input_buffer", process_input_buffer)
+        end
+    end)
+    if not ok then
+        texio.write_nl("todo-tracker.lua: Warning: Could not register callback: " .. tostring(err))
     end
     _todos._registered = true
     texio.write_nl("todo-tracker.lua: Registered process_input_buffer callback.")
