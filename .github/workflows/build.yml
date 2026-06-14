@@ -33,6 +33,8 @@ on:
     - .env.docker
     - .devcontainer/**
     - .woodpecker/**
+    - .gitea/**
+    - .gitlab/**
   pull_request:
     branches: [main, master]
     paths:
