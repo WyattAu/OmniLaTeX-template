@@ -523,7 +523,8 @@ A matrix heatmap with color-coded correlation values.
                 \pgfmathsetmacro{\intensity}{abs(\pgfmathresult)}
                 \pgfmathsetmacro{\redcolor}{100*\pgfmathresult + 155}
                 \pgfmathsetmacro{\bluecolor}{-100*\pgfmathresult + 155}
-                \ifdim \pgfmathresult pt > 0pt
+                \pgfmathtruncatemacro{\sign}{\pgfmathresult > 0 ? 1 : 0}
+                \ifnum \sign > 0
                     \definecolor{cellcolor}{rgb}{1,1-\intensity,1-\intensity}
                 \else
                     \definecolor{cellcolor}{rgb}{1-\intensity,1-\intensity,1}

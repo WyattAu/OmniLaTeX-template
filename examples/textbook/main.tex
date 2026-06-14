@@ -330,7 +330,8 @@ methods~\cite{bibid}.
 \begin{tikzpicture}[scale=0.5]
     \foreach \i in {1,...,8} {
         \foreach \j in {1,...,8} {
-            \pgfmathtruncmacro{\val}{abs(\i-\j) <= 1 ? 1 : 0}
+            \pgfmathparse{abs(\i-\j) <= 1 ? 1 : 0}
+            \pgfmathtruncatemacro{\val}{\pgfmathresult}
             \ifnum\val=1
                 \fill[blue!70] (\j,-\i) circle (4pt);
             \else

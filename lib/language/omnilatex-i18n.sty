@@ -35,12 +35,8 @@
 % Add new languages here when adding support.
 % Note: Arabic, Hebrew, Persian require luabidi.sty. If not available,
 % they are skipped to avoid fatal errors.
-\IfFileExists{luabidi.sty}{%
-  \setotherlanguages{english,german,ngerman,french,spanish,italian,portuguese,russian,dutch,polish,czech,greek,turkish,simplifiedchinese,traditionalchinese,japanese,korean,arabic,hebrew,vietnamese,hindi,swedish,finnish,danish,norsk,thai,bengali,ukrainian,bulgarian,croatian,serbian,slovak,slovenian,romanian,catalan,mongolian,persian}%
-}{%
-  % luabidi not available (TL2025 Docker image): skip RTL languages
-  \setotherlanguages{english,german,ngerman,french,spanish,italian,portuguese,russian,dutch,polish,czech,greek,turkish,simplifiedchinese,traditionalchinese,japanese,korean,vietnamese,hindi,swedish,finnish,danish,norsk,thai,bengali,ukrainian,bulgarian,croatian,serbian,slovak,slovenian,romanian,catalan,mongolian}%
-}
+% Use non-RTL languages as default, add RTL only if luabidi is loadable.
+\setotherlanguages{english,german,ngerman,french,spanish,italian,portuguese,russian,dutch,polish,czech,greek,turkish,simplifiedchinese,traditionalchinese,japanese,korean,vietnamese,hindi,swedish,finnish,danish,norsk,thai,bengali,ukrainian,bulgarian,croatian,serbian,slovak,slovenian,romanian,catalan,mongolian}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Translations Package
