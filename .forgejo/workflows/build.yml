@@ -4,7 +4,7 @@ permissions:
   contents: read
 
 env:
-  DOCKER_IMAGE: ghcr.io/wyattau/omnilatex-docker@sha256:01f992fcd63f7607327517c0c541947e0ccea6dd453cac7e0672cd54b7eeb45e  # See .env.docker
+  DOCKER_IMAGE: ghcr.io/wyattau/omnilatex-docker@sha256:809310eb78cbc9e121af2d301f7b89131d5b66b406e27a63dcbcd6acd7468f74  # See .env.docker
 
 on:
   push:
