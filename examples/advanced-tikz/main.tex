@@ -763,7 +763,7 @@ A radial mind map for knowledge organization.
             level distance=2.8cm, sibling angle=45,
         },
     ]
-        \node[root concept] {Machine\\Learning}
+        \node[text width=3cm, align=center, root concept] {Machine Learning}
             child[concept color=red!40] { node {Supervised}
                 child { node {Regression} }
                 child { node {Classification} }
@@ -819,20 +819,20 @@ A horizontal timeline marking key events.
         } {
             \node[event] at (\x, 0) {};
             \draw[thick] (\x, 0) -- (\x, 0.6);
-            \node[label, above] at (\x, 0.8) {\year\\[1pt]\textbf{\text}};
+            \node[text width=3cm, align=center, label, above] at (\x, 0.8) {\year [1pt]\textbf{\text}};
         }
 
         % Events below
         \foreach \x/\year/\text in {
-            2.5/1962/Communications\\Satellite,
+            2.5/1962/Communications Satellite,
             5.5/1971/Email,
             8.5/1989/WWW proposal,
             11.5/2000/iPod,
-            14.5/2020/Remote work\\revolution
+            14.5/2020/Remote work revolution
         } {
             \node[event, fill=red!60] at (\x, 0) {};
             \draw[thick] (\x, 0) -- (\x, -0.6);
-            \node[label, below] at (\x, -0.8) {\year\\[1pt]\textbf{\text}};
+            \node[text width=3cm, align=center, label, below] at (\x, -0.8) {\year [1pt]\textbf{\text}};
         }
     \end{tikzpicture}
     \caption{Timeline of major technology milestones.}
@@ -999,7 +999,7 @@ A UML class diagram with inheritance and associations.
         assoc/.style={-{Stealth[length=3mm]}, thick, gray},
     ]
         % Abstract class
-        \node[class, fill=yellow!10] (shape) at (0, 3) {
+        \node[class, fill=yellow!10, text width=4cm, align=left] (shape) at (0, 3) {
             \textbf{$\ll$abstract$\gg$ Shape}\\[2pt]
             \texttt{+ id: int}\\
             \texttt{+ name: String}
