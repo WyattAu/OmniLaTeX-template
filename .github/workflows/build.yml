@@ -31,6 +31,7 @@ on:
     - .github/workflows/build.yml
     - .github/actions/setup-python/action.yml
     - .env.docker
+    - .devcontainer/**
   pull_request:
     branches: [main, master]
     paths:
