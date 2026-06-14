@@ -278,17 +278,30 @@
 % LuaTeX: suppress non-fatal "Counter too large" errors.
 % These come from bib2gls .glstex files in large documents
 % (254+ pages).  PDF output is correct — errors are cosmetic.
-% Uses raw callback.register (no luatexbase dependency).
+% Use luatexbase.add_to_callback (modern API) instead of callback.register (deprecated).
 \ifluatex
   \directlua{
-    callback.register("show_error_hook", function()
-      local e = status.lasterrorstring or ""
-      if string.find(e, "Counter too large") then
-        texio.write("log", "(OmniLaTeX: counter too large suppressed)")
-        return true
-      end
-      return false
-    end)
+    local ok, luatexbase = pcall(require, "luatexbase")
+    if ok then
+      luatexbase.add_to_callback("show_error_hook", function()
+        local e = status.lasterrorstring or ""
+        if string.find(e, "Counter too large") then
+          texio.write("log", "(OmniLaTeX: counter too large suppressed)")
+          return true
+        end
+        return false
+      end, "omnilatex: suppress counter too large")
+    else
+      -- Fallback: use raw callback.register if luatexbase not available
+      callback.register("show_error_hook", function()
+        local e = status.lasterrorstring or ""
+        if string.find(e, "Counter too large") then
+          texio.write("log", "(OmniLaTeX: counter too large suppressed)")
+          return true
+        end
+        return false
+      end)
+    end
   }
 \fi
 
