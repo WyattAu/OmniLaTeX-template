@@ -9,6 +9,9 @@
 ]{../../omnilatex}
 
 \RequirePackage{config/document-settings}
+
+% Load tcolorbox BEFORE macros.sty (macros defines tcolorbox environments)
+\RequirePackage[most]{tcolorbox}
 \RequirePackage{config/macros}
 
 \RequirePackage{tikz}
@@ -25,7 +28,6 @@
 \RequirePackage{float}
 \RequirePackage{multirow}
 \RequirePackage{xcolor}
-\RequirePackage[most]{tcolorbox}
 \RequirePackage{fancyhdr}
 \RequirePackage{titlesec}
 \RequirePackage{appendices}
