@@ -21,7 +21,7 @@ else
 	TEST_FLAGS =
 endif
 
-test: test-modules test-config test-properties test-ctan test-build-py test-institutions test-negative test-edge-cases test-unicode test-visual-regression
+test: test-modules test-config test-properties test-build-py test-institutions test-negative test-edge-cases test-unicode test-visual-regression
 	@echo "All tests passed."
 
 # Target names correspond to actual Python test files, with some modifications made, see
@@ -35,9 +35,6 @@ test-config:
 
 test-properties:
 	@$(call run_test,properties)
-
-test-ctan:
-	@$(call run_test,ctan)
 
 test-build-py:
 	@$(call run_test,build_py)

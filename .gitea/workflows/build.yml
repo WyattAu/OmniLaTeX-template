@@ -101,4 +101,4 @@ jobs:
         CI: 'true'
       run: |
         pip install -q pymupdf pytest PyYAML python-dateutil PaperSize pytest-timeout hypothesis
-        python3 -m pytest tests/test_modules.py tests/test_ctan.py tests/test_properties.py tests/test_config.py tests/test_institutions.py tests/test_negative.py tests/test_build_py.py tests/test_beamer_regression.py --tb=short -q --timeout=60 -m "not slow"
+        python3 -m pytest tests/test_modules.py tests/test_properties.py tests/test_config.py tests/test_institutions.py tests/test_negative.py tests/test_build_py.py tests/test_beamer_regression.py --tb=short -q --timeout=60 -m "not slow"

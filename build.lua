@@ -1,6 +1,6 @@
 -- build.lua — l3build configuration for OmniLaTeX
 -- This is a custom configuration for a multi-file template project,
--- not a standard single-package CTAN distribution.
+-- not a standard single-package distribution.
 
 module = "omnilatex"
 pkgversion = "2.5.0"

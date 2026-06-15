@@ -2,7 +2,6 @@
 
 [![Build](https://github.com/WyattAu/OmniLaTeX-template/actions/workflows/build.yml/badge.svg)](https://github.com/WyattAu/OmniLaTeX-template/actions/workflows/build.yml)
 [![Lean 4 Proofs](https://github.com/WyattAu/OmniLaTeX-template/actions/workflows/lean4-ci.yml/badge.svg)](https://github.com/WyattAu/OmniLaTeX-template/actions/workflows/lean4-ci.yml)
-[![CTAN](https://img.shields.io/ctan/v/omnilatex)](https://ctan.org/pkg/omnilatex)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-2106+-successgreen)](https://github.com/WyattAu/OmniLaTeX-template/tree/main/tests)
 [![Coverage](https://img.shields.io/badge/buildlib_coverage-86%25-green)](https://github.com/WyattAu/OmniLaTeX-template/tree/main/buildlib)
@@ -19,12 +18,6 @@ python build.py build-example minimal-starter
 ```
 
 PDF appears in `build/examples/minimal-starter.pdf`.
-
-Or install from CTAN:
-
-```bash
-tlmgr install omnilatex
-```
 
 Or use Docker (no TeX Live required):
 

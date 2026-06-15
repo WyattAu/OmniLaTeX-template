@@ -477,14 +477,6 @@ package load times.
 
 ## Distribution
 
-### CTAN availability
-
-OmniLaTeX is available on CTAN as [omnilatex](https://ctan.org/pkg/omnilatex):
-
-```bash
-tlmgr install omnilatex
-```
-
 Alternatively, use the Git repository for the latest development version:
 
 ```bash

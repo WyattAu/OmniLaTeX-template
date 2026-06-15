@@ -317,16 +317,7 @@ class TestCrossReferenceConsistency:
         ), f"omnilatex-doctype-{doctype}.sty refs missing lib files: {missing}"
 
 
-class TestCTANPackage:
-    def test_ctan_zip_script_exists(self, repo_root):
-        assert (repo_root / "scripts" / "make-ctan-zip.sh").is_file()
-
-    def test_ctan_zip_script_executable(self, repo_root):
-        script = repo_root / "scripts" / "make-ctan-zip.sh"
-        import os
-
-        assert os.access(script, os.X_OK), "make-ctan-zip.sh is not executable"
-
+class TestOverleafPackage:
     def test_overleaf_zip_script_exists(self, repo_root):
         assert (repo_root / "scripts" / "make-overleaf-zip.sh").is_file()
 
@@ -335,28 +326,6 @@ class TestCTANPackage:
         import os
 
         assert os.access(script, os.X_OK), "make-overleaf-zip.sh is not executable"
-
-    def test_ctan_readme_exists(self, repo_root):
-        assert (repo_root / "CTAN_README.txt").is_file()
-
-    def test_ctan_script_references_existing_files(self, repo_root):
-        script_text = _read(repo_root / "scripts" / "make-ctan-zip.sh")
-        cp_targets = re.findall(r'cp\s+"?\$REPO_ROOT/([^"]+)"?', script_text)
-        cp_targets += re.findall(r'cp\s+-r\s+"?\$REPO_ROOT/([^"]+)"?', script_text)
-        # Files guarded by `if [ -f ... ]` are conditional -- skip them
-        conditional = set(re.findall(r'if\s+\[ -f "\$REPO_ROOT/([^"]+)"', script_text))
-        missing = []
-        seen = set()
-        for target in cp_targets:
-            if target in seen:
-                continue
-            seen.add(target)
-            if target in conditional:
-                continue
-            target_path = repo_root / target
-            if not target_path.exists():
-                missing.append(target)
-        assert not missing, f"make-ctan-zip.sh references missing files: {missing}"
 
     def test_overleaf_script_references_existing_files(self, repo_root):
         script_text = _read(repo_root / "scripts" / "make-overleaf-zip.sh")

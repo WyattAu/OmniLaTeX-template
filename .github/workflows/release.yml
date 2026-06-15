@@ -48,11 +48,6 @@ jobs:
           echo "content=Release ${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
         fi
 
-    - name: Generate CTAN zip
-      run: |
-        chmod +x scripts/make-ctan-zip.sh
-        scripts/make-ctan-zip.sh
-
     - name: Generate Overleaf zip
       run: |
         chmod +x scripts/make-overleaf-zip.sh
@@ -82,10 +77,7 @@ jobs:
     - name: Verify release assets
       run: |
         echo "=== Release Assets ==="
-        ls -lh ctan/omnilatex.zip omnilatex-overleaf.zip "omnilatex-${{ steps.version.outputs.version }}.tar.gz"
-        echo ""
-        echo "=== CTAN zip contents (sample) ==="
-        unzip -l ctan/omnilatex.zip | head -20
+        ls -lh omnilatex-overleaf.zip "omnilatex-${{ steps.version.outputs.version }}.tar.gz"
         echo ""
         echo "=== Overleaf zip contents (sample) ==="
         unzip -l omnilatex-overleaf.zip | head -20
@@ -101,7 +93,6 @@ jobs:
         draft: false
         prerelease: ${{ contains(github.ref_name, '-') }}
         files: |
-          ctan/omnilatex.zip
           omnilatex-overleaf.zip
           omnilatex-${{ steps.version.outputs.version }}.tar.gz
         fail_on_unmatched_files: true

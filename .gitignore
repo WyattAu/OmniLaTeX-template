@@ -476,7 +476,7 @@ Thumbs.db
 examples/*/.latexmkrc
 overleaf/*.zip
 
-# CTAN packaging output
+# Distribution packaging output
 ctan/
 
 # Lean 4 / Lake build artifacts

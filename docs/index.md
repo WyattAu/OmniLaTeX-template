@@ -32,7 +32,6 @@ For a step-by-step walkthrough, see [Getting Started](GETTING_STARTED.md).
 |--------|---------|
 | Docker | `docker run -v $(pwd):/workspace ghcr.io/wyattau/omnilatex-docker:latest` |
 | Nix | `nix develop` |
-| CTAN | `tlmgr install omnilatex` |
 | Local | TeX Live 2025+ with LuaLaTeX |
 | Overleaf | [Open in Overleaf](https://www.overleaf.com/latex/templates/omnilatex/cndqjfkdnrfn) |
 

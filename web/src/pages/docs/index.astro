@@ -12,7 +12,7 @@ const groups = {
   'Getting Started': docs.filter(d => ['user_guide', 'migration_guide', 'faq', 'overleaf'].some(n => d.id.includes(n))),
   'Reference': docs.filter(d => ['api_reference', 'institution_gallery', 'editor-integration', 'gallery', 'module_coverage'].some(n => d.id.includes(n))),
   'Advanced': docs.filter(d => ['accessibility', 'performance', 'api_stability', 'breaking_changes', 'plugin_catalog', 'localization_guide'].some(n => d.id.includes(n))),
-  'Distribution': docs.filter(d => ['ctan_submission', 'institution_contributing', 'institution_contribution_pipeline', 'language-expansion'].some(n => d.id.includes(n))),
+  'Distribution': docs.filter(d => ['institution_contributing', 'institution_contribution_pipeline', 'language-expansion'].some(n => d.id.includes(n))),
   'Manual': docs.filter(d => d.id.startsWith('manual/')),
 };
 ---
