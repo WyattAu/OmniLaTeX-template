@@ -303,14 +303,14 @@ commonly used for systems of equations and piecewise definitions.
     \caption{Common loss functions in machine learning.}
     \label{tab:array-math}
     \renewcommand{\arraystretch}{1.6}
-    \begin{tabular}{>{\displaystyle}l >{\displaystyle}c}
+    \begin{tabular}{lc}
         \toprule
         \textbf{Loss Function} & \textbf{Formula} \\
         \midrule
-        Cross-Entropy  & -\sum_{i} y_i \log \hat{y}_i \\
-        MSE            & \frac{1}{N} \sum_{i=1}^{N} (y_i - \hat{y}_i)^2 \\
-        MAE            & \frac{1}{N} \sum_{i=1}^{N} |y_i - \hat{y}_i| \\
-        Huber          & \begin{cases} \frac{1}{2}(y - \hat{y})^2 & |y - \hat{y}| \leq \delta \\ \delta|y - \hat{y}| - \frac{1}{2}\delta^2 & \text{otherwise} \end{cases} \\
+        Cross-Entropy  & $-\sum_{i} y_i \log \hat{y}_i$ \\
+        MSE            & $\frac{1}{N} \sum_{i=1}^{N} (y_i - \hat{y}_i)^2$ \\
+        MAE            & $\frac{1}{N} \sum_{i=1}^{N} |y_i - \hat{y}_i|$ \\
+        Huber          & $\begin{cases} \frac{1}{2}(y - \hat{y})^2 & |y - \hat{y}| \leq \delta \\ \delta|y - \hat{y}| - \frac{1}{2}\delta^2 & \text{otherwise} \end{cases}$ \\
         \bottomrule
     \end{tabular}
 \end{table}

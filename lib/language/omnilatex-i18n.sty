@@ -16,6 +16,20 @@
 
 \RequirePackage{polyglossia}% Language rules. Replacement for babel in lualatex
 
+% RTL languages (arabic, hebrew, persian) require bidi/luabidi for polyglossia.
+% If bidi is not installed, fall back to english and warn.  This prevents a
+% fatal error when building with a minimal TeX Live that lacks luabidi.
+\newif\ifomnilatex@bidi@available
+\IfFileExists{luabidi.sty}{%
+  \omnilatex@bidi@availabletrue
+}{%
+  \IfFileExists{bidi.sty}{%
+    \omnilatex@bidi@availabletrue
+  }{%
+    \omnilatex@bidi@availablefalse
+  }%
+}
+
 % Expand this properly; the version without \expandsafters does not work fully.
 % The first \expandafter is seen, so the following \setdefaultlanguage is not
 % expanded and skipped.
@@ -23,7 +37,26 @@
 % for later.
 % \omnilatex@language is then expanded fully, to the current language.
 % What is left is a properly working string, \setdefaultlanguage{<language string>}
-\expandafter\setdefaultlanguage\expandafter{\omnilatex@language}
+%
+% For RTL languages, only set as default if bidi is available; otherwise
+% fall back to english to keep compilation working.
+\newif\ifomnilatex@rtl@lang
+\omnilatex@rtl@langfalse
+\IfStrEq{\omnilatex@language}{arabic}{\omnilatex@rtl@langtrue}{}
+\IfStrEq{\omnilatex@language}{hebrew}{\omnilatex@rtl@langtrue}{}
+\IfStrEq{\omnilatex@language}{persian}{\omnilatex@rtl@langtrue}{}
+\ifomnilatex@rtl@lang
+  \ifomnilatex@bidi@available
+    \expandafter\setdefaultlanguage\expandafter{\omnilatex@language}
+  \else
+    \PackageWarning{omnilatex-i18n}{%
+      RTL language '\omnilatex@language' requires luabidi which is not\MessageBreak
+      installed.  Falling back to english.  Install luabidi for RTL support.}%
+    \setdefaultlanguage{english}%
+  \fi
+\else
+  \expandafter\setdefaultlanguage\expandafter{\omnilatex@language}
+\fi
 
 % Whatever main language (setmainlanguage = setdefaultlanguage) was loaded, we want
 % the "other" one (since we expect only English and German) to be available as a

@@ -30,6 +30,11 @@
 \newif\ifomnilatex@use@luatexja
 \IfStrEq{\omnilatex@language}{japanese}{\omnilatex@use@luatexjatrue}{}
 \ifomnilatex@use@luatexja
+  %% Set Japanese font BEFORE loading luatexja so it doesn't try its
+  %% default HaranoAji font (which may not be installed).
+  \IfFontExistsTF{Noto Serif CJK JP}{%
+    \setmainjfont{Noto Serif CJK JP}%
+  }{}
   \RequirePackage{luatexja}
   \RequirePackage{luatexja-fontspec}
   \RequirePackage{luatexja-ruby}

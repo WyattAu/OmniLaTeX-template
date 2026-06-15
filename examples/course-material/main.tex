@@ -6,6 +6,10 @@
 
 \RequirePackage{config/document-settings}
 
+% Course material doctype does not define \scheduleentry (that is syllabus-specific).
+% Define it here for the weekly schedule table.
+\newcommand{\scheduleentry}[3]{#1 & #2 & #3 \\}
+
 \begin{document}
 
 \maketitle

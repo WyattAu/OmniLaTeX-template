@@ -518,7 +518,7 @@ A matrix heatmap with color-coded correlation values.
             1/\corrA/0, 2/\corrB/-1, 3/\corrC/-2,
             4/\corrD/-3, 5/\corrE/-4, 6/\corrF/-5
         } {
-            \foreach \col/\val [count=\i from 0] in \data {
+            \foreach \val [count=\i from 0] in \data {
                 \pgfmathparse{\val}
                 \pgfmathsetmacro{\intensity}{abs(\pgfmathresult)}
                 \pgfmathsetmacro{\redcolor}{100*\pgfmathresult + 155}
