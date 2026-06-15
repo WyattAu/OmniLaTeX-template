@@ -710,7 +710,10 @@ is colored according to its value using a gradient.
             \pgfmathsetmacro{\r}{227 - \i*20}
             \pgfmathsetmacro{\g}{26 + \i*8}
             \pgfmathsetmacro{\b}{28 + \i*3}
-            \definecolor{hcell}{rgb}{\r/255,\g/255,\b/255}
+            \pgfmathsetmacro{\rnorm}{\r/255}
+            \pgfmathsetmacro{\gnorm}{\g/255}
+            \pgfmathsetmacro{\bnorm}{\b/255}
+            \definecolor{hcell}{rgb}{\rnorm,\gnorm,\bnorm}
             \fill[hcell] ({\i*0.2},0) rectangle ({\i*0.2+0.2},0.4);
         }
     \end{tikzpicture}
