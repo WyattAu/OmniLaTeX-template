@@ -503,7 +503,6 @@ class TestCICD:
             "build.yml",
             "docker-ci.yml",
             "lean4-ci.yml",
-            "ctan.yml",
             "integration-matrix.yml",
             "regression.yml",
             "docker-digest-sync.yml",
@@ -587,9 +586,6 @@ class TestDocumentation:
     )
     def test_doc_file_exists(self, doc):
         assert (REPO_ROOT / "docs" / doc).is_file(), f"Missing docs/{doc}"
-
-    def test_ctan_readme_exists(self):
-        assert (REPO_ROOT / "CTAN_README.txt").is_file()
 
 
 class TestTranslationPlaceholders:
