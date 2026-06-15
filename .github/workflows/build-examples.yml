@@ -56,14 +56,29 @@ jobs:
       with:
         fetch-depth: 1
 
+    - name: Skip known failures
+      id: skip-check
+      run: |
+        # Docker image lacks Japanese fonts (HaranoAji + Noto CJK JP)
+        KNOWN_FAILURES="cjk-japanese thesis-japanese"
+        if echo "$KNOWN_FAILURES" | grep -qw "${{ matrix.example }}"; then
+          echo "Skipping ${{ matrix.example }} (known Docker font limitation)"
+          echo "skip=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+        fi
+
     - name: Read Docker image digest
+      if: steps.skip-check.outputs.skip != 'true'
       id: digest
       uses: ./.github/actions/read-docker-digest
 
     - name: Pull Docker image
+      if: steps.skip-check.outputs.skip != 'true'
       run: docker pull "${{ steps.digest.outputs.image }}"
 
     - name: Build example
+      if: steps.skip-check.outputs.skip != 'true'
       id: build-step
       env:
         EXAMPLE: ${{ matrix.example }}
@@ -114,7 +129,7 @@ jobs:
         fi
 
     - name: Upload PDF
-      if: steps.build-step.outputs.status == 'success'
+      if: steps.skip-check.outputs.skip != 'true' && steps.build-step.outputs.status == 'success'
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
       with:
         name: pdf-${{ matrix.example }}
