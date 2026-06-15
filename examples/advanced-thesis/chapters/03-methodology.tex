@@ -163,7 +163,7 @@ value decomposition.
 
 The complete ASBO algorithm is presented in \cref{alg:asbo}.
 
-\begin{algorithm}[htbp]
+\begin{algorithm2e}[htbp]
 \caption{Adaptive Subspace Bayesian Optimisation (ASBO)}
 \label{alg:asbo}
 \KwIn{Objective function $f$, domain $\cX \subseteq \R^d$, budget $n$,
@@ -181,4 +181,4 @@ Initialise subspace $\bZ_0 \leftarrow \text{RandomProjection}(k_0, d)$\;
     Update intrinsic dimension: $k_t \leftarrow \text{EstimateDim}(\bZ_t)$\;
 }
 \Return $\bx_n^\star \leftarrow \argmin_{(\bx, y) \in \cD_n} y$\;
-\end{algorithm}
+\end{algorithm2e}
