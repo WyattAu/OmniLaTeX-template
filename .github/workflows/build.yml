@@ -124,8 +124,8 @@ jobs:
       run: |
         EXPECTED=$(ls -d examples/*/main.tex 2>/dev/null | wc -l)
         ACTUAL=$(ls build/examples/*.pdf 2>/dev/null | wc -l)
-        # Known failures: TeX Live 2026 callback.register() issue in Docker
-        KNOWN_FAILURES=""
+        # Known failures: Docker image missing Japanese fonts (HaranoAji + Noto CJK JP)
+        KNOWN_FAILURES="cjk-japanese thesis-japanese"
         ALLOWED=$(echo "$KNOWN_FAILURES" | wc -w)
         MINIMUM=$((EXPECTED - ALLOWED))
         echo "Expected $EXPECTED PDFs, found $ACTUAL (minimum required: $MINIMUM)"

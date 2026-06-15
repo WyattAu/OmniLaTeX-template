@@ -34,8 +34,9 @@
   \RequirePackage{luatexja-fontspec}
   \RequirePackage{luatexja-ruby}
   %% Override luatexja's default Japanese font (HaranoAji) with
-  %% Noto Serif CJK JP, which is bundled with TeX Live's CJK font set.
-  %% HaranoAji is not always installed, causing "font not loadable" errors.
+  %% Noto Serif CJK JP when available.  This prevents "font not loadable"
+  %% errors on installations that lack HaranoAji.  On Docker images without
+  %% either font, Japanese examples are skipped via CI allowlist.
   \IfFontExistsTF{Noto Serif CJK JP}{%
     \setmainjfont{Noto Serif CJK JP}%
   }{}
