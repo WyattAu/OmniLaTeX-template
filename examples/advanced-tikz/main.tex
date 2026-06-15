@@ -521,14 +521,14 @@ A matrix heatmap with color-coded correlation values.
             \foreach \val [count=\i from 0] in \data {
                 \pgfmathparse{\val}
                 \pgfmathsetmacro{\intensity}{abs(\pgfmathresult)}
-                \pgfmathsetmacro{\redcolor}{100*\pgfmathresult + 155}
-                \pgfmathsetmacro{\bluecolor}{-100*\pgfmathresult + 155}
                 \pgfmathtruncatemacro{\sign}{\pgfmathresult > 0 ? 1 : 0}
-                \pgfmathsetmacro{\invintensity}{1-\intensity}
+                \pgfmathtruncatemacro{\ri}{255}
+                \pgfmathtruncatemacro{\gi}{round(255*(1-\intensity))}
+                \pgfmathtruncatemacro{\bi}{round(255*(1-\intensity))}
                 \ifnum \sign > 0
-                    \definecolor{cellcolor}{rgb}{1,\invintensity,\invintensity}
+                    \definecolor{cellcolor}{RGB}{\ri,\gi,\bi}
                 \else
-                    \definecolor{cellcolor}{rgb}{\invintensity,\invintensity,1}
+                    \definecolor{cellcolor}{RGB}{\gi,\bi,\ri}
                 \fi
                 \fill[cellcolor] (\i*\cellsize, \y*\cellsize) rectangle
                     ++(\cellsize, \cellsize);
