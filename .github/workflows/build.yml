@@ -118,14 +118,14 @@ jobs:
           -e IS_OMNILATEX_CONTAINER=true \
           -e CI=true \
           "${{ steps.digest.outputs.image }}" \
-          python3 build.py --mode prod --verbose build-all
+          bash -c "luaotfload-tool --update && python3 build.py --mode prod --verbose build-all"
 
     - name: Verify all examples built
       run: |
         EXPECTED=$(ls -d examples/*/main.tex 2>/dev/null | wc -l)
         ACTUAL=$(ls build/examples/*.pdf 2>/dev/null | wc -l)
-        # Known failures: Docker image missing Japanese fonts (HaranoAji + Noto CJK JP)
-        KNOWN_FAILURES="cjk-japanese thesis-japanese"
+        # Known failures: none (all examples should build)
+        KNOWN_FAILURES=""
         ALLOWED=$(echo "$KNOWN_FAILURES" | wc -w)
         MINIMUM=$((EXPECTED - ALLOWED))
         echo "Expected $EXPECTED PDFs, found $ACTUAL (minimum required: $MINIMUM)"
