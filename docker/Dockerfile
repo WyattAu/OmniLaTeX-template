@@ -366,8 +366,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/* \
     && fc-cache -f -v \
     && mkdir -p /usr/local/texlive/texmf-local/fonts/truetype \
-    && ln -sf /usr/share/fonts/noto-cjk /usr/local/texlive/texmf-local/fonts/truetype/noto-cjk \
-    && ln -sf /usr/share/fonts/noto /usr/local/texlive/texmf-local/fonts/truetype/noto \
+    && ln -sf /usr/share/fonts/opentype/noto /usr/local/texlive/texmf-local/fonts/opentype/noto \
+    && ln -sf /usr/share/fonts/truetype/noto /usr/local/texlive/texmf-local/fonts/truetype/noto \
     && ln -sf /usr/share/fonts/truetype /usr/local/texlive/texmf-local/fonts/truetype/system \
     && luaotfload-tool --update --force
 
