@@ -1,0 +1,330 @@
+\documentclass[
+    language=english,
+    doctype=technical-report,
+    institution=none,
+    titlestyle=book,
+    oneside,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+%=============================================================================
+\chapter{Introduction}
+\label{sec:introduction}
+%=============================================================================
+
+This document presents the system design for DataPipe v4, a next-generation
+streaming ETL platform. DataPipe v4 addresses the scalability and
+operational limitations identified in the v3 architecture by introducing a
+serverless execution model, distributed state management, and a unified
+control plane.
+
+\section{Design Goals}
+
+\begin{enumerate}
+    \item \textbf{Scale to 10M events/s} on a multi-region deployment.
+    \item \textbf{Reduce operational overhead} through auto-scaling and
+        self-healing.
+    \item \textbf{Enable multi-tenancy} with resource isolation.
+    \item \textbf{Improve developer experience} with a local development
+        mode.
+    \item \textbf{Maintain backward compatibility} with v3 pipeline
+        definitions.
+\end{enumerate}
+
+%=============================================================================
+\chapter{Requirements}
+\label{sec:requirements}
+%=============================================================================
+
+\section{Functional Requirements}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Functional requirements for DataPipe v4.}
+    \label{tab:func-req}
+    \begin{tabular}{@{}p{2cm}p{4cm}p{5cm}@{}}
+        \toprule
+        ID & Requirement & Acceptance Criteria \\
+        \midrule
+        FR-01 & Support 50+ connector types & Connectors for all major
+            databases, message queues, and cloud storage. \\
+        FR-02 & Exactly-once delivery semantics & No duplicates under
+            consumer restart and network partitions. \\
+        FR-03 & Multi-tenant isolation & Pipeline execution in one tenant
+            does not affect others. \\
+        FR-04 & Real-time monitoring dashboard & Sub-second metric
+            refresh for all active pipelines. \\
+        FR-05 & Schema registry integration & Automatic schema evolution
+            validation. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Non-Functional Requirements}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Non-functional requirements.}
+    \label{tab:nfr}
+    \begin{tabular}{@{}p{3cm}p{4cm}p{4cm}@{}}
+        \toprule
+        Requirement & Target & Measurement \\
+        \midrule
+        Throughput & 10M events/s (multi-region) & End-to-end pipeline
+            throughput under sustained load. \\
+        Latency & P99 $< 100$\,ms & Time from source ingestion to sink
+            delivery. \\
+        Availability & 99.99\% & Monthly uptime excluding planned
+            maintenance. \\
+        Recovery & RTO $< 30$s, RPO $< 5$s & Time to recover from node
+            failure. \\
+        Tenancy & 1000 tenants per cluster & Resource isolation and
+            fair scheduling. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+%=============================================================================
+\chapter{Capacity Estimates}
+\label{sec:capacity}
+%=============================================================================
+
+\section{Throughput Calculation}
+
+For a target of 10M events/s:
+
+\begin{align}
+    \text{Events per second} &= 10{,}000{,}000 \\
+    \text{Avg.\ event size} &= 1{,}024\text{ bytes} \\
+    \text{Ingress bandwidth} &= 10^7 \times 1024 = 10.24\text{ GB/s} \\
+    \text{Egress bandwidth} &\approx 10.24\text{ GB/s (assuming 1:1 ratio)}
+\end{align}
+
+\section{Compute Requirements}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Compute capacity estimates.}
+    \label{tab:compute}
+    \begin{tabular}{@{}lrr@{}}
+        \toprule
+        Component & Instances & Specification \\
+        \midrule
+        Pipeline executors & 50 & 16 vCPU, 64\,GB RAM \\
+        Kafka brokers & 15 & 8 vCPU, 32\,GB RAM, 2\,TB NVMe \\
+        PostgreSQL (metadata) & 5 & 8 vCPU, 64\,GB RAM, 1\,TB SSD \\
+        Control plane & 3 & 8 vCPU, 16\,GB RAM \\
+        Monitoring stack & 3 & 8 vCPU, 32\,GB RAM \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Storage Requirements}
+
+\begin{align}
+    \text{Kafka retention} &= 7\text{ days} \\
+    \text{Storage per day} &= 10.24\text{ GB/s} \times 86{,}400\text{ s} \approx 885\text{ TB} \\
+    \text{Total Kafka storage} &= 885 \times 7 = 6{,}195\text{ TB} \\
+    \text{Replication factor} &= 3 \\
+    \text{Total disk} &= 6{,}195 \times 3 = 18{,}585\text{ TB} \approx 18.6\text{ PB}
+\end{align}
+
+%=============================================================================
+\chapter{API Design}
+\label{sec:api}
+%=============================================================================
+
+\section{REST API Endpoints}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Core REST API endpoints.}
+    \label{tab:api}
+    \begin{tabular}{@{}lp{4cm}p{5cm}@{}}
+        \toprule
+        Method & Endpoint & Description \\
+        \midrule
+        GET & /api/v4/pipelines & List all pipelines. \\
+        POST & /api/v4/pipelines & Create a new pipeline. \\
+        GET & /api/v4/pipelines/\{id\} & Get pipeline details. \\
+        PUT & /api/v4/pipelines/\{id\} & Update a pipeline. \\
+        DELETE & /api/v4/pipelines/\{id\} & Delete a pipeline. \\
+        POST & /api/v4/pipelines/\{id\}/start & Start a pipeline. \\
+        POST & /api/v4/pipelines/\{id\}/stop & Stop a pipeline. \\
+        GET & /api/v4/pipelines/\{id\}/metrics & Get pipeline metrics. \\
+        GET & /api/v4/tenants & List tenants (admin only). \\
+        POST & /api/v4/tenants & Create a tenant (admin only). \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Pipeline Configuration Schema}
+
+\begin{lstlisting}[language=yaml, caption={DataPipe v4 pipeline schema.}]
+apiVersion: datapipe.io/v4
+kind: Pipeline
+metadata:
+  name: user-events-to-warehouse
+  tenant: acme-corp
+  labels:
+    team: data-engineering
+    environment: production
+spec:
+  description: Ingest user events into the data warehouse
+  deliveryGuarantee: exactly-once
+  resources:
+    cpu: 4
+    memory: 8Gi
+    maxConcurrency: 16
+  stages:
+    - name: source
+      type: kafka
+      config:
+        topic: user-events
+        consumerGroup: etl-warehouse
+        bootstrapServers: kafka-0:9092,kafka-1:9092
+    - name: filter
+      type: filter
+      config:
+        predicate: "event_type IN ('click', 'purchase')"
+    - name: enrich
+      type: lookup
+      config:
+        source: user-profiles
+        joinKey: user_id
+        fields: [name, email, plan]
+    - name: sink
+      type: postgresql
+      config:
+        table: analytics.user_events
+        batchSize: 10000
+        flushInterval: 5s
+\end{lstlisting}
+
+%=============================================================================
+\chapter{Database Schema}
+\label{sec:database}
+%=============================================================================
+
+\section{Metadata Tables}
+
+\begin{lstlisting}[language=sql, caption={Core database schema.}]
+CREATE TABLE pipelines (
+    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id   UUID NOT NULL REFERENCES tenants(id),
+    name        VARCHAR(255) NOT NULL,
+    config      JSONB NOT NULL,
+    status      VARCHAR(50) NOT NULL DEFAULT 'stopped',
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE(tenant_id, name)
+);
+
+CREATE TABLE pipeline_runs (
+    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    pipeline_id UUID NOT NULL REFERENCES pipelines(id),
+    status      VARCHAR(50) NOT NULL,
+    started_at  TIMESTAMPTZ,
+    finished_at TIMESTAMPTZ,
+    records_in  BIGINT DEFAULT 0,
+    records_out BIGINT DEFAULT 0,
+    errors      INTEGER DEFAULT 0
+);
+
+CREATE TABLE pipeline_checkpoints (
+    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    pipeline_id UUID NOT NULL REFERENCES pipelines(id),
+    stage       VARCHAR(255) NOT NULL,
+    offset      JSONB NOT NULL,
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX idx_pipelines_tenant ON pipelines(tenant_id);
+CREATE INDEX idx_runs_pipeline ON pipeline_runs(pipeline_id);
+CREATE INDEX idx_checkpoints_pipeline ON pipeline_checkpoints(pipeline_id);
+\end{lstlisting}
+
+%=============================================================================
+\chapter{Scaling Strategy}
+\label{sec:scaling}
+%=============================================================================
+
+\section{Horizontal Scaling}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.2cm and 2cm,
+        box/.style={draw, rounded corners, minimum width=2.5cm,
+                     minimum height=0.9cm, text centered, font=\small,
+                     fill=#1!20, draw=#1!60!black},
+        arr/.style={->, >=stealth, thick},
+        scale-label/.style={font=\footnotesize, text width=3cm, align=center},
+    ]
+        \node[box=blue]   (lb)    {Load Balancer};
+        \node[box=green]  (cp)    [below=of lb] {Control Plane};
+        \node[box=orange] (exec1) [below left=1.5cm and 1cm of cp] {Executor 1};
+        \node[box=orange] (exec2) [below=of cp] {Executor 2};
+        \node[box=orange] (exec3) [below right=1.5cm and 1cm of cp] {Executor N};
+        \node[box=red]    (kafka) [below=2cm of exec2] {Kafka Cluster};
+
+        \draw[arr] (lb) -- (cp);
+        \draw[arr] (cp) -- (exec1);
+        \draw[arr] (cp) -- (exec2);
+        \draw[arr] (cp) -- (exec3);
+        \draw[arr] (exec1) -- (kafka);
+        \draw[arr] (exec2) -- (kafka);
+        \draw[arr] (exec3) -- (kafka);
+
+        \node[scale-label, right=0.5cm of exec3]
+            {Auto-scales based on consumer lag};
+    \end{tikzpicture}
+    \caption{Horizontal scaling architecture.}
+    \label{fig:scaling}
+\end{figure}
+
+\section{Auto-Scaling Rules}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Auto-scaling thresholds.}
+    \label{tab:autoscale}
+    \begin{tabular}{@{}lrr@{}}
+        \toprule
+        Metric & Scale Up & Scale Down \\
+        \midrule
+        Consumer lag $> 50{,}000$ records & +2 executors & --- \\
+        CPU utilisation $> 80\%$ for 5 min & +1 executor & --- \\
+        CPU utilisation $< 30\%$ for 15 min & --- & $-1$ executor \\
+        Memory utilisation $> 90\%$ & +2 executors & --- \\
+        Active pipelines $> 20$ per executor & +1 executor & --- \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Multi-Region Deployment}
+
+DataPipe v4 supports active-active multi-region deployment:
+
+\begin{enumerate}
+    \item Each region runs an independent Kafka cluster with cross-region
+        mirroring via MirrorMaker 2.
+    \item The control plane uses CockroachDB for globally consistent
+        metadata.
+    \item Pipelines are assigned to a primary region with automatic
+        failover.
+    \item Metrics are aggregated into a central monitoring cluster.
+\end{enumerate}
+
+\printbibliography[heading=bibintoc, title={References}]
+
+\end{document}

@@ -1,0 +1,293 @@
+\documentclass[
+    language=english,
+    doctype=project-charter,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+
+\maketitle
+
+\section*{Project Overview}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{ll}
+        \toprule
+        \textbf{Field} & \textbf{Value} \\
+        \midrule
+        Project Name        & Project Atlas --- Multi-Region Platform Expansion \\
+        Project Code        & PRJ-2026-004 \\
+        Sponsor             & Marcus Chen, CTO \\
+        Project Manager     & Jordan Mitchell, Senior Product Manager \\
+        Start Date          & July 1, 2026 \\
+        Target Completion   & December 31, 2026 \\
+        Estimated Budget    & \$1.85M \\
+        Priority            & Critical \\
+        \bottomrule
+    \end{tabular}
+    \caption{Project charter metadata.}
+\end{table}
+
+\section{Problem Statement}
+
+NovaPulse's platform currently operates from a single-region deployment in
+US-East (AWS). This architecture limits our ability to:
+
+\begin{itemize}
+    \item Serve European customers with sub-100ms latency (current average
+          is 280ms from EU data centers).
+    \item Meet data residency requirements for customers in regulated
+          industries (financial services, healthcare, government) that
+          mandate in-region data processing.
+    \item Achieve the 99.99\% uptime SLA we promise to enterprise customers,
+          as a single-region failure currently represents a single point
+          of catastrophic failure.
+    \item Scale to support our projected 3$\times$ customer growth through
+          2028 without proportionally increasing infrastructure costs.
+\end{itemize}
+
+Without addressing these limitations, we risk losing an estimated \$12M in
+annual enterprise contracts by Q4 2027 due to compliance, latency, and
+reliability requirements.
+
+\section{Project Objectives}
+
+\begin{enumerate}
+    \item \textbf{Deploy EU region.} Launch a fully operational EU
+        (Frankfurt, AWS eu-central-1) region by October 2026 with full
+        feature parity to US-East.
+    \item \textbf{Achieve 99.99\% uptime.} Implement active-active
+        multi-region failover with automated traffic shifting and
+        cross-region data replication.
+    \item \textbf{Reduce EU latency.} Achieve sub-100ms API response times
+        (P95) for customers in Western Europe.
+    \item \textbf{Enable data residency.} Provide configurable data
+        residency controls allowing customers to restrict data processing
+        and storage to specific regions.
+    \item \textbf{Maintain cost efficiency.} Keep infrastructure cost per
+        customer within 15\% of current single-region economics through
+        intelligent resource utilization.
+\end{enumerate}
+
+\section{Scope}
+
+\subsection{In Scope}
+
+\begin{itemize}
+    \item EU region deployment (Frankfurt) with all platform services.
+    \item Cross-region data replication (eventual consistency, $<$500ms RPO).
+    \item Active-active traffic routing with automatic failover.
+    \item Customer-facing data residency configuration UI and API.
+    \item Edge inference node deployment in EU for low-latency ML inference.
+    \item Monitoring, alerting, and incident response for multi-region
+          operations.
+    \item Documentation, runbooks, and team training for multi-region
+          operations.
+\end{itemize}
+
+\subsection{Out of Scope}
+
+\begin{itemize}
+    \item Asia-Pacific region expansion (planned for Q1 2027 as a separate
+          project).
+    \item On-premise or private cloud deployments.
+    \item Migration of existing US-East customers to EU (self-service
+          migration tool planned for Q1 2027).
+    \item Pricing model changes for multi-region support (to be determined
+          by Finance and Sales).
+\end{itemize}
+
+\section{Stakeholders}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lllp{4cm}}
+        \toprule
+        \textbf{Stakeholder} & \textbf{Role} & \textbf{Interest} & \textbf{Engagement Level} \\
+        \midrule
+        Marcus Chen       & CTO / Sponsor      & High   & Approves budget, removes
+            blockers, reviews architecture decisions \\
+        Jordan Mitchell   & Project Manager    & High   & Day-to-day ownership,
+            timeline management, cross-team coordination \\
+        Priya Sharma      & VP Engineering     & High   & Engineering resource
+            allocation, technical review \\
+        Sarah Okafor      & VP Sales           & High   & Customer requirements,
+            EU sales pipeline impact \\
+        Dr.\ Raj Patel    & VP Product         & Medium & Feature prioritization,
+            customer experience alignment \\
+        Taylor Brooks     & Lead DevOps        & High   & Infrastructure provisioning,
+            CI/CD pipeline changes, monitoring setup \\
+        Dr.\ Elena Vasquez & CEO               & Medium & Strategic alignment,
+            board updates \\
+        Riley Chen        & Customer Success   & Low    & Customer communication,
+            migration support planning \\
+        \bottomrule
+    \end{tabular}
+    \caption{Project stakeholders and engagement matrix.}
+\end{table}
+
+\section{Milestones \& Timeline}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{llcl}
+        \toprule
+        \textbf{ID} & \textbf{Milestone} & \textbf{Date} & \textbf{Status} \\
+        \midrule
+        M1  & Charter approved, team assembled           & Jul 1, 2026   & In Progress \\
+        M2  & EU infrastructure provisioned and hardened  & Jul 22, 2026  & Planned \\
+        M3  & Core services deployed to EU region         & Aug 15, 2026  & Planned \\
+        M4  & Cross-region replication validated          & Sep 1, 2026   & Planned \\
+        M5  & Active-active failover tested (chaos eng.)  & Sep 20, 2026  & Planned \\
+        M6  & Data residency UI and API complete          & Oct 1, 2026   & Planned \\
+        M7  & Beta customers onboarded to EU              & Oct 15, 2026  & Planned \\
+        M8  & Edge inference nodes deployed in EU         & Nov 1, 2026   & Planned \\
+        M9  & EU region GA launch                         & Nov 15, 2026  & Planned \\
+        M10 & Documentation, runbooks, training complete  & Dec 15, 2026  & Planned \\
+        M11 & Project closure and retrospective           & Dec 31, 2026  & Planned \\
+        \bottomrule
+    \end{tabular}
+    \caption{Project milestones and current status.}
+\end{table}
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[
+        phase/.style={fill=#1,rounded corners=2pt,minimum height=0.5cm,
+            font=\scriptsize\sffamily,text=white,inner sep=3pt},
+        milestone/.style={diamond,fill=red!70,draw=black,inner sep=1.5pt},
+    ]
+        \draw[gray!30,very thin] (0,0) grid (14,7);
+        \foreach \x/\month in {0/Jul,2.3/Aug,4.6/Sep,6.9/Oct,9.2/Nov,11.5/Dec} {
+            \draw[gray!60,thick] (\x,0) -- (\x,7);
+            \node[font=\small\sffamily\bfseries] at (\x+1.15,7.4) {\month};
+        }
+        \node[phase=blue!70] at (1.15,6) {Charter + Team};
+        \node[phase=blue!70] at (3.45,6) {Infra};
+        \node[phase=teal!70] at (5.75,6) {Services};
+        \node[phase=teal!70] at (8.05,6) {Replication};
+        \node[phase=orange!70] at (10.35,6) {Failover};
+        \node[phase=orange!70] at (12.65,6) {Data Residency};
+        \node[phase=red!60] at (8.05,5.2) {Beta};
+        \node[phase=red!60] at (11.5,5.2) {GA Launch};
+        \node[phase=gray!60] at (12.65,5.2) {Closure};
+        \node[milestone,label={[font=\tiny]below:M1}] at (0,4) {};
+        \node[milestone,label={[font=\tiny]below:M3}] at (4.6,4) {};
+        \node[milestone,label={[font=\tiny]below:M5}] at (8.05,4) {};
+        \node[milestone,label={[font=\tiny]below:M9}] at (11.5,4) {};
+        \node[milestone,label={[font=\tiny]below:M11}] at (14,4) {};
+    \end{tikzpicture}
+    \caption{Project timeline with phases and milestones.}
+\end{figure}
+
+\section{Budget}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lrrr}
+        \toprule
+        \textbf{Category} & \textbf{Q3 2026} & \textbf{Q4 2026} & \textbf{Total} \\
+        \midrule
+        Cloud Infrastructure (EU)     & \$180,000 & \$240,000 & \$420,000 \\
+        Engineering Labor (internal)  & \$420,000 & \$380,000 & \$800,000 \\
+        Security Audit \& Compliance  & \$ 85,000 & \$ 45,000 & \$130,000 \\
+        Chaos Engineering Tooling     & \$ 35,000 & \$ 15,000 & \$ 50,000 \\
+        External Consulting           & \$120,000 & \$ 80,000 & \$200,000 \\
+        Training \& Documentation     & \$ 30,000 & \$ 40,000 & \$ 70,000 \\
+        Contingency (10\%)            & \$ 87,000 & \$ 70,000 & \$157,000 \\
+        \midrule
+        \textbf{Total}                & \textbf{\$957,000} & \textbf{\$870,000} & \textbf{\$1,827,000} \\
+        \bottomrule
+    \end{tabular}
+    \caption{Budget breakdown by category and quarter.}
+\end{table}
+
+\section{Risk Register}
+
+\begin{table}[h]
+    \centering
+    \small
+    \begin{tabular}{llccp{4cm}p{3cm}}
+        \toprule
+        \textbf{ID} & \textbf{Risk} & \textbf{L} & \textbf{I} & \textbf{Mitigation} & \textbf{Owner} \\
+        \midrule
+        R1 & EU data residency regulations change & 2 & 4 & Engage external
+            legal counsel; monitor EU AI Act and GDPR developments &
+            Legal \\
+        R2 & Cross-region replication latency exceeds RPO target & 3 & 3 &
+            Prototype replication early (M4); fallback to asynchronous with
+            conflict resolution & Taylor Brooks \\
+        R3 & Key engineer leaves mid-project & 2 & 4 & Cross-train team;
+            document all architecture decisions; maintain backup assignments
+            & Priya Sharma \\
+        R4 & EU cloud costs exceed budget & 3 & 2 & Reserved instance planning;
+            cost monitoring dashboard from Day 1; weekly cost reviews &
+            Taylor Brooks \\
+        R5 & Beta customers discover critical bug in failover & 2 & 3 &
+            Chaos engineering testing before beta; staged rollout; instant
+            rollback capability & Jordan Mitchell \\
+        R6 & Competitor launches multi-region before us & 3 & 3 & Accelerate
+            timeline where possible; focus on differentiation through data
+            residency and edge inference & Sarah Okafor \\
+        \bottomrule
+    \end{tabular}
+    \caption{Risk register (L = Likelihood 1--5, I = Impact 1--5).}
+\end{table}
+
+\section{Resource Requirements}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{llcc}
+        \toprule
+        \textbf{Role} & \textbf{Name} & \textbf{Allocation} & \textbf{Duration} \\
+        \midrule
+        Project Manager         & Jordan Mitchell      & 80\%  & 6 months \\
+        Tech Lead               & Taylor Brooks        & 100\% & 6 months \\
+        Senior Backend Engineer & Alex Kim             & 100\% & 5 months \\
+        Backend Engineer        & Morgan Lee           & 80\%  & 4 months \\
+        DevOps Engineer         & Casey Diaz           & 100\% & 5 months \\
+        Security Engineer       & Riley Chen (external) & 50\% & 3 months \\
+        QA Engineer             & Sam Nguyen           & 60\%  & 3 months \\
+        Product Manager         & Jordan Mitchell      & 20\%  & 6 months \\
+        \bottomrule
+    \end{tabular}
+    \caption{Resource allocation plan.}
+\end{table}
+
+\section{Success Criteria}
+
+\begin{enumerate}
+    \item EU region launched and serving production traffic by November 15, 2026.
+    \item 99.99\% uptime achieved across both regions for 30 consecutive days
+          post-launch.
+    \item EU P95 API latency $<$100ms for customers in Western Europe.
+    \item Data residency controls functional and validated by 3 enterprise
+          customers.
+    \item Budget variance within $\pm$10\% of approved amount.
+    \item Zero P0 or P1 incidents during the first 30 days of EU GA.
+\end{enumerate}
+
+\section{Approval}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lll}
+        \toprule
+        \textbf{Role} & \textbf{Name} & \textbf{Date} \\
+        \midrule
+        Project Sponsor   & Marcus Chen & \underline{\hspace{3cm}} \\
+        VP Engineering    & Priya Sharma & \underline{\hspace{3cm}} \\
+        Project Manager   & Jordan Mitchell & \underline{\hspace{3cm}} \\
+        CISO              & (TBD) & \underline{\hspace{3cm}} \\
+        \bottomrule
+    \end{tabular}
+    \caption{Charter approval signatures.}
+\end{table}
+
+\printbibliography[heading=none]
+
+\end{document}

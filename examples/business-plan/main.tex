@@ -1,0 +1,415 @@
+\documentclass[
+    language=english,
+    doctype=business-plan,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+
+\maketitle
+
+\section*{Executive Summary}
+
+NovaPulse Technologies is a Series A startup developing an AI-powered platform
+for predictive maintenance in industrial manufacturing. Our solution reduces
+unplanned downtime by up to 45\% and extends equipment lifespan by 20--30\%,
+delivering measurable ROI within the first six months of deployment.
+
+We have secured letters of intent from three Fortune 500 manufacturers,
+completed a successful pilot program with Meridian Steel reducing their
+downtime costs by \$2.1M annually, and achieved \$1.4M in annual recurring
+revenue with 92\% gross margins. We are seeking \$8M in Series A funding to
+scale our engineering team, expand into European markets, and accelerate
+customer acquisition.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lrr}
+        \toprule
+        \textbf{Metric} & \textbf{Current} & \textbf{Year 3 Target} \\
+        \midrule
+        Annual Recurring Revenue  & \$1.4M   & \$28M   \\
+        Customers                 & 12       & 180     \\
+        Gross Margin              & 92\%     & 88\%    \\
+        Net Revenue Retention     & 118\%    & 130\%   \\
+        Team Size                 & 18       & 85      \\
+        \bottomrule
+    \end{tabular}
+    \caption{Key metrics: current status and three-year projections.}
+\end{table}
+
+\section{Company Overview}
+
+\subsection{Mission Statement}
+
+To eliminate preventable industrial downtime through intelligent, data-driven
+maintenance systems that protect people, assets, and productivity.
+
+\subsection{Founded}
+
+NovaPulse was incorporated in Delaware in March 2024 by Dr.\ Elena Vasquez
+(CEO, former VP of Engineering at Siemens Digital Industries) and Marcus Chen
+(CTO, former Principal Research Scientist at Google DeepMind with expertise in
+time-series anomaly detection).
+
+\subsection{Legal Structure}
+
+Delaware C-Corporation. Current cap table:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lrr}
+        \toprule
+        \textbf{Shareholder} & \textbf{Shares} & \textbf{Ownership} \\
+        \midrule
+        Founders (combined)     & 6,000,000 & 60.0\% \\
+        Seed Investors (SAFE)   & 2,000,000 & 20.0\% \\
+        Employee Option Pool    & 1,500,000 & 15.0\% \\
+        Advisors                &   500,000 &  5.0\% \\
+        \midrule
+        \textbf{Total}          & \textbf{10,000,000} & \textbf{100.0\%} \\
+        \bottomrule
+    \end{tabular}
+    \caption{Current capitalization structure.}
+\end{table}
+
+\section{Problem Statement}
+
+Unplanned equipment downtime costs the global manufacturing sector an estimated
+\$50B annually. Traditional maintenance strategies---either reactive
+(fix-on-failure) or preventive (time-based schedules)---fail to account for
+the actual condition of equipment. This results in either costly unexpected
+failures or wasteful premature part replacements.
+
+Key pain points identified through interviews with 140+ plant managers:
+
+\begin{itemize}
+    \item 67\% report that unplanned downtime has increased over the past
+          three years due to aging equipment and workforce shortages.
+    \item Average cost of a single hour of unplanned downtime in automotive
+          manufacturing: \$1.3M.
+    \item 80\% of maintenance teams still rely on spreadsheets and manual
+          inspections rather than data-driven systems.
+    \item Existing IoT monitoring solutions generate overwhelming volumes of
+          alert data without actionable insights, leading to alert fatigue.
+\end{itemize}
+
+\section{Solution}
+
+NovaPulse's platform combines edge computing, machine learning, and a
+cloud-based analytics dashboard to provide real-time health scoring and
+remaining useful life (RUL) predictions for critical industrial assets.
+
+\subsection{Core Technology}
+
+\begin{description}
+    \item[Edge Inference Engine.] Lightweight ML models deployed on-premise
+        that process vibration, thermal, and acoustic sensor data in real time,
+        operating within 50ms latency on standard industrial gateways.
+    \item[Predictive Analytics Layer.] Cloud-hosted models trained on
+        proprietary failure-mode datasets covering 14 equipment classes
+        (pumps, compressors, turbines, conveyors, CNC machines, etc.).
+    \item[Digital Twin Framework.] Physics-informed neural networks that
+        create virtual representations of each asset, enabling ``what-if''
+        scenario simulation for maintenance planning.
+    \item[Prescriptive Recommendations.] Actionable work orders generated
+        automatically, including part numbers, estimated labor hours, and
+        optimal scheduling to minimize production impact.
+\end{description}
+
+\subsection{Competitive Advantage}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lcccc}
+        \toprule
+        \textbf{Capability} & \textbf{NovaPulse} & \textbf{Uptake} &
+        \textbf{Augury} & \textbf{Sightline} \\
+        \midrule
+        Edge inference (on-prem)   & Yes & No  & Partial & No  \\
+        Digital twin simulation   & Yes & No  & No      & No  \\
+        Prescriptive work orders  & Yes & No  & Partial & No  \\
+        Multi-modal sensor fusion & Yes & Yes & Yes     & Yes \\
+        Time-to-value             & $<$2 weeks & 3--6 months & 2--4 months & 3+ months \\
+        \bottomrule
+    \end{tabular}
+    \caption{Competitive capability comparison.}
+\end{table}
+
+\section{Market Analysis}
+
+\subsection{Total Addressable Market (TAM)}
+
+The global predictive maintenance market is projected to reach \$23.5B by 2029,
+growing at a CAGR of 25.2\% (MarketsandMarkets, 2025). This encompasses
+hardware, software, and services across all industrial verticals.
+
+\subsection{Serviceable Addressable Market (SAM)}
+
+Focusing on the discrete and process manufacturing segments in North America
+and Europe---our initial target geographies---yields a SAM of \$6.8B.
+
+\subsection{Serviceable Obtainable Market (SOM)}
+
+Based on our current pricing model (average contract value of \$120K/year) and
+realistic market penetration assumptions, our SOM for Year 3 is \$35M
+representing 0.5\% of the SAM.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lrrr}
+        \toprule
+        \textbf{Market Tier} & \textbf{Size (2029)} & \textbf{Definition} \\
+        \midrule
+        TAM & \$23.5B & Global predictive maintenance market \\
+        SAM & \$6.8B  & North America \& Europe manufacturing \\
+        SOM & \$35M   & Year 3 obtainable revenue target \\
+        \bottomrule
+    \end{tabular}
+    \caption{Market sizing framework.}
+\end{table}
+
+\subsection{Target Customer Segments}
+
+\begin{enumerate}
+    \item \textbf{Enterprise Manufacturers (Tier 1).} Companies with
+        \$1B+ revenue, 500+ assets, and existing IoT infrastructure.
+        Average ACV: \$180K.
+    \item \textbf{Mid-Market Manufacturers (Tier 2).} Companies with
+        \$100M--\$1B revenue, 50--500 assets, beginning digital
+        transformation. Average ACV: \$75K.
+    \item \textbf{Industrial Service Providers.} Third-party maintenance
+        firms serving multiple manufacturers. Average ACV: \$50K.
+\end{enumerate}
+
+\section{Business Model}
+
+\subsection{Revenue Streams}
+
+\begin{enumerate}
+    \item \textbf{SaaS Subscriptions (85\% of revenue).} Annual contracts
+        based on number of monitored assets, tiered pricing.
+    \item \textbf{Professional Services (10\% of revenue).} Implementation,
+        sensor integration, custom model training, and digital twin setup.
+    \item \textbf{Data Licensing (5\% of revenue).} Anonymized failure-mode
+        datasets licensed to equipment OEMs for product improvement.
+\end{enumerate}
+
+\subsection{Pricing}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lrrr}
+        \toprule
+        \textbf{Tier} & \textbf{Assets} & \textbf{Annual Fee} & \textbf{Per-Asset} \\
+        \midrule
+        Starter   & 10--50    & \$48,000  & \$960  \\
+        Growth    & 51--200   & \$96,000  & \$640  \\
+        Enterprise & 201--500 & \$144,000 & \$480  \\
+        Scale     & 500+      & Custom    & Negotiated \\
+        \bottomrule
+    \end{tabular}
+    \caption{SaaS subscription pricing tiers.}
+\end{table}
+
+\section{Go-to-Market Strategy}
+
+\subsection{Phase 1: Foundation (Months 1--6)}
+
+\begin{itemize}
+    \item Close Series A round and hire 12 engineers and 4 sales
+          development representatives.
+    \item Expand pilot programs to 5 additional manufacturing companies
+          across automotive, pharmaceuticals, and food \& beverage.
+    \item Establish partnerships with two major industrial IoT platform
+          providers (Siemens MindSphere, PTC ThingWorx) for integration
+          certifications.
+    \item Publish three case studies with quantified ROI results.
+\end{itemize}
+
+\subsection{Phase 2: Scale (Months 7--18)}
+
+\begin{itemize}
+    \item Launch self-service onboarding portal for Tier 2 customers.
+    \item Open European sales office in Munich targeting DACH region.
+    \item Hire 8 field application engineers for on-site deployments.
+    \item Achieve \$10M ARR milestone by end of Month 18.
+\end{itemize}
+
+\subsection{Phase 3: Expand (Months 19--36)}
+
+\begin{itemize}
+    \item Enter APAC market through partnership with regional distributor.
+    \item Launch OEM licensing program for equipment manufacturers.
+    \item Introduce predictive quality module (extending beyond maintenance
+          into production quality optimization).
+    \item Target \$28M ARR and 180 customers by end of Year 3.
+\end{itemize}
+
+\section{Financial Projections}
+
+\subsection{Revenue Forecast}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lrrrr}
+        \toprule
+        \textbf{Line Item} & \textbf{Year 1} & \textbf{Year 2} & \textbf{Year 3} \\
+        \midrule
+        SaaS Revenue         & \$1.2M  & \$6.8M  & \$23.8M \\
+        Professional Services & \$0.4M  & \$1.6M  & \$3.2M  \\
+        Data Licensing        & \$0.1M  & \$0.6M  & \$1.4M  \\
+        \midrule
+        \textbf{Total Revenue} & \textbf{\$1.7M} & \textbf{\$9.0M} & \textbf{\$28.4M} \\
+        \bottomrule
+    \end{tabular}
+    \caption{Three-year revenue projection.}
+\end{table}
+
+\subsection{Operating Expenses}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lrrrr}
+        \toprule
+        \textbf{Category} & \textbf{Year 1} & \textbf{Year 2} & \textbf{Year 3} \\
+        \midrule
+        Research \& Development  & \$3.2M  & \$5.4M  & \$8.1M  \\
+        Sales \& Marketing       & \$2.0M  & \$4.5M  & \$8.0M  \\
+        General \& Administrative & \$1.1M & \$1.8M  & \$2.7M  \\
+        Cloud Infrastructure     & \$0.5M  & \$1.2M  & \$2.8M  \\
+        \midrule
+        \textbf{Total OpEx}      & \textbf{\$6.8M} & \textbf{\$12.9M} & \textbf{\$21.6M} \\
+        \bottomrule
+    \end{tabular}
+    \caption{Operating expense projections.}
+\end{table}
+
+\subsection{Path to Profitability}
+
+\begin{itemize}
+    \item \textbf{Year 1:} Net loss of \$(5.1M); burn rate of \$425K/month.
+    \item \textbf{Year 2:} Net loss of \$(3.9M); burn rate reduced to
+          \$325K/month as revenue scales.
+    \item \textbf{Year 3:} Net income of \$3.2M; operating margin of 11.3\%.
+    \item \textbf{Cash-flow positive} expected in Month 28.
+\end{itemize}
+
+\section{Team}
+
+\subsection{Leadership}
+
+\begin{description}
+    \item[Dr.\ Elena Vasquez, CEO.] 15 years in industrial automation.
+        Previously VP Engineering at Siemens Digital Industries. Led
+        development of the MindSphere IoT platform from 0 to 400 enterprise
+        customers.
+    \item[Marcus Chen, CTO.] PhD in Machine Learning (MIT). Former Principal
+        Research Scientist at Google DeepMind. Published 22 papers on
+        time-series anomaly detection with 4,800+ citations.
+    \item[Sarah Okafor, VP Sales.] Former Enterprise Sales Director at
+        Palantir Technologies. Closed \$45M in new enterprise logos over
+        three years. Deep relationships in automotive and aerospace.
+    \item[Dr.\ Raj Patel, VP Product.] Former Head of Product at Sightline
+        Industrial. Deep domain expertise in vibration analytics and
+        condition monitoring systems.
+\end{description}
+
+\subsection{Hiring Plan}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lrrr}
+        \toprule
+        \textbf{Department} & \textbf{Current} & \textbf{Year 1} & \textbf{Year 3} \\
+        \midrule
+        Engineering \& ML    & 10 & 22 & 40 \\
+        Sales \& Marketing   &  4 & 12 & 25 \\
+        Customer Success     &  2 &  6 & 12 \\
+        Operations \& G\&A   &  2 &  5 &  8 \\
+        \midrule
+        \textbf{Total}       & \textbf{18} & \textbf{45} & \textbf{85} \\
+        \bottomrule
+    \end{tabular}
+    \caption{Headcount growth plan.}
+\end{table}
+
+\section{Funding Requirements}
+
+\subsection{Series A: \$8M}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lr}
+        \toprule
+        \textbf{Use of Funds} & \textbf{Allocation} \\
+        \midrule
+        Engineering hiring (12 FTEs)       & \$3.0M \\
+        Sales \& marketing expansion       & \$2.0M \\
+        Cloud infrastructure \& scaling    & \$1.2M \\
+        European market entry (Munich)     & \$1.0M \\
+        Working capital \& contingency     & \$0.8M \\
+        \midrule
+        \textbf{Total}                     & \textbf{\$8.0M} \\
+        \bottomrule
+    \end{tabular}
+    \caption{Series A use of funds.}
+\end{table}
+
+\subsection{Target Terms}
+
+\begin{itemize}
+    \item Pre-money valuation: \$32M.
+    \item Round structure: Priced equity round (Series A Preferred Stock).
+    \item Expected runway: 24 months to Series B readiness.
+    \item Series B target: \$25M at \$100M+ valuation to fund APAC
+          expansion and OEM partnerships.
+\end{itemize}
+
+\section{Risk Factors}
+
+\begin{enumerate}
+    \item \textbf{Technology risk.} ML model accuracy may degrade across
+        different equipment types and operating conditions. Mitigation: continuous
+        learning pipeline with human-in-the-loop validation; physics-informed
+        constraints to ensure predictions remain within engineering bounds.
+    \item \textbf{Market risk.} Economic downturn could reduce manufacturing
+        capex and maintenance budgets. Mitigation: position as cost-reduction
+        tool rather than discretionary investment; flexible pricing tiers.
+    \item \textbf{Competitive risk.} Larger incumbents (Siemens, GE) could
+        integrate predictive maintenance into existing platforms. Mitigation:
+        deeper domain expertise, faster time-to-value, and multi-vendor
+        platform independence.
+    \item \textbf{Talent risk.} Competition for ML engineers and domain
+        experts is intense. Mitigation: competitive compensation, meaningful
+        equity grants, mission-driven culture, and remote-first policy for
+        select roles.
+\end{enumerate}
+
+\section{Milestones}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{llc}
+        \toprule
+        \textbf{Timeline} & \textbf{Milestone} & \textbf{Status} \\
+        \midrule
+        Q1 2024  & Company incorporated; seed round closed (\$2.5M) & Complete \\
+        Q3 2024  & MVP deployed at Meridian Steel pilot site & Complete \\
+        Q1 2025  & Pilot results: \$2.1M annual savings validated & Complete \\
+        Q2 2025  & 12 customers signed; \$1.4M ARR achieved & Complete \\
+        Q3 2025  & Series A close (\$8M target) & In Progress \\
+        Q4 2025  & 30 customers; Munich office opened & Planned \\
+        Q2 2026  & \$10M ARR; 80 customers & Planned \\
+        Q4 2026  & APAC market entry; OEM partnership signed & Planned \\
+        Q4 2027  & \$28M ARR; 180 customers; cash-flow positive & Planned \\
+        \bottomrule
+    \end{tabular}
+    \caption{Key milestones and current status.}
+\end{table}
+
+\printbibliography[heading=none]
+
+\end{document}

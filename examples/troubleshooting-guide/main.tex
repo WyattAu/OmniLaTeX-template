@@ -1,0 +1,362 @@
+\documentclass[
+    language=english,
+    doctype=manual,
+    institution=none,
+    titlestyle=book,
+    oneside,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+%=============================================================================
+\chapter{Introduction}
+\label{sec:introduction}
+%=============================================================================
+
+This guide helps you diagnose and resolve common DataPipe issues. Each
+section includes the error description, diagnostic steps, root cause
+analysis, and resolution. Use the error code table to quickly locate the
+relevant section.
+
+\section{How to Use This Guide}
+
+\begin{enumerate}
+    \item Identify the error code or symptom from the logs.
+    \item Look up the error code in the table below.
+    \item Follow the diagnostic flowchart for your issue category.
+    \item Apply the recommended resolution.
+    \item If the issue persists, contact support with the collected
+        diagnostic information.
+\end{enumerate}
+
+%=============================================================================
+\chapter{Error Code Reference}
+\label{sec:error-codes}
+%=============================================================================
+
+\begin{table}[htbp]
+    \centering
+    \caption{DataPipe error codes and descriptions.}
+    \label{tab:error-codes}
+    \begin{tabular}{@{}p{2cm}p{4cm}p{2cm}p{3cm}@{}}
+        \toprule
+        Code & Description & Severity & Section \\
+        \midrule
+        E001 & Kafka connection refused & Critical & \cref{sec:e001} \\
+        E002 & Pipeline configuration invalid & High & \cref{sec:e002} \\
+        E003 & Sink write failure & Critical & \cref{sec:e003} \\
+        E004 & Transform execution timeout & Medium & \cref{sec:e004} \\
+        E005 & Consumer lag threshold exceeded & High & \cref{sec:e005} \\
+        E006 & Out of memory & Critical & \cref{sec:e006} \\
+        E007 & Schema evolution conflict & High & \cref{sec:e007} \\
+        E008 & Authentication failure & Critical & \cref{sec:e008} \\
+        E009 & Disk space exhausted & Critical & \cref{sec:e009} \\
+        E010 & Checkpoint corruption & High & \cref{sec:e010} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+%=============================================================================
+\chapter{Diagnostic Flowcharts}
+\label{sec:flowcharts}
+%=============================================================================
+
+\section{Pipeline Not Starting}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1cm and 1.5cm,
+        decision/.style={diamond, draw, text width=2.5cm,
+                         text centered, inner sep=1pt,
+                         fill=yellow!20},
+        action/.style={rectangle, draw, rounded corners,
+                       minimum width=3cm, minimum height=0.8cm,
+                       text centered, font=\small, fill=blue!15},
+        result/.style={rectangle, draw, rounded corners,
+                       minimum width=3cm, minimum height=0.8cm,
+                       text centered, font=\small,
+                       fill=green!20, thick},
+        arr/.style={->, >=stealth, thick},
+        label/.style={font=\scriptsize},
+    ]
+        \node[action] (start) {Pipeline won't start};
+        \node[decision, below=of start] (config) {Config valid?};
+        \node[action, right=of config] (fix-config) {Fix configuration};
+        \node[decision, below=of config] (kafka) {Kafka reachable?};
+        \node[action, right=of kafka] (fix-kafka) {Check network};
+        \node[decision, below=of kafka] (perm) {Permissions OK?};
+        \node[action, right=of perm] (fix-perm) {Fix credentials};
+        \node[decision, below=of perm] (resources) {Resources OK?};
+        \node[action, right=of resources] (fix-res) {Scale up};
+        \node[result, below=of resources] (ok) {Pipeline starts};
+
+        \draw[arr] (start) -- (config);
+        \draw[arr] (config) -- node[label, right] {No} (fix-config);
+        \draw[arr] (config) -- node[label, below] {Yes} (kafka);
+        \draw[arr] (kafka) -- node[label, right] {No} (fix-kafka);
+        \draw[arr] (kafka) -- node[label, below] {Yes} (perm);
+        \draw[arr] (perm) -- node[label, right] {No} (fix-perm);
+        \draw[arr] (perm) -- node[label, below] {Yes} (resources);
+        \draw[arr] (resources) -- node[label, right] {No} (fix-res);
+        \draw[arr] (resources) -- node[label, below] {Yes} (ok);
+    \end{tikzpicture}
+    \caption{Diagnostic flowchart: pipeline not starting.}
+    \label{fig:flow-pipeline-start}
+\end{figure}
+
+\section{High Consumer Lag}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1cm and 1.5cm,
+        decision/.style={diamond, draw, text width=2.5cm,
+                         text centered, inner sep=1pt,
+                         fill=yellow!20},
+        action/.style={rectangle, draw, rounded corners,
+                       minimum width=3cm, minimum height=0.8cm,
+                       text centered, font=\small, fill=blue!15},
+        result/.style={rectangle, draw, rounded corners,
+                       minimum width=3cm, minimum height=0.8cm,
+                       text centered, font=\small,
+                       fill=green!20, thick},
+        arr/.style={->, >=stealth, thick},
+        label/.style={font=\scriptsize},
+    ]
+        \node[action] (start) {Consumer lag detected};
+        \node[decision, below=of start] (throughput)
+            {Source throughput normal?};
+        \node[action, right=of throughput] (source-issue)
+            {Investigate source};
+        \node[decision, below=of throughput] (cpu)
+            {CPU $> 80\%$?};
+        \node[action, right=of cpu] (scale) {Scale consumers};
+        \node[decision, below=of cpu] (slow-transform)
+            {Transform slow?};
+        \node[action, right=of slow-transform] (optimise)
+            {Optimise transform};
+        \node[decision, below=of slow-transform] (sink)
+            {Sink bottleneck?};
+        \node[action, right=of sink] (fix-sink)
+            {Optimise sink writes};
+        \node[result, below=of sink] (ok) {Lag recovered};
+
+        \draw[arr] (start) -- (throughput);
+        \draw[arr] (throughput) -- node[label, right] {No} (source-issue);
+        \draw[arr] (throughput) -- node[label, below] {Yes} (cpu);
+        \draw[arr] (cpu) -- node[label, right] {Yes} (scale);
+        \draw[arr] (cpu) -- node[label, below] {No} (slow-transform);
+        \draw[arr] (slow-transform) -- node[label, right] {Yes} (optimise);
+        \draw[arr] (slow-transform) -- node[label, below] {No} (sink);
+        \draw[arr] (sink) -- node[label, right] {Yes} (fix-sink);
+        \draw[arr] (sink) -- node[label, below] {No} (ok);
+    \end{tikzpicture}
+    \caption{Diagnostic flowchart: high consumer lag.}
+    \label{fig:flow-consumer-lag}
+\end{figure}
+
+%=============================================================================
+\chapter{Common Issues and Solutions}
+\label{sec:common-issues}
+%=============================================================================
+
+\section{E001: Kafka Connection Refused}
+\label{sec:e001}
+
+\textbf{Symptom:} Pipeline fails to start with error
+\texttt{E001: Kafka connection refused}.
+
+\textbf{Diagnostic steps:}
+
+\begin{lstlisting}[language=bash]
+# Verify Kafka is running
+kubectl get pods -l app=kafka -n datapipe
+
+# Test connectivity
+kubectl exec datapipe-0 -n datapipe -- \\
+    kafka-broker-api-versions.sh \\
+    --bootstrap-server kafka:9092
+
+# Check DNS resolution
+kubectl exec datapipe-0 -n datapipe -- nslookup kafka
+\end{lstlisting}
+
+\textbf{Common causes and fixes:}
+
+\begin{description}
+    \item[Kafka pods not running] Restart Kafka pods or check
+        Kafka operator logs.
+    \item[DNS misconfiguration] Verify the Kafka service name in the
+        pipeline configuration matches the Kubernetes service.
+    \item[Network policy blocking] Check Kubernetes NetworkPolicy
+        resources in the \texttt{datapipe} namespace.
+    \item[Firewall rules] Verify security group rules allow traffic
+        on port 9092 between application and Kafka nodes.
+\end{description}
+
+\section{E002: Pipeline Configuration Invalid}
+\label{sec:e002}
+
+\textbf{Symptom:} Pipeline fails to start with error
+\texttt{E002: Pipeline configuration invalid}.
+
+\textbf{Diagnostic steps:}
+
+\begin{lstlisting}[language=bash]
+# Validate the pipeline configuration
+dp pipeline validate <pipeline-name> --verbose
+
+# Check for YAML syntax errors
+yamllint <config-file>.yaml
+\end{lstlisting}
+
+\textbf{Common causes:}
+
+\begin{itemize}
+    \item Missing required fields in the pipeline definition.
+    \item YAML indentation errors.
+    \item Invalid connector type name.
+    \item Mismatched environment variable references.
+\end{itemize}
+
+\section{E003: Sink Write Failure}
+\label{sec:e003}
+
+\textbf{Symptom:} Pipeline reports errors writing to the sink, records
+are retried and eventually dropped.
+
+\textbf{Diagnostic steps:}
+
+\begin{lstlisting}[language=bash]
+# Check sink connectivity
+kubectl exec datapipe-0 -n datapipe -- \\
+    psql -h postgresql -U datapipe -c "SELECT 1;"
+
+# Check PostgreSQL replication status
+kubectl exec postgresql-primary-0 -n datapipe -- \\
+    psql -U postgres -c "SELECT * FROM pg_stat_replication;"
+
+# Check disk space on PostgreSQL
+kubectl exec postgresql-primary-0 -n datapipe -- \\
+    df -h /var/lib/postgresql/data
+\end{lstlisting}
+
+\textbf{Common causes and fixes:}
+
+\begin{description}
+    \item[Table does not exist] Run the schema migration:
+        \texttt{dp db migrate run}.
+    \item[Disk full] Expand the persistent volume or archive old data.
+    \item[Connection pool exhausted] Increase
+        \texttt{sink.max\_connections} in the pipeline config.
+    \item[Permission denied] Grant \texttt{INSERT} permission on the
+        target table.
+\end{description}
+
+\section{E006: Out of Memory}
+\label{sec:e006}
+
+\textbf{Symptom:} DataPipe process crashes with
+\texttt{java.lang.OutOfMemoryError}.
+
+\textbf{Diagnostic steps:}
+
+\begin{lstlisting}[language=bash]
+# Check pod memory usage
+kubectl top pods -n datapipe
+
+# Check JVM heap settings
+kubectl exec datapipe-0 -n datapipe -- \\
+    jcmd 1 VM.flags | grep HeapSize
+
+# Review heap dump if available
+ls -la /tmp/datapipe-heap-*.hprof
+\end{lstlisting}
+
+\textbf{Resolution:}
+
+\begin{enumerate}
+    \item Increase JVM heap via \texttt{DP\_JVM\_HEAP} environment
+        variable (e.g.\ \texttt{16g}).
+    \item Increase pod memory limit in the Kubernetes deployment.
+    \item Profile the pipeline to identify memory-intensive transforms.
+    \item Consider implementing backpressure to limit in-flight records.
+\end{enumerate}
+
+\section{E009: Disk Space Exhausted}
+\label{sec:e009}
+
+\textbf{Symptom:} DataPipe logs report \texttt{No space left on device}.
+
+\textbf{Diagnostic steps:}
+
+\begin{lstlisting}[language=bash]
+# Check disk usage on all nodes
+kubectl exec datapipe-0 -n datapipe -- df -h
+
+# Check Kafka log retention
+kubectl exec kafka-0 -n datapipe -- \\
+    kafka-configs.sh --describe \\
+    --bootstrap-server localhost:9092 \\
+    --entity-type topics --entity-name user-events
+
+# Find large files
+kubectl exec datapipe-0 -n datapipe -- \\
+    du -sh /data/datapipe/*
+\end{lstlisting}
+
+\textbf{Resolution:}
+
+\begin{enumerate}
+    \item Reduce Kafka log retention period.
+    \item Archive or delete old checkpoint files.
+    \item Expand the persistent volume.
+    \item Enable compression for pipeline stages.
+\end{enumerate}
+
+%=============================================================================
+\chapter{Collecting Diagnostic Information}
+\label{sec:diagnostics}
+%=============================================================================
+
+When contacting DataPipe support, provide the following:
+
+\begin{lstlisting}[language=bash, caption={Generate diagnostic bundle.}]
+# Generate a diagnostic bundle
+dp diagnostic collect --output /tmp/datapipe-diag.zip
+
+# The bundle includes:
+# - Pipeline configurations
+# - Recent logs (last 24h)
+# - JVM thread dumps
+# - System metrics snapshot
+# - Kubernetes pod descriptions
+\end{lstlisting}
+
+\begin{lstlisting}[language=bash, caption={Useful diagnostic commands.}]
+# System information
+uname -a
+java -version
+docker --version
+
+# Kubernetes information
+kubectl get events -n datapipe --sort-by=.lastTimestamp
+kubectl describe pods -n datapipe
+
+# Network diagnostics
+kubectl exec datapipe-0 -n datapipe -- netstat -tlnp
+kubectl exec datapipe-0 -n datapipe -- curl -s localhost:8080/health
+\end{lstlisting}
+
+\printbibliography[heading=bibintoc, title={References}]
+
+\end{document}

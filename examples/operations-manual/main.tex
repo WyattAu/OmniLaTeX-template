@@ -1,0 +1,291 @@
+\documentclass[
+    language=english,
+    doctype=manual,
+    institution=none,
+    titlestyle=book,
+    oneside,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+%=============================================================================
+\chapter{Overview}
+\label{sec:overview}
+%=============================================================================
+
+This runbook provides operational procedures for the DataPipe production
+environment. It covers monitoring, incident response, routine
+maintenance, and escalation paths. All on-call engineers must be familiar
+with the contents of this manual before their first rotation.
+
+\section{Environment Topology}
+
+The production environment spans three availability zones in the
+us-east-1 region:
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.2cm and 2cm,
+        box/.style={draw, rounded corners, minimum width=2.6cm,
+                     minimum height=0.9cm, text centered, font=\small,
+                     fill=#1!20, draw=#1!60!black},
+        az/.style={draw, dashed, rounded corners, inner sep=8pt,
+                    minimum width=3.5cm, minimum height=3.5cm,
+                    label={[font=\footnotesize]above:#1}},
+        arr/.style={->, >=stealth, thick},
+    ]
+        \begin{scope}[local bounding box=az-a]
+            \node[box=blue]   (k1) {Kafka-1};
+            \node[box=blue]   (d1) [below=of k1] {DataPipe-1};
+            \node[box=blue]   (p1) [below=of d1] {PostgreSQL-1};
+        \end{scope}
+        \node[az, fit=az-a, draw=blue!40, label={[font=\footnotesize]above:AZ-a}] {};
+
+        \begin{scope}[xshift=5.5cm, local bounding box=az-b]
+            \node[box=green]  (k2) {Kafka-2};
+            \node[box=green]  (d2) [below=of k2] {DataPipe-2};
+            \node[box=green]  (p2) [below=of d2] {PostgreSQL-2};
+        \end{scope}
+        \node[az, fit=az-b, draw=green!40, xshift=5.5cm,
+              label={[font=\footnotesize]above:AZ-b}] {};
+
+        \begin{scope}[xshift=11cm, local bounding box=az-c]
+            \node[box=orange] (k3) {Kafka-3};
+            \node[box=orange] (d3) [below=of k3] {DataPipe-3};
+            \node[box=orange] (p3) [below=of d3] {PostgreSQL-3};
+        \end{scope}
+        \node[az, fit=az-c, draw=orange!40, xshift=11cm,
+              label={[font=\footnotesize]above:AZ-c}] {};
+
+        \draw[arr] (k1) -- (k2);
+        \draw[arr] (k2) -- (k3);
+        \draw[arr] (k3) -- (k1);
+    \end{tikzpicture}
+    \caption{Production environment topology across three availability zones.}
+    \label{fig:topology}
+\end{figure}
+
+%=============================================================================
+\chapter{Monitoring Procedures}
+\label{sec:monitoring}
+%=============================================================================
+
+\section{Dashboards}
+
+All dashboards are available in Grafana at \texttt{https://grafana.internal}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Grafana dashboards and their purpose.}
+    \label{tab:dashboards}
+    \begin{tabular}{@{}lp{8cm}@{}}
+        \toprule
+        Dashboard & Purpose \\
+        \midrule
+        DataPipe Overview & High-level pipeline health, throughput, and error rates. \\
+        Kafka Consumer Lag & Per-consumer-group lag metrics and alerts. \\
+        PostgreSQL Performance & Query latency, connection count, replication lag. \\
+        Infrastructure & CPU, memory, disk, and network across all nodes. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Health Checks}
+
+Run the following commands during routine monitoring:
+
+\begin{lstlisting}[language=bash, caption={Health check commands.}]
+# Cluster-wide health check
+curl -s https://datapipe.internal/api/v1/cluster/health | jq .
+
+# Individual node check
+ssh datapipe-node-01 "dp cluster status"
+
+# Kafka consumer lag check
+kafka-consumer-groups.sh --bootstrap-server kafka:9092 \\
+    --describe --group datapipe-etl
+\end{lstlisting}
+
+\section{Key Metrics}
+
+Monitor the following metrics continuously:
+
+\begin{itemize}
+    \item \textbf{Pipeline throughput} (records/second) --- should remain
+        above 50\,000 rps in production.
+    \item \textbf{Consumer lag} --- alert if exceeds 10\,000 records for
+        more than 5 minutes.
+    \item \textbf{Error rate} --- alert if exceeds 0.1\% of total records.
+    \item \textbf{End-to-end latency} --- alert if P99 exceeds 2 seconds.
+    \item \textbf{Disk usage} --- alert at 80\% capacity.
+    \item \textbf{Replication lag} --- alert if exceeds 100\,ms.
+\end{itemize}
+
+%=============================================================================
+\chapter{Incident Response}
+\label{sec:incident-response}
+%=============================================================================
+
+\section{Severity Levels}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Incident severity classification.}
+    \label{tab:severity}
+    \begin{tabular}{@{}lp{5cm}p{3cm}@{}}
+        \toprule
+        Level & Description & Response Time \\
+        \midrule
+        SEV-1 & Complete data loss or pipeline failure & 15 minutes \\
+        SEV-2 & Partial data loss or degraded throughput & 30 minutes \\
+        SEV-3 & Non-critical error or cosmetic issue & 4 hours \\
+        SEV-4 & Informational or low-impact issue & 24 hours \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Escalation Matrix}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Escalation contacts by severity and time.}
+    \label{tab:escalation}
+    \begin{tabular}{@{}llll@{}}
+        \toprule
+        Level & First Responder & After 30 min & After 1 hour \\
+        \midrule
+        SEV-1 & On-call engineer & SRE lead & VP Engineering \\
+        SEV-2 & On-call engineer & SRE lead & SRE lead \\
+        SEV-3 & On-call engineer & Team lead & SRE lead \\
+        SEV-4 & On-call engineer & Team lead & --- \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Incident Response Playbook}
+
+\subsection{Pipeline Failure (SEV-1)}
+
+\begin{enumerate}
+    \item Acknowledge the alert in PagerDuty.
+    \item Assess the scope: is the failure affecting one pipeline or all
+        pipelines?
+    \item If a single pipeline:
+    \begin{enumerate}
+        \item Check recent deployments or configuration changes.
+        \item Review pipeline logs: \texttt{dp logs --pipeline <name> --level error}.
+        \item Attempt a graceful restart: \texttt{dp pipeline restart <name>}.
+    \end{enumerate}
+    \item If all pipelines:
+    \begin{enumerate}
+        \item Check cluster health: \texttt{dp cluster health}.
+        \item Verify Kafka connectivity.
+        \item Check for infrastructure-level issues (disk, network).
+    \end{enumerate}
+    \item If restart does not resolve, escalate to SRE lead.
+    \item Document the incident in the incident tracker.
+\end{enumerate}
+
+\subsection{Kafka Broker Down (SEV-2)}
+
+\begin{enumerate}
+    \item Verify which broker is affected via the Kafka dashboard.
+    \item Check if replication factor is sufficient (minimum 3).
+    \item Confirm remaining brokers have sufficient capacity.
+    \item Monitor consumer lag during recovery.
+    \item If lag grows beyond threshold, scale up consumers temporarily.
+    \item After broker recovery, verify partition rebalancing completes.
+\end{enumerate}
+
+\subsection{Database Replication Lag (SEV-2)}
+
+\begin{enumerate}
+    \item Check PostgreSQL replication status:
+    \begin{lstlisting}[language=bash]
+psql -h primary -c "SELECT client_addr, sent_lsn,
+    replay_lag FROM pg_stat_replication;"
+    \end{lstlisting}
+    \item If lag exceeds 1 minute, check for long-running queries on
+        replicas.
+    \item Kill any blocking queries and monitor recovery.
+    \item If lag persists, consider rebuilding the replica from a backup.
+\end{enumerate}
+
+%=============================================================================
+\chapter{Routine Maintenance}
+\label{sec:maintenance}
+%=============================================================================
+
+\section{Daily Tasks}
+
+\begin{enumerate}
+    \item Review overnight monitoring dashboards for anomalies.
+    \item Check consumer lag across all pipelines.
+    \item Verify backup completion and integrity.
+    \item Review error logs for recurring issues.
+\end{enumerate}
+
+\section{Weekly Tasks}
+
+\begin{enumerate}
+    \item Review capacity planning metrics and projections.
+    \item Audit access logs and API usage.
+    \item Test disaster recovery procedures.
+    \item Review and update runbook entries.
+\end{enumerate}
+
+\section{Monthly Tasks}
+
+\begin{enumerate}
+    \item Apply security patches and updates.
+    \item Review and rotate API keys and credentials.
+    \item Capacity planning review with engineering leadership.
+    \item Post-incident review for all SEV-1 and SEV-2 incidents.
+\end{enumerate}
+
+\section{Backup and Recovery}
+
+\begin{lstlisting}[language=bash, caption={Backup commands.}]
+# Full cluster backup
+dp backup create --full --output s3://backups/datapipe/
+
+# Configuration backup
+dp backup config --output s3://backups/datapipe/config/
+
+# Verify backup integrity
+dp backup verify s3://backups/datapipe/latest/
+\end{lstlisting}
+
+%=============================================================================
+\chapter{Contact Information}
+\label{sec:contacts}
+%=============================================================================
+
+\begin{table}[htbp]
+    \centering
+    \caption{Emergency contacts.}
+    \label{tab:contacts}
+    \begin{tabular}{@{}lll@{}}
+        \toprule
+        Role & Name & Contact \\
+        \midrule
+        SRE Lead & Dr. Mira Patel & +1-555-0101 \\
+        On-Call Engineer & Rotation & PagerDuty \\
+        Database Admin & Jordan Lee & +1-555-0102 \\
+        Security Lead & Priya Nair & +1-555-0103 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\printbibliography[heading=bibintoc, title={References}]
+
+\end{document}

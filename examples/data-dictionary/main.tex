@@ -1,0 +1,221 @@
+\documentclass[
+    language=english,
+    doctype=data-dictionary,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\RequirePackage{longtable}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+This data dictionary defines the enterprise data model for the Meridian
+Technologies platform. It provides a single source of truth for entity
+definitions, attribute specifications, data type conventions, constraints,
+and data ownership across all business domains. All teams must conform to
+these definitions when designing new features or modifying existing schemas.
+
+\section{Naming Conventions}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{ll}
+        \toprule
+        \textbf{Convention} & \textbf{Example} \\
+        \midrule
+        Entity names & PascalCase, singular noun (e.g., \texttt{CustomerOrder}) \\
+        Attribute names & camelCase (e.g., \texttt{orderCreatedAt}) \\
+        Table names & snake\_case, plural (e.g., \texttt{customer\_orders}) \\
+        Primary keys & \texttt{\{entity\}\_id} (e.g., \texttt{customer\_order\_id}) \\
+        Foreign keys & Referenced entity name + \texttt{\_id} \\
+        Boolean columns & Prefixed with \texttt{is\_} or \texttt{has\_} \\
+        Timestamps & Suffix \texttt{\_at} (e.g., \texttt{created\_at}) \\
+        \bottomrule
+    \end{tabular}
+    \caption{Naming conventions for entities and attributes.}
+\end{table}
+
+\section{Entity Catalog}
+
+\begin{longtable}{llllp{3cm}}
+    \toprule
+    \textbf{Entity} & \textbf{Schema} & \textbf{Owner} & \textbf{Retention} & \textbf{Description} \\
+    \midrule
+    \endhead
+    Customer & public & Data Platform & Indefinite & Registered account holder \\
+    CustomerOrder & public & Commerce & 7 years & Purchase transaction \\
+    Product & public & Catalog & Indefinite & Sellable item definition \\
+    Invoice & finance & Finance & 10 years & Financial billing record \\
+    Shipment & logistics & Fulfillment & 3 years & Delivery tracking record \\
+    SupportTicket & support & Customer Success & 5 years & Service request \\
+    AuditLog & audit & Security & 7 years & System event record \\
+    Employee & hr & Human Resources & Indefinite & Workforce member \\
+    Vendor & procurement & Procurement & Indefinite & External supplier \\
+    Warehouse & logistics & Supply Chain & Indefinite & Physical storage facility \\
+    \bottomrule
+    \caption{Complete entity catalog with ownership and retention.}
+\end{longtable}
+
+\section{Entity Definitions}
+
+\subsection{Customer}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{llllp{3.5cm}}
+        \toprule
+        \textbf{Attribute} & \textbf{Type} & \textbf{Nullable} & \textbf{Key} & \textbf{Description} \\
+        \midrule
+        customer\_id & UUID & No & PK & Unique identifier \\
+        email & VARCHAR(255) & No & UQ & Login email address \\
+        first\_name & VARCHAR(100) & No & -- & Given name \\
+        last\_name & VARCHAR(100) & No & -- & Family name \\
+        phone & VARCHAR(20) & Yes & -- & Contact phone number \\
+        created\_at & TIMESTAMP & No & -- & Registration timestamp \\
+        updated\_at & TIMESTAMP & No & -- & Last modification timestamp \\
+        is\_active & BOOLEAN & No & -- & Account active status \\
+        tier & ENUM & No & -- & Loyalty tier classification \\
+        \bottomrule
+    \end{tabular}
+    \caption{Customer entity attributes.}
+\end{table}
+
+\subsection{CustomerOrder}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{llllp{3.5cm}}
+        \toprule
+        \textbf{Attribute} & \textbf{Type} & \textbf{Nullable} & \textbf{Key} & \textbf{Description} \\
+        \midrule
+        order\_id & UUID & No & PK & Unique identifier \\
+        customer\_id & UUID & No & FK & References Customer \\
+        order\_number & VARCHAR(20) & No & UQ & Human-readable order ID \\
+        status & ENUM & No & -- & Current order state \\
+        subtotal & DECIMAL(12,2) & No & -- & Pre-tax line item total \\
+        tax\_amount & DECIMAL(12,2) & No & -- & Calculated tax \\
+        total & DECIMAL(12,2) & No & -- & Final charged amount \\
+        currency & CHAR(3) & No & -- & ISO 4217 currency code \\
+        order\_placed\_at & TIMESTAMP & No & -- & Order creation time \\
+        shipped\_at & TIMESTAMP & Yes & -- & Shipment date \\
+        delivered\_at & TIMESTAMP & Yes & -- & Delivery confirmation \\
+        \bottomrule
+    \end{tabular}
+    \caption{CustomerOrder entity attributes.}
+\end{table}
+
+\subsection{Product}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{llllp{3.5cm}}
+        \toprule
+        \textbf{Attribute} & \textbf{Type} & \textbf{Nullable} & \textbf{Key} & \textbf{Description} \\
+        \midrule
+        product\_id & UUID & No & PK & Unique identifier \\
+        sku & VARCHAR(50) & No & UQ & Stock keeping unit \\
+        name & VARCHAR(200) & No & -- & Display name \\
+        description & TEXT & Yes & -- & Detailed product description \\
+        unit\_price & DECIMAL(10,2) & No & -- & Current selling price \\
+        cost\_price & DECIMAL(10,2) & No & -- & Acquisition cost \\
+        category\_id & UUID & No & FK & References Category \\
+        stock\_quantity & INTEGER & No & -- & Available inventory count \\
+        weight\_kg & DECIMAL(8,3) & Yes & -- & Shipping weight \\
+        is\_active & BOOLEAN & No & -- & Listed for sale \\
+        \bottomrule
+    \end{tabular}
+    \caption{Product entity attributes.}
+\end{table}
+
+\section{Data Type Reference}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{llp{5cm}}
+        \toprule
+        \textbf{Data Type} & \textbf{Storage} & \textbf{Notes} \\
+        \midrule
+        UUID & 16 bytes & RFC 4122 v4 random identifier \\
+        VARCHAR(n) & Variable & Maximum n characters \\
+        TEXT & Variable & Unlimited length text \\
+        INTEGER & 4 bytes & Range: $-2^{31}$ to $2^{31}-1$ \\
+        BIGINT & 8 bytes & Range: $-2^{63}$ to $2^{63}-1$ \\
+        DECIMAL(p,s) & Variable & Exact numeric, precision p, scale s \\
+        BOOLEAN & 1 byte & TRUE, FALSE, or NULL \\
+        TIMESTAMP & 8 bytes & UTC with microsecond precision \\
+        DATE & 3 bytes & Calendar date without time \\
+        ENUM & 1-4 bytes & Named set of allowed values \\
+        JSONB & Variable & Binary-serialized JSON document \\
+        \bottomrule
+    \end{tabular}
+    \caption{Supported data types and storage characteristics.}
+\end{table}
+
+\section{Constraint Definitions}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{llp{5cm}}
+        \toprule
+        \textbf{Entity} & \textbf{Constraint} & \textbf{Definition} \\
+        \midrule
+        Customer & uq\_customer\_email & UNIQUE (email) \\
+        CustomerOrder & fk\_order\_customer & FOREIGN KEY (customer\_id) REFERENCES Customer \\
+        CustomerOrder & chk\_order\_total & CHECK (total >= 0) \\
+        Product & uq\_product\_sku & UNIQUE (sku) \\
+        Product & chk\_product\_price & CHECK (unit\_price > 0) \\
+        Invoice & fk\_invoice\_order & FOREIGN KEY (order\_id) REFERENCES CustomerOrder \\
+        SupportTicket & chk\_ticket\_status & CHECK (status IN ('open','pending','resolved')) \\
+        AuditLog & fk\_log\_employee & FOREIGN KEY (actor\_id) REFERENCES Employee \\
+        \bottomrule
+    \end{tabular}
+    \caption{Named constraint definitions across entities.}
+\end{table}
+
+\section{Data Ownership Matrix}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lll}
+        \toprule
+        \textbf{Domain} & \textbf{Data Steward} & \textbf{Escalation} \\
+        \midrule
+        Public/Customer & Data Platform Team & VP Engineering \\
+        Commerce & Commerce Team & Director of Product \\
+        Catalog & Catalog Team & VP Product \\
+        Finance & Finance Team & CFO \\
+        Logistics & Fulfillment Team & VP Operations \\
+        Support & Customer Success & VP Customer Experience \\
+        Security & Security Team & CISO \\
+        HR & Human Resources & CHRO \\
+        Procurement & Procurement Team & VP Supply Chain \\
+        \bottomrule
+    \end{tabular}
+    \caption{Data ownership and escalation contacts.}
+\end{table}
+
+\section{Version History}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lll}
+        \toprule
+        \textbf{Version} & \textbf{Date} & \textbf{Change Summary} \\
+        \midrule
+        3.0 & 2026-06-16 & Added Vendor and Warehouse entities; updated retention policies \\
+        2.4 & 2026-01-10 & Added JSONB support for flexible attributes \\
+        2.3 & 2025-09-22 & Added AuditLog entity for compliance \\
+        2.2 & 2025-06-01 & Revised CustomerOrder status enum \\
+        2.1 & 2025-02-15 & Added data ownership matrix \\
+        2.0 & 2024-11-01 & Major restructure; migrated to UUID primary keys \\
+        1.0 & 2024-03-01 & Initial data dictionary publication \\
+        \bottomrule
+    \end{tabular}
+    \caption{Data dictionary version history.}
+\end{table}
+
+\end{document}

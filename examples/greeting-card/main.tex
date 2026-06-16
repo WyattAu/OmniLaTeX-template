@@ -1,0 +1,104 @@
+\documentclass[
+    language=english,
+    doctype=greeting-card,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\RequirePackage{tikz}
+\RequirePackage{fontawesome5}
+
+\begin{document}
+
+\begin{tikzpicture}[remember picture, overlay]
+    \draw[thick, double, color=purple!60!black]
+        ([shift={(1.5cm,1.5cm)}]current page.north west)
+        rectangle
+        ([shift={(-1.5cm,-1.5cm)}]current page.south east);
+    \draw[thin, color=purple!40!black]
+        ([shift={(1.8cm,1.8cm)}]current page.north west)
+        rectangle
+        ([shift={(-1.8cm,-1.8cm)}]current page.south east);
+\end{tikzpicture}
+
+\begin{center}
+    \vspace*{2cm}
+
+    {\fontsize{48}{56}\selectfont\bfseries\color{purple!70!black}%
+    Happy Birthday!}
+
+    \vspace{1.5cm}
+
+    {\Large\itshape\color{purple!50!black}%
+    ``A birthday is not the beginning of another year,\\
+    but rather the beginning of another chance\\
+    to make beautiful memories.''}
+
+    \vspace{1cm}
+
+    {\large\color{gray!70!black}--- Unknown}
+
+    \vspace{2cm}
+
+    \noindent\rule{0.4\textwidth}{0.5pt}
+
+    \vspace{1.5cm}
+
+    {\fontsize{20}{26}\selectfont\color{purple!60!black}%
+    Wishing You Joy, Love,\\and Everything Wonderful}
+
+    \vspace{1.5cm}
+
+    {\Large\color{purple!50!black}%
+    On This Special Day}
+
+    \vspace{1cm}
+
+    \begin{tikzpicture}
+        \node[star, star points=5, star point ratio=0.5,
+              fill=gold!80!yellow, minimum size=0.8cm] at (0,0) {};
+        \node[star, star points=5, star point ratio=0.5,
+              fill=gold!80!yellow, minimum size=0.5cm] at (2,0.3) {};
+        \node[star, star points=5, star point ratio=0.5,
+              fill=gold!80!yellow, minimum size=0.6cm] at (-2,-0.2) {};
+        \node[star, star points=5, star point ratio=0.5,
+              fill=gold!80!yellow, minimum size=0.4cm] at (1.5,-0.5) {};
+        \node[star, star points=5, star point ratio=0.5,
+              fill=gold!80!yellow, minimum size=0.7cm] at (-1.5,0.4) {};
+    \end{tikzpicture}
+
+    \vspace{2cm}
+
+    {\large\itshape May your year ahead be filled\\
+    with laughter, adventure, and all the things\\
+    that make your heart happy.}
+
+    \vspace{1.5cm}
+
+    {\Large\bfseries\color{purple!60!black}%
+    With Love and Best Wishes}
+
+    \vspace{0.8cm}
+
+    {\Large Sarah, David, and the Whole Family}
+
+    \vspace{1cm}
+
+    \noindent\rule{0.4\textwidth}{0.5pt}
+
+    \vspace{1.5cm}
+
+    {\small\color{gray!60!black}%
+    \faEnvelope\ \ href{mailto:wishes@example.com}{wishes@example.com}%
+    \qquad
+    \faPhone\ (555) 123-4567}
+
+    \vspace{1cm}
+
+    {\small\itshape\color{gray!50!black}%
+    ``Grow old along with me; the best is yet to be.''\\
+    --- Robert Browning}
+
+\end{center}
+
+\end{document}

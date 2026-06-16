@@ -1,0 +1,301 @@
+\documentclass[
+    language=english,
+    doctype=manual,
+    institution=none,
+    titlestyle=book,
+    oneside,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+%=============================================================================
+\chapter{Getting Started}
+\label{sec:getting-started}
+%=============================================================================
+
+This guide is for contributors to the DataPipe project. It covers the
+repository layout, development environment setup, coding standards, and
+the pull request workflow. Before contributing, please read the Code of
+Conduct and the existing issues to find a task that matches your
+experience level.
+
+\section{Development Environment}
+
+\subsection{Prerequisites}
+
+\begin{itemize}
+    \item JDK 21 (Eclipse Temurin recommended).
+    \item Docker Desktop 4.x or Docker Engine 24+.
+    \item \texttt{gh} CLI for GitHub interaction.
+    \item \texttt{pre-commit} for commit hooks.
+    \item \texttt{just} as a command runner (alternative to Make).
+\end{itemize}
+
+\subsection{Cloning and Building}
+
+\begin{lstlisting}[language=bash, caption={Repository setup and first build.}]
+git clone https://github.com/datapipe/datapipe.git
+cd datapipe
+./gradlew build          # Full build with tests
+./gradlew assemble       # Compile only (faster)
+./gradlew test           # Run unit tests
+\end{lstlisting}
+
+\subsection{IDE Setup}
+
+Import the project as a Gradle project. IntelliJ IDEA 2024+ and VS Code
+with the Java Extension Pack are officially supported. Enable the
+following settings:
+
+\begin{lstlisting}[language=bash, caption={Recommended IDE settings.}]
+# IntelliJ: enable annotation processing
+# Settings > Build > Compiler > Annotation Processors > Enable
+
+# VS Code: install extensions
+code --install-extension vscjava.vscode-java-pack
+code --install-extension vscjava.vscode-java-debug
+\end{lstlisting}
+
+%=============================================================================
+\chapter{Architecture Overview}
+\label{sec:architecture}
+%=============================================================================
+
+\section{High-Level Components}
+
+DataPipe is organised into four major subsystems. The following diagram
+shows their relationships:
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.4cm and 2cm,
+        box/.style={draw, rounded corners, minimum width=3cm,
+                     minimum height=1cm, text centered, font=\small,
+                     fill=#1!20, draw=#1!60!black},
+        arr/.style={->, >=stealth, thick},
+    ]
+        \node[box=blue]   (cli)   {CLI};
+        \node[box=green]  (core)  [below=of cli] {Core Runtime};
+        \node[box=orange] (conn)  [below left=of core] {Connectors};
+        \node[box=purple] (trans) [below right=of core] {Transforms};
+        \node[box=red]    (admin) [right=of core] {Admin API};
+
+        \draw[arr] (cli) -- (core);
+        \draw[arr] (core) -- (conn);
+        \draw[arr] (core) -- (trans);
+        \draw[arr] (admin) -- (core);
+    \end{tikzpicture}
+    \caption{DataPipe subsystem architecture.}
+    \label{fig:subsystem-arch}
+\end{figure}
+
+\section{Module Structure}
+
+The repository is a multi-module Gradle project:
+
+\begin{lstlisting}[language=, caption={Top-level directory layout.}]
+datapipe/
+  core/           # Core runtime and pipeline engine
+  connectors/     # Source and sink connector plugins
+  transforms/     # Built-in transform library
+  cli/            # Command-line interface
+  admin-api/      # REST admin API
+  web-dashboard/  # React frontend
+  common/         # Shared utilities and types
+  docs/           # Documentation source files
+  deploy/         # Helm charts and Docker configs
+\end{lstlisting}
+
+\section{Data Flow}
+
+A record passes through the following stages:
+
+\begin{enumerate}
+    \item \textbf{Ingestion:} A connector reads a record from the source.
+    \item \textbf{Deserialisation:} The record is decoded from bytes into
+        an internal \texttt{Record} object.
+    \item \textbf{Transformation:} Zero or more transforms are applied.
+    \item \textbf{Serialisation:} The record is encoded for the sink.
+    \item \textbf{Delivery:} The connector writes the record to the
+        destination.
+\end{enumerate}
+
+%=============================================================================
+\chapter{Coding Standards}
+\label{sec:coding-standards}
+%=============================================================================
+
+\section{Java Code Style}
+
+DataPipe follows the Google Java Style Guide with the following
+modifications:
+
+\begin{itemize}
+    \item Maximum line length: 100 characters.
+    \item Four-space indentation (no tabs).
+    \item \texttt{@Override} annotations are mandatory on all
+        overriding methods.
+    \item All public APIs require Javadoc.
+\end{itemize}
+
+\section{Commit Messages}
+
+Follow the Conventional Commits specification:
+
+\begin{lstlisting}[language=bash, caption={Commit message examples.}]
+feat(connector): add Snowflake sink connector
+fix(core): handle null records in window aggregator
+docs: update contributing guide with PR checklist
+test(transform): add edge cases for currency converter
+\end{lstlisting}
+
+\section{Test Requirements}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Test coverage requirements by module.}
+    \label{tab:test-coverage}
+    \begin{tabular}{@{}lrr@{}}
+        \toprule
+        Module & Minimum Coverage & Critical Path \\
+        \midrule
+        core/ & 90\% & Yes \\
+        connectors/ & 85\% & Yes \\
+        transforms/ & 80\% & Yes \\
+        cli/ & 75\% & No \\
+        admin-api/ & 85\% & Yes \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+%=============================================================================
+\chapter{Testing}
+\label{sec:testing}
+%=============================================================================
+
+\section{Unit Tests}
+
+Unit tests live alongside source files in \texttt{src/test/java}. Use
+JUnit 5 and Mockito:
+
+\begin{lstlisting}[language=java, caption={Example unit test.}]
+@Test
+void shouldFilterRecordsByPredicate() {
+    FilterTransform transform = new FilterTransform(
+        Config.of("predicate", "status == 'active'")
+    );
+
+    Record active = Record.of("status", "active");
+    Record inactive = Record.of("status", "inactive");
+
+    assertThat(transform.apply(active)).isPresent();
+    assertThat(transform.apply(inactive)).isEmpty();
+}
+\end{lstlisting}
+
+\section{Integration Tests}
+
+Integration tests require Docker and run in CI. They verify end-to-end
+pipeline execution against real Kafka and PostgreSQL instances.
+
+\begin{lstlisting}[language=bash, caption={Run integration tests.}]
+./gradlew integrationTest         # All integration tests
+./gradlew integrationTest -i kafkaintegration   # Kafka only
+\end{lstlisting}
+
+\section{Performance Tests}
+
+JMH benchmarks measure throughput and latency for critical paths:
+
+\begin{lstlisting}[language=bash, caption={Run JMH benchmarks.}]
+./gradlew jmh
+\end{lstlisting}
+
+%=============================================================================
+\chapter{Pull Request Process}
+\label{sec:pr-process}
+%=============================================================================
+
+\section{Branch Naming}
+
+Use the following convention:
+
+\begin{lstlisting}[language=bash, caption={Branch naming conventions.}]
+feat/snowflake-sink-connector
+fix/null-record-handling
+docs/contributing-guide-update
+\end{lstlisting}
+
+\section{PR Checklist}
+
+Before submitting a pull request, verify:
+
+\begin{enumerate}
+    \item All unit tests pass (\texttt{./gradlew test}).
+    \item Code compiles without warnings (\texttt{./gradlew build}).
+    \item New code has corresponding unit tests.
+    \item Public APIs have Javadoc.
+    \item Documentation is updated if behaviour changed.
+    \item Commit messages follow Conventional Commits.
+\end{enumerate}
+
+\section{Review Process}
+
+\begin{enumerate}
+    \item Open the PR against \texttt{main}.
+    \item Assign at least one reviewer from the module owners list.
+    \item Address all review comments.
+    \item CI must pass (build, test, lint, security scan).
+    \item Squash-merge after approval.
+\end{enumerate}
+
+\section{Module Ownership}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Module owners and reviewers.}
+    \label{tab:owners}
+    \begin{tabular}{@{}lll@{}}
+        \toprule
+        Module & Owner & Reviewers \\
+        \midrule
+        core/ & @alex-feng & @mira-patel \\
+        connectors/ & @jordan-lee & @alex-feng \\
+        transforms/ & @sam-cho & @jordan-lee \\
+        cli/ & @priya-nair & @sam-cho \\
+        admin-api/ & @mira-patel & @priya-nair \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+%=============================================================================
+\chapter{Release Process}
+\label{sec:release}
+%=============================================================================
+
+Releases follow semantic versioning. The release process is automated
+via GitHub Actions:
+
+\begin{enumerate}
+    \item Update \texttt{CHANGELOG.md} with all changes since the last
+        release.
+    \item Create a release PR with the version bump in
+        \texttt{build.gradle}.
+    \item After approval, merge the PR.
+    \item GitHub Actions creates a Git tag, builds the release artifacts,
+        and publishes to Maven Central.
+    \item Docker images are pushed to \texttt{ghcr.io/datapipe/datapipe}.
+\end{enumerate}
+
+\printbibliography[heading=bibintoc, title={References}]
+
+\end{document}

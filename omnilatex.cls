@@ -202,6 +202,86 @@
 \omnilatex@matchdoctypes{annual-report,annualreport}{\omnilatex@setdoctype{annual-report}{scrreprt}{\omnilatex@reportoptions}}%
 \omnilatex@matchdoctypes{case-study,casestudy}{\omnilatex@setdoctype{case-study}{scrartcl}{\omnilatex@articleoptions}}%
 \omnilatex@matchdoctypes{whitepaper,white-paper-report}{\omnilatex@setdoctype{whitepaper}{scrreprt}{\omnilatex@reportoptions}}%
+% --- Academic / Research (expanded) ---
+\omnilatex@matchdoctypes{conference-paper,conferencepaper,conf-paper}{\omnilatex@setdoctype{conference-paper}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{meta-analysis,metaanalysis,systematic-review}{\omnilatex@setdoctype{meta-analysis}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{research-notebook,researchnotebook,lab-notebook}{\omnilatex@setdoctype{research-notebook}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{clinical-report,clinicalreport,clinical-study}{\omnilatex@setdoctype{clinical-report}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{data-sheet,datasheet,material-safety,msds}{\omnilatex@setdoctype{data-sheet}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{experiment-log,experimentlog,lab-journal}{\omnilatex@setdoctype{experiment-log}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{survey-report,surveyreport,survey-analysis}{\omnilatex@setdoctype{survey-report}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{review-article,reviewarticle,reviews}{\omnilatex@setdoctype{review-article}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{dissertation-proposal,dissertationproposal,phd-proposal}{\omnilatex@setdoctype{dissertation-proposal}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{postdoc-report,postdocreport,fellowship-report}{\omnilatex@setdoctype{postdoc-report}{scrreprt}{\omnilatex@reportoptions}}%
+% --- Business / Professional (expanded) ---
+\omnilatex@matchdoctypes{business-plan,businessplan,bizplan}{\omnilatex@setdoctype{business-plan}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{market-analysis,marketanalysis,market-report}{\omnilatex@setdoctype{market-analysis}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{financial-report,financialreport,finance-report}{\omnilatex@setdoctype{financial-report}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{employee-handbook,employeehandbook,hr-handbook}{\omnilatex@setdoctype{employee-handbook}{scrbook}{\omnilatex@bookoptions}}%
+\omnilatex@matchdoctypes{onboarding-guide,onboardingguide,new-hire-guide}{\omnilatex@setdoctype{onboarding-guide}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{performance-review,performancereview,appraisal}{\omnilatex@setdoctype{performance-review}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{project-charter,projectcharter,charter}{\omnilatex@setdoctype{project-charter}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{risk-assessment,riskassessment,risk-report}{\omnilatex@setdoctype{risk-assessment}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{stakeholder-report,stakeholderreport,investor-report}{\omnilatex@setdoctype{stakeholder-report}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{pitch-deck,pitchdeck,investor-deck}{\omnilatex@setdoctype{pitch-deck}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{press-release,pressrelease,pr}{\omnilatex@setdoctype{press-release}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{media-kit,mediakit,press-kit}{\omnilatex@setdoctype{media-kit}{scrreprt}{\omnilatex@reportoptions}}%
+% --- Technical / Documentation (expanded) ---
+\omnilatex@matchdoctypes{user-guide,userguide,ug}{\omnilatex@setdoctype{user-guide}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{developer-guide,developerguide,devguide}{\omnilatex@setdoctype{developer-guide}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{operations-manual,operationsmanual,ops-manual}{\omnilatex@setdoctype{operations-manual}{scrbook}{\omnilatex@bookoptions}}%
+\omnilatex@matchdoctypes{architecture-document,architecturedocument,arch-doc}{\omnilatex@setdoctype{architecture-document}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{design-document,designdocument,design-spec}{\omnilatex@setdoctype{design-document}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{test-plan,testplan,test-specification}{\omnilatex@setdoctype{test-plan}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{deployment-guide,deploymentguide,deploy-guide}{\omnilatex@setdoctype{deployment-guide}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{troubleshooting-guide,troubleshootingguide,triage-guide}{\omnilatex@setdoctype{troubleshooting-guide}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{coding-standards,codingstandards,style-guide,styleguide}{\omnilatex@setdoctype{coding-standards}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{data-dictionary,datadictionary,data-model}{\omnilatex@setdoctype{data-dictionary}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{system-design,systemdesign,system-architecture}{\omnilatex@setdoctype{system-design}{scrreprt}{\omnilatex@reportoptions}}%
+% --- Legal / Government (expanded) ---
+\omnilatex@matchdoctypes{contract,contracts,agreement}{\omnilatex@setdoctype{contract}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{terms-of-service,termsofservice,tos,eula}{\omnilatex@setdoctype{terms-of-service}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{privacy-policy,privacypolicy,data-protection}{\omnilatex@setdoctype{privacy-policy}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{legal-brief,legalbrief,brief,memo-of-law}{\omnilatex@setdoctype{legal-brief}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{court-filing,courtfiling,pleading}{\omnilatex@setdoctype{court-filing}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{affidavit,affidavits}{\omnilatex@setdoctype{affidavit}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{compliance-document,compliancedocument,compliance-report}{\omnilatex@setdoctype{compliance-document}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{policy-document,policydocument,policy}{\omnilatex@setdoctype{policy-document}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{public-comment,publiccomment,regulatory-comment}{\omnilatex@setdoctype{public-comment}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{impact-report,impactreport,social-impact}{\omnilatex@setdoctype{impact-report}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{audit-report,auditreport,audit}{\omnilatex@setdoctype{audit-report}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{feasibility-study,feasibilitystudy,feasibility}{\omnilatex@setdoctype{feasibility-study}{scrreprt}{\omnilatex@reportoptions}}%
+% --- Creative / Lifestyle (expanded) ---
+\omnilatex@matchdoctypes{novel,novels,fiction}{\omnilatex@setdoctype{novel}{scrbook}{\omnilatex@bookoptions}}%
+\omnilatex@matchdoctypes{short-story,shortstory,stories}{\omnilatex@setdoctype{short-story}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{poetry-collection,poetrycollection,poetry,poems}{\omnilatex@setdoctype{poetry-collection}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{screenplay,screenplay,script-film}{\omnilatex@setdoctype{screenplay}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{comic-book,comicbook,graphic-novel}{\omnilatex@setdoctype{comic-book}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{zine,zines,fanzine}{\omnilatex@setdoctype{zine}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{art-catalogue,artcatalogue,exhibition-catalogue}{\omnilatex@setdoctype{art-catalogue}{scrbook}{\omnilatex@bookoptions}}%
+\omnilatex@matchdoctypes{photo-book,photobook,photo-album}{\omnilatex@setdoctype{photo-book}{scrbook}{\omnilatex@bookoptions}}%
+\omnilatex@matchdoctypes{travel-guide,travelguide,travel}{\omnilatex@setdoctype{travel-guide}{scrbook}{\omnilatex@bookoptions}}%
+\omnilatex@matchdoctypes{greeting-card,greetingcard,card}{\omnilatex@setdoctype{greeting-card}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{wedding-invitation,weddinginvitation}{\omnilatex@setdoctype{wedding-invitation}{scrartcl}{\omnilatex@articleoptions}}%
+% --- Education (expanded) ---
+\omnilatex@matchdoctypes{flashcards,flash-cards,study-cards}{\omnilatex@setdoctype{flashcards}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{study-guide,studyguide,revision-guide}{\omnilatex@setdoctype{study-guide}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{curriculum,curricula,syllabus-collection}{\omnilatex@setdoctype{curriculum}{scrreprt}{\omnilatex@reportoptions}}%
+\omnilatex@matchdoctypes{activity-book,activitybook,workbook}{\omnilatex@setdoctype{activity-book}{scrbook}{\omnilatex@bookoptions}}%
+\omnilatex@matchdoctypes{workbook,workbooks,exercise-book}{\omnilatex@setdoctype{workbook}{scrbook}{\omnilatex@bookoptions}}%
+% --- Personal / Lifestyle ---
+\omnilatex@matchdoctypes{journal,journals,diary,diaries}{\omnilatex@setdoctype{journal}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{recipe-book,recipebook,cookbook,cook-book}{\omnilatex@setdoctype{recipe-book}{scrbook}{\omnilatex@bookoptions}}%
+\omnilatex@matchdoctypes{personal-portfolio,portfolio,portfolio-book}{\omnilatex@setdoctype{personal-portfolio}{scrbook}{\omnilatex@bookoptions}}%
+\omnilatex@matchdoctypes{family-tree,familytree,genealogy}{\omnilatex@setdoctype{family-tree}{scrartcl}{\omnilatex@articleoptions}}%
+% --- Media / Content ---
+\omnilatex@matchdoctypes{podcast-script,podcastscript,podcast}{\omnilatex@setdoctype{podcast-script}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{video-script,videoscript,youtube-script}{\omnilatex@setdoctype{video-script}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{advertising-copy,advertisingcopy,ad-copy,adcopy}{\omnilatex@setdoctype{advertising-copy}{scrartcl}{\omnilatex@articleoptions}}%
+% --- Religious / Spiritual ---
+\omnilatex@matchdoctypes{sermon,sermons,homily}{\omnilatex@setdoctype{sermon}{scrartcl}{\omnilatex@articleoptions}}%
+\omnilatex@matchdoctypes{liturgy,liturgies,worship}{\omnilatex@setdoctype{liturgy}{scrreprt}{\omnilatex@reportoptions}}%
+% --- Beamer ---
 \omnilatex@matchdoctypes{beamer,beamers}{\omnilatex@setdoctype{beamer}{beamer}{\omnilatex@beameraoptions}\omnilatex@beamertrue}%
 
 % Validate doctype: warn if user passed an unknown doctype that didn't match
@@ -219,7 +299,25 @@
         textbook, quiz, lesson-plan, software-documentation, api-reference,%
         changelog, technical-spec, blog-post, newsletter, brochure,%
         invitation, program, legislation, regulation, annual-report,%
-        case-study}%
+        case-study, conference-paper, meta-analysis, research-notebook,%
+        clinical-report, data-sheet, experiment-log, survey-report,%
+        review-article, dissertation-proposal, postdoc-report,%
+        business-plan, market-analysis, financial-report,%
+        employee-handbook, onboarding-guide, performance-review,%
+        project-charter, risk-assessment, stakeholder-report,%
+        pitch-deck, press-release, media-kit, user-guide,%
+        developer-guide, operations-manual, architecture-document,%
+        design-document, test-plan, deployment-guide,%
+        troubleshooting-guide, coding-standards, data-dictionary,%
+        system-design, contract, terms-of-service, privacy-policy,%
+        legal-brief, court-filing, affidavit, compliance-document,%
+        policy-document, public-comment, impact-report, audit-report,%
+        feasibility-study, novel, short-story, poetry-collection,%
+        screenplay, comic-book, zine, art-catalogue, photo-book,%
+        travel-guide, greeting-card, wedding-invitation, flashcards,%
+        study-guide, curriculum, activity-book, workbook, journal,%
+        recipe-book, personal-portfolio, family-tree, podcast-script,%
+        video-script, advertising-copy, sermon, liturgy}%
 \fi
 
 % Validate titlestyle

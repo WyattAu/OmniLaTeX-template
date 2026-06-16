@@ -2,111 +2,236 @@
     language=english,
     doctype=journal,
     institution=none,
-    titlestyle=book,
 ]{../../omnilatex}
 
 \RequirePackage{config/document-settings}
-\addbibresource{../../bib/bibliography.bib}
 
 \begin{document}
-
 \maketitle
 
-\section*{Abstract}
-This journal article example demonstrates peer-reviewed formatting features
-including structured sections, mathematical notation, figures, tables, and
-bibliographic references.
+\section*{PERSONAL JOURNAL}
 
-\tableofcontents
+\textbf{Owner:} Sarah Chen\\
+\textbf{Period:} June 1--30, 2024\\
+\textbf{Motto:} \textit{``Be present. Be kind. Be curious.''}
 
-\section{Introduction}
-State the motivation and research context~\cite{bibid}.  Recent advances in
-computational methods have enabled researchers to tackle problems of
-increasing scale and complexity.  However, many existing approaches suffer from
-scalability limitations that become apparent when applied to real-world
-datasets with millions of samples.
+\section*{MONTHLY REFLECTION PROMPTS}
 
-\section{Methodology}
-Describe the experimental setup or theoretical approach~\cite{diracPrinciplesQuantumMechanics1981}.
-We model the system dynamics using the Hamiltonian
-\begin{equation}
-    \hat{H} = -\frac{\hbar^{2}}{2m}\nabla^{2} + V(\mathbf{r}),
-    \label{eq:hamiltonian}
-\end{equation}
-where $V(\mathbf{r})$ is the external potential and $m$ is the effective mass.
-The energy eigenvalues $E_n$ satisfy
-\begin{equation}
-    \hat{H}\,\psi_n(\mathbf{r}) = E_n\,\psi_n(\mathbf{r}),
-\end{equation}
-and are obtained numerically via a finite-difference discretisation on a
-$256 \times 256$ grid.
+Before we begin, take a moment to answer these questions:
+\begin{enumerate}
+    \item What are three things I'm grateful for this month?
+    \item What challenged me most?
+    \item What did I learn about myself?
+    \item What do I want to carry forward into next month?
+    \item What do I want to leave behind?
+\end{enumerate}
 
-\section{Results}
-Present findings with figures and tables~\cite{einstein1905}.  Table~\ref{tab:energy}
-compares the computed energy levels with analytical values for the harmonic
-oscillator potential $V(r) = \tfrac{1}{2}m\omega^{2}r^{2}$.
+\section*{MOOD TRACKER}
 
-\begin{table}[htbp]
-    \centering
-    \caption{Energy eigenvalues of the quantum harmonic oscillator.}
-    \label{tab:energy}
-    \begin{tabular}{@{}cccc@{}}
-        \toprule
-        State $n$ & Analytical ($\hbar\omega$) & Computed ($\hbar\omega$) & Rel.\ error (\%) \\
-        \midrule
-        0 & 0.5000 & 0.5001 & 0.02 \\
-        1 & 1.5000 & 1.5003 & 0.02 \\
-        2 & 2.5000 & 2.5008 & 0.03 \\
-        3 & 3.5000 & 3.5014 & 0.04 \\
-        \bottomrule
-    \end{tabular}
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{c|c|c|c|c|c|c|c}
+\textbf{Date} & \textbf{Mon} & \textbf{Tue} & \textbf{Wed} & \textbf{Thu} & \textbf{Fri} & \textbf{Sat} & \textbf{Sun} \\
+\hline
+Week 1 & 4 & 3 & 4 & 5 & 4 & 5 & 4 \\
+Week 2 & 3 & 2 & 3 & 4 & 5 & 5 & 4 \\
+Week 3 & 4 & 4 & 3 & 2 & 3 & 4 & 5 \\
+Week 4 & 5 & 4 & 4 & 5 & 4 & 3 & 4 \\
+\end{tabular}
+\caption{Daily mood ratings (1--5 scale)}
 \end{table}
 
-Figure~\ref{fig:wavefunctions} shows the computed wave functions for the first
-four eigenstates.
+\noindent\textit{Key: 1 = Low, 2 = Below Average, 3 = Neutral, 4 = Good, 5 = Excellent}
 
-\begin{figure}[htbp]
-    \centering
-    \begin{tikzpicture}
-    \begin{axis}[
-        width=0.7\textwidth,
-        height=5cm,
-        xlabel={$x$},
-        ylabel={$\psi_n(x)$},
-        legend pos=north east,
-        grid=major,
-        thick,
-        domain=-3:3,
-        samples=80,
-        no markers,
-    ]
-        \addplot[blue, thick] {0.53*exp(-x^2)};
-        \addlegendentry{$\psi_0$}
-        \addplot[red, thick] {1.06*x*exp(-x^2)};
-        \addlegendentry{$\psi_1$}
-        \addplot[green!60!black, thick] {1.06*(2*x^2-1)*exp(-x^2)};
-        \addlegendentry{$\psi_2$}
-        \addplot[orange, thick] {2.12*x*(2*x^2/3-1)*exp(-x^2)};
-        \addlegendentry{$\psi_3$}
-    \end{axis}
-\end{tikzpicture}
-    \caption{Normalised wave functions for the four lowest eigenstates.}
-    \label{fig:wavefunctions}
-\end{figure}
+\section*{DAILY ENTRIES}
 
-\section{Discussion}
-Interpret the findings and compare with related
-work~\cite{birdNaturalLanguageProcessing2009}.  The relative errors in
-Table~\ref{tab:energy} remain below 0.05\% for the states shown, confirming
-the spectral accuracy of the discretisation scheme.  Higher excited states
-exhibit slightly larger errors due to increased oscillation frequency.
+\subsection{Saturday, June 1, 2024}
 
-\section{Conclusion}
-Summarise contributions and suggest future directions~\cite{goossensLaTeXCompanion1993}.
-The proposed numerical framework achieves high accuracy with modest
-computational resources, and can be extended to anharmonic potentials and
-multi-particle systems in future work.
+\textbf{Weather:} Partly cloudy, 72°F
 
-\printbibliography
+\textbf{Mood:} 4/5 --- Content
+
+I started the month with a walk along the river trail. The cherry blossoms are gone now, replaced by the deep green of full summer foliage. The air smelled like cut grass and river water, and there were people everywhere---families with strollers, couples holding hands, dogs chasing tennis balls.
+
+I've been thinking a lot about the concept of ``being present.'' It's something I read about in a book last month, and it's been stuck in my head ever since. The idea is simple: instead of worrying about the future or regretting the past, just be here. Just be in this moment.
+
+It sounds easy. It's not. My mind wanders constantly, jumping from ``what if'' to ``if only'' with the agility of a caffeinated squirrel. But I'm trying. Today, for about five minutes on the river trail, I actually managed it. I wasn't thinking about work, or the dishes in the sink, or the email I need to send tomorrow. I was just walking. Just breathing. Just being.
+
+Five minutes. It's a start.
+
+\textbf{Highlights:}
+\begin{itemize}
+    \item Walked the river trail (3.2 miles)
+    \item Finished the novel I've been reading for two weeks (\textit{The Overstory} by Richard Powers)
+    \item Cooked pasta from scratch for the first time
+\end{itemize}
+
+\textbf{Gratitude:}
+\begin{enumerate}
+    \item The sound of the river
+    \item The way the light looked through the trees
+    \item The pasta turned out better than expected
+\end{enumerate}
+
+\subsection{Sunday, June 2, 2024}
+
+\textbf{Weather:} Sunny, 78°F
+
+\textbf{Mood:} 3/5 --- Restless
+
+I woke up with a headache and a vague sense of dread, which I recognize as my body's way of telling me I need to slow down. I ignored it, went to brunch with friends, and spent three hours talking about politics, which left me more agitated than when I started.
+
+Sometimes I think social media has broken my brain. Not in the obvious ways---I don't doomscroll (much), I don't compare myself to strangers (much), I don't feel the need to post every meal I eat (much). But it has shortened my attention span, and it has made me confused about what I actually think versus what I've been told to think.
+
+I need a digital detox. A real one, not the kind where you put your phone in a drawer for six hours and then check it compulsively to make sure no one's noticed you're gone. A real one. A weekend with no screens, no notifications, no algorithm telling me what to be outraged about today.
+
+Maybe next weekend. I'll plan it. I'll write it in this journal so there's a record. And then I'll do it.
+
+Probably.
+
+\textbf{Highlights:}
+\begin{itemize}
+    \item Brunch with Marcus and Priya
+    \item Walked to the farmers' market (tomatoes, basil, peaches)
+    \item Read for an hour on the porch
+\end{itemize}
+
+\textbf{Gratitude:}
+\begin{enumerate}
+    \item Friends who argue with me about politics
+    \item The farmers' market tomatoes (so much better than supermarket ones)
+    \item The porch, the breeze, the book
+\end{enumerate}
+
+\subsection{Monday, June 3, 2024}
+
+\textbf{Weather:} Rain, 64°F
+
+\textbf{Mood:} 4/5 --- Productive
+
+Rain days are my favorite. There's something about the sound of rain on the roof that makes the rest of the world go quiet. I worked from home today, and between meetings, I sat at my desk and just listened to the rain for ten minutes. It was better than meditation.
+
+Work is going well. The project I've been leading for three months is finally coming together, and I had a good conversation with my manager about next steps. She said something that stuck with me: ``You're not just doing the work. You're learning how to do the work better.'' I think that's true, and I think it's the first time I've felt that way about a job in a long time.
+
+I also started a new painting today. Watercolor, which I haven't done in years. The first strokes were shaky, the colors muddied, the composition off. But there's something about starting something new that's inherently exciting. You don't know what it's going to become. It could be anything.
+
+\textbf{Highlights:}
+\begin{itemize}
+    \item Productive workday
+    \item Started a new watercolor painting
+    \item Made soup from scratch (leek and potato, from a recipe my grandmother gave me)
+    \item Went to bed at 10:30 (a personal record for a weeknight)
+\end{itemize}
+
+\textbf{Gratitude:}
+\begin{enumerate}
+    \item The sound of rain
+    \item A manager who sees potential
+    \item The ability to start something new
+    \item My grandmother's soup recipe
+\end{enumerate}
+
+\subsection{Tuesday, June 4, 2024}
+
+\textbf{Weather:} Overcast, 68°F
+
+\textbf{Mood:} 2/5 --- Frustrated
+
+Bad day. The kind where everything goes wrong in small,累积 ways that individually don't matter but collectively feel like the universe is conspiring to ruin your week.
+
+The coffee shop was out of oat milk (minor). My laptop crashed and I lost an hour of work (not minor). I got into a disagreement with a colleague about the direction of the project, and I handled it badly---I was defensive, I interrupted, I said things I regret. I apologized afterward, but the damage was done. The meeting ended on a sour note, and I spent the rest of the afternoon replaying it in my head.
+
+I need to work on my conflict resolution skills. I know this. I've known this for years. But knowing and doing are different things, and when someone challenges my ideas, my first instinct is to defend rather than listen. It's not a good instinct. I need to catch it before it catches me.
+
+Also, I ate an entire sleeve of Oreos, which didn't help anything.
+
+\textbf{Highlights:}
+\begin{itemize}
+    \item Took a walk at lunch to clear my head (helped a little)
+    \item Finished the watercolor (it's not great, but it's done)
+    \item Called my mom, which always makes me feel better
+\end{itemize}
+
+\textbf{Gratitude:}
+\begin{enumerate}
+    \item My mom's voice
+    \item The walk at lunch
+    \item The fact that tomorrow is a new day
+\end{enumerate}
+
+\subsection{Wednesday, June 5, 2024}
+
+\textbf{Weather:} Partly cloudy, 70°F
+
+\textbf{Mood:} 3/5 --- Cautiously optimistic
+
+Better today. The disagreement with my colleague is resolved---we talked it through this morning, and it turns out we were both right about different things. I'm learning that conflict isn't always bad. Sometimes it's necessary. Sometimes it's how you get to a better solution.
+
+I went to the library after work and checked out three books: a novel, a poetry collection, and a book about watercolor techniques. The librarian gave me a look when she scanned them all together, as if to say, ``Interesting combination.'' She wasn't wrong.
+
+I've been thinking about this journal, about what it means to write things down. There's research that says journaling helps with mental health, with creativity, with goal-setting. But I think the real benefit is simpler: it makes you pay attention. When you know you're going to write about your day, you start noticing your day. You start looking for the moments that are worth recording.
+
+Today's moment: a woman on the bus, maybe seventy years old, reading a paperback novel with the kind of concentration that suggested the rest of the world had ceased to exist. She turned each page with a delicacy that was almost ceremonial. I watched her for five stops, until my stop came, and I felt a strange pang of envy---not for the book, but for the focus. For the ability to be somewhere else entirely while sitting in a crowded bus.
+
+Maybe that's what reading is: a portable doorway to another world. And maybe that's what journaling is too: a way to step outside your own life and see it from a distance.
+
+\textbf{Highlights:}
+\begin{itemize}
+    \item Resolved the disagreement with my colleague
+    \item Library visit (three books checked out)
+    \item Observed the woman on the bus
+\end{itemize}
+
+\textbf{Gratitude:}
+\begin{enumerate}
+    \item Colleagues who are willing to talk things through
+    \item Libraries (free books! how did we ever deserve this?)
+    \item The woman on the bus, for reminding me what focus looks like
+\end{enumerate}
+
+\section*{END OF MONTH REFLECTION}
+
+As I write this on the last day of June, I notice that the month has been a kind of arc---starting with contentment, dipping into frustration, and ending in cautious optimism. Which is, I suppose, what most months look like if you pay attention.
+
+\textbf{What I learned this month:}
+\begin{enumerate}
+    \item Being present is a practice, not a destination. Some days I manage it for five minutes. Some days I manage it for five seconds. Both count.
+    \item Conflict is not always failure. Sometimes it's growth.
+    \item Starting something new is inherently exciting, even when the results are mediocre.
+    \item Rain days are restorative.
+    \item Oreos do not solve problems, despite what my brain insists.
+\end{enumerate}
+
+\textbf{What I want to carry forward:}
+\begin{itemize}
+    \item The daily walks
+    \item The watercolor practice
+    \item The habit of noticing small moments
+    \item The practice of writing things down
+\end{itemize}
+
+\textbf{What I want to leave behind:}
+\begin{itemize}
+    \item The defensiveness in conflict
+    \item The Oreos (or at least the impulse to eat an entire sleeve)
+    \item The habit of checking my phone first thing in the morning
+\end{itemize}
+
+\textbf{July intentions:}
+\begin{enumerate}
+    \item Take the digital detox weekend I've been planning
+    \item Complete three watercolor paintings
+    \item Read one book per week
+    \item Practice being present for ten minutes every day
+    \item Be kinder to myself
+\end{enumerate}
+
+\vspace{1cm}
+
+\begin{center}
+\textit{``The secret of getting ahead is getting started.''}\\
+--- Mark Twain
+\end{center}
 
 \end{document}

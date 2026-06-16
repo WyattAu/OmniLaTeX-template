@@ -1,0 +1,220 @@
+\documentclass[
+    language=english,
+    doctype=policy-document,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+\maketitle
+
+\section*{INFORMATION SECURITY POLICY}
+
+\textbf{Policy Number:} ISP-2024-001\\
+\textbf{Version:} 3.0\\
+\textbf{Effective Date:} \today\\
+\textbf{Next Review Date:} June 15, 2025\\
+\textbf{Classification:} Internal
+
+\section{PURPOSE}
+
+This Information Security Policy establishes the framework, principles, and requirements for protecting the confidentiality, integrity, and availability of information assets owned, controlled, or processed by Meridian Financial Services, Inc. (``Meridian'' or the ``Company''). The purpose of this policy is to:
+
+\begin{enumerate}
+    \item Protect the Company's information assets from unauthorized access, disclosure, modification, or destruction;
+    \item Ensure compliance with applicable legal, regulatory, and contractual requirements;
+    \item Establish a culture of security awareness throughout the organization;
+    \item Define roles, responsibilities, and accountability for information security;
+    \item Provide a framework for managing information security risks.
+\end{enumerate}
+
+\section{SCOPE}
+
+This policy applies to:
+\begin{itemize}
+    \item All employees, contractors, consultants, and temporary workers of the Company;
+    \item All information systems, networks, and data owned or managed by the Company;
+    \item All third parties who access the Company's information systems or data;
+    \item All physical and virtual locations where Company information is stored or processed.
+\end{itemize}
+
+\section{POLICY STATEMENTS}
+
+\subsection{Information Classification}
+
+All Company information shall be classified according to the following scheme:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{p{3cm}p{6cm}p{5cm}}
+\toprule
+\textbf{Classification} & \textbf{Description} & \textbf{Examples} \\
+\midrule
+\textbf{Confidential} & Highly sensitive information whose unauthorized disclosure would cause severe harm & Financial records, customer PII, trade secrets, legal documents \\
+\textbf{Internal} & Information intended for internal use only & Internal memos, organizational charts, process documentation \\
+\textbf{Public} & Information approved for public distribution & Marketing materials, press releases, published reports \\
+\bottomrule
+\end{tabular}
+\caption{Information classification scheme}
+\end{table}
+
+\subsection{Access Control}
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item Access to information systems and data shall be granted on a need-to-know basis following the principle of least privilege.
+    \item Access rights shall be approved by the data owner and the employee's manager prior to provisioning.
+    \item Multi-factor authentication (MFA) shall be required for all access to Confidential information and all remote access to Company systems.
+    \item Access rights shall be reviewed quarterly and upon any change in employment status.
+    \item Privileged access shall be limited to authorized personnel and logged for audit purposes.
+    \item All access shall be disabled within twenty-four (24) hours of termination of employment or contract.
+\end{enumerate}
+
+\subsection{Password and Authentication Requirements}
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item Passwords shall be a minimum of twelve (12) characters in length.
+    \item Passwords shall include a combination of uppercase letters, lowercase letters, numbers, and special characters.
+    \item Passwords shall not be reused for a minimum of twenty-four (24) previous passwords.
+    \item Accounts shall be locked after five (5) consecutive failed login attempts.
+    \item Password expiration shall be set to ninety (90) days for standard accounts and thirty (30) days for privileged accounts.
+    \item Shared accounts are prohibited except where operationally necessary and approved by the CISO.
+\end{enumerate}
+
+\subsection{Data Protection}
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item Confidential data shall be encrypted at rest using AES-256 or equivalent.
+    \item Confidential data shall be encrypted in transit using TLS 1.2 or higher.
+    \item Data shall be backed up in accordance with the Company's backup and recovery procedures (Document ID: BKP-2024-001).
+    \item Data retention periods shall comply with applicable legal and regulatory requirements.
+    \item Data destruction shall be performed using methods appropriate to the data classification level.
+    \item Data loss prevention (DLP) controls shall be implemented to detect and prevent unauthorized data exfiltration.
+\end{enumerate}
+
+\subsection{Network Security}
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item Network perimeters shall be protected by enterprise-grade firewalls with default deny rules.
+    \item Network segmentation shall be implemented to isolate sensitive systems and data.
+    \item Wireless networks shall use WPA3 encryption and be segmented from production networks.
+    \item Intrusion detection and prevention systems shall be deployed at network boundaries.
+    \item VPN shall be required for all remote access to internal network resources.
+    \item Network traffic shall be monitored and logged for security analysis.
+\end{enumerate}
+
+\subsection{Endpoint Security}
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item All Company-owned endpoints shall have endpoint detection and response (EDR) software installed and active.
+    \item Operating systems and applications shall be patched within thirty (30) days of security update release.
+    \item Full-disk encryption shall be enabled on all portable devices.
+    \item Unauthorized software installation is prohibited.
+    \item Personal devices accessing Company resources shall comply with the Bring Your Own Device (BYOD) policy.
+\end{enumerate}
+
+\subsection{Incident Response}
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item All suspected or confirmed security incidents shall be reported to the Information Security team within one (1) hour of discovery.
+    \item The Incident Response Team shall follow the Incident Response Plan (Document ID: IRP-2024-001).
+    \item Incidents involving potential data breaches shall be escalated to the Legal and Compliance teams immediately.
+    \item Post-incident reviews shall be conducted for all incidents of Medium severity or higher.
+    \item Lessons learned shall be documented and incorporated into security controls and training.
+\end{enumerate}
+
+\subsection{Third-Party Risk Management}
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item All third-party vendors with access to Company data or systems shall undergo a security assessment prior to engagement.
+    \item Third-party contracts shall include security requirements, audit rights, and breach notification obligations.
+    \item Third-party access shall be reviewed annually and terminated when no longer required.
+    \item Critical third-party service providers shall be assessed annually for ongoing compliance.
+\end{enumerate}
+
+\subsection{Physical Security}
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item Company facilities shall have access controls including badge readers and visitor management.
+    \item Server rooms and data centers shall have restricted access limited to authorized personnel.
+    \item Clean desk policies shall be enforced in all work areas.
+    \item Secure disposal containers shall be available for Confidential paper documents.
+    \item Security cameras shall be deployed at facility entrances and sensitive areas.
+\end{enumerate}
+
+\subsection{Security Awareness and Training}
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item All employees shall complete security awareness training within thirty (30) days of hire and annually thereafter.
+    \item Phishing simulations shall be conducted monthly; employees who fail three or more consecutive simulations shall receive additional training.
+    \item Role-specific security training shall be provided to employees with security responsibilities.
+    \item Security awareness metrics shall be reported to executive leadership quarterly.
+\end{enumerate}
+
+\section{COMPLIANCE AND ENFORCEMENT}
+
+\subsection{Monitoring and Assessment}
+The Information Security team shall conduct regular assessments to verify compliance with this policy, including:
+\begin{itemize}
+    \item Quarterly access reviews;
+    \item Monthly vulnerability scans;
+    \item Annual penetration testing;
+    \item Annual policy compliance audits.
+\end{itemize}
+
+\subsection{Non-Compliance}
+Violations of this policy may result in disciplinary action, up to and including termination of employment. Repeated or willful violations may result in legal action.
+
+\subsection{Exceptions}
+Exceptions to this policy must be approved in writing by the Chief Information Security Officer (CISO) and documented with compensating controls. Exceptions shall be reviewed annually and revoked if no longer justified.
+
+\section{ROLES AND RESPONSIBILITIES}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{p{4cm}p{9cm}}
+\toprule
+\textbf{Role} & \textbf{Responsibility} \\
+\midrule
+Board of Directors & Oversight of information security program and risk appetite \\
+Executive Management & Resource allocation and strategic direction \\
+CISO & Policy development, program management, and incident oversight \\
+IT Department & Implementation and maintenance of security controls \\
+All Employees & Compliance with policy requirements and incident reporting \\
+Human Resources & Integration of security requirements into employment processes \\
+\bottomrule
+\end{tabular}
+\caption{Roles and responsibilities}
+\end{table}
+
+\section{POLICY MAINTENANCE}
+
+This policy shall be reviewed at least annually and updated as necessary to address changes in the threat landscape, business operations, or regulatory requirements. All amendments shall be approved by the CISO and executive management.
+
+\section{RELATED DOCUMENTS}
+
+\begin{itemize}
+    \item Acceptable Use Policy (AUP-2024-001)
+    \item Incident Response Plan (IRP-2024-001)
+    \item Backup and Recovery Procedures (BKP-2024-001)
+    \item Business Continuity Plan (BCP-2024-001)
+    \item Vendor Risk Management Policy (VRM-2024-001)
+    \item Data Classification Standard (DCS-2024-001)
+\end{itemize}
+
+\section{APPROVAL}
+
+\vspace{1cm}
+
+\noindent\rule{5cm}{0.4pt}\\
+David Kim, CISO\\
+Date: \underline{\hspace{3cm}}
+
+\vspace{1cm}
+
+\noindent\rule{5cm}{0.4pt}\\
+Margaret Thornton, CFO\\
+Date: \underline{\hspace{3cm}}
+
+\end{document}

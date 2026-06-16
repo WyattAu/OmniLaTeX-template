@@ -1,0 +1,303 @@
+\documentclass[
+    language=english,
+    doctype=technical-report,
+    institution=none,
+    titlestyle=book,
+    oneside,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+%=============================================================================
+\chapter{Introduction}
+\label{sec:introduction}
+%=============================================================================
+
+This document describes the system architecture of DataPipe, a streaming
+ETL platform. It is intended for architects, senior engineers, and
+technical stakeholders who need to understand the system's design
+rationale, component interactions, and technology choices.
+
+\section{Document Scope}
+
+This architecture document covers:
+
+\begin{itemize}
+    \item High-level system architecture and component boundaries.
+    \item Data flow through the platform.
+    \item Technology selection rationale (Architecture Decision Records).
+    \item Non-functional requirements and their architectural implications.
+    \item Integration patterns with external systems.
+\end{itemize}
+
+\section{Architecture Principles}
+
+\begin{enumerate}
+    \item \textbf{Separation of concerns:} Each component has a single,
+        well-defined responsibility.
+    \item \textbf{Extensibility:} New connectors and transforms can be
+        added without modifying the core runtime.
+    \item \textbf{Resilience:} The system tolerates component failures
+        without data loss.
+    \item \textbf{Observability:} All components expose metrics, logs,
+        and traces.
+    \item \textbf{Simplicity:} Prefer boring technology over novel
+        solutions.
+\end{enumerate}
+
+%=============================================================================
+\chapter{System Architecture}
+\label{sec:architecture}
+%=============================================================================
+
+\section{Component Overview}
+
+The system comprises six major components arranged in a layered
+architecture:
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1cm and 1.5cm,
+        layer/.style={draw, rounded corners, minimum width=10cm,
+                      minimum height=1.5cm, text centered,
+                      fill=#1!10, draw=#1!50!black,
+                      font=\small},
+        comp/.style={draw, rounded corners, minimum width=2.2cm,
+                     minimum height=0.7cm, text centered, font=\footnotesize,
+                     fill=white, thick},
+        arr/.style={->, >=stealth, thick},
+        annot/.style={font=\scriptsize, text width=2.5cm, align=center},
+    ]
+        \node[layer=blue] (api) {API Layer};
+        \node[comp] (rest) [above=0.3cm of api] {REST API};
+        \node[comp] (cli) [left=1cm of rest] {CLI};
+        \node[comp] (grpc) [right=1cm of rest] {gRPC};
+
+        \node[layer=green] (runtime) [below=0.6cm of api] {Core Runtime};
+        \node[comp] (pipeline) [above=0.3cm of runtime] {Pipeline Engine};
+        \node[comp] (scheduler) [left=0.5cm of pipeline] {Scheduler};
+        \node[comp] (executor) [right=0.5cm of pipeline] {Executor};
+
+        \node[layer=orange] (connectors) [below=0.6cm of runtime] {Connector Layer};
+        \node[comp] (source) [above=0.3cm of connectors] {Sources};
+        \node[comp] (sink) [right=2cm of source] {Sinks};
+        \node[comp] (window) [left=2cm of source] {Windows};
+
+        \node[layer=red] (storage) [below=0.6cm of connectors] {Storage Layer};
+        \node[comp] (kafka) [above=0.3cm of storage] {Kafka};
+        \node[comp] (pg) [right=2cm of kafka] {PostgreSQL};
+        \node[comp] (s3) [left=2cm of kafka] {S3};
+
+        \draw[arr] (api) -- (runtime);
+        \draw[arr] (runtime) -- (connectors);
+        \draw[arr] (connectors) -- (storage);
+    \end{tikzpicture}
+    \caption{DataPipe layered architecture.}
+    \label{fig:layered-arch}
+\end{figure}
+
+\section{Data Flow}
+
+The following diagram shows how a record flows through the system from
+source to sink:
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.5cm and 2cm,
+        box/.style={draw, rounded corners, minimum width=2.5cm,
+                     minimum height=0.9cm, text centered, font=\small,
+                     fill=#1!20, draw=#1!60!black},
+        arr/.style={->, >=stealth, thick},
+    ]
+        \node[box=blue]   (src)   {Source};
+        \node[box=green]  ( deser) [right=of src] {Deserialize};
+        \node[box=orange] (trans) [right=of deser] {Transform};
+        \node[box=purple] (ser)   [right=of trans] {Serialize};
+        \node[box=red]    (sink)  [right=of ser] {Sink};
+
+        \draw[arr] (src) -- (deser);
+        \draw[arr] (deser) -- (trans);
+        \draw[arr] (trans) -- (ser);
+        \draw[arr] (ser) -- (sink);
+
+        \node[font=\footnotesize, below=0.3cm of deser, text width=2cm, align=center]
+            {JSON/Avro/Protobuf};
+        \node[font=\footnotesize, below=0.3cm of trans, text width=2cm, align=center]
+            {Filter/Map/Aggregate};
+        \node[font=\footnotesize, below=0.3cm of ser, text width=2cm, align=center]
+            {Target format};
+    \end{tikzpicture}
+    \caption{Record processing flow.}
+    \label{fig:data-flow}
+\end{figure}
+
+%=============================================================================
+\chapter{Technology Decisions}
+\label{sec:technology}
+%=============================================================================
+
+\section{Language and Runtime}
+
+\begin{itemize}
+    \item \textbf{Java 21} chosen for the core runtime due to its mature
+        ecosystem, strong typing, and excellent Kafka/Flink integration.
+    \item \textbf{Python 3.12} chosen for the CLI and custom transforms
+        due to rapid development cycle and data science community.
+\end{itemize}
+
+\section{Messaging}
+
+\textbf{Apache Kafka} was selected over RabbitMQ and NATS for the
+following reasons:
+
+\begin{enumerate}
+    \item Persistent storage enables replay and exactly-once semantics.
+    \item Partition-based parallelism scales horizontally.
+    \item Mature ecosystem with connectors for most data sources.
+    \item Strong community and commercial support.
+\end{enumerate}
+
+\section{Database}
+
+\textbf{PostgreSQL 16} serves as the primary metadata store:
+
+\begin{itemize}
+    \item ACID compliance ensures pipeline configuration consistency.
+    \item JSONB support enables flexible metadata storage.
+    \item Replication provides high availability.
+    \item Rich extension ecosystem (pg\_stat\_statements, pg\_cron).
+\end{itemize}
+
+%=============================================================================
+\chapter{Architecture Decision Records}
+\label{sec:adr}
+%=============================================================================
+
+\section{ADR-001: Use Kafka as the Primary Message Broker}
+
+\begin{description}
+    \item[Status] Accepted.
+    \item[Context] The platform requires a durable, high-throughput message
+        broker for inter-component communication and data buffering.
+    \item[Decision] Use Apache Kafka as the primary message broker.
+    \item[Consequences] Positive: durable storage, replay capability,
+        exactly-once semantics. Negative: operational complexity, JVM
+        dependency.
+\end{description}
+
+\section{ADR-002: Plugin Architecture for Connectors}
+
+\begin{description}
+    \item[Status] Accepted.
+    \item[Context] New data sources and sinks must be added without
+        modifying the core runtime.
+    \item[Decision] Implement a Java ServiceLoader-based plugin system for
+        connectors.
+    \item[Consequences] Positive: clean separation, third-party
+        extensibility. Negative: additional abstraction layer, versioning
+        complexity.
+\end{description}
+
+\section{ADR-003: Python CLI Over Go or Rust}
+
+\begin{description}
+    \item[Status] Accepted.
+    \item[Context] The CLI needs rapid iteration and should be accessible
+        to data engineers who primarily use Python.
+    \item[Decision] Implement the CLI in Python using Click.
+    \item[Consequences] Positive: fast development, familiar to target
+        users. Negative: slower startup, deployment complexity.
+\end{description}
+
+%=============================================================================
+\chapter{Non-Functional Requirements}
+\label{sec:nfr}
+%=============================================================================
+
+\begin{table}[htbp]
+    \centering
+    \caption{Non-functional requirements and architectural implications.}
+    \label{tab:nfr}
+    \begin{tabular}{@{}p{3.5cm}p{4cm}p{5cm}@{}}
+        \toprule
+        Requirement & Target & Architectural Implication \\
+        \midrule
+        Throughput & 500k events/s & Horizontal scaling of pipeline
+            executor nodes; Kafka partitioning. \\
+        Latency (P99) & $< 200$\,ms & In-memory transforms; avoid
+            synchronous I/O in the hot path. \\
+        Availability & 99.95\% & Multi-AZ deployment; automated failover;
+            read replicas. \\
+        Durability & At-least-once & Kafka WAL; idempotent sink writes;
+            checkpointing. \\
+        Scalability & 10x growth & Stateless executors; partition-based
+            parallelism; auto-scaling. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+%=============================================================================
+\chapter{Integration Architecture}
+\label{sec:integration}
+%=============================================================================
+
+\section{External System Integrations}
+
+DataPipe integrates with the following external systems:
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.2cm and 1.5cm,
+        box/.style={draw, rounded corners, minimum width=2.4cm,
+                     minimum height=0.8cm, text centered, font=\small},
+        center/.style={box, fill=red!20, draw=red!60!black,
+                       minimum width=3cm},
+        arr/.style={->, >=stealth, thick},
+    ]
+        \node[box=blue]   (pg)     {PostgreSQL};
+        \node[box=green]  (s3)     [below=of pg] {S3};
+        \node[box=orange] (bigq)   [below=of s3] {BigQuery};
+        \node[center]     (dp)     [right=2cm of s3] {DataPipe};
+        \node[box=purple] (kafka)  [right=2cm of pg] {Kafka};
+        \node[box=cyan]   (redis)  [below=of kafka] {Redis};
+        \node[box=red]    (elastic)[below=of redis] {Elasticsearch};
+
+        \draw[arr] (pg) -- (dp);
+        \draw[arr] (s3) -- (dp);
+        \draw[arr] (bigq) -- (dp);
+        \draw[arr] (dp) -- (kafka);
+        \draw[arr] (dp) -- (redis);
+        \draw[arr] (dp) -- (elastic);
+    \end{tikzpicture}
+    \caption{External system integration map.}
+    \label{fig:integration}
+\end{figure}
+
+\section{API Versioning Strategy}
+
+The REST API follows semantic versioning:
+
+\begin{lstlisting}[language=bash, caption={API versioning examples.}]
+# Versioned endpoints
+/api/v1/pipelines
+/api/v2/pipelines
+
+# Content negotiation via Accept header
+curl -H "Accept: application/vnd.datapipe.v2+json" \\
+    http://localhost:8080/api/v2/pipelines
+\end{lstlisting}
+
+\printbibliography[heading=bibintoc, title={References}]
+
+\end{document}

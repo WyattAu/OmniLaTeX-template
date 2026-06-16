@@ -1,0 +1,246 @@
+\documentclass[
+    language=english,
+    doctype=compliance-document,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+\maketitle
+
+\section*{REGULATORY COMPLIANCE DOCUMENT}
+
+\textbf{Organization:} Meridian Financial Services, Inc.\\
+\textbf{Document ID:} COMP-2024-001\\
+\textbf{Effective Date:} \today\\
+\textbf{Review Cycle:} Annual\\
+\textbf{Classification:} Internal --- Confidential
+
+\section{PURPOSE AND SCOPE}
+
+This document establishes the compliance framework for Meridian Financial Services, Inc. (``Meridian'' or the ``Company'') with respect to the Payment Card Industry Data Security Standard (PCI DSS), Version 4.0. This framework applies to all business units, subsidiaries, and third-party service providers that process, store, or transmit cardholder data.
+
+\section{REGULATORY REQUIREMENTS AND COMPLIANCE MAPPING}
+
+\subsection{PCI DSS Requirement 1: Install and Maintain Network Security Controls}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{p{3cm}p{5cm}p{4cm}p{3cm}}
+\toprule
+\textbf{Control ID} & \textbf{Requirement} & \textbf{Control Description} & \textbf{Status} \\
+\midrule
+1.1.1 & Establish firewall configuration standards & Documented firewall and router configuration standards including connection rules, network segmentation, and review processes. & Compliant \\
+1.1.2 & Build firewall and router configurations & Restrict connections between untrusted networks and systems in the cardholder data environment. & Compliant \\
+1.1.3 & Prohibit direct public access & Direct connections between the internet and the cardholder data environment are prohibited. & Compliant \\
+1.1.4 & Install personal firewall software & Personal firewall software deployed on all portable computing devices that connect to the internet. & Compliant \\
+1.2.1 & Restrict inbound traffic & Inbound traffic restricted to IP addresses and ports necessary for business operations. & Compliant \\
+1.2.2 & Restrict outbound traffic & Outbound traffic restricted to only necessary IP addresses and ports. & Partial \\
+\bottomrule
+\end{tabular}
+\caption{Requirement 1 compliance status}
+\end{table}
+
+\textbf{Evidence of Compliance:}
+\begin{itemize}
+    \item Firewall configuration documentation (Document ID: FW-CONFIG-2024-001)
+    \item Quarterly firewall rule review logs (Q1-Q4 2023)
+    \item Network segmentation diagrams (Last updated: January 15, 2024)
+    \item Penetration test results confirming segmentation effectiveness (Report ID: PT-2024-003)
+\end{itemize}
+
+\textbf{Remediation Required for 1.2.2:} Outbound traffic filtering for non-production environments must be implemented by March 31, 2024. Remediation owner: Network Security Team.
+
+\subsection{PCI DSS Requirement 2: Apply Secure Configurations to All System Components}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{p{3cm}p{5cm}p{4cm}p{3cm}}
+\toprule
+\textbf{Control ID} & \textbf{Requirement} & \textbf{Control Description} & \textbf{Status} \\
+\midrule
+2.1.1 & Change vendor-supplied defaults & All vendor-supplied default passwords and settings are changed before production deployment. & Compliant \\
+2.1.2 & Disable unnecessary services & Unnecessary protocols and services are disabled on all system components. & Compliant \\
+2.2.1 & System configuration standards & Configuration standards developed for all system components in the cardholder data environment. & Compliant \\
+2.2.2 & System hardening & Systems hardened according to industry-accepted hardening standards. & Partial \\
+2.3.1 & Wireless security & Wireless security protocols configured to industry best practices. & Compliant \\
+\bottomrule
+\end{tabular}
+\caption{Requirement 2 compliance status}
+\end{table}
+
+\textbf{Evidence of Compliance:}
+\begin{itemize}
+    \item System configuration standards document (Document ID: SYS-CONFIG-2024-001)
+    \item Quarterly configuration compliance scans (Q1-Q4 2023)
+    \item System hardening checklists for all production servers
+    \item Wireless network security audit report (Report ID: WSA-2023-002)
+\end{itemize}
+
+\textbf{Remediation Required for 2.2.2:} Five legacy servers require updated hardening configurations. Remediation owner: Systems Administration Team. Deadline: February 28, 2024.
+
+\subsection{PCI DSS Requirement 6: Develop and Maintain Secure Systems and Software}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{p{3cm}p{5cm}p{4cm}p{3cm}}
+\toprule
+\textbf{Control ID} & \textbf{Requirement} & \textbf{Control Description} & \textbf{Status} \\
+\midrule
+6.1.1 & Identify security vulnerabilities & Processes to identify security vulnerabilities through internal and external vulnerability scanning. & Compliant \\
+6.1.2 & Risk ranking & Risk ranking applied to identified vulnerabilities per the Company's risk assessment methodology. & Compliant \\
+6.2.1 & Patch management & Security patches installed within 30 days of release for critical vulnerabilities, 90 days for others. & Compliant \\
+6.2.2 & Software development lifecycle & Secure coding practices integrated into the SDLC. & Partial \\
+6.3.1 & Change control procedures & Change control procedures documented and enforced for all changes to system components. & Compliant \\
+6.3.2 & Security impact analysis & Security impact analysis performed for all changes prior to deployment. & Compliant \\
+6.4.1 & Web application protection & Web applications protected against common attacks using WAF or code review. & Compliant \\
+6.4.2 & Public-facing web application protection & Public-facing web applications addressed through manual or automated technical methods. & Compliant \\
+\bottomrule
+\end{tabular}
+\caption{Requirement 6 compliance status}
+\end{table}
+
+\textbf{Evidence of Compliance:}
+\begin{itemize}
+    \item Vulnerability scanning reports (Monthly, 2023-2024)
+    \item Patch management logs and compliance dashboard
+    \item Secure development lifecycle documentation (Document ID: SDLC-2024-001)
+    \item Change management system records (ServiceNow)
+    \item WAF configuration and rule set documentation
+    \item Penetration testing reports (Quarterly, 2023)
+\end{itemize}
+
+\textbf{Remediation Required for 6.2.2:} Automated security testing tools must be integrated into the CI/CD pipeline for all production applications. Remediation owner: Application Security Team. Deadline: April 30, 2024.
+
+\section{AUDIT TRAIL AND EVIDENCE LOG}
+
+\subsection{Internal Audit Activities}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{p{2.5cm}p{4cm}p{3cm}p{2.5cm}p{2cm}}
+\toprule
+\textbf{Audit ID} & \textbf{Description} & \textbf{Auditor} & \textbf{Date} & \textbf{Findings} \\
+\midrule
+IA-2023-001 & Q1 Firewall Rule Review & Security Team & 2023-03-15 & 0 High \\
+IA-2023-002 & Q1 Access Control Review & Internal Audit & 2023-03-22 & 1 Medium \\
+IA-2023-003 & Q2 Vulnerability Scan Review & Security Team & 2023-06-14 & 0 High \\
+IA-2023-004 & Q2 Configuration Review & Internal Audit & 2023-06-28 & 2 Medium \\
+IA-2023-005 & Q3 Penetration Test & External (NCC) & 2023-09-10 & 0 Critical \\
+IA-2023-006 & Q3 Access Control Review & Internal Audit & 2023-09-20 & 0 High \\
+IA-2023-007 & Q4 Firewall Rule Review & Security Team & 2023-12-12 & 0 High \\
+IA-2023-008 & Q4 Configuration Review & Internal Audit & 2023-12-18 & 1 Medium \\
+\bottomrule
+\end{tabular}
+\caption{2023 internal audit activities}
+\end{table}
+
+\subsection{External Audit and Assessment Activities}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{p{2.5cm}p{4cm}p{3cm}p{2.5cm}p{2cm}}
+\toprule
+\textbf{Activity ID} & \textbf{Description} & \textbf{Provider} & \textbf{Date} & \textbf{Result} \\
+\midrule
+EA-2023-001 & ASV Quarterly Scan (Q1) & Coalfire & 2023-03-08 & Pass \\
+EA-2023-002 & ASV Quarterly Scan (Q2) & Coalfire & 2023-06-07 & Pass \\
+EA-2023-003 & ASV Quarterly Scan (Q3) & Coalfire & 2023-09-06 & Pass \\
+EA-2023-004 & ASV Quarterly Scan (Q4) & Coalfire & 2023-12-06 & Pass \\
+EA-2023-005 & Annual Penetration Test & NCC Group & 2023-09-10 & Pass \\
+EA-2023-006 & PCI DSS Level 1 Audit & Coalfire & 2024-01-15 & In Progress \\
+\bottomrule
+\end{tabular}
+\caption{2023 external audit activities}
+\end{table}
+
+\section{INCIDENT RESPONSE}
+
+\subsection{Incident Response Plan Summary}
+Meridian maintains a comprehensive Incident Response Plan (Document ID: IRP-2024-001) that includes:
+\begin{enumerate}
+    \item \textbf{Preparation} --- Team roles, communication templates, and forensic tools readiness.
+    \item \textbf{Detection and Analysis} --- Monitoring, alerting, and triage procedures.
+    \item \textbf{Containment} --- Short-term and long-term containment strategies.
+    \item \textbf{Eradication and Recovery} --- Root cause analysis and system restoration procedures.
+    \item \textbf{Post-Incident Activity} --- Lessons learned documentation and control improvements.
+\end{enumerate}
+
+\subsection{Incident Log}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{p{2.5cm}p{3.5cm}p{2cm}p{2cm}p{2.5cm}}
+\toprule
+\textbf{Incident ID} & \textbf{Description} & \textbf{Date} & \textbf{Severity} & \textbf{Status} \\
+\midrule
+INC-2023-001 & Unauthorized access attempt & 2023-04-12 & Low & Closed \\
+INC-2023-002 & Phishing campaign detected & 2023-07-19 & Medium & Closed \\
+INC-2023-003 & Lost employee laptop & 2023-10-03 & Medium & Closed \\
+INC-2024-001 & Suspicious network activity & 2024-01-08 & Low & Under Investigation \\
+\bottomrule
+\end{tabular}
+\caption{Recorded security incidents}
+\end{table}
+
+\section{TRAINING AND AWARENESS}
+
+\begin{enumerate}
+    \item All employees complete PCI DSS awareness training upon hire and annually thereafter.
+    \item Development staff receive secure coding training annually.
+    \item System administrators receive specialized security configuration training.
+    \item Incident response team members participate in tabletop exercises quarterly.
+\end{enumerate}
+
+\textbf{Training Completion Rate (2023):} 98.7\% (3 exceptions due to late hires; completed within 30 days of start date).
+
+\section{ROLES AND RESPONSIBILITIES}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{p{3cm}p{5cm}p{5cm}}
+\toprule
+\textbf{Role} & \textbf{Responsibility} & \textbf{Name/Team} \\
+\midrule
+Executive Sponsor & Overall accountability for PCI DSS compliance & CFO (M. Thornton) \\
+QSA Coordinator & Liaison with Qualified Security Assessor & D. Kim (CISO) \\
+Compliance Manager & Day-to-day compliance program management & S. Patel \\
+Network Security & Firewall and network control implementation & Network Team \\
+System Administration & System configuration and patching & Systems Team \\
+Application Security & Secure development and vulnerability management & AppSec Team \\
+\bottomrule
+\end{tabular}
+\caption{Roles and responsibilities}
+\end{table}
+
+\section{REVIEW AND APPROVAL}
+
+This document has been reviewed and approved by:
+
+\vspace{1cm}
+
+\noindent\rule{5cm}{0.4pt}\\
+Margaret Thornton, CFO\\
+Date: \underline{\hspace{3cm}}
+
+\vspace{1cm}
+
+\noindent\rule{5cm}{0.4pt}\\
+David Kim, CISO\\
+Date: \underline{\hspace{3cm}}
+
+\vspace{1cm}
+
+\noindent\rule{5cm}{0.4pt}\\
+Sarah Patel, Compliance Manager\\
+Date: \underline{\hspace{3cm}}
+
+\end{document}

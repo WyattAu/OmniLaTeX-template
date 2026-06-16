@@ -1,0 +1,294 @@
+\documentclass[
+    language=english,
+    doctype=performance-review,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+
+\maketitle
+
+\section*{Employee Information}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{ll}
+        \toprule
+        \textbf{Field} & \textbf{Value} \\
+        \midrule
+        Employee Name   & Alex Kim \\
+        Employee ID     & NP-2024-0312 \\
+        Job Title       & Software Engineer \\
+        Department      & Engineering --- Platform Team \\
+        Manager         & Priya Sharma, VP Engineering \\
+        Review Period   & January 2025 -- December 2025 \\
+        Review Date     & June 15, 2026 \\
+        Review Type     & Annual Performance Review \\
+        \bottomrule
+    \end{tabular}
+    \caption{Employee and review metadata.}
+\end{table}
+
+\section{Performance Summary}
+
+Alex joined NovaPulse in March 2024 as a Software Engineer on the Platform
+team. Over the review period, Alex has grown into one of the team's most
+reliable contributors, consistently delivering high-quality work across
+multiple complex projects. Alex demonstrated strong technical depth in
+distributed systems, showed initiative in improving team processes, and
+earned the respect of peers across engineering, product, and customer success.
+
+Key accomplishments during the review period:
+
+\begin{itemize}
+    \item Led the design and implementation of the real-time streaming
+          pipeline, reducing data ingestion latency by 62\% (from 8.4 seconds
+          to 3.2 seconds for 95th percentile).
+    \item Resolved 47 production incidents with an average mean time to
+          resolution (MTTR) of 23 minutes, well below the team average of
+          41 minutes.
+    \item Authored 6 architecture decision records (ADRs) that established
+          new standards for API versioning and backward compatibility.
+    \item Mentored two junior engineers through the onboarding process, both
+          of whom reached independent contribution within 8 weeks.
+    \item Contributed to the NovaCore 4.0 launch by delivering the
+          edge-cloud synchronization module ahead of schedule.
+\end{itemize}
+
+\section{Competency Ratings}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lcccc}
+        \toprule
+        \textbf{Competency} & \textbf{Rating} & \textbf{Peer Avg.} & \textbf{Manager} & \textbf{Self} \\
+        \midrule
+        Technical Depth         & 4.8 & 4.5 & 5.0 & 4.5 \\
+        Code Quality            & 4.6 & 4.4 & 5.0 & 4.0 \\
+        Problem Solving         & 4.7 & 4.3 & 5.0 & 4.5 \\
+        Communication           & 4.2 & 4.0 & 4.0 & 4.0 \\
+        Collaboration           & 4.5 & 4.6 & 5.0 & 4.5 \\
+        Ownership \& Initiative & 4.8 & 4.5 & 5.0 & 4.5 \\
+        Mentorship              & 4.3 & 4.2 & 4.5 & 4.0 \\
+        Learning \& Growth      & 4.5 & 4.3 & 4.5 & 4.5 \\
+        \midrule
+        \textbf{Overall}        & \textbf{4.55} & \textbf{4.35} & \textbf{4.75} & \textbf{4.31} \\
+        \bottomrule
+    \end{tabular}
+    \caption{Competency ratings on a 5-point scale (1 = Below Expectations, 3 = Meets, 5 = Exceeds Significantly).}
+\end{table}
+
+\subsection{Rating Scale Reference}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{ll}
+        \toprule
+        \textbf{Score} & \textbf{Description} \\
+        \midrule
+        1.0--1.9 & Does Not Meet Expectations \\
+        2.0--2.9 & Partially Meets Expectations \\
+        3.0--3.9 & Meets Expectations \\
+        4.0--4.9 & Exceeds Expectations \\
+        5.0      & Significantly Exceeds Expectations \\
+        \bottomrule
+    \end{tabular}
+    \caption{Competency rating scale.}
+\end{table}
+
+\section{Goals Tracking}
+
+\subsection{Goals from Prior Review}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{p{5cm}ccp{4cm}}
+        \toprule
+        \textbf{Goal} & \textbf{Target} & \textbf{Actual} & \textbf{Comments} \\
+        \midrule
+        Reduce streaming pipeline latency from 8.4s to under 4.0s (P95) &
+            $<$4.0s & 3.2s & Exceeded; novel approach using backpressure
+            throttling \\
+        Ship edge-cloud sync module for NovaCore 4.0 &
+            Q4 2025 & Q4 2025 & Delivered on time with zero P0 bugs \\
+        Earn AWS Solutions Architect Professional certification &
+            By Dec 2025 & Completed Nov 2025 & Score: 892/1000 \\
+        Mentor 2 junior engineers to independent contribution &
+            8 weeks each & 7 \& 8 weeks & Both engineers now contributing
+            independently \\
+        Reduce incident MTTR for team by 15\% &
+            35 min & 23 min (Alex only); team avg 38 min & Alex's MTTR
+            is exceptional; team-wide goal not fully met \\
+        \bottomrule
+    \end{tabular}
+    \caption{Prior-period goals with outcomes.}
+\end{table}
+
+\subsection{Goals for Next Period (H2 2026)}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{p{5.5cm}lr}
+        \toprule
+        \textbf{Goal} & \textbf{Metric} & \textbf{Deadline} \\
+        \midrule
+        Lead the design of the multi-region failover architecture for
+            the platform &
+            Architecture doc + POC & Sep 2026 \\
+        Achieve 90\%+ code coverage on all new modules &
+            Coverage report & Dec 2026 \\
+        Complete the ``Engineering Manager Foundations'' course &
+            Certificate & Nov 2026 \\
+        Deliver a team-wide tech talk on distributed systems patterns &
+            Presentation + recording & Oct 2026 \\
+        Contribute to open-source SDK release (external-facing) &
+            Merged PRs + documentation & Dec 2026 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Proposed goals for the next review period.}
+\end{table}
+
+\section{Manager Assessment}
+
+\subsection{Strengths}
+
+\begin{itemize}
+    \item \textbf{Technical excellence.} Alex has a rare combination of
+        theoretical depth (strong grasp of distributed systems theory) and
+        practical shipping ability. The streaming pipeline redesign was
+        technically sophisticated and delivered ahead of schedule.
+    \item \textbf{Ownership.} Alex does not wait to be told what to do. When
+        production incidents occur, Alex is typically the first to volunteer
+        and the last to leave. The incident response documentation Alex
+        wrote has become the team standard.
+    \item \textbf{Mentorship.} Alex invested significant time in two junior
+        engineers, creating pair programming sessions, reviewing code
+        thoughtfully, and providing constructive feedback that accelerated
+        their growth.
+    \item \textbf{Reliability.} Alex consistently meets or beats deadlines.
+        In the past 12 months, Alex delivered all major milestones on time
+        with no quality escalations.
+\end{itemize}
+
+\subsection{Areas for Development}
+
+\begin{itemize}
+    \item \textbf{Communication breadth.} While Alex excels in written
+        communication (ADRs, documentation), there is room to grow in
+        presenting technical concepts to non-technical stakeholders.
+        The next project involving a cross-functional audience would be a
+        good opportunity to practice.
+    \item \textbf{Strategic thinking.} Alex is excellent at solving the
+        problem in front of them. The next step is to develop the ability
+        to anticipate problems upstream and propose architectural direction
+        proactively.
+    \item \textbf{Influence without authority.} As Alex grows toward a
+        Staff Engineer role, the ability to influence decisions across
+        teams---without direct authority---will become increasingly
+        important.
+\end{itemize}
+
+\section{Peer Feedback Summary}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lp{8cm}}
+        \toprule
+        \textbf{Reviewer} & \textbf{Key Feedback} \\
+        \midrule
+        Morgan Lee (Engineer) & ``Alex is the person I go to when I am stuck.
+            The streaming pipeline work was impressive and raised the bar for
+            the whole team.'' \\
+        Taylor Brooks (DevOps) & ``Collaboration on the NovaCore 4.0 launch
+            was seamless. Alex proactively communicated deployment needs and
+            handled edge cases I had not considered.'' \\
+        Jordan Mitchell (PM) & ``Alex does a great job translating technical
+            complexity into product language. Would love to see more of that
+            in larger group settings.'' \\
+        Sam Nguyen (QA) & ``Code quality from Alex is consistently high. PRs
+            are well-scoped, well-tested, and easy to review.'' \\
+        \bottomrule
+    \end{tabular}
+    \caption{Selected peer feedback excerpts.}
+\end{table}
+
+\section{Compensation Review}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lrr}
+        \toprule
+        \textbf{Component} & \textbf{Current} & \textbf{Proposed} \\
+        \midrule
+        Base Salary       & \$145,000 & \$162,000 \\
+        Target Bonus (15\%) & \$21,750 & \$24,300 \\
+        Equity (annual grant) & 5,000 RSUs & 7,500 RSUs \\
+        \midrule
+        \textbf{Total Comp} & \textbf{\$166,750} & \textbf{\$186,300} \\
+        \bottomrule
+    \end{tabular}
+    \caption{Compensation adjustment recommendation.}
+\end{table}
+
+\subsection{Justification}
+
+\begin{itemize}
+    \item 12\% base salary increase reflects promotion readiness toward
+          Senior Software Engineer level.
+    \item Equity increase of 50\% recognizes retention risk and
+          above-average contribution.
+    \item Total compensation at 80th percentile for market based on
+          Radford benchmark data for equivalent roles in Series A
+          technology companies.
+\end{itemize}
+
+\section{Development Plan}
+
+\subsection{Short-Term (Next 6 Months)}
+
+\begin{enumerate}
+    \item \textbf{Presentation skills.} Complete the ``Technical
+        Communication'' workshop offered by the company learning budget.
+        Present at two team tech talks.
+    \item \textbf{Architecture leadership.} Lead the design review for the
+        multi-region failover project. Author the architecture document.
+    \item \textbf{Cross-team influence.} Volunteer for the Platform
+        Council---a cross-team forum for discussing architectural
+        direction.
+\end{enumerate}
+
+\subsection{Medium-Term (6--18 Months)}
+
+\begin{enumerate}
+    \item \textbf{Staff Engineer track.} Develop a portfolio of
+        architecture decisions and cross-team contributions that
+        demonstrate Staff-level impact.
+    \item \textbf{Management exploration.} If interested in the management
+        track, complete the ``Engineering Manager Foundations'' course and
+        shadow a team lead for one quarter.
+    \item \textbf{Industry presence.} Publish one blog post or conference
+        talk on a technical topic from the streaming pipeline or edge
+        computing work.
+\end{enumerate}
+
+\section{Signatures}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lll}
+        \toprule
+        \textbf{Role} & \textbf{Signature} & \textbf{Date} \\
+        \midrule
+        Employee    & \underline{\hspace{5cm}} & \underline{\hspace{3cm}} \\
+        Manager     & \underline{\hspace{5cm}} & \underline{\hspace{3cm}} \\
+        HR Business Partner & \underline{\hspace{5cm}} & \underline{\hspace{3cm}} \\
+        \bottomrule
+    \end{tabular}
+    \caption{Review acknowledgment signatures.}
+\end{table}
+
+\printbibliography[heading=none]
+
+\end{document}

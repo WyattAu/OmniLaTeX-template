@@ -1,0 +1,345 @@
+\documentclass[
+    language=english,
+    doctype=onboarding-guide,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+
+\maketitle
+
+\section*{Welcome to NovaPulse}
+
+Congratulations on joining NovaPulse Technologies. This guide will walk you
+through your first week, introduce you to the people you will work with most
+closely, and help you get your tools and environment set up so you can start
+contributing from day one.
+
+Your onboarding buddy is \textbf{Jamie Rivera} (Senior Software Engineer).
+Jamie will be your go-to resource for questions about team culture, tools,
+and day-to-day life at NovaPulse. Reach out to Jamie anytime on Slack at
+\texttt{@jamie.rivera}.
+
+\section{Your First Week: Day-by-Day Schedule}
+
+\subsection{Day 1: Orientation \& Setup}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{clp{7cm}}
+        \toprule
+        \textbf{Time} & \textbf{Activity} & \textbf{Details} \\
+        \midrule
+        9:00 AM  & Welcome call with manager & 30-min 1:1 with your manager to
+            discuss first-week priorities and team norms. \\
+        9:30 AM  & IT setup & Follow the IT setup guide to configure your
+            laptop, install required software, and verify access to core
+            systems. \\
+        10:30 AM & New-hire orientation & 2-hour session covering company
+            history, values, benefits overview, and Q\&A with People Ops. \\
+        12:30 PM & Virtual lunch with team & Casual meet-and-greet with your
+            immediate team members. \\
+        1:30 PM  & Security training & Mandatory 1-hour module on data
+            handling, incident reporting, and acceptable use policy. \\
+        2:30 PM  & Meet your onboarding buddy & 30-min chat with Jamie Rivera
+            to get oriented. \\
+        3:00 PM  & Workspace setup & Complete ergonomic assessment and home
+            office configuration. \\
+        4:00 PM  & Slack introductions & Post a short intro in \texttt{\#team-engineering}
+            with your name, role, and a fun fact. \\
+        \bottomrule
+    \end{tabular}
+    \caption{Day 1 schedule.}
+\end{table}
+
+\subsection{Day 2: People \& Culture}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{clp{7cm}}
+        \toprule
+        \textbf{Time} & \textbf{Activity} & \textbf{Details} \\
+        \midrule
+        9:00 AM  & 1:1 with manager & Review your 30-60-90 day plan template
+            and discuss role expectations. \\
+        10:00 AM & Company vision session & CEO presents NovaPulse mission,
+            strategy, and market positioning (45 min). \\
+        11:00 AM & Culture deep-dive & VP People discusses our values in
+            practice, communication norms, and decision-making framework. \\
+        12:00 PM & Lunch break & \\
+        1:00 PM  & Product overview & VP Product walks through the NovaPulse
+            platform architecture, customer use cases, and roadmap. \\
+        2:30 PM  & Customer empathy session & Listen to 2 recorded customer
+            interviews to understand pain points and desired outcomes. \\
+        3:30 PM  & Benefits enrollment & Complete benefits selection in Workday
+            (guided walkthrough with People Ops). \\
+        4:30 PM  & Day 2 wrap-up & Reflection questions and any remaining
+            setup tasks. \\
+        \bottomrule
+    \end{tabular}
+    \caption{Day 2 schedule.}
+\end{table}
+
+\subsection{Day 3: Product Deep-Dive}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{clp{7cm}}
+        \toprule
+        \textbf{Time} & \textbf{Activity} & \textbf{Details} \\
+        \midrule
+        9:00 AM  & Platform demo & Product team provides a live walkthrough
+            of the NovaPulse dashboard, edge inference engine, and analytics
+            layer. \\
+        10:30 AM & Edge computing workshop & Hands-on session deploying a
+            sample ML model to an edge gateway using our SDK. \\
+        12:00 PM & Lunch break & \\
+        1:00 PM  & Data pipeline walkthrough & How sensor data flows from
+            ingestion through preprocessing, inference, and alerting. \\
+        2:30 PM  & Shadow a customer call & Observe a live customer check-in
+            meeting with the Customer Success team. \\
+        3:30 PM  & Technical documentation review & Review the engineering
+            handbook, coding standards, and architecture decision records
+            (ADRs). \\
+        \bottomrule
+    \end{tabular}
+    \caption{Day 3 schedule.}
+\end{table}
+
+\subsection{Day 4: Engineering \& Tools}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{clp{7cm}}
+        \toprule
+        \textbf{Time} & \textbf{Activity} & \textbf{Details} \\
+        \midrule
+        9:00 AM  & Development environment setup & Clone repositories, configure
+            local dev environment, run the test suite, and verify your first
+            build. \\
+        10:30 AM & Git workflow training & Branching strategy, pull request
+            process, code review expectations, and CI/CD pipeline overview. \\
+        12:00 PM & Lunch break & \\
+        1:00 PM  & 1:1 with onboarding buddy & Jamie walks through the team's
+            sprint process, standup cadence, and how work is prioritized. \\
+        2:00 PM  & Pair programming session & Pair with a team member on a
+            small bug fix or feature to experience the codebase firsthand. \\
+        3:30 PM  & Monitoring \& observability & How we use Grafana, Datadog,
+            and PagerDuty to monitor platform health and respond to incidents. \\
+        4:30 PM  & Day 4 wrap-up & Questions and remaining setup tasks. \\
+        \bottomrule
+    \end{tabular}
+    \caption{Day 4 schedule.}
+\end{table}
+
+\subsection{Day 5: Integration \& Planning}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{clp{7cm}}
+        \toprule
+        \textbf{Time} & \textbf{Activity} & \textbf{Details} \\
+        \midrule
+        9:00 AM  & Team standup & Attend the weekly engineering standup as an
+            observer. \\
+        9:30 AM  & Sprint planning & Participate in sprint planning to
+            understand how work is assigned and tracked in Linear. \\
+        11:00 AM & Cross-functional introductions & Scheduled 15-min 1:1s with
+            key collaborators: Product Manager, Designer, DevOps Engineer,
+            Customer Success lead. \\
+        12:30 PM & Virtual lunch with skip-level manager & Informal 30-min
+            conversation with VP Engineering. \\
+        1:30 PM  & First ``real'' task & Pick up a starter task from the
+            onboarding backlog (labeled \texttt{good-first-issue} in Linear). \\
+        3:00 PM  & Week 1 retrospective & 30-min session with your manager to
+            reflect on the first week and adjust the 30-60-90 plan if needed. \\
+        4:00 PM  & Slack announcement & Post a brief update in
+            \texttt{\#engineering} summarizing your first week. \\
+        \bottomrule
+    \end{tabular}
+    \caption{Day 5 schedule.}
+\end{table}
+
+\section{Team Introductions}
+
+\subsection{Your Immediate Team}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lll}
+        \toprule
+        \textbf{Name} & \textbf{Role} & \textbf{Focus Area} \\
+        \midrule
+        Dr.\ Elena Vasquez    & CEO            & Company strategy \& vision \\
+        Marcus Chen           & CTO            & Technical architecture \& ML research \\
+        Priya Sharma          & VP Engineering & Engineering leadership \& delivery \\
+        Your Manager          & Engineering Manager & Sprint planning \& career growth \\
+        Jamie Rivera          & Senior Software Engineer & Onboarding buddy; edge platform \\
+        Alex Kim              & Software Engineer & Backend services \& APIs \\
+        Morgan Lee            & Software Engineer & ML model training pipeline \\
+        Taylor Brooks         & DevOps Engineer & CI/CD, infrastructure \& monitoring \\
+        Sam Nguyen            & QA Engineer    & Testing strategy \& automation \\
+        \bottomrule
+    \end{tabular}
+    \caption{Key team members you will interact with daily.}
+\end{table}
+
+\subsection{Cross-Functional Partners}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lll}
+        \toprule
+        \textbf{Name} & \textbf{Role} & \textbf{When to Engage} \\
+        \midrule
+        Sarah Okafor          & VP Sales        & Customer escalations, feature requests \\
+        Dr.\ Raj Patel        & VP Product      & Roadmap questions, prioritization \\
+        Jordan Mitchell       & Product Manager & Sprint-level requirements, story refinement \\
+        Casey Diaz            & Product Designer & UI/UX questions, design system access \\
+        Riley Chen            & Customer Success & Customer feedback, usage patterns \\
+        Avery Morgan          & Data Engineer   & Data pipeline issues, schema questions \\
+        \bottomrule
+    \end{tabular}
+    \caption{Cross-functional collaborators.}
+\end{table}
+
+\section{Tools \& Accounts Setup}
+
+\subsection{Day 1 Checklist}
+
+\begin{itemize}
+    \item[\(\square\)] Receive laptop from IT (MacBook Pro M3 Max or
+          ThinkPad X1 Carbon, depending on preference).
+    \item[\(\square\)] Verify laptop is enrolled in MDM (Jamf or Intune).
+    \item[\(\square\)] Install 1Password and join the NovaPulse vault.
+    \item[\(\square\)] Create company Google Workspace account
+          (\texttt{yourname@novapulse.ai}).
+    \item[\(\square\)] Join Slack workspace and key channels:
+          \texttt{\#general}, \texttt{\#engineering}, \texttt{\#team-engineering},
+          \texttt{\#incidents}, \texttt{\#random}.
+    \item[\(\square\)] Set up VPN access (WireGuard configuration provided
+          by IT).
+    \item[\(\square\)] Verify Workday access and complete profile.
+\end{itemize}
+
+\subsection{Day 2 Checklist}
+
+\begin{itemize}
+    \item[\(\square\)] Create GitHub account (if personal) and join the
+          NovaPulse organization.
+    \item[\(\square\)] Accept GitHub invite and verify repository access.
+    \item[\(\square\)] Install development tools: VS Code (or preferred IDE),
+          Docker Desktop, Python 3.11+, Node.js 20+, PostgreSQL client.
+    \item[\(\square\)] Clone the main repositories:
+          \texttt{novapulse/platform}, \texttt{novapulse/edge-sdk},
+          \texttt{novapulse/ml-pipeline}.
+    \item[\(\square\)] Follow the \texttt{CONTRIBUTING.md} guide to set up
+          your local development environment.
+    \item[\(\square\)] Run the full test suite locally and confirm all tests
+          pass.
+\end{itemize}
+
+\subsection{Day 3 Checklist}
+
+\begin{itemize}
+    \item[\(\square\)] Set up Linear account and join the
+          \texttt{NovaPulse Engineering} workspace.
+    \item[\(\square\)] Familiarize yourself with the team's board structure
+          and sprint workflow.
+    \item[\(\square\)] Install \texttt{gh} CLI tool and authenticate with
+          GitHub.
+    \item[\(\square\)] Set up local PostgreSQL database and seed it with
+          test data.
+    \item[\(\square\)] Complete the ``Hello World'' edge deployment tutorial
+          using the NovaPulse SDK.
+\end{itemize}
+
+\subsection{Day 4 Checklist}
+
+\begin{itemize}
+    \item[\(\square\)] Review and bookmark the engineering handbook
+          (\texttt{docs/engineering-handbook.md}).
+    \item[\(\square\)] Set up Grafana dashboard access (request from DevOps).
+    \item[\(\square\)] Configure PagerDuty mobile app for on-call rotation
+          (not on-call yet, but ready).
+    \item[\(\square\)] Review the incident response runbook
+          (\texttt{docs/incident-response.md}).
+    \item[\(\square\)] Complete all remaining IT security training modules.
+\end{itemize}
+
+\subsection{Day 5 Checklist}
+
+\begin{itemize}
+    \item[\(\square\)] Pick up your first starter task from Linear.
+    \item[\(\square\)] Submit your first pull request (even if it is small).
+    \item[\(\square\)] Get your PR reviewed by at least one team member.
+    \item[\(\square\)] Complete the onboarding feedback survey in Workday.
+    \item[\(\square\)] Schedule your 30-day check-in with your manager.
+\end{itemize}
+
+\section{30-60-90 Day Plan}
+
+\subsection{Days 1--30: Learn}
+
+\begin{itemize}
+    \item Complete onboarding checklist and tool setup.
+    \item Shadow at least 3 customer calls or demos.
+    \item Submit 5+ pull requests (starter tasks and small features).
+    \item Read all architecture decision records (ADRs) in the repository.
+    \item Build a relationship with your onboarding buddy and manager.
+    \item Attend at least one sprint retrospective and provide feedback.
+\end{itemize}
+
+\subsection{Days 31--60: Contribute}
+
+\begin{itemize}
+    \item Own a small feature or improvement end-to-end.
+    \item Participate in code reviews for teammates' pull requests.
+    \item Write or update documentation for a component you worked on.
+    \item Join the on-call rotation (shadowing first, then primary).
+    \item Present a short ``tech talk'' or demo to the team on something
+          you learned.
+    \item Complete all mandatory compliance training.
+\end{itemize}
+
+\subsection{Days 61--90: Lead}
+
+\begin{itemize}
+    \item Take ownership of a well-scoped project or initiative.
+    \item Mentor a newer team member or incoming intern.
+    \item Contribute to sprint planning by estimating and proposing work.
+    \item Identify one process improvement and propose it to the team.
+    \item Complete your 90-day performance conversation with your manager.
+    \item Celebrate your first quarter at NovaPulse.
+\end{itemize}
+
+\section{Frequently Asked Questions}
+
+\begin{description}
+    \item[How do I request time off?] Submit through Workday under the
+        ``Time Off'' tab. Your manager will be notified and can approve or
+        discuss. For unplanned absences, notify your manager via Slack as
+        early as possible.
+    \item[Who do I contact for IT issues?] Post in \texttt{\#help-it} on
+        Slack or email \href{mailto:it@novapulse.ai}{it@novapulse.ai}.
+        Urgent issues (locked out, security incident): call the IT hotline
+        at +1 (555) 012-3456.
+    \item[What if I have an accessibility need?] Contact People Operations
+        at \href{mailto:people@novapulse.ai}{people@novapulse.ai}. We will
+        work with you to provide appropriate accommodations.
+    \item[Can I work from a co-working space?] Yes. NovaPulse provides a
+        WeWork All Access membership. Activate through the Ramp card or
+        request reimbursement for other providers.
+    \item[When is my first paycheck?] Payroll runs bi-weekly on Fridays.
+        You will receive your first paycheck on your second Friday of
+        employment.
+    \item[How do I update my personal information?] Log in to Workday and
+        navigate to ``Personal Information'' to update your address, bank
+        accounts, tax withholding, and emergency contacts.
+\end{description}
+
+\printbibliography[heading=none]
+
+\end{document}

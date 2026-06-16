@@ -1,0 +1,209 @@
+\documentclass[
+    language=english,
+    doctype=study-guide,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+
+\maketitle
+
+\section{Exam Overview}
+
+\noindent\textbf{Course:} Linear Algebra \\
+\textbf{Exam Date:} March 15, 2026 \\
+\textbf{Format:} 50 multiple-choice (2 pts each) + 5 short-answer (10 pts each) \\
+\textbf{Total:} 150 points \\
+\textbf{Allowed Materials:} One handwritten $3 \times 5$ index card
+
+\bigskip
+\noindent\textbf{Topics Covered:}
+\begin{enumerate}
+    \item Systems of linear equations and Gaussian elimination
+    \item Vector spaces and subspaces
+    \item Linear transformations and matrix representations
+    \item Eigenvalues, eigenvectors, and diagonalization
+    \item Inner product spaces and orthogonality
+\end{enumerate}
+
+\section{Topic 1: Systems of Linear Equations}
+
+\subsection{Key Concepts}
+
+A system of linear equations can be written in matrix form as $A\mathbf{x} = \mathbf{b}$, where $A$ is the $m \times n$ coefficient matrix, $\mathbf{x}$ is the vector of unknowns, and $\mathbf{b}$ is the right-hand side.
+
+\begin{itemize}
+    \item \textbf{Row echelon form (REF):} All nonzero rows are above any all-zero rows; the leading coefficient of each nonzero row is to the right of the leading coefficient of the row above.
+    \item \textbf{Reduced row echelon form (RREF):} REF plus each leading coefficient is 1 and is the only nonzero entry in its column.
+    \item \textbf{Pivot variables:} Columns containing a leading 1 in RREF.
+    \item \textbf{Free variables:} Columns not containing a leading 1.
+\end{itemize}
+
+\subsection{Key Formulas}
+
+\[
+\text{Number of solutions} =
+\begin{cases}
+    0 & \text{if a row of the augmented matrix is } [0 \;\cdots\; 0 \mid b] \text{ with } b \neq 0 \\
+    1 & \text{if every column has a pivot (no free variables)} \\
+    \infty & \text{if there are free variables and the system is consistent}
+\end{cases}
+\]
+
+\[
+\text{rank}(A) + \text{nullity}(A) = n \quad \text{(Rank--Nullity Theorem)}
+\]
+
+\subsection{Practice Questions}
+
+\begin{enumerate}
+    \item Solve the system:
+    \[
+        \begin{cases}
+            2x + y - z = 8 \\
+            -3x - y + 2z = -11 \\
+            -2x + y + 2z = -3
+        \end{cases}
+    \]
+    \textbf{Hint:} Form the augmented matrix and row reduce.
+
+    \item If $A$ is a $5 \times 7$ matrix with $\operatorname{rank}(A) = 4$, what is the dimension of the null space of $A$?
+
+    \item Under what conditions is $A\mathbf{x} = \mathbf{0}$ guaranteed to have only the trivial solution?
+\end{enumerate}
+
+\section{Topic 2: Vector Spaces}
+
+\subsection{Key Concepts}
+
+A vector space $V$ over a field $F$ is a set equipped with vector addition and scalar multiplication satisfying 10 axioms (closure, associativity, commutativity, identity, inverses, and distributivity).
+
+\begin{itemize}
+    \item \textbf{Subspace:} A subset $W \subseteq V$ that is closed under addition and scalar multiplication and contains $\mathbf{0}$.
+    \item \textbf{Span:} $\operatorname{span}(\mathbf{v}_1, \ldots, \mathbf{v}_k) = \{c_1\mathbf{v}_1 + \cdots + c_k\mathbf{v}_k \mid c_i \in F\}$.
+    \item \textbf{Linear independence:} Vectors $\{\mathbf{v}_1, \ldots, \mathbf{v}_k\}$ are linearly independent if $c_1\mathbf{v}_1 + \cdots + c_k\mathbf{v}_k = \mathbf{0}$ implies $c_1 = \cdots = c_k = 0$.
+    \item \textbf{Basis:} A linearly independent spanning set.
+    \item \textbf{Dimension:} The number of vectors in any basis.
+\end{itemize}
+
+\subsection{Key Formulas}
+
+\[
+\dim(V) = \dim(\operatorname{range}(T)) + \dim(\operatorname{null}(T))
+\]
+
+For the column space: $\operatorname{Col}(A) = \operatorname{span}$ of the pivot columns of $A$.
+
+For the null space: $\operatorname{Null}(A) = \{\mathbf{x} \mid A\mathbf{x} = \mathbf{0}\}$.
+
+\subsection{Practice Questions}
+
+\begin{enumerate}
+    \item Prove that the set of all $2 \times 2$ symmetric matrices forms a subspace of $M_{2 \times 2}(\mathbb{R})$.
+    \item Find a basis for the subspace of $\mathbb{R}^4$ spanned by $\{(1,2,3,4), (2,1,3,4), (1,1,1,1)\}$.
+    \item What is the dimension of the space of polynomials of degree at most $n$?
+\end{enumerate}
+
+\section{Topic 3: Eigenvalues and Diagonalization}
+
+\subsection{Key Concepts}
+
+\begin{itemize}
+    \item \textbf{Eigenvalue/eigenvector:} $\lambda$ is an eigenvalue of $A$ with eigenvector $\mathbf{v}$ if $A\mathbf{v} = \lambda\mathbf{v}$, where $\mathbf{v} \neq \mathbf{0}$.
+    \item \textbf{Characteristic polynomial:} $p(\lambda) = \det(A - \lambda I)$.
+    \item \textbf{Algebraic multiplicity:} The multiplicity of $\lambda$ as a root of $p(\lambda)$.
+    \item \textbf{Geometric multiplicity:} $\dim(\operatorname{Null}(A - \lambda I))$, the number of linearly independent eigenvectors for $\lambda$.
+    \item \textbf{Diagonalizable:} $A$ is diagonalizable if and only if $A$ has $n$ linearly independent eigenvectors, or equivalently, if the sum of geometric multiplicities equals $n$.
+\end{itemize}
+
+\subsection{Key Formulas}
+
+\[
+\det(A - \lambda I) = 0 \quad \text{(characteristic equation)}
+\]
+
+\[
+A = PDP^{-1}, \quad \text{where } D = \operatorname{diag}(\lambda_1, \ldots, \lambda_n), \; P = [\mathbf{v}_1 \mid \cdots \mid \mathbf{v}_n]
+\]
+
+\[
+A^k = PD^kP^{-1} \quad \text{(used to compute powers of } A\text{)}
+\]
+
+\subsection{Practice Questions}
+
+\begin{enumerate}
+    \item Find the eigenvalues and eigenvectors of:
+    \[
+        A = \begin{pmatrix} 4 & 1 \\ 2 & 3 \end{pmatrix}
+    \]
+    \item Is the matrix $A = \begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix}$ diagonalizable? Explain.
+    \item If $A$ is diagonalizable with eigenvalues $2$ and $5$, what are the eigenvalues of $A^3 - 2A + I$?
+\end{enumerate}
+
+\section{Topic 4: Orthogonality and Inner Products}
+
+\subsection{Key Concepts}
+
+\begin{itemize}
+    \item \textbf{Inner product:} A function $\langle \mathbf{u}, \mathbf{v} \rangle$ satisfying linearity, symmetry, and positive-definiteness.
+    \item \textbf{Orthogonal vectors:} $\mathbf{u} \perp \mathbf{v}$ if $\langle \mathbf{u}, \mathbf{v} \rangle = 0$.
+    \item \textbf{Norm:} $\|\mathbf{v}\| = \sqrt{\langle \mathbf{v}, \mathbf{v} \rangle}$.
+    \item \textbf{Gram--Schmidt process:} Given $\{\mathbf{v}_1, \ldots, \mathbf{v}_k\}$, construct an orthogonal set $\{\mathbf{u}_1, \ldots, \mathbf{u}_k\}$:
+\end{itemize}
+
+\[
+    \mathbf{u}_1 = \mathbf{v}_1, \qquad \mathbf{u}_j = \mathbf{v}_j - \sum_{i=1}^{j-1} \frac{\langle \mathbf{v}_j, \mathbf{u}_i \rangle}{\langle \mathbf{u}_i, \mathbf{u}_i \rangle} \mathbf{u}_i
+\]
+
+\begin{itemize}
+    \item \textbf{Orthonormal basis:} An orthogonal basis in which each vector has unit norm.
+    \item \textbf{Orthogonal projection:} $\operatorname{proj}_{\mathbf{u}}(\mathbf{v}) = \dfrac{\langle \mathbf{v}, \mathbf{u} \rangle}{\langle \mathbf{u}, \mathbf{u} \rangle} \mathbf{u}$.
+\end{itemize}
+
+\subsection{Practice Questions}
+
+\begin{enumerate}
+    \item Apply the Gram--Schmidt process to $\{(1,1,0), (1,0,1), (0,1,1)\}$ in $\mathbb{R}^3$.
+    \item Find the projection of $\mathbf{b} = (1,2,3)$ onto the subspace spanned by $\mathbf{a} = (1,0,1)$.
+    \item State the Cauchy--Schwarz inequality and explain its geometric meaning.
+\end{enumerate}
+
+\section{Study Schedule}
+
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Day} & \textbf{Topic} & \textbf{Activities} \\
+\hline
+Mon, Mar 9 & Systems of equations & Review notes, 10 practice problems \\
+\hline
+Tue, Mar 10 & Vector spaces & Review notes, 8 practice problems \\
+\hline
+Wed, Mar 11 & Eigenvalues/diagonalization & Review notes, 10 practice problems \\
+\hline
+Thu, Mar 12 & Orthogonality & Review notes, 8 practice problems \\
+\hline
+Fri, Mar 13 & Mixed review & 1 full practice exam \\
+\hline
+Sat, Mar 14 & Light review & Review index card, weak areas only \\
+\hline
+Sun, Mar 15 & \textbf{EXAM DAY} & Arrive 15 minutes early \\
+\hline
+\end{tabular}
+\end{center}
+
+\section{Quick Reference: Essential Properties}
+
+\begin{enumerate}
+    \item $\operatorname{rank}(A) = \operatorname{rank}(A^T)$
+    \item $\det(AB) = \det(A)\det(B)$
+    \item $\lambda$ is an eigenvalue of $A^{-1}$ iff $1/\lambda$ is an eigenvalue of $A$ (for invertible $A$).
+    \item A symmetric matrix is always diagonalizable and has real eigenvalues.
+    \item The eigenvectors corresponding to distinct eigenvalues are linearly independent.
+    \item An orthogonal matrix $Q$ satisfies $Q^TQ = QQ^T = I$ and preserves norms: $\|Q\mathbf{x}\| = \|\mathbf{x}\|$.
+\end{enumerate}
+
+\end{document}

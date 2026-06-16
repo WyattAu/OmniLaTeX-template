@@ -1,0 +1,381 @@
+\documentclass[
+    language=english,
+    doctype=standard,
+    institution=none,
+    titlestyle=book,
+    oneside,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+%=============================================================================
+\chapter{Introduction}
+\label{sec:introduction}
+%=============================================================================
+
+This document defines the coding standards for the DataPipe project. All
+contributors must follow these standards to maintain code quality,
+readability, and consistency across the codebase. These standards are
+enforced through automated linting, code review, and CI checks.
+
+\section{Scope}
+
+These standards apply to:
+
+\begin{itemize}
+    \item Java source code in the \texttt{core/}, \texttt{connectors/},
+        \texttt{transforms/}, \texttt{admin-api/}, and \texttt{cli/}
+        modules.
+    \item Python source code in the CLI and custom transform scripts.
+    \item YAML configuration files.
+    \item Shell scripts in the \texttt{deploy/} directory.
+\end{itemize}
+
+%=============================================================================
+\chapter{Java Code Standards}
+\label{sec:java}
+%=============================================================================
+
+\section{Naming Conventions}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Java naming conventions.}
+    \label{tab:java-naming}
+    \begin{tabular}{@{}lp{5cm}p{5cm}@{}}
+        \toprule
+        Element & Convention & Example \\
+        \midrule
+        Classes & PascalCase, noun & \texttt{KafkaSourceConnector} \\
+        Methods & camelCase, verb & \texttt{processRecord} \\
+        Constants & SCREAMING\_SNAKE\_CASE & \texttt{MAX\_BATCH\_SIZE} \\
+        Variables & camelCase & \texttt{consumerGroup} \\
+        Packages & lowercase, dot-separated & \texttt{io.datapipe.core} \\
+        Type parameters & Single uppercase letter & \texttt{T}, \texttt{E} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{File Structure}
+
+\begin{lstlisting}[language=java, caption={Standard Java class structure.}]
+package io.datapipe.core.pipeline;
+
+import java.util.List;
+import java.util.Objects;
+
+import io.datapipe.core.config.Config;
+import io.datapipe.core.record.Record;
+
+/**
+ * Executes a pipeline by orchestrating source, transform,
+ * and sink stages.
+ */
+public class PipelineExecutor {
+
+    private static final int DEFAULT_BATCH_SIZE = 1000;
+
+    private final Config config;
+    private final List<Stage> stages;
+    private volatile boolean running;
+
+    public PipelineExecutor(Config config, List<Stage> stages) {
+        this.config = Objects.requireNonNull(config);
+        this.stages = List.copyOf(stages);
+        this.running = false;
+    }
+
+    public void start() {
+        if (running) {
+            throw new IllegalStateException("Already running");
+        }
+        running = true;
+        execute();
+    }
+
+    public void stop() {
+        running = false;
+    }
+
+    private void execute() {
+        // Implementation
+    }
+}
+\end{lstlisting}
+
+\section{Code Style Rules}
+
+\begin{enumerate}
+    \item Maximum line length: 100 characters.
+    \item Four-space indentation (no tabs).
+    \item Use \texttt{final} for all local variables that are not
+        reassigned.
+    \item Use \texttt{var} only when the type is obvious from context.
+    \item Always use braces for \texttt{if}/\texttt{else}/\texttt{for}
+        blocks, even single-line bodies.
+    \item Order class members: static fields, instance fields,
+        constructors, methods, inner classes.
+\end{enumerate}
+
+%=============================================================================
+\chapter{Python Code Standards}
+\label{sec:python}
+%=============================================================================
+
+\section{Style Guide}
+
+Python code follows PEP 8 with the following additions:
+
+\begin{itemize}
+    \item Maximum line length: 88 characters (Black formatter default).
+    \item Use type hints for all public function signatures.
+    \item Use docstrings (Google style) for all public classes and
+        functions.
+    \item Prefer f-strings over \texttt{\%} formatting or
+        \texttt{str.format}.
+\end{itemize}
+
+\section{Example}
+
+\begin{lstlisting}[language=python, caption={Python coding standard example.}]
+from __future__ import annotations
+
+import logging
+from typing import Optional
+
+logger = logging.getLogger(__name__)
+
+
+class PipelineConfig:
+    """Configuration for a DataPipe pipeline.
+
+    Attributes:
+        name: Unique pipeline identifier.
+        batch_size: Number of records per batch.
+        timeout_ms: Maximum processing time per batch.
+    """
+
+    def __init__(
+        self,
+        name: str,
+        batch_size: int = 1000,
+        timeout_ms: int = 30000,
+    ) -> None:
+        self.name = name
+        self.batch_size = batch_size
+        self.timeout_ms = timeout_ms
+
+    def validate(self) -> bool:
+        """Validate configuration values.
+
+        Returns:
+            True if configuration is valid.
+
+        Raises:
+            ValueError: If any configuration value is invalid.
+        """
+        if self.batch_size <= 0:
+            raise ValueError(
+                f"batch_size must be positive, got {self.batch_size}"
+            )
+        return True
+\end{lstlisting}
+
+%=============================================================================
+\chapter{File Structure}
+\label{sec:file-structure}
+%=============================================================================
+
+\section{Repository Layout}
+
+\begin{lstlisting}[language=bash, caption={Repository directory structure.}]
+datapipe/
+  core/
+    src/main/java/io/datapipe/core/
+      config/          # Configuration classes
+      pipeline/        # Pipeline engine
+      record/          # Record model
+      transform/       # Transform interface
+    src/test/java/     # Unit tests
+  connectors/
+    src/main/java/io/datapipe/connectors/
+      kafka/           # Kafka connector
+      postgresql/      # PostgreSQL connector
+      s3/              # S3 connector
+  transforms/
+    src/main/java/io/datapipe/transforms/
+      filter/          # Filter transform
+      map/             # Map transform
+      aggregate/       # Aggregate transform
+  cli/
+    src/main/python/datapipe_cli/
+      commands/        # CLI commands
+      utils/           # Shared utilities
+  deploy/
+    terraform/         # Infrastructure as code
+    helm/              # Helm charts
+    docker/            # Dockerfiles
+  docs/                # Documentation
+  scripts/             # Build and CI scripts
+\end{lstlisting}
+
+\section{File Naming}
+
+\begin{table}[htbp]
+    \centering
+    \caption{File naming conventions.}
+    \label{tab:file-naming}
+    \begin{tabular}{@{}lp{8cm}@{}}
+        \toprule
+        Type & Convention \\
+        \midrule
+        Java class & \texttt{PascalCase.java} (matches class name) \\
+        Java test & \texttt{ClassNameTest.java} \\
+        Python module & \texttt{snake\_case.py} \\
+        Python test & \texttt{test\_module.py} \\
+        Configuration & \texttt{kebab-case.yaml} \\
+        Shell script & \texttt{kebab-case.sh} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+%=============================================================================
+\chapter{Code Review Checklist}
+\label{sec:code-review}
+%=============================================================================
+
+All pull requests must pass the following checklist before merge:
+
+\section{Correctness}
+
+\begin{enumerate}
+    \item Does the code do what the PR description claims?
+    \item Are edge cases handled (null, empty, overflow)?
+    \item Are error messages clear and actionable?
+    \item Is the code thread-safe where required?
+\end{enumerate}
+
+\section{Quality}
+
+\begin{enumerate}
+    \item Is the code readable without comments explaining \emph{what} it
+        does?
+    \item Are variable and function names descriptive?
+    \item Is there unnecessary duplication?
+    \item Are magic numbers replaced with named constants?
+\end{enumerate}
+
+\section{Testing}
+
+\begin{enumerate}
+    \item Are unit tests provided for all new code?
+    \item Do tests cover the happy path and error paths?
+    \item Are tests independent and deterministic?
+    \item Does the test name describe what it verifies?
+\end{enumerate}
+
+\section{Documentation}
+
+\begin{enumerate}
+    \item Are public APIs documented with Javadoc?
+    \item Is the CHANGELOG updated for user-facing changes?
+    \item Are README files updated for new features?
+\end{enumerate}
+
+%=============================================================================
+\chapter{CI/CD Requirements}
+\label{sec:cicd}
+%=============================================================================
+
+\section{CI Pipeline Stages}
+
+\begin{table}[htbp]
+    \centering
+    \caption{CI pipeline stages and requirements.}
+    \label{tab:ci-stages}
+    \begin{tabular}{@{}lp{6cm}p{3cm}@{}}
+        \toprule
+        Stage & Description & Must Pass? \\
+        \midrule
+        Build & Compile all modules & Yes \\
+        Unit Tests & Run unit tests with coverage & Yes \\
+        Integration Tests & Run integration tests with Docker & Yes \\
+        Lint & Checkstyle (Java), Ruff (Python) & Yes \\
+        Security Scan & Snyk dependency scan & Yes \\
+        Code Coverage & Minimum 80\% line coverage & Yes \\
+        Performance & JMH benchmark regression check & No (warning) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Linting Configuration}
+
+\begin{lstlisting}[language=bash, caption={Run linting locally.}]
+# Java: Checkstyle
+./gradlew checkstyleMain checkstyleTest
+
+# Python: Ruff
+ruff check cli/
+ruff format --check cli/
+
+# YAML: yamllint
+yamllint deploy/**/*.yaml
+\end{lstlisting}
+
+\section{Commit Hooks}
+
+The \texttt{pre-commit} framework runs the following checks before each
+commit:
+
+\begin{lstlisting}[language=bash, caption={pre-commit configuration.}]
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+
+  - repo: https://github.com/psf/black
+    rev: 24.2.0
+    hooks:
+      - id: black
+        language_version: python3.12
+\end{lstlisting}
+
+%=============================================================================
+\chapter{Enforcement}
+\label{sec:enforcement}
+%=============================================================================
+
+\section{Automated Enforcement}
+
+\begin{itemize}
+    \item CI pipeline blocks merge on any failing check.
+    \item Checkstyle violations are reported as PR comments.
+    \item Code coverage is enforced via Codecov thresholds.
+    \item Dependency vulnerabilities block merge if severity is critical.
+\end{itemize}
+
+\section{Manual Enforcement}
+
+\begin{itemize}
+    \item All PRs require at least one approval from a module owner.
+    \item Large PRs (> 500 lines) require two approvals.
+    \item The code review checklist must be completed.
+    \item Standards exceptions require approval from the Tech Lead.
+\end{itemize}
+
+\printbibliography[heading=bibintoc, title={References}]
+
+\end{document}

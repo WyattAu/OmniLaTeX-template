@@ -1,0 +1,353 @@
+\documentclass[
+    language=english,
+    doctype=review-article,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Transformer-based large language models (LLMs) have fundamentally reshaped
+the landscape of natural language processing (NLP) and are increasingly
+influencing computer vision, robotics, and scientific discovery. This
+comprehensive review examines the architectural innovations, training
+methodologies, and application domains that have defined the transformer
+era from 2017 through mid-2025. We organize the literature thematically
+around six core topics: (1) the original transformer architecture and
+its variants, (2) pretraining objectives and scaling laws, (3) alignment
+and fine-tuning techniques, (4) efficiency and deployment optimizations,
+(5) multimodal extensions, and (6) safety, ethics, and societal impact.
+For each theme, we synthesize findings from over 400 papers, identify
+key open problems, and outline future research directions. Our analysis
+reveals that while scaling continues to yield performance improvements,
+fundamental challenges in reasoning, factual grounding, and alignment
+remain largely unsolved.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:introduction}
+
+The introduction of the transformer architecture by Vaswani et al.\
+\cite{vaswani2017attention} marked a paradigm shift in sequence modeling.
+By replacing recurrent and convolutional mechanisms with self-attention,
+transformers enabled unprecedented parallelism during training and achieved
+state-of-the-art results across a wide range of NLP benchmarks.
+
+The subsequent development of pretrained language models --- BERT \cite{devlin2018bert},
+GPT-2 \cite{radford2019language}, GPT-3 \cite{brown2020language}, and their
+successors --- demonstrated that scaling model parameters, data, and compute
+could yield emergent capabilities not explicitly present in smaller models.
+By 2025, LLMs with hundreds of billions of parameters are used in production
+systems serving hundreds of millions of users.
+
+This review aims to provide a structured, thematic synthesis of the
+transformer and LLM literature. Rather than cataloging individual papers,
+we focus on identifying trends, contradictions, and open questions across
+the field. The review is intended for researchers and practitioners seeking
+a comprehensive overview of the current state of the art.
+
+\section{The Transformer Architecture}
+\label{sec:architecture}
+
+\subsection{Original Architecture}
+
+The transformer \cite{vaswani2017attention} consists of an encoder-decoder
+structure, each composed of stacked self-attention and feed-forward layers.
+The key innovation is the scaled dot-product attention mechanism:
+
+\begin{equation}
+    \text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right) V
+    \label{eq:attention}
+\end{equation}
+
+where $Q$, $K$, and $V$ are the query, key, and value matrices, and $d_k$
+is the key dimension. Multi-head attention computes this function in parallel
+across $h$ heads, with each head operating on a $d_k/h$-dimensional subspace.
+
+\subsection{Encoder-Only Models}
+
+BERT \cite{devlin2018bert} popularized the encoder-only transformer for
+representation learning. Pretrained with masked language modeling (MLM) and
+next sentence prediction (NSP), BERT achieved breakthrough results on a
+range of NLU benchmarks. Subsequent variants include RoBERTa \cite{liu2019roberta}
+(improved training procedure), ALBERT \cite{lan2019albert} (parameter
+reduction), and DeBERTa \cite{he2020deberta} (disentangled attention).
+
+\subsection{Decoder-Only Models}
+
+The GPT series \cite{radford2019language,brown2020language} demonstrated that
+autoregressive language modeling, combined with scale, could produce models
+with remarkable few-shot learning abilities. Decoder-only architectures have
+become dominant for generative tasks due to their simplicity and scalability.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Comparison of major transformer variants.}
+    \label{tab:variants}
+    \begin{tabular}{@{}lcccc@{}}
+        \toprule
+        Model & Architecture & Parameters & Training Data & Key Innovation \\
+        \midrule
+        BERT & Encoder & 340M & 160 GB & MLM pretraining \\
+        GPT-2 & Decoder & 1.5B & 40 GB & Zero-shot transfer \\
+        GPT-3 & Decoder & 175B & 300B tokens & In-context learning \\
+        PaLM & Decoder & 540B & 780B tokens & Pathways system \\
+        LLaMA 2 & Decoder & 70B & 2T tokens & Open-weight model \\
+        GPT-4 & MoE (est.) & $\sim$1.8T & $\sim$13T tokens & Multimodal \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Pretraining and Scaling}
+\label{sec:pretraining}
+
+\subsection{Scaling Laws}
+
+Kaplan et al. \cite{kaplan2020scaling} established that language model
+performance follows power-law relationships with model size, dataset size,
+and compute budget:
+
+\begin{equation}
+    L(N) \propto N^{-\alpha_N}, \quad L(D) \propto D^{-\alpha_D}, \quad L(C) \propto C^{-\alpha_C}
+    \label{eq:scaling}
+\end{equation}
+
+where $L$ is the loss, $N$ is the number of parameters, $D$ is the dataset
+size, and $C$ is the compute budget. The Chinchilla study \cite{hoffmann2022chinchilla}
+revised these findings, arguing that current LLMs are significantly
+undertrained relative to their parameter count.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Chinchilla-optimal training configurations.}
+    \label{tab:chinchilla}
+    \begin{tabular}{@{}lcc@{}}
+        \toprule
+        Model Parameters & Optimal Tokens & Compute (FLOPs) \\
+        \midrule
+        1B  & 20B   & $6 \times 10^{19}$ \\
+        10B & 200B  & $6 \times 10^{21}$ \\
+        70B & 1.4T  & $4.2 \times 10^{23}$ \\
+        175B & 3.5T & $1.05 \times 10^{24}$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Pretraining Objectives}
+
+The dominant pretraining objectives include:
+
+\begin{itemize}
+    \item \textbf{Causal language modeling (CLM):} Predict the next token
+          given all preceding tokens. Used by GPT, LLaMA, and most generative
+          models.
+    \item \textbf{Masked language modeling (MLM):} Predict randomly masked
+          tokens. Used by BERT and encoder-only models.
+    \item \textbf{Prefix language modeling:} Bidirectional attention over a
+          prefix, autoregressive generation thereafter. Used by T5 \cite{raffel2020exploring}
+          and U-PaLM.
+    \item \textbf{Fill-in-the-middle (FIM):} Train models to infill text
+          given both prefix and suffix. Critical for code generation.
+\end{itemize}
+
+\section{Alignment and Fine-Tuning}
+\label{sec:alignment}
+
+\subsection{Instruction Tuning}
+
+Instruction tuning \cite{ouyang2022training} fine-tunes pretrained LLMs on
+collections of (instruction, response) pairs, improving their ability to
+follow natural language instructions. Key datasets include FLAN \cite{wei2021finetuned},
+Self-Instruct \cite{wang2023self}, and Dolly.
+
+\subsection{Reinforcement Learning from Human Feedback (RLHF)}
+
+RLHF \cite{ouyang2022training} aligns LLMs with human preferences through:
+\begin{enumerate}
+    \item Training a reward model on human preference data.
+    \item Optimizing the LLM policy using PPO (Proximal Policy Optimization)
+          to maximize the learned reward.
+\end{enumerate}
+
+\begin{equation}
+    R_{\text{RLHF}}(\theta) = \mathbb{E}_{x,y \sim \pi_\theta}\left[r_\phi(x, y)\right] - \beta \cdot \text{KL}\left[\pi_\theta \| \pi_{\text{ref}}\right]
+    \label{eq:rlhf}
+\end{equation}
+
+where $r_\phi$ is the reward model, $\pi_\theta$ is the policy, $\pi_{\text{ref}}$
+is the reference policy (initial SFT model), and $\beta$ controls the KL
+penalty.
+
+\subsection{Direct Preference Optimization (DPO)}
+
+DPO \cite{rafailov2023direct} eliminates the need for a separate reward model
+by directly optimizing the policy on preference data:
+
+\begin{equation}
+    \mathcal{L}_{\text{DPO}}(\theta) = -\mathbb{E}_{(x, y_w, y_l)}\left[\log \sigma\left(\beta \log \frac{\pi_\theta(y_w|x)}{\pi_{\text{ref}}(y_w|x)} - \beta \log \frac{\pi_\theta(y_l|x)}{\pi_{\text{ref}}(y_l|x)}\right)\right]
+    \label{eq:dpo}
+\end{equation}
+
+where $y_w$ and $y_l$ are the preferred and dispreferred responses.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Comparison of alignment methods.}
+    \label{tab:alignment}
+    \begin{tabular}{@{}lcccc@{}}
+        \toprule
+        Method & Reward Model & Training Cost & Stability & Open Source \\
+        \midrule
+        RLHF (PPO) & Yes & High & Moderate & Limited \\
+        DPO & No & Low & High & Extensive \\
+        RLAIF & AI-generated & Medium & High & Growing \\
+        Constitutional AI & No & Medium & High & Yes \\
+        KTO & No & Low & High & Yes \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Efficiency and Deployment}
+\label{sec:efficiency}
+
+\subsection{Model Compression}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Model compression techniques and their impact.}
+    \label{tab:compression}
+    \begin{tabular}{@{}lccc@{}}
+        \toprule
+        Technique & Size Reduction & Speedup & Quality Impact \\
+        \midrule
+        INT8 quantization & 2$\times$ & 1.5--2$\times$ & Minimal \\
+        INT4 quantization & 4$\times$ & 2--3$\times$ & Small--Moderate \\
+        GPTQ & 4$\times$ & 2--3$\times$ & Small \\
+        LoRA (rank-16) & 10--20$\times$ & 1$\times$ & Small \\
+        Pruning (50\%) & 2$\times$ & 1.5--2$\times$ & Moderate \\
+        Knowledge distillation & Variable & Variable & Moderate \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Inference Optimization}
+
+Key inference optimization strategies include:
+\begin{itemize}
+    \item \textbf{KV-cache:} Avoids recomputing key/value tensors for
+          previously processed tokens.
+    \item \textbf{Speculative decoding:} Uses a smaller draft model to
+          propose tokens, verified by the larger model.
+    \item \textbf{Continuous batching:} Dynamically groups requests to
+          maximize GPU utilization.
+    \item \textbf{Tensor parallelism:} Distributes model layers across
+          multiple GPUs.
+    \item \textbf{Flash Attention:} IO-aware exact attention algorithm that
+          reduces memory footprint and improves throughput \cite{dao2022flashattention}.
+\end{itemize}
+
+\section{Multimodal Extensions}
+\label{sec:multimodal}
+
+The transformer architecture has been successfully extended to vision
+(ViT \cite{dosovitskiy2020image}), audio (Whisper \cite{radford2023robust}),
+and combined modalities. Vision-language models (VLMs) such as GPT-4V,
+Gemini, and LLaVA integrate visual understanding with language generation.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Major multimodal models and their capabilities.}
+    \label{tab:multimodal}
+    \begin{tabular}{@{}lccl@{}}
+        \toprule
+        Model & Modalities & Parameters & Key Capability \\
+        \midrule
+        GPT-4V & Text, Image & $\sim$1.8T (est.) & Visual reasoning \\
+        Gemini 1.5 & Text, Image, Audio, Video & $\sim$1.5T (est.) & 1M context \\
+        LLaVA 1.6 & Text, Image & 13B & Open VLM \\
+        Whisper & Audio & 1.5B & Speech recognition \\
+        SAM 2 & Image, Video & 64M & Segmentation \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Safety, Ethics, and Societal Impact}
+\label{sec:safety}
+
+\subsection{Harms and Risks}
+
+LLMs present several categories of harm:
+\begin{itemize}
+    \item \textbf{Hallucination:} Generating plausible but factually incorrect
+          information with high confidence.
+    \item \textbf{Bias and fairness:} Reproducing or amplifying societal biases
+          present in training data.
+    \item \textbf{Misinformation:} Enabling mass production of synthetic text
+          for deceptive purposes.
+    \item \textbf{Privacy:} Memorizing and leaking personally identifiable
+          information from training data.
+    \item \textbf{Dual use:} Facilitating cyberattacks, social engineering,
+          or weapons design.
+\end{itemize}
+
+\subsection{Mitigation Strategies}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Safety mitigation approaches.}
+    \label{tab:safety}
+    \begin{tabular}{@{}lp{10cm}@{}}
+        \toprule
+        Approach & Description \\
+        \midrule
+        Constitutional AI & Uses a set of principles to guide AI self-critique and revision \\
+        RLHF/RLAIF & Aligns model outputs with human or AI-generated preferences \\
+        Red teaming & Adversarial testing to identify failure modes \\
+        Watermarking & Embeds detectable patterns in generated text \\
+        Content filtering & Input/output classifiers to block harmful content \\
+        Differential privacy & Provides formal guarantees on training data privacy \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Future Directions}
+\label{sec:future}
+
+We identify five key research directions:
+
+\begin{enumerate}
+    \item \textbf{Reasoning:} Current LLMs struggle with multi-step logical
+          reasoning, mathematical proof, and causal inference. Approaches
+          like chain-of-thought prompting \cite{wei2022chain} show promise
+          but remain fragile.
+    \item \textbf{Long-context modeling:} While context windows have grown
+          to 1M+ tokens, effective utilization of long contexts remains
+          challenging.
+    \item \textbf{Grounded generation:} Connecting LLM outputs to verifiable
+          sources (retrieval-augmented generation, tool use) is critical for
+          factual reliability.
+    \item \textbf{Efficient scaling:} Mixture-of-experts, sparse attention,
+          and novel architectures may enable continued scaling with reduced
+          compute.
+    \item \textbf{Evaluation:} Current benchmarks are saturating; new
+          evaluation frameworks are needed to assess reasoning, factuality,
+          and safety simultaneously.
+\end{enumerate}
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+The transformer architecture has enabled a generation of language models with
+unprecedented capabilities. However, the field faces fundamental challenges
+in reasoning, alignment, and safety that cannot be solved by scaling alone.
+We anticipate that the next phase of progress will come from architectural
+innovation, improved training methodologies, and interdisciplinary
+collaboration with safety researchers and ethicists.
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

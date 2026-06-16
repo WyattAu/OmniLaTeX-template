@@ -1,0 +1,116 @@
+\documentclass[
+    language=english,
+    doctype=flashcards,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+
+\maketitle
+
+\section{Organic Chemistry \#201 -- Functional Groups}
+
+\card{What is a hydroxyl group and where is it found?}{A $-\text{OH}$ group bonded to a carbon atom. Found in alcohols (e.g., ethanol, $\text{CH}_3\text{CH}_2\text{OH}$) and in the $-\text{OH}$ of carboxylic acids. The oxygen is highly electronegative, giving the group a polar character.}
+
+\card{Distinguish between primary ($1^{\circ}$), secondary ($2^{\circ}$),), and tertiary ($3^{\circ}$) alcohols.}{\begin{itemize}
+    \item $1^{\circ}$: The $-\text{OH}$ carbon is bonded to at most one other carbon (e.g., ethanol).
+    \item $2^{\circ}$: The $-\text{OH}$ carbon is bonded to two other carbons (e.g., isopropanol).
+    \item $3^{\circ}$: The $-\text{OH}$ carbon is bonded to three other carbons (e.g., tert-butanol).
+\end{itemize}}
+
+\card{What is the general formula for a carboxylic acid and what characterizes it?}{$\text{RCOOH}$ (also written $\text{RCO}_2\text{H}$). It contains the carboxyl group $-\text{COOH}$, which is a carbonyl ($>\text{C}=\text{O}$) bonded to a hydroxyl ($-\text{OH}$). These are weak acids ($pK_a \approx 4$--$5$).}
+
+\card{List three properties of aldehydes versus ketones.}{\begin{enumerate}
+    \item Aldehydes have the carbonyl at the end of a carbon chain ($\text{RCHO}$); ketones have it in the middle ($\text{RCOR}'$).
+    \item Aldehydes are easily oxidized to carboxylic acids; ketones resist oxidation.
+    \item Aldehydes generally have lower boiling points than comparable ketones due to less dipole--dipole stabilization.
+\end{enumerate}}
+
+\section{Organic Chemistry \#202 -- Reaction Mechanisms}
+
+\card{What does an $S_N2$ mechanism involve?}{A single-step, bimolecular nucleophilic substitution. The nucleophile attacks from the back side of the carbon bearing the leaving group, causing inversion of stereochemistry. Rate $= k[\text{substrate}][\text{nucleophile}]$. Favored by primary substrates, strong nucleophiles, and polar aprotic solvents.}
+
+\card{Why do tertiary alkyl halides undergo $S_N1$ rather than $S_N2$?}{Tertiary substrates have severe steric hindrance at the reaction center, blocking back-side attack. The tertiary carbocation intermediate is stabilized by hyperconjugation and inductive effects, making the $S_N1$ pathway (two-step, with a carbocation intermediate) lower in energy.}
+
+\card{Define Markovnikov's rule and explain its electronic basis.}{In the addition of $\text{HX}$ to an unsymmetrical alkene, $\text{H}$ adds to the carbon with more hydrogens, and $\text{X}$ adds to the more substituted carbon. This occurs because the more substituted carbocation intermediate is more stable (inductive donation and hyperconjugation from adjacent alkyl groups).}
+
+\card{What is an E2 elimination and what conditions favor it?}{A concerted, bimolecular elimination in which a base abstracts a $\beta$-hydrogen while the leaving group departs simultaneously, forming a double bond. Favored by strong, bulky bases (e.g., $t$-BuOK), high temperature, and good leaving groups. Requires an anti-periplanar arrangement of $\text{H}$ and $\text{LG}$.}
+
+\section{Organic Chemistry \#203 -- Spectroscopy}
+
+\card{In $^1\text{H}$ NMR, what does chemical shift tell you?}{The electronic environment of a proton. Protons near electronegative atoms (e.g., $\text{O}$, $\text{N}$, halogens) or in aromatic rings appear downfield (higher $\delta$ values, 3--12 ppm), while protons on simple alkyl chains appear upfield (0.5--2 ppm).}
+
+\card{What pattern does a 1,4-disubstituted benzene give in $^1\text{H}$ NMR?}{An $\text{AA}'\text{BB}'$ pattern in the aromatic region ($\delta \approx 6.5$--$8.0$ ppm), appearing as two doublets (or a pair of distorted doublets). This symmetric substitution produces two chemically distinct sets of aromatic protons.}
+
+\card{How does IR spectroscopy distinguish an alcohol from a carboxylic acid?}{\begin{itemize}
+    \item Alcohol: broad $\text{O}--\text{H}$ stretch at $3200$--$3600\;\text{cm}^{-1}$.
+    \item Carboxylic acid: very broad $\text{O}--\text{H}$ stretch centered near $3000\;\text{cm}^{-1}$ (overlapping $\text{C}--\text{H}$ stretches) plus a strong $\text{C}=\text{O}$ stretch at $1700$--$1725\;\text{cm}^{-1}$.
+\end{itemize}}
+
+\card{What does a molecular ion peak ($M^+$) at $m/z = 78$ suggest?}{The compound has a molecular weight of 78 g/mol. A strong $M^+$ at 78 is characteristic of benzene ($\text{C}_6\text{H}_6$). The loss of 1 ($M-1$) would indicate a hydrogen atom, while $M-15$ would suggest loss of a methyl group.}
+
+\section{Organic Chemistry \#204 -- Named Reactions}
+
+\card{What is the Grignard reaction and what is its key feature?}{An organomagnesium halide ($\text{RMgX}$, a Grignard reagent) adds to a carbonyl compound ($\text{C}=\text{O}$) to form a new $\text{C}--\text{C}$ bond. Key feature: the Grignard reagent is both a strong nucleophile and a strong base, so it must be prepared under anhydrous conditions and cannot tolerate acidic protons.}
+
+\card{Describe the Wittig reaction and its product.}{A phosphonium ylide (Wittig reagent) reacts with an aldehyde or ketone to form an alkene and triphenylphosphine oxide. The reaction converts $\text{C}=\text{O}$ to $\text{C}=\text{C}$, with the double bond formed at exactly the carbonyl carbon. Stereochemistry depends on ylide type (stabilized $\to$ $E$-alkene).}
+
+\card{What is the Diels--Alder reaction?}{A [4+2] cycloaddition between a conjugated diene (4 $\pi$ electrons) and a dienophile (2 $\pi$ electrons), forming a cyclohexene ring. The reaction is concerted, stereospecific (suprafacial on both components), and favored by electron-rich dienes and electron-poor dienophiles.}
+
+\card{What conditions distinguish a Claisen condensation from an Aldol condensation?}{\begin{itemize}
+    \item Aldol: enolate of an aldehyde or ketone adds to another aldehyde or ketone ($\text{C}--\text{C}$ bond formation).
+    \item Claisen: enolate of an ester adds to another ester, followed by loss of alkoxide ($\beta$-keto ester product).
+    \item Both use base (e.g., $\text{NaOEt}$) but Claisen requires a full equivalent of base.
+\end{itemize}}
+
+\section{Organic Chemistry \#205 -- Thermodynamics \& Kinetics}
+
+\card{Define Gibbs free energy ($\Delta G$) and its relationship to spontaneity.}{$\Delta G = \Delta H - T\Delta S$. A reaction is spontaneous at constant $T$ and $P$ when $\Delta G < 0$. At equilibrium, $\Delta G = 0$. $\Delta G$ can also be written as $\Delta G = RT\ln(Q/K)$, connecting it to the equilibrium constant.}
+
+\card{How does a catalyst affect a reaction's energy profile?}{A catalyst lowers the activation energy ($E_a$) by providing an alternative reaction pathway but does \emph{not} change $\Delta G$, $\Delta H$, or $\Delta S$ of the overall reaction. It accelerates both the forward and reverse reactions equally, so $K_{eq}$ remains unchanged.}
+
+\card{What is the Arrhenius equation and what does it predict?}{$k = A e^{-E_a/(RT)}$, where $k$ is the rate constant, $A$ is the pre-exponential factor, $E_a$ is activation energy, $R$ is the gas constant, and $T$ is temperature. It predicts that rate constants increase exponentially with temperature and decrease with higher activation energy.}
+
+\card{Distinguish between kinetic and thermodynamic control of a product mixture.}{\begin{itemize}
+    \item Kinetic control: lower-energy transition state leads to the faster-forming product; favored at low temperature or short reaction times.
+    \item Thermodynamic control: the more stable product predominates; favored at high temperature or long reaction times allowing equilibration.
+\end{itemize}}
+
+\section{Organic Chemistry \#206 -- Biomolecules}
+
+\card{What is the difference between an $\alpha$-linkage and a $\beta$-linkage in carbohydrates?}{$\alpha$: the anomeric $-\text{OH}$ is trans to the $-\text{CH}_2\text{OH}$ group (down in D-sugars). $\beta$: the anomeric $-\text{OH}$ is cis to the $-\text{CH}_2\text{OH}$ group (up). This distinction determines polysaccharide structure: starch ($\alpha$-glucose, helical) versus cellulose ($\beta$-glucose, linear chains).}
+
+\card{What are the four levels of protein structure?}{\begin{enumerate}
+    \item Primary: amino acid sequence linked by peptide bonds.
+    \item Secondary: local folding into $\alpha$-helices and $\beta$-sheets stabilized by hydrogen bonds between backbone $\text{N}--\text{H}$ and $\text{C}=\text{O}$ groups.
+    \item Tertiary: 3D shape from side-chain interactions (hydrophobic, ionic, disulfide bonds).
+    \item Quaternary: arrangement of multiple polypeptide subunits (e.g., hemoglobin, 4 subunits).
+\end{enumerate}}
+
+\card{How do saturated, monounsaturated, and polyunsaturated fatty acids differ in structure and properties?}{\begin{itemize}
+    \item Saturated: no $\text{C}=\text{C}$ double bonds; straight chains; solid at room temperature.
+    \item Monounsaturated: one $\text{C}=\text{C}$ (typically cis); kinked chain; lower melting point.
+    \item Polyunsaturated: multiple $\text{C}=\text{C}$; more kinks; liquid at room temperature; more susceptible to oxidation.
+\end{itemize}}
+
+\card{What role does the enzyme's active site play in catalysis?}{The active site provides a complementary 3D environment (shape, charge, hydrophobicity) that binds the substrate with specificity. Catalytic residues lower $E_a$ through: (1) acid--base catalysis, (2) covalent catalysis, (3) proximity and orientation effects, and (4) strain/distortion of the substrate toward the transition state.}
+
+\section{Organic Chemistry \#207 -- Polymers}
+
+\card{Compare addition (chain-growth) and condensation (step-growth) polymerization.}{\begin{itemize}
+    \item Addition: monomers add one at a time to a growing chain; initiated by radicals, cations, or anions; monomer must have a double bond; high MW reached early.
+    \item Condensation: bifunctional monomers react in pairs; small molecule (e.g., $\text{H}_2\text{O}$) is eliminated; MW grows slowly; requires high conversion for high MW.
+\end{itemize}}
+
+\card{What is the difference between a thermoplastic and a thermoset polymer?}{\begin{itemize}
+    \item Thermoplastic: linear or branched chains; can be melted and reshaped repeatedly (e.g., polyethylene, polystyrene).
+    \item Thermoset: cross-linked network; once cured, cannot be remelted; decomposes at high temperature (e.g., epoxy, vulcanized rubber).
+\end{itemize}}
+
+\card{Define degree of polymerization and number-average molecular weight.}{Degree of polymerization ($n$) is the number of repeat units in a polymer chain. Number-average molecular weight $\overline{M}_n = \sum N_i M_i / \sum N_i$, where $N_i$ is the number of chains of molecular weight $M_i$. It is measured by methods like osmometry or GPC.}
+
+\card{What is the glass transition temperature ($T_g$) and why does it matter?}{$T_g$ is the temperature below which an amorphous polymer becomes hard and glassy, and above which it becomes soft and rubbery. It depends on chain flexibility, side-group bulkiness, and intermolecular forces. $T_g$ determines the useful temperature range for a polymer application.}
+
+\end{document}

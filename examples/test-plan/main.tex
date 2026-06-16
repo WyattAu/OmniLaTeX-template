@@ -1,0 +1,279 @@
+\documentclass[
+    language=english,
+    doctype=technical-report,
+    institution=none,
+    titlestyle=book,
+    oneside,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+%=============================================================================
+\chapter{Introduction}
+\label{sec:introduction}
+%=============================================================================
+
+This test plan describes the quality assurance strategy for DataPipe
+version 3.2. It defines the testing scope, approach, test cases,
+environment requirements, and entry and exit criteria. The plan covers
+functional, performance, security, and integration testing.
+
+\section{Scope}
+
+This test plan covers:
+
+\begin{itemize}
+    \item Core pipeline engine and execution framework.
+    \item Kafka and PostgreSQL connectors.
+    \item Built-in transforms (filter, map, aggregate, window).
+    \item CLI and REST API.
+    \item Web dashboard (basic smoke tests).
+    \item Exactly-once delivery semantics.
+\end{itemize}
+
+\section{Objectives}
+
+\begin{enumerate}
+    \item Verify all user stories in the 3.2 release are correctly
+        implemented.
+    \item Ensure backward compatibility with 3.1 pipeline configurations.
+    \item Validate performance targets are met under production-representative
+        load.
+    \item Confirm no regressions from the 3.1 release.
+\end{enumerate}
+
+%=============================================================================
+\chapter{Test Strategy}
+\label{sec:strategy}
+%=============================================================================
+
+\section{Testing Levels}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Testing levels and responsibilities.}
+    \label{tab:test-levels}
+    \begin{tabular}{@{}llp{5cm}@{}}
+        \toprule
+        Level & Owner & Scope \\
+        \midrule
+        Unit tests & Developers & Individual methods and classes. \\
+        Integration tests & Developers & Component interactions
+            (connector + pipeline). \\
+        System tests & QA team & End-to-end pipeline execution. \\
+        Performance tests & SRE team & Throughput and latency under load. \\
+        Security tests & Security team & Vulnerability scanning and
+            penetration testing. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Test Types}
+
+\subsection{Functional Testing}
+
+Functional tests verify that each feature behaves according to the
+specification. Tests are written in Java using JUnit 5 and executed as
+part of the CI pipeline.
+
+\subsection{Performance Testing}
+
+Performance tests use JMH for micro-benchmarks and a custom load
+generator for end-to-end throughput measurements. The target is
+500\,000 events per second on a three-node cluster.
+
+\subsection{Regression Testing}
+
+The full regression suite runs nightly against the \texttt{main} branch.
+Any failure blocks the next release candidate.
+
+%=============================================================================
+\chapter{Test Cases}
+\label{sec:test-cases}
+%=============================================================================
+
+\section{Functional Test Cases}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Functional test cases for the pipeline engine.}
+    \label{tab:func-tests}
+    \begin{tabular}{@{}p{2.5cm}p{5cm}p{3cm}p{2cm}@{}}
+        \toprule
+        Test ID & Description & Expected Result & Priority \\
+        \midrule
+        TC-001 & Start a pipeline with Kafka source and
+            PostgreSQL sink & Records flow from source to sink
+            within 10s & P0 \\
+        TC-002 & Stop a running pipeline gracefully &
+            Pipeline drains in-flight records before stopping & P0 \\
+        TC-003 & Apply filter transform & Only matching records
+            reach the sink & P0 \\
+        TC-004 & Apply windowed aggregation & Aggregate results
+            match expected values & P0 \\
+        TC-005 & Restart a failed pipeline & Pipeline resumes from
+            last checkpoint & P1 \\
+        TC-006 & Pipeline with exactly-once delivery & No duplicates
+            after consumer restart & P0 \\
+        TC-007 & Handle null records in transform & Null records are
+            skipped without error & P1 \\
+        TC-008 & CLI pipeline list command & All registered pipelines
+            are displayed & P1 \\
+        TC-009 & REST API pipeline status & JSON response matches
+            expected schema & P1 \\
+        TC-010 & Pipeline validation with missing config & Clear error
+            message identifying the missing field & P1 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Performance Test Cases}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Performance test cases.}
+    \label{tab:perf-tests}
+    \begin{tabular}{@{}p{2.5cm}p{4cm}p{3.5cm}p{2cm}@{}}
+        \toprule
+        Test ID & Description & Target & Priority \\
+        \midrule
+        PT-001 & Single pipeline throughput &
+            $\geq 500$k events/s on 3 nodes & P0 \\
+        PT-002 & End-to-end latency (P99) & $< 200$\,ms & P0 \\
+        PT-003 & Pipeline startup time & $< 5$\,seconds & P1 \\
+        PT-004 & Consumer lag recovery & Recover from 100k lag
+            in $< 60$\,s & P1 \\
+        PT-005 & Memory usage under load & $< 8$\,GB per node &
+            P1 \\
+        PT-006 & Concurrent pipeline execution &
+            10 pipelines simultaneously with $< 10\%$ degradation & P2 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Security Test Cases}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Security test cases.}
+    \label{tab:sec-tests}
+    \begin{tabular}{@{}p{2.5cm}p{6cm}p{3cm}p{1.5cm}@{}}
+        \toprule
+        Test ID & Description & Expected Result & Priority \\
+        \midrule
+        ST-001 & SQL injection via pipeline config &
+            Input is sanitised, no SQL execution & P0 \\
+        ST-002 & Unauthenticated API access &
+            401 Unauthorized returned & P0 \\
+        ST-003 & TLS termination on API endpoints &
+            All traffic encrypted in transit & P0 \\
+        ST-004 & Secret rotation for connector credentials &
+            Pipeline reloads new credentials without restart & P1 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+%=============================================================================
+\chapter{Test Environment}
+\label{sec:environment}
+%=============================================================================
+
+\section{Hardware Requirements}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Test environment hardware specifications.}
+    \label{tab:hardware}
+    \begin{tabular}{@{}lll@{}}
+        \toprule
+        Component & Specification & Quantity \\
+        \midrule
+        Application nodes & 8 vCPU, 32\,GB RAM, 200\,GB SSD & 3 \\
+        Kafka brokers & 4 vCPU, 16\,GB RAM, 500\,GB SSD & 3 \\
+        PostgreSQL & 4 vCPU, 16\,GB RAM, 200\,GB SSD & 2 (primary + replica) \\
+        Load generator & 8 vCPU, 16\,GB RAM & 1 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Software Requirements}
+
+\begin{itemize}
+    \item Ubuntu 22.04 LTS on all nodes.
+    \item Java 21 (Eclipse Temurin).
+    \item Docker 24+ and Docker Compose v2.
+    \item Kafka 3.7 with KRaft mode.
+    \item PostgreSQL 16.
+    \item DataPipe 3.2.0-rc1 (release candidate).
+\end{itemize}
+
+\section{Test Data}
+
+\begin{itemize}
+    \item Synthetic dataset: 10 million records in JSON format.
+    \item Production-representative dataset: anonymised snapshot from
+        staging environment.
+    \item Edge-case dataset: records with null fields, unicode characters,
+        and maximum-size payloads.
+\end{itemize}
+
+%=============================================================================
+\chapter{Entry and Exit Criteria}
+\label{sec:criteria}
+%=============================================================================
+
+\section{Entry Criteria}
+
+Testing may begin when:
+
+\begin{enumerate}
+    \item All P0 features are code-complete.
+    \item Unit test coverage meets the minimum threshold (80\%).
+    \item The release candidate build passes the CI pipeline.
+    \item Test environment is provisioned and verified.
+    \item Test data is loaded and validated.
+\end{enumerate}
+
+\section{Exit Criteria}
+
+Testing is complete when:
+
+\begin{enumerate}
+    \item All P0 test cases pass.
+    \item 95\% of P1 test cases pass.
+    \item No open P0 or P1 defects.
+    \item Performance targets are met.
+    \item Security scan reports no critical vulnerabilities.
+    \item Regression suite is clean.
+    \item Release notes are drafted and reviewed.
+\end{enumerate}
+
+\section{Defect Severity Definitions}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Defect severity levels and response targets.}
+    \label{tab:defects}
+    \begin{tabular}{@{}lp{5cm}p{3cm}p{2cm}@{}}
+        \toprule
+        Severity & Description & Fix Target & Blocks Release? \\
+        \midrule
+        S1 & Data loss or corruption & 24 hours & Yes \\
+        S2 & Feature unusable, no workaround & 48 hours & Yes \\
+        S3 & Feature degraded, workaround available & Next sprint & No \\
+        S4 & Cosmetic or minor issue & Backlog & No \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\printbibliography[heading=bibintoc, title={References}]
+
+\end{document}

@@ -1,0 +1,220 @@
+\documentclass[
+    language=english,
+    doctype=workbook,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+\RequirePackage{enumitem}
+
+\begin{document}
+
+\maketitle
+
+\section*{Instructions}
+
+This workbook accompanies the Advanced Calculus course (MATH 301). Complete
+each exercise in the space provided. Show all work for full credit. You may
+use a calculator, but all symbolic answers must be exact.
+
+\section{Limits and Continuity}
+
+\subsection{Exercises}
+
+\begin{enumerate}[label=\textbf{1.\arabic*}]
+
+    \item Evaluate the following limits. Show your work.
+
+    \begin{enumerate}[label=(\alph*)]
+        \item $\displaystyle\lim_{x \to 3} \frac{x^{2}-9}{x-3}$
+        \vspace{2cm}
+
+        \item $\displaystyle\lim_{x \to 0} \frac{\sin(5x)}{3x}$
+        \vspace{2cm}
+
+        \item $\displaystyle\lim_{x \to \infty} \frac{3x^{2}+2x}{5x^{2}-1}$
+        \vspace{2cm}
+    \end{enumerate}
+
+    \item Determine whether the function is continuous at $x=2$. Justify
+          your answer.
+
+    \[
+        f(x) = \begin{cases}
+            x^{2}-1 & \text{if } x < 2 \\
+            3       & \text{if } x = 2 \\
+            2x+1    & \text{if } x > 2
+        \end{cases}
+    \]
+    \vspace{3cm}
+
+\end{enumerate}
+
+\section{Derivatives}
+
+\subsection{Exercises}
+
+\begin{enumerate}[label=\textbf{2.\arabic*}]
+
+    \item Find the derivative of each function.
+
+    \begin{enumerate}[label=(\alph*)]
+        \item $f(x) = 3x^{4} - 2x^{2} + 7x - 5$
+        \vspace{2cm}
+
+        \item $g(x) = \dfrac{x+1}{x-1}$
+        \vspace{2cm}
+
+        \item $h(x) = e^{3x}\sin(x)$
+        \vspace{2cm}
+    \end{enumerate}
+
+    \item Use implicit differentiation to find $\dfrac{dy}{dx}$.
+
+    \[
+        x^{2} + y^{2} = 25
+    \]
+    \vspace{3cm}
+
+    \item Find the equation of the tangent line to $y = \ln(x)$ at $x=1$.
+    \vspace{4cm}
+
+\end{enumerate}
+
+\section{Applications of Derivatives}
+
+\subsection{Exercises}
+
+\begin{enumerate}[label=\textbf{3.\arabic*}]
+
+    \item Find the critical points and determine whether each is a local
+          maximum, local minimum, or neither.
+
+    \[
+        f(x) = x^{3} - 6x^{2} + 9x + 2
+    \]
+    \vspace{5cm}
+
+    \item A rectangular garden is to be fenced on three sides (one side is
+          bounded by a barn). If 120 feet of fencing is available, what
+          dimensions maximize the area?
+    \vspace{5cm}
+
+\end{enumerate}
+
+\section{Integration}
+
+\subsection{Fill in the Blanks}
+
+Complete the following integration formulas.
+
+\begin{enumerate}[label=\textbf{4.\arabic*}]
+
+    \item $\displaystyle\int x^{n}\,dx = $ \rule{4cm}{0.4pt} \quad
+          (where $n \neq -1$)
+
+    \item $\displaystyle\int e^{x}\,dx = $ \rule{4cm}{0.4pt}
+
+    \item $\displaystyle\int \frac{1}{x}\,dx = $ \rule{4cm}{0.4pt}
+
+    \item $\displaystyle\int \cos(x)\,dx = $ \rule{4cm}{0.4pt}
+
+    \item $\displaystyle\int \sec^{2}(x)\,dx = $ \rule{4cm}{0.4pt}
+
+\end{enumerate}
+
+\subsection{Exercises}
+
+\begin{enumerate}[label=\textbf{5.\arabic*}]
+
+    \item Evaluate the definite integrals.
+
+    \begin{enumerate}[label=(\alph*)]
+        \item $\displaystyle\int_{0}^{2} (3x^{2} - 4x + 1)\,dx$
+        \vspace{3cm}
+
+        \item $\displaystyle\int_{1}^{e} \frac{\ln(x)}{x}\,dx$
+        \vspace{3cm}
+    \end{enumerate}
+
+    \item Use substitution to evaluate.
+
+    \[
+        \int x\sqrt{x^{2}+1}\,dx
+    \]
+    \vspace{4cm}
+
+\end{enumerate}
+
+\section{Matching}
+
+Match each concept with its correct definition by writing the letter in
+the blank.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{ll}
+        \toprule
+        \textbf{Concept} & \textbf{Definition} \\
+        \midrule
+        \rule{0pt}{2em}1. Critical point & \rule{0pt}{2em}A. The limit of a
+            difference quotient as $h \to 0$ \\
+        \rule{0pt}{2em}2. Antiderivative & \rule{0pt}{2em}B. A point where
+            $f'(x)=0$ or $f'(x)$ is undefined \\
+        \rule{0pt}{2em}3. Derivative & \rule{0pt}{2em}C. A function $F$ such
+            that $F' = f$ \\
+        \rule{0pt}{2em}4. Definite integral & \rule{0pt}{2em}D. The net
+            signed area under a curve \\
+        \rule{0pt}{2em}5. Mean Value Theorem & \rule{0pt}{2em}E. A point
+            where $f'(x)$ changes sign \\
+        \bottomrule
+    \end{tabular}
+    \caption{Matching exercise --- concepts and definitions.}
+\end{table}
+
+\section{Short Answer}
+
+Answer each question in 2--3 complete sentences.
+
+\begin{enumerate}[label=\textbf{6.\arabic*}]
+
+    \item Explain the relationship between the derivative of a function and
+          the slope of its tangent line.
+    \vspace{3cm}
+
+    \item State the Fundamental Theorem of Calculus and explain its
+          significance.
+    \vspace{3cm}
+
+    \item Describe when you would use integration by parts versus
+          substitution.
+    \vspace{3cm}
+
+    \item What is the geometric interpretation of the definite integral
+          $\int_{a}^{b} f(x)\,dx$?
+    \vspace{3cm}
+
+\end{enumerate}
+
+\section{Answer Key (Selected)}
+
+\begin{description}
+    \item[1.1(a)] $\displaystyle\lim_{x \to 3} \frac{x^{2}-9}{x-3} = \lim_{x \to 3} (x+3) = 6$
+    \item[1.1(b)] $\displaystyle\lim_{x \to 0} \frac{\sin(5x)}{3x} = \frac{5}{3}$
+    \item[1.1(c)] $\displaystyle\lim_{x \to \infty} \frac{3x^{2}+2x}{5x^{2}-1} = \frac{3}{5}$
+    \item[2.1(a)] $f'(x) = 12x^{3} - 4x + 7$
+    \item[2.1(b)] $g'(x) = \dfrac{-2}{(x-1)^{2}}$
+    \item[2.1(c)] $h'(x) = e^{3x}(3\sin x + \cos x)$
+    \item[2.2] $\dfrac{dy}{dx} = -\dfrac{x}{y}$
+    \item[4.1] $\dfrac{x^{n+1}}{n+1} + C$
+    \item[4.2] $e^{x} + C$
+    \item[4.3] $\ln|x| + C$
+    \item[4.4] $\sin(x) + C$
+    \item[4.5] $\tan(x) + C$
+    \item[5.1(a)] $2$
+    \item[5.1(b)] $\dfrac{1}{2}$
+    \item[5.2] $\dfrac{1}{3}(x^{2}+1)^{3/2} + C$
+    \item[Matching] 1-B, 2-C, 3-A, 4-D, 5-E
+\end{description}
+
+\end{document}

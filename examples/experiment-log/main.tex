@@ -1,0 +1,360 @@
+\documentclass[
+    language=english,
+    doctype=experiment-log,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This experiment log documents a systematic investigation of catalytic transfer
+hydrogenation of nitroarenes using formic acid as the hydrogen source and
+palladium on carbon (Pd/C) as the catalyst. The study evaluates the effects
+of catalyst loading, temperature, solvent system, and substrate scope on
+reaction efficiency and selectivity. A total of 24 experiments were conducted
+over a 6-week period, culminating in an optimized protocol that achieves
+$>$95\% conversion for a broad range of substituted nitrobenzenes under mild
+conditions.
+\end{abstract}
+
+\section{Experimental Overview}
+\label{sec:overview}
+
+\subsection{Hypothesis}
+
+Catalytic transfer hydrogenation (CTH) of nitroarenes using formic acid as
+the hydrogen donor can achieve complete chemoselective reduction to the
+corresponding anilines without over-reduction or side reactions, provided
+that the catalyst loading, temperature, and solvent polarity are carefully
+optimized.
+
+\subsection{Research Question}
+
+What are the optimal conditions (catalyst loading, temperature, solvent,
+and reaction time) for the selective reduction of aromatic nitro groups to
+primary amines using Pd/C and formic acid, while preserving other functional
+groups (e.g., aldehydes, esters, halides)?
+
+\subsection{Significance}
+
+Selective reduction of nitroarenes is a fundamental transformation in organic
+synthesis with applications in pharmaceutical manufacturing, dye chemistry,
+and materials science \cite{blaser2004catalytic}. Traditional methods (H$_2$/Pd,
+Fe/HCl, SnCl$_2$) suffer from safety concerns, poor selectivity, or
+stoichiometric metal waste. CTH with formic acid offers a safer, greener
+alternative.
+
+\section{Materials and Methods}
+\label{sec:methods}
+
+\subsection{Reagents and Equipment}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Reagents and materials used.}
+    \label{tab:reagents}
+    \begin{tabular}{@{}lccl@{}}
+        \toprule
+        Reagent & Purity & Supplier & Storage \\
+        \midrule
+        4-Nitrobenzaldehyde & 99\% & Sigma-Aldrich & RT, dark \\
+        4-Nitrotoluene & 99\% & Alfa Aesar & RT \\
+        4-Nitroanisole & 98\% & TCI & RT \\
+        4-Nitrochlorobenzene & 99\% & Sigma-Aldrich & RT \\
+        4-Nitrobenzoic acid & 99\% & Acros Organics & RT \\
+        Formic acid (98\%) & 98\% & Fisher Chemical & 2--8\degree C \\
+        Pd/C (10 wt\% Pd) & 58.8\% Pd & Johnson Matthey & RT, inert atm. \\
+        Ethanol (absolute) & 99.8\% & Fisher Chemical & RT \\
+        Methanol (HPLC grade) & 99.9\% & Fisher Chemical & RT \\
+        Ethyl acetate (HPLC grade) & 99.8\% & Fisher Chemical & RT \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Equipment: 25 mL round-bottom flask, magnetic stir bar, nitrogen manifold,
+temperature-controlled oil bath, HPLC (Agilent 1260 Infinity II with
+DAD detector), GC-MS (Shimadzu GCMS-QP2020), rotary evaporator (B\"{u}chi
+R-300).
+
+\subsection{General Procedure}
+
+\begin{enumerate}
+    \item The nitroarene substrate (1.0 mmol) was dissolved in the appropriate
+          solvent (5 mL) in a 25 mL round-bottom flask equipped with a
+          magnetic stir bar.
+    \item Pd/C (10 wt\%) was added as a suspension in the reaction solvent.
+    \item Formic acid (3.0 mmol, 3.0 equiv.) was added dropwise over 2 min
+          at room temperature.
+    \item The reaction mixture was heated to the designated temperature under
+          nitrogen atmosphere.
+    \item Aliquots (0.1 mL) were withdrawn at designated time points,
+          filtered through a PTFE syringe filter (0.22 $\mu$m), and analyzed
+          by HPLC.
+    \item Upon completion, the reaction mixture was cooled to room temperature,
+          filtered through Celite to remove Pd/C, and concentrated under
+          reduced pressure.
+    \item The crude product was purified by column chromatography (ethyl
+          acetate/hexanes gradient) and characterized by $^1$H NMR, $^{13}$C
+          NMR, and HRMS.
+\end{enumerate}
+
+\subsection{Analytical Methods}
+
+\textbf{HPLC Analysis:} Column: Agilent ZORBAX Eclipse Plus C18 (250 $\times$
+4.6 mm, 5 $\mu$m). Mobile phase: MeCN/H$_2$O (0.1\% TFA). Flow rate:
+1.0 mL/min. Detection: UV at 254 nm. Retention times: nitroarene substrate
+(8--12 min), aniline product (4--7 min), formic acid (1.5 min).
+
+\textbf{Conversion and Selectivity:} Conversion was calculated from HPLC peak
+areas using external calibration:
+\begin{equation}
+    \text{Conversion (\%)} = \frac{[\text{Nitroarene}]_0 - [\text{Nitroarene}]_t}{[\text{Nitroarene}]_0} \times 100
+    \label{eq:conversion}
+\end{equation}
+
+Selectivity for the aniline product was confirmed by the absence of
+intermediate peaks (nitroso, hydroxylamine) in the HPLC chromatogram.
+
+\section{Experimental Log}
+\label{sec:log}
+
+%------------------------------------------------------------
+\subsection{Experiment 1 --- Baseline Conditions}
+\label{exp:001}
+%------------------------------------------------------------
+
+\begin{table}[htbp]
+    \centering
+    \caption{Experiment 1 parameters and results.}
+    \label{tab:exp001}
+    \begin{tabular}{@{}p{4cm}p{10cm}@{}}
+        \toprule
+        Parameter & Value \\
+        \midrule
+        Substrate & 4-Nitrobenzaldehyde (1.0 mmol, 151.1 mg) \\
+        Catalyst & Pd/C (10 wt\%), 5 mol\% (53 mg) \\
+        Solvent & Ethanol (5 mL) \\
+        Formic acid & 3.0 equiv.\ (113 $\mu$L) \\
+        Temperature & 60\degree C \\
+        Time & 2 h \\
+        Atmosphere & N$_2$ \\
+        \midrule
+        Conversion & 42\% (HPLC) \\
+        Selectivity & 98\% (aniline product) \\
+        Yield (isolated) & --- \\
+        \midrule
+        Observations & Yellow solution turned colorless after 1 h. \\
+                     & TLC shows intermediate spot (likely nitroso compound). \\
+                     & Aldehyde group appears to be preserved (confirmed by HPLC). \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\textbf{Analysis:} Conversion is moderate but selectivity is excellent. The
+reaction may require higher temperature or longer time for complete conversion.
+The aldehyde group survived the reaction, which is a positive result.
+
+\textbf{Next Steps:} Increase temperature to 80\degree C (Experiment 2).
+
+%------------------------------------------------------------
+\subsection{Experiment 2 --- Temperature Optimization}
+\label{exp:002}
+%------------------------------------------------------------
+
+\begin{table}[htbp]
+    \centering
+    \caption{Experiment 2 parameters and results.}
+    \label{tab:exp002}
+    \begin{tabular}{@{}p{4cm}p{10cm}@{}}
+        \toprule
+        Parameter & Value \\
+        \midrule
+        Substrate & 4-Nitrobenzaldehyde (1.0 mmol, 151.1 mg) \\
+        Catalyst & Pd/C (10 wt\%), 5 mol\% (53 mg) \\
+        Solvent & Ethanol (5 mL) \\
+        Formic acid & 3.0 equiv.\ (113 $\mu$L) \\
+        Temperature & 80\degree C \\
+        Time & 2 h \\
+        Atmosphere & N$_2$ \\
+        \midrule
+        Conversion & 87\% (HPLC) \\
+        Selectivity & 95\% (aniline product) \\
+        Yield (isolated) & 81\% (110 mg) \\
+        \midrule
+        Observations & Complete color change after 30 min. \\
+                     & Minor byproduct observed by HPLC (3\% retention time 9.2 min). \\
+                     & Isolated product: white solid, mp 71--73\degree C (lit.\ 72\degree C). \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\textbf{Analysis:} Temperature increase from 60 to 80\degree C nearly doubled
+conversion. Minor byproduct may be the alcohol (reduction of aldehyde), which
+is concerning. Need to investigate whether aldehyde reduction is temperature-
+or catalyst-dependent.
+
+\textbf{Next Steps:} Test 70\degree C to find optimal balance (Experiment 3).
+Also test with aliphatic alcohol solvent (Experiment 4).
+
+%------------------------------------------------------------
+\subsection{Experiment 3 --- Temperature Fine-Tuning}
+\label{exp:003}
+%------------------------------------------------------------
+
+\begin{table}[htbp]
+    \centering
+    \caption{Experiment 3 parameters and results.}
+    \label{tab:exp003}
+    \begin{tabular}{@{}p{4cm}p{10cm}@{}}
+        \toprule
+        Parameter & Value \\
+        \midrule
+        Substrate & 4-Nitrobenzaldehyde (1.0 mmol) \\
+        Catalyst & Pd/C (10 wt\%), 5 mol\% \\
+        Solvent & Ethanol (5 mL) \\
+        Formic acid & 3.0 equiv. \\
+        Temperature & 70\degree C \\
+        Time & 2 h \\
+        \midrule
+        Conversion & 68\% (HPLC) \\
+        Selectivity & 97\% (aniline product) \\
+        Yield (isolated) & 63\% \\
+        \midrule
+        Observations & Good balance of conversion and selectivity. \\
+                     & No detectable aldehyde reduction at this temperature. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\textbf{Decision:} 70\degree C provides the best selectivity for acid-sensitive
+substrates. For robust substrates, 80\degree C is acceptable. Moving forward
+with 80\degree C as the standard temperature for the substrate scope study.
+
+%------------------------------------------------------------
+\subsection{Experiment 7 --- Catalyst Loading Study}
+\label{exp:007}
+%------------------------------------------------------------
+
+\begin{table}[htbp]
+    \centering
+    \caption{Catalyst loading optimization results.}
+    \label{tab:cat-loading}
+    \begin{tabular}{@{}ccccc@{}}
+        \toprule
+        Exp. & Pd/C (mol\%) & Formic acid (equiv.) & Conversion & Selectivity \\
+        \midrule
+        7a & 1.0 & 3.0 & 31\% & 99\% \\
+        7b & 2.0 & 3.0 & 54\% & 99\% \\
+        7c & 3.0 & 3.0 & 72\% & 98\% \\
+        7d & 5.0 & 3.0 & 87\% & 95\% \\
+        7e & 10.0 & 3.0 & 99\% & 92\% \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\textbf{Analysis:} A clear dose-response relationship is observed. At 10 mol\%
+Pd/C, conversion is near-quantitative but selectivity drops slightly due to
+over-reduction. At 5 mol\%, the balance between conversion and selectivity is
+optimal for most substrates.
+
+\textbf{Decision:} Use 5 mol\% Pd/C as the standard catalyst loading. For
+electron-poor substrates, 3 mol\% may suffice.
+
+%------------------------------------------------------------
+\subsection{Experiment 14 --- Substrate Scope: 4-Nitrochlorobenzene}
+\label{exp:014}
+%------------------------------------------------------------
+
+\begin{table}[htbp]
+    \centering
+    \caption{Experiment 14 --- chemoselectivity test.}
+    \label{tab:exp014}
+    \begin{tabular}{@{}p{4cm}p{10cm}@{}}
+        \toprule
+        Parameter & Value \\
+        \midrule
+        Substrate & 4-Nitrochlorobenzene (1.0 mmol) \\
+        Catalyst & Pd/C (10 wt\%), 5 mol\% \\
+        Solvent & Ethanol (5 mL) \\
+        Formic acid & 3.0 equiv. \\
+        Temperature & 80\degree C \\
+        Time & 2 h \\
+        \midrule
+        Conversion & 91\% (HPLC) \\
+        Selectivity & 94\% (4-chloroaniline) \\
+        Dechlorination & 6\% (aniline by HPLC) \\
+        \midrule
+        Observations & Significant dechlorination observed (6\%). \\
+                     & Pd/C is too active for C--Cl bond cleavage. \\
+                     & Need to test with poisoned catalyst or lower loading. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\textbf{Analysis:} Dechlorination is a known side reaction with Pd/C. The
+6\% dechlorination at 5 mol\% loading is unacceptable for pharmaceutical
+synthesis. Options: (a) reduce catalyst loading, (b) use Pd/CaCO$_3$
+(Lindlar-type), or (c) switch to Pd/Al$_2$O$_3$.
+
+\textbf{Decision:} Test Pd/Al$_2$O$_3$ for halogenated substrates (Experiment 15).
+
+\section{Results Summary}
+\label{sec:results}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Substrate scope under optimized conditions (80\degree C, 5 mol\% Pd/C,
+             3.0 equiv.\ HCOOH, EtOH, 2 h).}
+    \label{tab:scope}
+    \begin{tabular}{@{}lccc@{}}
+        \toprule
+        Substrate & Conversion & Yield (isolated) & Functional Group Survival \\
+        \midrule
+        4-Nitrobenzaldehyde & 87\% & 81\% & Aldehyde preserved \\
+        4-Nitrotoluene & 95\% & 89\% & Methyl intact \\
+        4-Nitroanisole & 98\% & 93\% & Methoxy intact \\
+        4-Nitrobenzoic acid & 82\% & 76\% & Carboxylic acid intact \\
+        3-Nitrobenzaldehyde & 85\% & 79\% & Aldehyde preserved \\
+        2-Nitroanisole & 92\% & 87\% & Methoxy intact \\
+        4-Nitrochlorobenzene* & 91\% & 82\% & Cl preserved (Pd/Al$_2$O$_3$) \\
+        4-Nitroacetophenone & 88\% & 83\% & Ketone preserved \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Conclusions}
+\label{sec:conclusions}
+
+The optimized CTH protocol (5 mol\% Pd/C, 3.0 equiv.\ HCOOH, EtOH,
+80\degree C, 2 h) achieves selective reduction of aromatic nitro groups
+to primary amines for a broad range of substrates. Key findings:
+
+\begin{enumerate}
+    \item Temperature is the most critical parameter for conversion, with
+          80\degree C providing optimal results for most substrates.
+    \item Aldehyde, ester, ketone, and carboxylic acid functional groups
+          are preserved under standard conditions.
+    \item Halogenated substrates require Pd/Al$_2$O$_3$ instead of Pd/C
+          to prevent dehalogenation.
+    \item Catalyst loading of 5 mol\% provides the best balance of
+          activity and selectivity.
+\end{enumerate}
+
+\section{Outstanding Questions}
+\label{sec:questions}
+
+\begin{todo}
+    \item Test Pd/Al$_2$O$_3$ with 4-bromonitrobenzene (Experiment 16)
+    \item Scale up optimized conditions to 10 mmol (Experiment 20)
+    \item Investigate recyclability of Pd/C catalyst (Experiments 21--24)
+    \item Compare formic acid with ammonium formate as hydrogen source
+    \item Manuscript draft: target submission to Green Chemistry by Aug 1
+\end{todo}
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

@@ -1,0 +1,377 @@
+\documentclass[
+    language=english,
+    doctype=postdoc-report,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This annual report summarizes research activities, publications, teaching
+contributions, and professional development during the second year of
+my postdoctoral fellowship at the Center for Computational Biology,
+Department of Computer Science, University of Exampleton. The primary
+research focus has been on developing scalable Bayesian methods for
+spatial transcriptomics data analysis, with applications to the human
+brain atlasing project. Key achievements include 4 peer-reviewed
+publications (2 as first author), 2 manuscripts under review, and
+the release of an open-source software package with over 500 GitHub
+stars. Teaching contributions include co-instructing a graduate course
+on probabilistic machine learning and mentoring 3 PhD students.
+\end{abstract}
+
+\section{Research Summary}
+\label{sec:research}
+
+\subsection{Project 1: Bayesian Spatial Transcriptomics (BST)}
+
+\subsubsection{Background and Motivation}
+Spatial transcriptomics technologies (MERFISH, Slide-seq, Visium) measure
+gene expression while preserving spatial context in tissue sections. These
+technologies generate datasets with millions of spatially resolved
+measurements, presenting significant computational challenges for
+probabilistic modeling \cite{stahl2016visualization}.
+
+\subsubsection{Objectives}
+\begin{enumerate}
+    \item Develop scalable variational inference algorithms for spatial
+          gene expression models that scale to datasets with $>$ 1M spots.
+    \item Implement a Gaussian process latent variable model (GPLVM) that
+          captures spatially varying gene expression patterns.
+    \item Validate the methods on the Human Brain Atlas consortium dataset
+          (120 brain sections, 50,000--200,000 spots per section).
+\end{enumerate}
+
+\subsubsection{Methods and Results}
+
+I developed BST-spGPLVM, a Bayesian spatial Gaussian process latent variable
+model that uses inducing point approximations and natural gradient variational
+inference to achieve $\mathcal{O}(nm)$ complexity, where $n$ is the number
+of spots and $m$ is the number of inducing points.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Scalability comparison of BST-spGPLVM against existing methods.}
+    \label{tab:scalability}
+    \begin{tabular}{@{}lcccc@{}}
+        \toprule
+        Method & Spots & Genes & Time (min) & Memory (GB) \\
+        \midrule
+        SpatialDM & 10K & 20K & 12.4 & 8.2 \\
+        SPARK-X & 10K & 20K & 45.6 & 12.1 \\
+        BayesSpace & 10K & 20K & 28.3 & 9.8 \\
+        BST-spGPLVM & 10K & 20K & \textbf{3.2} & \textbf{2.1} \\
+        \midrule
+        BST-spGPLVM & 100K & 20K & \textbf{28.7} & \textbf{8.4} \\
+        BST-spGPLVM & 1M & 20K & \textbf{245} & \textbf{42.3} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The model identifies spatially variable genes (SVGs) with higher precision
+than existing methods (AUC = 0.92 vs.\ 0.78 for SpatialDM on simulated
+data with known SVGs). Application to the Human Brain Atlas data reveals
+previously uncharacterized spatial gene expression gradients in the
+prefrontal cortex.
+
+\subsubsection{Publications}
+
+\begin{enumerate}
+    \item \textbf{[First author]} ``Scalable Bayesian Spatial Transcriptomics
+          with Gaussian Process Latent Variable Models,'' \textit{Nature
+          Methods}, 2025. (Under review)
+    \item \textbf{[Co-author]} ``Bayesian Methods for Spatial Genomics:
+          A Comparative Benchmark,'' \textit{Bioinformatics}, 2025.
+\end{enumerate}
+
+\subsection{Project 2: Hierarchical Bayesian Models for Brain Atlasing}
+
+\subsubsection{Background}
+The Brain Atlas Consortium is generating spatial transcriptomics data from
+1,000+ postmortem brain samples to create a comprehensive reference atlas
+of human brain gene expression.
+
+\subsubsection{Objectives}
+\begin{enumerate}
+    \item Develop hierarchical Bayesian models that borrow strength across
+          brain regions and donors to improve estimation accuracy.
+    \item Design an active learning framework to optimally select which
+          brain regions to sample next.
+    \item Create a data integration pipeline that combines spatial
+          transcriptomics with single-cell RNA-seq and proteomics data.
+\end{enumerate}
+
+\subsubsection{Methods and Results}
+
+I developed a hierarchical Gaussian process model that shares information
+across brain regions through a common covariance structure. The model
+uses stochastic variational inference with distributed computing to
+handle the full atlas dataset.
+
+\begin{equation}
+    f_s(\mathbf{x}) \sim \mathcal{GP}\left(0, \kappa_s(\mathbf{x}, \mathbf{x}') + \kappa_{\text{shared}}(\mathbf{x}, \mathbf{x}')\right)
+    \label{eq:hierarchical}
+\end{equation}
+
+where $\kappa_s$ is a region-specific kernel and $\kappa_{\text{shared}}$
+is a shared kernel across regions. The hierarchical structure reduces
+posterior variance by 23\% compared to region-independent models, as
+measured by cross-validation log-likelihood.
+
+\subsubsection{Publications}
+
+\begin{enumerate}
+    \item \textbf{[First author]} ``Hierarchical Bayesian Modeling of
+          Spatial Gene Expression Across the Human Brain,'' \textit{Nature
+          Neuroscience}, 2025. (Submitted)
+    \item \textbf{[Co-author]} ``Active Learning for Spatial Transcriptomics
+          Experimental Design,'' \textit{Genome Biology}, 2025.
+\end{enumerate}
+
+\subsection{Project 3: Open-Source Software Development}
+
+I developed and maintain the \texttt{SpatialBayes.jl} package, a Julia
+library for Bayesian spatial transcriptomics analysis. Key features:
+
+\begin{itemize}
+    \item Scalable Gaussian process inference with inducing points
+    \item Hierarchical modeling across multiple tissue sections
+    \item GPU acceleration via CUDA.jl
+    \item Interactive visualization dashboards
+    \item Python and R bindings via PyCall and RCall
+\end{itemize}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Software metrics as of December 2025.}
+    \label{tab:software}
+    \begin{tabular}{@{}lc@{}}
+        \toprule
+        Metric & Value \\
+        \midrule
+        GitHub stars & 523 \\
+        Forks & 87 \\
+        Contributors & 12 \\
+        Downloads (JuliaHub) & 8,420 \\
+        Test coverage & 94\% \\
+        Documentation pages & 156 \\
+        Issues closed & 43 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Publications}
+\label{sec:publications}
+
+\subsection{Journal Articles}
+
+\begin{enumerate}
+    \item \textbf{[First author]} [Author], [Co-author A], [Co-author B].
+          ``Scalable Bayesian Spatial Transcriptomics with Gaussian Process
+          Latent Variable Models.'' \textit{Nature Methods} (under review,
+          2025).
+
+    \item \textbf{[First author]} [Author], [Co-author A]. ``Hierarchical
+          Bayesian Modeling of Spatial Gene Expression Across the Human
+          Brain.'' \textit{Nature Neuroscience} (submitted, 2025).
+
+    \item [Co-author C], \textbf{[Author]}, [Co-author D]. ``Bayesian
+          Methods for Spatial Genomics: A Comparative Benchmark.''
+          \textit{Bioinformatics} 41(3): btae012, 2025.
+
+    \item [Co-author E], \textbf{[Author]}, [Co-author F]. ``Active
+          Learning for Spatial Transcriptomics Experimental Design.''
+          \textit{Genome Biology} 26: 45, 2025.
+\end{enumerate}
+
+\subsection{Conference Papers}
+
+\begin{enumerate}
+    \item \textbf{[First author]} [Author], [Co-author A]. ``BST-spGPLVM:
+          Scalable Bayesian Spatial Transcriptomics.'' \textit{Proceedings
+          of NeurIPS 2025} (submitted).
+
+    \item \textbf{[First author]} [Author]. ``Distributed Variational
+          Inference for Large-Scale Spatial Genomics.'' \textit{Proceedings
+          of AISTATS 2026} (submitted).
+\end{enumerate}
+
+\subsection{Preprints}
+
+\begin{enumerate}
+    \item \textbf{[First author]} [Author], [Co-author A], [Co-author B].
+          ``SpatialBayes.jl: A Julia Library for Bayesian Spatial
+          Transcriptomics Analysis.'' arXiv:2025.12345, 2025.
+\end{enumerate}
+
+\section{Teaching and Mentoring}
+\label{sec:teaching}
+
+\subsection{Course Instruction}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Teaching contributions during the reporting period.}
+    \label{tab:teaching}
+    \begin{tabular}{@{}lcccc@{}}
+        \toprule
+        Course & Role & Semester & Enrollment & Rating \\
+        \midrule
+        CS 7641: Probabilistic ML & Co-instructor & Fall 2025 & 38 & 4.7/5.0 \\
+        CS 6250: Bioinformatics & Guest lectures (3) & Spring 2025 & 62 & 4.8/5.0 \\
+        CS 8903: Bayesian Methods & Seminar co-leader & Fall 2025 & 12 & --- \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Student Mentoring}
+
+\begin{enumerate}
+    \item \textbf{Alex Kim} (PhD student, Year 2): Co-mentoring on spatial
+          transcriptomics methods. Alex presented a poster at ISMB 2025
+          and is preparing a first-author manuscript.
+
+    \item \textbf{Priya Sharma} (PhD student, Year 1): Mentoring on
+          variational inference methods. Priya developed a novel divergence
+          measure for spatial data, accepted at AISTATS 2026.
+
+    \item \textbf{Marcus Lee} (MS student, final year): Thesis supervision
+          on GPU-accelerated Gaussian process inference. Thesis defended
+          August 2025.
+\end{enumerate}
+
+\subsection{Undergraduate Research}
+
+I supervised 2 undergraduate research projects through the university's
+REU (Research Experiences for Undergraduates) program:
+
+\begin{itemize}
+    \item \textbf{Jordan Rivera} (Summer 2025): Developed a visualization
+          toolkit for spatial gene expression data. Project resulted in
+          a poster presentation at the undergraduate research symposium.
+    \item \textbf{Casey Wong} (Fall 2025): Benchmarking spatial
+          transcriptomics methods on simulated data. Ongoing.
+\end{itemize}
+
+\section{Professional Development}
+\label{sec:development}
+
+\subsection{Conference Participation}
+
+\begin{itemize}
+    \item NeurIPS 2025 (Vancouver, Canada): Poster presentation
+    \item ISMB 2025 (Vienna, Austria): Oral presentation (selected)
+    \item Single-Cell Biology 2025 (Cambridge, UK): Invited speaker
+    \item Bayesian Statistics in Science (BSiS) 2025: Panel member
+\end{itemize}
+
+\subsection{Workshops and Tutorials}
+
+\begin{itemize}
+    \item Co-organized ``Bayesian Methods for Spatial Genomics'' workshop
+          at NeurIPS 2025 (45 attendees)
+    \item Presented tutorial on ``Gaussian Processes for Spatial Data''
+          at ISMB 2025 (120 attendees)
+    \item Guest lecture at University of Cambridge, Department of Statistics
+\end{itemize}
+
+\subsection{Service}
+
+\begin{itemize}
+    \item Program committee: NeurIPS 2025, ICML 2026
+    \item Reviewer: Nature Methods, Bioinformatics, JMLR
+    \item Departmental seminar organizer (2025--2026 academic year)
+    \item Faculty search committee member (junior faculty position)
+\end{itemize}
+
+\section{Future Plans}
+\label{sec:future}
+
+\subsection{Research Directions}
+
+\begin{enumerate}
+    \item \textbf{Foundation models for spatial biology:} Develop a
+          pre-trained model for spatial transcriptomics data, analogous
+          to protein language models (ESM-2, AlphaFold), that learns
+          general representations of spatial gene expression patterns.
+
+    \item \textbf{Multi-modal spatial integration:} Extend BST-spGPLVM
+          to jointly model spatial transcriptomics with spatial proteomics
+          (CODEX, MIBI) and spatial epigenomics (Spatial-CUT&Tag).
+
+    \item \textbf{Clinical applications:} Apply the methods to spatial
+          transcriptomics data from brain tumor biopsies, in collaboration
+          with the Neurosurgery Department, to develop diagnostic and
+          prognostic biomarkers.
+\end{enumerate}
+
+\subsection{Career Goals}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Career development milestones and timeline.}
+    \label{tab:career}
+    \begin{tabular}{@{}ld{12}l@{}}
+        \toprule
+        Timeline & Milestone \\
+        \midrule
+        Q1 2026 & Submit Nature Methods first-author manuscript \\
+        Q2 2026 & Submit NIH R21 grant (spatial biology methods) \\
+        Q3 2026 & Apply for faculty positions \\
+        Q4 2026 & Finalize tenure-track applications \\
+        2027    & Begin tenure-track position (target) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Job Market Preparation}
+
+I am preparing for the academic job market in Fall 2026. Key preparation
+activities include:
+
+\begin{itemize}
+    \item Developing a 3-page research statement focused on ``Bayesian
+          Methods for Spatial Biology''
+    \item Preparing a teaching portfolio with syllabus designs for 3
+          proposed courses
+    \item Networking with department chairs at target institutions
+\end{itemize}
+
+\section{Summary of Achievements}
+\label{sec:summary}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Summary of key metrics for the reporting period.}
+    \label{tab:summary}
+    \begin{tabular}{@{}lc@{}}
+        \toprule
+        Category & Metric \\
+        \midrule
+        Publications & 4 published, 2 under review \\
+        First-author papers & 2 \\
+        Software (GitHub stars) & 523 \\
+        Teaching & 1 course, 3 guest lectures \\
+        Students mentored & 5 (3 PhD, 1 MS, 1 REU) \\
+        Invited talks & 3 \\
+        Conference presentations & 4 \\
+        Grant applications & 1 submitted (NIH R01) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+This has been a productive year. The core research on scalable Bayesian
+spatial transcriptomics has advanced significantly, with two first-author
+manuscripts under review at top journals. The software package has gained
+traction in the community, and teaching and mentoring activities have been
+rewarding. I look forward to building on these achievements in the coming
+year, with a focus on foundation models for spatial biology and preparation
+for the faculty job market.
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

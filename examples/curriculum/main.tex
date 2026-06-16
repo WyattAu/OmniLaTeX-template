@@ -1,0 +1,145 @@
+\documentclass[
+    language=english,
+    doctype=curriculum,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+
+\maketitle
+
+\section{Course Information}
+
+\begin{itemize}
+    \item \textbf{Course:} Introduction to Machine Learning (CS 341)
+    \item \textbf{Instructor:} Dr.\ Sarah Chen
+    \item \textbf{Semester:} Spring 2026
+    \item \textbf{Lecture Time:} Tuesday/Thursday, 10:00--11:30 AM
+    \item \textbf{Location:} Computer Science Building, Room 301
+    \item \textbf{Office Hours:} Wednesday 2:00--4:00 PM, or by appointment
+    \item \textbf{Prerequisites:} CS 201 (Data Structures), MATH 210 (Linear Algebra), STAT 220 (Probability and Statistics)
+\end{itemize}
+
+\section{Course Description}
+
+This course provides a comprehensive introduction to machine learning, covering supervised learning, unsupervised learning, and reinforcement learning. Students will learn the theoretical foundations of key algorithms and gain practical experience implementing them in Python with scikit-learn, PyTorch, and TensorFlow.
+
+\section{Learning Objectives}
+
+Upon successful completion of this course, students will be able to:
+
+\begin{enumerate}
+    \item Formulate real-world problems as machine learning tasks and identify appropriate algorithmic approaches.
+    \item Implement and evaluate supervised learning algorithms including linear regression, logistic regression, support vector machines, decision trees, and neural networks.
+    \item Apply unsupervised learning techniques such as $k$-means clustering, hierarchical clustering, and principal component analysis to real datasets.
+    \item Diagnose and address common issues including overfitting, underfitting, class imbalance, and data leakage through cross-validation, regularization, and proper evaluation metrics.
+    \item Interpret model behavior using explainability techniques and assess ethical implications of machine learning systems.
+    \item Communicate results effectively through technical reports and reproducible code repositories.
+\end{enumerate}
+
+\section{Weekly Schedule}
+
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Week} & \textbf{Date} & \textbf{Topic} & \textbf{Assignment} \\
+\hline
+1 & Jan 20--22 & Introduction, Regression Fundamentals & --- \\
+\hline
+2 & Jan 27--29 & Linear Regression, Gradient Descent & Problem Set 1 \\
+\hline
+3 & Feb 3--5 & Logistic Regression, Classification & Problem Set 2 \\
+\hline
+4 & Feb 10--12 & Regularization (L1, L2) & --- \\
+\hline
+5 & Feb 17--19 & Support Vector Machines & Problem Set 3 \\
+\hline
+6 & Feb 24--26 & Decision Trees, Random Forests & --- \\
+\hline
+7 & Mar 3--5 & Ensemble Methods & Problem Set 4 \\
+\hline
+8 & Mar 10--12 & Neural Networks I: Perceptrons and MLPs & --- \\
+\hline
+9 & Mar 17--19 & \textbf{Midterm Exam} & --- \\
+\hline
+10 & Mar 24--26 & Neural Networks II: CNNs & Problem Set 5 \\
+\hline
+11 & Mar 31--Apr 2 & Recurrent Neural Networks, Transformers & --- \\
+\hline
+12 & Apr 7--9 & Unsupervised Learning: Clustering & Problem Set 6 \\
+\hline
+13 & Apr 14--16 & Dimensionality Reduction (PCA, t-SNE) & --- \\
+\hline
+14 & Apr 21--23 & Reinforcement Learning & Project Draft \\
+\hline
+15 & Apr 28--30 & Ethics in ML, Course Review & Project Report \\
+\hline
+\end{tabular}
+\end{center}
+
+\section{Grading Rubric}
+
+\begin{center}
+\begin{tabular}{|l|c|l|}
+\hline
+\textbf{Component} & \textbf{Weight} & \textbf{Details} \\
+\hline
+Problem Sets & 30\% & 6 assignments, lowest score dropped \\
+\hline
+Midterm Exam & 20\% & In-class, closed-book \\
+\hline
+Final Project & 25\% & Teams of 2--3, includes report and code \\
+\hline
+Participation & 10\% & Attendance, in-class activities, peer reviews \\
+\hline
+Final Exam & 15\% & Comprehensive, cumulative \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Grading Scale}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+\textbf{A} & \textbf{A--} & \textbf{B+} & \textbf{B} & \textbf{B--} & \textbf{C+} & \textbf{C} \\
+\hline
+93--100 & 90--92 & 87--89 & 83--86 & 80--82 & 77--79 & 73--76 \\
+\hline
+\end{tabular}
+\end{center}
+
+\section{Required Materials}
+
+\begin{enumerate}
+    \item \textbf{Textbook:} \emph{Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow}, 3rd Edition, Aur\'{e}lien G\'{e}ron. O'Reilly Media, 2022. ISBN: 978-1098125974.
+    \item \textbf{Supplementary:} \emph{An Introduction to Statistical Learning}, 2nd Edition, James, Witten, Hastie, and Tibshirani. Available free online at \texttt{https://www.statlearning.com}.
+    \item \textbf{Software:} Python 3.10+, scikit-learn, PyTorch, Jupyter Notebook. All software is freely available.
+    \item \textbf{Hardware:} A laptop capable of running Jupyter notebooks. GPU access provided via course cloud credits (AWS/GCP).
+\end{enumerate}
+
+\section{Course Policies}
+
+\subsection{Late Work}
+Assignments submitted late receive a 10\% deduction per day (up to 3 days). No submissions accepted after 3 days without prior arrangement or documented emergency.
+
+\subsection{Academic Integrity}
+All submitted work must be your own. You may discuss problems with classmates but must write solutions independently. Use of AI coding assistants (e.g., GitHub Copilot, ChatGPT) must be disclosed and is limited to code generation---understanding and explanation must be your own.
+
+\subsection{Collaboration}
+Pair programming and study groups are encouraged. All submitted work must clearly state collaborators. Final project code must be original; use of existing open-source ML libraries is permitted but must be cited.
+
+\section{Final Project}
+
+Students will work in teams of 2--3 to apply machine learning to a real-world dataset. The project includes:
+
+\begin{enumerate}
+    \item \textbf{Proposal (Week 14):} One-page description of the problem, dataset, and planned approach.
+    \item \textbf{Report (Week 15):} 5--8 page technical report following the ICML format.
+    \item \textbf{Code:} Reproducible Jupyter notebook with all experiments.
+    \item \textbf{Presentation:} 10-minute oral presentation in the final week.
+\end{enumerate}
+
+\end{document}

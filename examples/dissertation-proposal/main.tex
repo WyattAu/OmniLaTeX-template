@@ -1,0 +1,326 @@
+\documentclass[
+    language=english,
+    doctype=dissertation-proposal,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This dissertation proposal outlines a research program investigating
+\textit{Probabilistic Abstractions for Scalable Bayesian Inference in
+High-Dimensional Models}. The proposed research addresses a fundamental
+tension in modern machine learning: the need for principled uncertainty
+quantification (provided by Bayesian methods) versus the computational
+intractability of exact Bayesian inference in large-scale models.
+
+The dissertation develops three interconnected research thrusts: (1) a
+theoretical framework for constructing provably accurate probabilistic
+abstractions of complex models, (2) scalable inference algorithms that
+leverage these abstractions to achieve sublinear computational complexity,
+and (3) empirical validation on real-world problems in climate science
+and computational biology where uncertainty quantification is critical.
+
+The expected contributions include new theory bridging information geometry
+and approximate inference, open-source software for scalable Bayesian
+computation, and applications demonstrating the practical utility of the
+proposed methods.
+\end{abstract}
+
+\section{Introduction and Motivation}
+\label{sec:introduction}
+
+\subsection{Problem Statement}
+
+Bayesian inference provides a principled framework for incorporating prior
+knowledge, quantifying uncertainty, and performing model selection. However,
+exact Bayesian inference is intractable for all but the simplest models.
+Modern machine learning systems --- with millions to billions of parameters
+--- present an extreme challenge for Bayesian methods.
+
+Current approximate inference techniques (variational inference, MCMC, Laplace
+approximations) face a fundamental scalability bottleneck:
+
+\begin{equation}
+    \text{Cost} \propto \mathcal{O}(nd^2 + d^3)
+    \label{eq:bottleneck}
+\end{equation}
+
+where $n$ is the number of data points and $d$ is the number of parameters.
+For models with $d > 10^6$, these costs become prohibitive.
+
+\subsection{Research Vision}
+
+This dissertation proposes that \textit{probabilistic abstractions} ---
+compressed representations of model components that preserve essential
+statistical properties --- can break the scalability barrier while
+maintaining rigorous uncertainty guarantees.
+
+\subsection{Central Hypothesis}
+
+\begin{quote}
+    \textit{Probabilistic abstractions, defined as information-geometric
+    projections of model components onto tractable parametric families,
+    can reduce the computational complexity of Bayesian inference from
+    $\mathcal{O}(nd^2 + d^3)$ to $\mathcal{O}(nkd + k^3)$, where $k \ll d$
+    is the abstraction dimension, while maintaining approximation error
+    bounds that are controlled by the information geometry of the
+    projection.}
+\end{quote}
+
+\section{Research Questions}
+\label{sec:research-questions}
+
+This dissertation addresses the following research questions:
+
+\begin{enumerate}
+    \item \textbf{RQ1 (Theory):} How can we construct probabilistic
+          abstractions that minimize information loss while maximizing
+          computational savings? What are the fundamental limits of
+          abstraction accuracy?
+
+    \item \textbf{RQ2 (Algorithms):} Can we develop inference algorithms
+          that operate directly on abstractions, achieving sublinear
+          complexity in the number of parameters while maintaining
+          calibrated uncertainty estimates?
+
+    \item \textbf{RQ3 (Applications):} Do probabilistic abstractions
+          enable Bayesian inference on previously intractable problems
+          in climate science and computational biology, and do the
+          resulting uncertainty estimates improve downstream decision-making?
+\end{enumerate}
+
+\section{Literature Review}
+\label{sec:literature}
+
+\subsection{Approximate Bayesian Inference}
+
+The literature on approximate Bayesian inference spans several decades and
+multiple communities.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Summary of approximate inference methods and their limitations.}
+    \label{tab:inference-methods}
+    \begin{tabular}{@{}lccp{5cm}@{}}
+        \toprule
+        Method & Complexity & Scalability & Key Limitation \\
+        \midrule
+        MCMC & $\mathcal{O}(nd^2)$ per sample & Poor & Mixing in high dimensions \\
+        Variational Inference & $\mathcal{O}(ndk)$ & Good & Mean-field independence assumption \\
+        Laplace Approximation & $\mathcal{O}(nd^2 + d^3)$ & Poor & Mode-seeking, underestimates variance \\
+        Expectation Propagation & $\mathcal{O}(ndk)$ & Moderate & Non-convex optimization, no convergence guarantees \\
+        MCMC + subsampling & $\mathcal{O}(n' d^2)$ & Moderate & Gradient noise from minibatch \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Model Compression and Abstraction}
+
+Model compression techniques (pruning, quantization, knowledge distillation)
+have been developed primarily for deterministic models. Their Bayesian
+counterparts --- which must preserve uncertainty information --- are less
+well understood. Recent work on Bayesian compression \cite{blundell2015weight}
+and probabilistic pruning provides a foundation, but does not address the
+abstraction problem directly.
+
+\subsection{Information Geometry and Inference}
+
+Information geometry \cite{amari2016information} provides a natural
+framework for analyzing approximate inference. The Fisher information
+metric defines a Riemannian manifold on the space of probability
+distributions, and variational inference can be interpreted as a
+geodesic projection onto a tractable family.
+
+\begin{equation}
+    D_{\text{KL}}(p \| q) = \int p(x) \log \frac{p(x)}{q(x)} \, dx
+    \label{eq:kl}
+\end{equation}
+
+The KL divergence is not symmetric, and its geometry determines which
+approximation family is most suitable for a given model component.
+
+\section{Proposed Research}
+\label{sec:proposed}
+
+\subsection{Thrust 1: Theoretical Framework for Probabilistic Abstractions}
+
+\subsubsection{Objective}
+Develop a rigorous mathematical framework for constructing, analyzing, and
+composing probabilistic abstractions of model components.
+
+\subsubsection{Approach}
+\begin{enumerate}
+    \item Define abstractions as information-geometric projections: given a
+          complex distribution $p$, find $q^* \in \mathcal{Q}$ (a tractable
+          family) that minimizes $D_{\text{KL}}(p \| q)$ or $D_{\text{KL}}(q \| p)$.
+    \item Derive error bounds for downstream inference tasks that depend on
+          the abstraction quality.
+    \item Develop composition theorems: how do abstraction errors propagate
+          when multiple components are abstracted?
+\end{enumerate}
+
+\subsubsection{Expected Outcome}
+A set of theorems characterizing the fundamental trade-off between
+abstraction dimension $k$ and inference accuracy, analogous to the
+bias-variance trade-off but in the information-geometric setting.
+
+\subsection{Thrust 2: Scalable Inference Algorithms}
+
+\subsubsection{Objective}
+Develop inference algorithms that operate on probabilistic abstractions to
+achieve sublinear computational complexity.
+
+\subsubsection{Approach}
+\begin{enumerate}
+    \item Design a hierarchical variational inference algorithm where model
+          layers are represented at different abstraction levels.
+    \item Develop adaptive abstraction: automatically determine the
+          appropriate abstraction dimension for each model component based
+          on its contribution to posterior uncertainty.
+    \item Implement GPU-accelerated inference kernels for the proposed
+          algorithms.
+\end{enumerate}
+
+\subsubsection{Deliverable}
+An open-source software package (\texttt{ProbAbst.jl}) implementing the
+proposed algorithms in Julia, with a Python API.
+
+\subsection{Thrust 3: Applications}
+
+\subsubsection{Objective}
+Demonstrate the practical utility of probabilistic abstractions on two
+real-world domains where uncertainty quantification is critical.
+
+\subsubsection{Application 1: Climate Model Emulation}
+
+Climate models (GCMs) are computationally expensive, making Bayesian model
+emulation challenging. We will develop probabilistic abstractions of GCM
+components to enable uncertainty-aware climate projections.
+
+\subsubsection{Application 2: Single-Cell RNA Sequencing}
+
+Single-cell RNA-seq datasets contain millions of cells and tens of thousands
+of genes. Current Bayesian methods for cell-type annotation and trajectory
+inference are limited to small datasets. We will scale these methods using
+probabilistic abstractions.
+
+\section{Methodology}
+\label{sec:methodology}
+
+\subsection{Theoretical Methods}
+
+\begin{itemize}
+    \item Information geometry and Riemannian optimization
+    \item PAC-Bayesian generalization bounds
+    \item Transport map theory for probability distributions
+    \item Functional analysis of kernel operators
+\end{itemize}
+
+\subsection{Computational Methods}
+
+\begin{itemize}
+    \item Variational inference with structured variational families
+    \item Automatic differentiation (Julia Zygote, Python JAX)
+    \item GPU kernel optimization (CUDA, ROCm)
+    \item Distributed computing for large-scale experiments
+\end{itemize}
+
+\subsection{Empirical Methods}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Planned experimental evaluations.}
+    \label{tab:experiments}
+    \begin{tabular}{@{}lccc@{}}
+        \toprule
+        Experiment & Dataset & Baseline & Metrics \\
+        \midrule
+        Abstraction quality & Synthetic & VI, MCMC & KL divergence, coverage \\
+        Scalability & Synthetic & VI, MCMC & Wall-clock time, memory \\
+        Climate emulation & CMIP6 & GPE, Deep GP & RMSE, calibration \\
+        scRNA-seq & 10X Genomics & SCVI, PAGA & ARI, NMI \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Timeline}
+\label{sec:timeline}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Research timeline and milestones.}
+    \label{tab:timeline}
+    \begin{tabular}{@{}lcd{12}l@{}}
+        \toprule
+        Period & Task & {Milestone} \\
+        \midrule
+        Year 1, Q1--Q2 & Literature review and theory development & Thrust 1 draft \\
+        Year 1, Q3--Q4 & Error bounds and composition theorems & Conference paper \\
+        Year 2, Q1--Q2 & Inference algorithm design & Algorithm prototype \\
+        Year 2, Q3--Q4 & Software implementation & ProbAbst.jl v0.1 \\
+        Year 3, Q1--Q2 & Climate emulation application & Domain paper \\
+        Year 3, Q3--Q4 & scRNA-seq application & Domain paper \\
+        Year 4, Q1--Q2 & Dissertation writing & Thesis draft \\
+        Year 4, Q3--Q4 & Defense preparation & Dissertation defense \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Expected Contributions}
+\label{sec:contributions}
+
+\begin{enumerate}
+    \item \textbf{Theoretical:} A formal framework for probabilistic
+          abstractions with provable accuracy guarantees.
+    \item \textbf{Algorithmic:} Scalable inference algorithms achieving
+          $\mathcal{O}(nkd + k^3)$ complexity.
+    \item \textbf{Software:} Open-source package \texttt{ProbAbst.jl}
+          for Bayesian inference with probabilistic abstractions.
+    \item \textbf{Applications:} Demonstrated utility in climate science
+          and computational biology.
+    \item \textbf{Publications:} At least 3 conference papers (NeurIPS,
+          ICML, AISTATS) and 2 journal papers (JMLR, Biostatistics).
+\end{enumerate}
+
+\section{Broader Impacts}
+\label{sec:broader-impacts}
+
+\subsection{Scientific Impact}
+
+Scalable Bayesian inference with uncertainty quantification has the
+potential to improve scientific reasoning across disciplines, from climate
+policy (where uncertainty bounds on projections are critical for
+decision-making) to genomics (where single-cell heterogeneity must be
+quantified, not merely summarized).
+
+\subsection{Societal Impact}
+
+By enabling uncertainty-aware machine learning at scale, this research
+could improve the reliability and trustworthiness of AI systems used in
+high-stakes domains such as healthcare, environmental policy, and
+autonomous systems.
+
+\subsection{Broader Implications}
+
+The information-geometric framework developed here may have applications
+beyond machine learning, including signal processing, computational
+neuroscience, and statistical physics, where compressed representations
+of complex systems are essential.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+This dissertation proposes a research program that addresses a fundamental
+challenge in modern machine learning: principled Bayesian inference at
+scale. Through the development of probabilistic abstractions, the proposed
+research aims to provide both theoretical foundations and practical tools
+for uncertainty-aware machine learning in high-dimensional settings.
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

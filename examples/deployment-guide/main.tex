@@ -1,0 +1,293 @@
+\documentclass[
+    language=english,
+    doctype=manual,
+    institution=none,
+    titlestyle=book,
+    oneside,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+%=============================================================================
+\chapter{Prerequisites}
+\label{sec:prerequisites}
+%=============================================================================
+
+Before deploying DataPipe, ensure all infrastructure and software
+dependencies are in place. This chapter covers the required hardware,
+software, and access permissions.
+
+\section{Infrastructure Requirements}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Infrastructure requirements for production deployment.}
+    \label{tab:infra}
+    \begin{tabular}{@{}lll@{}}
+        \toprule
+        Component & Minimum & Recommended \\
+        \midrule
+        Application nodes & 3 $\times$ 8 vCPU, 32\,GB RAM &
+            3 $\times$ 16 vCPU, 64\,GB RAM \\
+        Kafka cluster & 3 $\times$ 4 vCPU, 16\,GB RAM, 500\,GB SSD &
+            3 $\times$ 8 vCPU, 32\,GB, 1\,TB NVMe \\
+        PostgreSQL & 2 $\times$ 4 vCPU, 16\,GB RAM &
+            2 $\times$ 8 vCPU, 32\,GB RAM \\
+        Load balancer & 2 vCPU, 4\,GB RAM &
+            Managed LB (AWS ALB / GCP CLB) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Software Dependencies}
+
+\begin{itemize}
+    \item Docker 24+ and Docker Compose v2.
+    \item Kubernetes 1.28+ (for K8s deployment path).
+    \item Helm 3.14+ (for chart-based deployment).
+    \item Terraform 1.7+ (for infrastructure provisioning).
+    \item AWS CLI or gcloud CLI (depending on cloud provider).
+\end{itemize}
+
+\section{Access Requirements}
+
+\begin{itemize}
+    \item SSH access to all application nodes.
+    \item Kubernetes cluster admin or namespace admin role.
+    \item Access to the container registry (\texttt{ghcr.io/datapipe}).
+    \item Database admin credentials for PostgreSQL.
+    \item Kafka admin credentials for topic management.
+\end{itemize}
+
+%=============================================================================
+\chapter{Infrastructure Provisioning}
+\label{sec:provisioning}
+%=============================================================================
+
+\section{Terragrunt Configuration}
+
+The infrastructure is managed via Terraform modules:
+
+\begin{lstlisting}[language=bash, caption={Terraform init and apply.}]
+cd deploy/terraform/production
+terraform init
+terraform plan -out=tfplan
+terraform apply tfplan
+\end{lstlisting}
+
+\section{Kubernetes Cluster Setup}
+
+\begin{lstlisting}[language=bash, caption={Kubernetes namespace and secrets setup.}]
+# Create namespace
+kubectl create namespace datapipe
+
+# Create secrets for database credentials
+kubectl create secret generic datapipe-db-credentials \
+    --from-literal=username=datapipe \\
+    --from-literal=password=$(openssl rand -base64 32) \\
+    -n datapipe
+
+# Create secrets for Kafka credentials
+kubectl create secret generic datapipe-kafka-credentials \\
+    --from-literal=sasl-username=datapipe \\
+    --from-literal=sasl-password=$(openssl rand -base64 32) \\
+    -n datapipe
+\end{lstlisting}
+
+%=============================================================================
+\chapter{Deployment Steps}
+\label{sec:deployment}
+%=============================================================================
+
+\section{Step 1: Deploy Kafka}
+
+\begin{lstlisting}[language=bash, caption={Deploy Kafka using Strimzi operator.}]
+helm repo add strimzi https://strimzi.io/charts/
+helm repo update
+
+helm install kafka strimzi/strimzi-kafka \\
+    --namespace datapipe \\
+    --values deploy/kafka/values-production.yaml \\
+    --wait
+\end{lstlisting}
+
+\section{Step 2: Deploy PostgreSQL}
+
+\begin{lstlisting}[language=bash, caption={Deploy PostgreSQL with Helm.}]
+helm repo add bitnami https://charts.bitnami.com/bitnami
+
+helm install postgresql bitnami/postgresql \\
+    --namespace datapipe \\
+    --values deploy/postgresql/values-production.yaml \\
+    --set auth.postgresPassword=$DB_PASSWORD \\
+    --set primary.persistence.size=100Gi \\
+    --wait
+\end{lstlisting}
+
+\section{Step 3: Deploy DataPipe}
+
+\begin{lstlisting}[language=bash, caption={Deploy DataPipe application.}]
+helm install datapipe deploy/datapipe \\
+    --namespace datapipe \\
+    --values deploy/datapipe/values-production.yaml \\
+    --set image.tag=3.2.1 \\
+    --set replicas=3 \\
+    --set resources.requests.cpu=8 \\
+    --set resources.requests.memory=32Gi \\
+    --set resources.limits.cpu=16 \\
+    --set resources.limits.memory=64Gi \\
+    --wait
+\end{lstlisting}
+
+\section{Step 4: Verify Deployment}
+
+\begin{lstlisting}[language=bash, caption={Verify all pods are running.}]
+# Check pod status
+kubectl get pods -n datapipe
+
+# Check logs for errors
+kubectl logs -l app=datapipe -n datapipe --tail=100
+
+# Run health check
+curl -s https://datapipe.internal/api/v1/cluster/health | jq .
+\end{lstlisting}
+
+\section{Step 5: Configure Pipelines}
+
+\begin{lstlisting}[language=bash, caption={Register production pipelines.}]
+# Apply pipeline configurations
+kubectl apply -f deploy/pipelines/ -n datapipe
+
+# Verify pipeline registration
+kubectl exec -it datapipe-0 -n datapipe -- \\
+    dp pipeline list
+\end{lstlisting}
+
+%=============================================================================
+\chapter{Health Checks}
+\label{sec:health-checks}
+%=============================================================================
+
+\section{Application Health}
+
+\begin{lstlisting}[language=bash, caption={Application health checks.}]
+# Basic health check
+curl -s https://datapipe.internal/api/v1/health
+
+# Detailed cluster status
+curl -s https://datapipe.internal/api/v1/cluster/status | jq .
+
+# Pipeline status
+curl -s https://datapipe.internal/api/v1/pipelines | jq .
+\end{lstlisting}
+
+\section{Infrastructure Health}
+
+\begin{lstlisting}[language=bash, caption={Infrastructure health verification.}]
+# Kubernetes node status
+kubectl get nodes -o wide
+
+# Pod resource usage
+kubectl top pods -n datapipe
+
+# Kafka cluster status
+kubectl exec kafka-0 -n datapipe -- \\
+    kafka-broker-api-versions.sh \\
+    --bootstrap-server localhost:9092
+
+# PostgreSQL replication status
+kubectl exec postgresql-primary-0 -n datapipe -- \\
+    psql -U postgres -c "SELECT * FROM pg_stat_replication;"
+\end{lstlisting}
+
+%=============================================================================
+\chapter{Rollback Procedure}
+\label{sec:rollback}
+%=============================================================================
+
+\section{Rollback Triggers}
+
+Initiate a rollback if any of the following occur within 30 minutes of
+deployment:
+
+\begin{itemize}
+    \item Error rate exceeds 5\% of total requests.
+    \item Pipeline throughput drops below 50\% of baseline.
+    \item P99 latency exceeds 5 seconds.
+    \item Data loss or corruption is detected.
+\end{itemize}
+
+\section{Rollback Steps}
+
+\begin{lstlisting}[language=bash, caption={Helm rollback procedure.}]
+# List previous releases
+helm history datapipe -n datapipe
+
+# Rollback to previous version
+helm rollback datapipe <REVISION> -n datapipe
+
+# Verify rollback
+kubectl get pods -n datapipe
+curl -s https://datapipe.internal/api/v1/cluster/health | jq .
+\end{lstlisting}
+
+\section{Database Rollback}
+
+If the deployment includes database migrations:
+
+\begin{lstlisting}[language=bash, caption={Database migration rollback.}]
+# List pending migrations
+kubectl exec datapipe-0 -n datapipe -- dp db migrate status
+
+# Rollback last migration
+kubectl exec datapipe-0 -n datapipe -- dp db migrate rollback
+
+# Verify database state
+kubectl exec postgresql-primary-0 -n datapipe -- \\
+    psql -U datapipe -c "SELECT version FROM schema_migrations;"
+\end{lstlisting}
+
+%=============================================================================
+\chapter{Post-Deployment Verification}
+\label{sec:post-deployment}
+%=============================================================================
+
+After deployment or rollback, perform the following checks:
+
+\begin{enumerate}
+    \item Verify all pods are in \texttt{Running} state.
+    \item Confirm health check endpoint returns \texttt{200 OK}.
+    \item Check pipeline status for all production pipelines.
+    \item Monitor error rates for 30 minutes.
+    \item Verify consumer lag is within acceptable bounds.
+    \item Run a sample pipeline execution end-to-end.
+    \item Update the deployment log with timestamp and version.
+\end{enumerate}
+
+\section{Deployment Log}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Deployment log template.}
+    \label{tab:deploy-log}
+    \begin{tabular}{@{}llll@{}}
+        \toprule
+        Date & Version & Deployer & Notes \\
+        \midrule
+        2025-06-15 & 3.2.0 & @alex-feng & Initial deployment \\
+        2025-06-16 & 3.2.1 & @jordan-lee & Hotfix for memory leak \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\printbibliography[heading=bibintoc, title={References}]
+
+\end{document}

@@ -1,0 +1,441 @@
+\documentclass[
+    language=english,
+    doctype=manual,
+    institution=none,
+    titlestyle=book,
+    oneside,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\addbibresource{../../bib/bibliography.bib}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+%=============================================================================
+\chapter{Introduction}
+\label{sec:introduction}
+%=============================================================================
+
+DataPipe is a streaming ETL platform for real-time data integration. This
+user guide walks you through installation, configuration, everyday usage,
+and advanced features. Whether you are evaluating DataPipe for a new project
+or integrating it into an existing data stack, this guide provides the
+information you need to get productive quickly.
+
+\section{Who Should Read This Guide}
+
+This guide is written for data engineers, platform operators, and
+technical leads who need to move data between systems in real time.
+Basic familiarity with the command line and REST APIs is assumed. No
+prior experience with Apache Kafka or Flink is required---the guide
+covers the necessary background in~\cref{sec:concepts}.
+
+\section{Key Concepts}
+\label{sec:concepts}
+
+\begin{description}
+    \item[Pipeline] A directed acyclic graph (DAG) of source, transform,
+        and sink stages that describes the flow of data from origin to
+        destination.
+    \item[Connector] A pluggable module that reads from or writes to an
+        external system (e.g.\ PostgreSQL, S3, Kafka topic).
+    \item[Transform] An inline function applied to each record as it
+        passes through a pipeline stage. Transforms are composable and
+        stateless by default.
+    \item[Window] A time-based or count-based grouping of records used
+        for aggregations and sessionization.
+    \item[Backpressure] The mechanism by which DataPipe slows ingestion
+        when downstream consumers cannot keep up.
+\end{description}
+
+\section{System Requirements}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Minimum and recommended system requirements.}
+    \label{tab:requirements}
+    \begin{tabular}{@{}lll@{}}
+        \toprule
+        Component & Minimum & Recommended \\
+        \midrule
+        CPU cores & 4 & 8 \\
+        RAM & 8\,GB & 32\,GB \\
+        Disk (SSD) & 50\,GB & 200\,GB \\
+        OS & Ubuntu 20.04+ & Ubuntu 22.04 LTS \\
+        Java & 17 & 21 LTS \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+%=============================================================================
+\chapter{Installation}
+\label{sec:installation}
+%=============================================================================
+
+\section{Prerequisites}
+
+Before installing DataPipe, ensure that the following software is present
+on your system:
+
+\begin{enumerate}
+    \item A supported operating system (see \cref{tab:requirements}).
+    \item Java Development Kit (JDK) 17 or later. Verify with:
+    \begin{lstlisting}[language=bash]
+java -version
+    \end{lstlisting}
+    \item Docker 20.10+ and Docker Compose v2 (for the containerised
+        deployment path).
+    \item curl or wget for downloading release archives.
+\end{enumerate}
+
+\section{Quick Install via Script}
+
+The fastest way to install DataPipe on a single node is the bootstrap
+script. It downloads the latest release, verifies the checksum, and
+installs the \texttt{dp} CLI into \texttt{/usr/local/bin}:
+
+\begin{lstlisting}[language=bash, caption={Bootstrap installation script.}]
+curl -fsSL https://get.datapipe.dev | bash
+dp --version
+\end{lstlisting}
+
+\section{Docker Compose Deployment}
+
+For development and evaluation, the included Docker Compose file starts a
+three-node cluster with Kafka, Zookeeper, and the DataPipe runtime:
+
+\begin{lstlisting}[language=bash, caption={Start the development cluster.}]
+cd /opt/datapipe
+docker compose up -d
+docker compose logs -f datapipe
+\end{lstlisting}
+
+\section{Manual Installation}
+
+For production deployments where Docker is not available:
+
+\begin{lstlisting}[language=bash, caption={Manual tarball installation.}]
+wget https://releases.datapipe.dev/3.2.1/datapipe-3.2.1.tar.gz
+tar xzf datapipe-3.2.1.tar.gz -C /opt/
+ln -s /opt/datapipe-3.2.1 /opt/datapipe
+export PATH="/opt/datapipe/bin:$PATH"
+\end{lstlisting}
+
+Add the \texttt{PATH} export to your \texttt{\textasciitilde/.bashrc} or
+\texttt{/etc/profile.d/datapipe.sh} for persistence.
+
+%=============================================================================
+\chapter{Configuration}
+\label{sec:configuration}
+%=============================================================================
+
+\section{Configuration File Format}
+
+DataPipe uses YAML configuration files. The primary configuration file is
+\texttt{datapipe.yaml}, located in the installation directory or specified
+via the \texttt{DP\_CONFIG} environment variable.
+
+\begin{lstlisting}[language=yaml, caption={Example datapipe.yaml configuration.}]
+version: "3.2"
+cluster:
+  name: production-cluster
+  id: dc-prod-01
+  seeds:
+    - 10.0.1.10:9092
+    - 10.0.1.11:9092
+  replication_factor: 3
+storage:
+  type: local
+  path: /data/datapipe
+  retention_ms: 604800000  # 7 days
+logging:
+  level: INFO
+  file: /var/log/datapipe/datapipe.log
+  max_size_mb: 500
+  compress: true
+\end{lstlisting}
+
+\section{Environment Variables}
+
+Key environment variables override configuration file values:
+
+\begin{table}[htbp]
+    \centering
+    \caption{DataPipe environment variables.}
+    \label{tab:env-vars}
+    \begin{tabular}{@{}lp{9cm}@{}}
+        \toprule
+        Variable & Description \\
+        \midrule
+        \texttt{DP\_CONFIG} & Path to the primary YAML configuration file. \\
+        \texttt{DP\_HOME} & Installation root directory. \\
+        \texttt{DP\_KAFKA\_BROKERS} & Comma-separated list of Kafka broker addresses. \\
+        \texttt{DP\_LOG\_LEVEL} & Logging level (\texttt{DEBUG}, \texttt{INFO}, \texttt{WARN}, \texttt{ERROR}). \\
+        \texttt{DP\_JVM\_HEAP} & JVM heap size (e.g.\ \texttt{8g}). \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Pipeline Configuration}
+
+A pipeline is defined in a separate YAML file and registered with the
+DataPipe runtime. Each pipeline declares one or more stages:
+
+\begin{lstlisting}[language=yaml, caption={Example pipeline definition.}]
+pipeline:
+  name: user-events-to-warehouse
+  description: Ingest user events and load into the data warehouse
+  stages:
+    - name: source
+      type: kafka-source
+      config:
+        topic: user-events
+        consumer_group: etl-warehouse
+        bootstrap_servers: ${DP_KAFKA_BROKERS}
+
+    - name: transform
+      type: filter
+      config:
+        predicate: "event_type IN ('click', 'purchase')"
+
+    - name: sink
+      type: postgres-sink
+      config:
+        table: analytics.user_events
+        batch_size: 5000
+        flush_interval_ms: 10000
+\end{lstlisting}
+
+%=============================================================================
+\chapter{Using DataPipe}
+\label{sec:usage}
+%=============================================================================
+
+\section{The \texttt{dp} Command-Line Interface}
+
+The \texttt{dp} CLI is the primary interface for managing DataPipe.
+Common commands include:
+
+\begin{lstlisting}[language=bash, caption={Common dp CLI commands.}]
+# List all registered pipelines
+dp pipeline list
+
+# Start a pipeline
+dp pipeline start user-events-to-warehouse
+
+# Check pipeline status
+dp pipeline status user-events-to-warehouse
+
+# View pipeline metrics
+dp metrics user-events-to-warehouse --last 1h
+
+# Stop a pipeline gracefully
+dp pipeline stop user-events-to-warehouse
+\end{lstlisting}
+
+\section{Monitoring with the Web Dashboard}
+
+DataPipe ships with a built-in web dashboard on port 8080. Navigate to
+\texttt{http://localhost:8080} after starting the runtime to access:
+
+\begin{itemize}
+    \item Real-time throughput graphs per pipeline.
+    \item Consumer lag monitoring.
+    \item Error rate and retry statistics.
+    \item Pipeline topology visualisation.
+\end{itemize}
+
+\section{REST API}
+
+The same operations available through the CLI are also exposed via a REST
+API:
+
+\begin{lstlisting}[language=bash, caption={Example REST API calls.}]
+# List pipelines
+curl -s http://localhost:8080/api/v1/pipelines | jq .
+
+# Get pipeline status
+curl -s http://localhost:8080/api/v1/pipelines/user-events-to-warehouse | jq .
+
+# Trigger a manual restart
+curl -X POST http://localhost:8080/api/v1/pipelines/user-events-to-warehouse/restart
+\end{lstlisting}
+
+%=============================================================================
+\chapter{Advanced Features}
+\label{sec:advanced}
+%=============================================================================
+
+\section{Exactly-Once Semantics}
+
+DataPipe supports exactly-once delivery for Kafka sources and supported
+sinks. Enable it in the pipeline configuration:
+
+\begin{lstlisting}[language=yaml, caption={Exactly-once pipeline configuration.}]
+pipeline:
+  name: exactly-once-example
+  delivery_guarantee: exactly-once
+  stages:
+    - name: source
+      type: kafka-source
+      config:
+        topic: financial-transactions
+        isolation_level: read_committed
+    - name: sink
+      type: postgres-sink
+      config:
+        table: ledger.transactions
+        idempotent: true
+\end{lstlisting}
+
+\section{Custom Transforms}
+
+Write custom transforms in Java or Python. The transform must implement
+the \texttt{Transform} interface:
+
+\begin{lstlisting}[language=java, caption={Custom Java transform.}]
+public class CurrencyConverter implements Transform {
+    private final String sourceCurrency;
+    private final String targetCurrency;
+    private final ExchangeRateService rates;
+
+    public CurrencyConverter(Config config) {
+        this.sourceCurrency = config.getString("source_currency");
+        this.targetCurrency = config.getString("target_currency");
+        this.rates = new ExchangeRateService(config);
+    }
+
+    @Override
+    public Record apply(Record record) {
+        double amount = record.getDouble("amount");
+        double rate = rates.getRate(sourceCurrency, targetCurrency);
+        record.set("amount", amount * rate);
+        record.set("currency", targetCurrency);
+        return record;
+    }
+}
+\end{lstlisting}
+
+\section{Windowed Aggregations}
+
+DataPipe supports tumbling, sliding, session, and global windows:
+
+\begin{lstlisting}[language=yaml, caption={Windowed aggregation pipeline.}]
+pipeline:
+  name: hourly-revenue
+  stages:
+    - name: source
+      type: kafka-source
+      config:
+        topic: purchases
+    - name: window
+      type: tumbling-window
+      config:
+        size_ms: 3600000  # 1 hour
+        trigger: on_window_close
+    - name: aggregate
+      type: aggregate
+      config:
+        group_by: ["region", "product_category"]
+        metrics:
+          - field: amount
+            function: sum
+            output_field: total_revenue
+          - field: order_id
+            function: count
+            output_field: order_count
+    - name: sink
+      type: postgres-sink
+      config:
+        table: analytics.hourly_revenue
+\end{lstlisting}
+
+%=============================================================================
+\chapter{Troubleshooting}
+\label{sec:troubleshooting}
+%=============================================================================
+
+\section{Common Issues}
+
+\begin{description}
+    \item[Pipeline fails to start]
+        Check that all required configuration values are set. Run
+        \texttt{dp pipeline validate <name>} to identify missing fields.
+        Ensure the Kafka brokers are reachable from the DataPipe node.
+
+    \item[High consumer lag]
+        Consumer lag indicates the pipeline cannot keep up with the source
+        throughput. Consider increasing the number of consumer instances,
+        optimising transforms, or scaling the sink batch size.
+
+    \item[Out-of-memory errors]
+        Increase the JVM heap via \texttt{DP\_JVM\_HEAP} or the
+        \texttt{storage.jvm\_heap} configuration key. If the issue
+        persists, profile the pipeline to identify memory-intensive
+        transforms.
+
+    \item[Connection refused to Kafka]
+        Verify broker addresses in the configuration, check firewall
+        rules, and ensure Kafka is running. Use
+        \texttt{dp cluster health} to diagnose connectivity.
+\end{description}
+
+\section{Log Analysis}
+
+DataPipe logs to \texttt{/var/log/datapipe/datapipe.log} by default. To
+enable debug logging temporarily:
+
+\begin{lstlisting}[language=bash]
+dp config set logging.level DEBUG
+dp pipeline restart <name>
+\end{lstlisting}
+
+\section{Diagnostic Commands}
+
+\begin{lstlisting}[language=bash, caption={Diagnostic and health-check commands.}]
+dp cluster health
+dp pipeline validate user-events-to-warehouse
+dp pipeline status user-events-to-warehouse --verbose
+dp metrics user-events-to-warehouse --last 24h --format csv > metrics.csv
+dp logs --tail 100 --level error
+\end{lstlisting}
+
+%=============================================================================
+\chapter{Frequently Asked Questions}
+\label{sec:faq}
+%=============================================================================
+
+\begin{description}
+    \item[Can DataPipe run on Kubernetes?]
+        Yes. Helm charts are available at
+        \texttt{https://charts.datapipe.dev}. See the Kubernetes
+        deployment guide for cluster sizing recommendations.
+
+    \item[What databases are supported as sinks?]
+        PostgreSQL, MySQL, MariaDB, ClickHouse, BigQuery, Snowflake, and
+        Redshift are officially supported. Community connectors exist for
+        additional databases.
+
+    \item[How do I upgrade DataPipe?]
+        Run the bootstrap script again---it will detect the existing
+        installation and perform an in-place upgrade. Always back up your
+        configuration before upgrading.
+
+    \item[Is there a managed cloud offering?]
+        DataPipe Cloud is available at \texttt{https://cloud.datapipe.dev}
+        with a free tier for evaluation workloads.
+
+    \item[Can I use DataPipe without Kafka?]
+        Yes. DataPipe includes a file-based connector for development and
+        testing environments. Production deployments are recommended to use
+        Kafka for durability and scalability.
+\end{description}
+
+\printbibliography[heading=bibintoc, title={References}]
+
+\end{document}

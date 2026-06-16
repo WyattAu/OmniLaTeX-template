@@ -1,0 +1,357 @@
+\documentclass[
+    language=english,
+    doctype=risk-assessment,
+    institution=none,
+]{../../omnilatex}
+
+\RequirePackage{config/document-settings}
+
+\begin{document}
+
+\maketitle
+
+\section*{Executive Summary}
+
+This risk assessment evaluates threats to NovaPulse Technologies' platform
+operations, data security, regulatory compliance, and strategic objectives
+as of Q2 2026. The assessment covers 18 identified risks across five
+categories, evaluated using a 5$\times$5 likelihood-impact matrix aligned
+with ISO 31000 and NIST SP 800-30 frameworks.
+
+Key findings:
+
+\begin{itemize}
+    \item 3 risks rated \textbf{Critical} (score 15--25): cybersecurity
+          breach, key talent attrition in ML engineering, and data residency
+          compliance failure.
+    \item 5 risks rated \textbf{High} (score 10--14): cloud infrastructure
+          outage, competitive pricing pressure, regulatory change (EU AI Act),
+          third-party vendor failure, and intellectual property dispute.
+    \item 6 risks rated \textbf{Medium} (score 5--9) and 4 risks rated
+          \textbf{Low} (score 1--4).
+    \item Aggregate risk exposure decreased 12\% from Q1 2026 due to
+          completion of SOC 2 Type II audit and launch of employee retention
+          program.
+\end{itemize}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lrr}
+        \toprule
+        \textbf{Summary Metric} & \textbf{Value} \\
+        \midrule
+        Total Risks Identified       & 18 \\
+        Critical Risks               & 3  \\
+        High Risks                   & 5  \\
+        Medium Risks                 & 6  \\
+        Low Risks                    & 4  \\
+        Risks with Mitigation Plans  & 18 (100\%) \\
+        Risks Requiring Escalation   & 4  \\
+        Assessment Date              & June 15, 2026 \\
+        Next Assessment Due          & September 15, 2026 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Risk assessment summary.}
+\end{table}
+
+\section{Methodology}
+
+\subsection{Risk Rating Framework}
+
+Each risk is evaluated on two dimensions:
+
+\begin{description}
+    \item[Likelihood.] The probability of the risk event occurring within
+        the next 12 months, rated 1 (Very Low, $<$5\%) through 5 (Almost
+        Certain, $>$80\%).
+    \item[Impact.] The severity of consequences if the risk materializes,
+        rated 1 (Negligible) through 5 (Catastrophic), considering
+        financial, operational, reputational, and regulatory dimensions.
+\end{description}
+
+Risk score = Likelihood $\times$ Impact. Scores are mapped to risk levels:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{llc}
+        \toprule
+        \textbf{Risk Level} & \textbf{Score Range} & \textbf{Response} \\
+        \midrule
+        Critical  & 15--25 & Immediate action required; escalate to C-suite \\
+        High      & 10--14 & Active mitigation plan; monthly review \\
+        Medium    & 5--9   & Monitor with defined triggers; quarterly review \\
+        Low       & 1--4   & Accept and monitor; annual review \\
+        \bottomrule
+    \end{tabular}
+    \caption{Risk level classification.}
+\end{table}
+
+\subsection{Assessment Scope}
+
+This assessment covers:
+
+\begin{enumerate}
+    \item Technology and cybersecurity risks.
+    \item Operational and business continuity risks.
+    \item People and organizational risks.
+    \item Regulatory and compliance risks.
+    \item Market and competitive risks.
+\end{enumerate}
+
+\section{Risk Matrix}
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[
+        cell/.style={minimum width=2.4cm,minimum height=1.2cm,font=\small},
+    ]
+        \matrix (risk) [matrix of nodes,
+            nodes={cell,anchor=center},
+            column sep=0pt, row sep=0pt,
+            column 1/.style={nodes={draw=none,minimum width=2.2cm,fill=none}},
+            row 1/.style={nodes={draw=none,fill=none}},
+            column 2/.style={nodes={fill=green!15,draw=gray!50}},
+            column 3/.style={nodes={fill=green!30,draw=gray!50}},
+            column 4/.style={nodes={fill=yellow!35,draw=gray!50}},
+            column 5/.style={nodes={fill=orange!35,draw=gray!50}},
+            column 6/.style={nodes={fill=red!30,draw=gray!50}},
+            row 2/.style={nodes={fill=red!15,draw=gray!50}},
+            row 3/.style={nodes={fill=orange!15,draw=gray!50}},
+            row 4/.style={nodes={fill=yellow!20,draw=gray!50}},
+            row 5/.style={nodes={fill=green!20,draw=gray!50}},
+            row 6/.style={nodes={fill=green!10,draw=gray!50}},
+        ] {
+            & \textbf{Negligible} & \textbf{Minor} & \textbf{Moderate} & \textbf{Major} & \textbf{Catastrophic} \\
+            \textbf{Almost Certain} & & & R5 & & \\
+            \textbf{Likely}   & & & R11 & R1,R2 & R3 \\
+            \textbf{Possible} & R17 & R14 & R8,R12 & R6,R7 & \\
+            \textbf{Unlikely} & R18 & R13,R16 & R9,R10 & R4 & \\
+            \textbf{Rare}     & & R15 & & & \\
+        };
+        \node[above=0.3cm of risk-1-3,font=\small\bfseries] {Impact $\rightarrow$};
+        \node[left=0.1cm of risk-3-1,rotate=90,font=\small\bfseries,anchor=south] {Likelihood $\rightarrow$};
+    \end{tikzpicture}
+    \caption{Risk matrix: likelihood vs.\ impact with identified risks plotted.}
+\end{figure}
+
+\section{Detailed Risk Register}
+
+\subsection{Technology \& Cybersecurity Risks}
+
+\begin{table}[h]
+    \centering
+    \small
+    \begin{tabular}{llcccl}
+        \toprule
+        \textbf{ID} & \textbf{Risk} & \textbf{L} & \textbf{I} & \textbf{Score} & \textbf{Mitigation Strategy} \\
+        \midrule
+        R1 & Cybersecurity breach / data exfiltration & 4 & 4 & 16 &
+            SOC 2 Type II certified; quarterly pen testing; 24/7 SOC
+            monitoring; zero-trust architecture; \$5M cyber insurance \\
+        R2 & Ransomware attack on production systems & 4 & 4 & 16 &
+            Immutable backups with 30-day retention; network segmentation;
+            endpoint detection (CrowdStrike); incident response plan tested
+            quarterly \\
+        R3 & ML model poisoning / adversarial attack & 4 & 5 & 20 &
+            Input validation; model integrity monitoring; adversarial
+            robustness testing; human-in-the-loop validation for critical
+            predictions \\
+        \bottomrule
+    \end{tabular}
+    \caption{Technology and cybersecurity risk details.}
+\end{table}
+
+\subsection{Operational Risks}
+
+\begin{table}[h]
+    \centering
+    \small
+    \begin{tabular}{llcccl}
+        \toprule
+        \textbf{ID} & \textbf{Risk} & \textbf{L} & \textbf{I} & \textbf{Score} & \textbf{Mitigation Strategy} \\
+        \midrule
+        R4 & Cloud provider outage (AWS regional) & 2 & 4 & 8 &
+            Multi-AZ deployment; active-active failover to EU region
+            (Project Atlas); DR testing quarterly; 99.99\% SLA target \\
+        R5 & Third-party vendor failure (key supplier) & 3 & 3 & 9 &
+            Vendor risk assessments; contractual SLAs with penalties;
+            identified backup vendors for critical services; 90-day buffer
+            stock for hardware \\
+        R6 & Insider threat / unauthorized access & 3 & 4 & 12 &
+            Role-based access control; least-privilege principles; audit
+            logging; background checks; mandatory security training;
+            anonymous reporting channel \\
+        R7 & Data loss / corruption & 3 & 4 & 12 &
+            Automated backups every 15 minutes; cross-region replication;
+            checksums and integrity validation; tested restore procedures
+            monthly \\
+        \bottomrule
+    \end{tabular}
+    \caption{Operational risk details.}
+\end{table}
+
+\subsection{People Risks}
+
+\begin{table}[h]
+    \centering
+    \small
+    \begin{tabular}{llcccl}
+        \toprule
+        \textbf{ID} & \textbf{Risk} & \textbf{L} & \textbf{I} & \textbf{Score} & \textbf{Mitigation Strategy} \\
+        \midrule
+        R8 & Key talent attrition (ML engineers) & 4 & 4 & 16 &
+            Competitive compensation (80th percentile); retention bonuses
+            for critical roles; expanded equity grants; EAP enhancements;
+            career development programs \\
+        R9 & Knowledge concentration risk & 3 & 3 & 9 &
+            Cross-training programs; documented architecture decisions;
+            pair programming rotation; minimum 2 engineers per critical
+            system \\
+        R10 & Onboarding bottleneck (new hires) & 3 & 3 & 9 &
+            Structured 30-60-90 onboarding program; buddy system;
+            documented runbooks; automated environment setup \\
+        \bottomrule
+    \end{tabular}
+    \caption{People risk details.}
+\end{table}
+
+\subsection{Regulatory \& Compliance Risks}
+
+\begin{table}[h]
+    \centering
+    \small
+    \begin{tabular}{llcccl}
+        \toprule
+        \textbf{ID} & \textbf{Risk} & \textbf{L} & \textbf{I} & \textbf{Score} & \textbf{Mitigation Strategy} \\
+        \midrule
+        R11 & EU AI Act non-compliance & 3 & 3 & 9 &
+            Dedicated compliance team; privacy-by-design architecture;
+            automated model documentation; third-party audit scheduled
+            Q4 2026 \\
+        R12 & Data residency violation & 3 & 4 & 12 &
+            Project Atlas delivers configurable data residency; automated
+            compliance monitoring; legal review of all data flows; customer
+            data classification system \\
+        R13 & GDPR enforcement action & 2 & 3 & 6 &
+            Appointed DPO; DPIAs conducted for all new features; consent
+            management platform; data subject request automation \\
+        \bottomrule
+    \end{tabular}
+    \caption{Regulatory and compliance risk details.}
+\end{table}
+
+\subsection{Market \& Strategic Risks}
+
+\begin{table}[h]
+    \centering
+    \small
+    \begin{tabular}{llcccl}
+        \toprule
+        \textbf{ID} & \textbf{Risk} & \textbf{L} & \textbf{I} & \textbf{Score} & \textbf{Mitigation Strategy} \\
+        \midrule
+        R14 & Competitive pricing pressure & 3 & 2 & 6 &
+            Differentiate on SLA, compliance, and edge capabilities;
+            value-based selling; flexible pricing tiers \\
+        R15 & Macroeconomic downturn reducing AI spending & 2 & 2 & 4 &
+            Position as cost-reduction tool; multi-year contracts;
+            diversified customer base across 8 industries \\
+        R16 & Open-source alternative commoditizes core features & 2 & 3 & 6 &
+            Invest in proprietary ML models; domain-specific solutions;
+            managed service layer; customer lock-in through integrations \\
+        R17 & Intellectual property dispute & 3 & 1 & 3 &
+            IP insurance; regular freedom-to-operate analyses; patent
+            portfolio review \\
+        R18 & Reputational damage from customer incident & 2 & 1 & 2 &
+            Incident communication plan; customer notification procedures;
+            transparent post-mortem process; cyber insurance \\
+        \bottomrule
+    \end{tabular}
+    \caption{Market and strategic risk details.}
+\end{table}
+
+\section{Mitigation Effectiveness}
+
+\begin{table}[h]
+    \centering
+    \small
+    \begin{tabular}{lccccc}
+        \toprule
+        \textbf{Risk} & \textbf{Inherent Score} & \textbf{Res.\ L} & \textbf{Res.\ I} & \textbf{Residual Score} & \textbf{Reduction} \\
+        \midrule
+        R3: ML model poisoning  & 20 & 3 & 4 & 12 & $-$40\% \\
+        R1: Cybersecurity breach & 16 & 3 & 3 & 9  & $-$44\% \\
+        R2: Ransomware attack    & 16 & 3 & 3 & 9  & $-$44\% \\
+        R8: Key talent attrition & 16 & 3 & 3 & 9  & $-$44\% \\
+        R6: Insider threat       & 12 & 2 & 3 & 6  & $-$50\% \\
+        R7: Data loss            & 12 & 2 & 3 & 6  & $-$50\% \\
+        R12: Data residency      & 12 & 2 & 3 & 6  & $-$50\% \\
+        R4: Cloud outage         &  8 & 1 & 3 & 3  & $-$63\% \\
+        R11: EU AI Act           &  9 & 2 & 2 & 4  & $-$56\% \\
+        \bottomrule
+    \end{tabular}
+    \caption{Residual risk scores after mitigation (top 9 risks by score).}
+\end{table}
+
+\section{Risk Response Actions}
+
+\begin{table}[h]
+    \centering
+    \small
+    \begin{tabular}{llcl}
+        \toprule
+        \textbf{Risk} & \textbf{Action} & \textbf{Owner} & \textbf{Due Date} \\
+        \midrule
+        R3  & Complete adversarial robustness testing framework &
+            Marcus Chen & Aug 2026 \\
+        R8  & Finalize retention bonus program for 12 critical ML engineers &
+            Priya Sharma & Jul 2026 \\
+        R12 & Launch data residency beta in Project Atlas &
+            Taylor Brooks & Oct 2026 \\
+        R6  & Complete zero-trust migration for production environments &
+            Casey Diaz & Sep 2026 \\
+        R1  & Obtain SOC 2 Type II certification (already complete; annual
+            renewal scheduled) &
+            Riley Chen & Jun 2027 \\
+        R2  & Conduct tabletop ransomware response exercise with full team &
+            Jordan Mitchell & Aug 2026 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Key risk response actions with owners and deadlines.}
+\end{table}
+
+\section{Governance \& Review}
+
+\begin{itemize}
+    \item \textbf{Monthly risk review.} The Risk Committee (CTO, CISO,
+        VP Engineering, Legal) meets monthly to review the top 10 risks,
+        track mitigation progress, and escalate new threats.
+    \item \textbf{Quarterly board reporting.} A risk dashboard is presented
+        to the Board of Directors at each quarterly meeting, including
+        changes in risk scores and status of critical mitigation actions.
+    \item \textbf{Incident-triggered reassessment.} Any P0 or P1 incident
+        triggers an immediate reassessment of the affected risk category.
+    \item \textbf{Annual comprehensive review.} A full risk assessment is
+        conducted annually with input from all department heads and external
+        advisors.
+\end{itemize}
+
+\section{Signatures}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lll}
+        \toprule
+        \textbf{Role} & \textbf{Name} & \textbf{Date} \\
+        \midrule
+        CTO / Risk Committee Chair & Marcus Chen & \underline{\hspace{3cm}} \\
+        CISO                        & (TBD) & \underline{\hspace{3cm}} \\
+        VP Engineering              & Priya Sharma & \underline{\hspace{3cm}} \\
+        General Counsel             & (TBD) & \underline{\hspace{3cm}} \\
+        \bottomrule
+    \end{tabular}
+    \caption{Assessment approval signatures.}
+\end{table}
+
+\printbibliography[heading=none]
+
+\end{document}
