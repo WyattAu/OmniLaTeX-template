@@ -1,0 +1,1511 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OmniLaTeX Language & Internationalization Module
+%
+% Polyglossia, translations, and multilingual support
+% Part of OmniLaTeX-template modular architecture
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/language/omnilatex-i18n}[2026/06/06 v2.4.1 OmniLaTeX i18n module]
+
+% Requires: \omnilatex@language to be defined by class
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Polyglossia - Language Rules
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{polyglossia}% Language rules. Replacement for babel in lualatex
+
+% RTL languages (arabic, hebrew, persian) require bidi/luabidi for polyglossia.
+% If bidi is not installed, fall back to english and warn.  This prevents a
+% fatal error when building with a minimal TeX Live that lacks luabidi.
+\newif\ifomnilatex@bidi@available
+\IfFileExists{luabidi.sty}{%
+  \omnilatex@bidi@availabletrue
+}{%
+  \IfFileExists{bidi.sty}{%
+    \omnilatex@bidi@availabletrue
+  }{%
+    \omnilatex@bidi@availablefalse
+  }%
+}
+
+% Expand this properly; the version without \expandsafters does not work fully.
+% The first \expandafter is seen, so the following \setdefaultlanguage is not
+% expanded and skipped.
+% Next, the second \expandafter is looked at. It sees the token { next, saving it
+% for later.
+% \omnilatex@language is then expanded fully, to the current language.
+% What is left is a properly working string, \setdefaultlanguage{<language string>}
+%
+% For RTL languages, only set as default if bidi is available; otherwise
+% fall back to english to keep compilation working.
+\newif\ifomnilatex@rtl@lang
+\omnilatex@rtl@langfalse
+\IfStrEq{\omnilatex@language}{arabic}{\omnilatex@rtl@langtrue}{}
+\IfStrEq{\omnilatex@language}{hebrew}{\omnilatex@rtl@langtrue}{}
+\IfStrEq{\omnilatex@language}{persian}{\omnilatex@rtl@langtrue}{}
+\ifomnilatex@rtl@lang
+  \ifomnilatex@bidi@available
+    \expandafter\setdefaultlanguage\expandafter{\omnilatex@language}
+  \else
+    \PackageWarning{omnilatex-i18n}{%
+      RTL language '\omnilatex@language' requires luabidi which is not\MessageBreak
+      installed.  Falling back to english.  Install luabidi for RTL support.}%
+    \setdefaultlanguage{english}%
+  \fi
+\else
+  \expandafter\setdefaultlanguage\expandafter{\omnilatex@language}
+\fi
+
+% Whatever main language (setmainlanguage = setdefaultlanguage) was loaded, we want
+% the "other" one (since we expect only English and German) to be available as a
+% secondary language. This is very convenient if for example a thesis is in English,
+% but certain parts have to be in German, e.g., for legal reasons. A simple switch
+% \begin{german} ... \end{german} would then achieve that.
+% Register all supported languages as "other" languages so they can be
+% used inline with \begin{language}...\end{language} or \foreignlanguage.
+% Add new languages here when adding support.
+% Note: Arabic, Hebrew, Persian require luabidi.sty. If not available,
+% they are skipped to avoid fatal errors.
+% Use non-RTL languages as default, add RTL only if luabidi is loadable.
+\setotherlanguages{english,german,ngerman,french,spanish,italian,portuguese,russian,dutch,polish,czech,greek,turkish,simplifiedchinese,traditionalchinese,japanese,korean,vietnamese,hindi,swedish,finnish,danish,norsk,thai,bengali,ukrainian,bulgarian,croatian,serbian,slovak,slovenian,romanian,catalan,mongolian}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Translations Package
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{translations}
+% Providing localization that are not automatically covered by polyglossia.
+% We use the translations package for this, which is a bit more powerful than
+% the provided commands by KOMAscript \providecaptionname<language> commands.
+
+% Register Chinese language variants not natively supported by the
+% translations package.  The translations package (v2.0) predefines
+% most languages we use, but simplifiedchinese and traditionalchinese
+% are missing.  Without registration, \DeclareTranslation for these
+% languages throws:
+%   ! Package translations Error: Unknown language `simplifiedchinese'.
+\DeclareLanguage{simplifiedchinese}
+\DeclareLanguage{traditionalchinese}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Generic Translations (not institution-specific)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Title page elements
+\DeclareTranslation{english}{First}{\nth{1}}
+\DeclareTranslation{german}{First}{1.}
+\DeclareTranslation{french}{First}{1\textsuperscript{er}}
+\DeclareTranslation{spanish}{First}{1.\textsuperscript{o}}
+% Note: Chinese (simplifiedchinese) and Japanese (japanese) are supported as
+% primary languages via polyglossia (set via \documentclass[language=simplifiedchinese]).
+% However, the `translations` package does not include language definition files
+% for these languages, so OmniLaTeX-specific translations (Gloss, BlankPage, etc.)
+% cannot be registered here. Polyglossia handles standard captions (TOC, figures,
+% tables) natively for these languages. To add custom translations, users can
+% add \DeclareTranslation commands in their preamble after loading the language.
+
+\DeclareTranslation{english}{Second}{\nth{2}}
+\DeclareTranslation{german}{Second}{2.}
+\DeclareTranslation{french}{Second}{2\textsuperscript{e}}
+\DeclareTranslation{spanish}{Second}{2.\textsuperscript{o}}
+
+\DeclareTranslation{english}{Examiner}{Examiner}
+\DeclareTranslation{german}{Examiner}{Prüfer:in}
+\DeclareTranslation{french}{Examiner}{Examinateur}
+\DeclareTranslation{spanish}{Examiner}{Examinador}
+
+\DeclareTranslation{english}{FirstExaminer}{Examiner}
+\DeclareTranslation{german}{FirstExaminer}{Prüfer}
+\DeclareTranslation{french}{FirstExaminer}{Examinateur}
+\DeclareTranslation{spanish}{FirstExaminer}{Examinador}
+
+\DeclareTranslation{english}{SecondExaminer}{Examiner}
+\DeclareTranslation{german}{SecondExaminer}{Prüfer:in}
+\DeclareTranslation{french}{SecondExaminer}{Examinateur}
+\DeclareTranslation{spanish}{SecondExaminer}{Examinador}
+
+\DeclareTranslation{english}{Supervisor}{Supervisor}
+\DeclareTranslation{german}{Supervisor}{Betreuer:in}
+\DeclareTranslation{french}{Supervisor}{Directeur de thèse}
+\DeclareTranslation{spanish}{Supervisor}{Director}
+
+% Colophon
+\DeclareTranslation{english}{CompiledOn}{Compiled on}
+\DeclareTranslation{german}{CompiledOn}{Kompiliert am}
+\DeclareTranslation{french}{CompiledOn}{Compilé le}
+\DeclareTranslation{spanish}{CompiledOn}{Compilado el}
+
+\DeclareTranslation{french}{LatexClass}{Classe}
+\DeclareTranslation{spanish}{LatexClass}{Clase}
+
+\DeclareTranslation{french}{Generator}{Généré par}
+\DeclareTranslation{spanish}{Generator}{Generado por}
+
+\DeclareTranslation{english}{CensorNotice}{This passage has been redacted.}
+\DeclareTranslation{english}{authorArticle}{the author}
+\DeclareTranslation{french}{CensorNotice}{VERSION CENSURÉE}
+\DeclareTranslation{french}{authorArticle}{l'auteur}
+\DeclareTranslation{spanish}{CensorNotice}{VERSIÓN CENSURADA}
+\DeclareTranslation{spanish}{authorArticle}{el autor}
+\DeclareTranslation{german}{CensorNotice}{Diese Passage wurde geschwärzt.}
+\DeclareTranslation{russian}{CensorNotice}{Этот текст зацензурирован.}
+\DeclareTranslation{russian}{authorArticle}{автор}
+\DeclareTranslation{italian}{CensorNotice}{Dichiarazione di non responsabilità: i contenuti riflettono le opinioni degli autori.}
+\DeclareTranslation{italian}{authorArticle}{l'autore}
+\DeclareTranslation{portuguese}{CensorNotice}{Aviso legal: O conteúdo reflete as opiniões dos autores.}
+\DeclareTranslation{portuguese}{authorArticle}{o autor}
+\DeclareTranslation{dutch}{CensorNotice}{Vrijwaring: De inhoud weerspiegelt de standpunten van de auteurs.}
+\DeclareTranslation{dutch}{authorArticle}{de auteur}
+\DeclareTranslation{polish}{CensorNotice}{Zastrzeżenie: Treść odzwierciedla poglądy autorów.}
+\DeclareTranslation{polish}{authorArticle}{autor}
+\DeclareTranslation{czech}{CensorNotice}{Prohlášení: Obsah odráží názory autorů.}
+\DeclareTranslation{czech}{authorArticle}{autor}
+\DeclareTranslation{greek}{CensorNotice}{Αποποίηση ευθύνης: Το περιεχόμενο αντανακλά τις απόψεις των συγγραφέων.}
+\DeclareTranslation{greek}{authorArticle}{τον συγγραφέα}
+\DeclareTranslation{turkish}{CensorNotice}{Sorumluluk Reddi: İçerik yazarların görüşlerini yansıtmaktadır.}
+\DeclareTranslation{turkish}{authorArticle}{yazar}
+\DeclareTranslation{vietnamese}{CensorNotice}{Từ chối trách nhiệm: Nội dung phản ánh quan điểm của tác giả.}
+\DeclareTranslation{vietnamese}{authorArticle}{tác giả}
+\DeclareTranslation{hindi}{CensorNotice}{अस्वीकरण: सामग्री लेखकों के विचारों को दर्शाती है।}
+\DeclareTranslation{hindi}{authorArticle}{लेखक}
+\DeclareTranslation{swedish}{CensorNotice}{Ansvarsfriskrivning: Innehållet återspeglar författarnas åsikter.}
+\DeclareTranslation{swedish}{authorArticle}{författaren}
+\DeclareTranslation{finnish}{CensorNotice}{Vastuuvapauslauseke: Sisältö heijastaa tekijöiden näkemyksiä.}
+\DeclareTranslation{finnish}{authorArticle}{tekijä}
+\DeclareTranslation{danish}{CensorNotice}{Ansvarsfraskrivelse: Indholdet afspejler forfatternes synspunkter.}
+\DeclareTranslation{danish}{authorArticle}{forfatteren}
+\DeclareTranslation{norsk}{CensorNotice}{Ansvarsfraskrivelse: Innholdet gjenspeiler forfatternes synspunkter.}
+\DeclareTranslation{norsk}{authorArticle}{forfatteren}
+
+% Task page
+\DeclareTranslation{english}{PlaceDate}{Place \& Date}
+\DeclareTranslation{german}{PlaceDate}{Ort \& Datum}
+\DeclareTranslation{french}{PlaceDate}{Lieu \& Date}
+\DeclareTranslation{spanish}{PlaceDate}{Lugar \& Fecha}
+
+\DeclareTranslation{english}{Topic}{Topic}
+\DeclareTranslation{german}{Topic}{Thema}
+\DeclareTranslation{french}{Topic}{Sujet}
+\DeclareTranslation{spanish}{Topic}{Tema}
+
+\DeclareTranslation{english}{Task}{Task}
+\DeclareTranslation{german}{Task}{Problemstellung}
+\DeclareTranslation{french}{Task}{Cahier des charges}
+\DeclareTranslation{spanish}{Task}{Tarea}
+
+\DeclareTranslation{english}{For}{For}
+\DeclareTranslation{german}{For}{Für}
+\DeclareTranslation{french}{For}{Pour}
+\DeclareTranslation{spanish}{For}{Para}
+
+% Declaration of Authorship
+\DeclareTranslation{english}{AuthorshipDeclTitle}{Declaration of Authorship}
+\DeclareTranslation{german}{AuthorshipDeclTitle}{Erklärung zur Eigenständigkeit}
+
+\DeclareTranslation{english}{author}{author}
+\DeclareTranslation{german}{author}{Autor:in}
+
+% Only needed for German, as the English version does not need a gendered article.
+\DeclareTranslation{german}{authorArticle}{der/die}
+
+\DeclareTranslation{english}{AuthorshipDeclText}{%
+    I, \@author{}, hereby declare to be the sole, independent author of the
+    \@documenttype{} submitted here.
+    No other than the cited references have been used.
+    Any content directly or indirectly obtained from external sources has been marked up as such.
+    This thesis has neither been submitted to a second examination authority nor been published.%
+}%
+
+\DeclareTranslation{german}{AuthorshipDeclText}{%
+    Hiermit bestätige ich, \@author{}, \GetTranslation{authorArticle} alleinige und selbstständige \GetTranslation{author} der hier
+    vorgelegten \@documenttype{} zu sein.
+    Keine anderen als die angegebenen Quellen wurden benutzt.
+    Jeglicher aus externen Quellen direkt oder indirekt bezogene Inhalt ist als solcher markiert.
+    Diese Arbeit wurde weder einer anderen Prüfungsbehörde vorgelegt noch veröffentlicht.
+}%
+
+% Cleveref
+\DeclareTranslation{english}{Reaction}{Reaction}
+\DeclareTranslation{german}{Reaction}{Reaktion}
+
+\DeclareTranslation{english}{Reactions}{Reactions}
+\DeclareTranslation{german}{Reactions}{Reaktionen}
+
+% Glossary
+\DeclareTranslation{english}{Gloss}{Glossary}
+\DeclareTranslation{german}{Gloss}{Glossar}
+\DeclareTranslation{french}{Gloss}{Glossaire}
+\DeclareTranslation{spanish}{Gloss}{Glosario}
+
+\DeclareTranslation{english}{Greek}{Greek}
+\DeclareTranslation{german}{Greek}{Griech.}
+\DeclareTranslation{french}{Greek}{Grec}
+\DeclareTranslation{spanish}{Greek}{Griego}
+
+\DeclareTranslation{english}{Roman}{Roman}
+\DeclareTranslation{german}{Roman}{Röm.}
+\DeclareTranslation{french}{Roman}{Romain}
+\DeclareTranslation{spanish}{Roman}{Romano}
+
+\DeclareTranslation{english}{Other}{Other}
+\DeclareTranslation{german}{Other}{Andere}
+\DeclareTranslation{french}{Other}{Autre}
+\DeclareTranslation{spanish}{Other}{Otro}
+
+\DeclareTranslation{english}{Terms}{Terms}
+\DeclareTranslation{german}{Terms}{Begriffe}
+\DeclareTranslation{french}{Terms}{Termes}
+\DeclareTranslation{spanish}{Terms}{Términos}
+
+\DeclareTranslation{english}{Names}{Names}
+\DeclareTranslation{german}{Names}{Namen}
+\DeclareTranslation{french}{Names}{Noms}
+\DeclareTranslation{spanish}{Names}{Nombres}
+
+\DeclareTranslation{english}{Acronyms}{Acronyms}
+\DeclareTranslation{german}{Acronyms}{Akronyme}
+\DeclareTranslation{french}{Acronyms}{Acronymes}
+\DeclareTranslation{spanish}{Acronyms}{Acrónimos}
+
+\DeclareTranslation{english}{Subscripts}{Subscripts}
+\DeclareTranslation{german}{Subscripts}{Indizes}
+\DeclareTranslation{french}{Subscripts}{Indices}
+\DeclareTranslation{spanish}{Subscripts}{Subíndices}
+
+\DeclareTranslation{english}{Superscripts}{Superscripts}
+\DeclareTranslation{german}{Superscripts}{Hochgest.}
+\DeclareTranslation{french}{Superscripts}{Exposants}
+\DeclareTranslation{spanish}{Superscripts}{Superíndices}
+
+\DeclareTranslation{english}{SubSuperTitle}{Sub- and Superscripts}
+\DeclareTranslation{german}{SubSuperTitle}{Indizes und Hochgestellte}
+\DeclareTranslation{french}{SubSuperTitle}{Indices et exposants}
+\DeclareTranslation{spanish}{SubSuperTitle}{Subíndices y superíndices}
+
+% SCRLayer and page layout
+\DeclareTranslation{english}{BlankPage}{Rest of this page intentionally left blank.}
+\DeclareTranslation{german}{BlankPage}{Rest der Seite absichtlich freigelassen.}
+\DeclareTranslation{french}{BlankPage}{Le reste de cette page est intentionnellement vide.}
+\DeclareTranslation{spanish}{BlankPage}{El resto de esta página se ha dejado en blanco intencionalmente.}
+
+% Lists of content
+\DeclareTranslation{english}{IllustrativeElements}{Illustrative Elements}
+\DeclareTranslation{german}{IllustrativeElements}{Veranschaulichende Elemente}
+\DeclareTranslation{french}{IllustrativeElements}{Éléments illustratifs}
+\DeclareTranslation{spanish}{IllustrativeElements}{Elementos ilustrativos}
+
+\DeclareTranslation{english}{ListOfIllustrations}{List of Illustrations}
+\DeclareTranslation{german}{ListOfIllustrations}{Illustrationsverzeichnis}
+\DeclareTranslation{french}{ListOfIllustrations}{Liste des illustrations}
+\DeclareTranslation{spanish}{ListOfIllustrations}{Lista de ilustraciones}
+
+\DeclareTranslation{english}{Listing}{Code Listing}
+\DeclareTranslation{english}{Listings}{Code Listings}
+\DeclareTranslation{german}{Listing}{Code}
+\DeclareTranslation{german}{Listings}{Codes}
+\DeclareTranslation{french}{Listing}{Liste de code}
+\DeclareTranslation{french}{Listings}{Listes de code}
+\DeclareTranslation{spanish}{Listing}{Listado de código}
+\DeclareTranslation{spanish}{Listings}{Listados de código}
+
+\DeclareTranslation{english}{ListOfListings}{List of Code}
+\DeclareTranslation{german}{ListOfListings}{Codeverzeichnis}
+\DeclareTranslation{french}{ListOfListings}{Liste des codes}
+\DeclareTranslation{spanish}{ListOfListings}{Lista de códigos}
+
+\DeclareTranslation{english}{ListOfExamples}{List of Examples}
+\DeclareTranslation{german}{ListOfExamples}{Beispielverzeichnis}
+\DeclareTranslation{french}{ListOfExamples}{Liste des exemples}
+\DeclareTranslation{spanish}{ListOfExamples}{Lista de ejemplos}
+
+\DeclareTranslation{english}{Example}{Example}
+\DeclareTranslation{german}{Example}{Beispiel}
+\DeclareTranslation{french}{Example}{Exemple}
+\DeclareTranslation{spanish}{Example}{Ejemplo}
+\DeclareTranslation{english}{Examples}{Examples}
+\DeclareTranslation{german}{Examples}{Beispiele}
+\DeclareTranslation{french}{Examples}{Exemples}
+\DeclareTranslation{spanish}{Examples}{Ejemplos}
+
+% Table translations for tabularray
+\DeclareTranslation{english}{Contfoot}{Continued on next page}
+\DeclareTranslation{german}{Contfoot}{Fortgeführt auf der nächsten Seite}
+\DeclareTranslation{french}{Contfoot}{Suite sur la page suivante}
+\DeclareTranslation{spanish}{Contfoot}{Continúa en la página siguiente}
+
+\DeclareTranslation{english}{Conthead}{ (Continued)}
+\DeclareTranslation{german}{Conthead}{ (Fortgesetzt)}
+\DeclareTranslation{french}{Conthead}{ (Suite)}
+\DeclareTranslation{spanish}{Conthead}{ (Continuación)}
+
+% Bibliography
+\DeclareTranslation{english}{FurtherReadingTitle}{Further Reading}
+\DeclareTranslation{german}{FurtherReadingTitle}{Weitere Literatur}
+\DeclareTranslation{french}{FurtherReadingTitle}{Pour aller plus loin}
+\DeclareTranslation{spanish}{FurtherReadingTitle}{Lectura adicional}
+
+\DeclareTranslation{english}{FurtherReadingText}{%
+    The following references were used in this work but not cited in the text body;
+    they are provided here as\-/is.
+}
+\DeclareTranslation{german}{FurtherReadingText}{%
+    Die folgenden Quellen wurden im Rahmen dieser Arbeit benutzt, jedoch nicht
+    explizit zitiert.
+    Sie sind hier der Vollständigkeit halber aufgeführt.
+}
+
+% Math and scientific notation
+\DeclareTranslation{english}{Constant}{const}
+\DeclareTranslation{german}{Constant}{konst}
+\DeclareTranslation{french}{Constant}{const}
+\DeclareTranslation{spanish}{Constant}{cte}
+
+\DeclareTranslation{english}{Unit}{Unit}
+\DeclareTranslation{german}{Unit}{Einh.}
+\DeclareTranslation{french}{Unit}{Unité}
+\DeclareTranslation{spanish}{Unit}{Unidad}
+
+\DeclareTranslation{english}{PhysicalQuantity}{Physical Quantity}
+\DeclareTranslation{german}{PhysicalQuantity}{Physikalische Größe}
+\DeclareTranslation{french}{PhysicalQuantity}{Grandeur physique}
+\DeclareTranslation{spanish}{PhysicalQuantity}{Magnitud física}
+
+% Image and content attribution
+\DeclareTranslation{english}{AdaptedFrom}{Adapted from}
+\DeclareTranslation{german}{AdaptedFrom}{Adaptiert von}
+\DeclareTranslation{french}{AdaptedFrom}{Adapté de}
+\DeclareTranslation{spanish}{AdaptedFrom}{Adaptado de}
+
+% Colophon (English - needed when using \GetTranslation in the colophon)
+\DeclareTranslation{english}{LatexClass}{Class}
+\DeclareTranslation{english}{Generator}{Generated by}
+\DeclareTranslation{english}{Title}{Title}
+
+% Colophon (German)
+\DeclareTranslation{german}{LatexClass}{Klasse}
+\DeclareTranslation{german}{Generator}{Generiert von}
+\DeclareTranslation{german}{Title}{Titel}
+
+% Authorship declaration (French)
+\DeclareTranslation{french}{AuthorshipDeclTitle}{Déclaration d'originalité}
+\DeclareTranslation{french}{author}{auteur}
+\DeclareTranslation{french}{AuthorshipDeclText}{%
+    Je, \@author{}, déclare par la présente être l'\GetTranslation{author} unique et indépendant
+    du \@documenttype{} présenté ici.
+    Aucune autre source que celles citées n'a été utilisée.
+    Tout contenu obtenu directement ou indirectement de sources externes a été signalé comme tel.
+    Ce travail n'a été soumis à aucune autre instance d'examen ni publié.%
+}%
+
+% Further reading (French)
+\DeclareTranslation{french}{FurtherReadingText}{%
+    Les références suivantes ont été utilisées dans ce travail mais ne sont pas citées
+    dans le corps du texte ; elles sont fournies telles quelles.
+}
+
+% Cleveref (French)
+\DeclareTranslation{french}{Reaction}{Réaction}
+\DeclareTranslation{french}{Reactions}{Réactions}
+\DeclareTranslation{french}{Title}{Titre}
+
+% Authorship declaration (Spanish)
+\DeclareTranslation{spanish}{AuthorshipDeclTitle}{Declaración de originalidad}
+\DeclareTranslation{spanish}{author}{autor}
+\DeclareTranslation{spanish}{AuthorshipDeclText}{%
+    Yo, \@author{}, declaro por la presente ser el \GetTranslation{author} único e independiente
+    del \@documenttype{} presentado aquí.
+    No se han utilizado otras fuentes que las citadas.
+    Todo contenido obtenido directa o indirectamente de fuentes externas ha sido señalado como tal.
+    Este trabajo no ha sido presentado a ninguna otra instancia de examen ni publicado.%
+}%
+
+% Further reading (Spanish)
+\DeclareTranslation{spanish}{FurtherReadingText}{%
+    Las siguientes referencias se utilizaron en este trabajo pero no se citaron
+    en el cuerpo del texto; se proporcionan tal cual.
+}
+
+% Cleveref (Spanish)
+\DeclareTranslation{spanish}{Reaction}{Reacción}
+\DeclareTranslation{spanish}{Reactions}{Reacciones}
+\DeclareTranslation{spanish}{Title}{Título}
+
+% Russian translations
+\DeclareTranslation{russian}{Gloss}{Глоссарий}
+\DeclareTranslation{russian}{Example}{Пример}
+\DeclareTranslation{russian}{Examples}{Примеры}
+\DeclareTranslation{russian}{BlankPage}{Остальная часть этой страницы намеренно оставлена пустой.}
+\DeclareTranslation{russian}{ListOfListings}{Список кодов}
+\DeclareTranslation{russian}{ListOfExamples}{Список примеров}
+\DeclareTranslation{russian}{FurtherReadingTitle}{Дополнительная литература}
+\DeclareTranslation{russian}{Supervisor}{Руководитель}
+\DeclareTranslation{russian}{Examiner}{Экзаменатор}
+\DeclareTranslation{russian}{CompiledOn}{Скомпилировано}
+\DeclareTranslation{russian}{AdaptedFrom}{Адаптировано из}
+\DeclareTranslation{russian}{Acronyms}{Аббревиатуры}
+\DeclareTranslation{russian}{AuthorshipDeclText}{Я настоящим заявляю, что эта работа была выполнена мной самостоятельно.}
+\DeclareTranslation{russian}{AuthorshipDeclTitle}{Заявление об авторстве}
+\DeclareTranslation{russian}{Constant}{Константа}
+\DeclareTranslation{russian}{Contfoot}{продолжение}
+\DeclareTranslation{russian}{Conthead}{(продолжение с предыдущей страницы)}
+\DeclareTranslation{russian}{First}{Первый}
+\DeclareTranslation{russian}{FirstExaminer}{Первый экзаменатор}
+\DeclareTranslation{russian}{For}{Для}
+\DeclareTranslation{russian}{FurtherReadingText}{Для дальнейшего чтения см.}
+\DeclareTranslation{russian}{Generator}{Сгенерировано с помощью OmniLaTeX}
+\DeclareTranslation{russian}{Greek}{Греческие буквы}
+\DeclareTranslation{russian}{IllustrativeElements}{Иллюстративные элементы}
+\DeclareTranslation{russian}{LatexClass}{Класс документа}
+\DeclareTranslation{russian}{ListOfIllustrations}{Список иллюстраций}
+\DeclareTranslation{russian}{Listing}{Листинг}
+\DeclareTranslation{russian}{Listings}{Листинги}
+\DeclareTranslation{russian}{Names}{Имена}
+\DeclareTranslation{russian}{Other}{Другое}
+\DeclareTranslation{russian}{PhysicalQuantity}{Физическая величина}
+\DeclareTranslation{russian}{PlaceDate}{Место, Дата}
+\DeclareTranslation{russian}{Reaction}{Реакция}
+\DeclareTranslation{russian}{Reactions}{Реакции}
+\DeclareTranslation{russian}{Roman}{Римский}
+\DeclareTranslation{russian}{Second}{Второй}
+\DeclareTranslation{russian}{SecondExaminer}{Второй экзаменатор}
+\DeclareTranslation{russian}{SubSuperTitle}{Символы, нижние и верхние индексы}
+\DeclareTranslation{russian}{Subscripts}{Нижние индексы}
+\DeclareTranslation{russian}{Superscripts}{Верхние индексы}
+\DeclareTranslation{russian}{Task}{Задание}
+\DeclareTranslation{russian}{Terms}{Термины}
+\DeclareTranslation{russian}{Topic}{Тема}
+\DeclareTranslation{russian}{Unit}{Единица}
+\DeclareTranslation{russian}{author}{Автор}
+\DeclareTranslation{russian}{Title}{Название}
+
+% Italian translations
+\DeclareTranslation{italian}{Gloss}{Glossario}
+\DeclareTranslation{italian}{Example}{Esempio}
+\DeclareTranslation{italian}{Examples}{Esempi}
+\DeclareTranslation{italian}{BlankPage}{Il resto di questa pagina è stato lasciato intenzionalmente vuoto.}
+\DeclareTranslation{italian}{ListOfListings}{Elenco dei codici}
+\DeclareTranslation{italian}{ListOfExamples}{Elenco degli esempi}
+\DeclareTranslation{italian}{FurtherReadingTitle}{Ulteriori letture}
+\DeclareTranslation{italian}{Supervisor}{Supervisore}
+\DeclareTranslation{italian}{Examiner}{Esaminatore}
+\DeclareTranslation{italian}{CompiledOn}{Compilato il}
+\DeclareTranslation{italian}{AdaptedFrom}{Adattato da}
+\DeclareTranslation{italian}{Acronyms}{Acronimi}
+\DeclareTranslation{italian}{AuthorshipDeclText}{Dichiaro che questo lavoro è stato svolto autonomamente.}
+\DeclareTranslation{italian}{AuthorshipDeclTitle}{Dichiarazione di Autore}
+\DeclareTranslation{italian}{Constant}{Costante}
+\DeclareTranslation{italian}{Contfoot}{continuo}
+\DeclareTranslation{italian}{Conthead}{(continuo dalla pagina precedente)}
+\DeclareTranslation{italian}{First}{Primo}
+\DeclareTranslation{italian}{FirstExaminer}{Primo Esaminatore}
+\DeclareTranslation{italian}{For}{Per}
+\DeclareTranslation{italian}{FurtherReadingText}{Per ulteriore lettura, vedere}
+\DeclareTranslation{italian}{Generator}{Generato da OmniLaTeX}
+\DeclareTranslation{italian}{Greek}{Lettere greche}
+\DeclareTranslation{italian}{IllustrativeElements}{Elementi illustrativi}
+\DeclareTranslation{italian}{LatexClass}{Classe documento}
+\DeclareTranslation{italian}{ListOfIllustrations}{Elenco delle figure}
+\DeclareTranslation{italian}{Listing}{Listato}
+\DeclareTranslation{italian}{Listings}{Listati}
+\DeclareTranslation{italian}{Names}{Nomi}
+\DeclareTranslation{italian}{Other}{Altro}
+\DeclareTranslation{italian}{PhysicalQuantity}{Grandezza fisica}
+\DeclareTranslation{italian}{PlaceDate}{Luogo, Data}
+\DeclareTranslation{italian}{Reaction}{Reazione}
+\DeclareTranslation{italian}{Reactions}{Reazioni}
+\DeclareTranslation{italian}{Roman}{Romano}
+\DeclareTranslation{italian}{Second}{Secondo}
+\DeclareTranslation{italian}{SecondExaminer}{Secondo Esaminatore}
+\DeclareTranslation{italian}{SubSuperTitle}{Simboli, pedici e apici}
+\DeclareTranslation{italian}{Subscripts}{Pedici}
+\DeclareTranslation{italian}{Superscripts}{Apici}
+\DeclareTranslation{italian}{Task}{Compito}
+\DeclareTranslation{italian}{Terms}{Termini}
+\DeclareTranslation{italian}{Topic}{Argomento}
+\DeclareTranslation{italian}{Unit}{Unità}
+\DeclareTranslation{italian}{author}{Autore}
+\DeclareTranslation{italian}{Title}{Titolo}
+
+% Portuguese translations
+\DeclareTranslation{portuguese}{Gloss}{Glossário}
+\DeclareTranslation{portuguese}{Example}{Exemplo}
+\DeclareTranslation{portuguese}{Examples}{Exemplos}
+\DeclareTranslation{portuguese}{BlankPage}{O restante desta página foi intencionalmente deixado em branco.}
+\DeclareTranslation{portuguese}{ListOfListings}{Lista de códigos}
+\DeclareTranslation{portuguese}{ListOfExamples}{Lista de exemplos}
+\DeclareTranslation{portuguese}{FurtherReadingTitle}{Leitura adicional}
+\DeclareTranslation{portuguese}{Supervisor}{Orientador}
+\DeclareTranslation{portuguese}{Examiner}{Examinador}
+\DeclareTranslation{portuguese}{CompiledOn}{Compilado em}
+\DeclareTranslation{portuguese}{AdaptedFrom}{Adaptado de}
+\DeclareTranslation{portuguese}{Acronyms}{Acrónimos}
+\DeclareTranslation{portuguese}{AuthorshipDeclText}{Declaro que este trabalho foi realizado por mim de forma autónoma.}
+\DeclareTranslation{portuguese}{AuthorshipDeclTitle}{Declaração de Autoria}
+\DeclareTranslation{portuguese}{Constant}{Constante}
+\DeclareTranslation{portuguese}{Contfoot}{continuação}
+\DeclareTranslation{portuguese}{Conthead}{(continuação da página anterior)}
+\DeclareTranslation{portuguese}{First}{Primeiro}
+\DeclareTranslation{portuguese}{FirstExaminer}{Primeiro Examinador}
+\DeclareTranslation{portuguese}{For}{Para}
+\DeclareTranslation{portuguese}{FurtherReadingText}{Para leitura adicional, consulte}
+\DeclareTranslation{portuguese}{Generator}{Gerado por OmniLaTeX}
+\DeclareTranslation{portuguese}{Greek}{Letras gregas}
+\DeclareTranslation{portuguese}{IllustrativeElements}{Elementos ilustrativos}
+\DeclareTranslation{portuguese}{LatexClass}{Classe de documento}
+\DeclareTranslation{portuguese}{ListOfIllustrations}{Lista de ilustrações}
+\DeclareTranslation{portuguese}{Listing}{Listagem}
+\DeclareTranslation{portuguese}{Listings}{Listagens}
+\DeclareTranslation{portuguese}{Names}{Nomes}
+\DeclareTranslation{portuguese}{Other}{Outro}
+\DeclareTranslation{portuguese}{PhysicalQuantity}{Grandeza física}
+\DeclareTranslation{portuguese}{PlaceDate}{Local, Data}
+\DeclareTranslation{portuguese}{Reaction}{Reação}
+\DeclareTranslation{portuguese}{Reactions}{Reações}
+\DeclareTranslation{portuguese}{Roman}{Romano}
+\DeclareTranslation{portuguese}{Second}{Segundo}
+\DeclareTranslation{portuguese}{SecondExaminer}{Segundo Examinador}
+\DeclareTranslation{portuguese}{SubSuperTitle}{Símbolos, subscritos e sobrescritos}
+\DeclareTranslation{portuguese}{Subscripts}{Subscritos}
+\DeclareTranslation{portuguese}{Superscripts}{Sobrescritos}
+\DeclareTranslation{portuguese}{Task}{Tarefa}
+\DeclareTranslation{portuguese}{Terms}{Termos}
+\DeclareTranslation{portuguese}{Topic}{Tópico}
+\DeclareTranslation{portuguese}{Unit}{Unidade}
+\DeclareTranslation{portuguese}{author}{Autor}
+\DeclareTranslation{portuguese}{Title}{Título}
+
+% Dutch translations
+\DeclareTranslation{dutch}{Gloss}{Woordenlijst}
+\DeclareTranslation{dutch}{Example}{Voorbeeld}
+\DeclareTranslation{dutch}{Examples}{Voorbeelden}
+\DeclareTranslation{dutch}{BlankPage}{De rest van deze pagina is met opzet leeg gelaten.}
+\DeclareTranslation{dutch}{ListOfListings}{Lijst van codes}
+\DeclareTranslation{dutch}{ListOfExamples}{Lijst van voorbeelden}
+\DeclareTranslation{dutch}{FurtherReadingTitle}{Aanbevolen literatuur}
+\DeclareTranslation{dutch}{Supervisor}{Begeleider}
+\DeclareTranslation{dutch}{Examiner}{Examinator}
+\DeclareTranslation{dutch}{CompiledOn}{Gecompileerd op}
+\DeclareTranslation{dutch}{AdaptedFrom}{Aangepast van}
+\DeclareTranslation{dutch}{Acronyms}{Acroniemen}
+\DeclareTranslation{dutch}{AuthorshipDeclText}{Ik verklaar hierbij dat dit werk zelfstandig is uitgevoerd.}
+\DeclareTranslation{dutch}{AuthorshipDeclTitle}{Verklaring van Auteurschap}
+\DeclareTranslation{dutch}{Constant}{Constante}
+\DeclareTranslation{dutch}{Contfoot}{vervolg}
+\DeclareTranslation{dutch}{Conthead}{(vervolg van vorige pagina)}
+\DeclareTranslation{dutch}{First}{Eerste}
+\DeclareTranslation{dutch}{FirstExaminer}{Eerste Beoordelaar}
+\DeclareTranslation{dutch}{For}{Voor}
+\DeclareTranslation{dutch}{FurtherReadingText}{Voor verder lezen, zie}
+\DeclareTranslation{dutch}{Generator}{Gegenereerd door OmniLaTeX}
+\DeclareTranslation{dutch}{Greek}{Griekse letters}
+\DeclareTranslation{dutch}{IllustrativeElements}{Illustratieve elementen}
+\DeclareTranslation{dutch}{LatexClass}{Documentklasse}
+\DeclareTranslation{dutch}{ListOfIllustrations}{Lijst van illustraties}
+\DeclareTranslation{dutch}{Listing}{Listing}
+\DeclareTranslation{dutch}{Listings}{Listings}
+\DeclareTranslation{dutch}{Names}{Namen}
+\DeclareTranslation{dutch}{Other}{Overig}
+\DeclareTranslation{dutch}{PhysicalQuantity}{Fysische grootheid}
+\DeclareTranslation{dutch}{PlaceDate}{Plaats, Datum}
+\DeclareTranslation{dutch}{Reaction}{Reactie}
+\DeclareTranslation{dutch}{Reactions}{Reacties}
+\DeclareTranslation{dutch}{Roman}{Romeins}
+\DeclareTranslation{dutch}{Second}{Tweede}
+\DeclareTranslation{dutch}{SecondExaminer}{Tweede Beoordelaar}
+\DeclareTranslation{dutch}{SubSuperTitle}{Symbolen, subscripten en superscripten}
+\DeclareTranslation{dutch}{Subscripts}{Subscripten}
+\DeclareTranslation{dutch}{Superscripts}{Superscripten}
+\DeclareTranslation{dutch}{Task}{Opdracht}
+\DeclareTranslation{dutch}{Terms}{Begrippen}
+\DeclareTranslation{dutch}{Topic}{Onderwerp}
+\DeclareTranslation{dutch}{Unit}{Eenheid}
+\DeclareTranslation{dutch}{author}{Auteur}
+\DeclareTranslation{dutch}{Title}{Titel}
+
+% Czech translations
+\DeclareTranslation{czech}{Gloss}{Glosář}
+\DeclareTranslation{czech}{Example}{Příklad}
+\DeclareTranslation{czech}{Examples}{Příklady}
+\DeclareTranslation{czech}{BlankPage}{Zbytek této stránky byl záměrně ponechán prázdný.}
+\DeclareTranslation{czech}{ListOfListings}{Seznam kódů}
+\DeclareTranslation{czech}{ListOfExamples}{Seznam příkladů}
+\DeclareTranslation{czech}{FurtherReadingTitle}{Doporučená literatura}
+\DeclareTranslation{czech}{Supervisor}{Vedoucí}
+\DeclareTranslation{czech}{Examiner}{Oponent}
+\DeclareTranslation{czech}{CompiledOn}{Kompilováno}
+\DeclareTranslation{czech}{AdaptedFrom}{Převzato z}
+\DeclareTranslation{czech}{Acronyms}{Zkratky}
+\DeclareTranslation{czech}{AuthorshipDeclText}{Prohlašuji, že jsem tuto práci vypracoval samostatně.}
+\DeclareTranslation{czech}{AuthorshipDeclTitle}{Prohlášení o autorství}
+\DeclareTranslation{czech}{Constant}{Konstanta}
+\DeclareTranslation{czech}{Contfoot}{pokračování}
+\DeclareTranslation{czech}{Conthead}{(pokračování z předchozí stránky)}
+\DeclareTranslation{czech}{First}{První}
+\DeclareTranslation{czech}{FirstExaminer}{První oponent}
+\DeclareTranslation{czech}{For}{Pro}
+\DeclareTranslation{czech}{FurtherReadingText}{Pro další čtení viz}
+\DeclareTranslation{czech}{Generator}{Vygenerováno pomocí OmniLaTeX}
+\DeclareTranslation{czech}{Greek}{Řecká písmena}
+\DeclareTranslation{czech}{IllustrativeElements}{Ilustrativní prvky}
+\DeclareTranslation{czech}{LatexClass}{Třída dokumentu}
+\DeclareTranslation{czech}{ListOfIllustrations}{Seznam ilustrací}
+\DeclareTranslation{czech}{Listing}{Výpis}
+\DeclareTranslation{czech}{Listings}{Výpisy}
+\DeclareTranslation{czech}{Names}{Jména}
+\DeclareTranslation{czech}{Other}{Ostatní}
+\DeclareTranslation{czech}{PhysicalQuantity}{Fyzikální veličina}
+\DeclareTranslation{czech}{PlaceDate}{Místo, Datum}
+\DeclareTranslation{czech}{Reaction}{Reakce}
+\DeclareTranslation{czech}{Reactions}{Reakce}
+\DeclareTranslation{czech}{Roman}{Římský}
+\DeclareTranslation{czech}{Second}{Druhý}
+\DeclareTranslation{czech}{SecondExaminer}{Druhý oponent}
+\DeclareTranslation{czech}{SubSuperTitle}{Symboly, dolní a horní indexy}
+\DeclareTranslation{czech}{Subscripts}{Dolní indexy}
+\DeclareTranslation{czech}{Superscripts}{Horní indexy}
+\DeclareTranslation{czech}{Task}{Úkol}
+\DeclareTranslation{czech}{Terms}{Termíny}
+\DeclareTranslation{czech}{Topic}{Téma}
+\DeclareTranslation{czech}{Unit}{Jednotka}
+\DeclareTranslation{czech}{author}{Autor}
+\DeclareTranslation{czech}{Title}{Název}
+
+% Polish translations
+\DeclareTranslation{polish}{Gloss}{Słownik}
+\DeclareTranslation{polish}{Example}{Przykład}
+\DeclareTranslation{polish}{Examples}{Przykłady}
+\DeclareTranslation{polish}{BlankPage}{Reszta tej strony została celowo pozostawiona pusta.}
+\DeclareTranslation{polish}{ListOfListings}{Lista kodów}
+\DeclareTranslation{polish}{ListOfExamples}{Lista przykładów}
+\DeclareTranslation{polish}{FurtherReadingTitle}{Literatura uzupełniająca}
+\DeclareTranslation{polish}{Supervisor}{Promotor}
+\DeclareTranslation{polish}{Examiner}{Recenzent}
+\DeclareTranslation{polish}{CompiledOn}{Skompilowano}
+\DeclareTranslation{polish}{AdaptedFrom}{Zaadaptowano z}
+\DeclareTranslation{polish}{Acronyms}{Akronimy}
+\DeclareTranslation{polish}{AuthorshipDeclText}{Oświadczam, że niniejszą pracę wykonałem samodzielnie.}
+\DeclareTranslation{polish}{AuthorshipDeclTitle}{Oświadczenie o autorstwie}
+\DeclareTranslation{polish}{Constant}{Stała}
+\DeclareTranslation{polish}{Contfoot}{ciąg dalszy}
+\DeclareTranslation{polish}{Conthead}{(ciąg dalszy z poprzedniej strony)}
+\DeclareTranslation{polish}{First}{Pierwszy}
+\DeclareTranslation{polish}{FirstExaminer}{Pierwszy Recenzent}
+\DeclareTranslation{polish}{For}{Dla}
+\DeclareTranslation{polish}{FurtherReadingText}{Aby dowiedzieć się więcej, zobacz}
+\DeclareTranslation{polish}{Generator}{Wygenerowano przez OmniLaTeX}
+\DeclareTranslation{polish}{Greek}{Litery greckie}
+\DeclareTranslation{polish}{IllustrativeElements}{Elementy ilustracyjne}
+\DeclareTranslation{polish}{LatexClass}{Klasa dokumentu}
+\DeclareTranslation{polish}{ListOfIllustrations}{Spis ilustracji}
+\DeclareTranslation{polish}{Listing}{Listing}
+\DeclareTranslation{polish}{Listings}{Listingi}
+\DeclareTranslation{polish}{Names}{Nazwy}
+\DeclareTranslation{polish}{Other}{Inne}
+\DeclareTranslation{polish}{PhysicalQuantity}{Wielkość fizyczna}
+\DeclareTranslation{polish}{PlaceDate}{Miejsce, Data}
+\DeclareTranslation{polish}{Reaction}{Reakcja}
+\DeclareTranslation{polish}{Reactions}{Reakcje}
+\DeclareTranslation{polish}{Roman}{Rzymski}
+\DeclareTranslation{polish}{Second}{Drugi}
+\DeclareTranslation{polish}{SecondExaminer}{Drugi Recenzent}
+\DeclareTranslation{polish}{SubSuperTitle}{Symbole, indeksy dolne i górne}
+\DeclareTranslation{polish}{Subscripts}{Indeksy dolne}
+\DeclareTranslation{polish}{Superscripts}{Indeksy górne}
+\DeclareTranslation{polish}{Task}{Zadanie}
+\DeclareTranslation{polish}{Terms}{Pojęcia}
+\DeclareTranslation{polish}{Topic}{Temat}
+\DeclareTranslation{polish}{Unit}{Jednostka}
+\DeclareTranslation{polish}{author}{Autor}
+\DeclareTranslation{polish}{Title}{Tytuł}
+
+% Greek translations
+\DeclareTranslation{greek}{Gloss}{Γλωσσάρι}
+\DeclareTranslation{greek}{Example}{Παράδειγμα}
+\DeclareTranslation{greek}{Examples}{Παραδείγματα}
+\DeclareTranslation{greek}{BlankPage}{Το υπόλοιπο αυτής της σελίδας έχει σκόπιμα αφήθηκε κενό.}
+\DeclareTranslation{greek}{ListOfListings}{Λίστα κώδικα}
+\DeclareTranslation{greek}{ListOfExamples}{Λίστα παραδειγμάτων}
+\DeclareTranslation{greek}{FurtherReadingTitle}{Προτεινόμενη βιβλιογραφία}
+\DeclareTranslation{greek}{Supervisor}{Επιβλέπτης}
+\DeclareTranslation{greek}{Examiner}{Εξεταστής}
+\DeclareTranslation{greek}{CompiledOn}{Μεταγλώττιση}
+\DeclareTranslation{greek}{AdaptedFrom}{Προσαρμοσμένο από}
+\DeclareTranslation{greek}{Acronyms}{Συντομογραφίες}
+\DeclareTranslation{greek}{AuthorshipDeclText}{Δηλώνω ότι αυτή η εργασία εκπονήθηκε από εμένα αυτοτελώς.}
+\DeclareTranslation{greek}{AuthorshipDeclTitle}{Δήλωση Συγγραφέα}
+\DeclareTranslation{greek}{Constant}{Σταθερά}
+\DeclareTranslation{greek}{Contfoot}{συνέχεια}
+\DeclareTranslation{greek}{Conthead}{(συνέχεια από προηγούμενη σελίδα)}
+\DeclareTranslation{greek}{First}{Πρώτο}
+\DeclareTranslation{greek}{FirstExaminer}{Πρώτος Εξεταστής}
+\DeclareTranslation{greek}{For}{Για}
+\DeclareTranslation{greek}{FurtherReadingText}{Για περαιτέρω μελέτη, βλέπε}
+\DeclareTranslation{greek}{Generator}{Δημιουργήθηκε από OmniLaTeX}
+\DeclareTranslation{greek}{Greek}{Ελληνικά Γράμματα}
+\DeclareTranslation{greek}{IllustrativeElements}{Εικονογραφικά Στοιχεία}
+\DeclareTranslation{greek}{LatexClass}{Κλάση Εγγράφου}
+\DeclareTranslation{greek}{ListOfIllustrations}{Κατάλογος Εικόνων}
+\DeclareTranslation{greek}{Listing}{Λίστα}
+\DeclareTranslation{greek}{Listings}{Λίστες}
+\DeclareTranslation{greek}{Names}{Ονόματα}
+\DeclareTranslation{greek}{Other}{Άλλο}
+\DeclareTranslation{greek}{PhysicalQuantity}{Φυσικό Μέγεθος}
+\DeclareTranslation{greek}{PlaceDate}{Τόπος, Ημερομηνία}
+\DeclareTranslation{greek}{Reaction}{Αντίδραση}
+\DeclareTranslation{greek}{Reactions}{Αντιδράσεις}
+\DeclareTranslation{greek}{Roman}{Ρωμαϊκός}
+\DeclareTranslation{greek}{Second}{Δεύτερο}
+\DeclareTranslation{greek}{SecondExaminer}{Δεύτερος Εξεταστής}
+\DeclareTranslation{greek}{SubSuperTitle}{Σύμβολα, κάτω και πάνω δείκτες}
+\DeclareTranslation{greek}{Subscripts}{Κάτω Δείκτες}
+\DeclareTranslation{greek}{Superscripts}{Πάνω Δείκτες}
+\DeclareTranslation{greek}{Task}{Εργασία}
+\DeclareTranslation{greek}{Terms}{Όροι}
+\DeclareTranslation{greek}{Topic}{Θέμα}
+\DeclareTranslation{greek}{Unit}{Μονάδα}
+\DeclareTranslation{greek}{author}{Συγγραφέας}
+\DeclareTranslation{greek}{Title}{Τίτλος}
+
+% Turkish translations
+\DeclareTranslation{turkish}{Gloss}{Sözlük}
+\DeclareTranslation{turkish}{Example}{Örnek}
+\DeclareTranslation{turkish}{Examples}{Örnekler}
+\DeclareTranslation{turkish}{BlankPage}{Bu sayfanın geri kalan kısmı kasıtlı boş bırakılmıştır.}
+\DeclareTranslation{turkish}{ListOfListings}{Kod listesi}
+\DeclareTranslation{turkish}{ListOfExamples}{Örnek listesi}
+\DeclareTranslation{turkish}{FurtherReadingTitle}{Ek okuma}
+\DeclareTranslation{turkish}{Supervisor}{Danışman}
+\DeclareTranslation{turkish}{Examiner}{Sınavcı}
+\DeclareTranslation{turkish}{CompiledOn}{Derlenme tarihi}
+\DeclareTranslation{turkish}{AdaptedFrom}{Uyarlanmış}
+\DeclareTranslation{turkish}{Acronyms}{Kısaltmalar}
+\DeclareTranslation{turkish}{AuthorshipDeclText}{Bu çalışmayı kendi başıma yaptığımı beyan ederim.}
+\DeclareTranslation{turkish}{AuthorshipDeclTitle}{Yazarlık Beyanı}
+\DeclareTranslation{turkish}{Constant}{Sabit}
+\DeclareTranslation{turkish}{Contfoot}{devam}
+\DeclareTranslation{turkish}{Conthead}{(önceki sayfadan devam)}
+\DeclareTranslation{turkish}{First}{Birinci}
+\DeclareTranslation{turkish}{FirstExaminer}{Birinci Sınav Görevlisi}
+\DeclareTranslation{turkish}{For}{İçin}
+\DeclareTranslation{turkish}{FurtherReadingText}{Daha fazla bilgi için bkz.}
+\DeclareTranslation{turkish}{Generator}{OmniLaTeX tarafından oluşturuldu}
+\DeclareTranslation{turkish}{Greek}{Yunan Harfleri}
+\DeclareTranslation{turkish}{IllustrativeElements}{İllüstratif Öğeler}
+\DeclareTranslation{turkish}{LatexClass}{Belge Sınıfı}
+\DeclareTranslation{turkish}{ListOfIllustrations}{Şekil Listesi}
+\DeclareTranslation{turkish}{Listing}{Kod Listesi}
+\DeclareTranslation{turkish}{Listings}{Kod Listeleri}
+\DeclareTranslation{turkish}{Names}{İsimler}
+\DeclareTranslation{turkish}{Other}{Diğer}
+\DeclareTranslation{turkish}{PhysicalQuantity}{Fiziksel Büyüklük}
+\DeclareTranslation{turkish}{PlaceDate}{Yer, Tarih}
+\DeclareTranslation{turkish}{Reaction}{Tepki}
+\DeclareTranslation{turkish}{Reactions}{Tepkiler}
+\DeclareTranslation{turkish}{Roman}{Roma}
+\DeclareTranslation{turkish}{Second}{İkinci}
+\DeclareTranslation{turkish}{SecondExaminer}{İkinci Sınav Görevlisi}
+\DeclareTranslation{turkish}{SubSuperTitle}{Semboller, alt ve üst indisler}
+\DeclareTranslation{turkish}{Subscripts}{Alt İndeksler}
+\DeclareTranslation{turkish}{Superscripts}{Üst İndeksler}
+\DeclareTranslation{turkish}{Task}{Görev}
+\DeclareTranslation{turkish}{Terms}{Terimler}
+\DeclareTranslation{turkish}{Topic}{Konu}
+\DeclareTranslation{turkish}{Unit}{Birim}
+\DeclareTranslation{turkish}{author}{Yazar}
+\DeclareTranslation{turkish}{Title}{Başlık}
+
+% Vietnamese translations
+\DeclareTranslation{vietnamese}{Gloss}{Bảng thuật ngữ}
+\DeclareTranslation{vietnamese}{Example}{Ví dụ}
+\DeclareTranslation{vietnamese}{Examples}{Các ví dụ}
+\DeclareTranslation{vietnamese}{BlankPage}{Phần còn lại của trang này được cố ý để trống.}
+\DeclareTranslation{vietnamese}{ListOfListings}{Danh sách mã nguồn}
+\DeclareTranslation{vietnamese}{ListOfExamples}{Danh sách ví dụ}
+\DeclareTranslation{vietnamese}{FurtherReadingTitle}{Tài liệu tham khảo thêm}
+\DeclareTranslation{vietnamese}{Supervisor}{Người hướng dẫn}
+\DeclareTranslation{vietnamese}{Examiner}{Người phản biện}
+\DeclareTranslation{vietnamese}{CompiledOn}{Biên soạn vào}
+\DeclareTranslation{vietnamese}{AdaptedFrom}{Thích ứng từ}
+\DeclareTranslation{vietnamese}{Acronyms}{Viết tắt}
+\DeclareTranslation{vietnamese}{AuthorshipDeclText}{Tôi tuyên bố rằng công trình này được thực hiện bởi tôi một cách độc lập.}
+\DeclareTranslation{vietnamese}{AuthorshipDeclTitle}{Tuyên bố Tác giả}
+\DeclareTranslation{vietnamese}{Constant}{Hằng số}
+\DeclareTranslation{vietnamese}{Contfoot}{tiếp tục}
+\DeclareTranslation{vietnamese}{Conthead}{(tiếp tục từ trang trước)}
+\DeclareTranslation{vietnamese}{First}{Thứ nhất}
+\DeclareTranslation{vietnamese}{FirstExaminer}{Giám khảo Thứ nhất}
+\DeclareTranslation{vietnamese}{For}{Cho}
+\DeclareTranslation{vietnamese}{FurtherReadingText}{Để đọc thêm, xem}
+\DeclareTranslation{vietnamese}{Generator}{Tạo bởi OmniLaTeX}
+\DeclareTranslation{vietnamese}{Greek}{Chữ Hy Lạp}
+\DeclareTranslation{vietnamese}{IllustrativeElements}{Yếu tố Minh họa}
+\DeclareTranslation{vietnamese}{LatexClass}{Lớp Tài liệu}
+\DeclareTranslation{vietnamese}{ListOfIllustrations}{Danh sách Hình minh họa}
+\DeclareTranslation{vietnamese}{Listing}{Đoạn mã}
+\DeclareTranslation{vietnamese}{Listings}{Đoạn mã}
+\DeclareTranslation{vietnamese}{Names}{Tên}
+\DeclareTranslation{vietnamese}{Other}{Khác}
+\DeclareTranslation{vietnamese}{PhysicalQuantity}{Đại lượng Vật lý}
+\DeclareTranslation{vietnamese}{PlaceDate}{Địa điểm, Ngày}
+\DeclareTranslation{vietnamese}{Reaction}{Phản ứng}
+\DeclareTranslation{vietnamese}{Reactions}{Phản ứng}
+\DeclareTranslation{vietnamese}{Roman}{La Mã}
+\DeclareTranslation{vietnamese}{Second}{Thứ hai}
+\DeclareTranslation{vietnamese}{SecondExaminer}{Giám khảo Thứ hai}
+\DeclareTranslation{vietnamese}{SubSuperTitle}{Ký hiệu, chỉ số dưới và trên}
+\DeclareTranslation{vietnamese}{Subscripts}{Chỉ số dưới}
+\DeclareTranslation{vietnamese}{Superscripts}{Chỉ số trên}
+\DeclareTranslation{vietnamese}{Task}{Bài tập}
+\DeclareTranslation{vietnamese}{Terms}{Thuật ngữ}
+\DeclareTranslation{vietnamese}{Topic}{Chủ đề}
+\DeclareTranslation{vietnamese}{Unit}{Đơn vị}
+\DeclareTranslation{vietnamese}{author}{Tác giả}
+\DeclareTranslation{vietnamese}{Title}{Tiêu đề}
+
+% Hindi translations
+\DeclareTranslation{hindi}{Gloss}{शब्दावली}
+\DeclareTranslation{hindi}{Example}{उदाहरण}
+\DeclareTranslation{hindi}{Examples}{उदाहरण}
+\DeclareTranslation{hindi}{BlankPage}{इस पृष्ठ का शेष भाग जानबूझन खाली छोड़ दिया गया है।}
+\DeclareTranslation{hindi}{ListOfListings}{कोड सूची}
+\DeclareTranslation{hindi}{ListOfExamples}{उदाहरण सूची}
+\DeclareTranslation{hindi}{FurtherReadingTitle}{अतिरिक्त पठन}
+\DeclareTranslation{hindi}{Supervisor}{पर्यवेक्षक}
+\DeclareTranslation{hindi}{Examiner}{परीक्षक}
+\DeclareTranslation{hindi}{CompiledOn}{संकलित}
+\DeclareTranslation{hindi}{AdaptedFrom}{अनुकूलित}
+\DeclareTranslation{hindi}{Acronyms}{संक्षेपाक्षर}
+\DeclareTranslation{hindi}{AuthorshipDeclText}{मैं घोषणा करता/करती हूं कि यह कार्य मैंने स्वयं किया है।}
+\DeclareTranslation{hindi}{AuthorshipDeclTitle}{लेखकत्व घोषणा}
+\DeclareTranslation{hindi}{Constant}{स्थिरांक}
+\DeclareTranslation{hindi}{Contfoot}{जारी}
+\DeclareTranslation{hindi}{Conthead}{(पिछले पृष्ठ से जारी)}
+\DeclareTranslation{hindi}{First}{प्रथम}
+\DeclareTranslation{hindi}{FirstExaminer}{प्रथम परीक्षक}
+\DeclareTranslation{hindi}{For}{के लिए}
+\DeclareTranslation{hindi}{FurtherReadingText}{अधिक जानकारी के लिए देखें}
+\DeclareTranslation{hindi}{Generator}{OmniLaTeX द्वारा निर्मित}
+\DeclareTranslation{hindi}{Greek}{ग्रीक अक्षर}
+\DeclareTranslation{hindi}{IllustrativeElements}{चित्रण तत्व}
+\DeclareTranslation{hindi}{LatexClass}{दस्तावेज़ वर्ग}
+\DeclareTranslation{hindi}{ListOfIllustrations}{आरेख सूची}
+\DeclareTranslation{hindi}{Listing}{कोड सूची}
+\DeclareTranslation{hindi}{Listings}{कोड सूचियाँ}
+\DeclareTranslation{hindi}{Names}{नाम}
+\DeclareTranslation{hindi}{Other}{अन्य}
+\DeclareTranslation{hindi}{PhysicalQuantity}{भौतिक राशि}
+\DeclareTranslation{hindi}{PlaceDate}{स्थान, दिनांक}
+\DeclareTranslation{hindi}{Reaction}{अभिक्रिया}
+\DeclareTranslation{hindi}{Reactions}{अभिक्रियाएँ}
+\DeclareTranslation{hindi}{Roman}{रोमन}
+\DeclareTranslation{hindi}{Second}{द्वितीय}
+\DeclareTranslation{hindi}{SecondExaminer}{द्वितीय परीक्षक}
+\DeclareTranslation{hindi}{SubSuperTitle}{प्रतीक, निचले और ऊपरी अनुसूचियाँ}
+\DeclareTranslation{hindi}{Subscripts}{निचले अनुसूचियाँ}
+\DeclareTranslation{hindi}{Superscripts}{ऊपरी अनुसूचियाँ}
+\DeclareTranslation{hindi}{Task}{कार्य}
+\DeclareTranslation{hindi}{Terms}{शब्दावली}
+\DeclareTranslation{hindi}{Topic}{विषय}
+\DeclareTranslation{hindi}{Unit}{इकाई}
+\DeclareTranslation{hindi}{author}{लेखक}
+\DeclareTranslation{hindi}{Title}{शीर्षक}
+
+% Swedish translations
+\DeclareTranslation{swedish}{Gloss}{Ordlista}
+\DeclareTranslation{swedish}{Example}{Exempel}
+\DeclareTranslation{swedish}{Examples}{Exempel}
+\DeclareTranslation{swedish}{BlankPage}{Resten av denna sida är medvetet lämnad tom.}
+\DeclareTranslation{swedish}{ListOfListings}{Kodlista}
+\DeclareTranslation{swedish}{ListOfExamples}{Exempellista}
+\DeclareTranslation{swedish}{FurtherReadingTitle}{Vidare läsning}
+\DeclareTranslation{swedish}{Supervisor}{Handledare}
+\DeclareTranslation{swedish}{Examiner}{Examinator}
+\DeclareTranslation{swedish}{CompiledOn}{Kompilerad}
+\DeclareTranslation{swedish}{AdaptedFrom}{Anpassat från}
+\DeclareTranslation{swedish}{Acronyms}{Förkortningar}
+\DeclareTranslation{swedish}{AuthorshipDeclText}{Jag försäkrar härmed att detta arbete har utförts av mig självständigt.}
+\DeclareTranslation{swedish}{AuthorshipDeclTitle}{Författarförklaring}
+\DeclareTranslation{swedish}{Constant}{Konstant}
+\DeclareTranslation{swedish}{Contfoot}{fortsättning}
+\DeclareTranslation{swedish}{Conthead}{(fortsättning från föregående sida)}
+\DeclareTranslation{swedish}{First}{Första}
+\DeclareTranslation{swedish}{FirstExaminer}{Första Examinator}
+\DeclareTranslation{swedish}{For}{För}
+\DeclareTranslation{swedish}{FurtherReadingText}{För vidare läsning, se}
+\DeclareTranslation{swedish}{Generator}{Genererat av OmniLaTeX}
+\DeclareTranslation{swedish}{Greek}{Grekiska bokstäver}
+\DeclareTranslation{swedish}{IllustrativeElements}{Illustrativa element}
+\DeclareTranslation{swedish}{LatexClass}{Dokumentklass}
+\DeclareTranslation{swedish}{ListOfIllustrations}{Figurförteckning}
+\DeclareTranslation{swedish}{Listing}{Kodlista}
+\DeclareTranslation{swedish}{Listings}{Kodlistor}
+\DeclareTranslation{swedish}{Names}{Namn}
+\DeclareTranslation{swedish}{Other}{Annan}
+\DeclareTranslation{swedish}{PhysicalQuantity}{Fysikalisk storhet}
+\DeclareTranslation{swedish}{PlaceDate}{Ort, Datum}
+\DeclareTranslation{swedish}{Reaction}{Reaktion}
+\DeclareTranslation{swedish}{Reactions}{Reaktioner}
+\DeclareTranslation{swedish}{Roman}{Romersk}
+\DeclareTranslation{swedish}{Second}{Andra}
+\DeclareTranslation{swedish}{SecondExaminer}{Andra Examinator}
+\DeclareTranslation{swedish}{SubSuperTitle}{Symboler, nedsatta och upphöjda index}
+\DeclareTranslation{swedish}{Subscripts}{Nedsättningar}
+\DeclareTranslation{swedish}{Superscripts}{Upphöjningar}
+\DeclareTranslation{swedish}{Task}{Uppgift}
+\DeclareTranslation{swedish}{Terms}{Termer}
+\DeclareTranslation{swedish}{Topic}{Ämne}
+\DeclareTranslation{swedish}{Unit}{Enhet}
+\DeclareTranslation{swedish}{author}{Författare}
+\DeclareTranslation{swedish}{Title}{Titel}
+
+% Finnish translations
+\DeclareTranslation{finnish}{Gloss}{Sanasto}
+\DeclareTranslation{finnish}{Example}{Esimerkki}
+\DeclareTranslation{finnish}{Examples}{Esimerkit}
+\DeclareTranslation{finnish}{BlankPage}{Tämän sivun loppuosa on tahallaan jätetty tyhjäksi.}
+\DeclareTranslation{finnish}{ListOfListings}{Koodiluettelo}
+\DeclareTranslation{finnish}{ListOfExamples}{Esimerkkiluettelo}
+\DeclareTranslation{finnish}{FurtherReadingTitle}{Lisälukemateriaalia}
+\DeclareTranslation{finnish}{Supervisor}{Ohjaaja}
+\DeclareTranslation{finnish}{Examiner}{Tarkastaja}
+\DeclareTranslation{finnish}{CompiledOn}{Käännetty}
+\DeclareTranslation{finnish}{AdaptedFrom}{Mukautettu lähteestä}
+\DeclareTranslation{finnish}{Acronyms}{Lyhenteet}
+\DeclareTranslation{finnish}{AuthorshipDeclText}{Vakuutan, että tämä työ on suoritettu itsenäisesti.}
+\DeclareTranslation{finnish}{AuthorshipDeclTitle}{Tekijänoikeusilmoitus}
+\DeclareTranslation{finnish}{Constant}{Vakio}
+\DeclareTranslation{finnish}{Contfoot}{jatkoa}
+\DeclareTranslation{finnish}{Conthead}{(jatkoa edelliseltä sivulta)}
+\DeclareTranslation{finnish}{First}{Ensimmäinen}
+\DeclareTranslation{finnish}{FirstExaminer}{Ensimmäinen Tarkastaja}
+\DeclareTranslation{finnish}{For}{Varten}
+\DeclareTranslation{finnish}{FurtherReadingText}{Lisälukemista varten katso}
+\DeclareTranslation{finnish}{Generator}{Luonut OmniLaTeX}
+\DeclareTranslation{finnish}{Greek}{Kreikkalaiset kirjaimet}
+\DeclareTranslation{finnish}{IllustrativeElements}{Kuvituselementit}
+\DeclareTranslation{finnish}{LatexClass}{Dokumenttiluokka}
+\DeclareTranslation{finnish}{ListOfIllustrations}{Kuvaluettelo}
+\DeclareTranslation{finnish}{Listing}{Koodilistaus}
+\DeclareTranslation{finnish}{Listings}{Koodilistaukset}
+\DeclareTranslation{finnish}{Names}{Nimet}
+\DeclareTranslation{finnish}{Other}{Muu}
+\DeclareTranslation{finnish}{PhysicalQuantity}{Fysikaalinen suure}
+\DeclareTranslation{finnish}{PlaceDate}{Paikka, Päivämäärä}
+\DeclareTranslation{finnish}{Reaction}{Reaktio}
+\DeclareTranslation{finnish}{Reactions}{Reaktiot}
+\DeclareTranslation{finnish}{Roman}{Roomalainen}
+\DeclareTranslation{finnish}{Second}{Toinen}
+\DeclareTranslation{finnish}{SecondExaminer}{Toinen Tarkastaja}
+\DeclareTranslation{finnish}{SubSuperTitle}{Symbolit, ala- ja yläindeksit}
+\DeclareTranslation{finnish}{Subscripts}{Alaindeksit}
+\DeclareTranslation{finnish}{Superscripts}{Yläindeksit}
+\DeclareTranslation{finnish}{Task}{Tehtävä}
+\DeclareTranslation{finnish}{Terms}{Termit}
+\DeclareTranslation{finnish}{Topic}{Aihe}
+\DeclareTranslation{finnish}{Unit}{Yksikkö}
+\DeclareTranslation{finnish}{author}{Tekijä}
+\DeclareTranslation{finnish}{Title}{Otsikko}
+
+% Danish translations
+\DeclareTranslation{danish}{Gloss}{Ordliste}
+\DeclareTranslation{danish}{Example}{Eksempel}
+\DeclareTranslation{danish}{Examples}{Eksempler}
+\DeclareTranslation{danish}{BlankPage}{Resten af denne side er med vilje efterladt tom.}
+\DeclareTranslation{danish}{ListOfListings}{Kodeliste}
+\DeclareTranslation{danish}{ListOfExamples}{Eksempelliste}
+\DeclareTranslation{danish}{FurtherReadingTitle}{Yderligere litteratur}
+\DeclareTranslation{danish}{Supervisor}{Vejleder}
+\DeclareTranslation{danish}{Examiner}{Censor}
+\DeclareTranslation{danish}{CompiledOn}{Kompileret}
+\DeclareTranslation{danish}{AdaptedFrom}{Tilpasset fra}
+\DeclareTranslation{danish}{Acronyms}{Forkortelser}
+\DeclareTranslation{danish}{AuthorshipDeclText}{Jeg erklærer herved, at dette arbejde er udført af mig selvstændigt.}
+\DeclareTranslation{danish}{AuthorshipDeclTitle}{Forfattererklæring}
+\DeclareTranslation{danish}{Constant}{Konstant}
+\DeclareTranslation{danish}{Contfoot}{fortsættelse}
+\DeclareTranslation{danish}{Conthead}{(fortsættelse fra forrige side)}
+\DeclareTranslation{danish}{First}{Første}
+\DeclareTranslation{danish}{FirstExaminer}{Første Censor}
+\DeclareTranslation{danish}{For}{For}
+\DeclareTranslation{danish}{FurtherReadingText}{For yderligere læsning, se}
+\DeclareTranslation{danish}{Generator}{Genereret af OmniLaTeX}
+\DeclareTranslation{danish}{Greek}{Græske bogstaver}
+\DeclareTranslation{danish}{IllustrativeElements}{Illustrative elementer}
+\DeclareTranslation{danish}{LatexClass}{Dokumentklasse}
+\DeclareTranslation{danish}{ListOfIllustrations}{Figuroversigt}
+\DeclareTranslation{danish}{Listing}{Kodestykke}
+\DeclareTranslation{danish}{Listings}{Kodestykker}
+\DeclareTranslation{danish}{Names}{Navne}
+\DeclareTranslation{danish}{Other}{Andet}
+\DeclareTranslation{danish}{PhysicalQuantity}{Fysisk størrelse}
+\DeclareTranslation{danish}{PlaceDate}{Sted, Dato}
+\DeclareTranslation{danish}{Reaction}{Reaktion}
+\DeclareTranslation{danish}{Reactions}{Reaktioner}
+\DeclareTranslation{danish}{Roman}{Romersk}
+\DeclareTranslation{danish}{Second}{Anden}
+\DeclareTranslation{danish}{SecondExaminer}{Anden Censor}
+\DeclareTranslation{danish}{SubSuperTitle}{Symboler, sænket og hævet skrift}
+\DeclareTranslation{danish}{Subscripts}{Sænket skrift}
+\DeclareTranslation{danish}{Superscripts}{Hævet skrift}
+\DeclareTranslation{danish}{Task}{Opgave}
+\DeclareTranslation{danish}{Terms}{Termer}
+\DeclareTranslation{danish}{Topic}{Emne}
+\DeclareTranslation{danish}{Unit}{Enhed}
+\DeclareTranslation{danish}{author}{Forfatter}
+\DeclareTranslation{danish}{Title}{Titel}
+
+% Norwegian translations
+\DeclareTranslation{norsk}{Gloss}{Ordliste}
+\DeclareTranslation{norsk}{Example}{Eksempel}
+\DeclareTranslation{norsk}{Examples}{Eksempler}
+\DeclareTranslation{norsk}{BlankPage}{Resten av denne siden er med viten etterlatt tom.}
+\DeclareTranslation{norsk}{ListOfListings}{Kodeliste}
+\DeclareTranslation{norsk}{ListOfExamples}{Eksempliste}
+\DeclareTranslation{norsk}{FurtherReadingTitle}{Anbefalt litteratur}
+\DeclareTranslation{norsk}{Supervisor}{Veileder}
+\DeclareTranslation{norsk}{Examiner}{Sensor}
+\DeclareTranslation{norsk}{CompiledOn}{Kompilert}
+\DeclareTranslation{norsk}{AdaptedFrom}{Tilpasset fra}
+\DeclareTranslation{norsk}{Acronyms}{Forkortelser}
+\DeclareTranslation{norsk}{AuthorshipDeclText}{Jeg erklærer herved at dette arbeidet er utført av meg selvstendig.}
+\DeclareTranslation{norsk}{AuthorshipDeclTitle}{Forfattererklæring}
+\DeclareTranslation{norsk}{Constant}{Konstant}
+\DeclareTranslation{norsk}{Contfoot}{fortsettelse}
+\DeclareTranslation{norsk}{Conthead}{(fortsettelse fra forrige side)}
+\DeclareTranslation{norsk}{First}{Første}
+\DeclareTranslation{norsk}{FirstExaminer}{Første Sensor}
+\DeclareTranslation{norsk}{For}{For}
+\DeclareTranslation{norsk}{FurtherReadingText}{For videre lesing, se}
+\DeclareTranslation{norsk}{Generator}{Generert av OmniLaTeX}
+\DeclareTranslation{norsk}{Greek}{Greske bokstaver}
+\DeclareTranslation{norsk}{IllustrativeElements}{Illustrative elementer}
+\DeclareTranslation{norsk}{LatexClass}{Dokumentklasse}
+\DeclareTranslation{norsk}{ListOfIllustrations}{Figuroversikt}
+\DeclareTranslation{norsk}{Listing}{Kodeliste}
+\DeclareTranslation{norsk}{Listings}{Kodelister}
+\DeclareTranslation{norsk}{Names}{Navn}
+\DeclareTranslation{norsk}{Other}{Annet}
+\DeclareTranslation{norsk}{PhysicalQuantity}{Fysisk størrelse}
+\DeclareTranslation{norsk}{PlaceDate}{Sted, Dato}
+\DeclareTranslation{norsk}{Reaction}{Reaksjon}
+\DeclareTranslation{norsk}{Reactions}{Reaksjoner}
+\DeclareTranslation{norsk}{Roman}{Romersk}
+\DeclareTranslation{norsk}{Second}{Andre}
+\DeclareTranslation{norsk}{SecondExaminer}{Andre Sensor}
+\DeclareTranslation{norsk}{SubSuperTitle}{Symboler, senket og hevet skrift}
+\DeclareTranslation{norsk}{Subscripts}{Senket skrift}
+\DeclareTranslation{norsk}{Superscripts}{Hevet skrift}
+\DeclareTranslation{norsk}{Task}{Oppgave}
+\DeclareTranslation{norsk}{Terms}{Termer}
+\DeclareTranslation{norsk}{Topic}{Emne}
+\DeclareTranslation{norsk}{Unit}{Enhet}
+\DeclareTranslation{norsk}{author}{Forfatter}
+\DeclareTranslation{norsk}{Title}{Tittel}
+
+% Thai translations
+\DeclareTranslation{thai}{First}{1}
+\DeclareTranslation{thai}{Second}{2}
+\DeclareTranslation{thai}{Examiner}{ผู้ตรวจสอบ}
+\DeclareTranslation{thai}{FirstExaminer}{ผู้ตรวจสอบคนแรก}
+\DeclareTranslation{thai}{SecondExaminer}{ผู้ตรวจสอบคนที่สอง}
+\DeclareTranslation{thai}{Supervisor}{อาจารย์ที่ปรึกษา}
+\DeclareTranslation{thai}{CompiledOn}{คอมไพล์เมื่อ}
+\DeclareTranslation{thai}{CensorNotice}{ข้อความนี้ถูกเซ็นเซอร์}
+\DeclareTranslation{thai}{authorArticle}{บทความ}
+\DeclareTranslation{thai}{PlaceDate}{สถานที่, วันที่}
+\DeclareTranslation{thai}{Topic}{หัวข้อ}
+\DeclareTranslation{thai}{Task}{งาน}
+\DeclareTranslation{thai}{For}{สำหรับ}
+\DeclareTranslation{thai}{AuthorshipDeclTitle}{คำรับรองการเขียน}
+\DeclareTranslation{thai}{author}{ผู้แต่ง}
+\DeclareTranslation{thai}{AuthorshipDeclText}{ข้าพเจ้ารับรองว่างานนี้เป็นผลงานของข้าพเจ้า}
+\DeclareTranslation{thai}{Reaction}{ปฏิกิริยา}
+\DeclareTranslation{thai}{Reactions}{ปฏิกิริยา}
+\DeclareTranslation{thai}{Gloss}{คำอธิบาย}
+\DeclareTranslation{thai}{Greek}{กรีก}
+\DeclareTranslation{thai}{Roman}{โรมัน}
+\DeclareTranslation{thai}{Other}{อื่นๆ}
+\DeclareTranslation{thai}{Terms}{คำศัพท์}
+\DeclareTranslation{thai}{Names}{ชื่อ}
+\DeclareTranslation{thai}{Acronyms}{ตัวย่อ}
+\DeclareTranslation{thai}{Subscripts}{ตัวห้อย}
+\DeclareTranslation{thai}{Superscripts}{ตัวยก}
+\DeclareTranslation{thai}{SubSuperTitle}{ตัวห้อยและตัวยก}
+\DeclareTranslation{thai}{BlankPage}{หน้าว่าง}
+\DeclareTranslation{thai}{IllustrativeElements}{องค์ประกอบภาพประกอบ}
+\DeclareTranslation{thai}{ListOfIllustrations}{รายการภาพประกอบ}
+\DeclareTranslation{thai}{Listing}{รายการโค้ด}
+\DeclareTranslation{thai}{Listings}{รายการโค้ด}
+\DeclareTranslation{thai}{ListOfListings}{รายการโค้ดทั้งหมด}
+\DeclareTranslation{thai}{ListOfExamples}{รายการตัวอย่าง}
+\DeclareTranslation{thai}{Example}{ตัวอย่าง}
+\DeclareTranslation{thai}{Examples}{ตัวอย่าง}
+\DeclareTranslation{thai}{Contfoot}{เชิงอรรถ}
+\DeclareTranslation{thai}{Conthead}{หัวข้อเชิงอรรถ}
+\DeclareTranslation{thai}{FurtherReadingTitle}{อ่านเพิ่มเติม}
+\DeclareTranslation{thai}{FurtherReadingText}{สำหรับข้อมูลเพิ่มเติม โปรดดู}
+\DeclareTranslation{thai}{Constant}{ค่าคงที่}
+\DeclareTranslation{thai}{Unit}{หน่วย}
+\DeclareTranslation{thai}{PhysicalQuantity}{ปริมาณทางกายภาพ}
+\DeclareTranslation{thai}{AdaptedFrom}{ดัดแปลงจาก}
+\DeclareTranslation{thai}{LatexClass}{คลาส LaTeX}
+\DeclareTranslation{thai}{Generator}{ตัวสร้าง}
+\DeclareTranslation{thai}{Title}{ชื่อเรื่อง}
+
+% Bengali translations
+\DeclareTranslation{bengali}{First}{১ম}
+\DeclareTranslation{bengali}{Second}{২য়}
+\DeclareTranslation{bengali}{Examiner}{পরীক্ষক}
+\DeclareTranslation{bengali}{FirstExaminer}{প্রথম পরীক্ষক}
+\DeclareTranslation{bengali}{SecondExaminer}{দ্বিতীয় পরীক্ষক}
+\DeclareTranslation{bengali}{Supervisor}{তত্ত্বাবধায়ক}
+\DeclareTranslation{bengali}{CompiledOn}{সংকলিত}
+\DeclareTranslation{bengali}{CensorNotice}{সেন্সর নোটিশ}
+\DeclareTranslation{bengali}{authorArticle}{নিবন্ধ}
+\DeclareTranslation{bengali}{PlaceDate}{স্থান, তারিখ}
+\DeclareTranslation{bengali}{Topic}{বিষয়}
+\DeclareTranslation{bengali}{Task}{কাজ}
+\DeclareTranslation{bengali}{For}{জন্য}
+\DeclareTranslation{bengali}{AuthorshipDeclTitle}{লেখকত্ব ঘোষণা}
+\DeclareTranslation{bengali}{author}{লেখক}
+\DeclareTranslation{bengali}{AuthorshipDeclText}{আমি ঘোষণা করছি যে এই কাজ আমার নিজস্ব}
+\DeclareTranslation{bengali}{Reaction}{বিক্রিয়া}
+\DeclareTranslation{bengali}{Reactions}{বিক্রিয়া}
+\DeclareTranslation{bengali}{Gloss}{শব্দার্থ}
+\DeclareTranslation{bengali}{Greek}{গ্রিক}
+\DeclareTranslation{bengali}{Roman}{রোমান}
+\DeclareTranslation{bengali}{Other}{অন্যান্য}
+\DeclareTranslation{bengali}{Terms}{পদ}
+\DeclareTranslation{bengali}{Names}{নাম}
+\DeclareTranslation{bengali}{Acronyms}{সংক্ষিপ্তাক্ষর}
+\DeclareTranslation{bengali}{Subscripts}{সাবস্ক্রিপ্ট}
+\DeclareTranslation{bengali}{Superscripts}{সুপারস্ক্রিপ্ট}
+\DeclareTranslation{bengali}{SubSuperTitle}{সাবস্ক্রিপ্ট ও সুপারস্ক্রিপ্ট}
+\DeclareTranslation{bengali}{BlankPage}{ফাঁকা পৃষ্ঠা}
+\DeclareTranslation{bengali}{IllustrativeElements}{চিত্রণ উপাদান}
+\DeclareTranslation{bengali}{ListOfIllustrations}{চিত্রণ তালিকা}
+\DeclareTranslation{bengali}{Listing}{কোড তালিকা}
+\DeclareTranslation{bengali}{Listings}{কোড তালিকা}
+\DeclareTranslation{bengali}{ListOfListings}{সকল কোড তালিকা}
+\DeclareTranslation{bengali}{ListOfExamples}{উদাহরণ তালিকা}
+\DeclareTranslation{bengali}{Example}{উদাহরণ}
+\DeclareTranslation{bengali}{Examples}{উদাহরণ}
+\DeclareTranslation{bengali}{Contfoot}{পাদটীকা}
+\DeclareTranslation{bengali}{Conthead}{পাদটীকা শিরোনাম}
+\DeclareTranslation{bengali}{FurtherReadingTitle}{আরও পড়ুন}
+\DeclareTranslation{bengali}{FurtherReadingText}{আরও তথ্যের জন্য দেখুন}
+\DeclareTranslation{bengali}{Constant}{ধ্রুবক}
+\DeclareTranslation{bengali}{Unit}{একক}
+\DeclareTranslation{bengali}{PhysicalQuantity}{ভৌত রাশি}
+\DeclareTranslation{bengali}{AdaptedFrom}{থেকে অভিযোজিত}
+\DeclareTranslation{bengali}{LatexClass}{LaTeX ক্লাস}
+\DeclareTranslation{bengali}{Generator}{জেনারেটর}
+\DeclareTranslation{bengali}{Title}{শিরোনাম}
+
+% Auto-generated translations for CJK and RTL languages (2026-06-02)
+% These languages were previously unsupported (0 of 47 keys).
+% Translations provided for all 47 keys across 6 languages.
+
+% ---- simplifiedchinese ----
+\DeclareTranslation{simplifiedchinese}{author}{作者}
+\DeclareTranslation{simplifiedchinese}{CompiledOn}{编译时间}
+\DeclareTranslation{simplifiedchinese}{CensorNotice}{此内容已编辑}
+\DeclareTranslation{simplifiedchinese}{PlaceDate}{地点与日期}
+\DeclareTranslation{simplifiedchinese}{Topic}{主题}
+\DeclareTranslation{simplifiedchinese}{Task}{任务}
+\DeclareTranslation{simplifiedchinese}{For}{致}
+\DeclareTranslation{simplifiedchinese}{FirstExaminer}{第一评审人}
+\DeclareTranslation{simplifiedchinese}{SecondExaminer}{第二评审人}
+\DeclareTranslation{simplifiedchinese}{Supervisor}{导师}
+\DeclareTranslation{simplifiedchinese}{Examiner}{评审人}
+\DeclareTranslation{simplifiedchinese}{AuthorshipDeclTitle}{原创性声明}
+\DeclareTranslation{simplifiedchinese}{AuthorshipDeclText}{本人声明本文为独立完成。}
+\DeclareTranslation{simplifiedchinese}{authorArticle}{作者}
+\DeclareTranslation{simplifiedchinese}{Gloss}{术语表}
+\DeclareTranslation{simplifiedchinese}{Acronyms}{缩写}
+\DeclareTranslation{simplifiedchinese}{Subscripts}{下标}
+\DeclareTranslation{simplifiedchinese}{Superscripts}{上标}
+\DeclareTranslation{simplifiedchinese}{SubSuperTitle}{下标与上标}
+\DeclareTranslation{simplifiedchinese}{Greek}{希腊字母}
+\DeclareTranslation{simplifiedchinese}{Roman}{罗马字母}
+\DeclareTranslation{simplifiedchinese}{Names}{名称}
+\DeclareTranslation{simplifiedchinese}{Terms}{术语}
+\DeclareTranslation{simplifiedchinese}{Other}{其他}
+\DeclareTranslation{simplifiedchinese}{ListOfExamples}{示例列表}
+\DeclareTranslation{simplifiedchinese}{ListOfListings}{代码列表}
+\DeclareTranslation{simplifiedchinese}{ListOfIllustrations}{插图列表}
+\DeclareTranslation{simplifiedchinese}{IllustrativeElements}{图例}
+\DeclareTranslation{simplifiedchinese}{Listing}{代码}
+\DeclareTranslation{simplifiedchinese}{Listings}{代码列表}
+\DeclareTranslation{simplifiedchinese}{Example}{示例}
+\DeclareTranslation{simplifiedchinese}{Examples}{示例}
+\DeclareTranslation{simplifiedchinese}{FurtherReadingTitle}{延伸阅读}
+\DeclareTranslation{simplifiedchinese}{FurtherReadingText}{请参阅以下资源了解更多信息。}
+\DeclareTranslation{simplifiedchinese}{Constant}{常数}
+\DeclareTranslation{simplifiedchinese}{PhysicalQuantity}{物理量}
+\DeclareTranslation{simplifiedchinese}{Unit}{单位}
+\DeclareTranslation{simplifiedchinese}{AdaptedFrom}{改编自}
+\DeclareTranslation{simplifiedchinese}{Reaction}{反应}
+\DeclareTranslation{simplifiedchinese}{Reactions}{反应}
+\DeclareTranslation{simplifiedchinese}{Contfoot}{下页继续}
+\DeclareTranslation{simplifiedchinese}{Conthead}{（续）}
+\DeclareTranslation{simplifiedchinese}{BlankPage}{本页有意留空。}
+\DeclareTranslation{simplifiedchinese}{First}{第一}
+\DeclareTranslation{simplifiedchinese}{Second}{第二}
+\DeclareTranslation{simplifiedchinese}{LatexClass}{文档类}
+\DeclareTranslation{simplifiedchinese}{Generator}{由以下生成}
+\DeclareTranslation{simplifiedchinese}{Title}{标题}
+
+% ---- traditionalchinese ----
+\DeclareTranslation{traditionalchinese}{author}{作者}
+\DeclareTranslation{traditionalchinese}{CompiledOn}{編譯時間}
+\DeclareTranslation{traditionalchinese}{CensorNotice}{此內容已編輯}
+\DeclareTranslation{traditionalchinese}{PlaceDate}{地點與日期}
+\DeclareTranslation{traditionalchinese}{Topic}{主題}
+\DeclareTranslation{traditionalchinese}{Task}{任務}
+\DeclareTranslation{traditionalchinese}{For}{致}
+\DeclareTranslation{traditionalchinese}{FirstExaminer}{第一評審人}
+\DeclareTranslation{traditionalchinese}{SecondExaminer}{第二評審人}
+\DeclareTranslation{traditionalchinese}{Supervisor}{導師}
+\DeclareTranslation{traditionalchinese}{Examiner}{評審人}
+\DeclareTranslation{traditionalchinese}{AuthorshipDeclTitle}{原創性聲明}
+\DeclareTranslation{traditionalchinese}{AuthorshipDeclText}{本人聲明本文為獨立完成。}
+\DeclareTranslation{traditionalchinese}{authorArticle}{作者}
+\DeclareTranslation{traditionalchinese}{Gloss}{術語表}
+\DeclareTranslation{traditionalchinese}{Acronyms}{縮寫}
+\DeclareTranslation{traditionalchinese}{Subscripts}{下標}
+\DeclareTranslation{traditionalchinese}{Superscripts}{上標}
+\DeclareTranslation{traditionalchinese}{SubSuperTitle}{下標與上標}
+\DeclareTranslation{traditionalchinese}{Greek}{希臘字母}
+\DeclareTranslation{traditionalchinese}{Roman}{羅馬字母}
+\DeclareTranslation{traditionalchinese}{Names}{名稱}
+\DeclareTranslation{traditionalchinese}{Terms}{術語}
+\DeclareTranslation{traditionalchinese}{Other}{其他}
+\DeclareTranslation{traditionalchinese}{ListOfExamples}{範例列表}
+\DeclareTranslation{traditionalchinese}{ListOfListings}{程式碼列表}
+\DeclareTranslation{traditionalchinese}{ListOfIllustrations}{插圖列表}
+\DeclareTranslation{traditionalchinese}{IllustrativeElements}{圖例}
+\DeclareTranslation{traditionalchinese}{Listing}{程式碼}
+\DeclareTranslation{traditionalchinese}{Listings}{程式碼列表}
+\DeclareTranslation{traditionalchinese}{Example}{範例}
+\DeclareTranslation{traditionalchinese}{Examples}{範例}
+\DeclareTranslation{traditionalchinese}{FurtherReadingTitle}{延伸閱讀}
+\DeclareTranslation{traditionalchinese}{FurtherReadingText}{請參閱以下資源了解更多資訊。}
+\DeclareTranslation{traditionalchinese}{Constant}{常數}
+\DeclareTranslation{traditionalchinese}{PhysicalQuantity}{物理量}
+\DeclareTranslation{traditionalchinese}{Unit}{單位}
+\DeclareTranslation{traditionalchinese}{AdaptedFrom}{改編自}
+\DeclareTranslation{traditionalchinese}{Reaction}{反應}
+\DeclareTranslation{traditionalchinese}{Reactions}{反應}
+\DeclareTranslation{traditionalchinese}{Contfoot}{下頁繼續}
+\DeclareTranslation{traditionalchinese}{Conthead}{（續）}
+\DeclareTranslation{traditionalchinese}{BlankPage}{本頁有意留空。}
+\DeclareTranslation{traditionalchinese}{First}{第一}
+\DeclareTranslation{traditionalchinese}{Second}{第二}
+\DeclareTranslation{traditionalchinese}{LatexClass}{文件類}
+\DeclareTranslation{traditionalchinese}{Generator}{由以下生成}
+\DeclareTranslation{traditionalchinese}{Title}{標題}
+
+% ---- japanese ----
+\DeclareTranslation{japanese}{author}{著者}
+\DeclareTranslation{japanese}{CompiledOn}{コンパイル日時}
+\DeclareTranslation{japanese}{CensorNotice}{この部分は編集されています}
+\DeclareTranslation{japanese}{PlaceDate}{場所と日付}
+\DeclareTranslation{japanese}{Topic}{トピック}
+\DeclareTranslation{japanese}{Task}{タスク}
+\DeclareTranslation{japanese}{For}{宛先}
+\DeclareTranslation{japanese}{FirstExaminer}{第一審査員}
+\DeclareTranslation{japanese}{SecondExaminer}{第二審査員}
+\DeclareTranslation{japanese}{Supervisor}{指導教員}
+\DeclareTranslation{japanese}{Examiner}{審査員}
+\DeclareTranslation{japanese}{AuthorshipDeclTitle}{著作権宣言}
+\DeclareTranslation{japanese}{AuthorshipDeclText}{本作品が独自に作成されたことを宣言します。}
+\DeclareTranslation{japanese}{authorArticle}{著者}
+\DeclareTranslation{japanese}{Gloss}{用語集}
+\DeclareTranslation{japanese}{Acronyms}{略語}
+\DeclareTranslation{japanese}{Subscripts}{下付き文字}
+\DeclareTranslation{japanese}{Superscripts}{上付き文字}
+\DeclareTranslation{japanese}{SubSuperTitle}{下付き・上付き文字}
+\DeclareTranslation{japanese}{Greek}{ギリシャ文字}
+\DeclareTranslation{japanese}{Roman}{ローマ字}
+\DeclareTranslation{japanese}{Names}{名称}
+\DeclareTranslation{japanese}{Terms}{用語}
+\DeclareTranslation{japanese}{Other}{その他}
+\DeclareTranslation{japanese}{ListOfExamples}{例の一覧}
+\DeclareTranslation{japanese}{ListOfListings}{コード一覧}
+\DeclareTranslation{japanese}{ListOfIllustrations}{図の一覧}
+\DeclareTranslation{japanese}{IllustrativeElements}{図表}
+\DeclareTranslation{japanese}{Listing}{コード}
+\DeclareTranslation{japanese}{Listings}{コード一覧}
+\DeclareTranslation{japanese}{Example}{例}
+\DeclareTranslation{japanese}{Examples}{例}
+\DeclareTranslation{japanese}{FurtherReadingTitle}{参考文献}
+\DeclareTranslation{japanese}{FurtherReadingText}{詳細については以下の資料を参照してください。}
+\DeclareTranslation{japanese}{Constant}{定数}
+\DeclareTranslation{japanese}{PhysicalQuantity}{物理量}
+\DeclareTranslation{japanese}{Unit}{単位}
+\DeclareTranslation{japanese}{AdaptedFrom}{以下より改変}
+\DeclareTranslation{japanese}{Reaction}{反応}
+\DeclareTranslation{japanese}{Reactions}{反応}
+\DeclareTranslation{japanese}{Contfoot}{次ページに続く}
+\DeclareTranslation{japanese}{Conthead}{（続き）}
+\DeclareTranslation{japanese}{BlankPage}{このページは意図的に空白です。}
+\DeclareTranslation{japanese}{First}{第一}
+\DeclareTranslation{japanese}{Second}{第二}
+\DeclareTranslation{japanese}{LatexClass}{文書クラス}
+\DeclareTranslation{japanese}{Generator}{生成元}
+\DeclareTranslation{japanese}{Title}{タイトル}
+
+% ---- korean ----
+\DeclareTranslation{korean}{author}{저자}
+\DeclareTranslation{korean}{CompiledOn}{컴파일 시간}
+\DeclareTranslation{korean}{CensorNotice}{이 내용은 편집되었습니다}
+\DeclareTranslation{korean}{PlaceDate}{장소 및 날짜}
+\DeclareTranslation{korean}{Topic}{주제}
+\DeclareTranslation{korean}{Task}{과제}
+\DeclareTranslation{korean}{For}{수신}
+\DeclareTranslation{korean}{FirstExaminer}{제1심사위원}
+\DeclareTranslation{korean}{SecondExaminer}{제2심사위원}
+\DeclareTranslation{korean}{Supervisor}{지도교수}
+\DeclareTranslation{korean}{Examiner}{심사위원}
+\DeclareTranslation{korean}{AuthorshipDeclTitle}{저작권 선언}
+\DeclareTranslation{korean}{AuthorshipDeclText}{본인이 독자적으로 작성하였음을 선언합니다.}
+\DeclareTranslation{korean}{authorArticle}{저자}
+\DeclareTranslation{korean}{Gloss}{용어집}
+\DeclareTranslation{korean}{Acronyms}{약어}
+\DeclareTranslation{korean}{Subscripts}{아래 첨자}
+\DeclareTranslation{korean}{Superscripts}{위 첨자}
+\DeclareTranslation{korean}{SubSuperTitle}{아래/위 첨자}
+\DeclareTranslation{korean}{Greek}{그리스 문자}
+\DeclareTranslation{korean}{Roman}{로마자}
+\DeclareTranslation{korean}{Names}{이름}
+\DeclareTranslation{korean}{Terms}{용어}
+\DeclareTranslation{korean}{Other}{기타}
+\DeclareTranslation{korean}{ListOfExamples}{예제 목록}
+\DeclareTranslation{korean}{ListOfListings}{코드 목록}
+\DeclareTranslation{korean}{ListOfIllustrations}{그림 목록}
+\DeclareTranslation{korean}{IllustrativeElements}{도해}
+\DeclareTranslation{korean}{Listing}{코드}
+\DeclareTranslation{korean}{Listings}{코드 목록}
+\DeclareTranslation{korean}{Example}{예제}
+\DeclareTranslation{korean}{Examples}{예제}
+\DeclareTranslation{korean}{FurtherReadingTitle}{추가 자료}
+\DeclareTranslation{korean}{FurtherReadingText}{자세한 내용은 다음 자료를 참조하십시오.}
+\DeclareTranslation{korean}{Constant}{상수}
+\DeclareTranslation{korean}{PhysicalQuantity}{물리량}
+\DeclareTranslation{korean}{Unit}{단위}
+\DeclareTranslation{korean}{AdaptedFrom}{출처}
+\DeclareTranslation{korean}{Reaction}{반응}
+\DeclareTranslation{korean}{Reactions}{반응}
+\DeclareTranslation{korean}{Contfoot}{다음 페이지에 계속}
+\DeclareTranslation{korean}{Conthead}{(계속)}
+\DeclareTranslation{korean}{BlankPage}{의도적으로 비워 둔 페이지입니다.}
+\DeclareTranslation{korean}{First}{첫째}
+\DeclareTranslation{korean}{Second}{둘째}
+\DeclareTranslation{korean}{LatexClass}{문서 클래스}
+\DeclareTranslation{korean}{Generator}{생성자}
+\DeclareTranslation{korean}{Title}{제목}
+
+% ---- arabic ----
+\DeclareTranslation{arabic}{author}{المؤلف}
+\DeclareTranslation{arabic}{CompiledOn}{تاريخ الترجمة}
+\DeclareTranslation{arabic}{CensorNotice}{تم تحرير هذا المحتوى}
+\DeclareTranslation{arabic}{PlaceDate}{المكان والتاريخ}
+\DeclareTranslation{arabic}{Topic}{الموضوع}
+\DeclareTranslation{arabic}{Task}{المهمة}
+\DeclareTranslation{arabic}{For}{إلى}
+\DeclareTranslation{arabic}{FirstExaminer}{الممتحن الأول}
+\DeclareTranslation{arabic}{SecondExaminer}{الممتحن الثاني}
+\DeclareTranslation{arabic}{Supervisor}{المشرف}
+\DeclareTranslation{arabic}{Examiner}{الممتحن}
+\DeclareTranslation{arabic}{AuthorshipDeclTitle}{إقرار التأليف}
+\DeclareTranslation{arabic}{AuthorshipDeclText}{أقر بأن هذا العمل تم إنجازه بشكل مستقل.}
+\DeclareTranslation{arabic}{authorArticle}{المؤلف}
+\DeclareTranslation{arabic}{Gloss}{قاموس المصطلحات}
+\DeclareTranslation{arabic}{Acronyms}{المختصرات}
+\DeclareTranslation{arabic}{Subscripts}{منخفضات}
+\DeclareTranslation{arabic}{Superscripts}{مرتفعات}
+\DeclareTranslation{arabic}{SubSuperTitle}{المنخفضات والمرتفعات}
+\DeclareTranslation{arabic}{Greek}{يوناني}
+\DeclareTranslation{arabic}{Roman}{لاتيني}
+\DeclareTranslation{arabic}{Names}{أسماء}
+\DeclareTranslation{arabic}{Terms}{مصطلحات}
+\DeclareTranslation{arabic}{Other}{أخرى}
+\DeclareTranslation{arabic}{ListOfExamples}{قائمة الأمثلة}
+\DeclareTranslation{arabic}{ListOfListings}{قائمة الأكواد}
+\DeclareTranslation{arabic}{ListOfIllustrations}{قائمة الرسوم}
+\DeclareTranslation{arabic}{IllustrativeElements}{عناصر توضيحية}
+\DeclareTranslation{arabic}{Listing}{كود}
+\DeclareTranslation{arabic}{Listings}{الأكواد}
+\DeclareTranslation{arabic}{Example}{مثال}
+\DeclareTranslation{arabic}{Examples}{أمثلة}
+\DeclareTranslation{arabic}{FurtherReadingTitle}{قراءات إضافية}
+\DeclareTranslation{arabic}{FurtherReadingText}{يرجى الرجوع إلى المصادر التالية للمزيد من المعلومات.}
+\DeclareTranslation{arabic}{Constant}{ثابت}
+\DeclareTranslation{arabic}{PhysicalQuantity}{كمية فيزيائية}
+\DeclareTranslation{arabic}{Unit}{وحدة}
+\DeclareTranslation{arabic}{AdaptedFrom}{مقتبس من}
+\DeclareTranslation{arabic}{Reaction}{تفاعل}
+\DeclareTranslation{arabic}{Reactions}{تفاعلات}
+\DeclareTranslation{arabic}{Contfoot}{يستمر في الصفحة التالية}
+\DeclareTranslation{arabic}{Conthead}{(تابع)}
+\DeclareTranslation{arabic}{BlankPage}{تركت هذه الصفحة فارغة عمداً.}
+\DeclareTranslation{arabic}{First}{الأول}
+\DeclareTranslation{arabic}{Second}{الثاني}
+\DeclareTranslation{arabic}{LatexClass}{فئة المستند}
+\DeclareTranslation{arabic}{Generator}{تم إنشاؤه بواسطة}
+\DeclareTranslation{arabic}{Title}{العنوان}
+
+% ---- hebrew ----
+\DeclareTranslation{hebrew}{author}{מחבר}
+\DeclareTranslation{hebrew}{CompiledOn}{תאריך הידור}
+\DeclareTranslation{hebrew}{CensorNotice}{תוכן זה נערך}
+\DeclareTranslation{hebrew}{PlaceDate}{מקום ותאריך}
+\DeclareTranslation{hebrew}{Topic}{נושא}
+\DeclareTranslation{hebrew}{Task}{משימה}
+\DeclareTranslation{hebrew}{For}{עבור}
+\DeclareTranslation{hebrew}{FirstExaminer}{בוחן ראשון}
+\DeclareTranslation{hebrew}{SecondExaminer}{בוחן שני}
+\DeclareTranslation{hebrew}{Supervisor}{מנחה}
+\DeclareTranslation{hebrew}{Examiner}{בוחן}
+\DeclareTranslation{hebrew}{AuthorshipDeclTitle}{הצהרת מקוריות}
+\DeclareTranslation{hebrew}{AuthorshipDeclText}{אני מצהיר כי עבודה זו נעשתה באופן עצמאי.}
+\DeclareTranslation{hebrew}{authorArticle}{המחבר}
+\DeclareTranslation{hebrew}{Gloss}{מונחון}
+\DeclareTranslation{hebrew}{Acronyms}{ראשי תיבות}
+\DeclareTranslation{hebrew}{Subscripts}{כתב תחתי}
+\DeclareTranslation{hebrew}{Superscripts}{כתב עילי}
+\DeclareTranslation{hebrew}{SubSuperTitle}{כתב תחתי ועילי}
+\DeclareTranslation{hebrew}{Greek}{יווני}
+\DeclareTranslation{hebrew}{Roman}{לטיני}
+\DeclareTranslation{hebrew}{Names}{שמות}
+\DeclareTranslation{hebrew}{Terms}{מונחים}
+\DeclareTranslation{hebrew}{Other}{אחר}
+\DeclareTranslation{hebrew}{ListOfExamples}{רשימת דוגמאות}
+\DeclareTranslation{hebrew}{ListOfListings}{רשימת קוד}
+\DeclareTranslation{hebrew}{ListOfIllustrations}{רשימת איורים}
+\DeclareTranslation{hebrew}{IllustrativeElements}{איורים}
+\DeclareTranslation{hebrew}{Listing}{קוד}
+\DeclareTranslation{hebrew}{Listings}{רשימות קוד}
+\DeclareTranslation{hebrew}{Example}{דוגמה}
+\DeclareTranslation{hebrew}{Examples}{דוגמאות}
+\DeclareTranslation{hebrew}{FurtherReadingTitle}{לקריאה נוספת}
+\DeclareTranslation{hebrew}{FurtherReadingText}{אנא עיין במקורות הבאים למידע נוסף.}
+\DeclareTranslation{hebrew}{Constant}{קבוע}
+\DeclareTranslation{hebrew}{PhysicalQuantity}{גודל פיזיקלי}
+\DeclareTranslation{hebrew}{Unit}{יחידה}
+\DeclareTranslation{hebrew}{AdaptedFrom}{מעובד מתוך}
+\DeclareTranslation{hebrew}{Reaction}{תגובה}
+\DeclareTranslation{hebrew}{Reactions}{תגובות}
+\DeclareTranslation{hebrew}{Contfoot}{המשך בעמוד הבא}
+\DeclareTranslation{hebrew}{Conthead}{(המשך)}
+\DeclareTranslation{hebrew}{BlankPage}{דף זה הושאר ריק במכוון.}
+\DeclareTranslation{hebrew}{First}{ראשון}
+\DeclareTranslation{hebrew}{Second}{שני}
+\DeclareTranslation{hebrew}{LatexClass}{מחלקת מסמך}
+\DeclareTranslation{hebrew}{Generator}{נוצר על ידי}
+\DeclareTranslation{hebrew}{Title}{כותרת}
+
+\endinput

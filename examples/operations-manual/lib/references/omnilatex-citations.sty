@@ -1,0 +1,260 @@
+%% OmniLaTeX Citation Style Library
+%% Pre-configured biblatex styles for common academic publishers
+%%
+%% Usage: \usepackage{omnilatex-citations}
+%%        \citationstyle{ieee}
+%%
+%% Available styles:
+%%   ieee, acm, apa, chicago, nature, science, harvard, vancouver, mla,
+%%   turabian, abnt, mhra, cse, asa, bluebook
+%%
+%% Note: This package requires biblatex to already be loaded (as done by
+%%       omnilatex-biblio).  The dedicated biblatex style packages
+%%       (biblatex-ieee, biblatex-apa, etc.) must be installed in your
+%%       TeX distribution.  For styles without a dedicated package the
+%%       built-in numeric or authoryear style is used with appropriate
+%%       options.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/references/omnilatex-citations}[2026/06/06 v2.4.1 OmniLaTeX citation style library]
+
+\RequirePackage{kvoptions}
+
+% ── Helper: unknown style warning ─────────────────────
+
+\newcommand{\citationstyle@unknown}[1]{%
+  \PackageWarning{omnilatex-citations}{%
+    Unknown citation style '#1'.%
+    \MessageBreak
+    Available: ieee, acm, apa, chicago, nature, science, harvard, vancouver, mla, turabian, abnt, mhra, cse, asa, bluebook%
+  }%
+}
+
+% ── Dispatcher ────────────────────────────────────────
+
+\newcommand{\citationstyle}[1]{%
+  % Only load a dedicated biblatex-<style> package if biblatex has not
+  % been loaded yet.  OmniLaTeX always pre-loads biblatex with
+  % ext-authoryear (via omnilatex-biblio.sty), so loading another
+  % biblatex style on top would cause an option clash.
+  % Instead, apply style-specific options via \ExecuteBibliographyOptions.
+  \@ifundefined{citestyle@#1}{%
+    \citationstyle@unknown{#1}%
+  }{%
+    \csname citestyle@#1\endcsname%
+  }
+}
+
+% ── Style: IEEE ───────────────────────────────────────
+% Numeric, [1] brackets, citation order, 3 max names.
+
+\newcommand{\citestyle@ieee}{%
+  \ExecuteBibliographyOptions{%
+    sorting=none,
+    maxbibnames=99,
+    maxcitenames=3,
+    mincitenames=1,
+    giveninits=true,
+  }%
+}
+
+% ── Style: ACM ────────────────────────────────────────
+% Numeric, [1], alphabetical by author, up to 9 names.
+
+\newcommand{\citestyle@acm}{%
+  \ExecuteBibliographyOptions{%
+    sorting=nyt,
+    maxbibnames=9,
+    maxcitenames=3,
+    mincitenames=1,
+    giveninits=true,
+  }%
+}
+
+% ── Style: APA (7th edition) ─────────────────────────
+% Author-year, (Author, Year), alphabetical.
+
+\newcommand{\citestyle@apa}{%
+  \ExecuteBibliographyOptions{%
+    sorting=nyt,
+    maxbibnames=99,
+    maxcitenames=2,
+    mincitenames=1,
+    uniquelist=false,
+  }%
+}
+
+% ── Style: Chicago author-date ───────────────────────
+% Author-year, (Author Year), alphabetical.
+
+\newcommand{\citestyle@chicago}{%
+  \ExecuteBibliographyOptions{%
+    sorting=nyt,
+    maxbibnames=99,
+    maxcitenames=3,
+    mincitenames=1,
+    uniquelist=false,
+    ibidtracker=constrict,
+    idemtracker=constrict,
+  }%
+}
+
+% ── Style: Nature ────────────────────────────────────
+% Numeric, superscript, citation order.
+
+\newcommand{\citestyle@nature}{%
+  \ExecuteBibliographyOptions{%
+    sorting=none,
+    maxbibnames=99,
+    maxcitenames=6,
+    mincitenames=1,
+    giveninits=true,
+  }%
+}
+
+% ── Style: Science ───────────────────────────────────
+% Numeric, [1], citation order, 10 max names before et al.
+% Falls back to numeric with science-appropriate options when
+% biblatex-science is not installed.
+
+\newcommand{\citestyle@science}{%
+  \ExecuteBibliographyOptions{%
+    sorting=none,
+    maxbibnames=10,
+    maxcitenames=10,
+    mincitenames=3,
+    giveninits=true,
+    doi=false,
+    eprint=false,
+    url=false,
+    isbn=false,
+  }%
+}
+
+% ── Style: Harvard ───────────────────────────────────
+% Author-year, (Author, Year), alphabetical.
+% Uses authoryear with harvard-specific punctuation.
+
+\newcommand{\citestyle@harvard}{%
+  \ExecuteBibliographyOptions{%
+    sorting=nyt,
+    maxbibnames=99,
+    maxcitenames=2,
+    mincitenames=1,
+    uniquelist=false,
+    dashed=false,
+    punctfield=false,
+  }%
+}
+
+% ── Style: Vancouver ─────────────────────────────────
+% Numeric, [1], citation order, 6 max names.
+
+\newcommand{\citestyle@vancouver}{%
+  \ExecuteBibliographyOptions{%
+    sorting=none,
+    maxbibnames=6,
+    maxcitenames=6,
+    mincitenames=3,
+    giveninits=true,
+    uniquelist=false,
+    uniquenames=false,
+  }%
+}
+
+% ── Style: MLA (9th edition) ─────────────────────────
+% Author-page style, alphabetical by author.
+
+\newcommand{\citestyle@mla}{%
+  \ExecuteBibliographyOptions{%
+    sorting=nyt,
+    maxbibnames=3,
+    maxcitenames=3,
+    mincitenames=1,
+  }%
+}
+
+% -- Style: Turabian --
+% Author-date variant, similar to Chicago but with specific Turabian formatting
+\newcommand{\citestyle@turabian}{%
+  \ExecuteBibliographyOptions{%
+    sorting=nyt,
+    maxbibnames=99,
+    maxcitenames=3,
+    mincitenames=1,
+    uniquelist=false,
+    ibidtracker=constrict,
+    idemtracker=constrict,
+    locctracker=constrict,
+    giveninits=true,
+  }%
+}
+
+% -- Style: ABNT (Brazilian standards) --
+% Numeric, [1], alphabetical by author
+\newcommand{\citestyle@abnt}{%
+  \ExecuteBibliographyOptions{%
+    sorting=nyt,
+    maxbibnames=99,
+    maxcitenames=3,
+    mincitenames=1,
+    giveninits=true,
+    uniquelist=false,
+  }%
+}
+
+% -- Style: MHRA (Modern Humanities Research Association) --
+% Footnote-based, author-title style
+\newcommand{\citestyle@mhra}{%
+  \ExecuteBibliographyOptions{%
+    sorting=nyt,
+    maxbibnames=99,
+    maxcitenames=3,
+    mincitenames=1,
+    uniquelist=false,
+    ibidtracker=constrict,
+    idemtracker=constrict,
+    locctracker=constrict,
+  }%
+}
+
+% -- Style: CSE (Council of Science Editors) --
+% Author-year, name-year system
+\newcommand{\citestyle@cse}{%
+  \ExecuteBibliographyOptions{%
+    sorting=nyt,
+    maxbibnames=99,
+    maxcitenames=2,
+    mincitenames=1,
+    giveninits=true,
+    uniquelist=false,
+  }%
+}
+
+% -- Style: ASA (American Sociological Association) --
+% Author-year, similar to APA with sociology conventions
+\newcommand{\citestyle@asa}{%
+  \ExecuteBibliographyOptions{%
+    sorting=nyt,
+    maxbibnames=99,
+    maxcitenames=3,
+    mincitenames=1,
+    uniquelist=false,
+    giveninits=true,
+  }%
+}
+
+% -- Style: Bluebook (Legal) --
+% Footnote-based legal citation style
+\newcommand{\citestyle@bluebook}{%
+  \ExecuteBibliographyOptions{%
+    sorting=nyt,
+    maxbibnames=99,
+    maxcitenames=1,
+    mincitenames=1,
+    uniquelist=false,
+    ibidtracker=constrict,
+  }%
+}
+
+\endinput

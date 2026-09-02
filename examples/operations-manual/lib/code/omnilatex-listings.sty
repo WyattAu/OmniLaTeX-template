@@ -1,0 +1,96 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OmniLaTeX Code Listings Module
+%
+% Source code highlighting with minted
+% Part of OmniLaTeX-template modular architecture
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/code/omnilatex-listings}[2026/06/06 v2.4.1 OmniLaTeX listings module]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Minted Package
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Always enable caching for performance
+% Cache directory is _minted-<jobname> by default, but can be overridden by MINTED_CACHE_DIR
+\RequirePackage[newfloat=true,cache=true,cachedir=_minted]{minted}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Minted Configuration
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\setminted{%
+    autogobble=true,
+    style=default,
+    fontsize=\footnotesize,
+    breaklines=true,
+    breakanywhere=true,
+    escapeinside=¬¬,
+    frame=leftline,
+    framerule=1pt,
+    rulecolor=\color{g3},
+    numbers=left,
+    numberfirstline=true,
+    stepnumber=5,
+    numbersep=2pt,
+    style=manni,
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Listing Environment Setup
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\SetupFloatingEnvironment{listing}{%
+    name=\GetTranslation{Listing},
+    listname=\GetTranslation{ListOfListings},
+}
+
+\newenvironment{longlisting}{\captionsetup{type=listing}}{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Line Number Accessibility
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{accsupp}
+
+\newcommand*{\emptyaccsupp}[1]{%
+    \BeginAccSupp{ActualText={}}#1\EndAccSupp{}%
+}%
+
+\renewcommand*{\theFancyVerbLine}{%
+    \textcolor{g3}{\ttfamily\tiny\emptyaccsupp{\arabic{FancyVerbLine}}}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Code Annotation Commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand*{\phstring}[1]{%
+    \textcolor{cRed}{#1}%
+}%
+\newcommand*{\phnum}[1]{%
+    \textcolor{cBlue}{#1}%
+}%
+\newcommand*{\phother}[1]{%
+    \textcolor{cGreen}{#1}%
+}%
+\newcommand*{\phnote}[1]{%
+    {%
+            \hypersetup{allcolors=cOrange}% If references occur in here
+            \textbf{\textcolor{cOrange}{#1}}%
+        }%
+}%
+
+% Graceful degradation when enablecode=false.
+% NOTE: These MUST precede \endinput to be reachable.
+\@ifundefined{minted}{%
+  \newenvironment{minted}[2][]{\begin{verbatim}}{\end{verbatim}}%
+  \newcommand{\mintinline}[3][]{\texttt{#3}}%
+  \newcommand{\mint}[3][]{\texttt{#3}}%
+  \newcommand{\inputminted}[3][]{}%
+  \newenvironment{mintedlisting}[2][]{}{}%
+}{}
+
+\endinput

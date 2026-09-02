@@ -1,0 +1,32 @@
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Chalmers University of Technology Configuration
+%
+% Official brand colors and identity.
+% Usage: \documentclass[doctype=thesis,institution=chalmers]{omnilatex}
+%
+% Brand guidelines: https://www.chalmers.se/en/about-chalmers/profile-and-identity/
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}[2024-01-01]
+\ProvidesPackage{config/institutions/chalmers/chalmers}[2026/05/17 Chalmers University Configuration]
+
+% Primary: Chalmers Blue
+\definecolor{chalmersPrimary}{HTML}{003366}
+% Secondary: Chalmers Light Blue
+\definecolor{chalmersSecondary}{HTML}{00A5CF}
+
+% Standard OmniLaTeX theme integration aliases
+\colorlet{universityprimary}{chalmersPrimary}
+\colorlet{universitysecondary}{chalmersSecondary}
+
+% Logo: Place in assets/logos/chalmers/logo.{pdf,png,jpg}
+% \DeclareTranslation{english}{LogoInstitution}{%
+%     \includegraphics[height=1.5cm]{assets/logos/chalmers/logo}%
+% }
+
+\DeclareTranslation{english}{LogoInstitution}{%
+    \includegraphics[height=1.5cm]{assets/logos/placeholder/logo}%
+}
+\DeclareTranslation{english}{LinkInstitution}{https://www.chalmers.se}
+
+\endinput

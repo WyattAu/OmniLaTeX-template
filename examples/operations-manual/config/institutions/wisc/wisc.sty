@@ -1,0 +1,64 @@
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% University of Wisconsin-Madison Configuration
+%
+% Official brand colors and identity.
+% Usage: \documentclass[doctype=thesis,institution=wisc]{omnilatex}
+%
+% Brand guidelines: https://uwmadisonbrand.wisc.edu/
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/institutions/wisc/wisc}[2026-06-12 v1.0.0 University of Wisconsin-Madison Institution Configuration]
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Color Palette (Official Wisconsin Brand Guidelines)
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Primary: Badger Red
+\definecolor{universityprimary}{RGB}{197, 5, 12}
+% Secondary: White
+\definecolor{universitysecondary}{RGB}{255, 255, 255}
+% Accent: Black
+\definecolor{universityaccent}{RGB}{0, 0, 0}
+% Neutral: White
+\definecolor{universitywhite}{RGB}{255, 255, 255}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Logo
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Place your Wisconsin logo in: assets/logos/wisc/logo.pdf
+% Official logo download: https://uwmadisonbrand.wisc.edu/
+%
+% \DeclareTranslation{english}{LogoInstitution}{%
+%     \includegraphics[height=1.5cm]{assets/logos/wisc/logo}%
+% }
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Name
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareTranslation{english}{InstitutionName}{University of Wisconsin-Madison}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Link
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareTranslation{english}{LogoInstitution}{%
+    \includegraphics[height=1.5cm]{assets/logos/placeholder/logo}%
+}
+\DeclareTranslation{english}{LinkInstitution}{https://www.wisc.edu}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Apply Colors to Document Elements
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Section headings use Badger Red
+\addtokomafont{section}{\color{universityprimary}}
+\addtokomafont{subsection}{\color{universityprimary}}
+
+% Links and URLs use Badger Red
+\hypersetup{linkcolor=universityprimary, urlcolor=universityprimary}
+
+% Table rules use White
+\arrayrulecolor{universitysecondary}
+
+% Footer line uses Badger Red
+\cfoot*{\color{universityprimary}\rule{\textwidth}{0.4pt}}
+
+\endinput

@@ -1,0 +1,51 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/omnilatex-doctype-presentation}[2026/06/06 v2.4.1 OmniLaTeX presentation profile]
+
+\documenttype{Presentation}
+\documentfontsize{14pt}
+\documentlayout{DIV=12,headinclude=false,footinclude=false}
+\KOMAoptions{titlepage=false,twoside=false}
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setcounter{tocdepth}{0}
+
+\documentcolormode{color}
+\documentlinespacing{single}
+\documentparspacing{half}
+\documentitemspacing{normal}
+\documentfontmode{sans}
+\documentlinkstyle{color}
+\documentcodestyle{color}
+
+\RequirePackage{multicol}
+\RequirePackage{lib/layout/omnilatex-presentation}
+
+%% ── Beamer-specific class options ──────────────────
+%% These are set via \DeclareOption in omnilatex.cls
+%% and propagated to the presentation module.
+
+\AtBeginDocument{%
+    \setlength{\paperwidth}{254mm}%
+    \setlength{\paperheight}{190.5mm}%
+    \recalctypearea
+}
+
+%% Aspect ratio override: apply before document begins
+%% Valid values: 43, 169, 161, 149, 54, 32
+\makeatletter
+\@ifundefined{omnilatex@beameraspectratio}{}{%
+    \ClassInfo{presentation}{Beamer aspect ratio: \omnilatex@beameraspectratio}%
+}
+\@ifundefined{omnilatex@beamernavigationsymbols}{}{%
+    \ifomnilatex@beamernavigationsymbols
+        \presentationnavsymbolson
+    \else
+        \presentationnavsymbolsoff
+    \fi
+    \ClassInfo{presentation}{Beamer navigation symbols: \ifomnilatex@beamernavigationsymbols on\else off\fi}%
+}
+\makeatother
+
+\citationstyle{apa}
+
+\endinput

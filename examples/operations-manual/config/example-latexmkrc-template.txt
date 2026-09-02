@@ -1,0 +1,24 @@
+#!/bin/env perl
+
+# ======================================================================================
+{{ ... }}
+# Example-specific latexmkrc template
+# ======================================================================================
+# Copy this file to your example directory as .latexmkrc
+
+# CRITICAL: Set TEXINPUTS to include the root directory
+# This allows LaTeX to find lib/ and other shared resources (omnilatex.cls, lib/*.sty)
+# The notation means: current dir (.), then root recursively (../..///), then system paths (:)
+ensure_path('TEXINPUTS', '../..///:');
+
+# IMPORTANT: Also export to environment for subprocesses
+# This ensures LaTeX commands can find all files
+$ENV{'TEXINPUTS'} = '.:../..///:' . ($ENV{'TEXINPUTS'} || '');
+
+# Load root configuration (inherits all settings)
+do '../../.latexmkrc';
+
+# Add example-specific overrides below if needed
+# Examples:
+# $max_repeat = 8;  # If more LaTeX runs are needed
+# $pdf_mode = 4;    # Already set in root, but can override

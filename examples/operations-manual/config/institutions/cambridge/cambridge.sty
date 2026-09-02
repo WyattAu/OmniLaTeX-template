@@ -1,0 +1,64 @@
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% University of Cambridge Configuration
+%
+% Official brand colors and identity.
+% Usage: \documentclass[doctype=thesis,institution=cambridge]{omnilatex}
+%
+% Brand guidelines: https://www.cam.ac.uk/brand-guidelines/
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/institutions/cambridge/cambridge}[2026-04-24 v1.0.0 University of Cambridge Institution Configuration]
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Color Palette (Official Cambridge Brand Guidelines)
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Primary: Cambridge Green
+\definecolor{universityprimary}{RGB}{163, 193, 173}
+% Secondary: Cambridge Blue
+\definecolor{universitysecondary}{RGB}{0, 62, 125}
+% Accent: Cambridge Dark Gray
+\definecolor{universityaccent}{RGB}{118, 118, 118}
+% Neutral: White
+\definecolor{universitywhite}{RGB}{255, 255, 255}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Logo
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Place your Cambridge logo in: assets/logos/cambridge/logo.pdf
+% Official logo download: https://www.cam.ac.uk/brand-guidelines/
+%
+% \DeclareTranslation{english}{LogoInstitution}{%
+%     \includegraphics[height=1.5cm]{assets/logos/cambridge/logo}%
+% }
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Name
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareTranslation{english}{InstitutionName}{University of Cambridge}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Institution Link
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareTranslation{english}{LogoInstitution}{%
+    \includegraphics[height=1.5cm]{assets/logos/placeholder/logo}%
+}
+\DeclareTranslation{english}{LinkInstitution}{https://www.cam.ac.uk}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Apply Colors to Document Elements
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Section headings use Cambridge Blue
+\addtokomafont{section}{\color{universitysecondary}}
+\addtokomafont{subsection}{\color{universitysecondary}}
+
+% Links and URLs use Cambridge Blue
+\hypersetup{linkcolor=universitysecondary, urlcolor=universitysecondary}
+
+% Table rules use Dark Gray
+\arrayrulecolor{universityaccent}
+
+% Footer line uses Cambridge Green
+\cfoot*{\color{universityprimary}\rule{\textwidth}{0.4pt}}
+
+\endinput

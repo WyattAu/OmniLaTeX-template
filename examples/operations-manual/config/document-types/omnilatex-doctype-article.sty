@@ -1,0 +1,70 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/omnilatex-doctype-article}[2026/06/06 v2.4.1 OmniLaTeX article profile]
+
+\documenttype{Research Article}
+\documentfontsize{11pt}
+\documentlayout{DIV=12,headinclude=false,footinclude=false}
+\KOMAoptions{titlepage=true}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{2}
+
+\documentcolormode{color}
+\documentlinespacing{onehalf}
+\documentparspacing{half}
+\documentitemspacing{normal}
+\documentfontmode{serif}
+\documentlinkstyle{color}
+\documentcodestyle{color}
+
+\makeatletter
+
+\newcommand*{\omnilatex@articlefrontpage}{%
+    \begin{titlepage}
+        \raggedright
+        \thispagestyle{empty}%
+        \begin{center}
+            {\Large \textsc{Journal of Applied OmniLaTeX}}\\[1.25\baselineskip]
+            {\huge\bfseries\@title}\par\vspace{1.5\baselineskip}
+            {\large\@author}\par\vspace{0.75\baselineskip}
+            {\small\@date}\par\vspace{2\baselineskip}
+        \end{center}
+        \begin{abstract}
+            \@subtitle
+        \end{abstract}
+        \vspace{1.5\baselineskip}
+        \begin{center}
+            \begin{tabular}{@{}p{0.3\textwidth}p{0.6\textwidth}@{}}
+                Keywords: & \@keywords \\
+                DOI:      & \@doi      \\
+                Contact:  & \@contact  \\
+            \end{tabular}
+        \end{center}
+        \vfill
+        \noindent\rule{\textwidth}{0.4pt}\par
+        \noindent\textsf{\textbf{Author Affiliations}}\par
+        \@affiliation
+    \end{titlepage}
+}
+
+\renewcommand{\maketitle}{%
+    \omnilatex@articlefrontpage
+    \setcounter{footnote}{0}% reset after titlepage
+    \let\thanks\@gobble
+}
+
+\providecommand*{\@subtitle}{\relax}
+\providecommand*{\subtitle}[1]{\gdef\@subtitle{#1}}
+\providecommand*{\@keywords}{n/a}
+\providecommand*{\keywords}[1]{\gdef\@keywords{#1}}
+\providecommand*{\@doi}{pending}
+\providecommand*{\doi}[1]{\gdef\@doi{#1}}
+\providecommand*{\@contact}{}
+\providecommand*{\contact}[1]{\gdef\@contact{#1}}
+\providecommand*{\@affiliation}{Independent Researcher}
+\providecommand*{\affiliation}[1]{\gdef\@affiliation{#1}}
+
+\makeatother
+
+\citationstyle{ieee}  % Default for this doctype; override via \citationstyle{}
+
+\endinput

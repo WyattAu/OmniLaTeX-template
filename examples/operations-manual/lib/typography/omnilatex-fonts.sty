@@ -1,0 +1,193 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OmniLaTeX Typography Module - Fonts
+%
+% Font configuration and loading
+% Part of OmniLaTeX-template modular architecture
+%
+% Deterministic font loading (P1-T03):
+%   - All fonts loaded by explicit name, not glob-based discovery.
+%   - Loading order is fixed: main -> mono -> sans -> math -> unit -> icons.
+%   - Font fallbacks use \IfFontExistsTF for graceful degradation.
+%   - Two builds with identical SOURCE_DATE_EPOCH produce identical font tables.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/typography/omnilatex-fonts}[2026/06/06 v2.4.1 OmniLaTeX fonts module]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Font Configuration for LuaLaTeX
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{fontspec}
+% Note: fix-cm intentionally NOT loaded — it is a pdfLaTeX package for
+% scaling Computer Modern bitmaps. OmniLaTeX uses LuaLaTeX with fontspec
+% (OTF/TTF fonts), so fix-cm is unnecessary and can cause warnings.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Math Fonts (load before font setup)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{amsmath}
+\RequirePackage{lualatex-math}
+\RequirePackage{amssymb}
+\RequirePackage[
+    warnings-off={
+            % Unicode overwrites colon-commands but uses over/underbracket from mathtools
+            % and warns us; suppress this:
+            mathtools-colon,%
+            mathtools-overbracket,%
+        }
+]{unicode-math}% Builds onto fontspec and loads it automatically
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Fonts shipped with TeXLive
+% Source: https://tug.org/FontCatalogue/
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% ── Font Setter Commands ──────────────────────────────────────────────────────
+% Users call these in the preamble to override the default fonts.
+% Each setter checks that the font exists before applying.
+% These apply the font immediately via fontspec, so call them after
+% \documentclass but before \begin{document}.
+%
+% Usage:
+%   \setMainFont{TeX Gyre Termes}
+%   \setSansFont{Fira Sans}
+%   \setMonoFont[Scale=MatchLowercase]{Fira Code}
+%   \setMathFont{TeX Gyre Termes Math}
+%
+% If no setter is called, the OmniLaTeX defaults (Libertinus family) are used.
+
+\newcommand{\setMainFont}[1]{%
+    \IfFontExistsTF{#1}{%
+        \setmainfont[Numbers=Lowercase,Scale=MatchLowercase]{#1}%
+    }{%
+        \ClassWarning{omnilatex-fonts}{Font '#1' not found. Main font unchanged.}%
+    }%
+}
+
+\newcommand{\setSansFont}[1]{%
+    \IfFontExistsTF{#1}{%
+        \setsansfont[Scale=MatchLowercase]{#1}%
+    }{%
+        \ClassWarning{omnilatex-fonts}{Font '#1' not found. Sans font unchanged.}%
+    }%
+}
+
+\newcommand{\setMonoFont}[2][]{%
+    \IfFontExistsTF{#2}{%
+        \setmonofont[Scale=MatchLowercase,#1]{#2}%
+    }{%
+        \ClassWarning{omnilatex-fonts}{Font '#2' not found. Mono font unchanged.}%
+    }%
+}
+
+\newcommand{\setMathFont}[1]{%
+    \IfFontExistsTF{#1}{%
+        \setmathfont[
+            mathrm=sym,mathit=sym,mathsf=sym,mathbf=sym,mathtt=sym,%
+            NFSSFamily=libertinus,%
+            BoldItalicFont={},ItalicFont={},SmallCapsFont={},%
+        ]{#1}%
+    }{%
+        \ClassWarning{omnilatex-fonts}{Font '#1' not found. Math font unchanged.}%
+    }%
+}
+
+% ── Default Font Loading ─────────────────────────────────────────────────────
+
+% mathtools must load before unicode-math (loaded by \setmainfont).
+% This eliminates the 'For best results, please load mathtools *before*'
+% warning (147×).  The math module re-requires it as a no-op.
+\RequirePackage{mathtools}
+
+% Pre-register CJK font fallback (may be empty if Noto CJK missing).
+% Must be done BEFORE \setmainfont so luaotfload knows the fallback name.
+\directlua{
+  luaotfload.add_fallback("omnilatexCJKFallback", {
+    "NotoSerifCJKSC:mode=harf;script=hani;",
+    "NotoSansCJKSC:mode=harf;script=hani;",
+    "NotoSansMonoCJKSC:mode=harf;script=hani;",
+  })
+}
+
+% Apply CJK fallback to default fonts IF Noto CJK is installed.
+\IfFontExistsTF{Noto Sans CJK SC}{%
+  \defaultfontfeatures{RawFeature={fallback=omnilatexCJKFallback}}%
+}{}
+
+% Main font: Libertinus Serif (replacing TeX Gyre Pagella)
+\setmainfont[
+    Numbers=Lowercase,% Hanging/OldStyle numbers through Lowercase numbers
+    % Proper scaling for consistent appearance with other fonts
+    Scale=MatchLowercase,
+]{Libertinus Serif}
+
+% Monospace font: Monaspace Neon (replacing Inconsolata)
+% Source: https://github.com/chriskapp/neon-monospace
+\IfFontExistsTF{Monaspace Neon}{%
+    \setmonofont[
+        % Monaspace Neon has proper italics support
+        Scale=MatchLowercase,% Prettier when using inline-code alongside our main font
+    ]{Monaspace Neon}%
+}{%
+    \ClassWarning{omnilatex-fonts}{Monaspace Neon not found. Falling back to Latin Modern Mono. Install from: https://github.com/chriskapp/neon-monospace}%
+    \setmonofont[
+        Scale=MatchLowercase,
+    ]{Latin Modern Mono}%
+}
+
+% Sans font: Atkinson Hyperlegible Next (replacing Merriweather Sans)
+\IfFontExistsTF{Atkinson Hyperlegible Next}{%
+    \setsansfont{Atkinson Hyperlegible Next}%
+}{%
+    \ClassWarning{omnilatex-fonts}{Atkinson Hyperlegible Next not found. Falling back to Libertinus Sans.}%
+    \setsansfont[
+        Scale=MatchLowercase,
+    ]{Libertinus Sans}%
+}
+
+% Math font: Libertinus Math (replacing TeX Gyre Pagella Math)
+% Source: https://github.com/alif-type/libertinus
+\setmathfont[
+    %Set math-font-commands to new versions; use \symbf{} instead of \mathbf{} etc:
+    mathrm=sym,%
+    mathit=sym,%
+    mathsf=sym,%
+    mathbf=sym,%
+    mathtt=sym,%
+    % 'libertinus': 'LibertinusSerif' NFSS family.
+    % This 'NFSS' style is required for \fontfamily{nfss-code}\selectfont to work,
+    % e.g., in package chemmacros/chemformula
+    NFSSFamily=libertinus,%
+    BoldItalicFont={},%
+    ItalicFont={},%
+    SmallCapsFont={},%
+]{Libertinus Math}
+
+% Suppress the Libertinus b/n font shape warning by providing a fallback.
+% The NFSSFamily=libertinus created by \setmathfont above does not include a
+% bold upright (b/n) shape in Libertinus Math.  Map it to the regular (m/n) shape.
+\DeclareFontShape{TU}{libertinus}{b}{n}{<->ssub*libertinus/m/n}{}
+
+% Provide a new font family for siunitx to work.
+% See: https://tex.stackexchange.com/a/468031/120853.
+% \newfontfamily is used similarly to \setmainfont etc,
+% see: https://tex.stackexchange.com/a/12568/120853
+\newfontfamily{\unitnumberfont}[
+    % New font family for typesetting units.
+    % Required since otherwise, numbers typeset with \qty/\num etc. from siunitx
+    % might be hanging if that feature is turned on in the main font (OldStyle numbers).
+    % To ensure these physical numbers are always upright, set Numbers:
+    Numbers=Uppercase,
+    % Proper scaling for consistency with main text
+    Scale=MatchLowercase,
+]{Libertinus Serif}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Special Symbols and Icons
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{fontawesome5}% High-quality Unicode vector web symbols
+
+\endinput

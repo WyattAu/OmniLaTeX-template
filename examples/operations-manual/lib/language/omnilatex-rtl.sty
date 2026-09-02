@@ -1,0 +1,282 @@
+%% OmniLaTeX RTL Language Support
+%% Arabic, Persian and Hebrew right-to-left typography
+%%
+%% Usage: Loaded automatically when language=arabic, language=persian or language=hebrew
+%%        Or: \usepackage{lib/language/omnilatex-rtl}
+%%
+%% Features:
+%%   - Bidi paragraph direction via the bidi package
+%%   - RTL-aware page layout (mirrored margins, binding side)
+%%   - Script-specific font configuration (Arabic, Hebrew)
+%%   - Arabic-Indic numeral option
+%%   - LTR math mode within RTL text
+%%   - Right-aligned list markers and TOC dot leaders
+%%
+%% Requirements: LuaLaTeX + bidi + fontspec (bundled with TeX Live)
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/language/omnilatex-rtl}[2026/06/06 v2.4.1 OmniLaTeX RTL language support]
+
+% ── Core Bidi Engine ────────────────────────────────────────────────────────
+% The bidi package provides the fundamental RTL typesetting layer for LuaLaTeX.
+% It redefines many LaTeX internals to be direction-aware, including paragraph
+% layout, list environments, TOC leaders, and float placement.
+
+
+% ── Font Configuration ──────────────────────────────────────────────────────
+% Default Arabic and Hebrew font families. These are widely available in TeX
+% Live or as system fonts. Users can override per-script with the setter
+% commands below.
+%
+% IMPORTANT: Do NOT use \providecommand for \arabicfont/\hebrewfont here.
+% The cls pre-defines these as font families (\newfontfamily) for polyglossia
+% compatibility. Using \providecommand would create them as text macros,
+% preventing the cls from setting them up properly.
+%
+% Instead, we store defaults in internal macros and let the cls and
+% \omnilatex@apply@*fonts handle the actual \newfontfamily calls.
+
+\newcommand{\omnilatex@arabicfont@default}{Amiri}
+\newcommand{\omnilatex@arabicfont@bold@default}{Amiri Bold}
+\newcommand{\omnilatex@hebrewfont@default}{David CLM}
+\newcommand{\omnilatex@hebrewfont@bold@default}{David CLM Bold}
+
+% ── Font Setter Commands ────────────────────────────────────────────────────
+% Users call these in the preamble to change fonts before setup is applied.
+% Changing the font after \begin{document} is not supported.
+
+\newcommand{\setArabicFont}[1]{%
+  \renewcommand{\omnilatex@arabicfont@default}{#1}%
+  \@ifundefined{arabicfont}{}{%
+    \expandafter\newfontfamily\expandafter\arabicfont\expandafter[%
+      Script=Arabic,BoldFont=#1,BoldFeatures={FakeBold=2}]{#1}%
+  }%
+}
+\newcommand{\setArabicBoldFont}[1]{%
+  \renewcommand{\omnilatex@arabicfont@bold@default}{#1}%
+}
+\newcommand{\setHebrewFont}[1]{%
+  \renewcommand{\omnilatex@hebrewfont@default}{#1}%
+  \@ifundefined{hebrewfont}{}{%
+    \expandafter\newfontfamily\expandafter\hebrewfont\expandafter[%
+      Script=Hebrew,BoldFont=#1,BoldFeatures={FakeBold=2}]{#1}%
+  }%
+}
+\newcommand{\setHebrewBoldFont}[1]{%
+  \renewcommand{\omnilatex@hebrewfont@bold@default}{#1}%
+}
+
+% ── Script Detection ────────────────────────────────────────────────────────
+% Track which RTL script is active so other parts of the template can query it.
+% Valid values: arabic, persian, hebrew.
+
+\newcommand{\omnilatex@rtlscript}{arabic}
+
+% ── Arabic-Indic Numerals ───────────────────────────────────────────────────
+% When enabled, Arabic documents use Arabic-Indic digits (٠١٢٣٤٥٦٧٨٩)
+% instead of Western Arabic digits (0123456789). Off by default.
+
+\newif\ifomnilatex@arabicindic
+\omnilatex@arabicindicfalse
+
+\newcommand{\arabicindictrue}{\omnilatex@arabicindictrue}
+\newcommand{\arabicindicfalse}{\omnilatex@arabicindicfalse}
+
+% ── RTL Page Layout ─────────────────────────────────────────────────────────
+% For RTL documents, mirror the margins so the binding edge is on the right
+% side (the "inner" edge for RTL). Adjust KOMA-Script's typearea binding
+% correction accordingly.
+
+\newcommand{\omnilatex@setup@rtl@layout}{%
+  \KOMAoptions{twoside=true,BCOR=0mm}%
+}
+
+% ── Math Mode Direction ─────────────────────────────────────────────────────
+% Mathematical expressions must remain left-to-right even inside RTL text.
+% The bidi package handles this automatically for display math, but inline
+% math ($...$) needs explicit direction enforcement.
+
+\newcommand{\omnilatex@setup@rtl@math}{%
+  \everymath{\displaystyle\textdirection=0}%
+}
+
+% ── List Alignment ──────────────────────────────────────────────────────────
+% RTL list environments should have markers on the right side.
+% The bidi package redefines itemize/enumerate automatically, but we
+% provide explicit hook points for further customization.
+
+\newcommand{\omnilatex@setup@rtl@lists}{%
+  % bidi package handles list marker placement.
+  % Adjust labelsep for slightly tighter RTL lists.
+  \setlength{\labelsep}{0.5em}%
+}
+
+% ── TOC Dot Leaders ─────────────────────────────────────────────────────────
+% The bidi package redefines TOC leaders to be right-aligned for RTL.
+% No additional configuration is needed.
+
+% ── Font Application: Arabic ────────────────────────────────────────────────
+% Set up Arabic script fonts with graceful fallback. If the requested font is
+% not found, emit a ClassWarning and fall back to Noto Naskh Arabic (bundled
+% with TeX Live).
+
+\newcommand{\omnilatex@apply@arabicfonts}{%
+  \@ifundefined{arabicfontfamily}{%
+    \IfFontExistsTF{\omnilatex@arabicfont@default}{%
+      \IfFontExistsTF{\omnilatex@arabicfont@bold@default}{%
+        \newfontfamily\arabicfontfamily[Script=Arabic,
+          BoldFont=\omnilatex@arabicfont@bold@default]{\omnilatex@arabicfont@default}%
+      }{%
+        \newfontfamily\arabicfontfamily[Script=Arabic,
+          BoldFont=\omnilatex@arabicfont@default,
+          BoldFeatures={FakeBold=2}]{\omnilatex@arabicfont@default}%
+      }%
+    }{%
+      \ClassWarning{omnilatex-rtl}{%
+        Arabic font '\omnilatex@arabicfont@default' not found,
+        using Noto Naskh Arabic\MessageBreak}%
+      \newfontfamily\arabicfontfamily[Script=Arabic]{Noto Naskh Arabic}%
+    }%
+  }{}%
+}
+
+% ── Font Application: Hebrew ────────────────────────────────────────────────
+% Set up Hebrew script fonts with graceful fallback chain:
+% David CLM → Frank Ruehl CLM → Noto Sans Hebrew
+
+\newcommand{\omnilatex@apply@hebrewfonts}{%
+  \@ifundefined{hebrewfontfamily}{%
+    \IfFontExistsTF{\omnilatex@hebrewfont@default}{%
+      \IfFontExistsTF{\omnilatex@hebrewfont@bold@default}{%
+        \newfontfamily\hebrewfontfamily[Script=Hebrew,
+          BoldFont=\omnilatex@hebrewfont@bold@default}{\omnilatex@hebrewfont@default}%
+      }{%
+        \newfontfamily\hebrewfontfamily[Script=Hebrew,
+          BoldFont=\omnilatex@hebrewfont@default,
+          BoldFeatures={FakeBold=2}]{\omnilatex@hebrewfont@default}%
+      }%
+    }{%
+      \IfFontExistsTF{Frank Ruehl CLM}{%
+        \ClassWarning{omnilatex-rtl}{%
+          Hebrew font '\omnilatex@hebrewfont@default' not found,
+          using Frank Ruehl CLM\MessageBreak}%
+        \newfontfamily\hebrewfontfamily[Script=Hebrew]{Frank Ruehl CLM}%
+      }{%
+        \ClassWarning{omnilatex-rtl}{%
+          Hebrew fonts '\omnilatex@hebrewfont@default' and
+          Frank Ruehl CLM not found,
+          using Noto Sans Hebrew\MessageBreak}%
+        \newfontfamily\hebrewfontfamily[Script=Hebrew]{Noto Sans Hebrew}%
+      }%
+    }%
+  }{}%
+}
+
+% ── Setup: Arabic ───────────────────────────────────────────────────────────
+% Complete Arabic RTL setup: fonts, numerals, polyglossia, math, lists.
+
+\newcommand{\omnilatex@setup@arabic}{%
+  \renewcommand{\omnilatex@rtlscript}{arabic}%
+  \omnilatex@setup@rtl@layout%
+  \omnilatex@apply@arabicfonts%
+  \omnilatex@setup@rtl@math%
+  \omnilatex@setup@rtl@lists%
+  % Arabic-Indic numerals
+  \ifomnilatex@arabicindic
+    \makeatletter
+    \def\@arabic##1{\expandafter\arabic@indic\expandafter{\the\numexpr##1\relax}}%
+    \newcount\@indic@temp
+    \def\arabic@indic##1{%
+      \@indic@temp=##1\relax
+      \ifnum\@indic@temp>9\relax
+        \expandafter\arabic@indic\expandafter
+          {\the\numexpr\@indic@temp/10\relax}%
+        \expandafter\arabic@indic\expandafter
+          {\the\numexpr\@indic@temp-10*(\@indic@temp/10)\relax}%
+      \else
+        \ifcase\@indic@temp ٠\or ١\or ٢\or ٣\or ٤\or
+        ٥\or ٦\or ٧\or ٨\or ٩\fi
+      \fi
+    }%
+    \makeatother
+  \fi
+}
+
+% ── Setup: Hebrew ───────────────────────────────────────────────────────────
+% Complete Hebrew RTL setup: fonts, polyglossia, math, lists.
+
+\newcommand{\omnilatex@setup@hebrew}{%
+  \renewcommand{\omnilatex@rtlscript}{hebrew}%
+  \omnilatex@setup@rtl@layout%
+  \omnilatex@apply@hebrewfonts%
+  \omnilatex@setup@rtl@math%
+  \omnilatex@setup@rtl@lists%
+  %% Font warm-up: typeset one character in a zero-height box
+  %% to preload the Hebrew font without leaking visible text.
+  \AtBeginDocument{\setbox0=\hbox{\hebrewfont א}}%
+}
+
+\newcommand{\omnilatex@setup@persian}{%
+  \renewcommand{\omnilatex@rtlscript}{persian}%
+  \omnilatex@setup@rtl@layout%
+  \omnilatex@apply@arabicfonts%
+  \omnilatex@setup@rtl@math%
+  \omnilatex@setup@rtl@lists%
+}
+
+% ── RTL Title Page Font Override ────────────────────────────────────────────
+% KOMA's \usekomafont{title} uses \sffamily which overrides fontspec's
+% automatic script-based font detection. For Arabic/Hebrew, we replace
+% \sffamily with the script-specific font family so the title page
+% renders in the correct script font.
+
+\AtBeginDocument{%
+  \IfStrEq{\omnilatex@rtlscript}{arabic}{%
+    \setkomafont{title}{\arabicfont\bfseries\Huge}%
+    \setkomafont{author}{\arabicfont\bfseries}%
+    \setkomafont{subtitle}{\arabicfont\normalsize}%
+    \setkomafont{date}{\arabicfont\normalsize}%
+    \setkomafont{publishers}{\arabicfont}%
+  }{}%
+  \IfStrEq{\omnilatex@rtlscript}{hebrew}{%
+    \setkomafont{title}{\hebrewfont\bfseries\Huge}%
+    \setkomafont{author}{\hebrewfont\bfseries}%
+    \setkomafont{subtitle}{\hebrewfont\normalsize}%
+    \setkomafont{date}{\hebrewfont\normalsize}%
+    \setkomafont{publishers}{\hebrewfont}%
+  }{}%
+  \IfStrEq{\omnilatex@rtlscript}{persian}{%
+    \setkomafont{title}{\arabicfont\bfseries\Huge}%
+    \setkomafont{author}{\arabicfont\bfseries}%
+    \setkomafont{subtitle}{\arabicfont\normalsize}%
+    \setkomafont{date}{\arabicfont\normalsize}%
+    \setkomafont{publishers}{\arabicfont}%
+  }{}%
+}
+
+% ── Auto-Script Detection ───────────────────────────────────────────────────
+% When this package is loaded, detect the document language from
+% \omnilatex@language (set by omnilatex.cls) and apply the appropriate
+% RTL setup. This runs unconditionally; the class guards loading to only
+% arabic/hebrew languages.
+
+\providecommand{\omnilatex@language}{}
+\@ifundefined{omnilatex@language}{}{%
+  \IfStrEq{\omnilatex@language}{arabic}{\omnilatex@setup@arabic}{}%
+  \IfStrEq{\omnilatex@language}{persian}{\omnilatex@setup@persian}{}%
+  \IfStrEq{\omnilatex@language}{hebrew}{\omnilatex@setup@hebrew}{}%
+}
+
+% ── Convenience: LTR Inline Override ────────────────────────────────────────
+% For short inline passages of LTR text inside an RTL document, use
+% \LTRinline{...}. This is a thin wrapper around bidi's \textLR.
+
+\newcommand{\LTRinline}[1]{\textLR{#1}}
+
+% ── Convenience: RTL Inline Override ────────────────────────────────────────
+% For short inline passages of RTL text inside an LTR document, use
+% \RTLinline{...}. This wraps bidi's \textRL.
+
+\newcommand{\RTLinline}[1]{\textRL{#1}}
+
+\endinput

@@ -1,0 +1,70 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OmniLaTeX Typesetting Module
+%
+% Typography helpers, line spacing, and quotation support
+% Part of OmniLaTeX-template modular architecture
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/typography/omnilatex-typesetting}[2026/06/06 v2.4.1 OmniLaTeX typesetting module]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Typesetting Helpers
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Using 'shortcuts' package option, do e.g., 'fast\-/paced' to get a breakable
+% 'fast-pace' word in print.
+% Otherwise, LaTeX does not hyphenate/linebreak words that already come with a hyphen,
+% since that could be ambiguous
+\RequirePackage[shortcuts]{extdash}
+
+\RequirePackage{microtype}% Advanced typesetting for kerning etc.
+
+% Enable hyphenation and improve paragraph breaking for ragged-right text
+\RequirePackage{ragged2e}%
+
+% Dummy text in readable English (Other languages are also detected)
+% Provides a more realistic preview than Lorem Ipsum
+\RequirePackage{blindtext}
+
+\RequirePackage{pdflscape}% Pages in landscape format
+
+\RequirePackage{url}% Escaping special chars as URL
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Line Spacing
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Loaded by omnilatex-base.sty
+% Note: singlespacing option is set at the class level in omnilatex.cls
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Quotation Support
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Proper quotation support, mainly through \enquote
+\RequirePackage[
+    autostyle=true,% true always adapts quotes to current language
+]
+{csquotes}
+% Change the default used cite command to \parencite
+% Must be done after biblatex is loaded; guard for non-biblatex contexts (e.g., beamer)
+\AtBeginDocument{%
+    \@ifundefined{parencite}{}{%
+        \SetCiteCommand{\parencite}%
+    }%
+}
+% Add itshape to beginning (beg) of display quote environments:
+\renewcommand*{\mkbegdispquote}[2]{\itshape}
+
+% Set text to ragged-right with proper hyphenation.
+% This improves readability and avoids underfull hbox warnings.
+% \RaggedRightRightskip controls how much stretch appears at line ends.
+% Default 0pt plus 2em is fine; increase emergencystretch for narrow columns.
+\setlength{\RaggedRightRightskip}{0pt plus 2em}
+\setlength{\RaggedRightParindent}{1.5em}
+% Suppress invisible overfull warnings (boxes wider by <0.5pt are imperceptible)
+\setlength{\hfuzz}{0.5pt}
+\RaggedRight
+
+\endinput

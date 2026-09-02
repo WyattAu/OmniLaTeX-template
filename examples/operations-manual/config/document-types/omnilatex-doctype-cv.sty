@@ -1,0 +1,119 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{config/document-types/omnilatex-doctype-cv}[2026/06/06 v2.4.1 OmniLaTeX CV profile]
+
+\RequirePackage{adjustbox}
+\RequirePackage{multicol}
+\RequirePackage{tikz}
+\RequirePackage{fontawesome5}
+
+\documenttype{Curriculum Vitae}
+\documentfontsize{10pt}
+\documentlayout{DIV=12,headinclude=false,footinclude=false,headsepline=false}
+\sloppy
+\KOMAoptions{titlepage=false,twoside=false}
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setcounter{tocdepth}{0}
+
+\documentcolormode{bw}
+\documentlinespacing{0.9}
+\documentparspacing{half}
+\documentitemspacing{compact}
+\documentfontmode{sans}
+\documentlinkstyle{color}
+\documentcodestyle{bw}
+
+\setlength{\itemsep}{0pt} % default minimal bullet spacing
+
+\makeatletter
+
+\newcommand*{\omnilatex@cvheader}{%
+    \begingroup
+    \setlength{\parindent}{0pt}%
+    \ifx\@cvimage\@empty
+    \begin{minipage}[c]{\textwidth}
+        \vspace{-0.5\baselineskip}
+        \raggedright
+        {\Large\bfseries\@title}\par
+        \ifx\@cvrole\@empty\else{\normalsize\itshape\@cvrole}\par\fi
+        \begingroup
+        \small
+        \ifx\@cvlocation\@empty\else\textbf{\@cvlocation}\par\fi
+        \ifx\@cvphone\@empty\else{\@cvphone} \textbullet{} \fi
+        \ifx\@cvcontact\@empty\else\@cvcontact \fi
+        \par
+        \ifx\@cvlinks\@empty\else\@cvlinks\par\fi
+        \endgroup
+    \end{minipage}%
+    \else
+        \begin{minipage}[c]{2.5cm}
+            \raggedright
+            \tikz[baseline=(char.base)]{\clip (0,0) circle (1cm); \useasboundingbox (0,0) circle (1cm); \node[inner sep=0pt] (char) {\adjustimage{width=2cm,height=2cm}{\@cvimage}};} % circular image placeholder
+        \end{minipage}%
+        \hspace{1em}
+        \begin{minipage}[c]{\dimexpr\textwidth-1.5cm-1em\relax}
+        \vspace{-0.5\baselineskip}
+        \raggedright
+        {\Large\bfseries\@title}\par
+        \ifx\@cvrole\@empty\else{\normalsize\itshape\@cvrole}\par\fi
+        \begingroup
+        \small
+        \ifx\@cvlocation\@empty\else\textbf{\@cvlocation}\par\fi
+            \ifx\@cvphone\@empty\else{\@cvphone} \textbullet{} \fi
+            \ifx\@cvcontact\@empty\else\@cvcontact \fi
+            \par
+            \ifx\@cvlinks\@empty\else\@cvlinks\par\fi
+            \endgroup
+            \end{minipage}%
+    \fi
+    \endgroup
+}
+
+\renewcommand{\maketitle}{%
+    \omnilatex@cvheader
+    \vspace{0.5\baselineskip}
+    \ifx\@cvsummary\@empty\else
+        \hrule
+        \vspace{0.2\baselineskip}
+        {\raggedright \@cvsummary}
+        \vspace{0.2\baselineskip}
+        \hrule
+    \fi
+}
+
+\let\oldsection\section
+\renewcommand{\section}[1]{\oldsection{#1}\vspace{-0.5\baselineskip}\hrule\vspace{0.5\baselineskip}}
+
+\providecommand*{\@cvrole}{\@author}
+\newcommand*{\cvrole}[1]{\gdef\@cvrole{#1}}
+\providecommand*{\@cvcontact}{\@date}
+\newcommand*{\cvcontact}[1]{\gdef\@cvcontact{#1}}
+\providecommand*{\@cvlocation}{}
+\newcommand*{\cvlocation}[1]{\gdef\@cvlocation{#1}}
+\providecommand*{\@cvphone}{}
+\newcommand*{\cvphone}[1]{\gdef\@cvphone{#1}}
+\providecommand*{\@cvlinks}{}
+\newcommand*{\cvlinks}[1]{\gdef\@cvlinks{#1}}
+\providecommand*{\@cvsummary}{}
+\newcommand*{\cvsummary}[1]{\gdef\@cvsummary{#1}}
+\providecommand*{\@cvimage}{}
+\newcommand*{\cvimage}[1]{\gdef\@cvimage{#1}}
+
+\providecommand*{\@cvbulletspacing}{0pt}
+\newcommand*{\cvbulletspacing}[1]{\gdef\@cvbulletspacing{#1}\setlength{\itemsep}{#1}}
+
+\newcommand*{\omnilatex@cvlanguages}{%
+    \begingroup
+    \raggedleft
+    \section{Languages}
+    \begin{itemize}
+        \item English (Native), German (Professional), French (Intermediate)
+    \end{itemize}
+    \endgroup
+}
+
+\makeatother
+
+\citationstyle{apa}  % Default for this doctype; override via \citationstyle{}
+
+\endinput

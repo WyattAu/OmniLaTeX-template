@@ -1,0 +1,84 @@
+%% omnilatex-beamer.sty
+%% OmniLaTeX Beamer integration
+%% Applies OmniLaTeX color and font system to Beamer presentations.
+%%
+%% This module is loaded automatically when doctype=beamer.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lib/graphics/omnilatex-beamer}[2026/06/06 v2.4.1 OmniLaTeX Beamer integration]
+
+\RequirePackage{lib/utils/omnilatex-colors}
+\RequirePackage{xstring}
+\RequirePackage{lib/typography/omnilatex-fonts}
+
+%% KOMA-Script compatibility stubs for Beamer mode.
+%% When TEXINPUTS includes the repo root, stale .toc/.aux files from KOMA
+%% builds may be read by beamer. Provide no-op definitions for KOMA-only
+%% commands to prevent undefined control sequence errors.
+\@ifundefined{nonumberline}{\newcommand{\nonumberline}{}}{}
+\@ifundefined{texorpdfstring}{\newcommand{\texorpdfstring}[2]{#2}}{}
+
+%% Define OmniLaTeX primary and accent colors for Beamer
+%% These are derived from the indigo color scheme used in documentation
+\providecolor{OmniPrimaryColor}{RGB}{63, 81, 181}%
+\providecolor{OmniAccentColor}{RGB}{92, 107, 192}%
+
+%% Apply OmniLaTeX colors to Beamer elements
+\setbeamercolor{structure}{fg=OmniPrimaryColor}
+\setbeamercolor{frametitle}{fg=white,bg=OmniPrimaryColor}
+\setbeamercolor{title}{fg=white,bg=OmniPrimaryColor}
+\setbeamercolor{subtitle}{fg=OmniAccentColor}
+\setbeamercolor{author}{fg=OmniAccentColor}
+\setbeamercolor{date}{fg=OmniAccentColor}
+\setbeamercolor{institute}{fg=OmniAccentColor}
+\setbeamercolor{section in toc}{fg=OmniPrimaryColor}
+\setbeamercolor{subsection in toc}{fg=OmniAccentColor}
+\setbeamercolor{block title}{fg=white,bg=OmniPrimaryColor}
+\setbeamercolor{block body}{bg=OmniPrimaryColor!10}
+\setbeamercolor{block title alerted}{fg=white,bg=red!70!black}
+\setbeamercolor{block body alerted}{bg=red!5}
+\setbeamercolor{block title example}{fg=white,bg=green!50!black}
+\setbeamercolor{block body example}{bg=green!5}
+\setbeamercolor{item}{fg=OmniPrimaryColor}
+\setbeamercolor{subitem}{fg=OmniAccentColor}
+\setbeamercolor{footline}{fg=OmniAccentColor}
+
+%% Apply OmniLaTeX fonts to Beamer elements
+\setbeamerfont{title}{series=\bfseries,size=\Large}
+\setbeamerfont{frametitle}{series=\bfseries}
+\setbeamerfont{framesubtitle}{size=\small}
+
+%% Navigation symbols: respect class option (default: hidden)
+\ifomnilatex@beamernavigationsymbols
+  \setbeamertemplate{navigation symbols}{\insertslidenavigationsymbol}
+\else
+  \setbeamertemplate{navigation symbols}{}
+\fi
+
+%% Frame numbering
+\setbeamertemplate{footline}{%
+  \hfill\insertframenumber\,/\,\inserttotalframenumber\hspace{2mm}\vspace{1mm}%
+}
+
+%% Aspect ratio is handled via \PassOptionsToClass in omnilatex.cls
+%% before \LoadClass{beamer} is called.
+
+%% Theme selection
+\expandafter\ifx\csname omnilatex@beamertheme\endcsname\relax\else
+  \edef\omnilatex@beamertheme@exp{\omnilatex@beamertheme}%
+  \IfStrEqCase{\omnilatex@beamertheme@exp}{%
+    {metropolis}{\usetheme{metropolis}}%
+    {Madrid}{\usetheme{Madrid}}%
+    {Warsaw}{\usetheme{Warsaw}}%
+    {Berlin}{\usetheme{Berlin}}%
+    {Copenhagen}{\usetheme{Copenhagen}}%
+    {Singapore}{\usetheme{Singapore}}%
+    {Goettingen}{\usetheme{Goettingen}}%
+    {Rochester}{\usetheme{Rochester}}%
+    {Pittsburgh}{\usetheme{Pittsburgh}}%
+    {Berkeley}{\usetheme{Berkeley}}%
+    {PaloAlto}{\usetheme{PaloAlto}}%
+  }[]%
+\fi
+
+\endinput
