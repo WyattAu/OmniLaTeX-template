@@ -28,7 +28,7 @@ jobs:
 
     - name: Get new image digest
       id: digest
-      uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772
+      uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
