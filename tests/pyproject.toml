@@ -17,7 +17,7 @@ pytest-cov = "^5.0"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.14.0"
-black = "^23.3"
+black = ">=23.3,<27.0"
 
 [tool.coverage.run]
 source = ["buildlib"]
